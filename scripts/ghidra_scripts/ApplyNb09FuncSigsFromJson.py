@@ -22,11 +22,14 @@ import traceback
 
 from ghidra.util import Msg
 from ghidra.util.exception import DuplicateNameException
+from java.lang import Throwable
+from java.util import ConcurrentModificationException
 from ghidra.program.model.symbol import SourceType
 from ghidra.program.model.data import (
     VoidDataType,
     ByteDataType,
     CharDataType,
+    ArrayDataType,
     ShortDataType,
     UnsignedShortDataType,
     IntegerDataType,
@@ -39,11 +42,24 @@ from ghidra.program.model.data import (
     Undefined1DataType,
     Undefined2DataType,
     Undefined4DataType,
+    ArrayDataType,
 )
 from ghidra.program.model.listing import ParameterImpl
 from ghidra.program.model.listing import VariableSizeException
 from ghidra.app.cmd.function import ApplyFunctionSignatureCmd
 from ghidra.program.model.data import FunctionDefinitionDataType, ParameterDefinitionImpl
+
+# ------------------------------------------------------------
+# knobs
+# ------------------------------------------------------------
+
+# When applying locals-by-bp-offset, we sometimes need to delete overlapping USER_DEFINED locals
+# to fit a larger struct/array. That can destroy manual work, so keep it off by default.
+ALLOW_REMOVE_USER_DEFINED_OVERLAPS = False
+
+# When var.setDataType() fails due to size/storage mismatches, remove/recreate the stack var.
+# This is often required for by-value structs/arrays (e.g., PAINTSTRUCT, char[32]).
+ALLOW_RECREATE_STACK_VAR_ON_TYPEFAIL = True
 
 # ------------------------------------------------------------
 # helpers
@@ -226,6 +242,13 @@ def datatype_from_c_type(c_type):
     if t is None:
         return None
 
+    # Function pointer (treat as opaque pointer; we can refine later)
+    # Examples: "int16_t (*32)(void)", "int16_t (*32)(PLANET *32, PLANET *32)"
+    if re.search(r"\(\s*\*32\s*\)\s*\(", t):
+        return Pointer32DataType(VoidDataType.dataType)
+    if re.search(r"\(\s*\*\s*\)\s*\(", t):
+        return PointerDataType(VoidDataType.dataType)
+
     # pointer32
     if t.endswith(" *32"):
         base = t[:-4].strip()
@@ -251,14 +274,18 @@ def datatype_from_c_type(c_type):
             _warn("PointerDataType failed for base '%s': %s; using Undefined2*" % (base, str(e)))
             return PointerDataType(Undefined2DataType.dataType)
 
-    # array (locals; not used for signature)
+    # array (locals)
     m = re.match(r"^(.+)\[(\d+)\]$", t)
     if m:
         base_dt = datatype_from_c_type(m.group(1).strip())
         if base_dt is None:
             return None
-        # We don't need arrays for function signatures; return base.
-        return base_dt
+        try:
+            cnt = int(m.group(2))
+            elem_len = int(base_dt.getLength())
+            return ArrayDataType(base_dt, cnt, elem_len)
+        except Exception:
+            return base_dt
 
     dt = find_datatype_by_name(t)
     return dt
@@ -478,7 +505,10 @@ def apply_bp_relative_vars(func, types_obj):
         return 0
 
     wanted = []
-    for key in ("params", "locals"):
+    # NOTE: We intentionally skip "params" here. Parameters are already applied
+    # by ApplyFunctionSignatureCmd above, and Ghidra often won't let us create/resize
+    # stack storage for params via StackFrame APIs. Focusing on locals yields better results.
+    for key in ("locals",):
         for e in (types_obj.get(key) or []):
             if not isinstance(e, dict):
                 continue
@@ -489,11 +519,25 @@ def apply_bp_relative_vars(func, types_obj):
             ct = normalize_c_type(e.get("c_type") or "")
             if not nm or not ct:
                 continue
-            kind = e.get("kind") or ("param" if key == "params" else "local")
+            kind = e.get("kind") or "local"
             wanted.append((kind, int(bp_off), nm, ct))
 
     if not wanted:
         return 0
+
+    # Make names unique within this function (Ghidra rejects duplicates)
+    name_counts = {}
+    uniq_wanted = []
+    for kind, bp_off, nm, ct in wanted:
+        base = nm
+        n = name_counts.get(base, 0) + 1
+        name_counts[base] = n
+        if n == 1:
+            uniq = base
+        else:
+            uniq = "%s_%d" % (base, n)
+        uniq_wanted.append((kind, bp_off, uniq, ct))
+    wanted = uniq_wanted
 
     by_off = _collect_stack_vars(func)  # ghidra stack offsets
     changed = 0
@@ -751,11 +795,40 @@ def _set_var_dtype_force(func, var, dt):
     except Throwable:
         pass
 
-    # Pass 2: remove *all* overlaps (including USER_DEFINED). This is the "convince the decompiler" mode.
-    if _resolve_stack_conflicts(func, target_off, want_len, keep_var=var, remove_user_defined=True) > 0:
-        _g_stackvars_dirty = True
+    # Pass 2: optionally remove USER_DEFINED overlaps too.
+    if ALLOW_REMOVE_USER_DEFINED_OVERLAPS:
+        if _resolve_stack_conflicts(func, target_off, want_len, keep_var=var, remove_user_defined=True) > 0:
+            _g_stackvars_dirty = True
+        try:
+            var.setDataType(dt, SourceType.USER_DEFINED)
+            return True
+        except Throwable:
+            pass
+
+    # Last resort: delete/recreate the local at this stack offset with the desired datatype.
+    if not ALLOW_RECREATE_STACK_VAR_ON_TYPEFAIL:
+        return False
     try:
-        var.setDataType(dt, SourceType.USER_DEFINED)
+        nm = None
+        try:
+            nm = var.getName()
+        except Throwable:
+            nm = "var_%+d" % int(target_off)
+
+        # Removing the existing variable (if allowed) then creating a fresh one
+        # is often required for by-value structs/arrays where the old var has the wrong size.
+        try:
+            func.removeVariable(var)
+            _g_stackvars_dirty = True
+        except Throwable:
+            # If we can't remove it, don't try to create another on top.
+            return False
+
+        newv, err = _try_create_stack_var(func, nm, target_off, dt)
+        if newv is None:
+            _warn("[BPVAR-RECREATEFAIL] %s %+d : %s" % (func.getName(), int(target_off), err))
+            return False
+        _log("[BPVAR-RECREATED] %s %+d %s : %s" % (func.getName(), int(target_off), nm, dt.getName()))
         return True
     except Throwable:
         return False
