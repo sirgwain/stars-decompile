@@ -1,3 +1,6 @@
+# this contains setting local to each dev
+# we dont want this committed
+mise.local.toml
 # Prerequisites
 *.d
 
