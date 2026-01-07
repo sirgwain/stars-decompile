@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include "utilgen.h"
+#include "globals.h"
 #include "strings.h"
 
 /* globals */
@@ -268,18 +269,36 @@ int16_t FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int1
 
 void Randomize2(uint32_t dw)
 {
-    int16_t a;
-    int16_t b;
+    /* Indices derived from dw (7-bit) with XOR scramblers */
+    uint16_t a = (uint16_t)(((uint16_t)dw & 0x7Fu) ^ 0x35u);
+    uint16_t b = (uint16_t)((((uint16_t)(dw >> 1) & 0x7Fu) ^ 0x5Cu));
 
-    /* TODO: implement */
+    /* Ensure different indices */
+    if (a == b)
+    {
+        b = (uint16_t)((b + 1u) & 0x7Fu);
+    }
+
+    /* Load primes and sign-extend to 32-bit (matches CWD -> DX:AX) */
+    lRandSeed1 = (int32_t)rgPrimes[a];
+    lRandSeed2 = (int32_t)rgPrimes[b];
 }
 
 void Randomize(uint32_t dw)
 {
-    int16_t a;
-    int16_t b;
+    /* Indices derived exactly like the assembly */
+    uint16_t a = (uint16_t)(dw & 0x3Fu);
+    uint16_t b = (uint16_t)((dw >> 1) & 0x3Fu);
 
-    /* TODO: implement */
+    /* Ensure different indices */
+    if (a == b)
+    {
+        b = (uint16_t)((b + 1u) & 0x3Fu);
+    }
+
+    /* Load primes and sign-extend to 32-bit */
+    lRandSeed1 = (int32_t)rgPrimes[a];
+    lRandSeed2 = (int32_t)rgPrimes[b];
 }
 
 // TODO: add bounds checking to make safer
@@ -427,14 +446,42 @@ void CopyFile(char *szSrc, char *szDst)
     /* TODO: implement */
 }
 
-int32_t LGetNextFileXor(void)
+uint32_t LGetNextFileXor(void)
 {
-    int32_t s1;
-    int32_t k;
-    int32_t s2;
+    /* Same core generator as Random(), but driven by file seeds and returning raw s1-s2. */
+    const uint32_t q1 = 53668u, r1 = 12211u, a1 = 40014u, m1 = 2147483563u; /* 0x7FFFFFAB */
+    const uint32_t q2 = 52774u, r2 = 3791u, a2 = 40692u, m2 = 2147483399u;  /* 0x7FFFFF07 */
 
-    /* TODO: implement */
-    return 0;
+    int32_t s1 = lFileSeed1;
+    int32_t s2 = lFileSeed2;
+
+    /* Update seed 1 */
+    {
+        uint32_t k = (uint32_t)s1 / q1;
+        int32_t s1mkq = (int32_t)((uint32_t)s1 - k * q1);
+        s1 = (int32_t)(a1 * (uint32_t)s1mkq) - (int32_t)(r1 * k);
+        if (s1 < 0)
+        {
+            s1 += (int32_t)m1;
+        }
+    }
+
+    /* Update seed 2 */
+    {
+        uint32_t k = (uint32_t)s2 / q2;
+        int32_t s2mkq = (int32_t)((uint32_t)s2 - k * q2);
+        s2 = (int32_t)(a2 * (uint32_t)s2mkq) - (int32_t)(r2 * k);
+        if (s2 < 0)
+        {
+            s2 += (int32_t)m2;
+        }
+    }
+
+    lFileSeed1 = s1;
+    lFileSeed2 = s2;
+
+    /* The decompile returns s1 - s2 without the "z<1 add m1-1" fixup. */
+    return (uint32_t)(s1 - s2);
 }
 
 void BoundPoints(RECT *prc, POINT *rgpt, int16_t cpt)
@@ -522,41 +569,82 @@ int16_t FGetMouseMove(POINT *ppt)
 
 void PopRandom(void)
 {
+    /* Original does not bounds-check. */
+    cRandStack = (int16_t)(cRandStack - 1);
 
-    /* TODO: implement */
+    /* Stack entry: [seed1, seed2] */
+    lRandSeed1 = rglRandStack[(uint16_t)cRandStack][0];
+    lRandSeed2 = rglRandStack[(uint16_t)cRandStack][1];
 }
 
 void SetFileSeeds(int32_t l1, int32_t l2)
 {
-
-    /* TODO: implement */
+    lFileSeed1 = l1;
+    lFileSeed2 = l2;
 }
 
 void GetFileSeeds(int32_t *pl1, int32_t *pl2)
 {
-
-    /* TODO: implement */
+    /* Original assumes non-null pointers. */
+    *pl1 = lFileSeed1;
+    *pl2 = lFileSeed2;
 }
 
 void SetFileXorStream(int32_t lid, int16_t lSalt, int16_t turn, int16_t iPlayer, int16_t fCrippled)
 {
-    int16_t a;
-    int16_t b;
+    /* Indices derived from salt (two 5-bit fields, then biased into 0..63). */
+    uint16_t a = (uint16_t)(lSalt & 0x1F);
+    uint16_t b = (uint16_t)(((uint16_t)lSalt >> 5) & 0x1F);
 
-    /* TODO: implement */
+    if (((uint16_t)lSalt & 0x0400u) == 0)
+    {
+        b = (uint16_t)(b + 0x20u);
+    }
+    else
+    {
+        a = (uint16_t)(a + 0x20u);
+    }
+
+    /* Seeds come from rgPrimes (sign-extended like the original CWD). */
+    lFileSeed1 = (int32_t)rgPrimes[a];
+    lFileSeed2 = (int32_t)rgPrimes[b];
+
+    /* Advance the stream a small, deterministic number of steps. */
+    {
+        int16_t n = (int16_t)((((lid & 3) + 1) * ((turn & 3) + 1) * ((iPlayer & 3) + 1)) + fCrippled);
+        while (n > 0)
+        {
+            (void)LGetNextFileXor();
+            n--;
+        }
+    }
 }
 
-void XorFileBuf(char *rgb, int16_t cb)
+void XorFileBuf(uint8_t *rgb, int16_t cb)
 {
-    int32_t *plMac;
-    int32_t *pl;
+    int32_t *pl = (int32_t *)rgb;
+    int32_t *plMac = (int32_t *)(rgb + ((cb >> 2) << 2));
     int32_t lPrev;
-    char *pch;
+    uint8_t *pch;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x1d21 */
+    while (pl < plMac)
+    {
+        lPrev = (int32_t)LGetNextFileXor();
+        pl[0] ^= lPrev;
+        pl++;
+    }
 
-    /* TODO: implement */
+    if ((cb & 3) != 0)
+    {
+        pch = (uint8_t *)pl;
+        lPrev = (int32_t)LGetNextFileXor();
+        cb &= 3;
+        while (cb--)
+        {
+            *pch++ ^= (uint8_t)lPrev;
+            lPrev >>= 8;
+        }
+    }
 }
 
 char *PszGetLine(char **ppszBeg)
@@ -570,13 +658,55 @@ char *PszGetLine(char **ppszBeg)
 
 int16_t Random(int16_t c)
 {
-    int32_t z;
-    int32_t s1;
-    int32_t k;
-    int32_t s2;
+    /* Constants from the original generator (L'Ecuyer combined LCG). */
+    const uint32_t q1 = 53668u, r1 = 12211u, a1 = 40014u, m1 = 2147483563u; /* 0x7FFFFFAB */
+    const uint32_t q2 = 52774u, r2 = 3791u, a2 = 40692u, m2 = 2147483399u;  /* 0x7FFFFF07 */
 
-    /* TODO: implement */
-    return 0;
+    int32_t s1 = lRandSeed1;
+    int32_t s2 = lRandSeed2;
+
+    /* If c < 1, original returns 0 and does not commit new seeds. */
+    if (c < 1)
+    {
+        return 0;
+    }
+
+    /* Update seed 1: k = s1 / q1; s1 = a1*(s1 - k*q1) - k*r1; if (s1 < 0) s1 += m1; */
+    {
+        uint32_t k = (uint32_t)s1 / q1;
+        int32_t s1mkq = (int32_t)((uint32_t)s1 - k * q1); /* preserve unsigned low-32 behavior */
+        s1 = (int32_t)(a1 * (uint32_t)s1mkq) - (int32_t)(r1 * k);
+        if (s1 < 0)
+        {
+            s1 += (int32_t)m1;
+        }
+    }
+
+    /* Update seed 2: k = s2 / q2; s2 = a2*(s2 - k*q2) - k*r2; if (s2 < 0) s2 += m2; */
+    {
+        uint32_t k = (uint32_t)s2 / q2;
+        int32_t s2mkq = (int32_t)((uint32_t)s2 - k * q2);
+        s2 = (int32_t)(a2 * (uint32_t)s2mkq) - (int32_t)(r2 * k);
+        if (s2 < 0)
+        {
+            s2 += (int32_t)m2;
+        }
+    }
+
+    /* Combine: z = s1 - s2; if (z < 1) z += (m1 - 1); */
+    {
+        int32_t z = s1 - s2;
+        if (z < 1)
+        {
+            z += (int32_t)(m1 - 1u); /* 2147483562 == 0x7FFFFFAA */
+        }
+
+        lRandSeed1 = s1;
+        lRandSeed2 = s2;
+
+        /* Original uses unsigned remainder; c is positive here. */
+        return (int16_t)((uint32_t)z % (uint32_t)(uint16_t)c);
+    }
 }
 
 char *PszFromLong(int32_t l, int16_t *pcch)
@@ -589,8 +719,15 @@ char *PszFromLong(int32_t l, int16_t *pcch)
 
 void PushRandom(int32_t lNew1, int32_t lNew2)
 {
+    /* Save current seeds on stack (no bounds-check in original). */
+    rglRandStack[(uint16_t)cRandStack][0] = lRandSeed1;
+    rglRandStack[(uint16_t)cRandStack][1] = lRandSeed2;
 
-    /* TODO: implement */
+    cRandStack = (int16_t)(cRandStack + 1);
+
+    /* Install new seeds. */
+    lRandSeed1 = lNew1;
+    lRandSeed2 = lNew2;
 }
 
 void OffsetRc(RECT *prc, int16_t dx, int16_t dy)
