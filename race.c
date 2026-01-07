@@ -4,14 +4,14 @@
 #include "race.h"
 
 /* globals */
-char rgRW3Spacing[7];  /* MEMORY_RACE:0x2a8c */
-char rgRW3Width[7];  /* MEMORY_RACE:0x2a94 */
-char rgRW3IStat[7];  /* MEMORY_RACE:0x2a9c */
-char rgRaceStatMin[16];  /* MEMORY_RACE:0x30f4 */
-char rgRaceStatMax[16];  /* MEMORY_RACE:0x3104 */
-int16_t rgRacePrimaryTrait[10];  /* MEMORY_RACE:0x4410 */
-int16_t rgRaceAdvDisPts[14];  /* MEMORY_RACE:0x4424 */
-int16_t rgRaceDisEnvPts[6];  /* MEMORY_RACE:0x4440 */
+char rgRW3Spacing[7];           /* MEMORY_RACE:0x2a8c */
+char rgRW3Width[7];             /* MEMORY_RACE:0x2a94 */
+char rgRW3IStat[7];             /* MEMORY_RACE:0x2a9c */
+char rgRaceStatMin[16];         /* MEMORY_RACE:0x30f4 */
+char rgRaceStatMax[16];         /* MEMORY_RACE:0x3104 */
+int16_t rgRacePrimaryTrait[10]; /* MEMORY_RACE:0x4410 */
+int16_t rgRaceAdvDisPts[14];    /* MEMORY_RACE:0x4424 */
+int16_t rgRaceDisEnvPts[6];     /* MEMORY_RACE:0x4440 */
 
 /* functions */
 int16_t RaceWizardDlg6(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
@@ -116,7 +116,7 @@ int16_t RaceWizardDlg1(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t
     RECT rc;
     int16_t iPlrBmp;
     int16_t iOffset;
-    PLAYER * pplr;
+    PLAYER *pplr;
     uint16_t hwndCB;
     POINT pt;
     uint16_t hdc;
@@ -125,7 +125,7 @@ int16_t RaceWizardDlg1(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t
     uint8_t k;
     BTNT btnt;
     int16_t bt;
-    RECT * prc;
+    RECT *prc;
     char szBuf[32];
     int16_t iDir;
     int16_t iCur;
@@ -152,18 +152,23 @@ void SetRaceGrbit(PLAYER *pplr, int16_t ibit, int16_t fSet)
 {
     uint32_t grMask;
 
-    if (pplr == NULL) {
+    if (pplr == NULL)
+    {
         return;
     }
-    if (ibit < 0 || ibit >= 32) {
+    if (ibit < 0 || ibit >= 32)
+    {
         /* The original code used a 32-bit mask here (16-bit helpers made it
          * look like a wider operation). */
         return;
     }
     grMask = (uint32_t)1u << (uint32_t)ibit;
-    if (fSet) {
+    if (fSet)
+    {
         pplr->grbitAttr |= grMask;
-    } else {
+    }
+    else
+    {
         pplr->grbitAttr &= ~grMask;
     }
 }
@@ -172,10 +177,12 @@ int16_t GetRaceGrbit(PLAYER *pplr, int16_t ibit)
 {
     uint32_t grMask;
 
-    if (pplr == NULL) {
+    if (pplr == NULL)
+    {
         return 0;
     }
-    if (ibit < 0 || ibit >= 32) {
+    if (ibit < 0 || ibit >= 32)
+    {
         return 0;
     }
     grMask = (uint32_t)1u << (uint32_t)ibit;
@@ -185,7 +192,7 @@ int16_t GetRaceGrbit(PLAYER *pplr, int16_t ibit)
 void DrawRaceAdvantagePoints(uint16_t hdc, RECT *prc, PLAYER *pplr)
 {
     TEXTMETRIC tm;
-    LOGFONT * plf;
+    LOGFONT *plf;
     uint32_t crBkSav;
     int16_t bkMode;
     int16_t dyBig;
@@ -227,7 +234,7 @@ int16_t CAdvantagePoints(PLAYER *pplr)
 int16_t RaceCreationWizard(uint16_t hwndParent, int16_t fReadOnly, int16_t fDontWrite)
 {
     int16_t mdRet;
-    int16_t (* lpProc)(void);
+    int16_t (*lpProc)(void);
     RECT rgrcStack[17];
     int16_t cpts;
 
@@ -270,7 +277,7 @@ void InvalidateAdvPtsRect(uint16_t hwnd)
 {
     uint16_t hdc;
     TEXTMETRIC tm;
-    LOGFONT * plf;
+    LOGFONT *plf;
     int16_t dyBig;
     uint16_t hfont;
     int16_t dx;
@@ -385,15 +392,13 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr)
 
 int16_t GetRaceStat(PLAYER *pplr, int16_t iStat)
 {
-
-    /* TODO: implement */
-    return 0;
+    return pplr->rgAttr[iStat];
 }
 
 uint16_t IRaceChecksum(PLAYER *pplr)
 {
     uint16_t ick;
-    uint16_t * p;
+    uint16_t *p;
     int16_t i;
     int16_t cs;
 

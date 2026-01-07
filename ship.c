@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "race.h"
 #include "util.h"
 #include "parts.h"

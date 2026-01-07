@@ -3,6 +3,21 @@ Decompile and recompile of original stars 4x
 
 All of the types, function signatures, and initial local variable declarations and structs are extracted from codeview nb09 binary (extracted from the end of the stars26jrc3.exe).
 
+## building
+To build using cmake, execute the following
+
+### macos/linux
+```bash
+cmake -S . -B build -G "Ninja" -DSTARS_BUILD_CLI=ON
+cmake --build build
+```
+
+### win32
+```bash
+cmake -S . -B build -G "Ninja" -DSTARS_BUILD_WIN32=ON -DSTARS_BUILD_CLI=OFF
+cmake --build build
+```
+
 ## scripts
 
 * nb09_model.py/nb09_parser.py - parsed the nb09 binary into python data classes

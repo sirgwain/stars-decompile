@@ -9,7 +9,7 @@ int16_t About(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
     RECT rc;
     uint16_t hdc;
     int16_t i;
-    int16_t (* lpProc)(void);
+    int16_t (*lpProc)(void);
     uint16_t hwndCtl;
 
     /* debug symbols */
@@ -37,7 +37,7 @@ int16_t FSetUpBatchProcessing(void)
 int16_t FGetSystemColors(void)
 {
     uint16_t hdc;
-    BITMAPINFO * lpbi;
+    BITMAPINFO *lpbi;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MAIN:0x0ab7 */
@@ -58,17 +58,6 @@ int16_t OrderInfoDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t l
 int16_t IPlrAlsoCheater(int16_t iplr)
 {
     int16_t i;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t WinMain(uint16_t hInstance, uint16_t hPrevInstance, char *lpCmdLine, int16_t nCmdShow)
-{
-    char *pch;
-    char * lpT;
-    int16_t i;
-    MSG msg;
 
     /* TODO: implement */
     return 0;
@@ -105,7 +94,7 @@ int16_t FHandleKey(uint16_t hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
     return 0;
 }
 
-char * SzVersion(void)
+char *SzVersion(void)
 {
 
     /* TODO: implement */

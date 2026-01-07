@@ -4,7 +4,7 @@
 #include "popup.h"
 
 /* globals */
-uint16_t mpimdgrbitBU[8];  /* MEMORY_POPUP:0x0138 */
+uint16_t mpimdgrbitBU[8]; /* MEMORY_POPUP:0x0138 */
 
 /* functions */
 int32_t PopupWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
@@ -20,7 +20,7 @@ int32_t PopupWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t l
     return 0;
 }
 
-int16_t PopupMenu(uint16_t hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char * *rgsz, int16_t iChecked, int16_t fRightBtn)
+int16_t PopupMenu(uint16_t hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn)
 {
     char *pszTitle;
     int16_t tpm;
@@ -84,7 +84,7 @@ POINT PtDisplayResourceInfo(uint16_t hdc, int16_t dx, int16_t fPrint)
     /* label SetQuan @ MEMORY_POPUP:0x346f */
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }
 
 POINT PtDisplayPlanetStateInfo(uint16_t hdc, int16_t fPrint)
@@ -97,7 +97,7 @@ POINT PtDisplayPlanetStateInfo(uint16_t hdc, int16_t fPrint)
     int16_t iNewVal;
     int16_t ids;
     int16_t dChg;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t pctDesireOld;
     int16_t pctDesire;
     int16_t iValSav;
@@ -109,7 +109,7 @@ POINT PtDisplayPlanetStateInfo(uint16_t hdc, int16_t fPrint)
     /* block (block) @ MEMORY_POPUP:0x2192 */
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }
 
 void Popup(uint16_t hwnd, int16_t x, int16_t y)
@@ -158,7 +158,7 @@ POINT PtDisplayString(uint16_t hdc, int16_t dx, int16_t fPrint)
     int16_t x;
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }
 
 POINT PtDisplayPlanetPopInfo(uint16_t hdc, int16_t fPrint)
@@ -180,7 +180,7 @@ POINT PtDisplayPlanetPopInfo(uint16_t hdc, int16_t fPrint)
     /* label AfterDesire @ MEMORY_POPUP:0x2d3e */
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }
 
 POINT PtDisplayZipOrdInfo(uint16_t hdc, int16_t xCtr, int16_t fPrint)
@@ -192,7 +192,7 @@ POINT PtDisplayZipOrdInfo(uint16_t hdc, int16_t xCtr, int16_t fPrint)
     int16_t x;
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }
 
 POINT PtDisplayFactoryMineInfo(uint16_t hdc, int16_t dx, int16_t fPrint)
@@ -215,5 +215,5 @@ POINT PtDisplayFactoryMineInfo(uint16_t hdc, int16_t dx, int16_t fPrint)
     /* label SetQuan @ MEMORY_POPUP:0x327d */
 
     /* TODO: implement */
-    return 0;
+    return (POINT){0, 0};
 }

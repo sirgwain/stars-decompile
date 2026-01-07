@@ -483,7 +483,7 @@ POINT InvertPaneBorder(uint16_t hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
     /* block (block) @ MEMORY_MDI:0x210e */
 
     /* TODO: implement */
-    return 0;
+    return pt;
 }
 
 int16_t CTurnsOutSafe(void)

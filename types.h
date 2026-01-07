@@ -1,5 +1,6 @@
 #ifndef STARS_NB09_TYPES_H
 #define STARS_NB09_TYPES_H
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
