@@ -8,14 +8,24 @@ To build using cmake, execute the following
 
 ### macos/linux
 ```bash
-cmake -S . -B build -G "Ninja" -DSTARS_BUILD_CLI=ON
+cmake -S . -B build -G Ninja -DSTARS_BUILD_CLI=ON -DSTARS_BUILD_WIN32=OFF
 cmake --build build
 ```
 
 ### win32
 ```bash
-cmake -S . -B build -G "Ninja" -DSTARS_BUILD_WIN32=ON -DSTARS_BUILD_CLI=OFF
-cmake --build build
+cmake -S . -B build -DSTARS_BUILD_CLI=ON -DSTARS_BUILD_WIN32=ON
+cmake --build build --config Debug
+```
+
+### macos crossover build
+```bash
+cmake -S . -B build-win -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=toolchains/mingw-w64.cmake \
+  -DSTARS_BUILD_CLI=OFF -DSTARS_BUILD_WIN32=ON
+
+cmake --build build-win
+cmake --build build-win --target run_in_crossover
 ```
 
 ## scripts
