@@ -61,5 +61,5 @@ dkms.conf
 __pycache__
 .DS_Store
 build/
-build-win/ghidra_project/
+build-win/
 ghidra_project/
