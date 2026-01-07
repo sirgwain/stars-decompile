@@ -304,11 +304,14 @@ typedef struct _rtbof {
 ```
 
 ### Document Types (dt)
-- 0: .m file (player turn)
-- 1: .x file (turn log)
+- 0: .xy file (universe definition)
+- 1: .x# file (turn order/submitted)
 - 2: .hst file (host file)
-- 3: .r file (race file)
-- 4: .def file (game definition)
+- 3: .m# file (player turn)
+- 4: .h# file (history file)
+- 5: .r# file (race file)
+
+**Source:** `SetSzWorkFromDt` function in io_writefile.c/io_loadgame.c
 
 ## Score Structure
 
