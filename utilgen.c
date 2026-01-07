@@ -281,14 +281,21 @@ void Randomize(uint32_t dw)
     /* TODO: implement */
 }
 
+// TODO: add bounds checking to make safer
 int16_t CchGetString(int16_t ids, char *psz)
 {
-    char *pszT;
-    char *pszTT;
+    char *dst0 = psz;
+    const char *src = PszGetCompressedString(ids);
 
-    /* TODO: implement */
-    return 0;
+    while (*src != '\0') {
+        *psz++ = *src++;
+    }
+    *psz = '\0';
+
+    /* number of chars copied (not including the NUL) */
+    return (int16_t)(psz - dst0);
 }
+
 
 int32_t LSaltFromSz(char *psz)
 {
