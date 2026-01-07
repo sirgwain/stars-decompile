@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include "planet.h"
+#include "globals.h"
 
 /* functions */
 void DrawPlanShip(uint16_t hdc, int16_t grbit)
@@ -15,7 +16,7 @@ void DrawPlanShip(uint16_t hdc, int16_t grbit)
     int16_t i;
     uint32_t crBack;
     int16_t fErase;
-    TILE * ptile;
+    TILE *ptile;
     int16_t fDC;
     RECT rc;
 
@@ -28,7 +29,7 @@ void DrawPlanShip(uint16_t hdc, int16_t grbit)
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal)
 {
     int16_t chs;
-    HS * lphs;
+    HS *lphs;
     int32_t cPts;
     int16_t cScore;
     int16_t j;
@@ -59,7 +60,7 @@ int16_t IWarpMAFromLppl(PLANET *lppl, int16_t *pfTwo)
     int16_t fTwo;
     int16_t iWarp;
     int16_t i;
-    HUL * lphul;
+    HUL *lphul;
     int16_t iNew;
 
     /* TODO: implement */
@@ -117,7 +118,7 @@ void DrawPlanetShipList(uint16_t hdc, TILE *ptile, OBJ obj)
     int16_t c;
     RECT rcGauge;
     XFER xf;
-    FLEET * pfl;
+    FLEET *pfl;
     int32_t lSel;
     int16_t xLeft;
     int32_t l;
@@ -135,7 +136,7 @@ void DrawPlanetStarbase(uint16_t hdc, TILE *ptile, OBJ obj)
     int16_t yTop;
     int16_t xRight;
     int16_t c;
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     uint32_t crForeSav;
     uint16_t w;
     char *psz;
@@ -174,7 +175,7 @@ void DrawPlanetMinSum(uint16_t hdc, TILE *ptile, OBJ obj)
     int16_t i;
     int16_t xLeft;
     uint16_t hbrSav;
-    PLANET * ppl;
+    PLANET *ppl;
     RECT rc;
 
     /* TODO: implement */
@@ -208,7 +209,7 @@ int16_t CMaxOperableDefenses(PLANET *lppl, int16_t iplr, int16_t fNextYear)
     return 0;
 }
 
-char * PszProductionETA(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *etaFirst, int16_t *etaLast)
+char *PszProductionETA(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *etaFirst, int16_t *etaLast)
 {
     int16_t iTurnEnd;
     int16_t iTurnBegin;
@@ -250,11 +251,29 @@ void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)
     /* TODO: implement */
 }
 
-char * PszCalcEnvVar(int16_t iEnv, int16_t iVar)
+char *PszCalcEnvVar(int16_t iEnv, int16_t iVar)
 {
+    switch (iEnv)
+    {
+    case 0: /* gravity */
+        return PszCalcGravity(iVar);
 
-    /* TODO: implement */
-    return NULL;
+    case 1:
+    { /* temperature */
+        /* original format: "%d%cC" with 186 (0xBA) degree symbol in the codepage */
+        const int deg = 186;
+        snprintf(szWork, sizeof(szWork), "%d%cC", (int)(iVar * 4 - 200), (char)deg);
+        return szWork;
+    }
+
+    case 2: /* radiation */
+        /* original format: "%dmR" */
+        snprintf(szWork, sizeof(szWork), "%dmR", (int)iVar);
+        return szWork;
+
+    default: /* fallback behaved like env==0 */
+        return PszCalcGravity(iVar);
+    }
 }
 
 int16_t CMaxOperableFactories(PLANET *lppl, int16_t iplr, int16_t fNextYear)
@@ -291,13 +310,41 @@ void DrawMassWarpGauge(uint16_t hdc, RECT *prc, int16_t iBest, int16_t iCur)
     /* TODO: implement */
 }
 
-char * PszCalcGravity(int16_t iGravity)
+/*
+ * Original semantics:
+ *  - iGravity is in the 0–100-ish Stars! gravity scale
+ *  - Result is a percentage-like value with two decimals
+ *  - Uses asymmetric scaling around 50
+ */
+char *PszCalcGravity(int16_t iGravity)
 {
-    int16_t d;
+    int16_t d = (int16_t)abs(iGravity - 50);
     int16_t iVal;
 
-    /* TODO: implement */
-    return NULL;
+    if (d < 26)
+    {
+        iVal = d * 4 + 100;
+    }
+    else
+    {
+        iVal = (d - 25) * 24 + 200;
+    }
+
+    if (iGravity < 50)
+    {
+        /* integer division, matches original long divide */
+        iVal = 10000 / iVal;
+    }
+
+    /* equivalent to wsprintf(szWork, "%d.%02d", ...) */
+    snprintf(
+        szWork,
+        sizeof(szWork),
+        "%d.%02d",
+        iVal / 100,
+        abs(iVal % 100));
+
+    return szWork;
 }
 
 int16_t CMaxMines(PLANET *lppl, int16_t iplr)
@@ -342,7 +389,7 @@ void DrawPlanetProduction(uint16_t hdc, TILE *ptile, OBJ obj)
     int16_t cch;
     int16_t xLeft;
     RECT rcT;
-    PLANET * ppl;
+    PLANET *ppl;
     RECT rc;
 
     /* TODO: implement */
@@ -434,12 +481,12 @@ int32_t PlanetWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t 
     int32_t lSel;
     RECT rc;
     POINT pt;
-    DRAWITEMSTRUCT * lpdis;
-    MEASUREITEMSTRUCT * lpmis;
-    PLANET * lpplMac;
+    DRAWITEMSTRUCT *lpdis;
+    MEASUREITEMSTRUCT *lpmis;
+    PLANET *lpplMac;
     uint16_t hcs;
-    PLANET * lppl;
-    FLEET * lpfl;
+    PLANET *lppl;
+    FLEET *lpfl;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0x05a2 */
@@ -456,10 +503,10 @@ int32_t PlanetWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t 
 
 int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)
 {
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     int16_t idLast;
     int16_t idFirst;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t idAfter;
     int16_t idBefore;
 
@@ -483,10 +530,10 @@ int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr)
 
 void FillShipDD(int16_t idSkip)
 {
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t i;
-    THING * lpth;
-    FLEET * lpfl;
+    THING *lpth;
+    FLEET *lpfl;
     POINT ptSel;
 
     /* TODO: implement */
@@ -497,7 +544,7 @@ void ChangeMainObjSel(int16_t grobjNew, int16_t iObjSel)
     int16_t fSameType;
     int16_t idSkip;
     int16_t i;
-    FLEET * lpfl;
+    FLEET *lpfl;
 
     /* TODO: implement */
 }
@@ -544,7 +591,7 @@ void UninhabitPlanet(PLANET *lppl)
 int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish)
 {
     int16_t i;
-    HUL * lphul;
+    HUL *lphul;
     PART part;
 
     /* debug symbols */
@@ -564,7 +611,7 @@ void FillPlanetProdLB(uint16_t hwnd, PLPROD *lpplprod, PLANET *lppl)
     int32_t resCost;
     char *psz;
     char ch;
-    PROD * lpprod;
+    PROD *lpprod;
     int16_t etaLast;
     int16_t etaFirst;
 
@@ -632,7 +679,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)
     int16_t xRel;
     uint16_t iCol;
     int16_t iCur;
-    TILE * prgtile;
+    TILE *prgtile;
     RECT rc;
     uint16_t hdc;
     TILE tile;
@@ -657,9 +704,9 @@ int16_t PctPlanetCapacity(PLANET *lppl)
 
 void SelectAdjPlanet(int16_t dInc, int16_t idPlanet)
 {
-    PLANET * lpPlT;
+    PLANET *lpPlT;
     int16_t i;
-    PLANET * lpPl;
+    PLANET *lpPl;
     SCAN scan;
     int16_t fWrap;
 
@@ -676,7 +723,7 @@ void ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw)
     int16_t ctile;
     int16_t i;
     int16_t grbit;
-    TILE * ptile;
+    TILE *ptile;
     RECT rc;
 
     /* TODO: implement */

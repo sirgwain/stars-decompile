@@ -2,20 +2,15 @@
 #include "types.h"
 #include "util.h"
 #include "parts.h"
-
-/* Minimal externs required by the implementations below. */
-extern GAME game;
-extern PLANET *lpPlanets;
-extern int16_t cPlanet;
-extern SHDEF *rglpshdef[]; /* per-player ship design tables */
+#include "globals.h"
 
 /* globals */
-uint8_t vrgbTachyon[18];     /* MEMORY_UTIL:0x50be */
-int32_t rgDSDivCnt[5];       /* MEMORY_UTIL:0x5f7e */
-uint32_t rgcrDrawStars[5];   /* MEMORY_UTIL:0x5f92 */
-int32_t rgDSDivCnt2[5];      /* MEMORY_UTIL:0x5fa6 */
-uint32_t rgcrDrawStars2a[5]; /* MEMORY_UTIL:0x5fba */
-uint32_t rgcrDrawStars2b[5]; /* MEMORY_UTIL:0x5fce */
+uint32_t rgcrDrawStars[5] = {0x007f7f7f, 0x00ffffff, 0x000000ff, 0x0000ff00, 0x00ff0000};
+uint32_t rgcrDrawStars2a[5] = {0x00c0c0c0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000};
+uint32_t rgcrDrawStars2b[5] = {0x007f7f7f, 0x0000007f, 0x00007f00, 0x007f0000, 0x00000000};
+int32_t rgDSDivCnt[5] = {28000, 28000, 63000, 95000, 73000};
+int32_t rgDSDivCnt2[5] = {80000, 210000, 310000, 260000, 0};
+uint8_t vrgbTachyon[18] = {0x64, 0x5f, 0x5d, 0x5b, 0x5a, 0x59, 0x58, 0x57, 0x56, 0x56, 0x55, 0x54, 0x54, 0x53, 0x53, 0x52, 0x52, 0x51};
 
 /* functions */
 char *PszGetLocName(int16_t grobj, int16_t id, int16_t x, int16_t y)
