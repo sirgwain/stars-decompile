@@ -62,3 +62,4 @@ __pycache__
 .DS_Store
 build/
 build-win/ghidra_project/
+ghidra_project/
