@@ -215,6 +215,47 @@ def c_escape_bytes_as_string(bs: bytes) -> str:
             out.append(f"\\x{b:02x}")
     return "".join(out)
 
+
+def read_c_string_at_seg_off(
+    exef, seg_ranges_by_seg: Dict[int, List[SegRange]], seg: int, off: int, *, max_len: int = 1024
+) -> Optional[str]:
+    """Read a NUL-terminated string from the EXE at seg:off.
+
+    Returns the *escaped contents* for a C string literal (without surrounding quotes),
+    or None if it can't be mapped or doesn't look like text.
+    """
+    file_off = find_file_offset(seg_ranges_by_seg, seg, off)
+    if file_off is None:
+        return None
+    exef.seek(file_off)
+    bs = exef.read(max_len)
+    if not bs:
+        return None
+    try:
+        end = bs.index(b"\x00")
+    except ValueError:
+        end = len(bs)
+
+    raw = bs[:end]
+    if raw == b"":
+        return ""
+
+    printable = sum(1 for b in raw if is_printable_byte(b))
+    if printable < max(1, int(len(raw) * 0.85)):
+        return None
+    return c_escape_bytes_as_string(raw)
+
+
+def parse_char_ptr_array_1d(c_type: str) -> Optional[Tuple[bool, int]]:
+    """Return (is_const, count) if c_type is (const) char*[N] (1D)."""
+    s = c_type.strip()
+    m = re.match(r"^(const\s+)?char\s*\*\s*\[(\d+)\]\s*$", s)
+    if not m:
+        return None
+    is_const = bool(m.group(1))
+    n = int(m.group(2))
+    return (is_const, n)
+
 def format_scalar(val: int, base: str, signed: bool) -> str:
     if base in ("char", "int8_t", "byte", "uint8_t"):
         if signed and base != "uint8_t":
@@ -243,10 +284,18 @@ def format_array_initializer(base: str, dims: List[int], bs: bytes) -> str:
     for d in dims:
         total *= d
 
+    # The binary read for a global can be truncated (e.g. near the end of a segment,
+    # or if debug symbols misstate an array length). struct.unpack() requires an
+    # exact-sized buffer, so pad with zeros.
+    need_len = elem_size * total
+    chunk = bs[:need_len]
+    if len(chunk) < need_len:
+        chunk = chunk + (b"\x00" * (need_len - len(chunk)))
+
     fmt_char = {1: ("b" if signed else "B"),
                 2: ("h" if signed else "H"),
                 4: ("i" if signed else "I")}[elem_size]
-    vals = list(struct.unpack("<" + fmt_char * total, bs[:elem_size * total]))
+    vals = list(struct.unpack("<" + fmt_char * total, chunk))
 
     def rec(vs: List[int], ds: List[int]) -> str:
         if len(ds) == 1:
@@ -464,8 +513,12 @@ def main() -> int:
             if not name or not c_type:
                 continue
 
-            # pointers (and arrays-of-pointers) are out of scope for initializer extraction.
-            if "*" in c_type:
+            # Pointers are generally out of scope, but Stars! has several global tables
+            # that are "pointer arrays" mis-typed as `[1]` in NB09. The important/common
+            # case is string tables: (const) char*[N] stored as 16-bit *near* offsets in
+            # the same segment.
+            char_ptr_arr = parse_char_ptr_array_1d(c_type)
+            if "*" in c_type and char_ptr_arr is None:
                 continue
 
             addr = (g.get("ghidra") or {}).get("addr")
@@ -477,6 +530,62 @@ def main() -> int:
             file_off = find_file_offset(seg_ranges_by_seg, seg, off)
             if file_off is None:
                 skipped.append(f"{name} @ {addr}: no segment mapping")
+                continue
+
+            # Special case: (const) char*[N] global tables.
+            if char_ptr_arr is not None:
+                _is_const, declared_n = char_ptr_arr
+
+                # Stars! stores these tables in _DATA as near pointers (uint16 offsets).
+                # If NB09 says `[1]`, scan forward until offsets stop looking like strings.
+                max_scan = 256 if declared_n == 1 else declared_n
+                exef.seek(file_off)
+                offs: List[int] = []
+                raw = exef.read(max_scan * 2)
+                for i in range(0, len(raw), 2):
+                    w = int.from_bytes(raw[i:i+2], "little")
+                    if declared_n != 1 and len(offs) >= declared_n:
+                        break
+                    # Treat 0 as NULL terminator if scanning.
+                    if declared_n == 1 and w == 0:
+                        break
+                    # Only accept if it decodes as a printable string.
+                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, seg, w)
+                    if s is None:
+                        if declared_n == 1 and len(offs) >= 1:
+                            break
+                        # For a declared sized table, keep placeholder.
+                        offs.append(w)
+                        continue
+                    offs.append(w)
+
+                if declared_n != 1 and len(offs) < declared_n:
+                    # Ensure we emit exactly N entries.
+                    offs += [0] * (declared_n - len(offs))
+
+                inferred_n = len(offs) if declared_n == 1 else declared_n
+                elems: List[str] = []
+                for w in offs[:inferred_n]:
+                    if w == 0:
+                        elems.append("NULL")
+                        continue
+                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, seg, w)
+                    if s is not None:
+                        elems.append(f"\"{s}\"")
+                    else:
+                        elems.append(f"NULL /* {seg:04x}:{w:04x} */")
+
+                c_decl = t.get("c_decl") or f"{c_type} {name}"
+                if declared_n == 1 and inferred_n != 1:
+                    c_decl = re.sub(r"\[\s*1\s*\]", f"[{inferred_n}]", c_decl, count=1)
+                init = "{ " + ", ".join(elems) + " }"
+                line = f"{c_decl} = {init}; /* {addr} */"
+
+                seg_name = logical_segname(g)
+                sr = find_seg_range(seg_ranges_by_seg, seg, off)
+                range_start = sr.start_off if sr else 0
+                emitted.append(Emitted(seg_name=seg_name, seg=seg, range_start=range_start, name=name, line=line))
+                handled += 1
                 continue
 
             size = sizeof_decl(c_type, structs)
