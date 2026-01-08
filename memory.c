@@ -4,7 +4,7 @@
 #include "memory.h"
 
 /* functions */
-void ResetHb(int16_t ht)
+void ResetHb(HeapType ht)
 {
     HB * lphb;
 
@@ -39,7 +39,7 @@ PL * LpplReAlloc(PL *lppl, uint16_t cAlloc)
     return NULL;
 }
 
-HB * LphbFromLpHt(void *lp, int16_t ht)
+HB * LphbFromLpHt(void *lp, HeapType ht)
 {
     HB * lphb;
 
@@ -47,7 +47,7 @@ HB * LphbFromLpHt(void *lp, int16_t ht)
     return NULL;
 }
 
-void FreeLp(void *lp, int16_t ht)
+void FreeLp(void *lp, HeapType ht)
 {
     uint16_t cbFree;
     HB * lphb;
@@ -55,7 +55,7 @@ void FreeLp(void *lp, int16_t ht)
     /* TODO: implement */
 }
 
-void * LpAlloc(uint16_t cb, int16_t ht)
+void * LpAlloc(uint16_t cb, HeapType ht)
 {
     int16_t fFree;
     uint16_t cbItem;
@@ -71,7 +71,7 @@ void * LpAlloc(uint16_t cb, int16_t ht)
     return NULL;
 }
 
-void * LpReAlloc(void *lp, uint16_t cb, int16_t ht)
+void * LpReAlloc(void *lp, uint16_t cb, HeapType ht)
 {
     void * lpNew;
     HB * lphb;
@@ -85,7 +85,7 @@ void * LpReAlloc(void *lp, uint16_t cb, int16_t ht)
     return NULL;
 }
 
-HB * LphbAlloc(uint16_t cb, int16_t ht)
+HB * LphbAlloc(uint16_t cb, HeapType ht)
 {
     uint16_t hmem;
     HB * lphb;
@@ -94,7 +94,7 @@ HB * LphbAlloc(uint16_t cb, int16_t ht)
     return NULL;
 }
 
-PL * LpplAlloc(uint16_t cbItem, uint16_t cAlloc, int16_t ht)
+PL * LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht)
 {
     PL * lppl;
 
