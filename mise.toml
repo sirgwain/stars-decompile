@@ -245,6 +245,7 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-update-runtime-helpers]
 description = "Update the known runtime helper functions (i.e. __aFl*/__aFul*) signatures"
+depends = ["ghidra-apply-win16api"]
 run = '''
 #!/bin/bash
 set -e
@@ -265,6 +266,7 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-retype-doubles]
 description = "Update the unknown8 vars in 1120:* to be doubles"
+depends = ["ghidra-update-runtime-helpers"]
 run = '''
 #!/bin/bash
 set -e
