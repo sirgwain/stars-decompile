@@ -298,6 +298,35 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
     -postScript DecompileFunction.py "$1" 2>&1
 '''
 
+[tasks.dump-asm]
+description = "Dump assembly listing for a function (usage: mise run dump-asm -- FunctionName)"
+run = '''
+#!/bin/bash
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: mise run dump-asm -- <function_name>"
+    echo ""
+    echo "Example: mise run dump-asm -- CalcPlayerScore"
+    exit 1
+fi
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript DumpAsm.py "$1" 2>&1
+'''
+
 [tasks.export-decompiled]
 description = "Export decompiled code to a file (usage: mise run export-decompiled -- output.c Func1 Func2 ...)"
 run = '''
