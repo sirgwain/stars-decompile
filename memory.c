@@ -1,7 +1,6 @@
 
 #include "types.h"
 
-#define MEMORY_DEFINE 1
 #include "memory.h"
 #include "msg.h"
 #include "strings.h"

@@ -3,16 +3,6 @@
 
 #include "types.h"
 
-/*
- * mphtcbAlloc and rglphb are defined in memory.c; declare them extern here.
- */
-
-#ifdef MEMORY_DEFINE
-#define MEMORY_EXTERN
-#else
-#define MEMORY_EXTERN extern
-#endif
-
 typedef enum HeapType
 {
     htOrd = 0,
@@ -30,8 +20,8 @@ typedef enum HeapType
     htCount
 } HeapType;
 
-MEMORY_EXTERN uint16_t mphtcbAlloc[12];
-MEMORY_EXTERN HB *rglphb[12];
+extern uint16_t mphtcbAlloc[12];
+extern HB *rglphb[12];
 
 /* functions */
 void ResetHb(HeapType ht);                                                 /* MEMORY_MEMORY:0x0348 */
