@@ -186,6 +186,49 @@ __FPMATH @ 14f8:0000
 __AHSHIFT @ 14f8:0090
 __AHINCR @ 14f8:0094
 __WINFLAGS @ 14f8:00b0
+_Draw3dFrame @ 1040:336a
+_exit @ 1118:01a3
+_strcat @ 1118:0352
+_strcpy @ 1118:0392
+_strcmp @ 1118:03c4
+_strlen @ 1118:03f0
+_strncpy @ 1118:040c
+_atoi @ 1118:0434
+_strchr @ 1118:05c8
+_strrchr @ 1118:068c
+_memmove @ 1118:06d2
+_memcmp @ 1118:071a
+_memcpy @ 1118:0742
+_memset @ 1118:076e
+_abs @ 1118:079c
+_bsearch @ 1118:07b0
+_labs @ 1118:0848
+_qsort @ 1118:0866
+_longjmp @ 1118:09ed
+_rename @ 1118:0abe
+_remove @ 1118:0aea
+_sqrt @ 1118:1124
+_pow @ 1118:1130
+_log @ 1118:1136
+_log10 @ 1118:113c
+_exp @ 1118:1141
+_sin @ 1118:115c
+_cos @ 1118:1162
+_tan @ 1118:1167
+_asin @ 1118:117c
+_acos @ 1118:1182
+_atan @ 1118:1187
+_atan2 @ 1118:118c
+_fFYTOX @ 1118:16ae
+_atof @ 1118:22ac
+_Soft_fFCOS @ 1118:24e0
+_Soft_fFSIN @ 1118:24f7
+_Soft_fFTAN @ 1118:25f9
+_i8_output @ 1118:2c12
+_i8_tpwr10 @ 1118:32bc
+_lclose @ 14f8:0070
+_lread @ 14f8:0074
+_lwrite @ 14f8:0078
 """
 
 def _ptr_near(base_dt):
@@ -322,6 +365,60 @@ def run():
         "__aFCIatan": ("double", ["double"]),
         "__aFCIatan2":("double", ["double", "double"]),
     }
+
+    # C runtime / misc (16-bit int, near pointers unless noted)
+    proto.update({
+        # termination
+        "_exit":    ("void",  ["int16"]),          # status
+
+        # string.h
+        "_strcat":  ("ptr_char", ["ptr_char", "ptr_char"]),
+        "_strcpy":  ("ptr_char", ["ptr_char", "ptr_char"]),
+        "_strcmp":  ("int16",    ["ptr_char", "ptr_char"]),
+        "_strlen":  ("uint16",   ["ptr_char"]),
+        "_strncpy": ("ptr_char", ["ptr_char", "ptr_char", "uint16"]),
+        "_atoi":    ("int16",    ["ptr_char"]),
+        "_strchr":  ("ptr_char", ["ptr_char", "int16"]),   # s, c
+        "_strrchr": ("ptr_char", ["ptr_char", "int16"]),   # s, c
+
+        # memory.h / string.h
+        "_memmove": ("ptr_void", ["ptr_void", "ptr_void", "uint16"]),
+        "_memcmp":  ("int16",    ["ptr_void", "ptr_void", "uint16"]),
+        "_memcpy":  ("ptr_void", ["ptr_void", "ptr_void", "uint16"]),
+        "_memset":  ("ptr_void", ["ptr_void", "int16", "uint16"]),
+
+        # stdlib.h
+        "_abs":     ("int16", ["int16"]),
+        "_labs":    ("long",  ["long"]),
+        "_bsearch": ("ptr_void", ["ptr_void", "ptr_void", "uint16", "uint16", "ptr_void"]),
+        "_qsort":   ("void",     ["ptr_void", "uint16", "uint16", "ptr_void"]),
+        "_longjmp": ("void",     ["ptr_void", "int16"]),   # jmp_buf*, val
+
+        # stdio/unistd-ish
+        "_rename":  ("int16", ["ptr_char", "ptr_char"]),
+        "_remove":  ("int16", ["ptr_char"]),
+
+        # math (Borland-ish CRT names)
+        "_sqrt":    ("double", ["double"]),
+        "_pow":     ("double", ["double", "double"]),
+        "_log":     ("double", ["double"]),
+        "_log10":   ("double", ["double"]),
+        "_exp":     ("double", ["double"]),
+        "_sin":     ("double", ["double"]),
+        "_cos":     ("double", ["double"]),
+        "_tan":     ("double", ["double"]),
+        "_asin":    ("double", ["double"]),
+        "_acos":    ("double", ["double"]),
+        "_atan":    ("double", ["double"]),
+        "_atan2":   ("double", ["double", "double"]),
+
+        "_atof":    ("double", ["ptr_char"]),
+
+        # Win16 KERNEL file APIs (HFILE + far buffer)
+        "_lclose":  ("int16",  ["int16"]),
+        "_lread":   ("uint16", ["int16", "ptr32_void", "uint16"]),
+        "_lwrite":  ("uint16", ["int16", "ptr32_void", "uint16"]),
+    })
 
     def resolve_type(tname):
         # Near (16-bit) pointers
