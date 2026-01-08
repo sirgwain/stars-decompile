@@ -917,13 +917,9 @@ def main():
             _warn("No function at %s for %s" % (addr_str, name))
             continue
 
-        # rename
-        try:
-            if func.getName() != name:
-                func.setName(name, SourceType.USER_DEFINED)
-                renamed += 1
-        except Exception as e:
-            _warn("Rename failed for %s @ %s: %s" % (name, addr_str, str(e)))
+        # NOTE: Renaming is handled by ApplyNb09NamesFromJson.py
+        # We skip renaming here to avoid duplicate work and potential inconsistencies.
+        # The naming script should be run before this one.
 
         # signature
         try:
