@@ -1,4 +1,4 @@
-#@category Stars
+# @category Stars
 #
 # UpdateStarsRuntimeHelperSignatures.py
 #

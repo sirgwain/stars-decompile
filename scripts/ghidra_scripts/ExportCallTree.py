@@ -1,5 +1,5 @@
 # ExportCallTree.py
-# @category: Stars.NB09
+# @category Stars
 # @description: Export a function and all functions it calls (recursively)
 #
 # Usage (headless): -postScript ExportCallTree.py <output_file> <root_function> [max_depth]

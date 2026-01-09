@@ -1,5 +1,5 @@
 # ExportDecompiled.py
-# @category: Stars.NB09
+# @category Stars
 # @description: Export decompiled code for multiple functions to a file
 #
 # Usage (headless): -postScript ExportDecompiled.py <output_file> <func1> [func2] ...

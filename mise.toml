@@ -13,7 +13,7 @@ SCRIPTS_DIR = "{{ cwd }}/scripts/ghidra_scripts"
 TARGET_EXE = "{{ cwd }}/target/stars.exe"
 JSON_GLOBALS = "{{ cwd }}/scripts/nb09_ghidra_globals.json"
 JSON_STRUCTS = "{{ cwd }}/scripts/nb09_structmeta.json"
-WINDOWS_H = "{{ cwd }}/include/WINDOWS.H"
+WINDOWS_H = "{{ cwd }}/scripts/ghidra_scripts/include/WINDOWS.H"
 
 [tasks.unzip-stars]
 description = "Extract stars.exe from the archive"
@@ -63,7 +63,6 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-apply-structs]
 description = "Apply NB09 struct definitions to Ghidra project"
-depends = ["ghidra-import"]
 run = '''
 #!/bin/bash
 set -e
@@ -87,7 +86,6 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-apply-names]
 description = "Apply NB09 function and global names to Ghidra project"
-depends = ["ghidra-apply-structs"]
 run = '''
 #!/bin/bash
 set -e
@@ -111,7 +109,6 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-apply-globals]
 description = "Apply NB09 global variable types to Ghidra project"
-depends = ["ghidra-apply-names"]
 run = '''
 #!/bin/bash
 set -e
@@ -135,7 +132,6 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-apply-funcsigs]
 description = "Apply NB09 function signatures to Ghidra project"
-depends = ["ghidra-apply-globals"]
 run = '''
 #!/bin/bash
 set -e
@@ -159,7 +155,6 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-apply-win16api]
 description = "Apply Win16 Windows API signatures to Ghidra project"
-depends = ["ghidra-apply-funcsigs"]
 run = '''
 #!/bin/bash
 set -e
@@ -183,14 +178,17 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 [tasks.ghidra-setup]
 description = "Full Ghidra setup: import binary and apply all symbol scripts"
-depends = ["ghidra-apply-win16api"]
-run = '''
-#!/bin/bash
-echo ""
-echo "=== Setup complete! ==="
-echo "Open Ghidra GUI with: mise run ghidra-gui"
-echo "Then open project: $GHIDRA_PROJECT/Stars.gpr"
-'''
+run = [
+    { task = "unzip-stars" },
+    { task = "ghidra-import" },
+    { task = "ghidra-apply-structs" },
+    { task = "ghidra-apply-names" },
+    { task = "ghidra-apply-globals" },
+    { task = "ghidra-apply-funcsigs" },
+    { task = "ghidra-apply-win16api" },
+    { task = "ghidra-update-runtime-helpers" },
+    { task = "ghidra-retype-doubles" },
+]
 
 [tasks.ghidra-gui]
 description = "Launch Ghidra GUI"

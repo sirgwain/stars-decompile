@@ -199,9 +199,9 @@ def _primitive_dt(name):
     if n in ("bool", "_Bool"):
         return BooleanDataType.dataType
     if n in ("int16_t", "short"):
-        return IntegerDataType.dataType
+        return ShortDataType.dataType
     if n in ("uint16_t", "unsigned short"):
-        return UnsignedIntegerDataType.dataType
+        return UnsignedShortDataType.dataType
     if n in ("int32_t", "int", "long"):
         return LongDataType.dataType
     if n in ("uint32_t", "unsigned int", "unsigned long"):
@@ -303,29 +303,6 @@ def _resolve_named_type(dtm, name):
         dt = _dtm_find_by_name(dtm, cand)
         if dt is not None:
             return dt
-
-    # Create very common Win16 structs if they are missing (reduces noise).
-    if name in ("POINT", "RECT"):
-        try:
-            if name == "POINT":
-                st = StructureDataType("POINT", 0)
-                st.add(ShortDataType.dataType, 2, "x", None)
-                st.add(ShortDataType.dataType, 2, "y", None)
-            else:
-                st = StructureDataType("RECT", 0)
-                st.add(ShortDataType.dataType, 2, "left", None)
-                st.add(ShortDataType.dataType, 2, "top", None)
-                st.add(ShortDataType.dataType, 2, "right", None)
-                st.add(ShortDataType.dataType, 2, "bottom", None)
-
-            dt_added = dtm.addDataType(st, DataTypeConflictHandler.DEFAULT_HANDLER)
-            # Refresh index so subsequent lookups see it.
-            global _DT_NAME_INDEX
-            _DT_NAME_INDEX = None
-            _ensure_dt_name_index(dtm)
-            return dt_added
-        except Exception:
-            pass
 
     return None
 

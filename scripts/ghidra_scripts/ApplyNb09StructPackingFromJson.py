@@ -39,7 +39,7 @@ _ARRAY_RE = re.compile(r"\[([0-9]+)\]")
 # Verbose debug logging (set False to quiet)
 _DEBUG = True
 
-_EXCLUDE_STRUCTS = ["RECT", "POINT"]
+_EXCLUDE_STRUCTS = [] # ["RECT", "POINT"]
 
 
 def _dbg(msg):
@@ -51,6 +51,30 @@ def _dbg(msg):
         pass
 
 
+
+def _safe_add_replace(dtm, dt, handler):
+    """Add a datatype, and if Ghidra blows up due to a corrupted existing type,
+    try to remove the existing type and retry."""
+    try:
+        return dtm.addDataType(dt, handler)
+    except Exception as e:
+        msg = str(e)
+        # We have observed Ghidra NPEs when replacing composites whose existing
+        # components have null datatypes (often from a prior bad import).
+        if ('NullPointerException' in msg) or ('java.lang.NullPointerException' in msg):
+            try:
+                existing = dtm.getDataType(dt.getCategoryPath(), dt.getName())
+            except Exception:
+                existing = None
+            if existing is not None:
+                try:
+                    _dbg("[SAFE] removing existing corrupted type %s" % existing.getPathName())
+                    dtm.remove(existing, monitor)
+                except Exception as e2:
+                    _dbg("[SAFE] remove failed for %s: %s" % (existing.getPathName(), e2))
+            # retry once
+            return dtm.addDataType(dt, handler)
+        raise
 def _norm(s):
     if s is None:
         return ""
@@ -494,17 +518,30 @@ def _builtin_for_name(dtm, base_name):
             # fallback: some builds may not expose CharDataType; best-effort
             return ByteDataType.dataType if ByteDataType is not None else None
 
+    # 8-bit
     if n in ("int8_t", "uint8_t", "byte"):
         if ByteDataType is not None:
             return ByteDataType.dataType
 
-    if n in ("short", "uint16_t", "word"):
+    # 16-bit
+    #
+    # NOTE: Ghidra's built-in "int" and "long" sizes depend on the language
+    # model; for Win16 (x86:16), we still want fixed *byte sizes* that match
+    # the C typedefs in types.h / NB09.
+    #
+    # Use ShortDataType for 2-byte integers, IntegerDataType for 4-byte integers,
+    # and LongDataType for 8-byte integers.
+    if n in ("short", "int16_t", "uint16_t", "word"):
         if ShortDataType is not None:
             return ShortDataType.dataType
-    if n in ("int16_t", "uint32_t", "dword"):
-        if IntegerDataType is not None:
-            return IntegerDataType.dataType
-    if n in ("int", "long", "int32_t", "uint32_t", "longlong"):
+
+    # 32-bit
+    if n in ("long", "int32_t", "uint32_t", "dword"):
+        if LongDataType is not None:
+            return LongDataType.dataType
+
+    # 64-bit
+    if n in ("longlong", "int64_t", "uint64_t"):
         if LongDataType is not None:
             return LongDataType.dataType
     if n in ("void",):
@@ -513,11 +550,23 @@ def _builtin_for_name(dtm, base_name):
             return ByteDataType.dataType
 
     return None
-
 _DEFAULT_CAT_PATH = CategoryPath("/stars")
+
+# Populated in main(): name -> size (bytes) for NB09 structs/unions.
+_SIZE_BY_NAME = {}
+
 
 
 def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
+    """
+    Resolve a base (non-pointer, non-array) type name to a Ghidra DataType.
+
+    Key points for this project:
+      - We frequently encounter forward references (a struct uses POINT before POINT is built).
+      - We must NOT create 1-byte typedef placeholders for composite types, because that poisons
+        subsequent structure placement (flen becomes 1, and later replacements can leave null components).
+      - Keep name_index in sync even as we add types (do a live dtm lookup when missing).
+    """
     b = _builtin_for_name(dtm, base_name)
     if b is not None:
         return b
@@ -531,14 +580,60 @@ def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
     if base_name.startswith("_") and len(base_name) > 1:
         cand.append(base_name[1:].upper())
 
+    # 1) Try cached index
     for c in cand:
         dt = name_index.get(c)
         if dt is not None:
             return dt
 
-    # As a last resort, create an empty typedef so fields can at least be placed.
-    # IMPORTANT: place it under the same category as our NB09 imports so it will be
-    # replaced later (and we don't pollute "/" with conflicting names like "/HB").
+    # 2) Try live lookups in dtm (keeps us correct after we create types)
+    for c in cand:
+        for cp in (cat_path or _DEFAULT_CAT_PATH, _DEFAULT_CAT_PATH, CategoryPath("/")):
+            try:
+                dt = dtm.getDataType(cp, c)
+            except Exception:
+                dt = None
+            if dt is not None:
+                dt = _unwrap_typedef(dt)
+                name_index[c] = dt
+                name_index[dt.getName()] = dt
+                try:
+                    name_index[dt.getPathName()] = dt
+                except Exception:
+                    pass
+                _dbg("[RESOLVE] %s -> %s (dtm lookup)" % (c, dt.getPathName()))
+                return dt
+
+    # 3) Forward reference: create a placeholder STRUCT (preferred) if we know its size.
+    #    This ensures early uses (e.g. embedding POINT) have the correct length.
+    for c in cand:
+        sz = _SIZE_BY_NAME.get(c)
+        if sz is None and c.startswith("tag"):
+            sz = _SIZE_BY_NAME.get(c[3:])
+        if sz is None and c.startswith("_"):
+            sz = _SIZE_BY_NAME.get(c[1:].upper())
+        if sz is not None and int(sz) > 0:
+            try:
+                sdt = StructureDataType(c, int(sz))
+                try:
+                    sdt.setCategoryPath(cat_path or _DEFAULT_CAT_PATH)
+                except Exception:
+                    pass
+                sdt = dtm.addDataType(sdt, DataTypeConflictHandler.KEEP_HANDLER)
+                base = _unwrap_typedef(sdt)
+                name_index[c] = base
+                name_index[base.getName()] = base
+                try:
+                    name_index[base.getPathName()] = base
+                except Exception:
+                    pass
+                _dbg("[FWD-STRUCT] created placeholder struct %s (size=%d) under %s" % (
+                    c, int(sz), (cat_path or _DEFAULT_CAT_PATH)))
+                return base
+            except Exception as e:
+                _dbg("[FWD-STRUCT] failed to create placeholder struct %s: %s" % (c, str(e)))
+
+    # 4) Last resort: typedef to char (length 1). This is only safe for truly-unknown scalars.
     try:
         td = TypedefDataType(base_name, _builtin_for_name(dtm, "char") or ByteDataType.dataType)
         try:
@@ -547,7 +642,14 @@ def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
             pass
         _dbg("[FWD-TYPEDEF] created placeholder typedef %s under %s" % (
             base_name, (cat_path or _DEFAULT_CAT_PATH)))
-        return dtm.addDataType(td, DataTypeConflictHandler.KEEP_HANDLER)
+        td = dtm.addDataType(td, DataTypeConflictHandler.KEEP_HANDLER)
+        base = _unwrap_typedef(td)
+        name_index[base_name] = base
+        try:
+            name_index[base.getPathName()] = base
+        except Exception:
+            pass
+        return base
     except Exception:
         return _builtin_for_name(dtm, "char") or (ByteDataType.dataType if ByteDataType else None)
 
@@ -623,17 +725,57 @@ def _create_struct_or_union_from_json(dtm, name_index, rec, cat_path):
     is_union = (kind == "union")
 
     if is_union:
+        # Populate unions too. If we early-return, any struct embedding this union will
+        # see it as a 0/1-byte type and you'll get large undefined gaps (e.g. FLEET's
+        # union { DV rgdv[16]; int32_t wtFleet; }).
         dt = UnionDataType(name)
         dt.setCategoryPath(cat_path)
-        dt = dtm.addDataType(dt, DataTypeConflictHandler.REPLACE_HANDLER)
-        # Allow self-references / forward refs to resolve to this union while populating members.
+        dt = _safe_add_replace(dtm, dt, DataTypeConflictHandler.REPLACE_HANDLER)
+        # Allow forward/self refs to resolve to this union while populating members.
         name_index[name] = dt
-        return dt
 
+        _dbg("[UNION] %s created/replaced size_json=%d ghidra_len=%d" % (dt.getPathName(), size, dt.getLength()))
+
+        fields = rec.get("fields") or []
+        for f in fields:
+            if not isinstance(f, dict) or _norm(f.get("kind")) != "member":
+                continue
+            c_decl = _norm(f.get("c_decl"))
+            if not c_decl:
+                continue
+
+            dt_field, parsed_name, _dims = _parse_type_from_cdecl(dtm, name_index, c_decl, cat_path=cat_path)
+            if dt_field is None:
+                _dbg("[UNION-MEMBER-SKIP] %s decl='%s' (type parse failed)" % (dt.getPathName(), c_decl))
+                continue
+
+            mname = _norm(f.get("name")) or parsed_name or "member_%d" % (dt.getNumComponents() + 1)
+            try:
+                _dbg("[UNION-MEMBER] %s %s len=%d decl='%s'" % (dt.getPathName(), mname, int(dt_field.getLength()), c_decl))
+                dt.add(dt_field, int(dt_field.getLength()), mname, None)
+            except Exception as e:
+                _dbg("[UNION-MEMBER-FAIL] %s %s err=%s" % (dt.getPathName(), mname, e))
+                raise
+
+        # If NB09 provided an explicit union size, ensure the union is at least that
+        # large by padding with undefined bytes (Ghidra unions are max(member sizes)).
+        if size > 0:
+            try:
+                cur = int(dt.getLength())
+            except Exception:
+                cur = 0
+            if cur < size:
+                try:
+                    pad = ArrayDataType(Undefined1DataType.dataType, size - cur, 1)
+                    dt.add(pad, int(pad.getLength()), "_pad", None)
+                except Exception:
+                    pass
+
+        return dt
     # Structures: do NOT allow 0-length, or replaceAtOffset will throw in some builds.
     dt = StructureDataType(name, max(size, 1))
     dt.setCategoryPath(cat_path)
-    dt = dtm.addDataType(dt, DataTypeConflictHandler.REPLACE_HANDLER)
+    dt = _safe_add_replace(dtm, dt, DataTypeConflictHandler.REPLACE_HANDLER)
 
     # Win16 structs are frequently packed (alignment 1 or 2) and many are NOT
     # rounded up to 4-byte multiples. Force packing to avoid Ghidra's end-padding.
@@ -651,59 +793,77 @@ def _create_struct_or_union_from_json(dtm, name_index, rec, cat_path):
 
     fields = rec.get("fields") or []
     # Process in offset order to avoid back-filling issues.
-    members = []
+    #
+    # IMPORTANT: NB09 represents anonymous unions by emitting multiple "member" entries
+    # that share the same offset. If we naively place them in sequence, the later entry
+    # will delete/overwrite the earlier one, often leaving the smaller alternative plus a
+    # tail of undefined1 fillers (e.g. FLEET: union { DV rgdv[16]; int32_t wtFleet; }).
+    #
+    # Strategy: group members by offset; for each offset, place the *widest* successfully
+    # parsed member (this produces the correct packed layout with no undefined gaps).
+    # We still keep bitfield containers as a special case.
+    members_by_off = {}
     placed_bitfield_offsets = set()  # offsets where we've already placed a flag container
     for f in fields:
+        if not isinstance(f, dict) or _norm(f.get('kind')) != 'member':
+            continue
         try:
-            if isinstance(f, dict) and _norm(f.get('kind')) == 'member':
-                members.append((int(f.get('offset')), f))
+            off = int(f.get('offset'))
         except Exception:
             continue
-    members.sort(key=lambda t: t[0])
+        members_by_off.setdefault(off, []).append(f)
 
-    for off, f in members:
-        if not isinstance(f, dict):
-            continue
-        if _norm(f.get("kind")) != "member":
-            continue
+    for off in sorted(members_by_off.keys()):
+        cand_fields = members_by_off.get(off) or []
 
-        c_decl = _norm(f.get("c_decl"))
-        if not c_decl:
-            continue
-
-        # off already parsed/sorted above
-
-        dt_field, parsed_name, _dims = _parse_type_from_cdecl(dtm, name_index, c_decl, cat_path=cat_path)
-        if dt_field is None:
-            continue
-
-        fname = _norm(f.get("name")) or parsed_name or "field_%x" % off
-
-        # Bitfields: we don't model individual bits here. We only create a single
-        # container field per 16-bit word and give it a stable name (flags1, flags2, ...).
-        bitlen = f.get("bitlen")
-        bitpos = f.get("bitpos")
-        if bitlen is not None:
-            # Many bitfield members share the same underlying word. Once we've placed the
-            # container for this offset, skip subsequent bitfields at the same offset.
+        # If any candidate is a bitfield member, emit a single container and skip the rest.
+        has_bitfield = False
+        for cf in cand_fields:
+            if isinstance(cf, dict) and cf.get('bitlen') is not None:
+                has_bitfield = True
+                break
+        if has_bitfield:
             if off in placed_bitfield_offsets:
-                _dbg("[BITFIELD-SKIP] %s +0x%x %s (container already placed)" % (
-                    dt.getPathName(), off, _norm(f.get("name")) or "bitfield"
-                ))
                 continue
             placed_bitfield_offsets.add(off)
-
             # Use 1-based word index for naming: +0 -> flags1, +2 -> flags2, etc.
             fname = "flags%d" % (off // 2 + 1)
-
-        flen = 0
-        try:
+            dt_field = _builtin_for_name(dtm, "uint16_t") or _builtin_for_name(dtm, "int16_t")
+            if dt_field is None:
+                continue
             flen = int(dt_field.getLength())
-        except Exception:
-            flen = 0
-
-        if flen <= 0:
+            _dbg("[FIELD] %s +0x%x len=%d decl='<bitfield-container>'" % (dt.getPathName(), off, flen))
+            _ensure_len(dt, off + flen)
+            _delete_overlaps(dt, off, flen)
+            _ensure_len(dt, off + flen)
+            dt.replaceAtOffset(off, dt_field, flen, fname, None)
             continue
+
+        # Non-bitfield: choose the widest parsed candidate at this offset.
+        best = None  # (flen, dt_field, fname, c_decl)
+        for f in cand_fields:
+            c_decl = _norm(f.get('c_decl'))
+            if not c_decl:
+                continue
+            dt_try, parsed_name, _dims = _parse_type_from_cdecl(dtm, name_index, c_decl, cat_path=cat_path)
+            if dt_try is None:
+                continue
+            try:
+                flen = int(dt_try.getLength())
+            except Exception:
+                continue
+            if flen <= 0:
+                continue
+            fname_try = _norm(f.get('name')) or parsed_name or ("field_%x" % off)
+            if best is None or flen > best[0]:
+                best = (flen, dt_try, fname_try, c_decl)
+
+        if best is None:
+            continue
+
+        flen, dt_field, fname, c_decl = best
+
+        # Note: union-like overlaps are resolved by choosing the widest member above.
 
         _dbg("[FIELD] %s +0x%x len=%d decl='%s'" % (dt.getPathName(), off, flen, c_decl))
         _dbg("[FIELD]   before: ghidra_len=%d" % dt.getLength())
@@ -757,6 +917,31 @@ def main():
         recs = data.get("structs") or data.get("types") or []
     else:
         recs = data
+
+
+    # Pre-index declared sizes so forward references (e.g. POINT before definition) can create
+    # correctly-sized placeholder structs instead of 1-byte typedefs.
+    global _SIZE_BY_NAME
+    _SIZE_BY_NAME = {}
+    try:
+        for r in recs:
+            if not isinstance(r, dict):
+                continue
+            k = _norm(r.get("kind"))
+            if k not in ("struct", "union"):
+                continue
+            n = _norm(r.get("name"))
+            if not n:
+                continue
+            sz = r.get("size")
+            if sz is None:
+                continue
+            try:
+                _SIZE_BY_NAME[n] = int(sz)
+            except Exception:
+                pass
+    except Exception as e:
+        _dbg("[WARN] size preindex failed: %s" % str(e))
 
     cat_path = CategoryPath("/stars")
 

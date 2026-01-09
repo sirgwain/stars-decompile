@@ -1,4 +1,5 @@
 # UpdateWin16WindowsApiSignatures.py
+# @category Stars
 #
 # Apply Win16 Windows API prototypes (from WINDOWS.H or similar) to the CURRENT program.
 #

@@ -1,5 +1,5 @@
 # RetypeUndefined8Doubles1120.py
-# @category: Stars
+# @category Stars
 #
 # Retype defined 8-byte constants in segment 1120:* to double and rename labels
 # so the value is recognizable in disassembly.

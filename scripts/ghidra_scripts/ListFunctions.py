@@ -1,5 +1,5 @@
 # ListFunctions.py
-# @category: Stars.NB09
+# @category Stars
 # @description: List all functions matching a pattern
 
 import sys

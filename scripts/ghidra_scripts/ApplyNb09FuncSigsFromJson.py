@@ -1,5 +1,5 @@
 # ApplyNb09FuncSigsFromJson.py
-# @category: Stars.NB09
+# @category Stars
 #
 # Apply function names + signatures from nb09_ghidra_globals.json (only PROC records).
 #

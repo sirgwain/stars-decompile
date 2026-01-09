@@ -1,5 +1,5 @@
 # DecompileFunction.py
-# @category: Stars.NB09
+# @category Stars
 # @description: Decompile a function by name and print the C code
 #
 # Usage (headless): -postScript DecompileFunction.py <function_name>

@@ -1,5 +1,5 @@
 # ImportWindowsH.py
-# @category: Stars.NB09
+# @category Stars
 # @description: Parse WINDOWS.H and import types into Ghidra
 #
 # Usage (headless): -postScript ImportWindowsH.py <path_to_windows.h>

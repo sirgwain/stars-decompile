@@ -1,5 +1,5 @@
 # ApplyNb09NamesFromJson.py
-# @category: Stars.NB09
+# @category Stars
 
 import json
 import re
