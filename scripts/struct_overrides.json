@@ -1,5 +1,7 @@
 {
   "HS": { "grhst": "HullSlotType" },
+  "HUL": { "ihuldef": "HullDef" },
+  
   "LOGXFER": { "grobj": "GrobjClass" },
   "LOGXFERF": { "grobj": "GrobjClass" },
   "RTCHGNAME": { "grobj": "GrobjClass" },

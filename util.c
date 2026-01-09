@@ -88,8 +88,9 @@ FLEET *LpflFromId(int16_t idFleet)
     int16_t iMid;
     int16_t want;
 
+    // In Stars!, a fleet id is packed. The decompile shows the owner lives in bits 9..12
     i = 0;
-    for (iplrCur = 0; iplrCur < (int16_t)(((uint16_t)idFleet >> 9) & 15); iplrCur++)
+    for (iplrCur = 0; iplrCur < (int16_t)(((uint16_t)idFleet >> 9) & 0x0f); iplrCur++)
     {
         i = (int16_t)(i + (int16_t)rgplr[iplrCur].cFleet);
     }
@@ -260,16 +261,41 @@ int32_t LCalcFuelGainFromRamScoops(FLEET *lpfl, int16_t iWarp, int32_t dTravel)
 int16_t IshdefPrimaryFromLpfl(FLEET *lpfl, int16_t *pcDiff)
 {
     int16_t cDiff;
-    int16_t ish;
-    int16_t i;
     int16_t csh;
-    int16_t ihul;
+    int16_t ish;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTIL:0x3e7d */
+    cDiff = 0;
+    csh = 0;
+    ish = 16;
 
-    /* TODO: implement */
-    return 0;
+    for (int16_t i = 0; i < 16; i++)
+    {
+        int16_t n = lpfl->rgcsh[i];
+
+        if (n > 0)
+        {
+            cDiff++;
+
+            if (n != csh && csh <= n)
+            {
+                HullDef ihuldef = rglpshdef[lpfl->iPlayer][i].hul.ihuldef;
+
+                ish = i;
+                csh = n;
+
+                if (ihuldef == ihullFuelTransport || ihuldef == ihullSuperFuelXport)
+                {
+                    csh = (int16_t)(csh - 1);
+                }
+            }
+        }
+    }
+
+    if (pcDiff != (int16_t *)0)
+    {
+        *pcDiff = cDiff;
+    }
+    return ish;
 }
 
 int16_t GetCachedFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)

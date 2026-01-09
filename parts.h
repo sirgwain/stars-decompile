@@ -27,7 +27,7 @@ extern SPECIALSB rgspecialSB[16];  /* MEMORY_PARTS:0x4d8a */
 /* functions */
 void LookupBestPlanetaryScanner(PART *ppart);  /* MEMORY_PARTS:0x60be */
 int16_t FLookupPart(PART *ppart);  /* MEMORY_PARTS:0x524e */
-HULDEF * LphuldefFromId(int16_t id);  /* RETFAR */  /* MEMORY_PARTS:0x512c */
+HULDEF * LphuldefFromId(HullDef id);  /* RETFAR */  /* MEMORY_PARTS:0x512c */
 int16_t TechStatus(char *rgTech);  /* MEMORY_PARTS:0x6148 */
 HULDEF * LphuldefSBFromId(int16_t id);  /* RETFAR */  /* MEMORY_PARTS:0x510a */
 SHDEF * LpshdefT(void);  /* RETFAR */  /* MEMORY_PARTS:0x51ac */

@@ -30,6 +30,7 @@ typedef enum RaceGrbit
     ibitRaceCheapFact = 0x1f,
     ibitRaceLast = 32,
 } RaceGrbit;
+
 typedef enum RaceStat
 {
     rsResGen = 0,
@@ -119,6 +120,42 @@ typedef enum ThingType
     MineralPacket = 2,
     Wormhole = 3,
 } ThingType;
+
+typedef enum HullDef
+{
+    ihullSmallFreighter = 0,
+    ihullMediumFreighter = 1,
+    ihullLargeFreighter = 2,
+    ihullSuperFreighter = 3,
+    ihullScout = 4,
+    ihullFrigate = 5,
+    ihullDestroyer = 6,
+    ihullCruiser = 7,
+    ihullBattleCruiser = 8,
+    ihullBattleship = 9,
+    ihullDreadnought = 10,
+    ihullPrivateer = 11,
+    ihullRogue = 12,
+    ihullGalleon = 13,
+    ihullMiniColonyShip = 14,
+    ihullColonyShip = 15,
+    ihullMiniBomber = 16,
+    ihullB17Bomber = 17,
+    ihullStealthBomber = 18,
+    ihullB52Bomber = 19,
+    ihullMidgetMiner = 20,
+    ihullMiniMiner = 21,
+    ihullMiner = 22,
+    ihullMaxiMiner = 23,
+    ihullUltraMiner = 24,
+    ihullFuelTransport = 25,
+    ihullSuperFuelXport = 26,
+    ihullMiniMineLayer = 27,
+    ihullSuperMineLayer = 28,
+    ihullNubian = 29,
+    ihullMiniMorph = 30,
+    ihullMetaMorph = 31,
+} HullDef;
 
 // ensure our structs use classic win16 packing
 #include "pack1.h"
@@ -2492,7 +2529,7 @@ typedef struct _part
 /* typind 4214 (0x1076) size=123 */
 typedef struct _hul
 {
-    int16_t ihuldef;         /* +0x0000 */
+    HullDef ihuldef;         /* +0x0000 */
     char rgTech[6];          /* +0x0002 */
     char szClass[32];        /* +0x0008 */
     uint16_t wtEmpty;        /* +0x0028 */

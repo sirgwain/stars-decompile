@@ -29,6 +29,8 @@
 
   "LpthNew": { "ith": "ThingType" },
 
+  "LphuldefFromId": { "id": "HullDef" },
+
   "FCheckMessages": { "imsg": "MessageId" },
   "FFindPlayerMessage": { "iMsg": "MessageId" },
   "FGetNMsgbig": { "idm": "MessageId" },

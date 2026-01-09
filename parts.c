@@ -3588,7 +3588,7 @@ int16_t FLookupPart(PART *ppart)
     return 0;
 }
 
-HULDEF *LphuldefFromId(int16_t id)
+HULDEF *LphuldefFromId(HullDef id)
 {
     if (id < 0)
     {

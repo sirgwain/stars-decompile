@@ -6761,9 +6761,9 @@
           "bitlen": null,
           "bitpos": null,
           "base_typind": null,
-          "c_type": "int16_t",
-          "c_decl": "int16_t ihuldef",
-          "override_c_type": null
+          "c_type": "HullDef",
+          "c_decl": "HullDef ihuldef",
+          "override_c_type": "HullDef"
         },
         {
           "kind": "member",

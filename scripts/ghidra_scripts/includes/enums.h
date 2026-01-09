@@ -83,6 +83,42 @@ typedef enum HullSlotType
     hstPlanetary = 0x8000,
 } HullSlotType;
 
+typedef enum HullDef
+{
+    ihullSmallFreighter = 0,
+    ihullMediumFreighter = 1,
+    ihullLargeFreighter = 2,
+    ihullSuperFreighter = 3,
+    ihullScout = 4,
+    ihullFrigate = 5,
+    ihullDestroyer = 6,
+    ihullCruiser = 7,
+    ihullBattleCruiser = 8,
+    ihullBattleship = 9,
+    ihullDreadnought = 10,
+    ihullPrivateer = 11,
+    ihullRogue = 12,
+    ihullGalleon = 13,
+    ihullMiniColonyShip = 14,
+    ihullColonyShip = 15,
+    ihullMiniBomber = 16,
+    ihullB17Bomber = 17,
+    ihullStealthBomber = 18,
+    ihullB52Bomber = 19,
+    ihullMidgetMiner = 20,
+    ihullMiniMiner = 21,
+    ihullMiner = 22,
+    ihullMaxiMiner = 23,
+    ihullUltraMiner = 24,
+    ihullFuelTransport = 25,
+    ihullSuperFuelXport = 26,
+    ihullMiniMineLayer = 27,
+    ihullSuperMineLayer = 28,
+    ihullNubian = 29,
+    ihullMiniMorph = 30,
+    ihullMetaMorph = 31,
+} HullDef;
+
 typedef enum StartingStarbase
 {
     Starbase = 0,
