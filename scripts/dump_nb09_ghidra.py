@@ -588,8 +588,154 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
     return out
 
 
+# --- signature override mapping (function -> arg -> c_type) ---
+
+def _normalize_func_keys(name: str) -> List[str]:
+    """
+    Produce a small set of keys that users are likely to write in override JSON.
+    Examples:
+      "MEMORY::LpAlloc" -> ["MEMORY::LpAlloc", "LpAlloc"]
+      "_strcpy" -> ["_strcpy", "strcpy"]
+    """
+    keys: List[str] = []
+    n = (name or "").strip()
+    if not n:
+        return keys
+    keys.append(n)
+
+    # Strip C++ namespace/class qualifiers.
+    if "::" in n:
+        keys.append(n.split("::")[-1])
+
+    # Strip leading underscore common in CRT symbols.
+    if n.startswith("_"):
+        keys.append(n[1:])
+        if "::" in n:
+            keys.append(n.split("::")[-1].lstrip("_"))
+
+    # De-dupe while preserving order.
+    seen = set()
+    out: List[str] = []
+    for k in keys:
+        if k and k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
+def load_signature_overrides(path: Optional[str]) -> Dict[str, Dict[str, str]]:
+    """
+    Load JSON mapping like:
+      {
+        "LpAlloc": {"ht": "HeapType"},
+        "LpReAlloc": {"2": "HeapType"}          // param index (0-based) also allowed
+      }
+
+    Values must be C-ish type strings (as you want them to appear in output JSON),
+    e.g. "HeapType", "const char *", "uint16_t".
+    """
+    if not path:
+        return {}
+    with open(path, "r", encoding="utf-8") as f:
+        obj = json.load(f)
+    if not isinstance(obj, dict):
+        raise ValueError("override JSON must be an object mapping function -> {arg->type}")
+    out: Dict[str, Dict[str, str]] = {}
+    for fn, amap in obj.items():
+        if not isinstance(fn, str) or not isinstance(amap, dict):
+            continue
+        clean: Dict[str, str] = {}
+        for ak, tv in amap.items():
+            if not isinstance(tv, str):
+                continue
+            # accept int keys, but normalize to string
+            if isinstance(ak, int):
+                ak = str(ak)
+            if not isinstance(ak, str):
+                continue
+            ak2 = ak.strip()
+            tv2 = tv.strip()
+            if ak2 and tv2:
+                clean[ak2] = tv2
+        if clean:
+            out[fn.strip()] = clean
+    return out
+
+
+def apply_signature_overrides_to_proc(proc_rec: Dict[str, Any], overrides: Dict[str, Dict[str, str]]) -> int:
+    """
+    Apply overrides to a single proc record (mutates proc_rec in place).
+    Returns count of params updated.
+    """
+    if not overrides:
+        return 0
+
+    name = str(proc_rec.get("name") or "")
+    if not name:
+        return 0
+
+    # Find mapping entry using a few normalized name variants.
+    amap: Optional[Dict[str, str]] = None
+    for k in _normalize_func_keys(name):
+        amap = overrides.get(k)
+        if amap:
+            break
+    if not amap:
+        return 0
+
+    tinfo = proc_rec.get("types") or {}
+    params = tinfo.get("params") or []
+    if not isinstance(params, list):
+        return 0
+
+    updated = 0
+
+    for ak, ctype in amap.items():
+        if not isinstance(ctype, str) or not ctype.strip():
+            continue
+        ak = str(ak).strip()
+        ctype = ctype.strip()
+        if not ak:
+            continue
+
+        # Special key: return type
+        if ak in ("ret", "return"):
+            ret = tinfo.get("ret")
+            if isinstance(ret, dict):
+                ret["c_type"] = ctype
+                # If a decl exists, refresh it too.
+                if "c_decl" in ret:
+                    ret["c_decl"] = ctype
+            continue
+
+        # Index override (0-based)
+        if ak.isdigit():
+            try:
+                idx = int(ak, 10)
+            except Exception:
+                idx = None
+            if idx is not None and 0 <= idx < len(params) and isinstance(params[idx], dict):
+                pname = str(params[idx].get("name") or f"a{idx+1}")
+                params[idx]["c_type"] = ctype
+                params[idx]["c_decl"] = f"{ctype} {pname}"
+                updated += 1
+            continue
+
+        # Name-based override
+        for p in params:
+            if not isinstance(p, dict):
+                continue
+            if str(p.get("name") or "") == ak:
+                p["c_type"] = ctype
+                p["c_decl"] = f"{ctype} {ak}"
+                updated += 1
+                break
+
+    return updated
+
 
 def compute_ghidra_addr(
+
     seg: int,
     off: int,
     seg_ent: Dict[str, Any],
@@ -630,7 +776,11 @@ def main() -> int:
     ap.add_argument("--segments", default="segments.csv", help="Path to segments.csv exported from Ghidra (default: ./segments.csv)")
     ap.add_argument("--out", default="nb09_ghidra_globals.json", help="Output JSON path")
     ap.add_argument("--include-unmapped", action="store_true", help="Include globals we cannot map to a Ghidra address")
+    ap.add_argument("--sig-overrides", dest="sig_overrides", default=None,
+                    help="Path to JSON mapping function->arg->c_type overrides (e.g. {\"LpAlloc\": {\"ht\": \"HeapType\"}})")
     args = ap.parse_args()
+
+    sig_overrides = load_signature_overrides(args.sig_overrides)
 
     db = load_nb09(args.nb09)
 
@@ -644,6 +794,7 @@ def main() -> int:
     unmapped_globals = 0
     unmapped_procs = 0
     unmapped_labels = 0
+    sig_overrides_applied = 0
 
     # --- globals ---
     all_globals = list(iter_unique_globals(db, seg_to_ent, frame_to_kind))
@@ -731,6 +882,8 @@ def main() -> int:
                 "flags": seg_ent.get("flags"),
                 "group": seg_ent.get("group"),
             }
+        if sig_overrides:
+            sig_overrides_applied += apply_signature_overrides_to_proc(rec, sig_overrides)
         procs_out.append(rec)
 
     # --- labels ---
@@ -780,6 +933,8 @@ def main() -> int:
         "meta": {
             "nb09": os.path.basename(args.nb09),
             "segments_csv": os.path.basename(args.segments),
+            "sig_overrides": os.path.basename(args.sig_overrides) if args.sig_overrides else None,
+            "sig_overrides_params_applied": sig_overrides_applied,
             "globals_total": len(all_globals),
             "procs_total": len(all_procs),
             "labels_total": len(labels_out) + (unmapped_labels if not args.include_unmapped else 0),

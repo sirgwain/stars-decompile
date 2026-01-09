@@ -13,7 +13,8 @@ SCRIPTS_DIR = "{{ cwd }}/scripts/ghidra_scripts"
 TARGET_EXE = "{{ cwd }}/target/stars.exe"
 JSON_GLOBALS = "{{ cwd }}/scripts/nb09_ghidra_globals.json"
 JSON_STRUCTS = "{{ cwd }}/scripts/nb09_structmeta.json"
-WINDOWS_H = "{{ cwd }}/scripts/ghidra_scripts/include/WINDOWS.H"
+WINDOWS_H = "{{ cwd }}/scripts/ghidra_scripts/includes/WINDOWS.H"
+ENUMS_H = "{{ cwd }}/scripts/ghidra_scripts/includes/enums.h"
 
 [tasks.unzip-stars]
 description = "Extract stars.exe from the archive"
@@ -181,6 +182,7 @@ description = "Full Ghidra setup: import binary and apply all symbol scripts"
 run = [
     { task = "unzip-stars" },
     { task = "ghidra-import" },
+    { task = "ghidra-create-enums" },
     { task = "ghidra-apply-structs" },
     { task = "ghidra-apply-names" },
     { task = "ghidra-apply-globals" },
@@ -277,6 +279,26 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
     -postScript RetypeUndefined8Doubles1120.py  2>&1
+'''
+
+[tasks.ghidra-create-enums]
+description = "Create enum types from enums.h"
+run = '''
+#!/bin/bash
+set -e
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+
+echo "Updating runtime helper signatures..."
+echo ""
+
+bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript CreateEnumsFromHeader.py "$ENUMS_H" 2>&1
 '''
 
 [tasks.extract-symbols]
@@ -453,3 +475,4 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 echo ""
 echo "Output: $PROJECT_DIR/decompiled/p1_util.c"
 '''
+

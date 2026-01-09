@@ -1,0 +1,9 @@
+{
+  "ResetHb": { "ht": "HeapType" },
+  "LphbFromLpHt": { "ht": "HeapType" },
+  "FreeLp": { "ht": "HeapType" },
+  "LpAlloc": { "ht": "HeapType" },
+  "LpReAlloc": { "ht": "HeapType" },
+  "LphbAlloc": { "ht": "HeapType" },
+  "LpplAlloc": { "ht": "HeapType" }
+}
