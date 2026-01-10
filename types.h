@@ -7,10 +7,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 #include <time.h>
 #include <setjmp.h>
 
-#define iPlayerNone -1
+#define iPlayerNil -1
 #define iPlayerMax 16
 
 typedef enum RaceGrbit
@@ -52,6 +53,16 @@ typedef enum RaceStat
     rsTechBonus6 = 13,
     rsMajorAdv = 14,
 } RaceStat;
+
+typedef enum DetType
+{
+    detNone = 0,
+    detMinimal = 1,
+    detObscure = 2,
+    detSome = 3,
+    detMore = 4,
+    detAll = 7,
+} DetType;
 
 typedef enum GrobjClass
 {

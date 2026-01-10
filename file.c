@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "utilgen.h"
 #include "save.h"
+#include "util.h"
 
 #include "file.h"
 
@@ -159,24 +160,67 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)
     int16_t cOut;
     char *psz;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0x06d2 */
-    /* block (block) @ MEMORY_IO:0x0739 */
-    /* block (block) @ MEMORY_IO:0x07bb */
+    pplrRaw = (PLAYER *)pbIn;
+    memset(pplr, 0, sizeof(*pplr));
 
-    /* TODO: implement */
+    if (pplrRaw->det == detAll)
+    {
+        /* Full player record up to relations, 112 bytes */
+        memmove(pplr, pbIn, cbPlayerAll);
+
+        /* pbIn[cbPlayerAll] is the count/size for rgmdRelation */
+        memmove(pplr->rgmdRelation, &pbIn[cbPlayerAll + 1], pbIn[cbPlayerAll]);
+
+        iOff = (int16_t)(cbPlayerAll + pbIn[cbPlayerAll] + 1);
+    }
+    else
+    {
+        /* Partial player record up to before idPlanetHome */
+        memmove(pplr, pbIn, cbPlayerSome);
+        iOff = (int16_t)cbPlayerSome;
+    }
+
+    /* Player singular name */
+    if (pbIn[iOff] == 0)
+    {
+        /* Not compressed: flag(0), then NUL-terminated string */
+        strcpy(pplr->szName, (char *)(pbIn + iOff + 1));
+        iOff = (int16_t)(iOff + 2 + (int)strlen(pplr->szName));
+    }
+    else
+    {
+        /* Compressed: flag is length, bytes follow */
+        cOut = 32;
+        FDecompressUserString(pbIn + iOff + 1, pbIn[iOff], pplr->szName, &cOut);
+        iOff = (int16_t)(iOff + 1 + pbIn[iOff]);
+    }
+
+    /* Plural name (szNames) */
+    if (((VERS *)(&wVersFile))->verMinor < 55)
+    {
+        psz = PszPlayerName(0, isupper((unsigned char)pplr->szName[0]) != 0, true, false, 0, pplr);
+        strcpy(pplr->szNames, psz);
+    }
+    else
+    {
+        if (pbIn[iOff] == 0)
+        {
+            strcpy(pplr->szNames, (char *)(pbIn + iOff + 1));
+        }
+        else
+        {
+            cOut = 32;
+            FDecompressUserString(pbIn + iOff + 1, pbIn[iOff], pplr->szNames, &cOut);
+        }
+    }
+
+    pplr->fLearned = false;
 }
 
 void UpdateBattleRecords(void)
 {
-    BTLDATA *lpbd;
-    BTLREC *lpbr;
-    int16_t cKill;
-    HB *lphb;
-    BTLREC26 *lpbr26;
-    int16_t itok;
-
-    /* TODO: implement */
+    // UpdateBattleRecords updates save game battle records from older versions
+    // to 2.6 versions. We are not implementing this for the port
 }
 
 bool FReadFleet(FLEET *lpfl)
@@ -477,12 +521,31 @@ void StreamClose(void)
 
 bool FNewTurnAvail(int16_t idPlayer)
 {
-    uint16_t wGenOld;
-    uint16_t turnOld;
-    int16_t fNew;
+    bool fNew;
+    uint16_t turnOld = game.turn;
+    uint16_t wGenOld = game.wGen;
+    bool fErrSav = fFileErrSilent;
 
-    /* TODO: implement */
-    return 0;
+    Assert(idPlayer != -1);
+    Assert(game.lid != 0);
+
+    fFileErrSilent = true;
+
+    /* Force FOpenFile() to populate game.turn from the BOF turn (it only does this when game.turn==0). */
+    game.turn = 0;
+
+    fNew = FOpenFile((uint16_t)(dtTurn | bitfMulti), idPlayer, mdRead);
+    if (fNew)
+    {
+        StreamClose();
+        fNew = (game.turn > turnOld);
+    }
+
+    game.turn = turnOld;
+    game.wGen = wGenOld;
+    fFileErrSilent = fErrSav;
+
+    return fNew;
 }
 
 void GetFileStatus(int16_t dt, int16_t iPlayer)
@@ -522,14 +585,115 @@ void PromptSaveGame(void)
 
 bool FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md)
 {
-    int16_t fReturn;
-    int16_t fOpened;
-    uint16_t wGenOld;
-    int16_t f;
-    int16_t fErrSav;
+    bool fReturn = false;
+    bool fOpened;
+    bool fErrSav = fFileErrSilent;
+    bool f = false;
+    uint16_t wGenOld = game.wGen;
 
-    /* TODO: implement */
-    return 0;
+    switch (dt)
+    {
+    case dtHost:
+        Assert(iPlayer == iPlayerNil);
+        f = gd.fHostMode;
+        gd.fHostMode = true;
+        break;
+
+    default:
+        break;
+    }
+
+    fFileErrSilent = true;
+
+    fOpened = FOpenFile(dt, iPlayer, mdRead);
+
+    switch (md)
+    {
+    case mdInUse:
+        if (!fOpened)
+        {
+            fReturn = true;
+        }
+        else
+        {
+            const RTBOF *bof = (const RTBOF *)rgbCur;
+            fReturn = bof->fInUse != 0;
+        }
+        break;
+
+    case mdDone:
+        if (fOpened)
+        {
+            const RTBOF *bof = (const RTBOF *)rgbCur;
+            fReturn = bof->fDone != 0;
+        }
+        else
+        {
+            fReturn = false;
+        }
+        break;
+
+    case mdMulti:
+        if (fOpened)
+        {
+            const RTBOF *bof = (const RTBOF *)rgbCur;
+            fReturn = bof->fMulti != 0;
+        }
+        else
+        {
+            fReturn = false;
+        }
+        break;
+
+    case mdPlayerType:
+        if (!fOpened)
+        {
+            fReturn = false;
+        }
+        else
+        {
+            for (;;)
+            {
+                ReadRt();
+
+                if (hdrCur.rt == rtPlr)
+                {
+                    const PLAYER *plr = (const PLAYER *)rgbCur;
+                    if (plr->iPlayer == iPlayer)
+                    {
+                        fReturn = plr->fAi != 0;
+                        break;
+                    }
+                }
+
+                if (hdrCur.rt == rtEOF)
+                {
+                    fReturn = false;
+                    break;
+                }
+            }
+        }
+        break;
+
+    default:
+        fReturn = false;
+        break;
+    }
+
+    if (fOpened)
+    {
+        StreamClose();
+    }
+
+    if (dt == dtHost)
+    {
+        gd.fHostMode = f;
+    }
+
+    fFileErrSilent = fErrSav;
+    game.wGen = wGenOld;
+
+    return fReturn;
 }
 
 bool FValidSerialLong(uint32_t lSerial)
@@ -547,7 +711,7 @@ void DestroyCurGame(void)
         FFinishPlrMsgEntry(0);
     }
 
-    if (idPlayer != iPlayerNone && game.fDirty)
+    if (idPlayer != iPlayerNil && game.fDirty)
     {
         PromptSaveGame();
     }
@@ -616,7 +780,7 @@ void DestroyCurGame(void)
         ini.lid = game.lid;
     }
 
-    idPlayer = iPlayerNone;
+    idPlayer = iPlayerNil;
     imemLogCur = 0;
     imemLogPrev = -1;
     iMsgCur = 0;

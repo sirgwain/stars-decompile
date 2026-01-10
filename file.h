@@ -4,6 +4,9 @@
 #include "types.h"
 #include "strings.h"
 
+#define cbPlayerSome ((unsigned)&((PLAYER *)0)->idPlanetHome)
+#define cbPlayerAll (((unsigned)&((PLAYER *)0)->rgmdRelation[0]))
+
 /* =========================================================================
  * Portable file handle wrapper (replaces Win16 HFILE + _lread/_lclose/_lseek)
  * =========================================================================
@@ -18,8 +21,20 @@ typedef struct StarsFile
 
 extern StarsFile hf;
 
-/* mdOpen flags */
-#define mdNoOpenErr 0x4000
+typedef enum MdCheckType
+{
+    mdInUse = 0x0001,      /* BOF.fInUse */
+    mdDone = 0x0002,       /* BOF.fDone */
+    mdMulti = 0x0004,      /* BOF.fMulti */
+    mdPlayerType = 0x0008, /* PLAYER.fAi */
+} MdCheckType;
+
+/* mdOpen flags (passed to StreamOpen / FOpenFile) */
+typedef enum MdOpenFlags
+{
+    mdRead = 0x0020,
+    mdNoOpenErr = 0x4000,
+} MdOpenFlags;
 
 typedef enum DtFileType
 {
