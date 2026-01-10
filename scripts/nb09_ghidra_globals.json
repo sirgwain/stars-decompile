@@ -6955,8 +6955,8 @@
       },
       "types": {
         "typind": 5607,
-        "c_type": "TILE[0]",
-        "c_decl": "TILE rgtilePlanet[0]",
+        "c_type": "TILE[1]",
+        "c_decl": "TILE rgtilePlanet[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -7499,8 +7499,8 @@
       },
       "types": {
         "typind": 5607,
-        "c_type": "TILE[0]",
-        "c_decl": "TILE rgtileShip[0]",
+        "c_type": "TILE[1]",
+        "c_decl": "TILE rgtileShip[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9793,8 +9793,8 @@
       },
       "types": {
         "typind": 4117,
-        "c_type": "PLAYER[0]",
-        "c_decl": "PLAYER vrgplrDef[0]",
+        "c_type": "PLAYER[1]",
+        "c_decl": "PLAYER vrgplrDef[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9827,8 +9827,8 @@
       },
       "types": {
         "typind": 4876,
-        "c_type": "uint16_t[0]",
-        "c_decl": "uint16_t rgidRaceBtn[0]",
+        "c_type": "uint16_t[1]",
+        "c_decl": "uint16_t rgidRaceBtn[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9929,8 +9929,8 @@
       },
       "types": {
         "typind": 4147,
-        "c_type": "char[0]",
-        "c_decl": "char szRacePass[0]",
+        "c_type": "char[1]",
+        "c_decl": "char szRacePass[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9963,8 +9963,8 @@
       },
       "types": {
         "typind": 4147,
-        "c_type": "char[0]",
-        "c_decl": "char szRaceFile[0]",
+        "c_type": "char[1]",
+        "c_decl": "char szRaceFile[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -11980,8 +11980,8 @@
       },
       "types": {
         "typind": 4328,
-        "c_type": "uint8_t[0]",
-        "c_decl": "uint8_t ctype[0]",
+        "c_type": "uint8_t[1]",
+        "c_decl": "uint8_t ctype[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -19420,8 +19420,8 @@
       },
       "types": {
         "typind": 4328,
-        "c_type": "uint8_t[0]",
-        "c_decl": "uint8_t vrgbEnvCur[0]",
+        "c_type": "uint8_t[1]",
+        "c_decl": "uint8_t vrgbEnvCur[1]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -19590,8 +19590,8 @@
       },
       "types": {
         "typind": 4147,
-        "c_type": "char[0]",
-        "c_decl": "char szBackup[0]",
+        "c_type": "char[1]",
+        "c_decl": "char szBackup[1]",
         "kind": "array",
         "is_far_ptr": false
       },

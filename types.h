@@ -889,7 +889,7 @@ typedef struct _pl
     }; /* +0x0000 */
     uint8_t iMax;   /* +0x0002 */
     uint8_t iMac;   /* +0x0003 */
-    uint8_t rgb[0]; /* +0x0004 */
+    uint8_t rgb[1]; /* +0x0004 flexible array - changed from [0] for Ghidra */
 } PL;
 
 /* typind 4729 (0x1279) size=14 */
@@ -1077,7 +1077,7 @@ typedef struct _msgplr
     int16_t iPlrTo;       /* +0x0006 */
     int16_t iInRe;        /* +0x0008 */
     int16_t cLen;         /* +0x000a */
-    uint8_t rgbMsg[0];    /* +0x000c */
+    uint8_t rgbMsg[1];    /* +0x000c flexible array - changed from [0] for Ghidra */
 } MSGPLR;
 
 /* typind 4822 (0x12d6) size=18 */
@@ -2492,14 +2492,14 @@ typedef struct PLPROD
     }; /* +0x0000 */
     uint8_t iprodMax; /* +0x0002 */
     uint8_t iprodMac; /* +0x0003 */
-    PROD rgprod[0];   /* +0x0004 */
+    PROD rgprod[1];   /* +0x0004 flexible array - changed from [0] for Ghidra */
 } PLPROD;
 
 /* typind 4933 (0x1345) size=2 */
 typedef struct _rtChgProdQ
 {
     int16_t id;     /* +0x0000 */
-    PROD rgprod[0]; /* +0x0002 */
+    PROD rgprod[1]; /* +0x0002 flexible array - changed from [0] for Ghidra */
 } RTCHGPRODQ;
 
 /* typind 4190 (0x105e) size=8 */
@@ -2569,7 +2569,7 @@ typedef struct _rtshdef
     uint16_t turn;   /* +0x0007 */
     uint32_t cBuilt; /* +0x0009 */
     uint32_t cExist; /* +0x000d */
-    HS rghs[0];      /* +0x0011 */
+    HS rghs[1];      /* +0x0011 flexible array - changed from [0] for Ghidra */
 } RTSHDEF;
 
 /* typind 4991 (0x137f) size=10 */
@@ -3067,7 +3067,7 @@ typedef struct _btldata
     uint16_t cbData;   /* +0x0006 */
     uint16_t idPlanet; /* +0x0008 */
     POINT pt;          /* +0x000a */
-    TOK rgtok[0];      /* +0x000e */
+    TOK rgtok[1];      /* +0x000e flexible array - changed from [0] for Ghidra */
 } BTLDATA;
 
 /* typind 5176 (0x1438) size=6 */
@@ -3086,7 +3086,7 @@ typedef struct _btlrec26
             uint16_t unused : 8;
         };
     }; /* +0x0004 */
-    KILL rgkill[0]; /* +0x0006 */
+    KILL rgkill[1]; /* +0x0006 flexible array - changed from [0] for Ghidra */
 } BTLREC26;
 
 /* typind 4438 (0x1156) size=6 */
@@ -3104,7 +3104,7 @@ typedef struct _btlrec
             uint16_t itokAttack : 8;
         };
     }; /* +0x0004 */
-    KILL rgkill[0]; /* +0x0006 */
+    KILL rgkill[1]; /* +0x0006 flexible array - changed from [0] for Ghidra */
 } BTLREC;
 
 /* typind 4116 (0x1014) size=192 */
@@ -3288,7 +3288,7 @@ typedef struct PLORD
     }; /* +0x0000 */
     uint8_t iordMax; /* +0x0002 */
     uint8_t iordMac; /* +0x0003 */
-    ORDER rgord[0];  /* +0x0004 */
+    ORDER rgord[1];  /* +0x0004 flexible array - changed from [0] for Ghidra */
 } PLORD;
 
 // turn off win16 packing
