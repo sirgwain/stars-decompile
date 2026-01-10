@@ -1,6 +1,14 @@
 # Stars! Decompilation Project Tasks
 # Configure Ghidra path via GHIDRA_HOME environment variable
 
+# If you want to customize something locally
+# just create a file named mise.local.toml (which is git ignored)
+# and modify any value from this file into the
+# local version.
+#
+# To know from which file an env var comes from
+# use the `mise set` command
+
 [env]
 # Default Ghidra path - override with: export GHIDRA_HOME=/path/to/ghidra
 # Uses shell's GHIDRA_HOME if set, otherwise falls back to default in scripts
@@ -474,6 +482,39 @@ bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
 
 echo ""
 echo "Output: $PROJECT_DIR/decompiled/p1_util.c"
+'''
+
+[tasks.export-all-decompiled]
+description = "Export ALL decompiled code (usage: mise run export-all-decompiled -- output.c [segment])"
+run = '''
+#!/bin/bash
+set -e
+
+OUTPUT_FILE="${1:-decompiled/all_funcs.c}"
+SEGMENT="${2:-}"
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+# Create output directory if needed
+mkdir -p "$(dirname "$OUTPUT_FILE")"
+
+echo "Exporting all decompiled functions to $OUTPUT_FILE..."
+if [ -n "$SEGMENT" ]; then
+    echo "Filtering to segment: $SEGMENT"
+fi
+
+bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript ExportAllDecompiled.py "$OUTPUT_FILE" "$SEGMENT" 2>&1
 '''
 
 [tasks.dump-structmeta-json]
