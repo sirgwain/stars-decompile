@@ -27,10 +27,19 @@ typedef enum MBFlags
 #define MsgYesNo(ids) AlertSz(PszFormatIds((ids), NULL), MB_YESNO | MB_ICONQUESTION)
 #define Error(ids) AlertSz(PszFormatIds((ids), NULL), MB_OK | MB_ICONHAND)
 
+const int dGalOff = 1000;   // map border inset (a.k.a. “off”)
+const int ishdefMax = 16;
+const int ishdefSBMax = 10;
+const int cbAllocMac = 65480;
+const int BTLPLANMAX = 16;
+const int cPlanetAbsMax = 999;
+const int cThingAbsMax = 4050;
+
 /* Unassigned symbols (no file inferred) */
 
 /* globals */
-extern BTLDATA *vlpbdVCR;
+extern BTLDATA *
+    vlpbdVCR;
 extern BTLDATA *vlpbdVCRNext;
 extern BTLPLAN *rglpbtlplan[1];
 extern BTLPLAN btlplan;

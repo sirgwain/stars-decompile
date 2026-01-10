@@ -3,6 +3,8 @@
 #include "globals.h"
 
 #include "msg.h"
+#include "memory.h"
+#include "file.h"
 #include "strings.h"
 #include "util.h"
 #include "utilgen.h"
@@ -29,15 +31,85 @@ int16_t FFindPlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
 
 int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
 {
-    uint8_t *lpbMax;
-    int16_t iMax;
-    MSGHDR *lpmh;
-    int16_t i;
-    uint8_t *lpb;
-    uint16_t u;
+    const uint8_t *lpb;
+    const uint8_t *end;
 
-    /* TODO: implement */
-    return 0;
+    if (iMsg < 0 || iMsg >= cMsg || pmb == NULL)
+    {
+        return 0;
+    }
+
+    lpb = (const uint8_t *)lpMsg;
+    end = (const uint8_t *)lpMsg + imemMsgCur;
+
+    /* Walk forward iMsg records; when iMsg==0, decode into *pmb. */
+    for (;;)
+    {
+        if (lpb + sizeof(MSGHDR) > end)
+        {
+            /* Shouldn’t happen if cMsg/imemMsgCur are consistent. */
+            return 0;
+        }
+
+        const MSGHDR *mh = (const MSGHDR *)lpb;
+        uint16_t idm = (uint16_t)mh->iMsg; /* 9-bit id */
+        uint16_t u = (uint16_t)mh->grWord; /* 7-bit “param is word” bitfield */
+        lpb += sizeof(MSGHDR);
+
+        if (iMsg == 0)
+        {
+            pmb->iMsg = (int16_t)idm;
+            pmb->wGoto = mh->wGoto;
+            for (int k = 0; k < 7; k++)
+                pmb->rgParam[k] = 0;
+        }
+
+        /* Param count comes from rgcMsgArgs[idm] (asm proves this). */
+        uint8_t cParam = 0;
+        if (idm < (uint16_t)sizeof(rgcMsgArgs))
+        {
+            cParam = (uint8_t)rgcMsgArgs[idm];
+        }
+
+        /* Safety: MSGBIG only has 7 params. Stars messages should never exceed that. */
+        if (cParam > 7)
+        {
+            cParam = 7;
+        }
+
+        for (uint8_t i = 0; i < cParam; ++i)
+        {
+            if (lpb >= end)
+                return 0;
+
+            if (iMsg == 0)
+            {
+                if ((u & 1u) == 0)
+                {
+                    /* byte param */
+                    pmb->rgParam[i] = (int16_t)(uint16_t)(*lpb);
+                }
+                else
+                {
+                    /* word param */
+                    if (lpb + 2 > end)
+                        return 0;
+                    pmb->rgParam[i] = *(const int16_t *)lpb;
+                }
+            }
+
+            lpb += ((u & 1u) ? 2u : 1u);
+            u >>= 1;
+        }
+
+        if (iMsg == 0)
+        {
+            return 1;
+        }
+
+        /* next record */
+        --iMsg;
+    }
 }
 
 void DecorateMsgTitleBar(uint16_t hdc, RECT *prc)
@@ -89,9 +161,11 @@ char *PszGetMessageN(int16_t iMsg)
 int16_t IdmGetMessageN(int16_t iMsg)
 {
     MSGBIG mb;
-
-    /* TODO: implement */
-    return 0;
+    if (!FGetNMsgbig(iMsg, &mb))
+    {
+        return -1;
+    }
+    return mb.iMsg;
 }
 
 int16_t FFinishPlrMsgEntry(int16_t dInc)
@@ -177,22 +251,116 @@ int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int
 
 void ReadPlayerMessages(void)
 {
-    uint8_t *lpbMax;
-    int16_t iMax;
-    int16_t fOOM;
-    int16_t (*penvMemSav)[9];
-    MSGHDR *lpmh;
-    uint16_t imemMsgT;
-    int16_t i;
-    int16_t env[9];
-    MSGPLR *lpmp;
-    uint8_t *lpb;
-    uint16_t u;
+    ENV env;
+    ENV *penvMemSav = penvMem;
 
-    /* debug symbols */
-    /* label LOutOfMem @ MEMORY_MSG:0x9bb2 */
+    uint16_t imemMsgT = 0;
+    int fOOM = 0;
 
-    /* TODO: implement */
+    /* Append any rtMsg blocks (rt == 0x0c per decompile) into lpMsg at imemMsgCur. */
+    penvMem = &env;
+    if (setjmp(env))
+    {
+        fOOM = 1;
+    }
+
+    while (hdrCur.rt == rtMsg)
+    {
+        uint16_t cb = hdrCur.cb;
+
+        if (!fOOM)
+        {
+            /* Bounds check matches decompile intent: avoid wrapping far offsets. */
+            if (cb != 0 && (uint32_t)imemMsgCur + imemMsgT < (uint32_t)(0xFFFFu - cb - 0x38u))
+            {
+                memmove(lpMsg + imemMsgCur + imemMsgT, rgbCur, cb);
+                imemMsgT = (uint16_t)(imemMsgT + cb);
+            }
+        }
+        ReadRt();
+    }
+
+    imemMsgCur = (uint16_t)(imemMsgCur + imemMsgT);
+
+    /* Walk newly appended messages to:
+       - set bitfMsgSent for each idm,
+       - increment cMsg,
+       - skip params according to the packing bits and param count table.
+     */
+    {
+        uint8_t *lpb = lpMsg + (imemMsgCur - imemMsgT);
+        uint8_t *end = lpb + imemMsgT;
+
+        while (lpb < end)
+        {
+            MSGHDR *mh = (MSGHDR *)lpb;
+            uint16_t idm = mh->iMsg;
+            uint16_t u = mh->grWord;
+
+            /* mark sent */
+            bitfMsgSent[idm >> 3] |= (uint8_t)(1u << (idm & 7));
+
+            ++cMsg;
+
+            lpb += 4; /* sizeof(MSGHDR) */
+
+            {
+                uint8_t cParam = (uint8_t)rgplr[1].szNames[0x0c + idm];
+                for (uint8_t i = 0; i < cParam; ++i)
+                {
+                    lpb += ((u & 1u) ? 2 : 1);
+                    u >>= 1;
+                }
+            }
+        }
+    }
+
+    /* Find tail of incoming MSGPLR list (vlpmsgplrIn is sentinel). */
+    {
+        MSGPLR *lpmp = &vlpmsgplrIn;
+        while (lpmp->lpmsgplrNext != NULL)
+        {
+            lpmp = lpmp->lpmsgplrNext;
+        }
+
+        /* Now read rtPlrMsg blocks (rt == 0x28 per decompile) and chain them. */
+        for (;;)
+        {
+            if (hdrCur.rt != rtPlrMsg)
+            {
+                break;
+            }
+
+            if (!fOOM)
+            {
+                uint16_t cb = hdrCur.cb;
+                MSGPLR *node = (MSGPLR *)LpAlloc(cb, htPlrMsg);
+                if (node == NULL)
+                {
+                    fOOM = 1;
+                }
+                else
+                {
+                    lpmp->lpmsgplrNext = node;
+                    lpmp = node;
+
+                    memcpy(node, rgbCur, cb);
+
+                    /* terminate */
+                    lpmp->lpmsgplrNext = NULL;
+                    ++vcmsgplrIn;
+                }
+            }
+
+            ReadRt();
+        }
+    }
+
+    /* Initialize current message cursor to first “next” message. */
+    iMsgCur = -1;
+    iMsgCur = IMsgNext(0);
+
+    penvMem = penvMemSav;
 }
 
 int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
@@ -728,20 +896,103 @@ int16_t HtMsgBox(POINT pt)
 
 int16_t IMsgPrev(int16_t fFilteredOnly)
 {
-    int16_t i;
-    int16_t idm;
+    int16_t i = iMsgCur;
 
-    /* TODO: implement */
-    return 0;
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
+    {
+        /* If we're in the "incoming player msg" region (iMsgCur > cMsg), just step back. */
+        if (cMsg < iMsgCur)
+        {
+            i = (int16_t)(iMsgCur - 1);
+        }
+        else
+        {
+            for (;;)
+            {
+                int16_t idm;
+                int not_set;
+
+                i = (int16_t)(i - 1);
+                if (i < 0)
+                {
+                    return -1;
+                }
+
+                idm = IdmGetMessageN(i);
+
+                /* Inline bit test: bitfMsgFiltered[idm] */
+                not_set = ((bitfMsgFiltered[(uint16_t)idm >> 3] &
+                            (uint8_t)(1u << ((uint16_t)idm & 7u))) == 0);
+
+                /* If fFilteredOnly==1: skip until bit is set.
+                   If fFilteredOnly==0: skip while bit is set. */
+                if (not_set != (fFilteredOnly != 0))
+                {
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        /* Viewing filtered messages normally: no filtering logic, just step back. */
+        if (iMsgCur < 1)
+        {
+            i = -1;
+        }
+        else
+        {
+            i = (int16_t)(iMsgCur - 1);
+        }
+    }
+
+    return i;
 }
 
 int16_t IMsgNext(int16_t fFilteredOnly)
 {
-    int16_t i;
-    int16_t idm;
+    int16_t i = iMsgCur;
 
-    /* TODO: implement */
-    return 0;
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
+    {
+        for (;;)
+        {
+            ++i;
+
+            if ((int16_t)cMsg <= i)
+            {
+                /* Past end of normal messages: allow “incoming player messages” region. */
+                if (i < (int16_t)(cMsg + vcmsgplrIn))
+                {
+                    return i;
+                }
+                return -1;
+            }
+
+            {
+                int16_t idm = IdmGetMessageN(i);
+                int filtered =
+                    (bitfMsgFiltered[idm >> 3] & (1 << (idm & 7))) != 0;
+
+                /* Decompile does: while ( (filtered==0) == fFilteredOnly ) keep looping.
+                   That means:
+                   - if fFilteredOnly==0: stop when filtered==0 (i.e., NOT filtered out)
+                   - if fFilteredOnly==1: stop when filtered!=0 (i.e., filtered)
+                 */
+                if ((filtered ? 1 : 0) == (fFilteredOnly ? 1 : 0))
+                {
+                    return i;
+                }
+            }
+        }
+    }
+
+    /* Not filtering-only, but the view is filtered: just step within the extended range. */
+    if (iMsgCur < (int16_t)(cMsg + vcmsgplrIn - 1))
+    {
+        return (int16_t)(iMsgCur + 1);
+    }
+    return -1;
 }
 
 char *PszFormatIds(StringId ids, int16_t *pParams)

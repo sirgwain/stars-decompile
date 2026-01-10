@@ -11,8 +11,26 @@
 #include <time.h>
 #include <setjmp.h>
 
+typedef jmp_buf ENV;
+
 #define iPlayerNil -1
 #define iPlayerMax 16
+#define iPlanetPartNone -1
+
+typedef enum RaceAttribute
+{
+    raCheapCol = 0,  // HE (Hyper Expansion)
+    raStealth = 1,   // SS (Super Stealth)
+    raAttack = 2,    // WM (War Monger)
+    raTerra = 3,     // CA (Claim Adjuster)
+    raDefend = 4,    // IS (Inner Strength)
+    raMines = 5,     // SD (Space Demolition)
+    raMassAccel = 6, // PP (Packet Physics)
+    raStargate = 7,  // IT (Inner Tech)
+    raMacintosh = 8, // AR (Alternate Reality)
+    raNone = 9,      // JoaT (Jack of All Trades)
+    raMax = 10,
+} RaceAttribute;
 
 typedef enum RaceGrbit
 {
@@ -135,6 +153,15 @@ typedef enum ThingType
     ithMysteryTrader = 3,
 } ThingType;
 
+typedef enum HulDefSB
+{
+    ihullSBOrbitalFort = 0,
+    ihullSBSpaceDock = 1,
+    ihullSBSpaceStation = 2,
+    ihullSBUltraStation = 3,
+    ihullSBDeathStar = 4,
+} HulDefSB;
+
 typedef enum HullDef
 {
     ihullSmallFreighter = 0,
@@ -169,6 +196,7 @@ typedef enum HullDef
     ihullNubian = 29,
     ihullMiniMorph = 30,
     ihullMetaMorph = 31,
+    ihulMax = 32,
 } HullDef;
 
 // ensure our structs use classic win16 packing

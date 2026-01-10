@@ -1,7 +1,9 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "vcr.h"
+#include "memory.h"
 
 /* functions */
 void EnableVCRButtons(void)
@@ -14,11 +16,11 @@ void EnableVCRButtons(void)
 int16_t PopupVCRMenu(uint16_t hwnd, int16_t x, int16_t y, uint8_t brc)
 {
     int16_t fAttack;
-    char * rgsz[1];
+    char *rgsz[1];
     int16_t i;
     int16_t c;
     char rgch[1536];
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     int16_t rgid[40];
     int16_t iChecked;
     int16_t iSel;
@@ -50,7 +52,7 @@ void DrawVCR(uint16_t hdc, int16_t iStart, int16_t iEnd)
     int16_t c;
     int16_t i;
     uint8_t brcT;
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     int16_t ibmp;
     int16_t csh;
     char *psz;
@@ -87,10 +89,10 @@ void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, 
     /* TODO: implement */
 }
 
-BTLDATA * BtlDataGet(int16_t i)
+BTLDATA *BtlDataGet(int16_t i)
 {
-    BTLDATA * lpbd;
-    HB * lphb;
+    BTLDATA *lpbd;
+    HB *lphb;
 
     /* TODO: implement */
     return NULL;
@@ -98,10 +100,10 @@ BTLDATA * BtlDataGet(int16_t i)
 
 void BattleVCR(int16_t iBattle)
 {
-    int16_t (* lpProc)(void);
-    int16_t (* penvMemSav)[9];
+    int16_t (*lpProc)(void);
+    int16_t (*penvMemSav)[9];
     int16_t env[9];
-    HB * lphb;
+    HB *lphb;
 
     /* debug symbols */
     /* label LCleanup @ MEMORY_VCR:0x0201 */
@@ -123,9 +125,9 @@ int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
 int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
 {
     int32_t cKilled;
-    BTLDATA * lpbdNext;
+    BTLDATA *lpbdNext;
     int16_t i;
-    BTLREC * lpbr;
+    BTLREC *lpbr;
     int16_t cKill;
 
     /* debug symbols */
@@ -137,7 +139,7 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
 
 int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
 {
-    TOK * lptok;
+    TOK *lptok;
     int16_t ctok;
     int32_t lUnits;
     int16_t i;
@@ -149,17 +151,51 @@ int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
 
 int16_t CBattles(void)
 {
-    BTLDATA * lpbd;
-    HB * lphb;
-    int16_t cBattles;
+    int16_t cBattles = 0;
+    HB *lphb = rglphb[htBattle];
+    BTLDATA *lpbd;
 
-    /* TODO: implement */
-    return 0;
+    if (lphb == NULL)
+    {
+        return 0;
+    }
+
+    /* Battle data begins immediately after HB + WORD (0x10 + 0x02 = 0x12). */
+    lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+
+    for (;;)
+    {
+        /* Walk battle records within this heap block until sentinel id == -1. */
+        while (lpbd->id != (int16_t)-1)
+        {
+            /* cb==0 means end of valid data (early out). In the decompile this is *(+6)==0. */
+            if (lpbd->cbData == 0)
+            {
+                return cBattles;
+            }
+
+            cBattles++;
+            lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
+        }
+
+        /* Move to next heap block (HB->lphbNext is a far pointer in the original). */
+        lphb = lphb->lphbNext;
+
+        /* Decompile: if null OR *(uint16_t *)(hb+6) < 17, stop.  */
+        if (lphb == NULL || lphb->cbBlock < 17u)
+        {
+            break;
+        }
+
+        lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+    }
+
+    return cBattles;
 }
 
 int16_t SetVCRBoard(int16_t iStep)
 {
-    TOK * ptok;
+    TOK *ptok;
     int16_t i;
     int16_t itok;
 
@@ -183,7 +219,7 @@ int16_t VCRDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
     RECT rcWindow;
     int16_t bt;
     int16_t dx;
-    RECT * prc;
+    RECT *prc;
     int16_t iDir;
     int16_t iCur;
     uint32_t crBkSav;
@@ -208,8 +244,8 @@ int16_t VCRDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
 
 void AnimateAttack(uint16_t hdc)
 {
-    TOK * ptokSrc;
-    TOK * ptokAttack;
+    TOK *ptokSrc;
+    TOK *ptokAttack;
     POINT ptBeam1;
     int16_t cFrame;
     int16_t dyFrame;

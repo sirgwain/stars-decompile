@@ -6,6 +6,7 @@
 
 #define cbPlayerSome ((unsigned)&((PLAYER *)0)->idPlanetHome)
 #define cbPlayerAll (((unsigned)&((PLAYER *)0)->rgmdRelation[0]))
+#define cbrtshdefB (2 * sizeof(uint8_t) + 2 * sizeof(uint16_t)) // ihuldef + wFlags + ibmp + wtEmpty
 
 /* =========================================================================
  * Portable file handle wrapper (replaces Win16 HFILE + _lread/_lclose/_lseek)
@@ -81,7 +82,7 @@ typedef enum RecordType
 
     /* 10 WaypointRepeatOrders */
     /* 11 WaypointTaskTypeChange */
-    /* 12 Events */
+    rtMsg = 12, /* MSG */
 
     /* NOTE: rtPlanet / rtPlanetB naming historically inconsistent */
     /* 13 Planet (RTPLANET) */
@@ -120,7 +121,7 @@ typedef enum RecordType
 
     rtContinue = 39, /* Battle continuation */
 
-    /* 40 Message */
+    rtPlrMsg = 40, /* 40 Message */
 
     rtAiData = 41, /* AI host file record */
 
