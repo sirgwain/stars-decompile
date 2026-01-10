@@ -13,6 +13,268 @@ int16_t rgPrimes[128] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53
 uint8_t acPN[999] = {0};
 extern const char *const aPNUncompressed[];
 
+// Player string compress/decompress tables
+char rgchcomp[13] = "+-,!.?:;'*%$";
+char *rgchcompstrlower = " aehilnorstbcdfgjkmpquvwxyz";
+int16_t rgcompstrlower[26] = {1, 77, 93, 109, 2, 125, 141, 3, 4, 157, 173, 5, 189, 6, 7, 205, 221, 8, 9, 10, 237, 253, 14, 30, 46, 62};
+
+/* Returns the packed code (original returned short). */
+int16_t NybbleFromCh(uint8_t ch)
+{
+    uint16_t code;
+
+    if (ch >= (uint8_t)'a' && ch <= (uint8_t)'z')
+    {
+        /* Lowercase uses a lookup table. */
+        code = (uint16_t)rgcompstrlower[ch - (uint8_t)'a'];
+        return (int16_t)code;
+    }
+
+    if (ch == (uint8_t)' ')
+    {
+        return 0;
+    }
+
+    /* Uppercase A..P => class 0xB, payload 0..15 */
+    if (ch >= (uint8_t)'A' && ch <= (uint8_t)'P')
+    {
+        code = (uint16_t)((ch - (uint8_t)'A') << 4) | 0x0B;
+        return (int16_t)code;
+    }
+
+    /* Q..Z => class 0xC, payload 0..9 */
+    if (ch >= (uint8_t)'Q' && ch <= (uint8_t)'Z')
+    {
+        code = (uint16_t)((ch - (uint8_t)'Q') << 4) | 0x0C;
+        return (int16_t)code;
+    }
+
+    /* '0'..'5' => also class 0xC, payload 10..15 (matches decompile's (ch - 0x26)) */
+    if (ch >= (uint8_t)'0' && ch <= (uint8_t)'5')
+    {
+        code = (uint16_t)((ch - 0x26u) << 4) | 0x0C;
+        return (int16_t)code;
+    }
+
+    /* '6'..'9' => class 0xD, payload 0..3 */
+    if (ch >= (uint8_t)'6' && ch <= (uint8_t)'9')
+    {
+        code = (uint16_t)((ch - 0x36u) << 4) | 0x0D;
+        return (int16_t)code;
+    }
+
+    /* Other chars: check special compressible set (class 0xE) */
+    {
+        const char *pch = strchr(rgchcomp, (int)ch);
+        if (pch == NULL)
+        {
+            /* Literal escape: class 0xF, payload is the byte itself. */
+            code = (uint16_t)((uint16_t)ch << 4) | 0x0F;
+            return (int16_t)code;
+        }
+        else
+        {
+            /* class 0xE, payload is index into rgchcomp (0..11) */
+            uint16_t idx = (uint16_t)(pch - rgchcomp) + 4; /* matches (pcVar1 - 0x13fc) */
+            code = (uint16_t)(idx << 4) | 0x0E;
+            return (int16_t)code;
+        }
+    }
+}
+
+/* Decode a packed token value back to a character (inverse of NybbleFromCh). */
+char ChFromNybble(int16_t nyb)
+{
+    uint16_t u = (uint16_t)nyb;
+
+    /* 0..10: one-nibble codes index directly into " aehilnorst" */
+    if (u < 11u)
+    {
+        return rgchcompstrlower[u];
+    }
+
+    /* low nibble 0xF: 3-nibble escape, literal byte in bits 4..11 */
+    if ((u & 0x000Fu) == 0x000Fu)
+    {
+        return (char)((u >> 4) & 0x00FFu);
+    }
+
+    {
+        uint8_t grp = (uint8_t)(u & 0x0Fu);        /* 0xB..0xE in valid data */
+        uint8_t idx = (uint8_t)((u >> 4) & 0x0Fu); /* 0..15 */
+
+        switch (grp)
+        {
+        case 0x0B: /* 'A'..'P' */
+            return (char)('A' + idx);
+
+        case 0x0C: /* 'Q'..'Z' then '0'..'5' */
+            if (idx < 10)
+                return (char)('Q' + idx);
+            return (char)('0' + (idx - 10));
+
+        case 0x0D: /* '6'..'9' then consonants "bcdfgjkmpquv" */
+            if (idx < 4)
+                return (char)('6' + idx);
+            /* idx 4..15 -> 12 chars starting at 'b' within rgchcompstrlower (offset 11) */
+            return rgchcompstrlower[11 + (idx - 4)];
+
+        case 0x0E: /* 'wxyz' then punctuation rgchcomp */
+            if (idx < 4)
+                return (char)('w' + idx);
+            /* idx 4..15 -> rgchcomp[0..11] */
+            return rgchcomp[idx - 4];
+
+        default:
+            return '?';
+        }
+    }
+}
+
+/* Returns 1 on success, 0 on failure (output would exceed *pcOut). */
+int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut)
+{
+    char szWork[1024];
+    char *pchOut = szWork;
+
+    /* false => use high nibble; true => use low nibble and advance input byte */
+    bool bHalf = false;
+
+    while (cIn > 0)
+    {
+        int16_t iNyb;
+        int16_t firstNyb;
+        uint16_t uVar4;
+
+        if (bHalf)
+        {
+            iNyb = (int16_t)((uint8_t)*szIn & 0x0F);
+            cIn--;
+            szIn++;
+
+            if (iNyb == 0x0F && cIn == 0)
+                break;
+        }
+        else
+        {
+            iNyb = (int16_t)(((uint8_t)*szIn >> 4) & 0x0F);
+        }
+
+        firstNyb = iNyb;
+        bHalf = !bHalf;
+
+        if ((uint16_t)iNyb > 10u)
+        {
+            if (bHalf)
+            {
+                uVar4 = (uint16_t)(((uint8_t)*szIn & 0x0F) << 4);
+                cIn--;
+                szIn++;
+            }
+            else
+            {
+                uVar4 = (uint16_t)((uint8_t)*szIn & 0xF0);
+            }
+
+            iNyb = (int16_t)((uint16_t)iNyb | uVar4);
+            bHalf = !bHalf;
+
+            if (firstNyb == 0x0F)
+            {
+                if (bHalf)
+                {
+                    uVar4 = (uint16_t)(((uint8_t)*szIn & 0x0F) << 8);
+                    cIn--;
+                    szIn++;
+                }
+                else
+                {
+                    uVar4 = (uint16_t)(((uint8_t)*szIn & 0xF0) << 4);
+                }
+
+                iNyb = (int16_t)((uint16_t)iNyb | uVar4);
+                bHalf = !bHalf;
+            }
+        }
+
+        *pchOut++ = ChFromNybble(iNyb);
+
+        if (*pcOut < (int16_t)(pchOut - szWork))
+            return 0;
+    }
+
+    *pchOut = '\0';
+    strcpy(szOut, szWork);
+    return 1;
+}
+
+/* Returns 1 on success, 0 on failure. On success, *pcOut is set to compressed byte count. */
+int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut)
+{
+    uint8_t szWork[1024];
+    uint8_t *pchOut = szWork;
+
+    bool bHalf = false;
+
+    for (;;)
+    {
+        if (*szIn == '\0')
+        {
+            if (bHalf)
+            {
+                *pchOut |= 0x0Fu;
+                pchOut++;
+
+                if ((pchOut - szWork) > (ptrdiff_t)sizeof(szWork))
+                    return 0;
+            }
+
+            if ((int16_t)(pchOut - szWork) <= *pcOut)
+            {
+                *pcOut = (int16_t)(pchOut - szWork);
+                memcpy(szOut, szWork, (size_t)*pcOut);
+                return 1;
+            }
+            return 0;
+        }
+
+        int16_t iNyb = NybbleFromCh((uint8_t)*szIn);
+
+        int16_t cNyb;
+        if ((uint16_t)iNyb < 0x000Bu)
+            cNyb = 1;
+        else if (((uint16_t)iNyb & 0x000Fu) == 0x000Fu)
+            cNyb = 3;
+        else
+            cNyb = 2;
+
+        while (cNyb != 0)
+        {
+            uint8_t nib = (uint8_t)((uint16_t)iNyb & 0x0F);
+
+            if (bHalf)
+            {
+                *pchOut |= nib;
+                pchOut++;
+                bHalf = false;
+
+                if ((pchOut - szWork) > 0x3FF)
+                    return 0;
+            }
+            else
+            {
+                *pchOut = (uint8_t)(nib << 4);
+                bHalf = true;
+            }
+
+            iNyb = (int16_t)(iNyb >> 4);
+            cNyb--;
+        }
+
+        szIn++;
+    }
+}
+
 /* functions */
 void DrawProgressGauge(uint16_t hdcOrig, int16_t fFull, int16_t iNumOnly)
 {
@@ -146,17 +408,6 @@ void InitBtnTrack(BTNT *pbtnt, uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t b
 {
 
     /* TODO: implement */
-}
-
-int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut)
-{
-    int16_t fHalf;
-    char szWork[1024];
-    int16_t iNyb;
-    char *pchOut;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void RcCtrTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
@@ -417,18 +668,6 @@ void _Draw3dFrame(uint16_t hdc, RECT *prc, int16_t fErase)
     RECT rc;
 
     /* TODO: implement */
-}
-
-int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut)
-{
-    int16_t fHalf;
-    char szWork[1024];
-    int16_t iNyb;
-    char *pchOut;
-    int16_t cNyb;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void CopyFile(char *szSrc, char *szDst)
@@ -820,14 +1059,6 @@ int16_t FTrackBtn(BTNT *pbtnt)
     return 0;
 }
 
-int16_t NybbleFromCh(uint8_t ch)
-{
-    char *pch;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void IntToRoman(int16_t i, char *pszOut)
 {
 
@@ -939,45 +1170,6 @@ int16_t CommaFormatLong(char *psz, int32_t l)
 
     /* TODO: implement */
     return 0;
-}
-
-char ChFromNybble(int16_t nyb)
-{
-    uint16_t u = (uint16_t)nyb;
-    uint16_t lo = u & 0x000F;
-    uint16_t hi = u >> 4;
-
-    /* Case 1: small codes 0..10 map directly through table */
-    if (u < 11)
-    {
-        return (char)rgchcompstrlower[u];
-    }
-
-    /* Case 2: escape: low nibble == 0xF means literal hi nibble */
-    if (lo == 0x000F)
-    {
-        return (char)hi;
-    }
-
-    /* Case 3: composite mapping */
-    {
-        int16_t iVal = (int16_t)(((int16_t)(lo - 11) * 16) + (int16_t)hi);
-
-        if (iVal < 26)
-        {
-            return (char)('A' + iVal);
-        }
-        if (iVal < 36)
-        {
-            return (char)(iVal + 0x16); /* '0'..'9' */
-        }
-        if (iVal < 52)
-        {
-            return (char)rgchcompstrlower[iVal - 25];
-        }
-
-        return (char)rgcompstrlower[iVal + 15];
-    }
 }
 
 void DiaganolTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
