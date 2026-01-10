@@ -5,7 +5,7 @@
 
 #include "globals.h"
 #include "types.h"
-#include "file.h"   /* FLoadGame */
+#include "file.h" /* FLoadGame */
 
 /* Snapshot/restore just the globals this test mutates. */
 typedef struct SaveGlobalsSnapshot
@@ -36,7 +36,49 @@ static void set_base(const char *base)
     strncpy(szBase, base, sizeof(szBase) - 1);
 }
 
+static void test_file__FLoadGame_tiny_2400(void)
+{
+    SaveGlobalsSnapshot snap = snapshot_globals();
+    ENV env;
+    int j;
+
+    /* ctest runs executables from the build directory, so use a path relative
+     * to that.
+     */
+    const char *base = "../test/data/tiny/2400/TEST";
+    char ext[8];
+
+    /* Ensure globals are in a known state for this test. */
+    DestroyCurGame();
+    set_base(base);
+    strcpy(ext, "m1");
+
+    penvMem = &env;
+    j = setjmp(env);
+    if (j != 0)
+    {
+        restore_globals(&snap);
+        TEST_MSG("FLoadGame longjmp'd (fatal file error)");
+        TEST_ASSERT(false);
+        return;
+    }
+
+    TEST_CHECK(FLoadGame(szBase, ext));
+
+    /* Tiny test files represent year 2400 (turn 1). Validate that we parsed
+     * something plausible.
+     */
+    TEST_CHECK(game.turn != 0);
+    TEST_CHECK(game.cPlayer > 0);
+    TEST_CHECK(cPlanet > 0);
+
+    /* Cleanup and restore.
+     * DestroyCurGame() may touch UI globals but is stubbed for non-Windows.
+     */
+    DestroyCurGame();
+    restore_globals(&snap);
+}
 
 TEST_LIST = {
-    {NULL, NULL}
-};
+    {"file/FLoadGame loads tiny 2400", test_file__FLoadGame_tiny_2400},
+    {NULL, NULL}};

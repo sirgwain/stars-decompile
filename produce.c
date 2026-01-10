@@ -255,3 +255,12 @@ void InitProduction(PROD *rgprod)
 
     /* TODO: implement */
 }
+
+bool FIsAutoBuild(PROD *lpprod)
+{
+    (void)lpprod;
+    /* TODO: when production queue formats are fully understood, detect the
+     * auto-build sentinel items.
+     */
+    return false;
+}

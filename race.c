@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "race.h"
 
 /* globals */
@@ -464,4 +465,10 @@ int32_t LInnateRaceHabitability(PLAYER *pplr)
 
     /* TODO: implement */
     return 0;
+}
+
+int16_t RaMajor(int16_t iplr)
+{
+    /* rsMajorAdv encodes the primary race attribute (HE/SS/WM/... in Stars!). */
+    return GetRaceStat(&rgplr[iplr], rsMajorAdv);
 }

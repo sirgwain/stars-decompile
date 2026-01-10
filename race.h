@@ -42,4 +42,7 @@ int16_t IrcRaceDlgHitTest(POINT pt);  /* MEMORY_RACE:0x2164 */
 void CreateRandomRace(PLAYER *pplr);  /* MEMORY_RACE:0x5b08 */
 int32_t LInnateRaceHabitability(PLAYER *pplr);  /* MEMORY_RACE:0x4c6e */
 
+/* convenience method to get the PRT */
+int16_t RaMajor(int16_t iplr);
+
 #endif /* RACE_H_ */

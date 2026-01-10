@@ -1,10 +1,22 @@
 
+#include <errno.h>
+
+#if defined(_WIN32)
+#include <io.h>
+#define stars_access _access
+#define modeWrite 2 /* MSVCRT _access: 2 == write permission check */
+#else
+#include <unistd.h>
+#define stars_access access
+#define modeWrite W_OK /* POSIX access(): W_OK checks write permission */
+#endif
+
 #include "types.h"
 #include "globals.h"
-#include "platform.h"
 #include "strings.h"
 
 #include "file.h"
+#include "platform.h"
 
 #include "memory.h"
 #include "msg.h"
@@ -15,6 +27,7 @@
 #include "parts.h"
 #include "planet.h"
 #include "produce.h"
+#include "race.h"
 #include "log.h"
 
 /* Planets are stored in a flat array lpPlanets[0..cPlanet-1]. */
@@ -110,6 +123,38 @@ static inline uint16_t read_u16_unaligned(const void *p)
     return v;
 }
 
+/* The original used the MSVCRT case-insensitive helpers. Keep local shims to
+ * avoid pulling platform headers.
+ */
+static int stars_stricmp(const char *a, const char *b)
+{
+    unsigned char ca;
+    unsigned char cb;
+    while (*a && *b)
+    {
+        ca = (unsigned char)tolower((unsigned char)*a++);
+        cb = (unsigned char)tolower((unsigned char)*b++);
+        if (ca != cb)
+            return (int)ca - (int)cb;
+    }
+    return (int)tolower((unsigned char)*a) - (int)tolower((unsigned char)*b);
+}
+
+static int stars_strnicmp(const char *a, const char *b, size_t n)
+{
+    size_t i;
+    for (i = 0; i < n; i++)
+    {
+        unsigned char ca = (unsigned char)tolower((unsigned char)a[i]);
+        unsigned char cb = (unsigned char)tolower((unsigned char)b[i]);
+        if (ca != cb)
+            return (int)ca - (int)cb;
+        if (a[i] == '\0' || b[i] == '\0')
+            break;
+    }
+    return 0;
+}
+
 static inline uint32_t read_u32_unaligned(const void *p)
 {
     uint32_t v;
@@ -149,13 +194,13 @@ void StreamOpen(const char *szFile, int16_t mdOpen)
         if (hf.last_errno == ENOENT)
             break;
 
-        uint32_t now = stars_tick_ms();
+        uint32_t now = PlatformTickMs();
         if (deadline == 0)
             deadline = now + 4000u;
         if (now >= deadline)
             break;
 
-        stars_sleep_ms(500u);
+        PlatformSleepMs(500u);
     }
 
     if (!fNoErr)
@@ -513,7 +558,7 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     ENV env;
     ENV *penvMemSav;
 
-    strcpy(szBase, pszFileName);
+    strncpy(szBase, pszFileName, sizeof(szBase));
     gd.fFleetLinkValid = false;
 
     penvMemSav = penvMem;
@@ -529,13 +574,21 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
         if (!ini.fValidate && !ini.fLogging && hwndTitle == 0)
         {
             POINT pt;
-            pt.x = GetSystemMetrics(SM_CXSCREEN);
-            pt.y = GetSystemMetrics(SM_CYSCREEN);
+            pt.x = PlatformScreenWidth();
+            pt.y = PlatformScreenHeight();
 
-            hwndTitle = CreateWindow(szTitle, "Stars!", WS_VISIBLE | WS_POPUP, 0, 0, pt.x, pt.y, hwndFrame, 0, hInst, 0);
+            hwndTitle = PlatformCreatePopupWindow(
+                szTitle,
+                "Stars!",
+                PLAT_WS_VISIBLE | PLAT_WS_POPUP,
+                0,
+                0,
+                pt.x,
+                pt.y,
+                (StarsHWND)hwndFrame);
 
             fFreeingTitle = false;
-            ShowWindow(hwndFrame, SW_HIDE);
+            PlatformShowWindow((StarsHWND)hwndFrame, PLAT_SW_HIDE);
         }
 
         penvMem = penvMemSav;
@@ -1487,12 +1540,12 @@ LNextTurn:
         Assert(iPlayer != -1);
         if (!rgplr[iPlayer].fAi && !ini.fDumpPlanets && !ini.fDumpFleets && !ini.fDumpMap)
         {
-            snprintf(szWork, PszGetCompressedString(idsNoteDYearsDataRead), cturn);
+            snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsNoteDYearsDataRead), cturn);
             MessageSz(szWork);
         }
     }
 
-    if (strnicmp(pszExt, "hst", 3) == 0)
+    if (stars_strnicmp(pszExt, "hst", 3) == 0)
     {
         goto DoneNow;
     }
@@ -1517,7 +1570,7 @@ LNextTurn:
                 iWarp = IWarpMAFromLppl(lppl, &fTwo);
                 if ((int16_t)(iWarp + (fTwo ? 1 : 0)) < (int16_t)(lpth->thp.iWarp + 4))
                 {
-                    FSendPlrMsg2XGen(idmMassPacketAppearsCollisionCourseWhichCurrently, -6, lpth->idFull, lppl->id);
+                    FSendPlrMsg2XGen(0, idmMassPacketAppearsCollisionCourseWhichCurrently, -6, lpth->idFull, lppl->id);
                 }
             }
         }
@@ -1559,21 +1612,21 @@ LNextTurn:
 
                 if (fWorking)
                 {
-                    FSendPlrMsg2XGen(idmStarbaseScheduledCompleteRemainingProductionItem, lppl->id, lppl->id, 0);
+                    FSendPlrMsg2XGen(0, idmStarbaseScheduledCompleteRemainingProductionItem, lppl->id, lppl->id, 0);
                 }
             }
 
             i = CBattles();
             if (i > 0)
             {
-                FSendPlrMsg2XGen((MessageId)(idmHaveReceivedOneBattleRecordingYear + (i > 1)), -7, i, 0);
+                FSendPlrMsg2XGen(1, (MessageId)(idmHaveReceivedOneBattleRecordingYear + (i > 1)), -7, i, 0);
             }
         }
     }
 
     if (!gd.fDontDoLogFiles)
     {
-        snprintf(szWork, "%s.x%s", pszFileName, pszExt + 1);
+        snprintf(szWork, sizeof(szWork), "%s.x%s", pszFileName, pszExt + 1);
         if (!FLoadLogFile(szWork) || !FRunLogFile())
         {
             Error(idsPlayerLogFileAppearsCorruptUnableLoad);
@@ -1626,11 +1679,11 @@ DoneNow:
             strcat(szT, ".");
             strcat(szT, pszExt);
 
-            if (stricmp(szT, vrgszMRU) != 0)
+            if (stars_stricmp(szT, vrgszMRU) != 0)
             {
                 for (i = 1; i < 8; i++)
                 {
-                    if (stricmp(szT, vrgszMRU + 256 * i) == 0)
+                    if (stars_stricmp(szT, vrgszMRU + 256 * i) == 0)
                         break;
                 }
 
@@ -1651,7 +1704,7 @@ DoneNow:
                 {
                     *psz = (char)('1' + i);
                     strcpy(szT, vrgszMRU + 256 * i);
-                    WritePrivateProfileString(szSection, szEntry, szT, szIniFile);
+                    PlatformWritePrivateProfileString(szSection, szEntry, szT, szIniFile);
                 }
             }
         }
@@ -2191,18 +2244,18 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited)
             if (lppl->iPlayer != -1)
             {
                 Assert(lppl->iPlayer != iPlayer);
-                FSendPlrMsg2XGen(idmHaveFoundPlanetOccupiedSomeoneElseCurrently, lppl->id, lppl->id, (int16_t)(lppl->iPlayer | 0x30));
+                FSendPlrMsg2XGen(0, idmHaveFoundPlanetOccupiedSomeoneElseCurrently, lppl->id, lppl->id, (int16_t)(lppl->iPlayer | 0x30));
             }
             else if (lppl->det <= detMinimal)
             {
-                FSendPlrMsg2XGen(idmHaveFoundNewPlanetDontKnowIf, lppl->id, lppl->id, 0);
+                FSendPlrMsg2XGen(0, idmHaveFoundNewPlanetDontKnowIf, lppl->id, lppl->id, 0);
             }
             else
             {
                 if (RaMajor(iPlayer) == raTerra)
                 {
                     int16_t pctOpt = PctPlanetOptValue(lppl, iPlayer);
-                    FSendPlrMsg2XGen(idmHaveInfoNewPlanetIfColonizeCan, lppl->id, lppl->id, pctOpt);
+                    FSendPlrMsg2XGen(0, idmHaveInfoNewPlanetIfColonizeCan, lppl->id, lppl->id, pctOpt);
                 }
                 else
                 {
@@ -2229,7 +2282,7 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited)
                         }
                     }
 
-                    FSendPlrMsg2XGen(idm, lppl->id, (int16_t)abs((int)pct), lppl->id);
+                    FSendPlrMsg2XGen(0, idm, lppl->id, (int16_t)abs((int)pct), lppl->id);
                 }
             }
         }
@@ -2504,17 +2557,17 @@ void DestroyCurGame(void)
 
     if (hwndBrowser != 0)
     {
-        DestroyWindow(hwndBrowser);
+        PlatformDestroyWindow((StarsHWND)hwndBrowser);
     }
 
     if (hwndReportDlg != 0)
     {
-        DestroyWindow(hwndReportDlg);
+        PlatformDestroyWindow((StarsHWND)hwndReportDlg);
     }
 
     if (hwndPopup != 0)
     {
-        DestroyWindow(hwndPopup);
+        PlatformDestroyWindow((StarsHWND)hwndPopup);
         hwndPopup = 0;
     }
 

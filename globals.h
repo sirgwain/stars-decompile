@@ -27,13 +27,31 @@ typedef enum MBFlags
 #define MsgYesNo(ids) AlertSz(PszFormatIds((ids), NULL), MB_YESNO | MB_ICONQUESTION)
 #define Error(ids) AlertSz(PszFormatIds((ids), NULL), MB_OK | MB_ICONHAND)
 
-const int dGalOff = 1000;   // map border inset (a.k.a. “off”)
-const int ishdefMax = 16;
-const int ishdefSBMax = 10;
-const int cbAllocMac = 65480;
-const int BTLPLANMAX = 16;
-const int cPlanetAbsMax = 999;
-const int cThingAbsMax = 4050;
+/* Message box helpers used by decompiled/ported code. */
+#ifndef MessageSz
+#define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
+#endif
+
+/* These are constants in the original; keep them header-only without creating
+ * multiple definitions across TUs.
+ */
+#define dGalOff 1000      /* map border inset ("off") */
+#define ishdefMax 16
+#define ishdefSBMax 10
+#define cbAllocMac 65480
+#define BTLPLANMAX 16
+#define cPlanetAbsMax 999
+#define cThingAbsMax 4050
+
+/* Stream helper: treat EOF like the Win16 macro. */
+#ifndef AtEOF
+#define AtEOF(fp) feof((fp))
+#endif
+
+/* UI helper used in a few places in the original. */
+#ifndef MessageSz
+#define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
+#endif
 
 /* Unassigned symbols (no file inferred) */
 

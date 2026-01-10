@@ -20,4 +20,7 @@ void InitializeProductionDlg(uint16_t hwnd);  /* MEMORY_PRODUCE:0x3430 */
 void FillZipProdLB(uint16_t hwndDlg, ZIPPRODQ *pzpq);  /* MEMORY_PRODUCE:0x5e58 */
 void InitProduction(PROD *rgprod);  /* MEMORY_PRODUCE:0x015e */
 
+/* Placeholder implementation used by file load logic. */
+bool FIsAutoBuild(PROD *lpprod);
+
 #endif /* PRODUCE_H_ */
