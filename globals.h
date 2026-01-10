@@ -1,7 +1,31 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+#include <assert.h>
 #include "types.h"
+
+#ifdef NDEBUG
+#define Assert(expr) ((void)0)
+#else
+#define Assert(expr) assert(expr)
+#endif
+
+/* MessageBox-style flags (Win16/Win32 compatible values) */
+typedef enum MBFlags
+{
+    MB_OK = 0x0000, /* default */
+    MB_YESNO = 0x0004,
+    MB_ICONHAND = 0x0010,     /* error / stop */
+    MB_ICONQUESTION = 0x0020, /* question */
+} MBFlags;
+
+#define IDOK 1
+#define IDYES 6
+#define IDNO 7
+
+// guessed defines from the decompile
+#define MsgYesNo(ids) AlertSz(PszFormatIds((ids), NULL), MB_YESNO | MB_ICONQUESTION)
+#define Error(ids) AlertSz(PszFormatIds((ids), NULL), MB_OK | MB_ICONHAND)
 
 /* Unassigned symbols (no file inferred) */
 
@@ -158,7 +182,7 @@ extern int16_t fAnimate;
 extern int16_t fBrowserValid;
 extern int16_t fDirtyPlan;
 extern int16_t fDlgUp;
-extern int16_t fFileErrSilent;
+extern bool fFileErrSilent;
 extern int16_t fFreeingTitle;
 extern int16_t fHullCopy;
 extern int16_t fInEditUpdate;
@@ -176,7 +200,6 @@ extern int16_t fStarbaseMode;
 extern int16_t fValidLx;
 extern int16_t fValidLxf;
 extern int16_t fViewFilteredMsg;
-extern int16_t hf;
 extern int16_t iAbout1st;
 extern int16_t iAboutPartial;
 extern int16_t idBattle;
@@ -472,7 +495,6 @@ extern uint16_t vhdibTitle;
 extern uint16_t vhpal;
 extern uint16_t vhpalSplash;
 extern uint16_t wVersFile;
-extern uint32_t bogi[25];
 extern uint32_t crButtonFace;
 extern uint32_t crButtonHilite;
 extern uint32_t crButtonShadow;

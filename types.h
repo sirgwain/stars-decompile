@@ -10,6 +10,9 @@
 #include <time.h>
 #include <setjmp.h>
 
+#define iPlayerNone -1
+#define iPlayerMax 16
+
 typedef enum RaceGrbit
 {
     ibitRaceIFE = 0x00,

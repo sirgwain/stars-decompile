@@ -213,8 +213,18 @@ void MarkPlayersThatSentMsgs(int16_t iPlayer)
 
 void ResetMessages(void)
 {
+    imemMsgCur = 0;
+    iMsgCur = -1;
+    cMsg = 0;
+    iMsgSendCur = 0;
 
-    /* TODO: implement */
+    memset(bitfMsgSent, 0, sizeof(bitfMsgSent));
+    memset(bitfMsgFiltered, 0, sizeof(bitfMsgFiltered));
+
+    vlpmsgplrIn = NULL;
+    vlpmsgplrOut = NULL;
+    vcmsgplrIn = 0;
+    vcmsgplrOut = 0;
 }
 
 int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
