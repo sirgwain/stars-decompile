@@ -501,60 +501,8 @@ static void print_hex_bytes(const uint8_t *pb, size_t cb)
 static int cmd_blocks(const StarsCli *cli)
 {
     char path[1024];
-    int64_t sz;
-    int block_count = 0;
-
     build_fullpath(path, sizeof(path), cli ? cli->path_base : NULL, cli ? cli->ext : NULL);
-    sz = file_size_bytes(path);
-
-    /* First pass: count blocks. */
-    StreamClose();
-    StreamOpen(path, mdRead | mdNoOpenErr);
-    for (;;) {
-        ReadRt();
-        if (hdrCur.rt == rtEOF) break;
-        block_count++;
-    }
-    /* Count the footer block too, if present. */
-    if (hdrCur.rt == rtEOF) block_count++;
-    StreamClose();
-
-    printf("File: %s", path);
-    if (sz >= 0) printf(" (%" PRId64 " bytes)", sz);
-    printf("\n");
-    printf("Blocks: %d\n\n", block_count);
-
-    /* Second pass: dump blocks. */
-    StreamOpen(path, mdRead | mdNoOpenErr);
-    for (int i = 0;; i++) {
-        ReadRt();
-
-        printf("Block %d: %s (type=%u, size=%u)\n",
-               i,
-               record_type_name(hdrCur.rt),
-               (unsigned)hdrCur.rt,
-               (unsigned)hdrCur.cb);
-
-        if (hdrCur.rt == 0x08 && hdrCur.cb >= sizeof(RTBOF)) {
-            RTBOF bof;
-            memcpy(&bof, rgbCur, sizeof(bof));
-            printf("  GameID: %" PRIu32 ", Turn: %u (Year %u), Player: %d\n\n",
-                   (uint32_t)bof.lidGame,
-                   (unsigned)bof.turn,
-                   (unsigned)(2400u + (uint16_t)bof.turn),
-                   (int)bof.iPlayer);
-        } else {
-            size_t cb_show = (hdrCur.cb <= 256u) ? (size_t)hdrCur.cb : 256u;
-            printf("  Data: ");
-            print_hex_bytes((const uint8_t *)rgbCur, cb_show);
-            if (cb_show < (size_t)hdrCur.cb) printf("...");
-            printf("\n\n");
-        }
-
-        if (hdrCur.rt == rtEOF) break;
-    }
-    StreamClose();
-    return 0;
+    return DumpGameFileBlocks(path);
 }
 
 /* ------------------------------------------------------------ */
@@ -632,17 +580,24 @@ int StarsCli_Run(int argc, char **argv)
         return 2;
     }
 
+    const char *cmd = argv[i++];
+
+    /* 'blocks' is a raw-dump command: do NOT call FLoadGame (it can fail on
+     * partially-supported records). Mirror Houston's blocks behavior.
+     */
+    if (strcmp(cmd, "blocks") == 0) {
+        return cmd_blocks(&cli);
+    }
+
     /* In the real UI load path, idPlayer influences what gets read; for CLI we
-     * set the global and let FLoadGame use it if/when implemented.
+     * set the global and then load the file.
      */
     idPlayer = cli.iPlayer;
-
     {
         int rc = do_load(&cli);
         if (rc != 0) return rc;
     }
 
-    const char *cmd = argv[i++];
     if (strcmp(cmd, "planets") == 0) {
         return cmd_planets();
     } else if (strcmp(cmd, "planet") == 0) {
@@ -677,8 +632,6 @@ int StarsCli_Run(int argc, char **argv)
         return cmd_shdef(argv[i]);
     } else if (strcmp(cmd, "game") == 0) {
         return cmd_game(&cli);
-    } else if (strcmp(cmd, "blocks") == 0) {
-        return cmd_blocks(&cli);
     }
 
     fprintf(stderr, "Unknown command: %s\n\n", cmd);

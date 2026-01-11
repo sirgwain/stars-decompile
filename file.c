@@ -1,5 +1,7 @@
 
 #include <errno.h>
+#include <inttypes.h>
+#include <stdio.h>
 
 #if defined(_WIN32)
 #include <io.h>
@@ -28,6 +30,161 @@
 #include "vcr.h"
 #include "parts.h"
 #include "planet.h"
+
+/* ------------------------------------------------------------------------- */
+/* Debug/diagnostic block dump helpers                                       */
+/* ------------------------------------------------------------------------- */
+
+static const char *Dump_RecordTypeName(uint16_t rt)
+{
+    /* Keep names aligned with Houston's "blocks" output for common records. */
+    switch (rt)
+    {
+    case rtEOF:
+        return "FileFooter";
+    case rtPlr:
+        return "Player";
+    case rtGame:
+        return "Game";
+    case rtBOF:
+        return "FileHeader";
+    case rtMsg:
+        return "Message";
+    case rtPlanet:
+        return "Planet";
+    case rtFleet:
+        return "Fleet";
+    case rtWaypoint:
+        return "Waypoint";
+    case rtString:
+        return "String";
+    case rtDesign:
+        return "Design";
+    case rtBattlePlan:
+        return "BattlePlan";
+    case rtBtlData:
+        return "BattleData";
+    case rtThing:
+        return "Thing";
+    case rtScore:
+        return "Score";
+    default:
+        return "Unknown";
+    }
+}
+
+static void Dump_PrintHexBytes(const uint8_t *pb, size_t cb)
+{
+    for (size_t i = 0; i < cb; i++)
+    {
+        printf("%02x", (unsigned)pb[i]);
+    }
+}
+
+static int64_t Dump_FileSizeBytes(const char *path)
+{
+    FILE *fp;
+    long end;
+
+    if (path == NULL)
+        return -1;
+
+    fp = fopen(path, "rb");
+    if (!fp)
+        return -1;
+    if (fseek(fp, 0, SEEK_END) != 0)
+    {
+        fclose(fp);
+        return -1;
+    }
+    end = ftell(fp);
+    fclose(fp);
+    return (end < 0) ? -1 : (int64_t)end;
+}
+
+int DumpGameFileBlocks(const char *path)
+{
+    int64_t sz;
+    int block_count = 0;
+
+    if (path == NULL || path[0] == '\0')
+    {
+        fprintf(stderr, "DumpGameFileBlocks: missing path\n");
+        return 2;
+    }
+
+    sz = Dump_FileSizeBytes(path);
+
+    /* First pass: count records. Include the footer (rt==0). */
+    StreamClose();
+    StreamOpen(path, mdRead | mdNoOpenErr);
+    for (;;)
+    {
+        ReadRt();
+        block_count++;
+        if (hdrCur.rt == rtEOF)
+            break;
+    }
+    StreamClose();
+
+    printf("File: %s", path);
+    if (sz >= 0)
+        printf(" (%" PRId64 " bytes)", sz);
+    printf("\n");
+    printf("Blocks: %d\n\n", block_count);
+
+    /* Second pass: dump records. */
+    StreamOpen(path, mdRead | mdNoOpenErr);
+    for (int i = 0;; i++)
+    {
+        ReadRt();
+
+        printf("Block %d: %s (type=%u, size=%u)\n",
+               i,
+               Dump_RecordTypeName(hdrCur.rt),
+               (unsigned)hdrCur.rt,
+               (unsigned)hdrCur.cb);
+
+        switch (hdrCur.rt)
+        {
+        case rtPlanet:
+            PLANET pl = {0};
+            FReadPlanet(iPlayerNil, &pl, false, false);
+            printf("  ID: %d Env: (g: %d, t: %d, r: %d)\n", pl.id, pl.rgEnvVar[0], pl.rgEnvVar[1], pl.rgEnvVar[2]);
+            break;
+        case rtPlr:
+            PLAYER plr = {0};
+            ReadRtPlr(&plr, rgbCur);
+            printf("  Name: %s\n", plr.szName);
+            break;
+        }
+
+        if (hdrCur.rt == rtBOF && hdrCur.cb >= sizeof(RTBOF))
+        {
+            RTBOF bof;
+            memcpy(&bof, rgbCur, sizeof(bof));
+            printf("  GameID: %" PRIu32 ", Turn: %u (Year %u), Player: %d\n\n",
+                   (uint32_t)bof.lidGame,
+                   (unsigned)bof.turn,
+                   (unsigned)(2400u + (uint16_t)bof.turn),
+                   (int)bof.iPlayer);
+        }
+        else
+        {
+            size_t cb_show = (hdrCur.cb <= 256u) ? (size_t)hdrCur.cb : 256u;
+            printf("  Data: ");
+            Dump_PrintHexBytes((const uint8_t *)rgbCur, cb_show);
+            if (cb_show < (size_t)hdrCur.cb)
+                printf("...");
+            printf("\n\n");
+        }
+
+        if (hdrCur.rt == rtEOF)
+            break;
+    }
+    StreamClose();
+    return 0;
+}
 #include "produce.h"
 #include "race.h"
 #include "log.h"
@@ -273,6 +430,32 @@ bool FBadFileError(StringId ids)
     return 0;
 }
 
+/*
+ * ReadRt
+ *
+ * Read the next record from the current Stars! data stream.
+ *
+ * The function performs the following steps:
+ *
+ *   1. Reads the record header (HDR) in plaintext.
+ *   2. Reads hdrCur.cb bytes of record payload into rgbCur.
+ *   3. Applies XOR decoding to the payload when appropriate.
+ *
+ * Record handling rules:
+ *
+ *   - rtBOF (begin-of-file):
+ *       The payload is NOT XOR-decoded. Instead, it is interpreted as an
+ *       RTBOF structure and used to initialize the XOR keystream via
+ *       SetFileXorStream(). All subsequent records depend on this state.
+ *
+ *   - rtEOF (end-of-file):
+ *       No XOR decoding is performed.
+ *
+ *   - All other record types:
+ *       The payload is XOR-decoded in place using the current file XOR stream.
+ *
+ * The record header itself is always unencrypted.
+ */
 void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)
 {
     int16_t iOff;
@@ -2667,6 +2850,24 @@ void DestroyCurGame(void)
     }
 }
 
+/*
+ * RgFromStream
+ *
+ * Read a raw byte range from the current input stream into the caller-supplied
+ * buffer. The stream may be either:
+ *
+ *   - a memory-backed stream (vlpMemStream), or
+ *   - an open file stream (hf.fp).
+ *
+ * Exactly cb bytes are copied into rg. The stream cursor is advanced by cb.
+ *
+ * This function performs no interpretation, decoding, or decryption of data;
+ * it only transfers bytes. Higher-level code (e.g. ReadRt) is responsible for
+ * interpreting headers and applying XOR decoding when required.
+ *
+ * On file read failure, the game reports a corruption error and longjmps out
+ * via penvMem, matching the original Stars! error-handling behavior.
+ */
 void RgFromStream(void *rg, uint16_t cb)
 {
     if (cb == 0)

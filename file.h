@@ -61,24 +61,41 @@ enum
 
 typedef enum RecordType
 {
-    rtEOF = 0x00, /* decompile: rt == 0 after ReadRt() -> end-of-file handling */
+    /*
+     * NOTE: Stars! file records encode a 6-bit "record type" (rt) plus a 10-bit
+     * byte count (cb) in a 16-bit header word.
+     *
+     * In .HST files (and others), record type 0x00 is used for the footer record
+     * (cb=2, data=0000). The original code treats "rt==0" as a terminator while
+     * reading, so we keep rtEOF=0 for that behavior.
+     */
+    rtEOF = 0x00,
 
-    rtPlr = 0x06,    /* decompile: while (rt == 6) { ReadRtPlr(...) } */
-    rtGame = 0x07,   /* you already had this */
-    rtBOF = 0x08,    /* original ReadRt(): if (rtBOF) SetFileXorStream(...); decompile: rt == 8 */
-    rtMsg = 0x0C,    /* player messages*/
-    rtFleetA = 0x10, /* decompile: inside FReadFleet(), rt == 0x10 */
-    rtOrderA = 0x13, /* decompile: fleet order records accept 0x13 or 0x14 */
-    rtOrderB = 0x14,
+    rtPlr = 0x06,  /* Player */
+    rtGame = 0x07, /* Game */
+    rtBOF = 0x08,  /* FileHeader / BOF */
+    rtMsg = 0x0C,  /* Message */
+
+    /* Common .HST records (matches Houston blocks output). */
+    rtPlanet = 0x0D,
+    rtFleet = 0x10,
+    rtWaypoint = 0x14,
+    rtDesign = 0x1A,
+    rtBattlePlan = 0x1E,
+
+    /* Legacy/internal aliases observed in decompilation. */
+    rtFleetA = rtFleet,
+    rtOrderA = 0x13, /* other order-like record type seen in decompile */
+    rtOrderB = rtWaypoint,
     rtString = 0x15, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
 
     rtSel = 0x16, /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
 
-    rtShDef = 0x1a, /* decompile: while (rt == 0x1a) { ... FReadShDef(...) } */
+    rtShDef = rtDesign, /* decompile: while (rt == 0x1a) { ... FReadShDef(...) } */
 
     rtPlanetB = 0x1c, /* decompile: after FReadPlanet(...), if (rt == 0x1c) { ...planet extra... } */
 
-    rtBtlPlan = 0x1e,  /* decompile: while (rt == 0x1e) { ...battle plan... } */
+    rtBtlPlan = rtBattlePlan, /* decompile: while (rt == 0x1e) { ...battle plan... } */
     rtBtlData = 0x1f,  /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
     rtContinue = 0x27, /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
 
@@ -118,6 +135,15 @@ void ReadRt(void);                                                              
 bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);                      /* MEMORY_IO:0x4ac2 */
 int16_t AskSaveDialog(void); /* PASCAL */                                        /* MEMORY_IO:0x432a */
 void StreamClose(void);                                                          /* MEMORY_IO:0x53cc */
+
+/*
+ * Debug/diagnostic helper: dump raw record blocks from a Stars! file.
+ *
+ * Opens the file at `path`, iterates records with ReadRt(), prints each block
+ * (type name, numeric type, size, and hex data), then closes the file.
+ * Returns 0 on success, non-zero on failure.
+ */
+int DumpGameFileBlocks(const char *path);
 bool FNewTurnAvail(int16_t idPlayer);                                            /* MEMORY_IO:0x4f22 */
 void GetFileStatus(int16_t dt, int16_t iPlayer);                                 /* MEMORY_IO:0x4a60 */
 bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited); /* MEMORY_IO:0x3206 */
