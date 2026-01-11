@@ -120,29 +120,29 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer)
 
     switch (dt)
     {
-    case dtTurn: /* Universe file */
-        strcat(szWork, ".xy");
+    case dtTurn: /* Log file */
+        snprintf(szWork + len, sizeof(szWork) - len, ".M%d", iPlayer);
         break;
 
     case dtHost:
-        strcat(szWork, ".hst");
+        strcat(szWork, ".HST");
         break;
 
-    case dtXY: /* Log file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".x%d", iPlayer);
+    case dtXY: /* Universe file */
+        strcat(szWork, ".XY");
         break;
 
     case dtLog: /* Turn file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".m%d", iPlayer);
+        snprintf(szWork + len, sizeof(szWork) - len, ".X%d", iPlayer);
         break;
 
     case dtHist: /* History file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".h%d", iPlayer);
+        snprintf(szWork + len, sizeof(szWork) - len, ".H%d", iPlayer);
         break;
 
     default:
         /* Defensive fallback: behave like universe */
-        strcat(szWork, ".xy");
+        strncat(szWork, ".XY", sizeof(szWork));
         break;
     }
 }

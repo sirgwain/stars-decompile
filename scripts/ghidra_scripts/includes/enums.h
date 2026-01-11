@@ -17,10 +17,10 @@ typedef enum HeapType
 
 typedef enum DtFileType
 {
-    dtTurn = 0,
-    dtXY = 1,
+    dtXY = 0,
+    dtLog = 1,
     dtHost = 2,
-    dtLog = 3,
+    dtTurn = 3,
     dtHist = 4,
 } DtFileType;
 

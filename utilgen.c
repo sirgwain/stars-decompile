@@ -318,7 +318,7 @@ int16_t FCheckPassword(void)
     /* block (block) @ MEMORY_UTILGEN:0x592a */
 
     /* TODO: implement */
-    return 0;
+    return 1;
 }
 
 int16_t PasswordDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)

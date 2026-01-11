@@ -92,6 +92,17 @@ static inline int stars_open_file(StarsFile *h, const char *path, int16_t mdOpen
     if (!h->fp)
     {
         h->last_errno = errno;
+
+        fprintf(stderr,
+                "stars_open_file: fopen failed\n"
+                "  path: \"%s\"\n"
+                "  mode: \"%s\"\n"
+                "  errno: %d (%s)\n",
+                path,
+                mode ? mode : "(null)",
+                errno,
+                strerror(errno));
+
         return 1;
     }
 

@@ -39,10 +39,10 @@ typedef enum MdOpenFlags
 
 typedef enum DtFileType
 {
-    dtTurn = 0, /* Universe file: .xy */
-    dtXY = 1,   /* Log file: .xN */
+    dtXY = 0,   /* Universe file: .xy */
+    dtLog = 1,  /* Log file: .xN */
     dtHost = 2, /* Host file: .hst */
-    dtLog = 3,  /* Turn file: .mN */
+    dtTurn = 3, /* Turn file: .mN */
     dtHist = 4, /* History file: .hN */
 } DtFileType;
 
@@ -59,83 +59,42 @@ enum
     grbitDtBase = 0x00FF
 };
 
-/* Stars! record type identifiers (rt*)
- *
- * These values are serialized on disk and MUST NOT CHANGE.
- * Unknown / unnamed rt values are intentionally left without enum symbols.
- */
 typedef enum RecordType
 {
-    rtEOF = 0, /* End of file marker */
+    rtEOF = 0x00, /* decompile: rt == 0 after ReadRt() -> end-of-file handling */
 
-    rtOrderA = 1, /* Small cargo transfer (RTXFER) */
-    rtOrderB = 2, /* Medium cargo transfer (RTXFERX) */
+    rtPlr = 0x06,    /* decompile: while (rt == 6) { ReadRtPlr(...) } */
+    rtGame = 0x07,   /* you already had this */
+    rtBOF = 0x08,    /* original ReadRt(): if (rtBOF) SetFileXorStream(...); decompile: rt == 8 */
+    rtMsg = 0x0C,    /* player messages*/
+    rtFleetA = 0x10, /* decompile: inside FReadFleet(), rt == 0x10 */
+    rtOrderA = 0x13, /* decompile: fleet order records accept 0x13 or 0x14 */
+    rtOrderB = 0x14,
+    rtString = 0x15, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
 
-    /* 3  WaypointDelete */
-    /* 4  WaypointAdd (RTWAYPT) */
-    /* 5  WaypointChangeTask */
+    rtSel = 0x16, /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
 
-    rtPlr = 6,     /* Player / race data (PLR) */
-    rtPlanetB = 7, /* Planet list header (RTHISTHDR) */
-    rtBOF = 8,     /* Beginning of file (RTBOF) */
-    rtSel = 9,     /* Turn serial / hardware hash (TURNSERIAL) */
+    rtShDef = 0x1a, /* decompile: while (rt == 0x1a) { ... FReadShDef(...) } */
 
-    /* 10 WaypointRepeatOrders */
-    /* 11 WaypointTaskTypeChange */
-    rtMsg = 12, /* MSG */
+    rtPlanetB = 0x1c, /* decompile: after FReadPlanet(...), if (rt == 0x1c) { ...planet extra... } */
 
-    /* NOTE: rtPlanet / rtPlanetB naming historically inconsistent */
-    /* 13 Planet (RTPLANET) */
-    /* 14 PartialPlanet (PLANETMINIMAL) */
+    rtBtlPlan = 0x1e,  /* decompile: while (rt == 0x1e) { ...battle plan... } */
+    rtBtlData = 0x1f,  /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
+    rtContinue = 0x27, /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
 
-    rtFleetA = 16, /* Full fleet data */
+    rtHistHdr = 0x20, /* decompile: after opening dtHist, expects rt == 0x20 */
+    rtMsgFilt = 0x21, /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
+    rtProdQ = 0x21,
 
-    /* 17 PartialFleet */
+    rtChgPassword = 0x24, /* file.c: if (hdrCur.rt == rtChgPassword) { lSaltCur = *(long*)rgbCur; } */
 
-    /* 18 unused */
+    rtPlrMsg = 0x28,
+    rtAiData = 0x29, /* decompile: loop skips/reads while (rt == 0x29) around vlpbAiData */
 
-    /* 19 WaypointTask */
-    /* 20 Waypoint (RTWAYPT) */
+    rtThing = 0x2b, /* decompile: if (rt == 0x2b) { cThing = rgbCur; alloc things } */
+    rtScore = 0x2d, /* decompile: loop `if (rt != 0x2d) break;` in score load path */
 
-    rtString = 21, /* Fleet name change (RTCHGNAME) */
-
-    /* 22–25 unused */
-
-    rtShDef = 26, /* Ship / starbase design (RTSHDEF) */
-    /* 27 DesignChange (RTCHGSHDEF) */
-
-    rtProdQ = 28, /* Production queue (RTCHGPRODQ) */
-    /* 29 ProductionQueueChange */
-
-    rtBtlPlan = 30, /* Battle plan definition */
-    rtBtlData = 31, /* Battle record */
-
-    rtGame = 32,    /* Game counters (GAME) */
-    rtMsgFilt = 33, /* Message filter settings */
-
-    /* 34–35 unused */
-
-    rtChgPassword = 36, /* Change password */
-
-    /* 37–38 unused */
-
-    rtContinue = 39, /* Battle continuation */
-
-    rtPlrMsg = 40, /* 40 Message */
-
-    rtAiData = 41, /* AI host file record */
-
-    /* 42 unused */
-
-    rtThing = 43, /* Minefields, wormholes, packets (RTLOGTHING) */
-
-    /* 44 unused */
-
-    rtScore = 45, /* Player score data (SCORE) */
-
-    /* 46 SaveAndSubmit */
-
-    rtMax = 47 /* Sentinel / max rt value */
+    rtMax = 46 /* one past highest observed (0x2d) */
 } RecordType;
 
 enum
