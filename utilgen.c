@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include "utilgen.h"
+#include "debuglog.h"
 #include "globals.h"
 #include "strings.h"
 
@@ -848,6 +849,11 @@ void SetFileXorStream(int32_t lid, int16_t lSalt, int16_t turn, int16_t iPlayer,
     /* Seeds come from rgPrimes (sign-extended like the original CWD). */
     lFileSeed1 = (int32_t)rgPrimes[a];
     lFileSeed2 = (int32_t)rgPrimes[b];
+
+    DBG_LOGD("SetFileXorStream: lid=%ld salt=%d turn=%d iPlayer=%d crippled=%d -> idx a=%u b=%u seeds=(%ld,%ld)",
+             (long)lid, (int)lSalt, (int)turn, (int)iPlayer, (int)fCrippled,
+             (unsigned)a, (unsigned)b,
+             (long)lFileSeed1, (long)lFileSeed2);
 
     /* Advance the stream a small, deterministic number of steps. */
     {

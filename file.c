@@ -15,6 +15,8 @@
 #include "globals.h"
 #include "strings.h"
 
+#include "debuglog.h"
+
 #include "file.h"
 #include "platform.h"
 
@@ -281,6 +283,8 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)
     pplrRaw = (PLAYER *)pbIn;
     memset(pplr, 0, sizeof(*pplr));
 
+    DBG_HEXDUMP(DBGLOG_TRACE, pbIn, 128, 128, "Player record bytes (first 128)");
+
     if (pplrRaw->det == detAll)
     {
         /* Full player record up to relations, 112 bytes */
@@ -332,6 +336,9 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)
         }
     }
 
+    DBG_LOGD("ReadRtPlr: iPlayer=%d det=%u szName='%s' szNames='%s'", (int)pplr->iPlayer, (unsigned)pplr->det,
+             pplr->szName, pplr->szNames);
+
     pplr->fLearned = false;
 }
 
@@ -354,6 +361,19 @@ bool FReadFleet(FLEET *lpfl)
 
     memset(lpfl, 0, sizeof(*lpfl));
     memmove(lpfl, rgbCur, sizeof(FLEETSOME));
+
+    /* Fleet fields frequently reveal stream/XOR/packing issues. */
+    DBG_LOGD("FReadFleet: rt=%d cb=%u FLEETSOME=%zu id=%d iPlayer=%d det=%u idPlanet=%d pt=(%d,%d)",
+             (int)hdrCur.rt,
+             (unsigned)hdrCur.cb,
+             sizeof(FLEETSOME),
+             (int)lpfl->id,
+             (int)lpfl->iPlayer,
+             (unsigned)lpfl->det,
+             (int)lpfl->idPlanet,
+             (int)lpfl->pt.x,
+             (int)lpfl->pt.y);
+    DBG_HEXDUMP(DBGLOG_TRACE, rgbCur, (size_t)hdrCur.cb, 64, "Fleet record bytes (first 64)");
 
     /* Load rgcsh, saved as byte or word values depending on fByteCsh. */
     fByte = (((FLEETSOME *)lpfl)->fByteCsh != 0);
@@ -569,6 +589,16 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     ENV env;
     ENV *penvMemSav;
 
+    /* Accept both "HST" and ".HST" styles from callers/CLI. */
+    const char *pszExtWork = pszExt;
+    if (pszExtWork != NULL && pszExtWork[0] == '.')
+    {
+        pszExtWork++;
+    }
+
+    DBG_LOGI("FLoadGame: base='%s' ext='%s'", pszFileName ? pszFileName : "(null)",
+             pszExtWork ? pszExtWork : "(null)");
+
     strncpy(szBase, pszFileName, sizeof(szBase));
     gd.fFleetLinkValid = false;
 
@@ -650,7 +680,7 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
 
     StreamClose();
 
-    if ((pszExt[0] == 'h' || pszExt[0] == 'H') && (pszExt[1] == 's' || pszExt[1] == 'S'))
+    if ((pszExtWork[0] == 'h' || pszExtWork[0] == 'H') && (pszExtWork[1] == 's' || pszExtWork[1] == 'S'))
     {
         dt = dtHost;
         iPlayer = iPlayerNil;
@@ -659,7 +689,8 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     {
         dt = dtTurn;
         grf = (int16_t)(grf | (bitfMulti | bitfRewind));
-        iPlayer = (int16_t)atoi(pszExt + 1);
+        iPlayer = (int16_t)atoi(pszExtWork + 1);
+        DBG_LOGD("FLoadGame: parsed player from ext='%s' => %d", pszExtWork, (int)iPlayer);
         Assert(iPlayer > 0 && iPlayer <= iPlayerMax);
         iPlayer--;
     }
@@ -1256,6 +1287,14 @@ LNextTurn:
         lpfl = rglpfl[i] = (FLEET *)LpAlloc(sizeof(FLEET), htFleets);
         if (!FReadFleet(lpfl))
         {
+            goto LError;
+        }
+        if (lpfl->iPlayer < 0 || lpfl->iPlayer >= game.cPlayer)
+        {
+            DBG_LOGE("FLoadGame: bad fleet iPlayer=%d (game.cPlayer=%d) fleet.id=%d", (int)lpfl->iPlayer,
+                     (int)game.cPlayer, (int)lpfl->id);
+            /* Note: the raw fleet bytes are dumped inside FReadFleet before it advances the stream. */
+            Error(idsGameFileAppearsCorruptUnableLoadFile);
             goto LError;
         }
         rgplr[lpfl->iPlayer].cFleet++;
@@ -1872,6 +1911,8 @@ void ReadRt(void)
 
     RgFromStream(&hdrCur, sizeof(HDR));
 
+    DBG_LOGT("ReadRt: rt=%d cb=%u", (int)hdrCur.rt, (unsigned)hdrCur.cb);
+
     if (hdrCur.cb != 0)
     {
         RgFromStream(rgbCur, hdrCur.cb);
@@ -1881,6 +1922,15 @@ void ReadRt(void)
     {
         RTBOF bof;
         memcpy(&bof, rgbCur, sizeof(bof));
+
+        DBG_LOGD("ReadRt: BOF ver=%d.%d lid=%ld salt=%d turn=%d iPlayer=%d crippled=%d",
+                 (int)bof.verMajor, (int)bof.verMinor,
+                 (long)bof.lidGame,
+                 (int)bof.lSaltTime,
+                 (int)bof.turn,
+                 (int)bof.iPlayer,
+                 (int)bof.fCrippled);
+
         SetFileXorStream(bof.lidGame, bof.lSaltTime, bof.turn, bof.iPlayer, bof.fCrippled);
     }
     else if (hdrCur.rt != rtEOF)
@@ -2626,6 +2676,8 @@ void RgFromStream(void *rg, uint16_t cb)
 
     Assert(rg != NULL);
 
+    DBG_LOGT("RgFromStream: cb=%u (mem=%s)", (unsigned)cb, (vlpMemStream != NULL) ? "yes" : "no");
+
     if (vlpMemStream != NULL)
     {
         /* Read from memory */
@@ -2642,6 +2694,8 @@ void RgFromStream(void *rg, uint16_t cb)
         Assert(penvMem != NULL);
         longjmp(*(jmp_buf *)penvMem, -1);
     }
+
+    DBG_LOGT("RgFromStream: read %u bytes", (unsigned)cb);
 }
 
 bool FBogusLong(uint32_t lSerial)

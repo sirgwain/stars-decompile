@@ -28,7 +28,7 @@ message(STATUS "STARS_BUILD_CLI=${STARS_BUILD_CLI} STARS_BUILD_WIN32=${STARS_BUI
 message(STATUS "CROSSOVER_ENABLE=${CROSSOVER_ENABLE} HOST_IS_MAC=${HOST_IS_MAC}")
 
 # -------- Sources: flat directory --------
-file(GLOB STARSRCS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/*.c")
+file(GLOB STARSRCS "${CMAKE_SOURCE_DIR}/*.c")
 
 # Do not compile entrypoints into the core library.
 list(REMOVE_ITEM STARSRCS
@@ -38,6 +38,9 @@ list(REMOVE_ITEM STARSRCS
 
 add_library(stars_core STATIC ${STARSRCS})
 target_include_directories(stars_core PUBLIC ${CMAKE_SOURCE_DIR})
+
+# Debug logging is compiled in for Debug builds.
+target_compile_definitions(stars_core PUBLIC $<$<CONFIG:Debug>:STARS_DEBUG=1>)
 
 # Math library (sqrt, etc.)
 if (NOT MSVC)

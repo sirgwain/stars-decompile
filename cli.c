@@ -12,6 +12,67 @@
 /* ------------------------------------------------------------ */
 /* small helpers */
 
+static void build_fullpath(char *out, size_t outsz, const char *base, const char *ext)
+{
+    /*
+     * CLI convention: <base> is a path without extension, <ext> may be:
+     *   - ".HST" (with dot)
+     *   - "HST"  (without dot)
+     */
+    const char *e = (ext != NULL) ? ext : "";
+    if (e[0] == '.') {
+        snprintf(out, outsz, "%s%s", base ? base : "", e);
+    } else if (e[0] != '\0') {
+        snprintf(out, outsz, "%s.%s", base ? base : "", e);
+    } else {
+        snprintf(out, outsz, "%s", base ? base : "");
+    }
+}
+
+static int64_t file_size_bytes(const char *path)
+{
+    FILE *fp;
+    long end;
+
+    if (path == NULL) return -1;
+
+    fp = fopen(path, "rb");
+    if (!fp) return -1;
+    if (fseek(fp, 0, SEEK_END) != 0) {
+        fclose(fp);
+        return -1;
+    }
+    end = ftell(fp);
+    fclose(fp);
+    return (end < 0) ? -1 : (int64_t)end;
+}
+
+static const char *record_type_name(uint16_t rt)
+{
+    /*
+     * Note: the file format uses 6-bit record types. Some of our internal enum
+     * names are still being reconciled; here we bias toward common Stars!
+     * .HST record meanings (and match Houston output where possible).
+     */
+    switch (rt) {
+    case 0x00: return "FileFooter";
+    case 0x06: return "Player";
+    case 0x07: return "Game";
+    case 0x08: return "FileHeader";
+    case 0x0C: return "Message";
+    case 0x0D: return "Planet";
+    case 0x10: return "Fleet";
+    case 0x14: return "Waypoint";
+    case 0x15: return "String";
+    case 0x1A: return "Design";
+    case 0x1E: return "BattlePlan";
+    case 0x1F: return "BattleData";
+    case 0x2B: return "Thing";
+    case 0x2D: return "Score";
+    default: return "Unknown";
+    }
+}
+
 static void print_usage(FILE *out)
 {
     fprintf(out,
@@ -29,7 +90,9 @@ static void print_usage(FILE *out)
             "  fleets                 List fleets (all players)\n"
             "  fleet <id>             Show a fleet (id/ifl packed field)\n"
             "  shdefs                 List ship designs (best-effort)\n"
-            "  shdef <index>          Show a ship design by index (best-effort)\n");
+            "  shdef <index>          Show a ship design by index (best-effort)\n"
+            "  game                   Dump loaded game summary\n"
+            "  blocks                 Dump raw record blocks (type/size/data)\n");
 }
 
 static int32_t parse_i32(const char *s, bool *ok)
@@ -394,6 +457,106 @@ static int cmd_shdef(const char *sidx)
     return 0;
 }
 
+static int cmd_game(const StarsCli *cli)
+{
+    char path[1024];
+    int64_t sz;
+
+    build_fullpath(path, sizeof(path), cli ? cli->path_base : NULL, cli ? cli->ext : NULL);
+    sz = file_size_bytes(path);
+
+    printf("File: %s", path);
+    if (sz >= 0) printf(" (%" PRId64 " bytes)", sz);
+    printf("\n");
+
+    printf("Game ID: %" PRIu32 ", Turn: %u (Year %u)\n",
+           (uint32_t)game.lid,
+           (unsigned)game.turn,
+           (unsigned)(2400u + (uint16_t)game.turn));
+
+    printf("\nPlayers found:\n");
+    for (int16_t iplr = 0; iplr < game.cPlayer; iplr++) {
+        const PLAYER *p = &rgplr[iplr];
+        /* Skip empty/default slots. */
+        if (p->szName[0] == '\0' && p->szNames[0] == '\0' && p->cPlanet == 0 && p->cFleet == 0 && p->cShDef == 0 && p->cshdefSB == 0)
+            continue;
+
+        printf("  Player %d: %s (%s)\n", (int)iplr,
+               (p->szName[0] != '\0') ? p->szName : "(unnamed)",
+               (p->szNames[0] != '\0') ? p->szNames : "(unnamed)");
+        printf("    Ships: %u designs, Starbases: %u designs\n", (unsigned)(uint8_t)p->cShDef, (unsigned)p->cshdefSB);
+        printf("    Planets: %u, Fleets: %u\n", (unsigned)(uint16_t)p->cPlanet, (unsigned)p->cFleet);
+    }
+
+    return 0;
+}
+
+static void print_hex_bytes(const uint8_t *pb, size_t cb)
+{
+    for (size_t i = 0; i < cb; i++) {
+        printf("%02x", (unsigned)pb[i]);
+    }
+}
+
+static int cmd_blocks(const StarsCli *cli)
+{
+    char path[1024];
+    int64_t sz;
+    int block_count = 0;
+
+    build_fullpath(path, sizeof(path), cli ? cli->path_base : NULL, cli ? cli->ext : NULL);
+    sz = file_size_bytes(path);
+
+    /* First pass: count blocks. */
+    StreamClose();
+    StreamOpen(path, mdRead | mdNoOpenErr);
+    for (;;) {
+        ReadRt();
+        if (hdrCur.rt == rtEOF) break;
+        block_count++;
+    }
+    /* Count the footer block too, if present. */
+    if (hdrCur.rt == rtEOF) block_count++;
+    StreamClose();
+
+    printf("File: %s", path);
+    if (sz >= 0) printf(" (%" PRId64 " bytes)", sz);
+    printf("\n");
+    printf("Blocks: %d\n\n", block_count);
+
+    /* Second pass: dump blocks. */
+    StreamOpen(path, mdRead | mdNoOpenErr);
+    for (int i = 0;; i++) {
+        ReadRt();
+
+        printf("Block %d: %s (type=%u, size=%u)\n",
+               i,
+               record_type_name(hdrCur.rt),
+               (unsigned)hdrCur.rt,
+               (unsigned)hdrCur.cb);
+
+        if (hdrCur.rt == 0x08 && hdrCur.cb >= sizeof(RTBOF)) {
+            RTBOF bof;
+            memcpy(&bof, rgbCur, sizeof(bof));
+            printf("  GameID: %" PRIu32 ", Turn: %u (Year %u), Player: %d\n\n",
+                   (uint32_t)bof.lidGame,
+                   (unsigned)bof.turn,
+                   (unsigned)(2400u + (uint16_t)bof.turn),
+                   (int)bof.iPlayer);
+        } else {
+            size_t cb_show = (hdrCur.cb <= 256u) ? (size_t)hdrCur.cb : 256u;
+            printf("  Data: ");
+            print_hex_bytes((const uint8_t *)rgbCur, cb_show);
+            if (cb_show < (size_t)hdrCur.cb) printf("...");
+            printf("\n\n");
+        }
+
+        if (hdrCur.rt == rtEOF) break;
+    }
+    StreamClose();
+    return 0;
+}
+
 /* ------------------------------------------------------------ */
 
 static int do_load(StarsCli *cli)
@@ -512,6 +675,10 @@ int StarsCli_Run(int argc, char **argv)
             return 2;
         }
         return cmd_shdef(argv[i]);
+    } else if (strcmp(cmd, "game") == 0) {
+        return cmd_game(&cli);
+    } else if (strcmp(cmd, "blocks") == 0) {
+        return cmd_blocks(&cli);
     }
 
     fprintf(stderr, "Unknown command: %s\n\n", cmd);
