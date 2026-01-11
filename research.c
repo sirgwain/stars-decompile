@@ -1,7 +1,9 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "research.h"
+#include "parts.h"
 
 /* globals */
 uint16_t rggrbitBrParts[17] = {0x19ff, 0x0008, 0x0010, 0x0040, 0x0800, 0x0001, 0x1000, 0x0100, 0x0080, 0x0200, 0x8000, 0x0002, 0x0004, 0x4000, 0x0400, 0x2000, 0x0020};
@@ -222,8 +224,99 @@ int16_t FShouldPartBeHidden(PART *ppart)
     int16_t iItem;
     uint16_t grbitTrader;
 
-    /* TODO: implement */
-    return 0;
+    if (idPlayer == -1)
+        return false; // no player context => don't block here
+
+    iItem = ppart->hs.iItem;
+    const uint16_t grhst = ppart->hs.grhst;
+
+    unsigned required_mask = grbitTraderNone;
+
+    switch (grhst)
+    {
+    case hstBomb:
+        // Hush-A-Boom
+        if (iItem == ibombHushABoom)
+            required_mask = grbitTraderBomb;
+        break;
+
+    case hstTorp:
+        // Anti-Matter Torpedo
+        if (iItem == itorpAntiMatterTorpedo)
+            required_mask = grbitTraderTorp;
+        break;
+
+    case hstEngine:
+        // Enigma Pulsar
+        if (iItem == iengineEnigmaPulsar)
+            required_mask = grbitTraderEngine;
+        break;
+
+    case hstShield:
+        // Langston Shell
+        if (iItem == ishieldLangstonShell)
+            required_mask = grbitTraderShield;
+        break;
+
+    case hstArmor:
+        // Mega Poly Shell
+        if (iItem == iarmorMegaPolyShell)
+            required_mask = grbitTraderArmor;
+        break;
+
+    case hstBeam:
+        // Multi-Contained Munition
+        if (iItem == ibeamMultiContainedMunition)
+            required_mask = grbitTraderBeam;
+        break;
+
+    case hstMining:
+        // Alien Miner
+        if (iItem == iminingAlienMiner)
+            required_mask = grbitTraderMiner;
+        break;
+
+    case hstSpecialE:
+        // Multi-Function Pod
+        if (iItem == ispecialEMultiFunctionPod)
+            required_mask = grbitTraderSpecial;
+        break;
+
+    case hstSpecialM:
+        // Multi Cargo Pod or Jump Gate
+        if (iItem == ispecialMMultiCargoPod)
+            required_mask = grbitTraderCargo;
+        else if (iItem == ispecialMJumpGate)
+            required_mask = grbitTraderJumpgate;
+        break;
+
+    case hstHull:
+        // Mini Morph hull needs a hull trader perk in the original code.
+        if (iItem == ihuldefMiniMorph)
+            required_mask = grbitTraderHull;
+        break;
+
+    case hstPlanetary:
+        // Genesis Device
+        if (iItem == iplanetaryGenesisDevice)
+            required_mask = grbitTraderGenesis;
+        break;
+
+    default:
+        break;
+    }
+
+    if (required_mask != grbitTraderNone)
+    {
+        // Same field the original used (rgplr[idPlayer].grbitTrader)
+        const unsigned grbitTrader = *(const unsigned *)((const char *)&rgplr[0].grbitTrader + idPlayer * 0xC0);
+
+        // If the needed perk bit is not set, this component is blocked
+        if ((grbitTrader & required_mask) == 0)
+            return true;
+    }
+
+    return false;
 }
 
 int16_t BrowserDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)

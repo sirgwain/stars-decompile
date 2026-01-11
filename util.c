@@ -283,7 +283,7 @@ int16_t IshdefPrimaryFromLpfl(FLEET *lpfl, int16_t *pcDiff)
                 ish = i;
                 csh = n;
 
-                if (ihuldef == ihullFuelTransport || ihuldef == ihullSuperFuelXport)
+                if (ihuldef == ihuldefFuelTransport || ihuldef == ihuldefSuperFuelXport)
                 {
                     csh = (int16_t)(csh - 1);
                 }

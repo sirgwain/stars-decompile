@@ -1,7 +1,10 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "parts.h"
+#include "race.h"
+#include "research.h"
 
 ENGINE rgengine[16] = {
     {.id = 1,
@@ -3579,13 +3582,318 @@ void LookupBestPlanetaryScanner(PART *ppart)
     /* TODO: implement */
 }
 
-int16_t FLookupPart(PART *ppart)
+// attach union pointer so CheckTechRequirements sees the right record
+static inline int attach_part_ptr(PART *part, uint16_t grhst, uint16_t iItem)
+{
+    switch (grhst)
+    {
+    case hstEngine:
+        if (iItem >= iengineCount)
+            return LookupInvalid;
+        part->pengine = &rgengine[iItem];
+        return 1;
+    case hstScanner:
+        if (iItem >= iscannerCount)
+            return LookupInvalid;
+        part->pscanner = &rgscanner[iItem];
+        return 1;
+    case hstShield:
+        if (iItem >= ishieldCount)
+            return LookupInvalid;
+        part->pshield = &rgshield[iItem];
+        return 1;
+    case hstArmor:
+        if (iItem >= iarmorCount)
+            return LookupInvalid;
+        part->parmor = &rgarmor[iItem];
+        return 1;
+    case hstBeam:
+        if (iItem >= ibeamCount)
+            return LookupInvalid;
+        part->pbeam = &rgbeam[iItem];
+        return 1;
+    case hstTorp:
+        if (iItem >= itorpCount)
+            return LookupInvalid;
+        part->ptorp = &rgtorp[iItem];
+        return 1;
+    case hstBomb:
+        if (iItem >= ibombCount)
+            return LookupInvalid;
+        part->pbomb = &rgbomb[iItem];
+        return 1;
+    case hstMining:
+        if (iItem >= iminingCount)
+            return LookupInvalid;
+        part->pmining = &rgmining[iItem];
+        return 1;
+    case hstMines:
+        if (iItem >= iminesCount)
+            return LookupInvalid;
+        part->pmines = &rgmines[iItem];
+        return 1;
+    case hstSpecialSB:
+        if (iItem >= ispecialSBCount)
+            return LookupInvalid;
+        part->pspecialsb = &rgspecialSB[iItem];
+        return 1; /* present in tech.c */ /* :contentReference[oaicite:1]{index=1} */
+    case hstSpecialE:
+        if (iItem >= ispecialECount)
+            return LookupInvalid;
+        part->pspecial = &rgspecialE[iItem];
+        return 1;
+    case hstSpecialM:
+        if (iItem >= ispecialMCount)
+            return LookupInvalid;
+        part->pspecial = &rgspecialM[iItem];
+        return 1;
+    case hstTerra:
+        if (iItem >= iterraCount)
+            return LookupInvalid;
+        part->pterra = &rgterra[iItem];
+        return 1;
+    case hstHull:
+        if (iItem >= ihuldefCount)
+            return LookupInvalid;
+        part->phul = (HUL *)&rghuldef[iItem];
+        return 1;
+    case hstPlanetary:
+        if (iItem >= iplanetaryCount)
+            return LookupInvalid;
+        part->pplanetary = &rgplanetary[iItem];
+        return 1;
+    default:
+        return LookupInvalid;
+    }
+}
+
+int16_t FLookupPart(PART *part)
 {
     int16_t raMajor;
     HS hs;
 
-    /* TODO: implement */
-    return 0;
+    const uint16_t grhst = part->hs.grhst;
+    const uint16_t iItem = part->hs.iItem;
+
+    // attach pointer and range-check using *named* counts
+    {
+        int ok = attach_part_ptr(part, grhst, iItem);
+        if (ok != 1)
+            return ok;
+    }
+
+    const PLAYER *me = (idPlayer == -1) ? NULL : &rgplr[idPlayer];
+    const int majorAdv = me ? GetRaceStat(me, rsMajorAdv) : raNone;
+
+    if (me)
+    {
+        switch (grhst)
+        {
+        case hstEngine:
+            if (iItem == iengineSettlersDelight && majorAdv != raCheapCol)
+                return LookupDisallowed;
+
+            // “No Ram Scoops” blocks scoop engines: Radiating Hydro (10) and every index after it that’s a scoop.
+            if ((iItem == iengineRadiatingHydroRamScoop || iItem >= iengineSubGalacticFuelScoop) && GetRaceGrbit(me, ibitRaceNoRamscoops))
+                return LookupDisallowed;
+
+            // IFE requirement for Trans-Galactic Mizer Scoop (15) and Fuel Mizer (2)
+            if ((iItem == iengineTransGalacticMizerScoop || iItem == iengineFuelMizer) && !GetRaceGrbit(me, ibitRaceIFE))
+                return LookupDisallowed;
+
+            // Interspace-10 (7) special-case from the decompile
+            if (iItem == iengineInterspace10 && !GetRaceGrbit(me, ibitRaceNoRamscoops))
+                return LookupDisallowed;
+            break;
+
+        case hstBomb:
+            // Advanced bombs (10..14) blocked for Defender
+            if (iItem >= ibombSmartBomb && iItem <= ibombAnnihilatorBomb && majorAdv == raDefend)
+                return LookupDisallowed;
+
+            // Hush-A-Boom specific gate mirrored as “needs raTerra”
+            if (iItem == ibombRetroBomb && majorAdv != raTerra)
+                return LookupDisallowed;
+            break;
+
+        case hstBeam:
+            if (iItem == ibeamMiniGun && majorAdv != raDefend)
+                return LookupDisallowed;
+            if ((iItem == ibeamBlunderbuss || iItem == ibeamGatlingNeutrinoCannon) && majorAdv != raAttack)
+                return LookupDisallowed;
+            break;
+
+        case hstShield:
+            if (iItem == ishieldShadowShield && majorAdv != raStealth)
+                return LookupDisallowed;
+            if (iItem == ishieldCrobySharmor && majorAdv != raDefend)
+                return LookupDisallowed;
+            break;
+
+        case hstArmor:
+            if (iItem == iarmorDepletedNeutronium && majorAdv != raStealth)
+                return LookupDisallowed;
+            if (iItem == iarmorFieldedKelarium && majorAdv != raDefend)
+                return LookupDisallowed;
+            break;
+
+        case hstScanner:
+            // “No Advanced Scanners” style gating (decompile hit 7,8,12)
+            if ((iItem == iscannerFerretScanner || iItem == iscannerDolphinScanner || iItem == iscannerRNAScanner) && GetRaceGrbit(me, ibitRaceNoAdvScanner))
+                return LookupDisallowed;
+            // (5,6,14) look stealth-leaning in the original logic
+            if ((iItem == iscannerPickPocketScanner || iItem == iscannerChameleonScanner || iItem == iscannerRobberBaronScanner) && majorAdv != raStealth)
+                return LookupDisallowed;
+            break;
+
+        case hstMining:
+            // OBRM blocks certain remote miners: {0,2,3,4,5}
+            if ((iItem == iminingRoboMidgetMiner || iItem == iminingRoboMiniMiner || iItem == iminingRoboMiner || iItem == iminingRoboMaxiMiner ||
+                 iItem == iminingRoboSuperMiner) &&
+                GetRaceGrbit(me, ibitRaceOBRM))
+                return LookupDisallowed;
+
+            // ARM required for {0,5}
+            if ((iItem == iminingRoboMidgetMiner || iItem == iminingRoboSuperMiner) && !GetRaceGrbit(me, ibitRaceARM))
+                return LookupDisallowed;
+
+            if (iItem == iminingOrbitalAdjuster && majorAdv != raTerra)
+                return LookupDisallowed;
+            break;
+
+        case hstMines:
+            // many mine types require raMines
+            if ((iItem == iminesMineDispenser40 || iItem == iminesMineDispenser80 || iItem == iminesMineDispenser130 || iItem == iminesHeavyDispenser50 ||
+                 iItem == iminesHeavyDispenser110 || iItem == iminesHeavyDispenser200 || iItem == iminesSpeedTrap30 || iItem == iminesSpeedTrap50) &&
+                majorAdv != raMines)
+                return LookupDisallowed;
+
+            // Speed Trap 20: raMines or raDefend
+            if (iItem == iminesSpeedTrap20 && !(majorAdv == raMines || majorAdv == raDefend))
+                return LookupDisallowed;
+
+            // Mine Dispenser 50 → raAttack
+            if (iItem == iminesMineDispenser50 && majorAdv != raAttack)
+                return LookupDisallowed;
+            break;
+
+        case hstSpecialSB:
+            // mass drivers 7..15 (except 9,12) need raMassAccel
+            if (iItem >= ispecialSBMassDriver5 && iItem <= ispecialSBUltraDriver13 && !(iItem == ispecialSBMassDriver7 || iItem == ispecialSBSuperDriver9) &&
+                majorAdv != raMassAccel)
+                return LookupDisallowed;
+
+            // stargates 0..6: if not raStargate, #1 and >3 are disallowed
+            if (iItem <= ispecialSBStargateAnyAny)
+            {
+                if (majorAdv != raStargate)
+                {
+                    if (iItem == ispecialSBStargateAny300)
+                        return LookupDisallowed;
+                    if (iItem > ispecialSBStargate300500)
+                        return LookupDisallowed;
+                }
+                // original path also enforced raCheapCol
+                if (majorAdv != raCheapCol)
+                    return LookupDisallowed;
+            }
+            break;
+
+        case hstSBHull:
+            // Space Dock and Ultra Station require ISB
+            if ((iItem == ihuldefSBSpaceDock || iItem == ihuldefSBUltraStation) && !GetRaceGrbit(me, ibitRaceISB))
+                return LookupDisallowed;
+            // Death Star → raMacintosh
+            if (iItem == ihuldefSBDeathStar && majorAdv != raMacintosh)
+                return LookupDisallowed;
+            break;
+
+        case hstSpecialM:
+            if (FShouldPartBeHidden(part))
+                return LookupDisallowed;
+            // AR cannot build colonizer module (0)
+            if (iItem == ispecialMColonizationModule && majorAdv == raMacintosh)
+                return LookupDisallowed;
+            // orbital construction module (1) requires AR
+            if (iItem == ispecialMOrbitalConstructionModule && majorAdv != raMacintosh)
+                return LookupDisallowed;
+            break;
+
+        case hstHull:
+            if ((iItem == ihuldefMiniColonyShip || iItem == ihuldefMetaMorph) && majorAdv != raCheapCol)
+                return LookupDisallowed;
+            if ((iItem == ihuldefFuelTransport || iItem == ihuldefSuperFreighter) && majorAdv != raDefend)
+                return LookupDisallowed;
+            if ((iItem == ihuldefMiner || iItem == ihuldefMaxiMiner || iItem == ihuldefMidgetMiner || iItem == ihuldefUltraMiner) && GetRaceGrbit(me, ibitRaceOBRM))
+                return LookupDisallowed;
+            if ((iItem == ihuldefMidgetMiner || iItem == ihuldefMiner || iItem == ihuldefUltraMiner) && !GetRaceGrbit(me, ibitRaceARM))
+                return LookupDisallowed;
+            if ((iItem == ihuldefDreadnought || iItem == ihuldefBattleCruiser) && majorAdv != raAttack)
+                return LookupDisallowed;
+            if ((iItem == ihuldefRogue || iItem == ihuldefStealthBomber) && majorAdv != raStealth)
+                return LookupDisallowed;
+            if ((iItem == ihuldefMiniMineLayer || iItem == ihuldefSuperMineLayer) && majorAdv != raMines)
+                return LookupDisallowed;
+            break;
+
+        case hstPlanetary:
+            // penetrating scanners (first 9) blocked by “No Adv Scanners”
+            if (iItem < 9 && GetRaceGrbit(me, ibitRaceNoAdvScanner))
+                return LookupDisallowed;
+            // AR can’t use planetary scanners (first 9)
+            if (iItem < 9 && majorAdv == raMacintosh)
+                return LookupDisallowed;
+            // AR can’t use defenses (10..13)
+            if (iItem > 9 && iItem < 14 && majorAdv == raMacintosh)
+                return LookupDisallowed;
+            break;
+
+        case hstTerra:
+            // Total Terraforming (0..7) requires TT
+            if (iItem <= iterraTotalTerraform30 && !GetRaceGrbit(me, ibitRaceTT))
+                return LookupDisallowed;
+            break;
+
+        case hstSpecialE:
+            if (FShouldPartBeHidden(part))
+                return LookupDisallowed;
+            switch (iItem)
+            {
+            case ispecialETransportCloaking: // 0
+            case ispecialEUltraStealthCloak: // 3
+                if (majorAdv != raStealth)
+                    return LookupDisallowed;
+                break;
+            case ispecialEJammer10:        // 8
+            case ispecialEJammer50:        // 11
+            case ispecialETachyonDetector: // 15
+                if (majorAdv != raDefend)
+                    return LookupDisallowed;
+                break;
+            case ispecialEFluxCapacitor: // 13
+                if (majorAdv != raCheapCol)
+                    return LookupDisallowed;
+                break;
+            case ispecialEEnergyDampener: // 14
+                if (majorAdv != raMines)
+                    return LookupDisallowed;
+                break;
+            case ispecialEAntiMatterGenerator: // 16
+                if (majorAdv != raStargate)
+                    return LookupDisallowed;
+                break;
+            default:
+                break;
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    // final tech gate (original returned 1/2/…/99 as in your CheckTechRequirements)
+    return TechStatus(part->pcom->rgTech);
 }
 
 HULDEF *LphuldefFromId(HullDef id)
@@ -3612,8 +3920,46 @@ int16_t TechStatus(char *rgTech)
     int16_t fAlmost;
     int16_t cMiss;
 
-    /* TODO: implement */
-    return 0;
+    if (!rgTech || idPlayer == -1)
+        return 1; // no gating without a player
+
+    const PLAYER *plr = &rgplr[idPlayer];
+
+    const int8_t *have = plr->rgTech;
+
+    int missing_count = 0;
+    int missing_idx = -1;  // 0..5 if exactly one field is missing
+    bool near_one = false; // exactly one short by 1 and it’s the current research field
+    const int iTechCur = (plr->iTechCur & 0x0F);
+
+    for (int techLevel = 0; techLevel < 6; ++techLevel)
+    {
+        if (have[techLevel] < rgTech[techLevel])
+        {
+            ++missing_count;
+            if (techLevel == iTechCur && have[techLevel] + 1 == rgTech[techLevel])
+            {
+                near_one = true;
+            }
+            else
+            {
+                missing_idx = techLevel;
+            }
+        }
+    }
+
+    if (missing_count == 0)
+        return LookupOk; // OK
+    if (missing_count == 1 && near_one)
+        return LookupNear;
+
+    if (missing_count == 1 && missing_idx >= 0)
+    {
+        // Same arithmetic as the legacy code: (need - have) + 1
+        return (int)(rgTech[missing_idx] - have[missing_idx]) + 1;
+    }
+
+    return 99; // multiple requirements missing
 }
 
 HULDEF *LphuldefSBFromId(int16_t id)

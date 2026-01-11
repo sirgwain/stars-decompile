@@ -31,6 +31,8 @@
 #include "parts.h"
 #include "planet.h"
 
+static inline uint16_t rd_u16le(const uint8_t *p) { return (uint16_t)p[0] | ((uint16_t)p[1] << 8); }
+
 /* ------------------------------------------------------------------------- */
 /* Debug/diagnostic block dump helpers                                       */
 /* ------------------------------------------------------------------------- */
@@ -102,22 +104,23 @@ static int64_t Dump_FileSizeBytes(const char *path)
     return (end < 0) ? -1 : (int64_t)end;
 }
 
-int DumpGameFileBlocks(const char *path)
+int DumpGameFileBlocks(const char *szPath)
 {
     int64_t sz;
     int block_count = 0;
+    STARPACK sp;
 
-    if (path == NULL || path[0] == '\0')
+    if (szPath == NULL || szPath[0] == '\0')
     {
         fprintf(stderr, "DumpGameFileBlocks: missing path\n");
         return 2;
     }
 
-    sz = Dump_FileSizeBytes(path);
+    sz = Dump_FileSizeBytes(szPath);
 
     /* First pass: count records. Include the footer (rt==0). */
     StreamClose();
-    StreamOpen(path, mdRead | mdNoOpenErr);
+    StreamOpen(szPath, mdRead | mdNoOpenErr);
     for (;;)
     {
         ReadRt();
@@ -127,14 +130,60 @@ int DumpGameFileBlocks(const char *path)
     }
     StreamClose();
 
-    printf("File: %s", path);
+    printf("File: %s", szPath);
     if (sz >= 0)
         printf(" (%" PRId64 " bytes)", sz);
     printf("\n");
     printf("Blocks: %d\n\n", block_count);
 
-    /* Second pass: dump records. */
-    StreamOpen(path, mdRead | mdNoOpenErr);
+    // second pass, load xy file to initialize game
+    strncpy(szBase, szPath, sizeof(szBase));
+    if (!FOpenFile(dtXY, iPlayerNil, mdRead))
+    {
+        goto XYCorrupt;
+    }
+
+    ReadRt();
+    if (hdrCur.rt != rtGame)
+    {
+    XYCorrupt:
+        Error(idsUniverseCreationFileAppearsInvalid);
+        return 1;
+    }
+
+    game = *((GAME *)rgbCur);
+    game.fDirty = false;
+
+    dGal = (int16_t)((game.mdSize * 400) + 400);
+    dGalInv = (int16_t)(dGal + 2 * dGalOff);
+
+    int16_t x = dGalOff;
+    for (int i = 0; i < game.cPlanMax; i++)
+    {
+        RgFromStream(&sp, sizeof(STARPACK));
+        x = (int16_t)(x + (int16_t)(uint16_t)sp.dx);
+        Assert(x < (int16_t)(dGal + dGalOff));
+
+        rgptPlan[i].x = x;
+        rgptPlan[i].y = (int16_t)(uint16_t)sp.y;
+        rgidPlan[i] = (int16_t)(uint16_t)sp.id;
+
+        if (x >= (int16_t)(dGal + dGalOff) || rgptPlan[i].y >= (int16_t)(dGal + dGalOff) || rgidPlan[i] > cPlanetAbsMax)
+        {
+            goto XYCorrupt;
+        }
+    }
+
+    ReadRt();
+    if (hdrCur.rt != rtEOF)
+    {
+        goto XYCorrupt;
+    }
+
+    StreamClose();
+
+    /* third pass: dump records. */
+    StreamOpen(szPath, mdRead | mdNoOpenErr);
     for (int i = 0;; i++)
     {
         ReadRt();
@@ -150,12 +199,28 @@ int DumpGameFileBlocks(const char *path)
         case rtPlanet:
             PLANET pl = {0};
             FReadPlanet(iPlayerNil, &pl, false, false);
-            printf("  ID: %d Env: (g: %d, t: %d, r: %d)\n", pl.id, pl.rgEnvVar[0], pl.rgEnvVar[1], pl.rgEnvVar[2]);
+            printf("  ID: %d Env: (g: %d, t: %d, r: %d) Conc: (i: %d, b: %d, g: %d), Surf: (i: %d, b: %d, g: %d)\n", pl.id,
+                   pl.rgEnvVar[0], pl.rgEnvVar[1], pl.rgEnvVar[2],
+                   pl.rgMinConc[0], pl.rgMinConc[1], pl.rgMinConc[2],
+                   pl.rgwtMin[0], pl.rgwtMin[1], pl.rgwtMin[2]);
+            break;
+        case rtFleet:
+            FLEET fl = {0};
+            FReadFleet(&fl);
+            printf("  ID: %d(ifl: %d, iplr: %d) iPlayer: %d Name: %s \n", fl.id, fl.ifl, fl.iplr, fl.iPlayer, fl.lpszName);
             break;
         case rtPlr:
             PLAYER plr = {0};
             ReadRtPlr(&plr, rgbCur);
-            printf("  Name: %s\n", plr.szName);
+            printf("  ID: %d Name: %s Hab: (g: %d-%d (%d), t: %d-%d (%d), r: %d-%d (%d))\n", plr.iPlayer, plr.szName,
+                   plr.rgEnvVarMin[0], plr.rgEnvVarMax[0], plr.rgEnvVar[0],
+                   plr.rgEnvVarMin[1], plr.rgEnvVarMax[1], plr.rgEnvVar[1],
+                   plr.rgEnvVarMin[2], plr.rgEnvVarMax[2], plr.rgEnvVar[2]);
+            break;
+        case rtShDef:
+            SHDEF shdef = {0};
+            FReadShDef((RTSHDEF *)rgbCur, &shdef, 0); // hardcode to load as player1?
+            printf("  Hul: %d Scan %d/%d\n", shdef.hul.ihuldef, shdef.dScanRange, shdef.dScanRange2);
             break;
         }
 
@@ -467,7 +532,17 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)
     memset(pplr, 0, sizeof(*pplr));
 
     DBG_HEXDUMP(DBGLOG_TRACE, pbIn, 128, 128, "Player record bytes (first 128)");
+    DBG_LOGD("Player raw: iPlayer=%u cShDef=%u cPlanet=%u wFleetSB=0x%04x wMdPlr=0x%04x env=%u/%u/%u min=%u/%u/%u max=%u/%u/%u",
+             (unsigned)pbIn[0],
+             (unsigned)pbIn[1],
+             (unsigned)rd_u16le(pbIn + 2),
+             (unsigned)rd_u16le(pbIn + 4),
+             (unsigned)rd_u16le(pbIn + 6),
+             (unsigned)(uint8_t)pbIn[16], (unsigned)(uint8_t)pbIn[17], (unsigned)(uint8_t)pbIn[18],
+             (unsigned)(uint8_t)pbIn[19], (unsigned)(uint8_t)pbIn[20], (unsigned)(uint8_t)pbIn[21],
+             (unsigned)(uint8_t)pbIn[22], (unsigned)(uint8_t)pbIn[23], (unsigned)(uint8_t)pbIn[24]);
 
+    DBG_LOGD("Player raw: cbPlayerAll=%u, cbPlayerSome=%u", cbPlayerAll, cbPlayerSome);
     if (pplrRaw->det == detAll)
     {
         /* Full player record up to relations, 112 bytes */
@@ -862,6 +937,7 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     }
 
     StreamClose();
+    DBG_LOGI("FLoadGame: xy dGal: %d dGalInv %d cPlanMax %d", dGal, dGalInv, game.cPlanMax);
 
     if ((pszExtWork[0] == 'h' || pszExtWork[0] == 'H') && (pszExtWork[1] == 's' || pszExtWork[1] == 'S'))
     {
@@ -1261,6 +1337,11 @@ LNextTurn:
         cFleet = (int16_t)(cFleet + rgplr[i].cFleet);
         rgplr[i].cFleet = 0;
 
+        DBG_LOGI("Player ID: %d Name: %s Hab: (g: %d-%d (%d), t: %d-%d (%d), r: %d-%d (%d))\n", rgplr[i].iPlayer, rgplr[i].szName,
+                 rgplr[i].rgEnvVarMin[0], rgplr[i].rgEnvVarMax[0], rgplr[i].rgEnvVar[0],
+                 rgplr[i].rgEnvVarMin[1], rgplr[i].rgEnvVarMax[1], rgplr[i].rgEnvVar[1],
+                 rgplr[i].rgEnvVarMin[2], rgplr[i].rgEnvVarMax[2], rgplr[i].rgEnvVar[2]);
+
         ReadRt();
     }
 
@@ -1277,6 +1358,7 @@ LNextTurn:
     {
         lSaltCur = 0;
     }
+    DBG_LOGD("FLoadGame: lSalCur='%d'\n", lSaltCur);
 
     if (!FCheckPassword())
     {
@@ -1727,7 +1809,8 @@ LNextTurn:
         goto LError;
     }
 
-    if (!AtEOF(hf.fp))
+    // TODO: AtEOF isn't working, not doing multiple turn loads yet
+    if (!true && !AtEOF(hf.fp))
     {
         ReadRt();
         if (hdrCur.rt == rtBOF)
@@ -1821,7 +1904,7 @@ LNextTurn:
                     continue;
                 }
 
-                if (rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef == (ihullSBOrbitalFort + ihulMax))
+                if (rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef == (ihuldefSBOrbitalFort + ihuldefCount))
                 {
                     continue;
                 }
@@ -1993,7 +2076,8 @@ bool FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad)
         }
     }
 
-    cch = (int16_t)(*lpb++);
+    cch = (int16_t)(*lpb);
+    lpb++;
     if (cch == 0)
     {
         strcpy(shdef.hul.szClass, (const char *)lpb);

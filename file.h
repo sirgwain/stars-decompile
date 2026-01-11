@@ -4,6 +4,11 @@
 #include "types.h"
 #include "strings.h"
 
+#include <stddef.h>
+
+#define cbPlayerSome ((uint16_t)offsetof(PLAYER, idPlanetHome))
+#define cbPlayerAll ((uint16_t)offsetof(PLAYER, rgmdRelation))
+
 #define cbPlayerSome ((unsigned)&((PLAYER *)0)->idPlanetHome)
 #define cbPlayerAll (((unsigned)&((PLAYER *)0)->rgmdRelation[0]))
 #define cbrtshdefB (2 * sizeof(uint8_t) + 2 * sizeof(uint16_t)) // ihuldef + wFlags + ibmp + wtEmpty
@@ -96,8 +101,8 @@ typedef enum RecordType
     rtPlanetB = 0x1c, /* decompile: after FReadPlanet(...), if (rt == 0x1c) { ...planet extra... } */
 
     rtBtlPlan = rtBattlePlan, /* decompile: while (rt == 0x1e) { ...battle plan... } */
-    rtBtlData = 0x1f,  /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
-    rtContinue = 0x27, /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
+    rtBtlData = 0x1f,         /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
+    rtContinue = 0x27,        /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
 
     rtHistHdr = 0x20, /* decompile: after opening dtHist, expects rt == 0x20 */
     rtMsgFilt = 0x21, /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
@@ -122,19 +127,19 @@ enum
 };
 
 /* functions */
-void FileError(StringId ids);                                                    /* MEMORY_IO:0x4a10 */
-void StreamOpen(const char *szFile, int16_t mdOpen);                             /* MEMORY_IO:0x52ae */
-void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan);          /* MEMORY_IO:0x40ce */
-bool FBadFileError(StringId ids);                                                /* MEMORY_IO:0x524e */
-void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn);                                     /* MEMORY_IO:0x05e2 */
-void UpdateBattleRecords(void);                                                  /* MEMORY_IO:0x41ac */
-bool FReadFleet(FLEET *lpfl);                                                    /* MEMORY_IO:0x3a4c */
-bool FLoadGame(const char *pszFileName, char *pszExt);                           /* MEMORY_IO:0x0810 */
-bool FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);                /* MEMORY_IO:0x0006 */
-void ReadRt(void);                                                               /* MEMORY_IO:0x5168 */
-bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);                      /* MEMORY_IO:0x4ac2 */
-int16_t AskSaveDialog(void); /* PASCAL */                                        /* MEMORY_IO:0x432a */
-void StreamClose(void);                                                          /* MEMORY_IO:0x53cc */
+void FileError(StringId ids);                                           /* MEMORY_IO:0x4a10 */
+void StreamOpen(const char *szFile, int16_t mdOpen);                    /* MEMORY_IO:0x52ae */
+void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan); /* MEMORY_IO:0x40ce */
+bool FBadFileError(StringId ids);                                       /* MEMORY_IO:0x524e */
+void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn);                            /* MEMORY_IO:0x05e2 */
+void UpdateBattleRecords(void);                                         /* MEMORY_IO:0x41ac */
+bool FReadFleet(FLEET *lpfl);                                           /* MEMORY_IO:0x3a4c */
+bool FLoadGame(const char *pszFileName, char *pszExt);                  /* MEMORY_IO:0x0810 */
+bool FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);       /* MEMORY_IO:0x0006 */
+void ReadRt(void);                                                      /* MEMORY_IO:0x5168 */
+bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);             /* MEMORY_IO:0x4ac2 */
+int16_t AskSaveDialog(void); /* PASCAL */                               /* MEMORY_IO:0x432a */
+void StreamClose(void);                                                 /* MEMORY_IO:0x53cc */
 
 /*
  * Debug/diagnostic helper: dump raw record blocks from a Stars! file.

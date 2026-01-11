@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static DebugLogLevel g_level = DBGLOG_WARN;
+static DebugLogLevel g_level = DBGLOG_TRACE;
 static int g_inited = 0;
 
 static const char *level_to_str(DebugLogLevel level)

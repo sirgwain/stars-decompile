@@ -469,7 +469,7 @@ uint32_t GetDiskSerialNumber(void)
     int16_t j;
     int16_t drive;
     char fn[13];
-    FIND_T fi;
+    // FIND_T fi; // dos dependency
     int16_t i;
     int16_t iWork;
     uint8_t uDefault;
