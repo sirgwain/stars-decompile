@@ -322,22 +322,21 @@ typedef enum HullDef
 
 typedef enum BattleUnitFlags
 {
-    /* --- Side selection --- */
-    BU_OUR_UNITS = 0x0001,   /* tokens owned by idPlayer */
-    BU_THEIR_UNITS = 0x0002, /* tokens owned by other players */
+    /* Side selection */
+    grBuOurUnits = 0x0001,   /* tok->iplr == idPlayer */
+    grBuTheirUnits = 0x0002, /* tok->iplr != idPlayer */
 
-    /* --- Object type --- */
-    BU_INCLUDE_SB = 0x0004, /* include starbases (ishdef >= 16) */
+    /* Object type selection */
+    grBuIncludeSb = 0x0004, /* include starbases (ishdef >= 16) */
 
-    /* --- Hull class filters (ships only, ishdef < 16) --- */
-    BU_CLASS_OTHER = 0x0008,  /* hulClass < 2 or > 5 */
-    BU_CLASS_FIGHT = 0x0010,  /* hulClass == 2 */
-    BU_CLASS_BOMBER = 0x0020, /* hulClass == 3 */
-    BU_CLASS_CAP = 0x0040,    /* hulClass == 5 */
-    BU_CLASS_FRIG = 0x0080,   /* hulClass == 4 */
+    /* Hull category filters (ships only; ishdef < 16) */
+    grBuClassOther = 0x0008,  /* imdCategory < 2 or > 5 */
+    grBuClassFight = 0x0010,  /* imdCategory == 2 */
+    grBuClassBomber = 0x0020, /* imdCategory == 3 */
+    grBuClassCap = 0x0040,    /* imdCategory == 5 */
+    grBuClassFrig = 0x0080,   /* imdCategory == 4 */
 
-    /* Convenience mask: all ship classes */
-    BU_CLASS_ALL = 0x00F8
+    grBuClassAll = 0x00F8
 } BattleUnitFlags;
 
 /* Match Win16/Stars! default struct packing (2-byte alignment). */

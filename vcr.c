@@ -79,31 +79,45 @@ BTLDATA *BtlDataGet(int16_t i)
     }
 }
 
-int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
+/*
+ * CBattleKills
+ *
+ * Sum the number of units destroyed in a battle.
+ *
+ * This function walks the variable-length BTLREC/KILL stream stored inside
+ * a BTLDATA block and accumulates kill counts. Depending on fOurDead, it
+ * either counts units owned by the current player (idPlayer) or units
+ * owned by other players.
+ *
+ * Parameters:
+ *   lpbd     - Battle data block containing TOK, BTLREC, and KILL records.
+ *   fOurDead - Nonzero to count our units destroyed; zero to count enemy
+ *              units destroyed.
+ *
+ * Returns:
+ *   Total number of units destroyed, using 32-bit integer arithmetic to
+ *   match the original Win16 long behavior.
+ */
+int32_t CBattleKills(BTLDATA *lpbd, int32_t fOurDead)
 {
-    /* TOK table starts at +0x0e */
     TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
-
-    /* BTLREC stream begins immediately after TOK array (ctok * sizeof(TOK)) */
-    BTLREC *lpbr = (BTLREC *)((uint8_t *)rgtok + (uint32_t)lpbd->ctok * (uint32_t)sizeof(TOK));
-
+    BTLREC *lpbr = (BTLREC *)((uint8_t *)rgtok +
+                              (uint32_t)lpbd->ctok * (uint32_t)sizeof(TOK));
     uint8_t *pbEnd = (uint8_t *)lpbd + (uint32_t)lpbd->cbData;
 
     uint32_t cKilled = 0;
 
     while ((uint8_t *)lpbr < pbEnd)
     {
-        int16_t cKill = lpbr->ctok; /* number of KILL entries */
+        int16_t cKill = lpbr->ctok;
 
         for (int16_t i = 0; i < cKill; i++)
         {
             KILL *pk = &lpbr->rgkill[i];
 
-            /* decompile checks (uint16 at +8+i*8) != 0 => cshKill != 0 */
             if (pk->cshKill == 0)
                 continue;
 
-            /* victim owner is tok[itok].iplr */
             uint8_t victimPlr = rgtok[pk->itok].iplr;
 
             if (victimPlr == (uint8_t)idPlayer)
@@ -118,14 +132,39 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
             }
         }
 
-        /* Next record: 6-byte header + (ctok * 8-byte KILL entries) */
-        lpbr = (BTLREC *)((uint8_t *)lpbr + 6u + (uint32_t)cKill * (uint32_t)sizeof(KILL));
+        lpbr = (BTLREC *)((uint8_t *)lpbr +
+                          6u +
+                          (uint32_t)cKill * (uint32_t)sizeof(KILL));
     }
 
     return (int32_t)cKilled;
 }
 
-int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
+/*
+ * CBattleUnits
+ *
+ * Count the number of battle units matching a filter mask.
+ *
+ * Iterates over the TOK table in a BTLDATA block and sums the unit counts
+ * (TOK::csh) for tokens that match the specified BattleUnitFlags mask.
+ * The mask controls which side (ours/theirs), whether starbases are
+ * included, and which ship hull categories are counted.
+ *
+ * Parameters:
+ *   lpbd     - Battle data block containing the TOK table.
+ *   grbitBu  - Combination of BattleUnitFlags (grBu* values) selecting
+ *              sides, object types, and hull classes.
+ *
+ * Returns:
+ *   Total number of matching units as a 32-bit integer.
+ *
+ * Notes:
+ *   - TOK entries with ishdef >= 16 are treated as starbases.
+ *   - Hull category is derived from HULDEF::imdCategory.
+ *   - All arithmetic and filtering behavior matches the original Win16
+ *     implementation.
+ */
+int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu)
 {
     uint32_t lUnits = 0;
 
@@ -137,45 +176,46 @@ int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
         TOK *tok = &rgtok[i];
 
         /* Side filter */
-        uint16_t sideOk = (tok->iplr == (uint8_t)idPlayer) ? (grbitBU & BU_OUR_UNITS)
-                                                           : (grbitBU & BU_THEIR_UNITS);
+        uint16_t sideOk =
+            (tok->iplr == (uint8_t)idPlayer)
+                ? (grbitBu & grBuOurUnits)
+                : (grbitBu & grBuTheirUnits);
+
         if (sideOk == 0)
             continue;
 
-        /* Object-type filter: per your note, ishdef >= 16 means starbase */
-        const bool isStarbase = (tok->ishdef >= 16);
-        if (isStarbase && ((grbitBU & BU_INCLUDE_SB) == 0))
+        /* Starbase filter: ishdef >= 16 */
+        bool isStarbase = (tok->ishdef >= 16);
+        if (isStarbase && ((grbitBu & grBuIncludeSb) == 0))
             continue;
 
-        /* Hull-category filtering applies only to ships (ishdef < 16), and only if not "all classes" */
-        if (!isStarbase && ((grbitBU & BU_CLASS_ALL) != BU_CLASS_ALL))
+        /* Hull-category filtering (ships only) */
+        if (!isStarbase && ((grbitBu & grBuClassAll) != grBuClassAll))
         {
-            /* Ship design comes from rglpshdef[player][ishdef] */
-            SHDEF *pshdef = (SHDEF *)((uint8_t *)rglpshdef[tok->iplr] + (uint32_t)tok->ishdef * 0x93);
+            SHDEF *pshdef =
+                (SHDEF *)((uint8_t *)rglpshdef[tok->iplr] +
+                          (uint32_t)tok->ishdef * 0x93);
 
-            /* HULDEF lookup by ihuldef (exact field exists in your HUL/HULDEF types) */
             HULDEF *phuldef = LphuldefFromId(pshdef->hul.ihuldef);
 
-            /* Matches decompile: (*(uint16*)(huldef+0x7b)>>10)&0xF */
             uint16_t hulClass = (uint16_t)phuldef->imdCategory;
 
-            uint16_t classMask;
+            uint16_t classOk;
             if (hulClass < 2 || hulClass > 5)
-                classMask = (grbitBU & BU_CLASS_OTHER);
+                classOk = grbitBu & grBuClassOther;
             else if (hulClass == 2)
-                classMask = (grbitBU & BU_CLASS_FIGHT);
+                classOk = grbitBu & grBuClassFight;
             else if (hulClass == 3)
-                classMask = (grbitBU & BU_CLASS_BOMBER);
+                classOk = grbitBu & grBuClassBomber;
             else if (hulClass == 5)
-                classMask = (grbitBU & BU_CLASS_CAP);
+                classOk = grbitBu & grBuClassCap;
             else /* hulClass == 4 */
-                classMask = (grbitBU & BU_CLASS_FRIG);
+                classOk = grbitBu & grBuClassFrig;
 
-            if (classMask == 0)
+            if (classOk == 0)
                 continue;
         }
 
-        /* Add this token's unit count (tok->csh at +0x13) */
         lUnits += (uint32_t)tok->csh;
     }
 
