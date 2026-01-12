@@ -23,8 +23,11 @@
  *   The table maps: shuffled[i] = decoded[vrgbShuffleSerial[i]]
  *
  * OUTPUT STRUCTURE (21 bytes after decode + shuffle):
- *   Bytes 0-3:   lSerial (32-bit serial number, stored in FileHashBlock offset 2-5)
- *   Bytes 4-14:  pbEnv (11-byte hardware fingerprint, stored in FileHashBlock offset 6-16)
+ *   Bytes 0-3:   lSerial (32-bit serial number, stored in FileHashBlock offset 0-3)
+ *   Bytes 4-14:  pbEnv (11-byte hardware fingerprint, stored in FileHashBlock offset 4-14)
+ *
+ * NOTE: FileHashBlock is 17 bytes. Bytes 15-16 contain pbEnv tail but are NOT
+ * copied to the in-memory TURNSERIAL structure (only 15 bytes are used).
  *
  * KEY FUNCTIONS:
  *   FSerialAndEnvFromSz() - Decode serial string → (lSerial, pbEnv)

@@ -16,9 +16,9 @@
 
 typedef uint16_t MessageId;
 
-/* Turn serial data - contains homeworld coordinates for cheater detection */
+/* Turn serial data - contains registration serial and hardware fingerprint for piracy detection */
 typedef struct _TURNSERIAL {
-    uint8_t data[16];      /* Bytes 0-3: homeworld X,Y; Bytes 4-14: additional data */
+    uint8_t data[16];      /* Bytes 0-3: lSerial (registration); Bytes 4-14: pbEnv (hardware fingerprint) */
 } TURNSERIAL;
 
 /* Game state structure */

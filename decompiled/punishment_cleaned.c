@@ -18,7 +18,7 @@ extern GAME        game;              /* Game settings and state */
 extern PLAYER      rgplr[16];         /* Array of player structures */
 extern FLEET      *rglpfl[];          /* Array of fleet pointers */
 extern PLANET     *lpPlanets;         /* Pointer to planet array */
-extern TURNSERIAL *vrgts;             /* Turn serial data (homeworld coords) */
+extern TURNSERIAL *vrgts;             /* Turn serial data (registration + hardware fingerprint) */
 extern int16_t     cFleet;            /* Number of fleets */
 extern int16_t     cPlanet;           /* Number of planets */
 extern uint8_t    *lpMsg;             /* Message buffer */
@@ -33,15 +33,16 @@ extern int16_t fmemcmp(void *p1, void *p2, uint16_t len);
 
 
 /* ============================================================================
- * IPlrAlsoCheater - Find another cheater with matching homeworld
+ * IPlrAlsoCheater - Find another cheater with matching serial number
  * ============================================================================
  * Address: 1018:07aa
  *
  * Searches for a player who:
  *   1. Is already flagged as cheater (fCheater bit set)
- *   2. Has the same homeworld coordinates as the given player
+ *   2. Has the same registration serial number as the given player
  *
- * This is used to identify which two players shared save files.
+ * This is used to identify which two players are sharing the same registration
+ * (serial piracy detection).
  *
  * @param iplr  Player index to check against
  * @return      Index of matching cheater, or -1 if none found
@@ -52,10 +53,10 @@ int16_t IPlrAlsoCheater(int16_t iplr)
     TURNSERIAL *otherSerial;
     int16_t i;
 
-    /* Get this player's turn serial data (contains homeworld coordinates) */
+    /* Get this player's turn serial data (lSerial + pbEnv) */
     mySerial = &vrgts[iplr];
 
-    /* Validate that this player has a valid serial number */
+    /* Validate that this player has a valid registration serial */
     if (!FValidSerialLong(*(uint32_t *)mySerial)) {
         return -1;
     }
@@ -74,15 +75,15 @@ int16_t IPlrAlsoCheater(int16_t iplr)
 
         otherSerial = &vrgts[i];
 
-        /* Compare homeworld coordinates (first 4 bytes = X,Y) */
+        /* Compare registration serial number (first 4 bytes = lSerial) */
         if (*(uint32_t *)mySerial != *(uint32_t *)otherSerial) {
             continue;
         }
 
-        /* Coordinates match - compare additional 11 bytes of serial data */
-        /* If memcmp returns non-zero, the data differs (confirming different players) */
+        /* Serial matches - compare hardware fingerprint (11 bytes of pbEnv) */
+        /* If memcmp returns non-zero, different hardware = piracy confirmed */
         if (fmemcmp(&mySerial->data[4], &otherSerial->data[4], 11) != 0) {
-            return i;  /* Found matching cheater */
+            return i;  /* Found matching cheater (same serial, different hardware) */
         }
     }
 
