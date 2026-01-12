@@ -409,24 +409,27 @@ def _get_stack_offset(var):
     Works across a couple of Ghidra versions by trying multiple APIs.
     """
     try:
-        # Many variable implementations expose this directly
+        # Many variable implementations expose this directly.
+        # In some cases (e.g. register-backed storage) Ghidra throws
+        # java.lang.UnsupportedOperationException: "Storage does not have a stack varnode".
         return int(var.getStackOffset())
-    except Exception:
+    except:
+        # Jython may not reliably map Java runtime exceptions to `Exception`.
         pass
     try:
         vs = var.getVariableStorage()
         if vs is not None and vs.isStackStorage():
             try:
                 return int(vs.getStackOffset())
-            except Exception:
+            except:
                 # Some versions: stack offset comes from first varnode
-                vn = vs.getVarnodes()
-                if vn and len(vn) > 0:
-                    try:
+                try:
+                    vn = vs.getVarnodes()
+                    if vn and len(vn) > 0:
                         return int(vn[0].getOffset())
-                    except Exception:
-                        return None
-    except Exception:
+                except:
+                    return None
+    except:
         pass
     return None
 
