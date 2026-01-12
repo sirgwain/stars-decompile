@@ -39,22 +39,14 @@ static void set_base(const char *base)
 static void test_file__FLoadGame_tiny_2400(void)
 {
     SaveGlobalsSnapshot snap = snapshot_globals();
-    ENV env;
+    MemJump env;
     int j;
-
-    /* ctest runs executables from the build directory, so use a path relative
-     * to that.
-     */
-    const char *base = "../test/data/tiny/2400/TEST";
-    char ext[8];
 
     /* Ensure globals are in a known state for this test. */
     DestroyCurGame();
-    set_base(base);
-    strcpy(ext, "m1");
 
     penvMem = &env;
-    j = setjmp(env);
+    j = setjmp(env.env);
     if (j != 0)
     {
         restore_globals(&snap);
@@ -63,7 +55,7 @@ static void test_file__FLoadGame_tiny_2400(void)
         return;
     }
 
-    TEST_CHECK(FLoadGame(szBase, ext));
+    TEST_CHECK(FLoadGame("test/data/tiny/2400/TEST", "HST"));
 
     /* Tiny test files represent year 2400 (turn 1). Validate that we parsed
      * something plausible.

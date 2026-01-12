@@ -252,15 +252,15 @@ int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int
 
 void ReadPlayerMessages(void)
 {
-    ENV env;
-    ENV *penvMemSav = penvMem;
+    MemJump env;
+    MemJump *penvMemSav = penvMem;
 
     uint16_t imemMsgT = 0;
     int fOOM = 0;
 
     /* Append any rtMsg blocks (rt == 0x0c per decompile) into lpMsg at imemMsgCur. */
     penvMem = &env;
-    if (setjmp(env))
+    if (setjmp(env.env))
     {
         fOOM = 1;
     }
@@ -857,6 +857,7 @@ char *PszGetCompressedMessage(MessageId idm)
 
 int16_t MsgDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
 {
+#ifdef _WIN32
     RECT rc;
     uint16_t hdc;
     POINT pt;
@@ -869,6 +870,7 @@ int16_t MsgDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
     /* block (block) @ MEMORY_MSG:0x8f77 */
     /* block (block) @ MEMORY_MSG:0x9031 */
 
+#endif
     /* TODO: implement */
     return 0;
 }
@@ -1017,6 +1019,7 @@ int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int1
 
 int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
 {
+#ifdef _WIN32
     uint16_t hdc;
     int16_t i;
     char *psz;
@@ -1071,7 +1074,7 @@ int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t
     /* label PrevMsg @ MEMORY_MSG:0x6ba0 */
     /* label ToggleMsgMode @ MEMORY_MSG:0x6298 */
     /* label GotoMsg @ MEMORY_MSG:0x6d8d */
-
+#endif
     /* TODO: implement */
     return 0;
 }

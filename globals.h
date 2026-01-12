@@ -3,21 +3,15 @@
 
 #include <assert.h>
 #include "types.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif /* _WIN32 */
 
 #ifdef NDEBUG
 #define Assert(expr) ((void)0)
 #else
 #define Assert(expr) assert(expr)
 #endif
-
-/* MessageBox-style flags (Win16/Win32 compatible values) */
-typedef enum MBFlags
-{
-    MB_OK = 0x0000, /* default */
-    MB_YESNO = 0x0004,
-    MB_ICONHAND = 0x0010,     /* error / stop */
-    MB_ICONQUESTION = 0x0020, /* question */
-} MBFlags;
 
 #define IDOK 1
 #define IDYES 6
@@ -35,7 +29,7 @@ typedef enum MBFlags
 /* These are constants in the original; keep them header-only without creating
  * multiple definitions across TUs.
  */
-#define dGalOff 1000      /* map border inset ("off") */
+#define dGalOff 1000 /* map border inset ("off") */
 #define ishdefMax 16
 #define ishdefSBMax 10
 #define cbAllocMac 65480
@@ -53,9 +47,16 @@ typedef enum MBFlags
 #define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
 #endif
 
+typedef struct MemJump {
+    jmp_buf env;
+} MemJump;
+
+extern MemJump *penvMem;   // pointer to wrapper is fine
+
 /* Unassigned symbols (no file inferred) */
 
 /* globals */
+
 extern BTLDATA *
     vlpbdVCR;
 extern BTLDATA *vlpbdVCRNext;
@@ -95,7 +96,7 @@ extern char *vrgszUnits[6];
 extern char iLastGet;
 extern char iLastMsgGet;
 extern char iLastStrGet;
-extern char rgbCur[1024];
+extern uint8_t rgbCur[1024];
 extern char rgszArial[4][32];
 extern char rgszSpeed[30];
 extern char szBackup[0];
@@ -148,7 +149,6 @@ extern int16_t (*lpfnRealEditProc)(void);
 extern int16_t (*lpfnRealListProc)(void);
 extern int16_t (*lpfnReportDlgProc)(void);
 extern int16_t (*lpfnTutorDlgProc)(void);
-extern int16_t (*penvMem)[9];
 extern int16_t *lpMsg;
 extern int16_t *rgXferValidHulls;
 extern int16_t *vrgiflMerge;

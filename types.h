@@ -14,7 +14,16 @@
 // enable to ensure structs are bin compatible.
 // #define STARS_LAYOUT_CHECKS 1
 
-typedef jmp_buf ENV;
+#ifndef _WIN32
+/* MessageBox-style flags (Win16/Win32 compatible values) */
+typedef enum MBFlags
+{
+    MB_OK = 0x0000, /* default */
+    MB_YESNO = 0x0004,
+    MB_ICONHAND = 0x0010,     /* error / stop */
+    MB_ICONQUESTION = 0x0020, /* question */
+} MBFlags;
+#endif
 
 #define fFalse 0
 #define fTrue 1
@@ -320,7 +329,6 @@ typedef struct HELPWININFO HELPWININFO;
 typedef struct MENUITEMTEMPLATE MENUITEMTEMPLATE;
 typedef struct MENUITEMTEMPLATEHEADER MENUITEMTEMPLATEHEADER;
 typedef struct DOCINFO DOCINFO;
-typedef struct tagDEVNAMES DEVNAMES;
 typedef struct tagDRVCONFIGINFO DRVCONFIGINFO;
 typedef struct _logxfer LOGXFER;
 typedef struct _btn BTN;
@@ -2038,22 +2046,6 @@ typedef struct DOCINFO
     char *lpszOutput;  /* +0x0006 */
 } DOCINFO;
 
-/* typind 5096 (0x13e8) size=8 */
-typedef struct tagDEVNAMES
-{
-    uint16_t wDriverOffset; /* +0x0000 */
-    uint16_t wDeviceOffset; /* +0x0002 */
-    uint16_t wOutputOffset; /* +0x0004 */
-    uint16_t wDefault;      /* +0x0006 */
-} DEVNAMES;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DEVNAMES) == 8, "sizeof(DEVNAMES)");
-_Static_assert(offsetof(DEVNAMES, wDriverOffset) == 0x0, "offsetof(DEVNAMES,wDriverOffset)");
-_Static_assert(offsetof(DEVNAMES, wDeviceOffset) == 0x2, "offsetof(DEVNAMES,wDeviceOffset)");
-_Static_assert(offsetof(DEVNAMES, wOutputOffset) == 0x4, "offsetof(DEVNAMES,wOutputOffset)");
-_Static_assert(offsetof(DEVNAMES, wDefault) == 0x6, "offsetof(DEVNAMES,wDefault)");
-#endif
-
 /* typind 5098 (0x13ea) size=12 */
 typedef struct tagDRVCONFIGINFO
 {
@@ -2432,16 +2424,6 @@ _Static_assert(offsetof(AISTARBASE, cFreighter) == 0x2, "offsetof(AISTARBASE,cFr
 _Static_assert(offsetof(AISTARBASE, rgflid) == 0x4, "offsetof(AISTARBASE,rgflid)");
 #endif
 
-/* typind 5192 (0x1448) size=28 */
-typedef struct _exception
-{
-    int16_t type;  /* +0x0000 */
-    char *name;    /* +0x0002 */
-    double arg1;   /* +0x0004 */
-    double arg2;   /* +0x000c */
-    double retval; /* +0x0014 */
-} EXCEPTION;
-
 /* typind 5195 (0x144b) size=2 */
 typedef struct tagHANDLETABLE
 {
@@ -2625,18 +2607,6 @@ _Static_assert(offsetof(TIMER, mdForce) == 0x0, "offsetof(TIMER,mdForce)");
 _Static_assert(offsetof(TIMER, fAutoGenWhenIn) == 0x2, "offsetof(TIMER,fAutoGenWhenIn)");
 _Static_assert(offsetof(TIMER, hrsForce) == 0x4, "offsetof(TIMER,hrsForce)");
 _Static_assert(offsetof(TIMER, tickcount) == 0x6, "offsetof(TIMER,tickcount)");
-#endif
-
-/* typind 5252 (0x1484) size=16 */
-typedef struct _complex
-{
-    double x; /* +0x0000 */
-    double y; /* +0x0008 */
-} COMPLEX;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(COMPLEX) == 16, "sizeof(COMPLEX)");
-_Static_assert(offsetof(COMPLEX, x) == 0x0, "offsetof(COMPLEX,x)");
-_Static_assert(offsetof(COMPLEX, y) == 0x8, "offsetof(COMPLEX,y)");
 #endif
 
 /* typind 5254 (0x1486) size=37 */
@@ -3127,30 +3097,6 @@ typedef struct _mdplr
 } MDPLR;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(MDPLR) == 2, "sizeof(MDPLR)");
-#endif
-
-/* typind 5482 (0x156a) size=4 */
-typedef struct _div_t
-{
-    int16_t quot; /* +0x0000 */
-    int16_t rem;  /* +0x0002 */
-} DIV_T;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DIV_T) == 4, "sizeof(DIV_T)");
-_Static_assert(offsetof(DIV_T, quot) == 0x0, "offsetof(DIV_T,quot)");
-_Static_assert(offsetof(DIV_T, rem) == 0x2, "offsetof(DIV_T,rem)");
-#endif
-
-/* typind 5485 (0x156d) size=8 */
-typedef struct _ldiv_t
-{
-    int32_t quot; /* +0x0000 */
-    int32_t rem;  /* +0x0004 */
-} LDIV_T;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(LDIV_T) == 8, "sizeof(LDIV_T)");
-_Static_assert(offsetof(LDIV_T, quot) == 0x0, "offsetof(LDIV_T,quot)");
-_Static_assert(offsetof(LDIV_T, rem) == 0x4, "offsetof(LDIV_T,rem)");
 #endif
 
 /* typind 5127 (0x1407) size=10 */

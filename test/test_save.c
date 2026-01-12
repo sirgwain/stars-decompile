@@ -5,7 +5,7 @@
 
 #include "globals.h"
 #include "types.h"
-#include "save.h"   /* SetSzWorkFromDt */
+#include "save.h" /* SetSzWorkFromDt */
 
 /* Snapshot/restore just the globals this test mutates. */
 typedef struct SaveGlobalsSnapshot
@@ -52,11 +52,11 @@ static void test_SetSzWorkFromDt_table(void)
 
     const Case cases[] = {
         {
-            "dtTurn appends .xy and strips extension",
+            "dtTurn appends .XY and strips extension",
             "game1.sta",
-            dtTurn,
+            dtXY,
             7,
-            "game1.xy",
+            "game1.XY",
             "game1",
         },
         {
@@ -64,47 +64,47 @@ static void test_SetSzWorkFromDt_table(void)
             "C:\\GAMES\\STARS\\mystuff.gam",
             dtHost,
             3,
-            "C:\\GAMES\\STARS\\mystuff.hst",
+            "C:\\GAMES\\STARS\\mystuff.HST",
             "C:\\GAMES\\STARS\\mystuff",
         },
         {
-            "dtLog uses .mN with %c%d format",
+            "dtLog uses .MN with %c%d format",
+            "foo.bar",
+            dtTurn,
+            12,
+            "foo.M12",
+            "foo",
+        },
+        {
+            "dtXY uses .XN with %c%d format",
             "foo.bar",
             dtLog,
-            12,
-            "foo.m12",
-            "foo",
-        },
-        {
-            "dtXY uses .xN with %c%d format",
-            "foo.bar",
-            dtXY,
             1,
-            "foo.x1",
+            "foo.X1",
             "foo",
         },
         {
-            "dtHist uses .hN with %c%d format",
+            "dtHist uses .HN with %c%d format",
             "foo.bar",
             dtHist,
             16,
-            "foo.h16",
+            "foo.H16",
             "foo",
         },
         {
             "dot in directory does not count as extension",
             "C:\\dir.name\\file",
-            dtTurn,
+            dtXY,
             2,
-            "C:\\dir.name\\file.xy",
+            "C:\\dir.name\\file.XY",
             "C:\\dir.name\\file",
         },
         {
             "dot before last backslash is not stripped",
             "C:\\dir.name\\file.ext",
-            dtTurn,
+            dtXY,
             2,
-            "C:\\dir.name\\file.xy",
+            "C:\\dir.name\\file.XY",
             "C:\\dir.name\\file",
         },
     };
@@ -134,5 +134,4 @@ static void test_SetSzWorkFromDt_table(void)
 
 TEST_LIST = {
     {"save/SetSzWorkFromDt (table)", test_SetSzWorkFromDt_table},
-    {NULL, NULL}
-};
+    {NULL, NULL}};

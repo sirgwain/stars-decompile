@@ -44,7 +44,7 @@ char *vrgszUnits[6] = {"kT", "kT", "kT", "00", "mg", "% "};
 char iLastGet = -1;
 char iLastMsgGet = -1;
 char iLastStrGet = -1;
-char rgbCur[1024] = {0};
+uint8_t rgbCur[1024] = {0};
 char rgszArial[4][32] = {0};
 char rgszSpeed[30];
 char szBackup[0]; // TODO: wut?
@@ -97,7 +97,7 @@ int16_t (*lpfnRealEditProc)(void);
 int16_t (*lpfnRealListProc)(void);
 int16_t (*lpfnReportDlgProc)(void);
 int16_t (*lpfnTutorDlgProc)(void);
-int16_t (*penvMem)[9];
+MemJump *penvMem;
 int16_t *lpMsg;
 int16_t *rgXferValidHulls;
 int16_t *vrgiflMerge;

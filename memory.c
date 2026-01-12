@@ -212,7 +212,7 @@ LReAllocOOM:
     int16_t mbType = 0x10;
     char *sz = PszFormatIds(idsMemory, (int16_t *)0);
     AlertSz(sz, mbType);
-    longjmp(penvMem, -1);
+    longjmp(penvMem->env, -1);
 }
 }
 
@@ -451,7 +451,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht)
         int16_t mbType = 0x10;
         char *sz = PszFormatIds(0x1a, (int16_t *)0);
         AlertSz(sz, mbType);
-        longjmp(penvMem, -1);
+        longjmp(penvMem->env, -1);
     }
 
     if (want < mphtcbAlloc[(uint16_t)ht])
@@ -466,7 +466,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht)
         int16_t mbType = 0x10;
         char *sz = PszFormatIds(0x1a, (int16_t *)0);
         AlertSz(sz, mbType);
-        longjmp(penvMem, -1);
+        longjmp(penvMem->env, -1);
     }
 
     /* Create a 16-bit “handle” for this block (replacement for HGLOBAL). */
@@ -479,7 +479,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht)
             int16_t mbType = 0x10;
             char *sz = PszFormatIds(0x1a, (int16_t *)0);
             AlertSz(sz, mbType);
-            longjmp(penvMem, -1);
+            longjmp(penvMem->env, -1);
         }
     }
 

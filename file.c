@@ -441,7 +441,7 @@ void StreamOpen(const char *szFile, int16_t mdOpen)
     if (!fNoErr)
         FileError(idsCantOpenFile);
 
-    longjmp(*(jmp_buf *)penvMem, -1);
+    longjmp(penvMem->env, -1);
 }
 
 void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan)
@@ -844,8 +844,8 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     int16_t cPlanetHist = 0;
     int16_t cPlanetAlloc = 0;
     int16_t fSilentSav;
-    ENV env;
-    ENV *penvMemSav;
+    MemJump env;
+    MemJump *penvMemSav;
 
     /* Accept both "HST" and ".HST" styles from callers/CLI. */
     const char *pszExtWork = pszExt;
@@ -863,7 +863,7 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
     penvMemSav = penvMem;
     penvMem = &env;
 
-    if (setjmp(env))
+    if (setjmp(env.env))
     {
     LError:
         game.fDirty = false;
@@ -2977,7 +2977,7 @@ void RgFromStream(void *rg, uint16_t cb)
     {
         FileError(idsGameFileAppearsCorruptUnableLoadFile);
         Assert(penvMem != NULL);
-        longjmp(*(jmp_buf *)penvMem, -1);
+        longjmp(penvMem->env, -1);
     }
 
     DBG_LOGT("RgFromStream: read %u bytes", (unsigned)cb);

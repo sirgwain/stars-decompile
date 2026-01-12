@@ -18,7 +18,7 @@ extern char *rgchcompstrlower;
 /* functions */
 int16_t NybbleFromCh(uint8_t ch);                                                                                                                                    /* MEMORY_UTILGEN:0x4880 */
 char ChFromNybble(int16_t nyb);                                                                                                                                      /* MEMORY_UTILGEN:0x49ea */
-int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut);                                                                                 /* MEMORY_UTILGEN:0x46e8 */
+int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut);                                                                                /* MEMORY_UTILGEN:0x46e8 */
 int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut);                                                                                                /* MEMORY_UTILGEN:0x45a0 */
 void DrawProgressGauge(uint16_t hdcOrig, int16_t fFull, int16_t iNumOnly);                                                                                           /* MEMORY_UTILGEN:0x65f6 */
 int16_t AlertSz(char *sz, int16_t mbType);                                                                                                                           /* MEMORY_UTILGEN:0x2160 */
