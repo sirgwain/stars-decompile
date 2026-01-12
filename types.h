@@ -11,9 +11,6 @@
 #include <time.h>
 #include <setjmp.h>
 
-// enable to ensure structs are bin compatible.
-// #define STARS_LAYOUT_CHECKS 1
-
 #ifndef _WIN32
 /* MessageBox-style flags (Win16/Win32 compatible values) */
 typedef enum MBFlags
@@ -23,6 +20,34 @@ typedef enum MBFlags
     MB_ICONHAND = 0x0010,     /* error / stop */
     MB_ICONQUESTION = 0x0020, /* question */
 } MBFlags;
+
+/* typind 4120 (0x1018) size=4 */
+typedef struct tagPOINT
+{
+    int16_t x; /* +0x0000 */
+    int16_t y; /* +0x0002 */
+} POINT;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(POINT) == 4, "sizeof(POINT)");
+_Static_assert(offsetof(POINT, x) == 0x0, "offsetof(POINT,x)");
+_Static_assert(offsetof(POINT, y) == 0x2, "offsetof(POINT,y)");
+#endif
+
+/* typind 4122 (0x101a) size=8 */
+typedef struct tagRECT
+{
+    int16_t left;   /* +0x0000 */
+    int16_t top;    /* +0x0002 */
+    int16_t right;  /* +0x0004 */
+    int16_t bottom; /* +0x0006 */
+} RECT;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(RECT) == 8, "sizeof(RECT)");
+_Static_assert(offsetof(RECT, left) == 0x0, "offsetof(RECT,left)");
+_Static_assert(offsetof(RECT, top) == 0x2, "offsetof(RECT,top)");
+_Static_assert(offsetof(RECT, right) == 0x4, "offsetof(RECT,right)");
+_Static_assert(offsetof(RECT, bottom) == 0x6, "offsetof(RECT,bottom)");
+#endif
 #endif
 
 #define fFalse 0
@@ -222,197 +247,185 @@ typedef enum HullDef
 #define offsetof(type, member) __builtin_offsetof(type, member)
 #endif
 
-/* forward declarations (to satisfy pointer members) */
-typedef struct _planet PLANET;
-typedef struct _fleet FLEET;
-typedef struct _order ORDER;
-typedef struct _thing THING;
-typedef struct _shdef SHDEF;
-typedef struct _game GAME;
-typedef struct _gdata GDATA;
-typedef struct _player PLAYER;
-typedef struct tagPOINT POINT;
-typedef struct tagPAINTSTRUCT PAINTSTRUCT;
-typedef struct tagRECT RECT;
-typedef struct _framestuff FRAMESTUFF;
-typedef struct _prod PROD;
-typedef struct _cyberinfo CYBERINFO;
-typedef struct _cyberinfotemp CYBERINFOTEMP;
-typedef struct _scan SCAN;
-typedef struct PLPROD PLPROD;
-typedef struct _sel SEL;
-typedef struct _part PART;
-typedef struct _hul HUL;
-typedef struct _hs HS;
-typedef struct _ziporder ZIPORDER;
-typedef struct _scorex SCOREX;
-typedef struct _btldata BTLDATA;
-typedef struct _rpt RPT;
-typedef struct _btlplan BTLPLAN;
-typedef struct _popupdata POPUPDATA;
-typedef struct _itemaction ITEMACTION;
-typedef struct _tok TOK;
-typedef struct _ini INI;
-typedef struct _tutor TUTOR;
-typedef struct _zipprodq1 ZIPPRODQ1;
-typedef struct _zipprodq ZIPPRODQ;
-typedef struct _aipart AIPART;
-typedef struct tagTIMERINFO TIMERINFO;
-typedef struct _hb HB;
-typedef struct _btlrec BTLREC;
-typedef struct _dv DV;
-typedef struct _btnt BTNT;
-typedef struct _diskfree_t DISKFREE_T;
-typedef struct tagOFSTRUCT OFSTRUCT;
-typedef struct tagLOGFONT LOGFONT;
-typedef struct tagMSG MSG;
-typedef struct tagBITMAPCOREHEADER BITMAPCOREHEADER;
-typedef struct tagBITMAPINFOHEADER BITMAPINFOHEADER;
-typedef struct tagLOGPALETTE LOGPALETTE;
-typedef struct tagBITMAP BITMAP;
-typedef struct tagTEXTMETRIC TEXTMETRIC;
-typedef struct tagOFN OFN;
-typedef struct _engine ENGINE;
-typedef struct _pl PL;
-typedef struct tagDRAWITEMSTRUCT DRAWITEMSTRUCT;
-typedef struct tagMEASUREITEMSTRUCT MEASUREITEMSTRUCT;
-typedef struct _huldef HULDEF;
-typedef struct _scanner SCANNER;
-typedef struct _planetary PLANETARY;
-typedef struct _armor ARMOR;
-typedef struct _shield SHIELD;
-typedef struct _special SPECIAL;
-typedef struct _mines MINES;
-typedef struct _mining MINING;
-typedef struct _terra TERRA;
-typedef struct _bomb BOMB;
-typedef struct _torp TORP;
-typedef struct _beam BEAM;
-typedef struct _specialsb SPECIALSB;
-typedef struct _msgplr MSGPLR;
-typedef struct _msgbig MSGBIG;
-typedef struct _msgturn MSGTURN;
-typedef struct _msghdr MSGHDR;
-typedef struct _hdr HDR;
-typedef struct _starpack STARPACK;
-typedef struct _rtbof RTBOF;
-typedef struct _xfer XFER;
-typedef struct _xferfull XFERFULL;
-typedef struct _coldrop COLDROP;
-typedef struct _score SCORE;
-typedef struct _turnserial TURNSERIAL;
-typedef struct _rthisthdr RTHISTHDR;
-typedef struct _rtChgProdQ RTCHGPRODQ;
-typedef struct _prodq1 PRODQ1;
-typedef struct tagEVENTMSG EVENTMSG;
-typedef struct _rtlogthing RTLOGTHING;
-typedef struct tagFINDREPLACE FINDREPLACE;
-typedef struct _rtChgPlanetLong RTCHGPLANETLONG;
-typedef struct _planetsome PLANETSOME;
-typedef struct tagRGBTRIPLE RGBTRIPLE;
-typedef struct tagBITMAPCOREINFO BITMAPCOREINFO;
-typedef struct _exceptionl EXCEPTIONL;
-typedef struct tagGLYPHMETRICS GLYPHMETRICS;
-typedef struct _taskxport TASKXPORT;
-typedef struct _tasklaymines TASKLAYMINES;
-typedef struct _taskpatrol TASKPATROL;
-typedef struct _tasksell TASKSELL;
-typedef struct _complexl COMPLEXL;
-typedef struct tagBITMAPFILEHEADER BITMAPFILEHEADER;
-typedef struct tagCLIENTCREATESTRUCT CLIENTCREATESTRUCT;
-typedef struct tagWNDCLASS WNDCLASS;
-typedef struct tagMETAFILEPICT METAFILEPICT;
-typedef struct tagDEBUGHOOKINFO DEBUGHOOKINFO;
-typedef struct _obj OBJ;
-typedef struct _tile TILE;
-typedef struct HELPWININFO HELPWININFO;
-typedef struct MENUITEMTEMPLATE MENUITEMTEMPLATE;
-typedef struct MENUITEMTEMPLATEHEADER MENUITEMTEMPLATEHEADER;
-typedef struct DOCINFO DOCINFO;
-typedef struct tagDRVCONFIGINFO DRVCONFIGINFO;
-typedef struct _logxfer LOGXFER;
-typedef struct _btn BTN;
-typedef struct _kill KILL;
-typedef struct _logxferf LOGXFERF;
-typedef struct _fleetsome FLEETSOME;
-typedef struct tagMETAHEADER METAHEADER;
-typedef struct tagWINDEBUGINFO WINDEBUGINFO;
-typedef struct tagLOGPEN LOGPEN;
-typedef struct _rtxfer RTXFER;
-typedef struct tagFIXED FIXED;
-typedef struct _compart COMPART;
-typedef struct tagDCB DCB;
-typedef struct _rtxferx RTXFERX;
-typedef struct _thmine THMINE;
-typedef struct tagCOMSTAT COMSTAT;
-typedef struct tagMAT2 MAT2;
-typedef struct _rtxferl RTXFERL;
-typedef struct _rtxferf RTXFERF;
-typedef struct _btlrec26 BTLREC26;
-typedef struct tagRGBQUAD RGBQUAD;
-typedef struct _thpack THPACK;
-typedef struct _rtshipint RTSHIPINT;
-typedef struct _aistarbase AISTARBASE;
-typedef struct _exception EXCEPTION;
-typedef struct tagHANDLETABLE HANDLETABLE;
-typedef struct _sbar SBAR;
-typedef struct _rtshipint2 RTSHIPINT2;
-typedef struct tagWINDOWPOS WINDOWPOS;
-typedef struct tagCREATESTRUCT CREATESTRUCT;
-typedef struct tagPD PD;
-typedef struct _thworm THWORM;
-typedef struct _aihist AIHIST;
-typedef struct tagCHOOSEFONT CHOOSEFONT;
-typedef struct _rtwaypt RTWAYPT;
-typedef struct _drawcir DRAWCIR;
-typedef struct tagMETARECORD METARECORD;
-typedef struct tagMDICREATESTRUCT MDICREATESTRUCT;
-typedef struct _timer TIMER;
-typedef struct _complex COMPLEX;
-typedef struct _rtchgname RTCHGNAME;
-typedef struct complex complex;
-typedef struct _lsb LSB;
-typedef struct tagPOINTFX POINTFX;
-typedef struct tagPANOSE PANOSE;
-typedef struct tagOUTLINETEXTMETRIC OUTLINETEXTMETRIC;
-typedef struct _thtrader THTRADER;
-typedef struct tagCBT_CREATEWND CBT_CREATEWND;
-typedef struct tagMOUSEHOOKSTRUCT MOUSEHOOKSTRUCT;
-typedef struct tagTTPOLYCURVE TTPOLYCURVE;
-typedef struct tagNEWTEXTMETRIC NEWTEXTMETRIC;
-typedef struct tagWINDOWPLACEMENT WINDOWPLACEMENT;
-typedef struct tagCBTACTIVATESTRUCT CBTACTIVATESTRUCT;
-typedef struct tagTTPOLYGONHEADER TTPOLYGONHEADER;
-typedef struct tagPALETTEENTRY PALETTEENTRY;
-typedef struct _rtshdef RTSHDEF;
-typedef struct _rtchgshdef RTCHGSHDEF;
-typedef struct tagDELETEITEMSTRUCT DELETEITEMSTRUCT;
-typedef struct tagHARDWAREHOOKSTRUCT HARDWAREHOOKSTRUCT;
-typedef struct _rtplanet RTPLANET;
-typedef struct tagDRIVERINFOSTRUCT DRIVERINFOSTRUCT;
-typedef struct tagCHOOSECOLOR CHOOSECOLOR;
-typedef struct tagABC ABC;
-typedef struct tagLOGBRUSH LOGBRUSH;
-typedef struct tagSIZE SIZE;
-typedef struct _fleetid FLEETID;
-typedef struct tagMULTIKEYHELP MULTIKEYHELP;
-typedef struct _vers VERS;
-typedef struct tagNCCALCSIZE_PARAMS NCCALCSIZE_PARAMS;
-typedef struct tagCOMPAREITEMSTRUCT COMPAREITEMSTRUCT;
-typedef struct tagMINMAXINFO MINMAXINFO;
-typedef struct tagSEGINFO SEGINFO;
-typedef struct tagKERNINGPAIR KERNINGPAIR;
-typedef struct tagENUMLOGFONT ENUMLOGFONT;
-typedef struct PLORD PLORD;
-typedef struct _selSome SELSOME;
-typedef struct _planetminimal PLANETMINIMAL;
-typedef struct _wn WN;
-typedef struct tagBITMAPINFO BITMAPINFO;
-typedef struct tagRASTERIZER_STATUS RASTERIZER_STATUS;
-typedef struct _rtloghdr RTLOGHDR;
-typedef struct _mdplr MDPLR;
-typedef struct _div_t DIV_T;
-typedef struct _ldiv_t LDIV_T;
+/* typind 4153 (0x1039) size=4 */
+typedef struct _prod
+{
+    union
+    {
+        struct
+        {
+            uint32_t cItem : 10;
+            uint32_t iItem : 7;
+            uint32_t grobj : 3;
+            uint32_t pct : 7;
+            uint32_t unused : 5;
+        };
+        uint32_t dwRaw_0000;
+    }; /* +0x0000 */
+} PROD;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(PROD) == 4, "sizeof(PROD)");
+#endif
+
+/* typind 4180 (0x1054) size=4 */
+typedef struct PLPROD
+{
+    union
+    {
+        struct
+        {
+            uint16_t cbItem : 8;
+            uint16_t fMark : 1;
+            uint16_t ht : 3;
+            uint16_t cAlloc : 4;
+        };
+        uint16_t wRaw_0000;
+    }; /* +0x0000 */
+    uint8_t iprodMax; /* +0x0002 */
+    uint8_t iprodMac; /* +0x0003 */
+    PROD rgprod[0];   /* +0x0004 */
+} PLPROD;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(PLPROD) == 4, "sizeof(PLPROD)");
+_Static_assert(offsetof(PLPROD, iprodMax) == 0x2, "offsetof(PLPROD,iprodMax)");
+_Static_assert(offsetof(PLPROD, iprodMac) == 0x3, "offsetof(PLPROD,iprodMac)");
+_Static_assert(offsetof(PLPROD, rgprod) == 0x4, "offsetof(PLPROD,rgprod)");
+#endif
+
+/* typind 4299 (0x10cb) size=2 */
+typedef struct _itemaction
+{
+    union
+    {
+        struct
+        {
+            uint16_t cQuan : 12;
+            uint16_t iAction : 4;
+        };
+        uint16_t wRaw_0000;
+    }; /* +0x0000 */
+} ITEMACTION;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(ITEMACTION) == 2, "sizeof(ITEMACTION)");
+#endif
+
+/* typind 4991 (0x137f) size=10 */
+typedef struct _taskxport
+{
+    ITEMACTION rgia[5]; /* +0x0000 */
+} TASKXPORT;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(TASKXPORT) == 10, "sizeof(TASKXPORT)");
+_Static_assert(offsetof(TASKXPORT, rgia) == 0x0, "offsetof(TASKXPORT,rgia)");
+#endif
+
+/* typind 4993 (0x1381) size=4 */
+typedef struct _tasklaymines
+{
+    uint16_t cTime;    /* +0x0000 */
+    uint16_t cTimeOld; /* +0x0002 */
+} TASKLAYMINES;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(TASKLAYMINES) == 4, "sizeof(TASKLAYMINES)");
+_Static_assert(offsetof(TASKLAYMINES, cTime) == 0x0, "offsetof(TASKLAYMINES,cTime)");
+_Static_assert(offsetof(TASKLAYMINES, cTimeOld) == 0x2, "offsetof(TASKLAYMINES,cTimeOld)");
+#endif
+
+/* typind 4995 (0x1383) size=4 */
+typedef struct _taskpatrol
+{
+    uint16_t iWarp; /* +0x0000 */
+    uint16_t iDist; /* +0x0002 */
+} TASKPATROL;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(TASKPATROL) == 4, "sizeof(TASKPATROL)");
+_Static_assert(offsetof(TASKPATROL, iWarp) == 0x0, "offsetof(TASKPATROL,iWarp)");
+_Static_assert(offsetof(TASKPATROL, iDist) == 0x2, "offsetof(TASKPATROL,iDist)");
+#endif
+
+/* typind 4997 (0x1385) size=2 */
+typedef struct _tasksell
+{
+    uint16_t iPlrX; /* +0x0000 */
+} TASKSELL;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(TASKSELL) == 2, "sizeof(TASKSELL)");
+_Static_assert(offsetof(TASKSELL, iPlrX) == 0x0, "offsetof(TASKSELL,iPlrX)");
+#endif
+/* typind 4101 (0x1005) size=18 */
+typedef struct _order
+{
+    POINT pt;   /* +0x0000 */
+    int16_t id; /* +0x0004 */
+    union
+    {
+        struct
+        {
+            uint16_t grTask : 4;
+            uint16_t iWarp : 4;
+            uint16_t grobj : 4;
+            uint16_t fValidTask : 1;
+            uint16_t fNoAutoTrack : 1;
+            uint16_t fUnused : 2;
+        };
+        uint16_t wRaw_0006;
+    }; /* +0x0006 */
+    union
+    {
+        TASKXPORT txp;
+        TASKLAYMINES tlm;
+        TASKPATROL tptl;
+        TASKSELL tsell;
+    }; /* +0x0008 */
+} ORDER;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(ORDER) == 18, "sizeof(ORDER)");
+_Static_assert(offsetof(ORDER, pt) == 0x0, "offsetof(ORDER,pt)");
+_Static_assert(offsetof(ORDER, id) == 0x4, "offsetof(ORDER,id)");
+_Static_assert(offsetof(ORDER, txp) == 0x8, "offsetof(ORDER,txp)");
+_Static_assert(offsetof(ORDER, tlm) == 0x8, "offsetof(ORDER,tlm)");
+_Static_assert(offsetof(ORDER, tptl) == 0x8, "offsetof(ORDER,tptl)");
+_Static_assert(offsetof(ORDER, tsell) == 0x8, "offsetof(ORDER,tsell)");
+#endif
+
+/* typind 4229 (0x1085) size=24 */
+typedef struct _ziporder
+{
+    TASKXPORT txp;   /* +0x0000 */
+    char szName[13]; /* +0x000a */
+    uint8_t fValid;  /* +0x0017 */
+} ZIPORDER;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(ZIPORDER) == 24, "sizeof(ZIPORDER)");
+_Static_assert(offsetof(ZIPORDER, txp) == 0x0, "offsetof(ZIPORDER,txp)");
+_Static_assert(offsetof(ZIPORDER, szName) == 0xa, "offsetof(ZIPORDER,szName)");
+_Static_assert(offsetof(ZIPORDER, fValid) == 0x17, "offsetof(ZIPORDER,fValid)");
+#endif
+
+/* typind 5416 (0x1528) size=4 */
+typedef struct PLORD
+{
+    union
+    {
+        struct
+        {
+            uint16_t cbItem : 8;
+            uint16_t fMark : 1;
+            uint16_t ht : 3;
+            uint16_t cAlloc : 4;
+        };
+        uint16_t wRaw_0000;
+    }; /* +0x0000 */
+    uint8_t iordMax; /* +0x0002 */
+    uint8_t iordMac; /* +0x0003 */
+    ORDER rgord[0];  /* +0x0004 */
+} PLORD;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(PLORD) == 4, "sizeof(PLORD)");
+_Static_assert(offsetof(PLORD, iordMax) == 0x2, "offsetof(PLORD,iordMax)");
+_Static_assert(offsetof(PLORD, iordMac) == 0x3, "offsetof(PLORD,iordMac)");
+_Static_assert(offsetof(PLORD, rgord) == 0x4, "offsetof(PLORD,rgord)");
+#endif
 
 /* typind 4098 (0x1002) size=56 */
 typedef struct _planet
@@ -624,34 +637,6 @@ _Static_assert(offsetof(GDATA, grBits) == 0x0, "offsetof(GDATA,grBits)");
 _Static_assert(offsetof(GDATA, grBits2) == 0x4, "offsetof(GDATA,grBits2)");
 #endif
 
-/* typind 4120 (0x1018) size=4 */
-typedef struct tagPOINT
-{
-    int16_t x; /* +0x0000 */
-    int16_t y; /* +0x0002 */
-} POINT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(POINT) == 4, "sizeof(POINT)");
-_Static_assert(offsetof(POINT, x) == 0x0, "offsetof(POINT,x)");
-_Static_assert(offsetof(POINT, y) == 0x2, "offsetof(POINT,y)");
-#endif
-
-/* typind 4122 (0x101a) size=8 */
-typedef struct tagRECT
-{
-    int16_t left;   /* +0x0000 */
-    int16_t top;    /* +0x0002 */
-    int16_t right;  /* +0x0004 */
-    int16_t bottom; /* +0x0006 */
-} RECT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(RECT) == 8, "sizeof(RECT)");
-_Static_assert(offsetof(RECT, left) == 0x0, "offsetof(RECT,left)");
-_Static_assert(offsetof(RECT, top) == 0x2, "offsetof(RECT,top)");
-_Static_assert(offsetof(RECT, right) == 0x4, "offsetof(RECT,right)");
-_Static_assert(offsetof(RECT, bottom) == 0x6, "offsetof(RECT,bottom)");
-#endif
-
 /* typind 4152 (0x1038) size=22 */
 typedef struct _framestuff
 {
@@ -680,26 +665,6 @@ _Static_assert(offsetof(FRAMESTUFF, dyMinWant) == 0xe, "offsetof(FRAMESTUFF,dyMi
 _Static_assert(offsetof(FRAMESTUFF, dx2PlanWant) == 0x10, "offsetof(FRAMESTUFF,dx2PlanWant)");
 _Static_assert(offsetof(FRAMESTUFF, dy2MsgWant) == 0x12, "offsetof(FRAMESTUFF,dy2MsgWant)");
 _Static_assert(offsetof(FRAMESTUFF, dy2MinWant) == 0x14, "offsetof(FRAMESTUFF,dy2MinWant)");
-#endif
-
-/* typind 4153 (0x1039) size=4 */
-typedef struct _prod
-{
-    union
-    {
-        struct
-        {
-            uint32_t cItem : 10;
-            uint32_t iItem : 7;
-            uint32_t grobj : 3;
-            uint32_t pct : 7;
-            uint32_t unused : 5;
-        };
-        uint32_t dwRaw_0000;
-    }; /* +0x0000 */
-} PROD;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PROD) == 4, "sizeof(PROD)");
 #endif
 
 /* typind 4158 (0x103e) size=2 */
@@ -803,23 +768,6 @@ _Static_assert(sizeof(BTLPLAN) == 36, "sizeof(BTLPLAN)");
 _Static_assert(offsetof(BTLPLAN, szName) == 0x4, "offsetof(BTLPLAN,szName)");
 #endif
 
-/* typind 4299 (0x10cb) size=2 */
-typedef struct _itemaction
-{
-    union
-    {
-        struct
-        {
-            uint16_t cQuan : 12;
-            uint16_t iAction : 4;
-        };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
-} ITEMACTION;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(ITEMACTION) == 2, "sizeof(ITEMACTION)");
-#endif
-
 /* typind 4416 (0x1140) size=2 */
 typedef struct _aipart
 {
@@ -856,14 +804,14 @@ _Static_assert(offsetof(TIMERINFO, dwmsThisVM) == 0x8, "offsetof(TIMERINFO,dwmsT
 /* typind 4431 (0x114f) size=16 */
 typedef struct _hb
 {
-    uint16_t cbFree;  /* +0x0000 */
-    uint16_t cbBlock; /* +0x0002 */
-    uint16_t cbSlop;  /* +0x0004 */
-    uint16_t ibTop;   /* +0x0006 */
-    HB *lphbNext;     /* +0x0008 */
-    uint16_t hmem;    /* +0x000c */
-    uint8_t ht;       /* +0x000e */
-    uint8_t unused1;  /* +0x000f */
+    uint16_t cbFree;      /* +0x0000 */
+    uint16_t cbBlock;     /* +0x0002 */
+    uint16_t cbSlop;      /* +0x0004 */
+    uint16_t ibTop;       /* +0x0006 */
+    struct _hb *lphbNext; /* +0x0008 */
+    uint16_t hmem;        /* +0x000c */
+    uint8_t ht;           /* +0x000e */
+    uint8_t unused1;      /* +0x000f */
 } HB;
 
 /* typind 4440 (0x1158) size=2 */
@@ -1469,12 +1417,12 @@ _Static_assert(offsetof(SPECIALSB, grAbility2) == 0x36, "offsetof(SPECIALSB,grAb
 /* typind 4820 (0x12d4) size=12 */
 typedef struct _msgplr
 {
-    MSGPLR *lpmsgplrNext; /* +0x0000 */
-    int16_t iPlrFrom;     /* +0x0004 */
-    int16_t iPlrTo;       /* +0x0006 */
-    int16_t iInRe;        /* +0x0008 */
-    int16_t cLen;         /* +0x000a */
-    uint8_t rgbMsg[0];    /* +0x000c */
+    struct _msgplr *lpmsgplrNext; /* +0x0000 */
+    int16_t iPlrFrom;             /* +0x0004 */
+    int16_t iPlrTo;               /* +0x0006 */
+    int16_t iInRe;                /* +0x0008 */
+    int16_t cLen;                 /* +0x000a */
+    uint8_t rgbMsg[0];            /* +0x000c */
 } MSGPLR;
 
 /* typind 4822 (0x12d6) size=18 */
@@ -1839,40 +1787,6 @@ typedef struct _exceptionl
     long double retval; /* +0x0018 */
 } EXCEPTIONL;
 
-/* typind 4993 (0x1381) size=4 */
-typedef struct _tasklaymines
-{
-    uint16_t cTime;    /* +0x0000 */
-    uint16_t cTimeOld; /* +0x0002 */
-} TASKLAYMINES;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TASKLAYMINES) == 4, "sizeof(TASKLAYMINES)");
-_Static_assert(offsetof(TASKLAYMINES, cTime) == 0x0, "offsetof(TASKLAYMINES,cTime)");
-_Static_assert(offsetof(TASKLAYMINES, cTimeOld) == 0x2, "offsetof(TASKLAYMINES,cTimeOld)");
-#endif
-
-/* typind 4995 (0x1383) size=4 */
-typedef struct _taskpatrol
-{
-    uint16_t iWarp; /* +0x0000 */
-    uint16_t iDist; /* +0x0002 */
-} TASKPATROL;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TASKPATROL) == 4, "sizeof(TASKPATROL)");
-_Static_assert(offsetof(TASKPATROL, iWarp) == 0x0, "offsetof(TASKPATROL,iWarp)");
-_Static_assert(offsetof(TASKPATROL, iDist) == 0x2, "offsetof(TASKPATROL,iDist)");
-#endif
-
-/* typind 4997 (0x1385) size=2 */
-typedef struct _tasksell
-{
-    uint16_t iPlrX; /* +0x0000 */
-} TASKSELL;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TASKSELL) == 2, "sizeof(TASKSELL)");
-_Static_assert(offsetof(TASKSELL, iPlrX) == 0x0, "offsetof(TASKSELL,iPlrX)");
-#endif
-
 /* typind 5021 (0x139d) size=14 */
 typedef struct tagBITMAPFILEHEADER
 {
@@ -1951,44 +1865,6 @@ _Static_assert(offsetof(DEBUGHOOKINFO, lParam) == 0x6, "offsetof(DEBUGHOOKINFO,l
 _Static_assert(offsetof(DEBUGHOOKINFO, wParam) == 0xa, "offsetof(DEBUGHOOKINFO,wParam)");
 _Static_assert(offsetof(DEBUGHOOKINFO, code) == 0xc, "offsetof(DEBUGHOOKINFO,code)");
 #endif
-
-/* typind 5042 (0x13b2) size=2 */
-typedef struct _obj
-{
-    union
-    {
-        PLANET *ppl;
-        FLEET *pfl;
-        THING *pth;
-    }; /* +0x0000 */
-} OBJ;
-
-/* typind 5046 (0x13b6) size=16 */
-typedef struct _tile
-{
-    int16_t yTop;                       /* +0x0000 */
-    int16_t dyFull;                     /* +0x0002 */
-    int16_t grbit;                      /* +0x0004 */
-    void (*pfn)(uint16_t, TILE *, OBJ); /* +0x0006 */
-    union
-    {
-        struct
-        {
-            uint16_t iCol : 3;
-            uint16_t id : 4;
-            uint16_t fPopped : 1;
-            uint16_t fNullPtr : 1;
-            uint16_t fMinTitle : 1;
-            uint16_t fErase : 1;
-            uint16_t fFixCtls : 1;
-            uint16_t fMinDraw : 1;
-            uint16_t : 3;
-        };
-        uint16_t wRaw_000a;
-    }; /* +0x000a */
-    uint16_t fUnused : 4; /* +0x000c */
-    uint16_t idh;         /* +0x000e */
-} TILE;
 
 /* typind 5087 (0x13df) size=14 */
 typedef struct HELPWININFO
@@ -3470,31 +3346,6 @@ _Static_assert(offsetof(BTN, bt) == 0x8, "offsetof(BTN,bt)");
 _Static_assert(offsetof(BTN, iVal) == 0xa, "offsetof(BTN,iVal)");
 #endif
 
-/* typind 4180 (0x1054) size=4 */
-typedef struct PLPROD
-{
-    union
-    {
-        struct
-        {
-            uint16_t cbItem : 8;
-            uint16_t fMark : 1;
-            uint16_t ht : 3;
-            uint16_t cAlloc : 4;
-        };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
-    uint8_t iprodMax; /* +0x0002 */
-    uint8_t iprodMac; /* +0x0003 */
-    PROD rgprod[0];   /* +0x0004 */
-} PLPROD;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PLPROD) == 4, "sizeof(PLPROD)");
-_Static_assert(offsetof(PLPROD, iprodMax) == 0x2, "offsetof(PLPROD,iprodMax)");
-_Static_assert(offsetof(PLPROD, iprodMac) == 0x3, "offsetof(PLPROD,iprodMac)");
-_Static_assert(offsetof(PLPROD, rgprod) == 0x4, "offsetof(PLPROD,rgprod)");
-#endif
-
 /* typind 4933 (0x1345) size=2 */
 typedef struct _rtChgProdQ
 {
@@ -3506,30 +3357,6 @@ _Static_assert(sizeof(RTCHGPRODQ) == 2, "sizeof(RTCHGPRODQ)");
 _Static_assert(offsetof(RTCHGPRODQ, id) == 0x0, "offsetof(RTCHGPRODQ,id)");
 _Static_assert(offsetof(RTCHGPRODQ, rgprod) == 0x2, "offsetof(RTCHGPRODQ,rgprod)");
 #endif
-
-/* typind 4190 (0x105e) size=8 */
-typedef struct _part
-{
-    HS hs; /* +0x0000 */
-    union
-    {
-        COMPART *pcom;
-        ARMOR *parmor;
-        HUL *phul;
-        ENGINE *pengine;
-        SCANNER *pscanner;
-        BEAM *pbeam;
-        TORP *ptorp;
-        BOMB *pbomb;
-        SHIELD *pshield;
-        SPECIAL *pspecial;
-        SPECIALSB *pspecialsb;
-        MINES *pmines;
-        MINING *pmining;
-        PLANETARY *pplanetary;
-        TERRA *pterra;
-    }; /* +0x0004 */
-} PART;
 
 /* typind 4214 (0x1076) size=123 */
 typedef struct _hul
@@ -3562,6 +3389,30 @@ _Static_assert(offsetof(HUL, dp) == 0x38, "offsetof(HUL,dp)");
 _Static_assert(offsetof(HUL, rghs) == 0x3a, "offsetof(HUL,rghs)");
 _Static_assert(offsetof(HUL, chs) == 0x7a, "offsetof(HUL,chs)");
 #endif
+
+/* typind 4190 (0x105e) size=8 */
+typedef struct _part
+{
+    HS hs; /* +0x0000 */
+    union
+    {
+        COMPART *pcom;
+        ARMOR *parmor;
+        HUL *phul;
+        ENGINE *pengine;
+        SCANNER *pscanner;
+        BEAM *pbeam;
+        TORP *ptorp;
+        BOMB *pbomb;
+        SHIELD *pshield;
+        SPECIAL *pspecial;
+        SPECIALSB *pspecialsb;
+        MINES *pmines;
+        MINING *pmining;
+        PLANETARY *pplanetary;
+        TERRA *pterra;
+    }; /* +0x0004 */
+} PART;
 
 /* typind 5327 (0x14cf) size=17 */
 typedef struct _rtshdef
@@ -3605,16 +3456,6 @@ _Static_assert(offsetof(RTSHDEF, cExist) == 0xd, "offsetof(RTSHDEF,cExist)");
 _Static_assert(offsetof(RTSHDEF, rghs) == 0x11, "offsetof(RTSHDEF,rghs)");
 #endif
 
-/* typind 4991 (0x137f) size=10 */
-typedef struct _taskxport
-{
-    ITEMACTION rgia[5]; /* +0x0000 */
-} TASKXPORT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TASKXPORT) == 10, "sizeof(TASKXPORT)");
-_Static_assert(offsetof(TASKXPORT, rgia) == 0x0, "offsetof(TASKXPORT,rgia)");
-#endif
-
 /* typind 4099 (0x1003) size=124 */
 typedef struct _fleet
 {
@@ -3653,12 +3494,12 @@ typedef struct _fleet
         DV rgdv[16];
         int32_t wtFleet;
     }; /* +0x002c */
-    int32_t rgwtMin[5]; /* +0x004c */
-    uint8_t iplan;      /* +0x0060 */
-    uint8_t bUnused;    /* +0x0061 */
-    int16_t cord;       /* +0x0062 */
-    PLORD *lpplord;     /* +0x0064 */
-    FLEET *lpflNext;    /* +0x0068 */
+    int32_t rgwtMin[5];      /* +0x004c */
+    uint8_t iplan;           /* +0x0060 */
+    uint8_t bUnused;         /* +0x0061 */
+    int16_t cord;            /* +0x0062 */
+    PLORD *lpplord;          /* +0x0064 */
+    struct _fleet *lpflNext; /* +0x0068 */
     union
     {
         int32_t lPower;
@@ -4105,43 +3946,6 @@ _Static_assert(offsetof(INI, cTurnGen) == 0x16, "offsetof(INI,cTurnGen)");
 _Static_assert(offsetof(INI, iMsg) == 0x18, "offsetof(INI,iMsg)");
 #endif
 
-/* typind 4291 (0x10c3) size=22 */
-typedef struct _popupdata
-{
-    int16_t grPopup; /* +0x0000 */
-    union
-    {
-        int32_t rgi[5];
-        int16_t dxOut;
-        int16_t iPlayer;
-        int16_t idPlan;
-        int16_t idPlanet;
-        FLEET *lpfl;
-        SHDEF *lpshdef;
-        PART part;
-        int16_t cMax;
-        int16_t iPlanetVar;
-        char *psz;
-        int16_t cCur;
-        int16_t fRedDamage;
-        int16_t fShowDamage;
-        int16_t iPlanVal;
-        int16_t cOperate;
-        int16_t dxDamage;
-        int16_t fHideCounts;
-        int16_t iPlanMin;
-        int16_t fFactory;
-        int16_t fToken;
-        uint16_t grbit;
-        int16_t iPlanMax;
-        int16_t fSummary;
-        int16_t iPlrVal;
-        int16_t iPlrMin;
-        int16_t itok;
-        int16_t iPlrMax;
-    }; /* +0x0002 */
-} POPUPDATA;
-
 /* typind 4104 (0x1008) size=147 */
 typedef struct _shdef
 {
@@ -4232,56 +4036,6 @@ typedef struct _rtchgshdef
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTCHGSHDEF) == 19, "sizeof(RTCHGSHDEF)");
 _Static_assert(offsetof(RTCHGSHDEF, rtshdef) == 0x2, "offsetof(RTCHGSHDEF,rtshdef)");
-#endif
-
-/* typind 4101 (0x1005) size=18 */
-typedef struct _order
-{
-    POINT pt;   /* +0x0000 */
-    int16_t id; /* +0x0004 */
-    union
-    {
-        struct
-        {
-            uint16_t grTask : 4;
-            uint16_t iWarp : 4;
-            uint16_t grobj : 4;
-            uint16_t fValidTask : 1;
-            uint16_t fNoAutoTrack : 1;
-            uint16_t fUnused : 2;
-        };
-        uint16_t wRaw_0006;
-    }; /* +0x0006 */
-    union
-    {
-        TASKXPORT txp;
-        TASKLAYMINES tlm;
-        TASKPATROL tptl;
-        TASKSELL tsell;
-    }; /* +0x0008 */
-} ORDER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(ORDER) == 18, "sizeof(ORDER)");
-_Static_assert(offsetof(ORDER, pt) == 0x0, "offsetof(ORDER,pt)");
-_Static_assert(offsetof(ORDER, id) == 0x4, "offsetof(ORDER,id)");
-_Static_assert(offsetof(ORDER, txp) == 0x8, "offsetof(ORDER,txp)");
-_Static_assert(offsetof(ORDER, tlm) == 0x8, "offsetof(ORDER,tlm)");
-_Static_assert(offsetof(ORDER, tptl) == 0x8, "offsetof(ORDER,tptl)");
-_Static_assert(offsetof(ORDER, tsell) == 0x8, "offsetof(ORDER,tsell)");
-#endif
-
-/* typind 4229 (0x1085) size=24 */
-typedef struct _ziporder
-{
-    TASKXPORT txp;   /* +0x0000 */
-    char szName[13]; /* +0x000a */
-    uint8_t fValid;  /* +0x0017 */
-} ZIPORDER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(ZIPORDER) == 24, "sizeof(ZIPORDER)");
-_Static_assert(offsetof(ZIPORDER, txp) == 0x0, "offsetof(ZIPORDER,txp)");
-_Static_assert(offsetof(ZIPORDER, szName) == 0xa, "offsetof(ZIPORDER,szName)");
-_Static_assert(offsetof(ZIPORDER, fValid) == 0x17, "offsetof(ZIPORDER,fValid)");
 #endif
 
 /* typind 4258 (0x10a2) size=14 */
@@ -4619,30 +4373,80 @@ _Static_assert(offsetof(RTWAYPT, iWaypt) == 0x2, "offsetof(RTWAYPT,iWaypt)");
 _Static_assert(offsetof(RTWAYPT, order) == 0x4, "offsetof(RTWAYPT,order)");
 #endif
 
-/* typind 5416 (0x1528) size=4 */
-typedef struct PLORD
+/* typind 4291 (0x10c3) size=22 */
+typedef struct _popupdata
 {
+    int16_t grPopup; /* +0x0000 */
+    union
+    {
+        int32_t rgi[5];
+        int16_t dxOut;
+        int16_t iPlayer;
+        int16_t idPlan;
+        int16_t idPlanet;
+        FLEET *lpfl;
+        SHDEF *lpshdef;
+        PART part;
+        int16_t cMax;
+        int16_t iPlanetVar;
+        char *psz;
+        int16_t cCur;
+        int16_t fRedDamage;
+        int16_t fShowDamage;
+        int16_t iPlanVal;
+        int16_t cOperate;
+        int16_t dxDamage;
+        int16_t fHideCounts;
+        int16_t iPlanMin;
+        int16_t fFactory;
+        int16_t fToken;
+        uint16_t grbit;
+        int16_t iPlanMax;
+        int16_t fSummary;
+        int16_t iPlrVal;
+        int16_t iPlrMin;
+        int16_t itok;
+        int16_t iPlrMax;
+    }; /* +0x0002 */
+} POPUPDATA;
+
+/* typind 5042 (0x13b2) size=2 */
+typedef struct _obj
+{
+    union
+    {
+        PLANET *ppl;
+        FLEET *pfl;
+        THING *pth;
+    }; /* +0x0000 */
+} OBJ;
+
+/* typind 5046 (0x13b6) size=16 */
+typedef struct _tile
+{
+    int16_t yTop;                               /* +0x0000 */
+    int16_t dyFull;                             /* +0x0002 */
+    int16_t grbit;                              /* +0x0004 */
+    void (*pfn)(uint16_t, struct _tile *, OBJ); /* +0x0006 */
     union
     {
         struct
         {
-            uint16_t cbItem : 8;
-            uint16_t fMark : 1;
-            uint16_t ht : 3;
-            uint16_t cAlloc : 4;
+            uint16_t iCol : 3;
+            uint16_t id : 4;
+            uint16_t fPopped : 1;
+            uint16_t fNullPtr : 1;
+            uint16_t fMinTitle : 1;
+            uint16_t fErase : 1;
+            uint16_t fFixCtls : 1;
+            uint16_t fMinDraw : 1;
+            uint16_t : 3;
         };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
-    uint8_t iordMax; /* +0x0002 */
-    uint8_t iordMac; /* +0x0003 */
-    ORDER rgord[0];  /* +0x0004 */
-} PLORD;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PLORD) == 4, "sizeof(PLORD)");
-_Static_assert(offsetof(PLORD, iordMax) == 0x2, "offsetof(PLORD,iordMax)");
-_Static_assert(offsetof(PLORD, iordMac) == 0x3, "offsetof(PLORD,iordMac)");
-_Static_assert(offsetof(PLORD, rgord) == 0x4, "offsetof(PLORD,rgord)");
-#endif
+        uint16_t wRaw_000a;
+    }; /* +0x000a */
+    uint16_t fUnused : 4; /* +0x000c */
+    uint16_t idh;         /* +0x000e */
+} TILE;
 
 #pragma pack(pop)
 #endif /* STARS_NB09_TYPES_H */

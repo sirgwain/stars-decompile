@@ -9,8 +9,6 @@
 #define cbPlayerSome ((uint16_t)offsetof(PLAYER, idPlanetHome))
 #define cbPlayerAll ((uint16_t)offsetof(PLAYER, rgmdRelation))
 
-#define cbPlayerSome ((unsigned)&((PLAYER *)0)->idPlanetHome)
-#define cbPlayerAll (((unsigned)&((PLAYER *)0)->rgmdRelation[0]))
 #define cbrtshdefB (2 * sizeof(uint8_t) + 2 * sizeof(uint16_t)) // ihuldef + wFlags + ibmp + wtEmpty
 
 /* =========================================================================

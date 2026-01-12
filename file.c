@@ -2208,8 +2208,8 @@ void ReadRt(void)
 
 bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md)
 {
-    jmp_buf env;
-    jmp_buf *penvMemSav;
+    MemJump env;
+    MemJump *penvMemSav;
     bool fSilentSav = fFileErrSilent;
     bool fCheckMulti;
     bool fRewind;
@@ -2227,7 +2227,7 @@ bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md)
 
     penvMemSav = penvMem;
     penvMem = &env;
-    if (setjmp(env) != 0)
+    if (setjmp(env.env) != 0)
     {
         fFileErrSilent = fSilentSav;
         FileError(ids);
