@@ -38,20 +38,36 @@
 #define cThingAbsMax 4050
 
 /* Stream helper: treat EOF like the Win16 macro. */
-#ifndef AtEOF
-#define AtEOF(fp) feof((fp))
-#endif
+static bool AtEOF(FILE *fp)
+{
+    long pos = ftell(fp);
+    if (pos < 0)
+        return true;
+
+    if (fseek(fp, 0, SEEK_END) != 0)
+        return true;
+
+    long end = ftell(fp);
+    if (end < 0)
+        return true;
+
+    /* Restore position */
+    fseek(fp, pos, SEEK_SET);
+
+    return pos >= end;
+}
 
 /* UI helper used in a few places in the original. */
 #ifndef MessageSz
 #define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
 #endif
 
-typedef struct MemJump {
+typedef struct MemJump
+{
     jmp_buf env;
 } MemJump;
 
-extern MemJump *penvMem;   // pointer to wrapper is fine
+extern MemJump *penvMem; // pointer to wrapper is fine
 
 /* Unassigned symbols (no file inferred) */
 

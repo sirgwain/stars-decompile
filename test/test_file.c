@@ -55,12 +55,15 @@ static void test_file__FLoadGame_tiny_2400(void)
         return;
     }
 
-    TEST_CHECK(FLoadGame("test/data/tiny/2400/TEST", "HST"));
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    printf("CWD = %s\n", cwd);
+    TEST_CHECK(FLoadGame("./test/data/tiny/2401/TEST", "HST"));
 
     /* Tiny test files represent year 2400 (turn 1). Validate that we parsed
      * something plausible.
      */
-    TEST_CHECK(game.turn != 0);
+    TEST_CHECK(game.turn == 1);
     TEST_CHECK(game.cPlayer > 0);
     TEST_CHECK(cPlanet > 0);
 

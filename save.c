@@ -105,7 +105,7 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer)
 
     /* Strip extension from szBase if '.' is after the last path separator */
     pchDot = strrchr(szBase, '.');
-    if (pchDot != NULL)
+    if (pchDot != NULL && szBase[0] != '.')
     {
         pchSlash = strrchr(szBase, '\\');
         if (pchSlash == NULL || pchSlash < pchDot)
@@ -115,7 +115,7 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer)
     }
 
     /* Start szWork with base name */
-    strcpy(szWork, szBase);
+    strncpy(szWork, szBase, sizeof(szBase));
     len = strlen(szWork);
 
     switch (dt)

@@ -1810,7 +1810,7 @@ LNextTurn:
     }
 
     // TODO: AtEOF isn't working, not doing multiple turn loads yet
-    if (!true && !AtEOF(hf.fp))
+    if (!AtEOF(hf.fp))
     {
         ReadRt();
         if (hdrCur.rt == rtBOF)
