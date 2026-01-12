@@ -98,7 +98,7 @@ BTLDATA *BtlDataGet(int16_t i)
  *   Total number of units destroyed, using 32-bit integer arithmetic to
  *   match the original Win16 long behavior.
  */
-int32_t CBattleKills(BTLDATA *lpbd, int32_t fOurDead)
+int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
 {
     TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
     BTLREC *lpbr = (BTLREC *)((uint8_t *)rgtok +
