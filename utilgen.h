@@ -18,7 +18,7 @@ extern char *rgchcompstrlower;
 /* functions */
 int16_t NybbleFromCh(uint8_t ch);                                                                                                                                    /* MEMORY_UTILGEN:0x4880 */
 char ChFromNybble(int16_t nyb);                                                                                                                                      /* MEMORY_UTILGEN:0x49ea */
-int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut);                                                                                /* MEMORY_UTILGEN:0x46e8 */
+int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut);                                                                                 /* MEMORY_UTILGEN:0x46e8 */
 int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut);                                                                                                /* MEMORY_UTILGEN:0x45a0 */
 void DrawProgressGauge(uint16_t hdcOrig, int16_t fFull, int16_t iNumOnly);                                                                                           /* MEMORY_UTILGEN:0x65f6 */
 int16_t AlertSz(char *sz, int16_t mbType);                                                                                                                           /* MEMORY_UTILGEN:0x2160 */
@@ -30,7 +30,6 @@ uint16_t HbrGet(uint32_t cr);                                                   
 int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax);                                                                                                         /* MEMORY_UTILGEN:0x6986 */
 void ExpandRc(RECT *prc, int16_t dx, int16_t dy);                                                                                                                    /* MEMORY_UTILGEN:0x2f0c */
 void CtrTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen);                                                                                        /* MEMORY_UTILGEN:0x2534 */
-uint16_t HdibLoadBigResource(int16_t idb);                                                                                                                           /* MEMORY_UTILGEN:0x5220 */
 void HideProgressGauge(void);                                                                                                                                        /* MEMORY_UTILGEN:0x63b2 */
 void InitBtnTrack(BTNT *pbtnt, uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText);          /* MEMORY_UTILGEN:0x354c */
 void RcCtrTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen);                                                                                                 /* MEMORY_UTILGEN:0x28fc */
@@ -52,7 +51,7 @@ uint16_t DibNumColors(void *pv);                                                
 void RightTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase);                                                                     /* MEMORY_UTILGEN:0x29d6 */
 void DrawBtn(uint16_t hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText);                                                                                      /* MEMORY_UTILGEN:0x38b8 */
 void _Draw3dFrame(uint16_t hdc, RECT *prc, int16_t fErase);                                                                                                          /* MEMORY_UTILGEN:0x336a */
-void CopyStarsFile(char *szSrc, char *szDst);                                                                                                                             /* MEMORY_UTILGEN:0x1ffa */
+void CopyStarsFile(char *szSrc, char *szDst);                                                                                                                        /* MEMORY_UTILGEN:0x1ffa */
 uint32_t LGetNextFileXor(void);                                                                                                                                      /* MEMORY_UTILGEN:0x1b54 */
 void BoundPoints(RECT *prc, POINT *rgpt, int16_t cpt);                                                                                                               /* MEMORY_UTILGEN:0x2f70 */
 uint16_t HpalFromDib(uint16_t hdib);                                                                                                                                 /* MEMORY_UTILGEN:0x4b50 */
@@ -90,4 +89,7 @@ int32_t LDrawGauge(uint16_t hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, uint
 int16_t CommaFormatLong(char *psz, int32_t l);                                                                                                                       /* MEMORY_UTILGEN:0x2440 */
 void DiaganolTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen);                                                                                              /* MEMORY_UTILGEN:0x2afa */
 
+#ifdef _WIN32
+HGLOBAL HdibLoadBigResource(int idb);
+#endif /* _WIN32 */
 #endif /* UTILGEN_H_ */

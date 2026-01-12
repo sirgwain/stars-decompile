@@ -2935,34 +2935,6 @@ _Static_assert(offsetof(BTLDATA, pt) == 0xa, "offsetof(BTLDATA,pt)");
 _Static_assert(offsetof(BTLDATA, rgtok) == 0xe, "offsetof(BTLDATA,rgtok)");
 #endif
 
-/* typind 5176 (0x1438) size=6 */
-typedef struct _btlrec26
-{
-    uint8_t itok;       /* +0x0000 */
-    uint8_t brcDest;    /* +0x0001 */
-    uint8_t itokAttack; /* +0x0002 */
-    uint8_t ctok;       /* +0x0003 */
-    union
-    {
-        struct
-        {
-            uint16_t iRound : 4;
-            uint16_t dzDis : 4;
-            uint16_t unused : 8;
-        };
-        uint16_t wRaw_0004;
-    }; /* +0x0004 */
-    KILL rgkill[0]; /* +0x0006 */
-} BTLREC26;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BTLREC26) == 6, "sizeof(BTLREC26)");
-_Static_assert(offsetof(BTLREC26, itok) == 0x0, "offsetof(BTLREC26,itok)");
-_Static_assert(offsetof(BTLREC26, brcDest) == 0x1, "offsetof(BTLREC26,brcDest)");
-_Static_assert(offsetof(BTLREC26, itokAttack) == 0x2, "offsetof(BTLREC26,itokAttack)");
-_Static_assert(offsetof(BTLREC26, ctok) == 0x3, "offsetof(BTLREC26,ctok)");
-_Static_assert(offsetof(BTLREC26, rgkill) == 0x6, "offsetof(BTLREC26,rgkill)");
-#endif
-
 /* typind 5107 (0x13f3) size=8 */
 typedef struct _kill
 {

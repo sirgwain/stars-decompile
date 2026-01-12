@@ -12,6 +12,8 @@ extern ITEMACTION rgiaUnloadAllCol[5];  /* MEMORY_TUTOR:0x0fa8 */
 extern ITEMACTION rgiaLoadAllCol[5];  /* MEMORY_TUTOR:0x0fb2 */
 extern ZIPPRODQ1 rgzpqTut[2];  /* MEMORY_TUTOR:0x663a */
 
+extern char mpishdefishTutor[6];  /* MEMORY_IO:0x0000 */
+
 /* functions */
 void EndTutor(int16_t fClose);  /* MEMORY_TUTOR:0x0c02 */
 void DrawTutorText(uint16_t hwnd);  /* MEMORY_TUTOR:0x03c0 */

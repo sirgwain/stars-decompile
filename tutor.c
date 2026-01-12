@@ -10,6 +10,8 @@ ITEMACTION rgiaUnloadAllCol[5]; /* MEMORY_TUTOR:0x0fa8 */
 ITEMACTION rgiaLoadAllCol[5];   /* MEMORY_TUTOR:0x0fb2 */
 ZIPPRODQ1 rgzpqTut[2];          /* MEMORY_TUTOR:0x663a */
 
+char mpishdefishTutor[6] = {3, 4, 9, 6, 7, 14};
+
 /* functions */
 void EndTutor(int16_t fClose)
 {

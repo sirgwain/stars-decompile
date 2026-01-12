@@ -55,33 +55,6 @@ void FormatSerialAndEnv(int32_t lSerial, uint8_t *pbEnv, char *pszOut)
     /* TODO: implement */
 }
 
-void RestoreSelection(void)
-{
-    PLANET *lppl;
-
-    /* TODO: implement */
-}
-
-void RefitFrameChildren(void)
-{
-    int16_t dyMsg;
-    uint16_t hmenu;
-    int16_t i;
-    int16_t dyMinMin;
-    int16_t dyMsgMin;
-    int16_t dyMin;
-    int16_t dyT;
-    int16_t yScanner;
-    int16_t dyTot;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x8d56 */
-    /* block (block) @ MEMORY_MDI:0x8de6 */
-    /* block (block) @ MEMORY_MDI:0x8fb7 */
-
-    /* TODO: implement */
-}
-
 int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
 {
     int16_t idsError;
@@ -99,32 +72,6 @@ int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
     return 0;
 }
 
-int16_t HostModeDialog(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t (*lpProc)(void);
-    int16_t fRet;
-    RECT rc;
-    int16_t mf;
-    uint16_t hdc;
-    POINT pt;
-    int16_t tpm;
-    int16_t i;
-    int16_t iRet;
-    int16_t iSel;
-    int16_t iDiamond;
-    uint16_t hmenuPopup;
-    PAINTSTRUCT ps;
-    MSG msg;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x6db6 */
-    /* block (block) @ MEMORY_MDI:0x71b9 */
-    /* label Done @ MEMORY_MDI:0x6d62 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 void EnsureAis(void)
 {
     int16_t fHostSav;
@@ -136,6 +83,44 @@ void EnsureAis(void)
     MDPLR rgmdplr[16];
 
     /* TODO: implement */
+}
+
+int16_t CTurnsOutSafe(void)
+{
+    int16_t idPlayerSav;
+    int16_t fHostModeSav;
+    int16_t fGenSav;
+    int16_t cturn;
+
+    /* TODO: implement */
+    return 0;
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t (*lpProc)(void);
+    int16_t fRet;
+    RECT rc;
+    int16_t mf;
+    HDC hdc;
+    POINT pt;
+    int16_t tpm;
+    int16_t i;
+    int16_t iRet;
+    int16_t iSel;
+    int16_t iDiamond;
+    uint16_t hmenuPopup;
+    PAINTSTRUCT ps;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MDI:0x6db6 */
+    /* block (block) @ MEMORY_MDI:0x71b9 */
+    /* label Done @ MEMORY_MDI:0x6d62 */
+
+    /* TODO: implement */
+    return 0;
 }
 
 int16_t FFindSomethingAndSelectIt(void)
@@ -162,9 +147,9 @@ int16_t CFindTurnsOutstanding(void)
     return 0;
 }
 
-int32_t TitleWndProc(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t i;
     uint16_t hpalSav;
     RECT rc;
@@ -197,7 +182,7 @@ int32_t TitleWndProc(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lPara
     return 0;
 }
 
-void CommandHandler(uint16_t hwnd, uint16_t wParam)
+void CommandHandler(HWND hwnd, uint16_t wParam)
 {
     POINT pt;
     uint16_t hmenu;
@@ -278,9 +263,9 @@ void CommandHandler(uint16_t hwnd, uint16_t wParam)
     /* TODO: implement */
 }
 
-int32_t FrameWndProc(uint16_t a1, uint16_t a2, uint16_t a3, int32_t a4)
+LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t i;
     uint16_t hpalSav;
     int16_t ich;
@@ -310,8 +295,6 @@ int32_t FrameWndProc(uint16_t a1, uint16_t a2, uint16_t a3, int32_t a4)
     PAINTSTRUCT ps;
     int16_t yOffset;
     char szTemp[80];
-    uint16_t hwnd;
-    uint16_t wParam;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MDI:0x06eb */
@@ -341,17 +324,17 @@ int32_t FrameWndProc(uint16_t a1, uint16_t a2, uint16_t a3, int32_t a4)
     return 0;
 }
 
-void GetWindowRc(uint16_t hwnd, RECT *prc)
+void GetWindowRc(HWND hwnd, RECT *prc)
 {
     WINDOWPLACEMENT wndpl;
 
     /* TODO: implement */
 }
 
-void DrawHostDialog2(uint16_t hwnd, uint16_t hdcIn)
+void DrawHostDialog2(HWND hwnd, HDC hdcIn)
 {
     uint32_t dsec;
-    uint16_t hdc;
+    HDC hdc;
     uint16_t dhour;
     int16_t bkMode;
     int16_t yCur;
@@ -370,7 +353,7 @@ void DrawHostDialog2(uint16_t hwnd, uint16_t hdcIn)
     /* TODO: implement */
 }
 
-void DrawHostOptions(uint16_t hwnd, uint16_t hdc, int16_t iDraw)
+void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)
 {
 
     /* TODO: implement */
@@ -393,9 +376,9 @@ void WriteIniSettings(void)
     /* TODO: implement */
 }
 
-void HostTimerProc(uint16_t hwnd, uint16_t msg, uint16_t idTimer, uint32_t dwTime)
+VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-    uint16_t hwndT;
+    HWND hwndT;
     char szExt[4];
     int16_t cOut;
     int16_t fSav;
@@ -410,7 +393,7 @@ void HostTimerProc(uint16_t hwnd, uint16_t msg, uint16_t idTimer, uint32_t dwTim
     /* TODO: implement */
 }
 
-uint16_t GetASubMenu(uint16_t hwnd, int16_t iMenu)
+uint16_t GetASubMenu(HWND hwnd, int16_t iMenu)
 {
     int16_t fChildMenu;
     uint16_t hmenu;
@@ -419,7 +402,7 @@ uint16_t GetASubMenu(uint16_t hwnd, int16_t iMenu)
     return 0;
 }
 
-int16_t FOpenGame(uint16_t hwnd, int16_t fRaceOnly)
+int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly)
 {
     // OFN ofn;
     uint16_t i;
@@ -459,7 +442,7 @@ uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel)
     return 0;
 }
 
-POINT InvertPaneBorder(uint16_t hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
+POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
 {
     int16_t notMin;
     int16_t dChg;
@@ -486,17 +469,6 @@ POINT InvertPaneBorder(uint16_t hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
     return pt;
 }
 
-int16_t CTurnsOutSafe(void)
-{
-    int16_t idPlayerSav;
-    int16_t fHostModeSav;
-    int16_t fGenSav;
-    int16_t cturn;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void BringUpHostDlg(void)
 {
     POINT pt;
@@ -511,10 +483,10 @@ void BringUpHostDlg(void)
     /* TODO: implement */
 }
 
-int16_t HostOptionsDialog(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+LRESULT CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     RECT rc;
-    uint16_t hdc;
+    HDC hdc;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -542,10 +514,39 @@ void CreateChildWindows(void)
     /* TODO: implement */
 }
 
-void SetWindowIniString(char *sz, uint16_t hwnd)
+void SetWindowIniString(char *sz, HWND hwnd)
 {
     char ch;
     RECT rc;
 
     /* TODO: implement */
 }
+
+void RestoreSelection(void)
+{
+    PLANET *lppl;
+
+    /* TODO: implement */
+}
+
+void RefitFrameChildren(void)
+{
+    int16_t dyMsg;
+    uint16_t hmenu;
+    int16_t i;
+    int16_t dyMinMin;
+    int16_t dyMsgMin;
+    int16_t dyMin;
+    int16_t dyT;
+    int16_t yScanner;
+    int16_t dyTot;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MDI:0x8d56 */
+    /* block (block) @ MEMORY_MDI:0x8de6 */
+    /* block (block) @ MEMORY_MDI:0x8fb7 */
+
+    /* TODO: implement */
+}
+
+#endif /* _WIN32 */

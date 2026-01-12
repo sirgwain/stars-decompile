@@ -384,20 +384,20 @@ void CtrTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen)
     /* TODO: implement */
 }
 
-uint16_t HdibLoadBigResource(int16_t idb)
+#ifdef _WIN32
+HGLOBAL HdibLoadBigResource(int idb)
 {
-    uint16_t hrsrc;
-    char *lpstr;
-    int16_t hfile;
-    uint16_t hdib;
+    HRSRC hRsrc = FindResource(hInst, MAKEINTRESOURCE(idb), RT_BITMAP);
+    if (!hRsrc)
+        return NULL;
 
-    /* debug symbols */
-    /* label FreeAndFail @ MEMORY_UTILGEN:0x5298 */
-    /* label CloseAndFail @ MEMORY_UTILGEN:0x52c6 */
+    HGLOBAL hRes = LoadResource(hInst, hRsrc);
+    if (!hRes)
+        return NULL;
 
-    /* TODO: implement */
-    return 0;
+    return hRes; /* This already contains the bitmap bits */
 }
+#endif
 
 void HideProgressGauge(void)
 {

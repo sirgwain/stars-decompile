@@ -4,8 +4,269 @@
 
 #include "vcr.h"
 #include "memory.h"
+#include "battle.h"
+#include "parts.h"
 
-/* functions */
+int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
+{
+    TOK *ptok = &vrgtok[itok];
+    SHDEF *pshdef = LpshdefFromTok(ptok);
+
+    /* SHDEF +0x38: base hull DP (uint16_t) */
+    uint16_t dpShdef = pshdef->hul.dp;
+
+    /* Base DP = dpShdef * ptok->csh */
+    int32_t dp = (int32_t)dpShdef * (int32_t)ptok->csh;
+
+    if (lpdv->dp != 0)
+    {
+        /*
+         * dv layout:
+         *   pctSh : 7 (bits 0..6)
+         *   pctDp : 9 (bits 7..15)
+         *
+         * Win16 decompile does:
+         *   csh = (ptok->csh * (dv.dp & 0x007F)) / 100; clamp to >= 1
+         *   dp -= ((dpShdef * (dv.dp >> 7)) / 10) * csh / 50
+         *
+         * All integer math with truncation.
+         */
+        int32_t csh = ((int32_t)ptok->csh * (int32_t)lpdv->pctSh) / 100;
+        if (csh < 1)
+            csh = 1;
+
+        int32_t term = ((int32_t)dpShdef * (int32_t)lpdv->pctDp) / 10;
+        term = (term * csh) / 50;
+
+        dp -= term;
+    }
+
+    return dp;
+}
+
+BTLDATA *BtlDataGet(int16_t i)
+{
+    HB *lphb = rglphb[htBattle];
+    if (lphb == NULL)
+        return NULL;
+
+    BTLDATA *lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+
+    for (;;)
+    {
+        while ((int16_t)lpbd->id != -1)
+        {
+            if (lpbd->cbData == 0)
+                return NULL;
+
+            if (i < 1)
+                return lpbd;
+
+            i--;
+            lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
+        }
+
+        lphb = lphb->lphbNext;
+        if (lphb == NULL)
+            return NULL;
+
+        /* Decompile: if (*(uint16_t *)(hb + 6) < 0x11) break; */
+        /* maybe this is better if (lphb->ibTop < (uint16_t)(sizeof(HB) + sizeof(uint16_t)))*/
+        if (lphb->ibTop < 0x11)
+            return NULL;
+
+        lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+    }
+}
+
+int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
+{
+    /* TOK table starts at +0x0e */
+    TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
+
+    /* BTLREC stream begins immediately after TOK array (ctok * sizeof(TOK)) */
+    BTLREC *lpbr = (BTLREC *)((uint8_t *)rgtok + (uint32_t)lpbd->ctok * (uint32_t)sizeof(TOK));
+
+    uint8_t *pbEnd = (uint8_t *)lpbd + (uint32_t)lpbd->cbData;
+
+    uint32_t cKilled = 0;
+
+    while ((uint8_t *)lpbr < pbEnd)
+    {
+        int16_t cKill = lpbr->ctok; /* number of KILL entries */
+
+        for (int16_t i = 0; i < cKill; i++)
+        {
+            KILL *pk = &lpbr->rgkill[i];
+
+            /* decompile checks (uint16 at +8+i*8) != 0 => cshKill != 0 */
+            if (pk->cshKill == 0)
+                continue;
+
+            /* victim owner is tok[itok].iplr */
+            uint8_t victimPlr = rgtok[pk->itok].iplr;
+
+            if (victimPlr == (uint8_t)idPlayer)
+            {
+                if (fOurDead != 0)
+                    cKilled += (uint32_t)pk->cshKill;
+            }
+            else
+            {
+                if (fOurDead == 0)
+                    cKilled += (uint32_t)pk->cshKill;
+            }
+        }
+
+        /* Next record: 6-byte header + (ctok * 8-byte KILL entries) */
+        lpbr = (BTLREC *)((uint8_t *)lpbr + 6u + (uint32_t)cKill * (uint32_t)sizeof(KILL));
+    }
+
+    return (int32_t)cKilled;
+}
+
+int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
+{
+    uint32_t lUnits = 0;
+
+    TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
+    uint8_t ctok = lpbd->ctok;
+
+    for (int16_t i = 0; i < (int16_t)ctok; i++)
+    {
+        TOK *tok = &rgtok[i];
+
+        /* Side filter */
+        uint16_t sideOk = (tok->iplr == (uint8_t)idPlayer) ? (grbitBU & BU_OUR_UNITS)
+                                                           : (grbitBU & BU_THEIR_UNITS);
+        if (sideOk == 0)
+            continue;
+
+        /* Object-type filter: per your note, ishdef >= 16 means starbase */
+        const bool isStarbase = (tok->ishdef >= 16);
+        if (isStarbase && ((grbitBU & BU_INCLUDE_SB) == 0))
+            continue;
+
+        /* Hull-category filtering applies only to ships (ishdef < 16), and only if not "all classes" */
+        if (!isStarbase && ((grbitBU & BU_CLASS_ALL) != BU_CLASS_ALL))
+        {
+            /* Ship design comes from rglpshdef[player][ishdef] */
+            SHDEF *pshdef = (SHDEF *)((uint8_t *)rglpshdef[tok->iplr] + (uint32_t)tok->ishdef * 0x93);
+
+            /* HULDEF lookup by ihuldef (exact field exists in your HUL/HULDEF types) */
+            HULDEF *phuldef = LphuldefFromId(pshdef->hul.ihuldef);
+
+            /* Matches decompile: (*(uint16*)(huldef+0x7b)>>10)&0xF */
+            uint16_t hulClass = (uint16_t)phuldef->imdCategory;
+
+            uint16_t classMask;
+            if (hulClass < 2 || hulClass > 5)
+                classMask = (grbitBU & BU_CLASS_OTHER);
+            else if (hulClass == 2)
+                classMask = (grbitBU & BU_CLASS_FIGHT);
+            else if (hulClass == 3)
+                classMask = (grbitBU & BU_CLASS_BOMBER);
+            else if (hulClass == 5)
+                classMask = (grbitBU & BU_CLASS_CAP);
+            else /* hulClass == 4 */
+                classMask = (grbitBU & BU_CLASS_FRIG);
+
+            if (classMask == 0)
+                continue;
+        }
+
+        /* Add this token's unit count (tok->csh at +0x13) */
+        lUnits += (uint32_t)tok->csh;
+    }
+
+    return (int32_t)lUnits;
+}
+
+int16_t CBattles(void)
+{
+    int16_t cBattles = 0;
+    HB *lphb = rglphb[htBattle];
+    BTLDATA *lpbd;
+
+    if (lphb == NULL)
+    {
+        return 0;
+    }
+
+    /* Battle data begins immediately after HB + WORD (0x10 + 0x02 = 0x12). */
+    lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+
+    for (;;)
+    {
+        /* Walk battle records within this heap block until sentinel id == -1. */
+        while (lpbd->id != (int16_t)-1)
+        {
+            /* cb==0 means end of valid data (early out). In the decompile this is *(+6)==0. */
+            if (lpbd->cbData == 0)
+            {
+                return cBattles;
+            }
+
+            cBattles++;
+            lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
+        }
+
+        /* Move to next heap block (HB->lphbNext is a far pointer in the original). */
+        lphb = lphb->lphbNext;
+
+        /* Decompile: if null OR *(uint16_t *)(hb+6) < 17, stop.  */
+        if (lphb == NULL || lphb->cbBlock < 17u)
+        {
+            break;
+        }
+
+        lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
+    }
+
+    return cBattles;
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
+    int16_t i;
+    int16_t ibtn;
+    RECT rc;
+    int16_t dyFrame;
+    uint8_t brc;
+    int16_t iStep;
+    POINT pt;
+    int16_t dStep;
+    int16_t bkMode;
+    int16_t iSel;
+    RECT rcWindow;
+    int16_t bt;
+    int16_t dx;
+    RECT *prc;
+    int16_t iDir;
+    int16_t iCur;
+    uint32_t crBkSav;
+    PAINTSTRUCT ps;
+    BTNT btnt;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_VCR:0x0e9f */
+    /* block (block) @ MEMORY_VCR:0x1076 */
+    /* block (block) @ MEMORY_VCR:0x10e4 */
+    /* block (block) @ MEMORY_VCR:0x1138 */
+    /* block (block) @ MEMORY_VCR:0x14f7 */
+    /* block (block) @ MEMORY_VCR:0x1618 */
+    /* block (block) @ MEMORY_VCR:0x1693 */
+    /* label GoodSel @ MEMORY_VCR:0x1601 */
+    /* label KillTime @ MEMORY_VCR:0x16af */
+    /* label NextBtn @ MEMORY_VCR:0x1788 */
+
+    /* TODO: implement */
+    return 0;
+}
+
 void EnableVCRButtons(void)
 {
     int16_t i;
@@ -13,7 +274,7 @@ void EnableVCRButtons(void)
     /* TODO: implement */
 }
 
-int16_t PopupVCRMenu(uint16_t hwnd, int16_t x, int16_t y, uint8_t brc)
+int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc)
 {
     int16_t fAttack;
     char *rgsz[1];
@@ -36,12 +297,12 @@ int16_t PopupVCRMenu(uint16_t hwnd, int16_t x, int16_t y, uint8_t brc)
     return 0;
 }
 
-void DrawVCR(uint16_t hdc, int16_t iStart, int16_t iEnd)
+void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd)
 {
     int16_t ctok;
     int16_t ibmpRace;
     int16_t bkMode;
-    uint16_t hbrSav;
+    HBRUSH hbrSav;
     int32_t dpShields;
     int16_t itokT;
     int32_t dpT;
@@ -89,15 +350,6 @@ void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, 
     /* TODO: implement */
 }
 
-BTLDATA *BtlDataGet(int16_t i)
-{
-    BTLDATA *lpbd;
-    HB *lphb;
-
-    /* TODO: implement */
-    return NULL;
-}
-
 void BattleVCR(int16_t iBattle)
 {
     int16_t (*lpProc)(void);
@@ -111,88 +363,6 @@ void BattleVCR(int16_t iBattle)
     /* TODO: implement */
 }
 
-int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
-{
-    DV dv;
-    uint16_t dpShdef;
-    int16_t csh;
-    int32_t dp;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
-{
-    int32_t cKilled;
-    BTLDATA *lpbdNext;
-    int16_t i;
-    BTLREC *lpbr;
-    int16_t cKill;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_VCR:0x0692 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBU)
-{
-    TOK *lptok;
-    int16_t ctok;
-    int32_t lUnits;
-    int16_t i;
-    int16_t imd;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t CBattles(void)
-{
-    int16_t cBattles = 0;
-    HB *lphb = rglphb[htBattle];
-    BTLDATA *lpbd;
-
-    if (lphb == NULL)
-    {
-        return 0;
-    }
-
-    /* Battle data begins immediately after HB + WORD (0x10 + 0x02 = 0x12). */
-    lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
-
-    for (;;)
-    {
-        /* Walk battle records within this heap block until sentinel id == -1. */
-        while (lpbd->id != (int16_t)-1)
-        {
-            /* cb==0 means end of valid data (early out). In the decompile this is *(+6)==0. */
-            if (lpbd->cbData == 0)
-            {
-                return cBattles;
-            }
-
-            cBattles++;
-            lpbd = (BTLDATA *)((uint8_t *)lpbd + lpbd->cbData);
-        }
-
-        /* Move to next heap block (HB->lphbNext is a far pointer in the original). */
-        lphb = lphb->lphbNext;
-
-        /* Decompile: if null OR *(uint16_t *)(hb+6) < 17, stop.  */
-        if (lphb == NULL || lphb->cbBlock < 17u)
-        {
-            break;
-        }
-
-        lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
-    }
-
-    return cBattles;
-}
-
 int16_t SetVCRBoard(int16_t iStep)
 {
     TOK *ptok;
@@ -203,46 +373,7 @@ int16_t SetVCRBoard(int16_t iStep)
     return 0;
 }
 
-int16_t VCRDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hdc;
-    int16_t i;
-    int16_t ibtn;
-    RECT rc;
-    int16_t dyFrame;
-    uint8_t brc;
-    int16_t iStep;
-    POINT pt;
-    int16_t dStep;
-    int16_t bkMode;
-    int16_t iSel;
-    RECT rcWindow;
-    int16_t bt;
-    int16_t dx;
-    RECT *prc;
-    int16_t iDir;
-    int16_t iCur;
-    uint32_t crBkSav;
-    PAINTSTRUCT ps;
-    BTNT btnt;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_VCR:0x0e9f */
-    /* block (block) @ MEMORY_VCR:0x1076 */
-    /* block (block) @ MEMORY_VCR:0x10e4 */
-    /* block (block) @ MEMORY_VCR:0x1138 */
-    /* block (block) @ MEMORY_VCR:0x14f7 */
-    /* block (block) @ MEMORY_VCR:0x1618 */
-    /* block (block) @ MEMORY_VCR:0x1693 */
-    /* label GoodSel @ MEMORY_VCR:0x1601 */
-    /* label KillTime @ MEMORY_VCR:0x16af */
-    /* label NextBtn @ MEMORY_VCR:0x1788 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-void AnimateAttack(uint16_t hdc)
+void AnimateAttack(HDC hdc)
 {
     TOK *ptokSrc;
     TOK *ptokAttack;
@@ -276,7 +407,7 @@ void AnimateAttack(uint16_t hdc)
     POINT ptDestRight;
     POINT ptDestLeft;
     int16_t x;
-    uint16_t hdcMem;
+    HDC hdcMem;
     uint16_t hbmpSav;
     uint16_t hbmpScreen;
 
@@ -296,3 +427,5 @@ void Delay(int16_t ctick)
 
     /* TODO: implement */
 }
+
+#endif /* _WIN32 */
