@@ -55,9 +55,6 @@ static void test_file__FLoadGame_tiny_2400(void)
         return;
     }
 
-    char cwd[1024];
-    getcwd(cwd, sizeof(cwd));
-    printf("CWD = %s\n", cwd);
     TEST_CHECK(FLoadGame("./test/data/tiny/2401/TEST", "HST"));
 
     /* Tiny test files represent year 2400 (turn 1). Validate that we parsed

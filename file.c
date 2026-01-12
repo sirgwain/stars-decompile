@@ -5,7 +5,7 @@
 
 #if defined(_WIN32)
 #include <io.h>
-#define stars_access _access
+#define stars_access access
 #define modeWrite 2 /* MSVCRT _access: 2 == write permission check */
 #else
 #include <unistd.h>
@@ -870,25 +870,20 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
         DestroyCurGame();
         StreamClose();
 
-        if (!ini.fValidate && !ini.fLogging && hwndTitle == 0)
+#ifdef _WIN32
+        // TODO: refactor away this platform specific popup
+        if (!ini.fValidate && !ini.fLogging && hwndTitle == NULL)
         {
             POINT pt;
-            pt.x = PlatformScreenWidth();
-            pt.y = PlatformScreenHeight();
+            pt.x = GetSystemMetrics(SM_CXSCREEN);
+            pt.y = GetSystemMetrics(SM_CYSCREEN);
 
-            hwndTitle = PlatformCreatePopupWindow(
-                szTitle,
-                "Stars!",
-                PLAT_WS_VISIBLE | PLAT_WS_POPUP,
-                0,
-                0,
-                pt.x,
-                pt.y,
-                (StarsHWND)hwndFrame);
+            hwndTitle = CreateWindow(szTitle, "Stars!", WS_VISIBLE | WS_POPUP, 0, 0, pt.x, pt.y, hwndFrame, NULL, hInst, NULL);
 
             fFreeingTitle = false;
-            PlatformShowWindow((StarsHWND)hwndFrame, PLAT_SW_HIDE);
+            ShowWindow(hwndFrame, SW_HIDE);
         }
+#endif
 
         penvMem = penvMemSav;
         return false;
@@ -950,7 +945,7 @@ bool FLoadGame(const char *pszFileName, char *pszExt)
         grf = (int16_t)(grf | (bitfMulti | bitfRewind));
         iPlayer = (int16_t)atoi(pszExtWork + 1);
         DBG_LOGD("FLoadGame: parsed player from ext='%s' => %d", pszExtWork, (int)iPlayer);
-        Assert(iPlayer > 0 && iPlayer <= iPlayerMax);
+        Assert(iPlayer > 0 && iPlayer <= cPlayerMax);
         iPlayer--;
     }
 
@@ -2818,7 +2813,7 @@ void DestroyCurGame(void)
     vrptBattle.fCached = false;
     vrptEFleet.fCached = false;
 
-    for (i = 0; i < iPlayerMax; i++)
+    for (i = 0; i < cPlayerMax; i++)
     {
         rgsxPlr[i] = NULL;
     }
@@ -2846,7 +2841,7 @@ void DestroyCurGame(void)
 
     ResetHb(htPlrMsg);
 
-    for (i = 0; i < iPlayerMax; i++)
+    for (i = 0; i < cPlayerMax; i++)
     {
         rglpshdef[i] = NULL;
         rglpshdefSB[i] = NULL;
@@ -2883,23 +2878,25 @@ void DestroyCurGame(void)
     gd.fGameOverMan = false;
     gd.fSendMsgMode = false;
 
-    if (hwndBrowser != 0)
+#ifdef _WIN32
+    if (hwndBrowser != NULL)
     {
-        PlatformDestroyWindow((StarsHWND)hwndBrowser);
+        DestroyWindow(hwndBrowser);
     }
 
-    if (hwndReportDlg != 0)
+    if (hwndReportDlg != NULL)
     {
-        PlatformDestroyWindow((StarsHWND)hwndReportDlg);
+        DestroyWindow(hwndReportDlg);
     }
 
-    if (hwndPopup != 0)
+    if (hwndPopup != NULL)
     {
-        PlatformDestroyWindow((StarsHWND)hwndPopup);
-        hwndPopup = 0;
+        DestroyWindow(hwndPopup);
+        hwndPopup = NULL;
     }
 
-    hwndActive = 0;
+    hwndActive = NULL;
+#endif
 
     sel.scan.grobj = grobjNone;
     sel.scan.grobjFull = grobjNone;

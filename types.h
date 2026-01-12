@@ -135,7 +135,7 @@ typedef struct tagOFSTRUCT
 #define fTrue 1
 
 #define iPlayerNil -1
-#define iPlayerMax 16
+#define cPlayerMax 16
 #define iPlanetPartNone -1
 
 typedef enum RaceAttribute
@@ -319,6 +319,26 @@ typedef enum HullDef
     ihuldefMetaMorph = 31,
     ihuldefCount = 32,
 } HullDef;
+
+typedef enum BattleUnitFlags
+{
+    /* --- Side selection --- */
+    BU_OUR_UNITS = 0x0001,   /* tokens owned by idPlayer */
+    BU_THEIR_UNITS = 0x0002, /* tokens owned by other players */
+
+    /* --- Object type --- */
+    BU_INCLUDE_SB = 0x0004, /* include starbases (ishdef >= 16) */
+
+    /* --- Hull class filters (ships only, ishdef < 16) --- */
+    BU_CLASS_OTHER = 0x0008,  /* hulClass < 2 or > 5 */
+    BU_CLASS_FIGHT = 0x0010,  /* hulClass == 2 */
+    BU_CLASS_BOMBER = 0x0020, /* hulClass == 3 */
+    BU_CLASS_CAP = 0x0040,    /* hulClass == 5 */
+    BU_CLASS_FRIG = 0x0080,   /* hulClass == 4 */
+
+    /* Convenience mask: all ship classes */
+    BU_CLASS_ALL = 0x00F8
+} BattleUnitFlags;
 
 /* Match Win16/Stars! default struct packing (2-byte alignment). */
 #pragma pack(push, 1)
@@ -1743,6 +1763,122 @@ _Static_assert(offsetof(THMINE, fDetonate) == 0x7, "offsetof(THMINE,fDetonate)")
 _Static_assert(offsetof(THMINE, grbitPlrNow) == 0x8, "offsetof(THMINE,grbitPlrNow)");
 #endif
 
+/* typind 5185 (0x1441) size=10 */
+typedef struct _thpack
+{
+    union
+    {
+        struct
+        {
+            uint16_t idPlanet : 10;
+            uint16_t iWarp : 4;
+            uint16_t fMoved : 1;
+            uint16_t fInclude : 1;
+        };
+        uint16_t wRaw_0000;
+    }; /* +0x0000 */
+    int16_t rgwtMin[3]; /* +0x0002 */
+    union
+    {
+        struct
+        {
+            uint16_t wtMax : 14;
+            uint16_t iDecayRate : 2;
+        };
+        uint16_t wRaw_0008;
+    }; /* +0x0008 */
+} THPACK;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(THPACK) == 10, "sizeof(THPACK)");
+_Static_assert(offsetof(THPACK, rgwtMin) == 0x2, "offsetof(THPACK,rgwtMin)");
+#endif
+
+/* typind 5270 (0x1496) size=10 */
+typedef struct _thtrader
+{
+    POINT ptDest; /* +0x0000 */
+    union
+    {
+        struct
+        {
+            uint16_t iWarp : 4;
+            uint16_t fInclude : 1;
+            uint16_t unused : 11;
+        };
+        uint16_t wRaw_0004;
+    }; /* +0x0004 */
+    uint16_t grbitPlr;    /* +0x0006 */
+    uint16_t grbitTrader; /* +0x0008 */
+} THTRADER;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(THTRADER) == 10, "sizeof(THTRADER)");
+_Static_assert(offsetof(THTRADER, ptDest) == 0x0, "offsetof(THTRADER,ptDest)");
+_Static_assert(offsetof(THTRADER, grbitPlr) == 0x6, "offsetof(THTRADER,grbitPlr)");
+_Static_assert(offsetof(THTRADER, grbitTrader) == 0x8, "offsetof(THTRADER,grbitTrader)");
+#endif
+
+/* typind 5213 (0x145d) size=8 */
+typedef struct _thworm
+{
+    union
+    {
+        struct
+        {
+            uint16_t iStable : 2;
+            uint16_t cLastMove : 10;
+            uint16_t fDestKnown : 1;
+            uint16_t fInclude : 1;
+            uint16_t : 2;
+        };
+        uint16_t wRaw_0000;
+    }; /* +0x0000 */
+    uint16_t grbitPlr;     /* +0x0002 */
+    uint16_t grbitPlrTrav; /* +0x0004 */
+    uint16_t idPartner;    /* +0x0006 */
+} THWORM;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(THWORM) == 8, "sizeof(THWORM)");
+_Static_assert(offsetof(THWORM, grbitPlr) == 0x2, "offsetof(THWORM,grbitPlr)");
+_Static_assert(offsetof(THWORM, grbitPlrTrav) == 0x4, "offsetof(THWORM,grbitPlrTrav)");
+_Static_assert(offsetof(THWORM, idPartner) == 0x6, "offsetof(THWORM,idPartner)");
+#endif
+
+/* typind 4102 (0x1006) size=18 */
+typedef struct _thing
+{
+    union
+    {
+        uint16_t idFull;
+        struct
+        {
+            uint16_t id : 9;
+            uint16_t iplr : 4;
+            uint16_t ith : 3;
+        };
+    }; /* +0x0000 */
+    POINT pt; /* +0x0002 */
+    union
+    {
+        uint8_t rgb[10];
+        THMINE thm;
+        THPACK thp;
+        THTRADER tht;
+        THWORM thw;
+    }; /* +0x0006 */
+    uint16_t turn; /* +0x0010 */
+} THING;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(THING) == 18, "sizeof(THING)");
+_Static_assert(offsetof(THING, idFull) == 0x0, "offsetof(THING,idFull)");
+_Static_assert(offsetof(THING, pt) == 0x2, "offsetof(THING,pt)");
+_Static_assert(offsetof(THING, rgb) == 0x6, "offsetof(THING,rgb)");
+_Static_assert(offsetof(THING, thm) == 0x6, "offsetof(THING,thm)");
+_Static_assert(offsetof(THING, thp) == 0x6, "offsetof(THING,thp)");
+_Static_assert(offsetof(THING, thw) == 0x6, "offsetof(THING,thw)");
+_Static_assert(offsetof(THING, tht) == 0x6, "offsetof(THING,tht)");
+_Static_assert(offsetof(THING, turn) == 0x10, "offsetof(THING,turn)");
+#endif
+
 /* typind 5169 (0x1431) size=10 */
 typedef struct _rtxferl
 {
@@ -1793,36 +1929,6 @@ _Static_assert(offsetof(RTXFERF, grbitItems) == 0x5, "offsetof(RTXFERF,grbitItem
 _Static_assert(offsetof(RTXFERF, rgcQuan) == 0x7, "offsetof(RTXFERF,rgcQuan)");
 #endif
 
-/* typind 5185 (0x1441) size=10 */
-typedef struct _thpack
-{
-    union
-    {
-        struct
-        {
-            uint16_t idPlanet : 10;
-            uint16_t iWarp : 4;
-            uint16_t fMoved : 1;
-            uint16_t fInclude : 1;
-        };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
-    int16_t rgwtMin[3]; /* +0x0002 */
-    union
-    {
-        struct
-        {
-            uint16_t wtMax : 14;
-            uint16_t iDecayRate : 2;
-        };
-        uint16_t wRaw_0008;
-    }; /* +0x0008 */
-} THPACK;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(THPACK) == 10, "sizeof(THPACK)");
-_Static_assert(offsetof(THPACK, rgwtMin) == 0x2, "offsetof(THPACK,rgwtMin)");
-#endif
-
 /* typind 5187 (0x1443) size=4 */
 typedef struct _rtshipint
 {
@@ -1861,32 +1967,6 @@ _Static_assert(sizeof(RTSHIPINT2) == 6, "sizeof(RTSHIPINT2)");
 _Static_assert(offsetof(RTSHIPINT2, id) == 0x0, "offsetof(RTSHIPINT2,id)");
 _Static_assert(offsetof(RTSHIPINT2, i) == 0x2, "offsetof(RTSHIPINT2,i)");
 _Static_assert(offsetof(RTSHIPINT2, i2) == 0x4, "offsetof(RTSHIPINT2,i2)");
-#endif
-
-/* typind 5213 (0x145d) size=8 */
-typedef struct _thworm
-{
-    union
-    {
-        struct
-        {
-            uint16_t iStable : 2;
-            uint16_t cLastMove : 10;
-            uint16_t fDestKnown : 1;
-            uint16_t fInclude : 1;
-            uint16_t : 2;
-        };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
-    uint16_t grbitPlr;     /* +0x0002 */
-    uint16_t grbitPlrTrav; /* +0x0004 */
-    uint16_t idPartner;    /* +0x0006 */
-} THWORM;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(THWORM) == 8, "sizeof(THWORM)");
-_Static_assert(offsetof(THWORM, grbitPlr) == 0x2, "offsetof(THWORM,grbitPlr)");
-_Static_assert(offsetof(THWORM, grbitPlrTrav) == 0x4, "offsetof(THWORM,grbitPlrTrav)");
-_Static_assert(offsetof(THWORM, idPartner) == 0x6, "offsetof(THWORM,idPartner)");
 #endif
 
 /* typind 5250 (0x1482) size=10 */
@@ -2153,30 +2233,6 @@ typedef struct _sbar
     char *psz;     /* +0x0008 */
     SCAN *pscan;   /* +0x000a */
 } SBAR;
-
-/* typind 5270 (0x1496) size=10 */
-typedef struct _thtrader
-{
-    POINT ptDest; /* +0x0000 */
-    union
-    {
-        struct
-        {
-            uint16_t iWarp : 4;
-            uint16_t fInclude : 1;
-            uint16_t unused : 11;
-        };
-        uint16_t wRaw_0004;
-    }; /* +0x0004 */
-    uint16_t grbitPlr;    /* +0x0006 */
-    uint16_t grbitTrader; /* +0x0008 */
-} THTRADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(THTRADER) == 10, "sizeof(THTRADER)");
-_Static_assert(offsetof(THTRADER, ptDest) == 0x0, "offsetof(THTRADER,ptDest)");
-_Static_assert(offsetof(THTRADER, grbitPlr) == 0x6, "offsetof(THTRADER,grbitPlr)");
-_Static_assert(offsetof(THTRADER, grbitTrader) == 0x8, "offsetof(THTRADER,grbitTrader)");
-#endif
 
 /* typind 4276 (0x10b4) size=54 */
 typedef struct _rpt
@@ -2623,24 +2679,6 @@ _Static_assert(offsetof(TOK, dv) == 0x15, "offsetof(TOK,dv)");
 _Static_assert(offsetof(TOK, wFlags) == 0x1b, "offsetof(TOK,wFlags)");
 #endif
 
-/* typind 5107 (0x13f3) size=8 */
-typedef struct _kill
-{
-    uint8_t itok;      /* +0x0000 */
-    uint8_t grfWeapon; /* +0x0001 */
-    uint16_t cshKill;  /* +0x0002 */
-    uint16_t dpShield; /* +0x0004 */
-    DV dv;             /* +0x0006 */
-} KILL;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(KILL) == 8, "sizeof(KILL)");
-_Static_assert(offsetof(KILL, itok) == 0x0, "offsetof(KILL,itok)");
-_Static_assert(offsetof(KILL, grfWeapon) == 0x1, "offsetof(KILL,grfWeapon)");
-_Static_assert(offsetof(KILL, cshKill) == 0x2, "offsetof(KILL,cshKill)");
-_Static_assert(offsetof(KILL, dpShield) == 0x4, "offsetof(KILL,dpShield)");
-_Static_assert(offsetof(KILL, dv) == 0x6, "offsetof(KILL,dv)");
-#endif
-
 /* typind 4830 (0x12de) size=5 */
 typedef struct _msgturn
 {
@@ -2736,42 +2774,6 @@ _Static_assert(offsetof(SELSOME, grobjFull) == 0x6, "offsetof(SELSOME,grobjFull)
 _Static_assert(offsetof(SELSOME, id) == 0x8, "offsetof(SELSOME,id)");
 _Static_assert(offsetof(SELSOME, iwpAct) == 0xa, "offsetof(SELSOME,iwpAct)");
 _Static_assert(offsetof(SELSOME, scan) == 0xc, "offsetof(SELSOME,scan)");
-#endif
-
-/* typind 4102 (0x1006) size=18 */
-typedef struct _thing
-{
-    union
-    {
-        uint16_t idFull;
-        struct
-        {
-            uint16_t id : 9;
-            uint16_t iplr : 4;
-            uint16_t ith : 3;
-        };
-    }; /* +0x0000 */
-    POINT pt; /* +0x0002 */
-    union
-    {
-        uint8_t rgb[10];
-        THMINE thm;
-        THPACK thp;
-        THTRADER tht;
-        THWORM thw;
-    }; /* +0x0006 */
-    uint16_t turn; /* +0x0010 */
-} THING;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(THING) == 18, "sizeof(THING)");
-_Static_assert(offsetof(THING, idFull) == 0x0, "offsetof(THING,idFull)");
-_Static_assert(offsetof(THING, pt) == 0x2, "offsetof(THING,pt)");
-_Static_assert(offsetof(THING, rgb) == 0x6, "offsetof(THING,rgb)");
-_Static_assert(offsetof(THING, thm) == 0x6, "offsetof(THING,thm)");
-_Static_assert(offsetof(THING, thp) == 0x6, "offsetof(THING,thp)");
-_Static_assert(offsetof(THING, thw) == 0x6, "offsetof(THING,thw)");
-_Static_assert(offsetof(THING, tht) == 0x6, "offsetof(THING,tht)");
-_Static_assert(offsetof(THING, turn) == 0x10, "offsetof(THING,turn)");
 #endif
 
 /* typind 4332 (0x10ec) size=26 */
@@ -2959,6 +2961,24 @@ _Static_assert(offsetof(BTLREC26, brcDest) == 0x1, "offsetof(BTLREC26,brcDest)")
 _Static_assert(offsetof(BTLREC26, itokAttack) == 0x2, "offsetof(BTLREC26,itokAttack)");
 _Static_assert(offsetof(BTLREC26, ctok) == 0x3, "offsetof(BTLREC26,ctok)");
 _Static_assert(offsetof(BTLREC26, rgkill) == 0x6, "offsetof(BTLREC26,rgkill)");
+#endif
+
+/* typind 5107 (0x13f3) size=8 */
+typedef struct _kill
+{
+    uint8_t itok;      /* +0x0000 */
+    uint8_t grfWeapon; /* +0x0001 */
+    uint16_t cshKill;  /* +0x0002 */
+    uint16_t dpShield; /* +0x0004 */
+    DV dv;             /* +0x0006 */
+} KILL;
+#ifdef STARS_LAYOUT_CHECKS
+_Static_assert(sizeof(KILL) == 8, "sizeof(KILL)");
+_Static_assert(offsetof(KILL, itok) == 0x0, "offsetof(KILL,itok)");
+_Static_assert(offsetof(KILL, grfWeapon) == 0x1, "offsetof(KILL,grfWeapon)");
+_Static_assert(offsetof(KILL, cshKill) == 0x2, "offsetof(KILL,cshKill)");
+_Static_assert(offsetof(KILL, dpShield) == 0x4, "offsetof(KILL,dpShield)");
+_Static_assert(offsetof(KILL, dv) == 0x6, "offsetof(KILL,dv)");
 #endif
 
 /* typind 4438 (0x1156) size=6 */

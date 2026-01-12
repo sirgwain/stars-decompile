@@ -289,7 +289,7 @@ void ReadPlayerMessages(void)
        - skip params according to the packing bits and param count table.
      */
     {
-        uint8_t *lpb = lpMsg + (imemMsgCur - imemMsgT);
+        uint8_t *lpb = (uint8_t *)lpMsg + (uint16_t)(imemMsgCur - imemMsgT);
         uint8_t *end = lpb + imemMsgT;
 
         while (lpb < end)
@@ -316,12 +316,14 @@ void ReadPlayerMessages(void)
         }
     }
 
-    /* Find tail of incoming MSGPLR list (vlpmsgplrIn is sentinel). */
+    /* Find tail of incoming MSGPLR list (vlpmsgplrIn is head pointer). */
     {
-        MSGPLR *lpmp = &vlpmsgplrIn;
-        while (lpmp->lpmsgplrNext != NULL)
+        MSGPLR **lpmp = &vlpmsgplrIn;
+
+        /* Walk "pointer to next" until we reach a NULL next. */
+        while (*lpmp != NULL)
         {
-            lpmp = lpmp->lpmsgplrNext;
+            lpmp = &(*lpmp)->lpmsgplrNext;
         }
 
         /* Now read rtPlrMsg blocks (rt == 0x28 per decompile) and chain them. */
@@ -342,13 +344,13 @@ void ReadPlayerMessages(void)
                 }
                 else
                 {
-                    lpmp->lpmsgplrNext = node;
-                    lpmp = node;
-
                     memcpy(node, rgbCur, cb);
 
-                    /* terminate */
-                    lpmp->lpmsgplrNext = NULL;
+                    /* terminate and link */
+                    node->lpmsgplrNext = NULL;
+                    *lpmp = node;
+                    lpmp = &node->lpmsgplrNext;
+
                     ++vcmsgplrIn;
                 }
             }
