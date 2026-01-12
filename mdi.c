@@ -221,10 +221,10 @@ void CommandHandler(uint16_t hwnd, uint16_t wParam)
     PLANET *lppl;
     FLEET *lpfl;
     int16_t i;
-    TIMERINFO ti;
+    // TIMERINFO ti;
     uint32_t dwTickCur;
     uint32_t dwTickBase;
-    PD pd;
+    // PD pd;
     int16_t cPageY;
     int16_t xPage;
     int16_t dxMax;
@@ -421,7 +421,7 @@ uint16_t GetASubMenu(uint16_t hwnd, int16_t iMenu)
 
 int16_t FOpenGame(uint16_t hwnd, int16_t fRaceOnly)
 {
-    OFN ofn;
+    // OFN ofn;
     uint16_t i;
     char szFile[256];
     char *pch;

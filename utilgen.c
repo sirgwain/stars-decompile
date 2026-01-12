@@ -671,7 +671,7 @@ void _Draw3dFrame(uint16_t hdc, RECT *prc, int16_t fErase)
     /* TODO: implement */
 }
 
-void CopyFile(char *szSrc, char *szDst)
+void CopyStarsFile(char *szSrc, char *szDst)
 {
     char rgb[2048];
     int16_t fFileErrSav;

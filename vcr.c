@@ -265,7 +265,7 @@ void AnimateAttack(uint16_t hdc)
     POINT ptSrc;
     POINT ptTorp;
     POINT ptLeft;
-    TIMERINFO ti;
+    // TIMERINFO ti;
     int16_t iFrame;
     int16_t dx;
     int16_t fKill;
@@ -292,7 +292,7 @@ void Delay(int16_t ctick)
 {
     uint32_t dwTickLast;
     uint32_t dwTickCur;
-    TIMERINFO ti;
+    // TIMERINFO ti;
 
     /* TODO: implement */
 }

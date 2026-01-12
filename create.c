@@ -319,7 +319,7 @@ int16_t FGetNewGameName(char *szFileSuggest)
     char szFileTitle[256];
     char szFile[256];
     char szFilter[256];
-    OFN ofn;
+    // OFN ofn;
 
     /* TODO: implement */
     return 0;

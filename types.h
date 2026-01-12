@@ -11,7 +11,9 @@
 #include <time.h>
 #include <setjmp.h>
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else /* !_WIN32 */
 /* MessageBox-style flags (Win16/Win32 compatible values) */
 typedef enum MBFlags
 {
@@ -48,6 +50,85 @@ _Static_assert(offsetof(RECT, top) == 0x2, "offsetof(RECT,top)");
 _Static_assert(offsetof(RECT, right) == 0x4, "offsetof(RECT,right)");
 _Static_assert(offsetof(RECT, bottom) == 0x6, "offsetof(RECT,bottom)");
 #endif
+
+/* Minimal “Windows SDK” stubs for non-Windows builds.
+ * These exist only so code that declares locals/params compiles.
+ * Do NOT rely on their layouts/fields on non-Windows.
+ */
+
+typedef struct tagLOGFONT
+{
+    int _unused;
+} LOGFONT;
+typedef struct tagTEXTMETRIC
+{
+    int _unused;
+} TEXTMETRIC;
+typedef struct tagPAINTSTRUCT
+{
+    int _unused;
+} PAINTSTRUCT;
+typedef struct tagDRAWITEMSTRUCT
+{
+    int _unused;
+} DRAWITEMSTRUCT;
+typedef struct tagMEASUREITEMSTRUCT
+{
+    int _unused;
+} MEASUREITEMSTRUCT;
+typedef struct tagWNDCLASS
+{
+    int _unused;
+} WNDCLASS;
+typedef struct tagWINDOWPLACEMENT
+{
+    int _unused;
+} WINDOWPLACEMENT;
+
+/* Windows message struct (careful: name is MSG). */
+typedef struct tagMSG
+{
+    int _unused;
+} MSG;
+
+/* If you used these abbreviated names in generated code: */
+typedef struct tagOPENFILENAME
+{
+    int _unused;
+} OFN;
+typedef struct tagTIMERINFO
+{
+    int _unused;
+} TIMERINFO;
+typedef struct tagPD
+{
+    int _unused;
+} PD;
+typedef struct tagBITMAP
+{
+    int _unused;
+} BITMAP;
+typedef struct tagBITMAPCOREHEADER
+{
+    int _unused;
+} BITMAPCOREHEADER;
+typedef struct tagBITMAPINFOHEADER
+{
+    int _unused;
+} BITMAPINFOHEADER;
+typedef struct tagBITMAPINFO
+{
+    int _unused;
+} BITMAPINFO;
+typedef struct tagLOGPALETTE
+{
+    int _unused;
+} LOGPALETTE;
+typedef struct tagOFSTRUCT
+{
+    int _unused;
+} OFSTRUCT;
+
 #endif
 
 #define fFalse 0
@@ -787,20 +868,6 @@ typedef struct _aipart
 _Static_assert(sizeof(AIPART) == 2, "sizeof(AIPART)");
 #endif
 
-/* typind 4427 (0x114b) size=12 */
-typedef struct tagTIMERINFO
-{
-    uint32_t dwSize;         /* +0x0000 */
-    uint32_t dwmsSinceStart; /* +0x0004 */
-    uint32_t dwmsThisVM;     /* +0x0008 */
-} TIMERINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TIMERINFO) == 12, "sizeof(TIMERINFO)");
-_Static_assert(offsetof(TIMERINFO, dwSize) == 0x0, "offsetof(TIMERINFO,dwSize)");
-_Static_assert(offsetof(TIMERINFO, dwmsSinceStart) == 0x4, "offsetof(TIMERINFO,dwmsSinceStart)");
-_Static_assert(offsetof(TIMERINFO, dwmsThisVM) == 0x8, "offsetof(TIMERINFO,dwmsThisVM)");
-#endif
-
 /* typind 4431 (0x114f) size=16 */
 typedef struct _hb
 {
@@ -848,144 +915,6 @@ _Static_assert(offsetof(DISKFREE_T, sectors_per_cluster) == 0x4, "offsetof(DISKF
 _Static_assert(offsetof(DISKFREE_T, bytes_per_sector) == 0x6, "offsetof(DISKFREE_T,bytes_per_sector)");
 #endif
 
-/* typind 4477 (0x117d) size=136 */
-typedef struct tagOFSTRUCT
-{
-    uint8_t cBytes;       /* +0x0000 */
-    uint8_t fFixedDisk;   /* +0x0001 */
-    uint16_t nErrCode;    /* +0x0002 */
-    uint8_t reserved[4];  /* +0x0004 */
-    char szPathName[128]; /* +0x0008 */
-} OFSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(OFSTRUCT) == 136, "sizeof(OFSTRUCT)");
-_Static_assert(offsetof(OFSTRUCT, cBytes) == 0x0, "offsetof(OFSTRUCT,cBytes)");
-_Static_assert(offsetof(OFSTRUCT, fFixedDisk) == 0x1, "offsetof(OFSTRUCT,fFixedDisk)");
-_Static_assert(offsetof(OFSTRUCT, nErrCode) == 0x2, "offsetof(OFSTRUCT,nErrCode)");
-_Static_assert(offsetof(OFSTRUCT, reserved) == 0x4, "offsetof(OFSTRUCT,reserved)");
-_Static_assert(offsetof(OFSTRUCT, szPathName) == 0x8, "offsetof(OFSTRUCT,szPathName)");
-#endif
-
-/* typind 4503 (0x1197) size=50 */
-typedef struct tagLOGFONT
-{
-    int16_t lfHeight;         /* +0x0000 */
-    int16_t lfWidth;          /* +0x0002 */
-    int16_t lfEscapement;     /* +0x0004 */
-    int16_t lfOrientation;    /* +0x0006 */
-    int16_t lfWeight;         /* +0x0008 */
-    uint8_t lfItalic;         /* +0x000a */
-    uint8_t lfUnderline;      /* +0x000b */
-    uint8_t lfStrikeOut;      /* +0x000c */
-    uint8_t lfCharSet;        /* +0x000d */
-    uint8_t lfOutPrecision;   /* +0x000e */
-    uint8_t lfClipPrecision;  /* +0x000f */
-    uint8_t lfQuality;        /* +0x0010 */
-    uint8_t lfPitchAndFamily; /* +0x0011 */
-    char lfFaceName[32];      /* +0x0012 */
-} LOGFONT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(LOGFONT) == 50, "sizeof(LOGFONT)");
-_Static_assert(offsetof(LOGFONT, lfHeight) == 0x0, "offsetof(LOGFONT,lfHeight)");
-_Static_assert(offsetof(LOGFONT, lfWidth) == 0x2, "offsetof(LOGFONT,lfWidth)");
-_Static_assert(offsetof(LOGFONT, lfEscapement) == 0x4, "offsetof(LOGFONT,lfEscapement)");
-_Static_assert(offsetof(LOGFONT, lfOrientation) == 0x6, "offsetof(LOGFONT,lfOrientation)");
-_Static_assert(offsetof(LOGFONT, lfWeight) == 0x8, "offsetof(LOGFONT,lfWeight)");
-_Static_assert(offsetof(LOGFONT, lfItalic) == 0xa, "offsetof(LOGFONT,lfItalic)");
-_Static_assert(offsetof(LOGFONT, lfUnderline) == 0xb, "offsetof(LOGFONT,lfUnderline)");
-_Static_assert(offsetof(LOGFONT, lfStrikeOut) == 0xc, "offsetof(LOGFONT,lfStrikeOut)");
-_Static_assert(offsetof(LOGFONT, lfCharSet) == 0xd, "offsetof(LOGFONT,lfCharSet)");
-_Static_assert(offsetof(LOGFONT, lfOutPrecision) == 0xe, "offsetof(LOGFONT,lfOutPrecision)");
-_Static_assert(offsetof(LOGFONT, lfClipPrecision) == 0xf, "offsetof(LOGFONT,lfClipPrecision)");
-_Static_assert(offsetof(LOGFONT, lfQuality) == 0x10, "offsetof(LOGFONT,lfQuality)");
-_Static_assert(offsetof(LOGFONT, lfPitchAndFamily) == 0x11, "offsetof(LOGFONT,lfPitchAndFamily)");
-_Static_assert(offsetof(LOGFONT, lfFaceName) == 0x12, "offsetof(LOGFONT,lfFaceName)");
-#endif
-
-/* typind 4537 (0x11b9) size=12 */
-typedef struct tagBITMAPCOREHEADER
-{
-    uint32_t bcSize;     /* +0x0000 */
-    int16_t bcWidth;     /* +0x0004 */
-    int16_t bcHeight;    /* +0x0006 */
-    uint16_t bcPlanes;   /* +0x0008 */
-    uint16_t bcBitCount; /* +0x000a */
-} BITMAPCOREHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BITMAPCOREHEADER) == 12, "sizeof(BITMAPCOREHEADER)");
-_Static_assert(offsetof(BITMAPCOREHEADER, bcSize) == 0x0, "offsetof(BITMAPCOREHEADER,bcSize)");
-_Static_assert(offsetof(BITMAPCOREHEADER, bcWidth) == 0x4, "offsetof(BITMAPCOREHEADER,bcWidth)");
-_Static_assert(offsetof(BITMAPCOREHEADER, bcHeight) == 0x6, "offsetof(BITMAPCOREHEADER,bcHeight)");
-_Static_assert(offsetof(BITMAPCOREHEADER, bcPlanes) == 0x8, "offsetof(BITMAPCOREHEADER,bcPlanes)");
-_Static_assert(offsetof(BITMAPCOREHEADER, bcBitCount) == 0xa, "offsetof(BITMAPCOREHEADER,bcBitCount)");
-#endif
-
-/* typind 4539 (0x11bb) size=40 */
-typedef struct tagBITMAPINFOHEADER
-{
-    uint32_t biSize;         /* +0x0000 */
-    int32_t biWidth;         /* +0x0004 */
-    int32_t biHeight;        /* +0x0008 */
-    uint16_t biPlanes;       /* +0x000c */
-    uint16_t biBitCount;     /* +0x000e */
-    uint32_t biCompression;  /* +0x0010 */
-    uint32_t biSizeImage;    /* +0x0014 */
-    int32_t biXPelsPerMeter; /* +0x0018 */
-    int32_t biYPelsPerMeter; /* +0x001c */
-    uint32_t biClrUsed;      /* +0x0020 */
-    uint32_t biClrImportant; /* +0x0024 */
-} BITMAPINFOHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BITMAPINFOHEADER) == 40, "sizeof(BITMAPINFOHEADER)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biSize) == 0x0, "offsetof(BITMAPINFOHEADER,biSize)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biWidth) == 0x4, "offsetof(BITMAPINFOHEADER,biWidth)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biHeight) == 0x8, "offsetof(BITMAPINFOHEADER,biHeight)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biPlanes) == 0xc, "offsetof(BITMAPINFOHEADER,biPlanes)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biBitCount) == 0xe, "offsetof(BITMAPINFOHEADER,biBitCount)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biCompression) == 0x10, "offsetof(BITMAPINFOHEADER,biCompression)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biSizeImage) == 0x14, "offsetof(BITMAPINFOHEADER,biSizeImage)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biXPelsPerMeter) == 0x18, "offsetof(BITMAPINFOHEADER,biXPelsPerMeter)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biYPelsPerMeter) == 0x1c, "offsetof(BITMAPINFOHEADER,biYPelsPerMeter)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biClrUsed) == 0x20, "offsetof(BITMAPINFOHEADER,biClrUsed)");
-_Static_assert(offsetof(BITMAPINFOHEADER, biClrImportant) == 0x24, "offsetof(BITMAPINFOHEADER,biClrImportant)");
-#endif
-
-/* typind 4549 (0x11c5) size=14 */
-typedef struct tagBITMAP
-{
-    int16_t bmType;       /* +0x0000 */
-    int16_t bmWidth;      /* +0x0002 */
-    int16_t bmHeight;     /* +0x0004 */
-    int16_t bmWidthBytes; /* +0x0006 */
-    uint8_t bmPlanes;     /* +0x0008 */
-    uint8_t bmBitsPixel;  /* +0x0009 */
-    void *bmBits;         /* +0x000a */
-} BITMAP;
-
-/* typind 4571 (0x11db) size=31 */
-typedef struct tagTEXTMETRIC
-{
-    int16_t tmHeight;           /* +0x0000 */
-    int16_t tmAscent;           /* +0x0002 */
-    int16_t tmDescent;          /* +0x0004 */
-    int16_t tmInternalLeading;  /* +0x0006 */
-    int16_t tmExternalLeading;  /* +0x0008 */
-    int16_t tmAveCharWidth;     /* +0x000a */
-    int16_t tmMaxCharWidth;     /* +0x000c */
-    int16_t tmWeight;           /* +0x000e */
-    uint8_t tmItalic;           /* +0x0010 */
-    uint8_t tmUnderlined;       /* +0x0011 */
-    uint8_t tmStruckOut;        /* +0x0012 */
-    uint8_t tmFirstChar;        /* +0x0013 */
-    uint8_t tmLastChar;         /* +0x0014 */
-    uint8_t tmDefaultChar;      /* +0x0015 */
-    uint8_t tmBreakChar;        /* +0x0016 */
-    uint8_t tmPitchAndFamily;   /* +0x0017 */
-    uint8_t tmCharSet;          /* +0x0018 */
-    int16_t tmOverhang;         /* +0x0019 */
-    int16_t tmDigitizedAspectX; /* +0x001b */
-    int16_t tmDigitizedAspectY; /* +0x001d */
-} TEXTMETRIC;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(TEXTMETRIC) == 31, "sizeof(TEXTMETRIC)");
 _Static_assert(offsetof(TEXTMETRIC, tmHeight) == 0x0, "offsetof(TEXTMETRIC,tmHeight)");
@@ -1009,31 +938,6 @@ _Static_assert(offsetof(TEXTMETRIC, tmOverhang) == 0x19, "offsetof(TEXTMETRIC,tm
 _Static_assert(offsetof(TEXTMETRIC, tmDigitizedAspectX) == 0x1b, "offsetof(TEXTMETRIC,tmDigitizedAspectX)");
 _Static_assert(offsetof(TEXTMETRIC, tmDigitizedAspectY) == 0x1d, "offsetof(TEXTMETRIC,tmDigitizedAspectY)");
 #endif
-
-/* typind 4614 (0x1206) size=72 */
-typedef struct tagOFN
-{
-    uint32_t lStructSize;                                        /* +0x0000 */
-    uint16_t hwndOwner;                                          /* +0x0004 */
-    uint16_t hInstance;                                          /* +0x0006 */
-    char *lpstrFilter;                                           /* +0x0008 */
-    char *lpstrCustomFilter;                                     /* +0x000c */
-    uint32_t nMaxCustFilter;                                     /* +0x0010 */
-    uint32_t nFilterIndex;                                       /* +0x0014 */
-    char *lpstrFile;                                             /* +0x0018 */
-    uint32_t nMaxFile;                                           /* +0x001c */
-    char *lpstrFileTitle;                                        /* +0x0020 */
-    uint32_t nMaxFileTitle;                                      /* +0x0024 */
-    char *lpstrInitialDir;                                       /* +0x0028 */
-    char *lpstrTitle;                                            /* +0x002c */
-    uint32_t Flags;                                              /* +0x0030 */
-    uint16_t nFileOffset;                                        /* +0x0034 */
-    uint16_t nFileExtension;                                     /* +0x0036 */
-    char *lpstrDefExt;                                           /* +0x0038 */
-    int32_t lCustData;                                           /* +0x003c */
-    uint16_t (*lpfnHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x0040 */
-    char *lpTemplateName;                                        /* +0x0044 */
-} OFN;
 
 /* typind 4636 (0x121c) size=78 */
 typedef struct _engine
@@ -1084,26 +988,6 @@ _Static_assert(sizeof(PL) == 4, "sizeof(PL)");
 _Static_assert(offsetof(PL, iMax) == 0x2, "offsetof(PL,iMax)");
 _Static_assert(offsetof(PL, iMac) == 0x3, "offsetof(PL,iMac)");
 _Static_assert(offsetof(PL, rgb) == 0x4, "offsetof(PL,rgb)");
-#endif
-
-/* typind 4729 (0x1279) size=14 */
-typedef struct tagMEASUREITEMSTRUCT
-{
-    uint16_t CtlType;    /* +0x0000 */
-    uint16_t CtlID;      /* +0x0002 */
-    uint16_t itemID;     /* +0x0004 */
-    uint16_t itemWidth;  /* +0x0006 */
-    uint16_t itemHeight; /* +0x0008 */
-    uint32_t itemData;   /* +0x000a */
-} MEASUREITEMSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MEASUREITEMSTRUCT) == 14, "sizeof(MEASUREITEMSTRUCT)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, CtlType) == 0x0, "offsetof(MEASUREITEMSTRUCT,CtlType)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, CtlID) == 0x2, "offsetof(MEASUREITEMSTRUCT,CtlID)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, itemID) == 0x4, "offsetof(MEASUREITEMSTRUCT,itemID)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, itemWidth) == 0x6, "offsetof(MEASUREITEMSTRUCT,itemWidth)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, itemHeight) == 0x8, "offsetof(MEASUREITEMSTRUCT,itemHeight)");
-_Static_assert(offsetof(MEASUREITEMSTRUCT, itemData) == 0xa, "offsetof(MEASUREITEMSTRUCT,itemData)");
 #endif
 
 /* typind 4749 (0x128d) size=56 */
@@ -1653,22 +1537,6 @@ _Static_assert(sizeof(PRODQ1) == 2, "sizeof(PRODQ1)");
 _Static_assert(offsetof(PRODQ1, w) == 0x0, "offsetof(PRODQ1,w)");
 #endif
 
-/* typind 4939 (0x134b) size=10 */
-typedef struct tagEVENTMSG
-{
-    uint16_t message; /* +0x0000 */
-    uint16_t paramL;  /* +0x0002 */
-    uint16_t paramH;  /* +0x0004 */
-    uint32_t time;    /* +0x0006 */
-} EVENTMSG;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(EVENTMSG) == 10, "sizeof(EVENTMSG)");
-_Static_assert(offsetof(EVENTMSG, message) == 0x0, "offsetof(EVENTMSG,message)");
-_Static_assert(offsetof(EVENTMSG, paramL) == 0x2, "offsetof(EVENTMSG,paramL)");
-_Static_assert(offsetof(EVENTMSG, paramH) == 0x4, "offsetof(EVENTMSG,paramH)");
-_Static_assert(offsetof(EVENTMSG, time) == 0x6, "offsetof(EVENTMSG,time)");
-#endif
-
 /* typind 4942 (0x134e) size=4 */
 typedef struct _rtlogthing
 {
@@ -1680,22 +1548,6 @@ _Static_assert(sizeof(RTLOGTHING) == 4, "sizeof(RTLOGTHING)");
 _Static_assert(offsetof(RTLOGTHING, idFull) == 0x0, "offsetof(RTLOGTHING,idFull)");
 _Static_assert(offsetof(RTLOGTHING, fDetonate) == 0x2, "offsetof(RTLOGTHING,fDetonate)");
 #endif
-
-/* typind 4948 (0x1354) size=36 */
-typedef struct tagFINDREPLACE
-{
-    uint32_t lStructSize;                                        /* +0x0000 */
-    uint16_t hwndOwner;                                          /* +0x0004 */
-    uint16_t hInstance;                                          /* +0x0006 */
-    uint32_t Flags;                                              /* +0x0008 */
-    char *lpstrFindWhat;                                         /* +0x000c */
-    char *lpstrReplaceWith;                                      /* +0x0010 */
-    uint16_t wFindWhatLen;                                       /* +0x0014 */
-    uint16_t wReplaceWithLen;                                    /* +0x0016 */
-    int32_t lCustData;                                           /* +0x0018 */
-    uint16_t (*lpfnHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x001c */
-    char *lpTemplateName;                                        /* +0x0020 */
-} FINDREPLACE;
 
 /* typind 4955 (0x135b) size=6 */
 typedef struct _rtChgPlanetLong
@@ -1763,20 +1615,6 @@ _Static_assert(offsetof(PLANETSOME, rgEnvVarOrig) == 0x12, "offsetof(PLANETSOME,
 _Static_assert(offsetof(PLANETSOME, uGuesses) == 0x15, "offsetof(PLANETSOME,uGuesses)");
 #endif
 
-/* typind 4968 (0x1368) size=3 */
-typedef struct tagRGBTRIPLE
-{
-    uint8_t rgbtBlue;  /* +0x0000 */
-    uint8_t rgbtGreen; /* +0x0001 */
-    uint8_t rgbtRed;   /* +0x0002 */
-} RGBTRIPLE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(RGBTRIPLE) == 3, "sizeof(RGBTRIPLE)");
-_Static_assert(offsetof(RGBTRIPLE, rgbtBlue) == 0x0, "offsetof(RGBTRIPLE,rgbtBlue)");
-_Static_assert(offsetof(RGBTRIPLE, rgbtGreen) == 0x1, "offsetof(RGBTRIPLE,rgbtGreen)");
-_Static_assert(offsetof(RGBTRIPLE, rgbtRed) == 0x2, "offsetof(RGBTRIPLE,rgbtRed)");
-#endif
-
 /* typind 4975 (0x136f) size=34 */
 typedef struct _exceptionl
 {
@@ -1786,149 +1624,6 @@ typedef struct _exceptionl
     long double arg2;   /* +0x000e */
     long double retval; /* +0x0018 */
 } EXCEPTIONL;
-
-/* typind 5021 (0x139d) size=14 */
-typedef struct tagBITMAPFILEHEADER
-{
-    uint16_t bfType;      /* +0x0000 */
-    uint32_t bfSize;      /* +0x0002 */
-    uint16_t bfReserved1; /* +0x0006 */
-    uint16_t bfReserved2; /* +0x0008 */
-    uint32_t bfOffBits;   /* +0x000a */
-} BITMAPFILEHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BITMAPFILEHEADER) == 14, "sizeof(BITMAPFILEHEADER)");
-_Static_assert(offsetof(BITMAPFILEHEADER, bfType) == 0x0, "offsetof(BITMAPFILEHEADER,bfType)");
-_Static_assert(offsetof(BITMAPFILEHEADER, bfSize) == 0x2, "offsetof(BITMAPFILEHEADER,bfSize)");
-_Static_assert(offsetof(BITMAPFILEHEADER, bfReserved1) == 0x6, "offsetof(BITMAPFILEHEADER,bfReserved1)");
-_Static_assert(offsetof(BITMAPFILEHEADER, bfReserved2) == 0x8, "offsetof(BITMAPFILEHEADER,bfReserved2)");
-_Static_assert(offsetof(BITMAPFILEHEADER, bfOffBits) == 0xa, "offsetof(BITMAPFILEHEADER,bfOffBits)");
-#endif
-
-/* typind 5028 (0x13a4) size=4 */
-typedef struct tagCLIENTCREATESTRUCT
-{
-    uint16_t hWindowMenu;  /* +0x0000 */
-    uint16_t idFirstChild; /* +0x0002 */
-} CLIENTCREATESTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(CLIENTCREATESTRUCT) == 4, "sizeof(CLIENTCREATESTRUCT)");
-_Static_assert(offsetof(CLIENTCREATESTRUCT, hWindowMenu) == 0x0, "offsetof(CLIENTCREATESTRUCT,hWindowMenu)");
-_Static_assert(offsetof(CLIENTCREATESTRUCT, idFirstChild) == 0x2, "offsetof(CLIENTCREATESTRUCT,idFirstChild)");
-#endif
-
-/* typind 5031 (0x13a7) size=26 */
-typedef struct tagWNDCLASS
-{
-    uint16_t style;                                                /* +0x0000 */
-    int32_t (*lpfnWndProc)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x0002 */
-    int16_t cbClsExtra;                                            /* +0x0006 */
-    int16_t cbWndExtra;                                            /* +0x0008 */
-    uint16_t hInstance;                                            /* +0x000a */
-    uint16_t hIcon;                                                /* +0x000c */
-    uint16_t hCursor;                                              /* +0x000e */
-    uint16_t hbrBackground;                                        /* +0x0010 */
-    char *lpszMenuName;                                            /* +0x0012 */
-    char *lpszClassName;                                           /* +0x0016 */
-} WNDCLASS;
-
-/* typind 5036 (0x13ac) size=8 */
-typedef struct tagMETAFILEPICT
-{
-    int16_t mm;   /* +0x0000 */
-    int16_t xExt; /* +0x0002 */
-    int16_t yExt; /* +0x0004 */
-    uint16_t hMF; /* +0x0006 */
-} METAFILEPICT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(METAFILEPICT) == 8, "sizeof(METAFILEPICT)");
-_Static_assert(offsetof(METAFILEPICT, mm) == 0x0, "offsetof(METAFILEPICT,mm)");
-_Static_assert(offsetof(METAFILEPICT, xExt) == 0x2, "offsetof(METAFILEPICT,xExt)");
-_Static_assert(offsetof(METAFILEPICT, yExt) == 0x4, "offsetof(METAFILEPICT,yExt)");
-_Static_assert(offsetof(METAFILEPICT, hMF) == 0x6, "offsetof(METAFILEPICT,hMF)");
-#endif
-
-/* typind 5038 (0x13ae) size=14 */
-typedef struct tagDEBUGHOOKINFO
-{
-    uint16_t hModuleHook; /* +0x0000 */
-    int32_t reserved;     /* +0x0002 */
-    int32_t lParam;       /* +0x0006 */
-    uint16_t wParam;      /* +0x000a */
-    int16_t code;         /* +0x000c */
-} DEBUGHOOKINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DEBUGHOOKINFO) == 14, "sizeof(DEBUGHOOKINFO)");
-_Static_assert(offsetof(DEBUGHOOKINFO, hModuleHook) == 0x0, "offsetof(DEBUGHOOKINFO,hModuleHook)");
-_Static_assert(offsetof(DEBUGHOOKINFO, reserved) == 0x2, "offsetof(DEBUGHOOKINFO,reserved)");
-_Static_assert(offsetof(DEBUGHOOKINFO, lParam) == 0x6, "offsetof(DEBUGHOOKINFO,lParam)");
-_Static_assert(offsetof(DEBUGHOOKINFO, wParam) == 0xa, "offsetof(DEBUGHOOKINFO,wParam)");
-_Static_assert(offsetof(DEBUGHOOKINFO, code) == 0xc, "offsetof(DEBUGHOOKINFO,code)");
-#endif
-
-/* typind 5087 (0x13df) size=14 */
-typedef struct HELPWININFO
-{
-    int16_t wStructSize; /* +0x0000 */
-    int16_t x;           /* +0x0002 */
-    int16_t y;           /* +0x0004 */
-    int16_t dx;          /* +0x0006 */
-    int16_t dy;          /* +0x0008 */
-    int16_t wMax;        /* +0x000a */
-    char rgchMember[2];  /* +0x000c */
-} HELPWININFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(HELPWININFO) == 14, "sizeof(HELPWININFO)");
-_Static_assert(offsetof(HELPWININFO, wStructSize) == 0x0, "offsetof(HELPWININFO,wStructSize)");
-_Static_assert(offsetof(HELPWININFO, x) == 0x2, "offsetof(HELPWININFO,x)");
-_Static_assert(offsetof(HELPWININFO, y) == 0x4, "offsetof(HELPWININFO,y)");
-_Static_assert(offsetof(HELPWININFO, dx) == 0x6, "offsetof(HELPWININFO,dx)");
-_Static_assert(offsetof(HELPWININFO, dy) == 0x8, "offsetof(HELPWININFO,dy)");
-_Static_assert(offsetof(HELPWININFO, wMax) == 0xa, "offsetof(HELPWININFO,wMax)");
-_Static_assert(offsetof(HELPWININFO, rgchMember) == 0xc, "offsetof(HELPWININFO,rgchMember)");
-#endif
-
-/* typind 5090 (0x13e2) size=5 */
-typedef struct MENUITEMTEMPLATE
-{
-    uint16_t mtOption; /* +0x0000 */
-    uint16_t mtID;     /* +0x0002 */
-    char mtString[1];  /* +0x0004 */
-} MENUITEMTEMPLATE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MENUITEMTEMPLATE) == 5, "sizeof(MENUITEMTEMPLATE)");
-_Static_assert(offsetof(MENUITEMTEMPLATE, mtOption) == 0x0, "offsetof(MENUITEMTEMPLATE,mtOption)");
-_Static_assert(offsetof(MENUITEMTEMPLATE, mtID) == 0x2, "offsetof(MENUITEMTEMPLATE,mtID)");
-_Static_assert(offsetof(MENUITEMTEMPLATE, mtString) == 0x4, "offsetof(MENUITEMTEMPLATE,mtString)");
-#endif
-
-/* typind 5092 (0x13e4) size=4 */
-typedef struct MENUITEMTEMPLATEHEADER
-{
-    uint16_t versionNumber; /* +0x0000 */
-    uint16_t offset;        /* +0x0002 */
-} MENUITEMTEMPLATEHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MENUITEMTEMPLATEHEADER) == 4, "sizeof(MENUITEMTEMPLATEHEADER)");
-_Static_assert(offsetof(MENUITEMTEMPLATEHEADER, versionNumber) == 0x0, "offsetof(MENUITEMTEMPLATEHEADER,versionNumber)");
-_Static_assert(offsetof(MENUITEMTEMPLATEHEADER, offset) == 0x2, "offsetof(MENUITEMTEMPLATEHEADER,offset)");
-#endif
-
-/* typind 5094 (0x13e6) size=10 */
-typedef struct DOCINFO
-{
-    int16_t cbSize;    /* +0x0000 */
-    char *lpszDocName; /* +0x0002 */
-    char *lpszOutput;  /* +0x0006 */
-} DOCINFO;
-
-/* typind 5098 (0x13ea) size=12 */
-typedef struct tagDRVCONFIGINFO
-{
-    uint32_t dwDCISize;       /* +0x0000 */
-    char *lpszDCISectionName; /* +0x0004 */
-    char *lpszDCIAliasName;   /* +0x0008 */
-} DRVCONFIGINFO;
 
 /* typind 5100 (0x13ec) size=24 */
 typedef struct _logxfer
@@ -1958,48 +1653,6 @@ _Static_assert(offsetof(LOGXFERF, grobj) == 0x2, "offsetof(LOGXFERF,grobj)");
 _Static_assert(offsetof(LOGXFERF, rgdItem) == 0x4, "offsetof(LOGXFERF,rgdItem)");
 #endif
 
-/* typind 5120 (0x1400) size=18 */
-typedef struct tagMETAHEADER
-{
-    uint16_t mtType;         /* +0x0000 */
-    uint16_t mtHeaderSize;   /* +0x0002 */
-    uint16_t mtVersion;      /* +0x0004 */
-    uint32_t mtSize;         /* +0x0006 */
-    uint16_t mtNoObjects;    /* +0x000a */
-    uint32_t mtMaxRecord;    /* +0x000c */
-    uint16_t mtNoParameters; /* +0x0010 */
-} METAHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(METAHEADER) == 18, "sizeof(METAHEADER)");
-_Static_assert(offsetof(METAHEADER, mtType) == 0x0, "offsetof(METAHEADER,mtType)");
-_Static_assert(offsetof(METAHEADER, mtHeaderSize) == 0x2, "offsetof(METAHEADER,mtHeaderSize)");
-_Static_assert(offsetof(METAHEADER, mtVersion) == 0x4, "offsetof(METAHEADER,mtVersion)");
-_Static_assert(offsetof(METAHEADER, mtSize) == 0x6, "offsetof(METAHEADER,mtSize)");
-_Static_assert(offsetof(METAHEADER, mtNoObjects) == 0xa, "offsetof(METAHEADER,mtNoObjects)");
-_Static_assert(offsetof(METAHEADER, mtMaxRecord) == 0xc, "offsetof(METAHEADER,mtMaxRecord)");
-_Static_assert(offsetof(METAHEADER, mtNoParameters) == 0x10, "offsetof(METAHEADER,mtNoParameters)");
-#endif
-
-/* typind 5122 (0x1402) size=26 */
-typedef struct tagWINDEBUGINFO
-{
-    uint16_t flags;         /* +0x0000 */
-    uint32_t dwOptions;     /* +0x0002 */
-    uint32_t dwFilter;      /* +0x0006 */
-    char achAllocModule[8]; /* +0x000a */
-    uint32_t dwAllocBreak;  /* +0x0012 */
-    uint32_t dwAllocCount;  /* +0x0016 */
-} WINDEBUGINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(WINDEBUGINFO) == 26, "sizeof(WINDEBUGINFO)");
-_Static_assert(offsetof(WINDEBUGINFO, flags) == 0x0, "offsetof(WINDEBUGINFO,flags)");
-_Static_assert(offsetof(WINDEBUGINFO, dwOptions) == 0x2, "offsetof(WINDEBUGINFO,dwOptions)");
-_Static_assert(offsetof(WINDEBUGINFO, dwFilter) == 0x6, "offsetof(WINDEBUGINFO,dwFilter)");
-_Static_assert(offsetof(WINDEBUGINFO, achAllocModule) == 0xa, "offsetof(WINDEBUGINFO,achAllocModule)");
-_Static_assert(offsetof(WINDEBUGINFO, dwAllocBreak) == 0x12, "offsetof(WINDEBUGINFO,dwAllocBreak)");
-_Static_assert(offsetof(WINDEBUGINFO, dwAllocCount) == 0x16, "offsetof(WINDEBUGINFO,dwAllocCount)");
-#endif
-
 /* typind 5132 (0x140c) size=7 */
 typedef struct _rtxfer
 {
@@ -2025,18 +1678,6 @@ _Static_assert(offsetof(RTXFER, grbitItems) == 0x5, "offsetof(RTXFER,grbitItems)
 _Static_assert(offsetof(RTXFER, rgcQuan) == 0x6, "offsetof(RTXFER,rgcQuan)");
 #endif
 
-/* typind 5134 (0x140e) size=4 */
-typedef struct tagFIXED
-{
-    uint16_t fract; /* +0x0000 */
-    int16_t value;  /* +0x0002 */
-} FIXED;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(FIXED) == 4, "sizeof(FIXED)");
-_Static_assert(offsetof(FIXED, fract) == 0x0, "offsetof(FIXED,fract)");
-_Static_assert(offsetof(FIXED, value) == 0x2, "offsetof(FIXED,value)");
-#endif
-
 /* typind 5141 (0x1415) size=52 */
 typedef struct _compart
 {
@@ -2057,68 +1698,6 @@ _Static_assert(offsetof(COMPART, cMass) == 0x28, "offsetof(COMPART,cMass)");
 _Static_assert(offsetof(COMPART, resCost) == 0x2a, "offsetof(COMPART,resCost)");
 _Static_assert(offsetof(COMPART, rgwtOreCost) == 0x2c, "offsetof(COMPART,rgwtOreCost)");
 _Static_assert(offsetof(COMPART, ibmp) == 0x32, "offsetof(COMPART,ibmp)");
-#endif
-
-/* typind 5149 (0x141d) size=25 */
-typedef struct tagDCB
-{
-    uint8_t Id;          /* +0x0000 */
-    uint16_t BaudRate;   /* +0x0001 */
-    uint8_t ByteSize;    /* +0x0003 */
-    uint8_t Parity;      /* +0x0004 */
-    uint8_t StopBits;    /* +0x0005 */
-    uint16_t RlsTimeout; /* +0x0006 */
-    uint16_t CtsTimeout; /* +0x0008 */
-    uint16_t DsrTimeout; /* +0x000a */
-    union
-    {
-        struct
-        {
-            uint16_t fBinary : 1;
-            uint16_t fRtsDisable : 1;
-            uint16_t fParity : 1;
-            uint16_t fOutxCtsFlow : 1;
-            uint16_t fOutxDsrFlow : 1;
-            uint16_t fDummy : 2;
-            uint16_t fDtrDisable : 1;
-            uint16_t fOutX : 1;
-            uint16_t fInX : 1;
-            uint16_t fPeChar : 1;
-            uint16_t fNull : 1;
-            uint16_t fChEvt : 1;
-            uint16_t fDtrflow : 1;
-            uint16_t fRtsflow : 1;
-            uint16_t fDummy2 : 1;
-        };
-        uint16_t wRaw_000c;
-    }; /* +0x000c */
-    char XonChar;     /* +0x000e */
-    char XoffChar;    /* +0x000f */
-    uint16_t XonLim;  /* +0x0010 */
-    uint16_t XoffLim; /* +0x0012 */
-    char PeChar;      /* +0x0014 */
-    char EofChar;     /* +0x0015 */
-    char EvtChar;     /* +0x0016 */
-    uint16_t TxDelay; /* +0x0017 */
-} DCB;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DCB) == 25, "sizeof(DCB)");
-_Static_assert(offsetof(DCB, Id) == 0x0, "offsetof(DCB,Id)");
-_Static_assert(offsetof(DCB, BaudRate) == 0x1, "offsetof(DCB,BaudRate)");
-_Static_assert(offsetof(DCB, ByteSize) == 0x3, "offsetof(DCB,ByteSize)");
-_Static_assert(offsetof(DCB, Parity) == 0x4, "offsetof(DCB,Parity)");
-_Static_assert(offsetof(DCB, StopBits) == 0x5, "offsetof(DCB,StopBits)");
-_Static_assert(offsetof(DCB, RlsTimeout) == 0x6, "offsetof(DCB,RlsTimeout)");
-_Static_assert(offsetof(DCB, CtsTimeout) == 0x8, "offsetof(DCB,CtsTimeout)");
-_Static_assert(offsetof(DCB, DsrTimeout) == 0xa, "offsetof(DCB,DsrTimeout)");
-_Static_assert(offsetof(DCB, XonChar) == 0xe, "offsetof(DCB,XonChar)");
-_Static_assert(offsetof(DCB, XoffChar) == 0xf, "offsetof(DCB,XoffChar)");
-_Static_assert(offsetof(DCB, XonLim) == 0x10, "offsetof(DCB,XonLim)");
-_Static_assert(offsetof(DCB, XoffLim) == 0x12, "offsetof(DCB,XoffLim)");
-_Static_assert(offsetof(DCB, PeChar) == 0x14, "offsetof(DCB,PeChar)");
-_Static_assert(offsetof(DCB, EofChar) == 0x15, "offsetof(DCB,EofChar)");
-_Static_assert(offsetof(DCB, EvtChar) == 0x16, "offsetof(DCB,EvtChar)");
-_Static_assert(offsetof(DCB, TxDelay) == 0x17, "offsetof(DCB,TxDelay)");
 #endif
 
 /* typind 5153 (0x1421) size=8 */
@@ -2162,20 +1741,6 @@ _Static_assert(offsetof(THMINE, grbitPlr) == 0x4, "offsetof(THMINE,grbitPlr)");
 _Static_assert(offsetof(THMINE, iType) == 0x6, "offsetof(THMINE,iType)");
 _Static_assert(offsetof(THMINE, fDetonate) == 0x7, "offsetof(THMINE,fDetonate)");
 _Static_assert(offsetof(THMINE, grbitPlrNow) == 0x8, "offsetof(THMINE,grbitPlrNow)");
-#endif
-
-/* typind 5163 (0x142b) size=5 */
-typedef struct tagCOMSTAT
-{
-    uint8_t status;    /* +0x0000 */
-    uint16_t cbInQue;  /* +0x0001 */
-    uint16_t cbOutQue; /* +0x0003 */
-} COMSTAT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(COMSTAT) == 5, "sizeof(COMSTAT)");
-_Static_assert(offsetof(COMSTAT, status) == 0x0, "offsetof(COMSTAT,status)");
-_Static_assert(offsetof(COMSTAT, cbInQue) == 0x1, "offsetof(COMSTAT,cbInQue)");
-_Static_assert(offsetof(COMSTAT, cbOutQue) == 0x3, "offsetof(COMSTAT,cbOutQue)");
 #endif
 
 /* typind 5169 (0x1431) size=10 */
@@ -2226,22 +1791,6 @@ _Static_assert(offsetof(RTXFERF, id1) == 0x0, "offsetof(RTXFERF,id1)");
 _Static_assert(offsetof(RTXFERF, id2) == 0x2, "offsetof(RTXFERF,id2)");
 _Static_assert(offsetof(RTXFERF, grbitItems) == 0x5, "offsetof(RTXFERF,grbitItems)");
 _Static_assert(offsetof(RTXFERF, rgcQuan) == 0x7, "offsetof(RTXFERF,rgcQuan)");
-#endif
-
-/* typind 5180 (0x143c) size=4 */
-typedef struct tagRGBQUAD
-{
-    uint8_t rgbBlue;     /* +0x0000 */
-    uint8_t rgbGreen;    /* +0x0001 */
-    uint8_t rgbRed;      /* +0x0002 */
-    uint8_t rgbReserved; /* +0x0003 */
-} RGBQUAD;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(RGBQUAD) == 4, "sizeof(RGBQUAD)");
-_Static_assert(offsetof(RGBQUAD, rgbBlue) == 0x0, "offsetof(RGBQUAD,rgbBlue)");
-_Static_assert(offsetof(RGBQUAD, rgbGreen) == 0x1, "offsetof(RGBQUAD,rgbGreen)");
-_Static_assert(offsetof(RGBQUAD, rgbRed) == 0x2, "offsetof(RGBQUAD,rgbRed)");
-_Static_assert(offsetof(RGBQUAD, rgbReserved) == 0x3, "offsetof(RGBQUAD,rgbReserved)");
 #endif
 
 /* typind 5185 (0x1441) size=10 */
@@ -2300,16 +1849,6 @@ _Static_assert(offsetof(AISTARBASE, cFreighter) == 0x2, "offsetof(AISTARBASE,cFr
 _Static_assert(offsetof(AISTARBASE, rgflid) == 0x4, "offsetof(AISTARBASE,rgflid)");
 #endif
 
-/* typind 5195 (0x144b) size=2 */
-typedef struct tagHANDLETABLE
-{
-    uint16_t objectHandle[1]; /* +0x0000 */
-} HANDLETABLE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(HANDLETABLE) == 2, "sizeof(HANDLETABLE)");
-_Static_assert(offsetof(HANDLETABLE, objectHandle) == 0x0, "offsetof(HANDLETABLE,objectHandle)");
-#endif
-
 /* typind 5201 (0x1451) size=6 */
 typedef struct _rtshipint2
 {
@@ -2323,69 +1862,6 @@ _Static_assert(offsetof(RTSHIPINT2, id) == 0x0, "offsetof(RTSHIPINT2,id)");
 _Static_assert(offsetof(RTSHIPINT2, i) == 0x2, "offsetof(RTSHIPINT2,i)");
 _Static_assert(offsetof(RTSHIPINT2, i2) == 0x4, "offsetof(RTSHIPINT2,i2)");
 #endif
-
-/* typind 5204 (0x1454) size=14 */
-typedef struct tagWINDOWPOS
-{
-    uint16_t hwnd;            /* +0x0000 */
-    uint16_t hwndInsertAfter; /* +0x0002 */
-    int16_t x;                /* +0x0004 */
-    int16_t y;                /* +0x0006 */
-    int16_t cx;               /* +0x0008 */
-    int16_t cy;               /* +0x000a */
-    uint16_t flags;           /* +0x000c */
-} WINDOWPOS;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(WINDOWPOS) == 14, "sizeof(WINDOWPOS)");
-_Static_assert(offsetof(WINDOWPOS, hwnd) == 0x0, "offsetof(WINDOWPOS,hwnd)");
-_Static_assert(offsetof(WINDOWPOS, hwndInsertAfter) == 0x2, "offsetof(WINDOWPOS,hwndInsertAfter)");
-_Static_assert(offsetof(WINDOWPOS, x) == 0x4, "offsetof(WINDOWPOS,x)");
-_Static_assert(offsetof(WINDOWPOS, y) == 0x6, "offsetof(WINDOWPOS,y)");
-_Static_assert(offsetof(WINDOWPOS, cx) == 0x8, "offsetof(WINDOWPOS,cx)");
-_Static_assert(offsetof(WINDOWPOS, cy) == 0xa, "offsetof(WINDOWPOS,cy)");
-_Static_assert(offsetof(WINDOWPOS, flags) == 0xc, "offsetof(WINDOWPOS,flags)");
-#endif
-
-/* typind 5207 (0x1457) size=34 */
-typedef struct tagCREATESTRUCT
-{
-    void *lpCreateParams; /* +0x0000 */
-    uint16_t hInstance;   /* +0x0004 */
-    uint16_t hMenu;       /* +0x0006 */
-    uint16_t hwndParent;  /* +0x0008 */
-    int16_t cy;           /* +0x000a */
-    int16_t cx;           /* +0x000c */
-    int16_t y;            /* +0x000e */
-    int16_t x;            /* +0x0010 */
-    int32_t style;        /* +0x0012 */
-    char *lpszName;       /* +0x0016 */
-    char *lpszClass;      /* +0x001a */
-    uint32_t dwExStyle;   /* +0x001e */
-} CREATESTRUCT;
-
-/* typind 5209 (0x1459) size=52 */
-typedef struct tagPD
-{
-    uint32_t lStructSize;                                             /* +0x0000 */
-    uint16_t hwndOwner;                                               /* +0x0004 */
-    uint16_t hDevMode;                                                /* +0x0006 */
-    uint16_t hDevNames;                                               /* +0x0008 */
-    uint16_t hDC;                                                     /* +0x000a */
-    uint32_t Flags;                                                   /* +0x000c */
-    uint16_t nFromPage;                                               /* +0x0010 */
-    uint16_t nToPage;                                                 /* +0x0012 */
-    uint16_t nMinPage;                                                /* +0x0014 */
-    uint16_t nMaxPage;                                                /* +0x0016 */
-    uint16_t nCopies;                                                 /* +0x0018 */
-    uint16_t hInstance;                                               /* +0x001a */
-    int32_t lCustData;                                                /* +0x001c */
-    uint16_t (*lpfnPrintHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x0020 */
-    uint16_t (*lpfnSetupHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x0024 */
-    char *lpPrintTemplateName;                                        /* +0x0028 */
-    char *lpSetupTemplateName;                                        /* +0x002c */
-    uint16_t hPrintTemplate;                                          /* +0x0030 */
-    uint16_t hSetupTemplate;                                          /* +0x0032 */
-} PD;
 
 /* typind 5213 (0x145d) size=8 */
 typedef struct _thworm
@@ -2412,54 +1888,6 @@ _Static_assert(offsetof(THWORM, grbitPlr) == 0x2, "offsetof(THWORM,grbitPlr)");
 _Static_assert(offsetof(THWORM, grbitPlrTrav) == 0x4, "offsetof(THWORM,grbitPlrTrav)");
 _Static_assert(offsetof(THWORM, idPartner) == 0x6, "offsetof(THWORM,idPartner)");
 #endif
-
-/* typind 5224 (0x1468) size=46 */
-typedef struct tagCHOOSEFONT
-{
-    uint32_t lStructSize;                                        /* +0x0000 */
-    uint16_t hwndOwner;                                          /* +0x0004 */
-    uint16_t hDC;                                                /* +0x0006 */
-    LOGFONT *lpLogFont;                                          /* +0x0008 */
-    int16_t iPointSize;                                          /* +0x000c */
-    uint32_t Flags;                                              /* +0x000e */
-    uint32_t rgbColors;                                          /* +0x0012 */
-    int32_t lCustData;                                           /* +0x0016 */
-    uint16_t (*lpfnHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x001a */
-    char *lpTemplateName;                                        /* +0x001e */
-    uint16_t hInstance;                                          /* +0x0022 */
-    char *lpszStyle;                                             /* +0x0024 */
-    uint16_t nFontType;                                          /* +0x0028 */
-    int16_t nSizeMin;                                            /* +0x002a */
-    int16_t nSizeMax;                                            /* +0x002c */
-} CHOOSEFONT;
-
-/* typind 5241 (0x1479) size=8 */
-typedef struct tagMETARECORD
-{
-    uint32_t rdSize;     /* +0x0000 */
-    uint16_t rdFunction; /* +0x0004 */
-    uint16_t rdParm[1];  /* +0x0006 */
-} METARECORD;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(METARECORD) == 8, "sizeof(METARECORD)");
-_Static_assert(offsetof(METARECORD, rdSize) == 0x0, "offsetof(METARECORD,rdSize)");
-_Static_assert(offsetof(METARECORD, rdFunction) == 0x4, "offsetof(METARECORD,rdFunction)");
-_Static_assert(offsetof(METARECORD, rdParm) == 0x6, "offsetof(METARECORD,rdParm)");
-#endif
-
-/* typind 5243 (0x147b) size=26 */
-typedef struct tagMDICREATESTRUCT
-{
-    char *szClass;   /* +0x0000 */
-    char *szTitle;   /* +0x0004 */
-    uint16_t hOwner; /* +0x0008 */
-    int16_t x;       /* +0x000a */
-    int16_t y;       /* +0x000c */
-    int16_t cx;      /* +0x000e */
-    int16_t cy;      /* +0x0010 */
-    uint32_t style;  /* +0x0012 */
-    int32_t lParam;  /* +0x0016 */
-} MDICREATESTRUCT;
 
 /* typind 5250 (0x1482) size=10 */
 typedef struct _timer
@@ -2538,69 +1966,6 @@ typedef struct _lsb
 _Static_assert(sizeof(LSB) == 4, "sizeof(LSB)");
 #endif
 
-/* typind 5263 (0x148f) size=10 */
-typedef struct tagPANOSE
-{
-    uint8_t bFamilyType;      /* +0x0000 */
-    uint8_t bSerifStyle;      /* +0x0001 */
-    uint8_t bWeight;          /* +0x0002 */
-    uint8_t bProportion;      /* +0x0003 */
-    uint8_t bContrast;        /* +0x0004 */
-    uint8_t bStrokeVariation; /* +0x0005 */
-    uint8_t bArmStyle;        /* +0x0006 */
-    uint8_t bLetterform;      /* +0x0007 */
-    uint8_t bMidline;         /* +0x0008 */
-    uint8_t bXHeight;         /* +0x0009 */
-} PANOSE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PANOSE) == 10, "sizeof(PANOSE)");
-_Static_assert(offsetof(PANOSE, bFamilyType) == 0x0, "offsetof(PANOSE,bFamilyType)");
-_Static_assert(offsetof(PANOSE, bSerifStyle) == 0x1, "offsetof(PANOSE,bSerifStyle)");
-_Static_assert(offsetof(PANOSE, bWeight) == 0x2, "offsetof(PANOSE,bWeight)");
-_Static_assert(offsetof(PANOSE, bProportion) == 0x3, "offsetof(PANOSE,bProportion)");
-_Static_assert(offsetof(PANOSE, bContrast) == 0x4, "offsetof(PANOSE,bContrast)");
-_Static_assert(offsetof(PANOSE, bStrokeVariation) == 0x5, "offsetof(PANOSE,bStrokeVariation)");
-_Static_assert(offsetof(PANOSE, bArmStyle) == 0x6, "offsetof(PANOSE,bArmStyle)");
-_Static_assert(offsetof(PANOSE, bLetterform) == 0x7, "offsetof(PANOSE,bLetterform)");
-_Static_assert(offsetof(PANOSE, bMidline) == 0x8, "offsetof(PANOSE,bMidline)");
-_Static_assert(offsetof(PANOSE, bXHeight) == 0x9, "offsetof(PANOSE,bXHeight)");
-#endif
-
-/* typind 5274 (0x149a) size=6 */
-typedef struct tagCBT_CREATEWND
-{
-    CREATESTRUCT *lpcs;       /* +0x0000 */
-    uint16_t hwndInsertAfter; /* +0x0004 */
-} CBT_CREATEWND;
-
-/* typind 5298 (0x14b2) size=41 */
-typedef struct tagNEWTEXTMETRIC
-{
-    int16_t tmHeight;           /* +0x0000 */
-    int16_t tmAscent;           /* +0x0002 */
-    int16_t tmDescent;          /* +0x0004 */
-    int16_t tmInternalLeading;  /* +0x0006 */
-    int16_t tmExternalLeading;  /* +0x0008 */
-    int16_t tmAveCharWidth;     /* +0x000a */
-    int16_t tmMaxCharWidth;     /* +0x000c */
-    int16_t tmWeight;           /* +0x000e */
-    uint8_t tmItalic;           /* +0x0010 */
-    uint8_t tmUnderlined;       /* +0x0011 */
-    uint8_t tmStruckOut;        /* +0x0012 */
-    uint8_t tmFirstChar;        /* +0x0013 */
-    uint8_t tmLastChar;         /* +0x0014 */
-    uint8_t tmDefaultChar;      /* +0x0015 */
-    uint8_t tmBreakChar;        /* +0x0016 */
-    uint8_t tmPitchAndFamily;   /* +0x0017 */
-    uint8_t tmCharSet;          /* +0x0018 */
-    int16_t tmOverhang;         /* +0x0019 */
-    int16_t tmDigitizedAspectX; /* +0x001b */
-    int16_t tmDigitizedAspectY; /* +0x001d */
-    uint32_t ntmFlags;          /* +0x001f */
-    uint16_t ntmSizeEM;         /* +0x0023 */
-    uint16_t ntmCellHeight;     /* +0x0025 */
-    uint16_t ntmAvgWidth;       /* +0x0027 */
-} NEWTEXTMETRIC;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(NEWTEXTMETRIC) == 41, "sizeof(NEWTEXTMETRIC)");
 _Static_assert(offsetof(NEWTEXTMETRIC, tmHeight) == 0x0, "offsetof(NEWTEXTMETRIC,tmHeight)");
@@ -2627,68 +1992,6 @@ _Static_assert(offsetof(NEWTEXTMETRIC, ntmFlags) == 0x1f, "offsetof(NEWTEXTMETRI
 _Static_assert(offsetof(NEWTEXTMETRIC, ntmSizeEM) == 0x23, "offsetof(NEWTEXTMETRIC,ntmSizeEM)");
 _Static_assert(offsetof(NEWTEXTMETRIC, ntmCellHeight) == 0x25, "offsetof(NEWTEXTMETRIC,ntmCellHeight)");
 _Static_assert(offsetof(NEWTEXTMETRIC, ntmAvgWidth) == 0x27, "offsetof(NEWTEXTMETRIC,ntmAvgWidth)");
-#endif
-
-/* typind 5303 (0x14b7) size=4 */
-typedef struct tagCBTACTIVATESTRUCT
-{
-    int16_t fMouse;      /* +0x0000 */
-    uint16_t hWndActive; /* +0x0002 */
-} CBTACTIVATESTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(CBTACTIVATESTRUCT) == 4, "sizeof(CBTACTIVATESTRUCT)");
-_Static_assert(offsetof(CBTACTIVATESTRUCT, fMouse) == 0x0, "offsetof(CBTACTIVATESTRUCT,fMouse)");
-_Static_assert(offsetof(CBTACTIVATESTRUCT, hWndActive) == 0x2, "offsetof(CBTACTIVATESTRUCT,hWndActive)");
-#endif
-
-/* typind 5322 (0x14ca) size=4 */
-typedef struct tagPALETTEENTRY
-{
-    uint8_t peRed;   /* +0x0000 */
-    uint8_t peGreen; /* +0x0001 */
-    uint8_t peBlue;  /* +0x0002 */
-    uint8_t peFlags; /* +0x0003 */
-} PALETTEENTRY;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PALETTEENTRY) == 4, "sizeof(PALETTEENTRY)");
-_Static_assert(offsetof(PALETTEENTRY, peRed) == 0x0, "offsetof(PALETTEENTRY,peRed)");
-_Static_assert(offsetof(PALETTEENTRY, peGreen) == 0x1, "offsetof(PALETTEENTRY,peGreen)");
-_Static_assert(offsetof(PALETTEENTRY, peBlue) == 0x2, "offsetof(PALETTEENTRY,peBlue)");
-_Static_assert(offsetof(PALETTEENTRY, peFlags) == 0x3, "offsetof(PALETTEENTRY,peFlags)");
-#endif
-
-/* typind 5339 (0x14db) size=12 */
-typedef struct tagDELETEITEMSTRUCT
-{
-    uint16_t CtlType;  /* +0x0000 */
-    uint16_t CtlID;    /* +0x0002 */
-    uint16_t itemID;   /* +0x0004 */
-    uint16_t hwndItem; /* +0x0006 */
-    uint32_t itemData; /* +0x0008 */
-} DELETEITEMSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DELETEITEMSTRUCT) == 12, "sizeof(DELETEITEMSTRUCT)");
-_Static_assert(offsetof(DELETEITEMSTRUCT, CtlType) == 0x0, "offsetof(DELETEITEMSTRUCT,CtlType)");
-_Static_assert(offsetof(DELETEITEMSTRUCT, CtlID) == 0x2, "offsetof(DELETEITEMSTRUCT,CtlID)");
-_Static_assert(offsetof(DELETEITEMSTRUCT, itemID) == 0x4, "offsetof(DELETEITEMSTRUCT,itemID)");
-_Static_assert(offsetof(DELETEITEMSTRUCT, hwndItem) == 0x6, "offsetof(DELETEITEMSTRUCT,hwndItem)");
-_Static_assert(offsetof(DELETEITEMSTRUCT, itemData) == 0x8, "offsetof(DELETEITEMSTRUCT,itemData)");
-#endif
-
-/* typind 5341 (0x14dd) size=10 */
-typedef struct tagHARDWAREHOOKSTRUCT
-{
-    uint16_t hWnd;     /* +0x0000 */
-    uint16_t wMessage; /* +0x0002 */
-    uint16_t wParam;   /* +0x0004 */
-    int32_t lParam;    /* +0x0006 */
-} HARDWAREHOOKSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(HARDWAREHOOKSTRUCT) == 10, "sizeof(HARDWAREHOOKSTRUCT)");
-_Static_assert(offsetof(HARDWAREHOOKSTRUCT, hWnd) == 0x0, "offsetof(HARDWAREHOOKSTRUCT,hWnd)");
-_Static_assert(offsetof(HARDWAREHOOKSTRUCT, wMessage) == 0x2, "offsetof(HARDWAREHOOKSTRUCT,wMessage)");
-_Static_assert(offsetof(HARDWAREHOOKSTRUCT, wParam) == 0x4, "offsetof(HARDWAREHOOKSTRUCT,wParam)");
-_Static_assert(offsetof(HARDWAREHOOKSTRUCT, lParam) == 0x6, "offsetof(HARDWAREHOOKSTRUCT,lParam)");
 #endif
 
 /* typind 5346 (0x14e2) size=4 */
@@ -2725,76 +2028,6 @@ typedef struct _rtplanet
 _Static_assert(sizeof(RTPLANET) == 4, "sizeof(RTPLANET)");
 #endif
 
-/* typind 5349 (0x14e5) size=134 */
-typedef struct tagDRIVERINFOSTRUCT
-{
-    uint16_t length;       /* +0x0000 */
-    uint16_t hDriver;      /* +0x0002 */
-    uint16_t hModule;      /* +0x0004 */
-    char szAliasName[128]; /* +0x0006 */
-} DRIVERINFOSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DRIVERINFOSTRUCT) == 134, "sizeof(DRIVERINFOSTRUCT)");
-_Static_assert(offsetof(DRIVERINFOSTRUCT, length) == 0x0, "offsetof(DRIVERINFOSTRUCT,length)");
-_Static_assert(offsetof(DRIVERINFOSTRUCT, hDriver) == 0x2, "offsetof(DRIVERINFOSTRUCT,hDriver)");
-_Static_assert(offsetof(DRIVERINFOSTRUCT, hModule) == 0x4, "offsetof(DRIVERINFOSTRUCT,hModule)");
-_Static_assert(offsetof(DRIVERINFOSTRUCT, szAliasName) == 0x6, "offsetof(DRIVERINFOSTRUCT,szAliasName)");
-#endif
-
-/* typind 5354 (0x14ea) size=32 */
-typedef struct tagCHOOSECOLOR
-{
-    uint32_t lStructSize;                                        /* +0x0000 */
-    uint16_t hwndOwner;                                          /* +0x0004 */
-    uint16_t hInstance;                                          /* +0x0006 */
-    uint32_t rgbResult;                                          /* +0x0008 */
-    uint32_t *lpCustColors;                                      /* +0x000c */
-    uint32_t Flags;                                              /* +0x0010 */
-    int32_t lCustData;                                           /* +0x0014 */
-    uint16_t (*lpfnHook)(uint16_t, uint16_t, uint16_t, int32_t); /* +0x0018 */
-    char *lpTemplateName;                                        /* +0x001c */
-} CHOOSECOLOR;
-
-/* typind 5360 (0x14f0) size=6 */
-typedef struct tagABC
-{
-    int16_t abcA;  /* +0x0000 */
-    uint16_t abcB; /* +0x0002 */
-    int16_t abcC;  /* +0x0004 */
-} ABC;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(ABC) == 6, "sizeof(ABC)");
-_Static_assert(offsetof(ABC, abcA) == 0x0, "offsetof(ABC,abcA)");
-_Static_assert(offsetof(ABC, abcB) == 0x2, "offsetof(ABC,abcB)");
-_Static_assert(offsetof(ABC, abcC) == 0x4, "offsetof(ABC,abcC)");
-#endif
-
-/* typind 5365 (0x14f5) size=8 */
-typedef struct tagLOGBRUSH
-{
-    uint16_t lbStyle; /* +0x0000 */
-    uint32_t lbColor; /* +0x0002 */
-    int16_t lbHatch;  /* +0x0006 */
-} LOGBRUSH;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(LOGBRUSH) == 8, "sizeof(LOGBRUSH)");
-_Static_assert(offsetof(LOGBRUSH, lbStyle) == 0x0, "offsetof(LOGBRUSH,lbStyle)");
-_Static_assert(offsetof(LOGBRUSH, lbColor) == 0x2, "offsetof(LOGBRUSH,lbColor)");
-_Static_assert(offsetof(LOGBRUSH, lbHatch) == 0x6, "offsetof(LOGBRUSH,lbHatch)");
-#endif
-
-/* typind 5368 (0x14f8) size=4 */
-typedef struct tagSIZE
-{
-    int16_t cx; /* +0x0000 */
-    int16_t cy; /* +0x0002 */
-} SIZE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(SIZE) == 4, "sizeof(SIZE)");
-_Static_assert(offsetof(SIZE, cx) == 0x0, "offsetof(SIZE,cx)");
-_Static_assert(offsetof(SIZE, cy) == 0x2, "offsetof(SIZE,cy)");
-#endif
-
 /* typind 5372 (0x14fc) size=2 */
 typedef struct _fleetid
 {
@@ -2813,20 +2046,6 @@ typedef struct _fleetid
 _Static_assert(sizeof(FLEETID) == 2, "sizeof(FLEETID)");
 #endif
 
-/* typind 5375 (0x14ff) size=4 */
-typedef struct tagMULTIKEYHELP
-{
-    uint16_t mkSize;     /* +0x0000 */
-    uint8_t mkKeylist;   /* +0x0002 */
-    char szKeyphrase[1]; /* +0x0003 */
-} MULTIKEYHELP;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MULTIKEYHELP) == 4, "sizeof(MULTIKEYHELP)");
-_Static_assert(offsetof(MULTIKEYHELP, mkSize) == 0x0, "offsetof(MULTIKEYHELP,mkSize)");
-_Static_assert(offsetof(MULTIKEYHELP, mkKeylist) == 0x2, "offsetof(MULTIKEYHELP,mkKeylist)");
-_Static_assert(offsetof(MULTIKEYHELP, szKeyphrase) == 0x3, "offsetof(MULTIKEYHELP,szKeyphrase)");
-#endif
-
 /* typind 5378 (0x1502) size=2 */
 typedef struct _vers
 {
@@ -2843,64 +2062,6 @@ typedef struct _vers
 } VERS;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(VERS) == 2, "sizeof(VERS)");
-#endif
-
-/* typind 5391 (0x150f) size=18 */
-typedef struct tagCOMPAREITEMSTRUCT
-{
-    uint16_t CtlType;   /* +0x0000 */
-    uint16_t CtlID;     /* +0x0002 */
-    uint16_t hwndItem;  /* +0x0004 */
-    uint16_t itemID1;   /* +0x0006 */
-    uint32_t itemData1; /* +0x0008 */
-    uint16_t itemID2;   /* +0x000c */
-    uint32_t itemData2; /* +0x000e */
-} COMPAREITEMSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(COMPAREITEMSTRUCT) == 18, "sizeof(COMPAREITEMSTRUCT)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, CtlType) == 0x0, "offsetof(COMPAREITEMSTRUCT,CtlType)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, CtlID) == 0x2, "offsetof(COMPAREITEMSTRUCT,CtlID)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, hwndItem) == 0x4, "offsetof(COMPAREITEMSTRUCT,hwndItem)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, itemID1) == 0x6, "offsetof(COMPAREITEMSTRUCT,itemID1)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, itemData1) == 0x8, "offsetof(COMPAREITEMSTRUCT,itemData1)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, itemID2) == 0xc, "offsetof(COMPAREITEMSTRUCT,itemID2)");
-_Static_assert(offsetof(COMPAREITEMSTRUCT, itemData2) == 0xe, "offsetof(COMPAREITEMSTRUCT,itemData2)");
-#endif
-
-/* typind 5395 (0x1513) size=16 */
-typedef struct tagSEGINFO
-{
-    uint16_t offSegment;  /* +0x0000 */
-    uint16_t cbSegment;   /* +0x0002 */
-    uint16_t flags;       /* +0x0004 */
-    uint16_t cbAlloc;     /* +0x0006 */
-    uint16_t h;           /* +0x0008 */
-    uint16_t alignShift;  /* +0x000a */
-    uint16_t reserved[2]; /* +0x000c */
-} SEGINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(SEGINFO) == 16, "sizeof(SEGINFO)");
-_Static_assert(offsetof(SEGINFO, offSegment) == 0x0, "offsetof(SEGINFO,offSegment)");
-_Static_assert(offsetof(SEGINFO, cbSegment) == 0x2, "offsetof(SEGINFO,cbSegment)");
-_Static_assert(offsetof(SEGINFO, flags) == 0x4, "offsetof(SEGINFO,flags)");
-_Static_assert(offsetof(SEGINFO, cbAlloc) == 0x6, "offsetof(SEGINFO,cbAlloc)");
-_Static_assert(offsetof(SEGINFO, h) == 0x8, "offsetof(SEGINFO,h)");
-_Static_assert(offsetof(SEGINFO, alignShift) == 0xa, "offsetof(SEGINFO,alignShift)");
-_Static_assert(offsetof(SEGINFO, reserved) == 0xc, "offsetof(SEGINFO,reserved)");
-#endif
-
-/* typind 5400 (0x1518) size=6 */
-typedef struct tagKERNINGPAIR
-{
-    uint16_t wFirst;     /* +0x0000 */
-    uint16_t wSecond;    /* +0x0002 */
-    int16_t iKernAmount; /* +0x0004 */
-} KERNINGPAIR;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(KERNINGPAIR) == 6, "sizeof(KERNINGPAIR)");
-_Static_assert(offsetof(KERNINGPAIR, wFirst) == 0x0, "offsetof(KERNINGPAIR,wFirst)");
-_Static_assert(offsetof(KERNINGPAIR, wSecond) == 0x2, "offsetof(KERNINGPAIR,wSecond)");
-_Static_assert(offsetof(KERNINGPAIR, iKernAmount) == 0x4, "offsetof(KERNINGPAIR,iKernAmount)");
 #endif
 
 /* typind 5426 (0x1532) size=6 */
@@ -2926,20 +2087,6 @@ typedef struct _planetminimal
 _Static_assert(sizeof(PLANETMINIMAL) == 6, "sizeof(PLANETMINIMAL)");
 _Static_assert(offsetof(PLANETMINIMAL, id) == 0x0, "offsetof(PLANETMINIMAL,id)");
 _Static_assert(offsetof(PLANETMINIMAL, iPlayer) == 0x2, "offsetof(PLANETMINIMAL,iPlayer)");
-#endif
-
-/* typind 5453 (0x154d) size=6 */
-typedef struct tagRASTERIZER_STATUS
-{
-    int16_t nSize;       /* +0x0000 */
-    int16_t wFlags;      /* +0x0002 */
-    int16_t nLanguageID; /* +0x0004 */
-} RASTERIZER_STATUS;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(RASTERIZER_STATUS) == 6, "sizeof(RASTERIZER_STATUS)");
-_Static_assert(offsetof(RASTERIZER_STATUS, nSize) == 0x0, "offsetof(RASTERIZER_STATUS,nSize)");
-_Static_assert(offsetof(RASTERIZER_STATUS, wFlags) == 0x2, "offsetof(RASTERIZER_STATUS,wFlags)");
-_Static_assert(offsetof(RASTERIZER_STATUS, nLanguageID) == 0x4, "offsetof(RASTERIZER_STATUS,nLanguageID)");
 #endif
 
 /* typind 5456 (0x1550) size=17 */
@@ -2973,20 +2120,6 @@ typedef struct _mdplr
 } MDPLR;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(MDPLR) == 2, "sizeof(MDPLR)");
-#endif
-
-/* typind 5127 (0x1407) size=10 */
-typedef struct tagLOGPEN
-{
-    uint16_t lopnStyle; /* +0x0000 */
-    POINT lopnWidth;    /* +0x0002 */
-    uint32_t lopnColor; /* +0x0006 */
-} LOGPEN;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(LOGPEN) == 10, "sizeof(LOGPEN)");
-_Static_assert(offsetof(LOGPEN, lopnStyle) == 0x0, "offsetof(LOGPEN,lopnStyle)");
-_Static_assert(offsetof(LOGPEN, lopnWidth) == 0x2, "offsetof(LOGPEN,lopnWidth)");
-_Static_assert(offsetof(LOGPEN, lopnColor) == 0x6, "offsetof(LOGPEN,lopnColor)");
 #endif
 
 /* typind 4167 (0x1047) size=16 */
@@ -3045,22 +2178,6 @@ _Static_assert(offsetof(THTRADER, grbitPlr) == 0x6, "offsetof(THTRADER,grbitPlr)
 _Static_assert(offsetof(THTRADER, grbitTrader) == 0x8, "offsetof(THTRADER,grbitTrader)");
 #endif
 
-/* typind 5279 (0x149f) size=12 */
-typedef struct tagMOUSEHOOKSTRUCT
-{
-    POINT pt;              /* +0x0000 */
-    uint16_t hwnd;         /* +0x0004 */
-    uint16_t wHitTestCode; /* +0x0006 */
-    uint32_t dwExtraInfo;  /* +0x0008 */
-} MOUSEHOOKSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MOUSEHOOKSTRUCT) == 12, "sizeof(MOUSEHOOKSTRUCT)");
-_Static_assert(offsetof(MOUSEHOOKSTRUCT, pt) == 0x0, "offsetof(MOUSEHOOKSTRUCT,pt)");
-_Static_assert(offsetof(MOUSEHOOKSTRUCT, hwnd) == 0x4, "offsetof(MOUSEHOOKSTRUCT,hwnd)");
-_Static_assert(offsetof(MOUSEHOOKSTRUCT, wHitTestCode) == 0x6, "offsetof(MOUSEHOOKSTRUCT,wHitTestCode)");
-_Static_assert(offsetof(MOUSEHOOKSTRUCT, dwExtraInfo) == 0x8, "offsetof(MOUSEHOOKSTRUCT,dwExtraInfo)");
-#endif
-
 /* typind 4276 (0x10b4) size=54 */
 typedef struct _rpt
 {
@@ -3103,62 +2220,6 @@ _Static_assert(offsetof(RPT, hwndHScroll) == 0x32, "offsetof(RPT,hwndHScroll)");
 _Static_assert(offsetof(RPT, cColScroll) == 0x34, "offsetof(RPT,cColScroll)");
 #endif
 
-/* typind 5393 (0x1511) size=20 */
-typedef struct tagMINMAXINFO
-{
-    POINT ptReserved;     /* +0x0000 */
-    POINT ptMaxSize;      /* +0x0004 */
-    POINT ptMaxPosition;  /* +0x0008 */
-    POINT ptMinTrackSize; /* +0x000c */
-    POINT ptMaxTrackSize; /* +0x0010 */
-} MINMAXINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MINMAXINFO) == 20, "sizeof(MINMAXINFO)");
-_Static_assert(offsetof(MINMAXINFO, ptReserved) == 0x0, "offsetof(MINMAXINFO,ptReserved)");
-_Static_assert(offsetof(MINMAXINFO, ptMaxSize) == 0x4, "offsetof(MINMAXINFO,ptMaxSize)");
-_Static_assert(offsetof(MINMAXINFO, ptMaxPosition) == 0x8, "offsetof(MINMAXINFO,ptMaxPosition)");
-_Static_assert(offsetof(MINMAXINFO, ptMinTrackSize) == 0xc, "offsetof(MINMAXINFO,ptMinTrackSize)");
-_Static_assert(offsetof(MINMAXINFO, ptMaxTrackSize) == 0x10, "offsetof(MINMAXINFO,ptMaxTrackSize)");
-#endif
-
-/* typind 4983 (0x1377) size=12 */
-typedef struct tagGLYPHMETRICS
-{
-    uint16_t gmBlackBoxX;  /* +0x0000 */
-    uint16_t gmBlackBoxY;  /* +0x0002 */
-    POINT gmptGlyphOrigin; /* +0x0004 */
-    int16_t gmCellIncX;    /* +0x0008 */
-    int16_t gmCellIncY;    /* +0x000a */
-} GLYPHMETRICS;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(GLYPHMETRICS) == 12, "sizeof(GLYPHMETRICS)");
-_Static_assert(offsetof(GLYPHMETRICS, gmBlackBoxX) == 0x0, "offsetof(GLYPHMETRICS,gmBlackBoxX)");
-_Static_assert(offsetof(GLYPHMETRICS, gmBlackBoxY) == 0x2, "offsetof(GLYPHMETRICS,gmBlackBoxY)");
-_Static_assert(offsetof(GLYPHMETRICS, gmptGlyphOrigin) == 0x4, "offsetof(GLYPHMETRICS,gmptGlyphOrigin)");
-_Static_assert(offsetof(GLYPHMETRICS, gmCellIncX) == 0x8, "offsetof(GLYPHMETRICS,gmCellIncX)");
-_Static_assert(offsetof(GLYPHMETRICS, gmCellIncY) == 0xa, "offsetof(GLYPHMETRICS,gmCellIncY)");
-#endif
-
-/* typind 4523 (0x11ab) size=18 */
-typedef struct tagMSG
-{
-    uint16_t hwnd;    /* +0x0000 */
-    uint16_t message; /* +0x0002 */
-    uint16_t wParam;  /* +0x0004 */
-    int32_t lParam;   /* +0x0006 */
-    uint32_t time;    /* +0x000a */
-    POINT pt;         /* +0x000e */
-} MSG;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MSG) == 18, "sizeof(MSG)");
-_Static_assert(offsetof(MSG, hwnd) == 0x0, "offsetof(MSG,hwnd)");
-_Static_assert(offsetof(MSG, message) == 0x2, "offsetof(MSG,message)");
-_Static_assert(offsetof(MSG, wParam) == 0x4, "offsetof(MSG,wParam)");
-_Static_assert(offsetof(MSG, lParam) == 0x6, "offsetof(MSG,lParam)");
-_Static_assert(offsetof(MSG, time) == 0xa, "offsetof(MSG,time)");
-_Static_assert(offsetof(MSG, pt) == 0xe, "offsetof(MSG,pt)");
-#endif
-
 /* typind 5117 (0x13fd) size=12 */
 typedef struct _fleetsome
 {
@@ -3188,52 +2249,6 @@ _Static_assert(offsetof(FLEETSOME, idPlanet) == 0x6, "offsetof(FLEETSOME,idPlane
 _Static_assert(offsetof(FLEETSOME, pt) == 0x8, "offsetof(FLEETSOME,pt)");
 #endif
 
-/* typind 4121 (0x1019) size=32 */
-typedef struct tagPAINTSTRUCT
-{
-    uint16_t hdc;            /* +0x0000 */
-    int16_t fErase;          /* +0x0002 */
-    RECT rcPaint;            /* +0x0004 */
-    int16_t fRestore;        /* +0x000c */
-    int16_t fIncUpdate;      /* +0x000e */
-    uint8_t rgbReserved[16]; /* +0x0010 */
-} PAINTSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(PAINTSTRUCT) == 32, "sizeof(PAINTSTRUCT)");
-_Static_assert(offsetof(PAINTSTRUCT, hdc) == 0x0, "offsetof(PAINTSTRUCT,hdc)");
-_Static_assert(offsetof(PAINTSTRUCT, fErase) == 0x2, "offsetof(PAINTSTRUCT,fErase)");
-_Static_assert(offsetof(PAINTSTRUCT, rcPaint) == 0x4, "offsetof(PAINTSTRUCT,rcPaint)");
-_Static_assert(offsetof(PAINTSTRUCT, fRestore) == 0xc, "offsetof(PAINTSTRUCT,fRestore)");
-_Static_assert(offsetof(PAINTSTRUCT, fIncUpdate) == 0xe, "offsetof(PAINTSTRUCT,fIncUpdate)");
-_Static_assert(offsetof(PAINTSTRUCT, rgbReserved) == 0x10, "offsetof(PAINTSTRUCT,rgbReserved)");
-#endif
-
-/* typind 4727 (0x1277) size=26 */
-typedef struct tagDRAWITEMSTRUCT
-{
-    uint16_t CtlType;    /* +0x0000 */
-    uint16_t CtlID;      /* +0x0002 */
-    uint16_t itemID;     /* +0x0004 */
-    uint16_t itemAction; /* +0x0006 */
-    uint16_t itemState;  /* +0x0008 */
-    uint16_t hwndItem;   /* +0x000a */
-    uint16_t hDC;        /* +0x000c */
-    RECT rcItem;         /* +0x000e */
-    uint32_t itemData;   /* +0x0016 */
-} DRAWITEMSTRUCT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(DRAWITEMSTRUCT) == 26, "sizeof(DRAWITEMSTRUCT)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, CtlType) == 0x0, "offsetof(DRAWITEMSTRUCT,CtlType)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, CtlID) == 0x2, "offsetof(DRAWITEMSTRUCT,CtlID)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, itemID) == 0x4, "offsetof(DRAWITEMSTRUCT,itemID)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, itemAction) == 0x6, "offsetof(DRAWITEMSTRUCT,itemAction)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, itemState) == 0x8, "offsetof(DRAWITEMSTRUCT,itemState)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, hwndItem) == 0xa, "offsetof(DRAWITEMSTRUCT,hwndItem)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, hDC) == 0xc, "offsetof(DRAWITEMSTRUCT,hDC)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, rcItem) == 0xe, "offsetof(DRAWITEMSTRUCT,rcItem)");
-_Static_assert(offsetof(DRAWITEMSTRUCT, itemData) == 0x16, "offsetof(DRAWITEMSTRUCT,itemData)");
-#endif
-
 /* typind 5239 (0x1477) size=24 */
 typedef struct _drawcir
 {
@@ -3247,33 +2262,6 @@ typedef struct _drawcir
     int16_t fCovered;   /* +0x0014 */
     int16_t fHollowOut; /* +0x0016 */
 } DRAWCIR;
-
-/* typind 5301 (0x14b5) size=22 */
-typedef struct tagWINDOWPLACEMENT
-{
-    uint16_t length;       /* +0x0000 */
-    uint16_t flags;        /* +0x0002 */
-    uint16_t showCmd;      /* +0x0004 */
-    POINT ptMinPosition;   /* +0x0006 */
-    POINT ptMaxPosition;   /* +0x000a */
-    RECT rcNormalPosition; /* +0x000e */
-} WINDOWPLACEMENT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(WINDOWPLACEMENT) == 22, "sizeof(WINDOWPLACEMENT)");
-_Static_assert(offsetof(WINDOWPLACEMENT, length) == 0x0, "offsetof(WINDOWPLACEMENT,length)");
-_Static_assert(offsetof(WINDOWPLACEMENT, flags) == 0x2, "offsetof(WINDOWPLACEMENT,flags)");
-_Static_assert(offsetof(WINDOWPLACEMENT, showCmd) == 0x4, "offsetof(WINDOWPLACEMENT,showCmd)");
-_Static_assert(offsetof(WINDOWPLACEMENT, ptMinPosition) == 0x6, "offsetof(WINDOWPLACEMENT,ptMinPosition)");
-_Static_assert(offsetof(WINDOWPLACEMENT, ptMaxPosition) == 0xa, "offsetof(WINDOWPLACEMENT,ptMaxPosition)");
-_Static_assert(offsetof(WINDOWPLACEMENT, rcNormalPosition) == 0xe, "offsetof(WINDOWPLACEMENT,rcNormalPosition)");
-#endif
-
-/* typind 5386 (0x150a) size=28 */
-typedef struct tagNCCALCSIZE_PARAMS
-{
-    RECT rgrc[3];     /* +0x0000 */
-    WINDOWPOS *lppos; /* +0x0018 */
-} NCCALCSIZE_PARAMS;
 
 /* typind 5429 (0x1535) size=10 */
 typedef struct _wn
@@ -3653,20 +2641,6 @@ _Static_assert(offsetof(KILL, dpShield) == 0x4, "offsetof(KILL,dpShield)");
 _Static_assert(offsetof(KILL, dv) == 0x6, "offsetof(KILL,dv)");
 #endif
 
-/* typind 5407 (0x151f) size=146 */
-typedef struct tagENUMLOGFONT
-{
-    LOGFONT elfLogFont;   /* +0x0000 */
-    char elfFullName[64]; /* +0x0032 */
-    char elfStyle[32];    /* +0x0072 */
-} ENUMLOGFONT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(ENUMLOGFONT) == 146, "sizeof(ENUMLOGFONT)");
-_Static_assert(offsetof(ENUMLOGFONT, elfLogFont) == 0x0, "offsetof(ENUMLOGFONT,elfLogFont)");
-_Static_assert(offsetof(ENUMLOGFONT, elfFullName) == 0x32, "offsetof(ENUMLOGFONT,elfFullName)");
-_Static_assert(offsetof(ENUMLOGFONT, elfStyle) == 0x72, "offsetof(ENUMLOGFONT,elfStyle)");
-#endif
-
 /* typind 4830 (0x12de) size=5 */
 typedef struct _msgturn
 {
@@ -3730,58 +2704,6 @@ _Static_assert(offsetof(ZIPPRODQ1, cpq) == 0x1, "offsetof(ZIPPRODQ1,cpq)");
 _Static_assert(offsetof(ZIPPRODQ1, rgpq) == 0x2, "offsetof(ZIPPRODQ1,rgpq)");
 #endif
 
-/* typind 4971 (0x136b) size=15 */
-typedef struct tagBITMAPCOREINFO
-{
-    BITMAPCOREHEADER bmciHeader; /* +0x0000 */
-    RGBTRIPLE bmciColors[1];     /* +0x000c */
-} BITMAPCOREINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BITMAPCOREINFO) == 15, "sizeof(BITMAPCOREINFO)");
-_Static_assert(offsetof(BITMAPCOREINFO, bmciHeader) == 0x0, "offsetof(BITMAPCOREINFO,bmciHeader)");
-_Static_assert(offsetof(BITMAPCOREINFO, bmciColors) == 0xc, "offsetof(BITMAPCOREINFO,bmciColors)");
-#endif
-
-/* typind 5165 (0x142d) size=16 */
-typedef struct tagMAT2
-{
-    FIXED eM11; /* +0x0000 */
-    FIXED eM12; /* +0x0004 */
-    FIXED eM21; /* +0x0008 */
-    FIXED eM22; /* +0x000c */
-} MAT2;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(MAT2) == 16, "sizeof(MAT2)");
-_Static_assert(offsetof(MAT2, eM11) == 0x0, "offsetof(MAT2,eM11)");
-_Static_assert(offsetof(MAT2, eM12) == 0x4, "offsetof(MAT2,eM12)");
-_Static_assert(offsetof(MAT2, eM21) == 0x8, "offsetof(MAT2,eM21)");
-_Static_assert(offsetof(MAT2, eM22) == 0xc, "offsetof(MAT2,eM22)");
-#endif
-
-/* typind 5261 (0x148d) size=8 */
-typedef struct tagPOINTFX
-{
-    FIXED x; /* +0x0000 */
-    FIXED y; /* +0x0004 */
-} POINTFX;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(POINTFX) == 8, "sizeof(POINTFX)");
-_Static_assert(offsetof(POINTFX, x) == 0x0, "offsetof(POINTFX,x)");
-_Static_assert(offsetof(POINTFX, y) == 0x4, "offsetof(POINTFX,y)");
-#endif
-
-/* typind 5446 (0x1546) size=44 */
-typedef struct tagBITMAPINFO
-{
-    BITMAPINFOHEADER bmiHeader; /* +0x0000 */
-    RGBQUAD bmiColors[1];       /* +0x0028 */
-} BITMAPINFO;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(BITMAPINFO) == 44, "sizeof(BITMAPINFO)");
-_Static_assert(offsetof(BITMAPINFO, bmiHeader) == 0x0, "offsetof(BITMAPINFO,bmiHeader)");
-_Static_assert(offsetof(BITMAPINFO, bmiColors) == 0x28, "offsetof(BITMAPINFO,bmiColors)");
-#endif
-
 /* typind 5218 (0x1462) size=1284 */
 typedef struct _aihist
 {
@@ -3794,57 +2716,6 @@ _Static_assert(sizeof(AIHIST) == 1284, "sizeof(AIHIST)");
 _Static_assert(offsetof(AIHIST, cbAiHist) == 0x0, "offsetof(AIHIST,cbAiHist)");
 _Static_assert(offsetof(AIHIST, cStarbase) == 0x2, "offsetof(AIHIST,cStarbase)");
 _Static_assert(offsetof(AIHIST, rgasb) == 0x4, "offsetof(AIHIST,rgasb)");
-#endif
-
-/* typind 5265 (0x1491) size=114 */
-typedef struct tagOUTLINETEXTMETRIC
-{
-    uint16_t otmSize;               /* +0x0000 */
-    TEXTMETRIC otmTextMetrics;      /* +0x0002 */
-    uint8_t otmFiller;              /* +0x0021 */
-    PANOSE otmPanoseNumber;         /* +0x0022 */
-    uint16_t otmfsSelection;        /* +0x002c */
-    uint16_t otmfsType;             /* +0x002e */
-    int16_t otmsCharSlopeRise;      /* +0x0030 */
-    int16_t otmsCharSlopeRun;       /* +0x0032 */
-    int16_t otmItalicAngle;         /* +0x0034 */
-    uint16_t otmEMSquare;           /* +0x0036 */
-    int16_t otmAscent;              /* +0x0038 */
-    int16_t otmDescent;             /* +0x003a */
-    uint16_t otmLineGap;            /* +0x003c */
-    uint16_t otmsCapEmHeight;       /* +0x003e */
-    uint16_t otmsXHeight;           /* +0x0040 */
-    RECT otmrcFontBox;              /* +0x0042 */
-    int16_t otmMacAscent;           /* +0x004a */
-    int16_t otmMacDescent;          /* +0x004c */
-    uint16_t otmMacLineGap;         /* +0x004e */
-    uint16_t otmusMinimumPPEM;      /* +0x0050 */
-    POINT otmptSubscriptSize;       /* +0x0052 */
-    POINT otmptSubscriptOffset;     /* +0x0056 */
-    POINT otmptSuperscriptSize;     /* +0x005a */
-    POINT otmptSuperscriptOffset;   /* +0x005e */
-    uint16_t otmsStrikeoutSize;     /* +0x0062 */
-    int16_t otmsStrikeoutPosition;  /* +0x0064 */
-    int16_t otmsUnderscorePosition; /* +0x0066 */
-    int16_t otmsUnderscoreSize;     /* +0x0068 */
-    char *otmpFamilyName;           /* +0x006a */
-    char *otmpFaceName;             /* +0x006c */
-    char *otmpStyleName;            /* +0x006e */
-    char *otmpFullName;             /* +0x0070 */
-} OUTLINETEXTMETRIC;
-
-/* typind 4542 (0x11be) size=8 */
-typedef struct tagLOGPALETTE
-{
-    uint16_t palVersion;         /* +0x0000 */
-    uint16_t palNumEntries;      /* +0x0002 */
-    PALETTEENTRY palPalEntry[1]; /* +0x0004 */
-} LOGPALETTE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(LOGPALETTE) == 8, "sizeof(LOGPALETTE)");
-_Static_assert(offsetof(LOGPALETTE, palVersion) == 0x0, "offsetof(LOGPALETTE,palVersion)");
-_Static_assert(offsetof(LOGPALETTE, palNumEntries) == 0x2, "offsetof(LOGPALETTE,palNumEntries)");
-_Static_assert(offsetof(LOGPALETTE, palPalEntry) == 0x4, "offsetof(LOGPALETTE,palPalEntry)");
 #endif
 
 /* typind 5422 (0x152e) size=28 */
@@ -4282,34 +3153,6 @@ _Static_assert(offsetof(ZIPPRODQ, zpq1) == 0xe, "offsetof(ZIPPRODQ,zpq1)");
 _Static_assert(offsetof(ZIPPRODQ, fNoResearch) == 0xe, "offsetof(ZIPPRODQ,fNoResearch)");
 _Static_assert(offsetof(ZIPPRODQ, cpq) == 0xf, "offsetof(ZIPPRODQ,cpq)");
 _Static_assert(offsetof(ZIPPRODQ, rgpq) == 0x10, "offsetof(ZIPPRODQ,rgpq)");
-#endif
-
-/* typind 5286 (0x14a6) size=12 */
-typedef struct tagTTPOLYCURVE
-{
-    uint16_t wType;  /* +0x0000 */
-    uint16_t cpfx;   /* +0x0002 */
-    POINTFX apfx[1]; /* +0x0004 */
-} TTPOLYCURVE;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TTPOLYCURVE) == 12, "sizeof(TTPOLYCURVE)");
-_Static_assert(offsetof(TTPOLYCURVE, wType) == 0x0, "offsetof(TTPOLYCURVE,wType)");
-_Static_assert(offsetof(TTPOLYCURVE, cpfx) == 0x2, "offsetof(TTPOLYCURVE,cpfx)");
-_Static_assert(offsetof(TTPOLYCURVE, apfx) == 0x4, "offsetof(TTPOLYCURVE,apfx)");
-#endif
-
-/* typind 5320 (0x14c8) size=16 */
-typedef struct tagTTPOLYGONHEADER
-{
-    uint32_t cb;      /* +0x0000 */
-    uint32_t dwType;  /* +0x0004 */
-    POINTFX pfxStart; /* +0x0008 */
-} TTPOLYGONHEADER;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(TTPOLYGONHEADER) == 16, "sizeof(TTPOLYGONHEADER)");
-_Static_assert(offsetof(TTPOLYGONHEADER, cb) == 0x0, "offsetof(TTPOLYGONHEADER,cb)");
-_Static_assert(offsetof(TTPOLYGONHEADER, dwType) == 0x4, "offsetof(TTPOLYGONHEADER,dwType)");
-_Static_assert(offsetof(TTPOLYGONHEADER, pfxStart) == 0x8, "offsetof(TTPOLYGONHEADER,pfxStart)");
 #endif
 
 /* typind 4187 (0x105b) size=226 */

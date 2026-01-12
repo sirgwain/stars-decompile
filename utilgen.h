@@ -52,7 +52,7 @@ uint16_t DibNumColors(void *pv);                                                
 void RightTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase);                                                                     /* MEMORY_UTILGEN:0x29d6 */
 void DrawBtn(uint16_t hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText);                                                                                      /* MEMORY_UTILGEN:0x38b8 */
 void _Draw3dFrame(uint16_t hdc, RECT *prc, int16_t fErase);                                                                                                          /* MEMORY_UTILGEN:0x336a */
-void CopyFile(char *szSrc, char *szDst);                                                                                                                             /* MEMORY_UTILGEN:0x1ffa */
+void CopyStarsFile(char *szSrc, char *szDst);                                                                                                                             /* MEMORY_UTILGEN:0x1ffa */
 uint32_t LGetNextFileXor(void);                                                                                                                                      /* MEMORY_UTILGEN:0x1b54 */
 void BoundPoints(RECT *prc, POINT *rgpt, int16_t cpt);                                                                                                               /* MEMORY_UTILGEN:0x2f70 */
 uint16_t HpalFromDib(uint16_t hdib);                                                                                                                                 /* MEMORY_UTILGEN:0x4b50 */

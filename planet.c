@@ -55,7 +55,7 @@ int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr)
     return 0;
 }
 
-int16_t IWarpMAFromLppl(PLANET *lppl, int16_t *pfTwo)
+int16_t IWarpMAFromLppl(PLANET *lppl, bool *pfTwo)
 {
     int16_t fTwo;
     int16_t iWarp;

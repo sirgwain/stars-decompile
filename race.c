@@ -385,7 +385,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr)
     char szFilter[256];
     uint16_t i;
     char szFile[256];
-    OFN ofn;
+    // OFN ofn;
 
     /* TODO: implement */
     return 0;

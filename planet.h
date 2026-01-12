@@ -8,7 +8,7 @@
 void DrawPlanShip(uint16_t hdc, int16_t grbit);  /* MEMORY_PLANET:0x0d16 */
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal);  /* MEMORY_PLANET:0x88c0 */
 int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr);  /* MEMORY_PLANET:0x6b88 */
-int16_t IWarpMAFromLppl(PLANET *lppl, int16_t *pfTwo);  /* MEMORY_PLANET:0x7b10 */
+int16_t IWarpMAFromLppl(PLANET *lppl, bool *pfTwo);  /* MEMORY_PLANET:0x7b10 */
 void DrawPlanetStats(uint16_t hdc, TILE *ptile, OBJ obj);  /* MEMORY_PLANET:0x1716 */
 int16_t FGetBestDefensePart(PART *ppart);  /* MEMORY_PLANET:0x21f6 */
 void DrawPlanetShipList(uint16_t hdc, TILE *ptile, OBJ obj);  /* MEMORY_PLANET:0x377e */
