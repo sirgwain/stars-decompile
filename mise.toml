@@ -177,6 +177,12 @@ if [ ! -f "$ANALYZER" ]; then
     exit 1
 fi
 
+echo "Renaming Win16 API functions..."
+bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -postScript FixWin16LibraryFunctionNames.java
+
 echo "Applying Win16 API signatures..."
 bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
@@ -191,11 +197,11 @@ run = [
     { task = "unzip-stars" },
     { task = "ghidra-import" },
     { task = "ghidra-create-enums" },
+    { task = "ghidra-apply-win16api" },
     { task = "ghidra-apply-structs" },
     { task = "ghidra-apply-names" },
     { task = "ghidra-apply-globals" },
     { task = "ghidra-apply-funcsigs" },
-    { task = "ghidra-apply-win16api" },
     { task = "ghidra-update-runtime-helpers" },
     { task = "ghidra-retype-doubles" },
 ]
