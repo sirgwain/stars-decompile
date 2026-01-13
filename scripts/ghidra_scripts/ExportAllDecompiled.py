@@ -62,6 +62,8 @@ def main():
             for func in fm.getFunctions(True):
                 addr = str(func.getEntryPoint())
                 name = func.getName()
+                if name.startswith("_"):
+                    continue
 
                 # Apply segment filter if specified
                 if segment_filter and not addr.startswith(segment_filter):
