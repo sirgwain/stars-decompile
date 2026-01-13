@@ -21,6 +21,7 @@ typedef enum HeapType
 } HeapType;
 
 extern uint16_t mphtcbAlloc[12]; /*1120:0d64*/
+// TODO: figure out how to get ghidra to override this type
 extern HB *rglphb[12]; /*1120:0d34*/
 
 /* functions */

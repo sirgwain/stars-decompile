@@ -26,11 +26,11 @@ void WriteBOF(int16_t iPlayer, int16_t dt, int16_t fMulti)
     /* TODO: implement */
 }
 
-void WriteRtShDef(SHDEF *lpshdef, uint8_t * *ppbStore)
+void WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore)
 {
     uint8_t rgb[147];
     char szHulName[32];
-    uint8_t * pb;
+    uint8_t *pb;
     int16_t cOut;
 
     /* TODO: implement */
@@ -40,15 +40,15 @@ void WriteBattles(int16_t iPlayer)
 {
     int16_t ctok;
     int16_t cbRec;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t cbT;
     uint16_t fPlayerCur;
-    BTLREC * lpbtlrec;
-    uint8_t * lpbBattle;
-    HB * lphb;
-    BTLDATA * lpbtldata;
+    BTLREC *lpbtlrec;
+    uint8_t *lpbBattle;
+    HB *lphb;
+    BTLDATA *lpbtldata;
     int16_t cb;
     int16_t iplr;
 
@@ -60,11 +60,11 @@ void WriteBattles(int16_t iPlayer)
 
 void WriteFleet(FLEET *lpfl)
 {
-    uint16_t * pus;
+    uint16_t *pus;
     uint8_t rgb[134];
     uint16_t us;
     int16_t i;
-    uint8_t * pb;
+    uint8_t *pb;
     int16_t fByte;
     uint16_t grMask;
     int32_t wt;
@@ -78,7 +78,7 @@ void WriteFleet(FLEET *lpfl)
 void WriteOrders(FLEET *lpfl)
 {
     int16_t cord;
-    ORDER * lpord;
+    ORDER *lpord;
 
     /* TODO: implement */
 }
@@ -89,21 +89,71 @@ void RgToStream(void *rg, uint16_t cb)
     /* TODO: implement */
 }
 
-void SetSzWorkFromDt(uint16_t dt, int16_t iPlayer)
+/* Build szWork from szBase and dt/iPlayer.
+ * Behavior from decompile:
+ *  - strip extension from szBase if the last '.' is after the last '\\'
+ *  - copy base into szWork
+ *  - dt==2: append fixed host suffix and return
+ *  - dt in {1,3,4}: append a player-specific extension using 'x','m','h' selector
+ *  - otherwise: append fallback suffix
+ */
+void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer)
 {
-    char *pchSlash;
-    int16_t c;
     char *pchDot;
+    char *pchSlash;
+    size_t len;
 
-    /* TODO: implement */
+    /* Strip extension from szBase if '.' is after the last path separator */
+    pchDot = strrchr(szBase, '.');
+    if (pchDot != NULL && szBase[0] != '.')
+    {
+        pchSlash = strrchr(szBase, '\\');
+        if (pchSlash == NULL || pchSlash < pchDot)
+        {
+            *pchDot = '\0';
+        }
+    }
+
+    /* Start szWork with base name */
+    strncpy(szWork, szBase, sizeof(szBase));
+    len = strlen(szWork);
+
+    switch (dt)
+    {
+    case dtTurn: /* Log file */
+        snprintf(szWork + len, sizeof(szWork) - len, ".M%d", iPlayer);
+        break;
+
+    case dtHost:
+        strcat(szWork, ".HST");
+        break;
+
+    case dtXY: /* Universe file */
+        strcat(szWork, ".XY");
+        break;
+
+    case dtLog: /* Turn file */
+        snprintf(szWork + len, sizeof(szWork) - len, ".X%d", iPlayer);
+        break;
+
+    case dtHist: /* History file */
+        snprintf(szWork + len, sizeof(szWork) - len, ".H%d", iPlayer);
+        break;
+
+    default:
+        /* Defensive fallback: behave like universe */
+        strncat(szWork, ".XY", sizeof(szWork));
+        break;
+    }
 }
 
-int16_t FMarkFile(uint16_t dt, int16_t iPlayer, int16_t mdMark, int16_t f)
+int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f)
 {
     int16_t ids;
     RTBOF rtbof;
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
+    ;
     int16_t fChange;
     int16_t fSuccess;
     int16_t fSilentSav;
@@ -120,15 +170,15 @@ int16_t FMarkFile(uint16_t dt, int16_t iPlayer, int16_t mdMark, int16_t f)
 
 void SetVisPFInit(int16_t iPlr)
 {
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     uint16_t detNew;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t j;
-    FLEET * lpfl;
-    THING * lpth;
+    FLEET *lpfl;
+    THING *lpth;
     int16_t ifl;
     int16_t i;
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t raMajor;
     uint16_t grbitPlr;
     int16_t iSteal;
@@ -142,7 +192,7 @@ void SetVisPFInit(int16_t iPlr)
 void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog)
 {
     uint8_t rgb[36];
-    uint8_t * pb;
+    uint8_t *pb;
     char szPlanName[32];
     int16_t cOut;
 
@@ -152,28 +202,29 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog)
 int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend)
 {
     int16_t iMax;
-    FLEET * lpflT;
+    FLEET *lpflT;
     int16_t fNoAutoTrack;
-    BTLPLAN * lpbtlplan;
+    BTLPLAN *lpbtlplan;
     int16_t j;
-    int16_t (* penvMemSav)[9];
+    MemJump *penvMemSav;
     int16_t i;
-    ORDER * lpord;
-    THING * lpth;
-    FLEET * lpfl;
-    int16_t env[9];
+    ORDER *lpord;
+    THING *lpth;
+    FLEET *lpfl;
+    MemJump env;
+    ;
     int16_t iord;
-    SHDEF * lpshdef;
-    THING * lpthMac;
+    SHDEF *lpshdef;
+    THING *lpthMac;
     int16_t fRet;
-    PLANET * lpplT;
+    PLANET *lpplT;
     SCAN scan;
     int16_t mdTarget;
-    FLEET * lpflTarget;
+    FLEET *lpflTarget;
     POINT pt;
     int32_t dy;
     int16_t iflT;
-    FLEET * lpflBest;
+    FLEET *lpflBest;
     int16_t fFoundIdeal;
     int32_t dx;
     int32_t lBest;
@@ -212,10 +263,11 @@ void SetVisPFFinish(int16_t iPlr)
     /* TODO: implement */
 }
 
-int16_t FCreateFile(uint16_t dt, int16_t iPlayer, char *szForceName)
+int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName)
 {
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
+    ;
     char *psz;
 
     /* TODO: implement */
@@ -226,24 +278,24 @@ void SetVisPFPlanets(int16_t iPlr)
 {
     int32_t lRadPlanet2;
     int16_t iRadPlanet;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     POINT pt;
     int16_t pctCloak;
-    PLANET * lppl2;
+    PLANET *lppl2;
     int16_t dy;
-    FLEET * lpfl2;
+    FLEET *lpfl2;
     int32_t d2;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t j;
-    THING * lpth;
+    THING *lpth;
     int32_t lRadius2;
     int16_t i;
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t iRadius;
     int16_t fStargateView;
     int16_t dx;
     int32_t l;
-    PLANET * lpplMac2;
+    PLANET *lpplMac2;
     uint16_t grbitPlr;
     int16_t rgStargateRange[16];
     int32_t lVis2;
@@ -260,19 +312,19 @@ void SetVisPFPlanets(int16_t iPlr)
 
 void SetVisPFFleets(int16_t iPlr)
 {
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     POINT pt;
     int16_t pctCloak;
     int16_t dy;
-    FLEET * lpfl2;
+    FLEET *lpfl2;
     int32_t d2;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t j;
-    FLEET * lpfl;
-    THING * lpth;
+    FLEET *lpfl;
+    THING *lpth;
     int32_t lRadius2;
     int16_t ifl;
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t iRadius;
     int16_t dx;
     uint16_t grbitPlr;
@@ -296,9 +348,9 @@ void WritePlanet(PLANET *lppl, int16_t rt, int16_t fHistory)
 {
     uint8_t bMask;
     uint8_t rgb[80];
-    uint8_t * pbBase;
+    uint8_t *pbBase;
     int16_t i;
-    uint8_t * pb;
+    uint8_t *pb;
 
     /* debug symbols */
     /* label LFinishBRecord @ MEMORY_IO:0x7f89 */
@@ -309,7 +361,7 @@ void WritePlanet(PLANET *lppl, int16_t rt, int16_t fHistory)
 void MarkFleet(FLEET *lpfl, int16_t det)
 {
     int16_t i;
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
 
     /* debug symbols */
     /* block (block) @ MEMORY_IO:0x887e */
@@ -319,7 +371,7 @@ void MarkFleet(FLEET *lpfl, int16_t det)
 
 void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det)
 {
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
 
     /* TODO: implement */
 }
@@ -329,20 +381,20 @@ void SetVisPFThings(int16_t iPlr)
     POINT pt;
     int16_t pctCloak;
     int16_t dy;
-    FLEET * lpfl2;
+    FLEET *lpfl2;
     int32_t d2;
     int16_t j;
-    THING * lpth;
+    THING *lpth;
     int32_t lRadius2;
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t iRadius;
     int16_t dx;
     uint16_t grbitPlr;
-    PLANET * lppl2;
+    PLANET *lppl2;
     int32_t l;
-    THING * lpthMac2;
-    THING * lpth2;
-    PLANET * lpplMac2;
+    THING *lpthMac2;
+    THING *lpth2;
+    PLANET *lpplMac2;
     int32_t lVis2;
 
     /* debug symbols */
@@ -359,7 +411,7 @@ void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore)
 {
     uint8_t rgb[264];
     int16_t i;
-    uint8_t * pb;
+    uint8_t *pb;
     int16_t cOut;
 
     /* TODO: implement */

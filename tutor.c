@@ -10,6 +10,32 @@ ITEMACTION rgiaUnloadAllCol[5]; /* MEMORY_TUTOR:0x0fa8 */
 ITEMACTION rgiaLoadAllCol[5];   /* MEMORY_TUTOR:0x0fb2 */
 ZIPPRODQ1 rgzpqTut[2];          /* MEMORY_TUTOR:0x663a */
 
+char mpishdefishTutor[6] = {3, 4, 9, 6, 7, 14};
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HMENU hmenu;
+    RECT rc;
+    int16_t (*lpProc)(void);
+    int16_t fRet;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_TUTOR:0x00ad */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
+
+    /* TODO: implement */
+    return 0;
+}
+
 /* functions */
 void EndTutor(int16_t fClose)
 {
@@ -17,9 +43,9 @@ void EndTutor(int16_t fClose)
     /* TODO: implement */
 }
 
-void DrawTutorText(uint16_t hwnd)
+void DrawTutorText(HWND hwnd)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t yTop;
     int16_t fPara;
     PAINTSTRUCT ps;
@@ -85,20 +111,6 @@ int16_t FTutorTaskDone(void)
     return 0;
 }
 
-int16_t TutorDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hmenu;
-    RECT rc;
-    int16_t (*lpProc)(void);
-    int16_t fRet;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_TUTOR:0x00ad */
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t FCheckFleetName(int16_t id, int16_t ids)
 {
     FLEET *lpfl;
@@ -122,7 +134,7 @@ int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, int16_t ids)
 
 void SaveGameState(void)
 {
-    uint16_t hmenu;
+    HMENU hmenu;
 
     /* TODO: implement */
 }
@@ -168,17 +180,9 @@ void ShowTutor(int16_t fShow)
 
 void RestoreGameState(void)
 {
-    uint16_t hmenu;
+    HMENU hmenu;
 
     /* TODO: implement */
-}
-
-int16_t PanicDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    RECT rc;
-
-    /* TODO: implement */
-    return 0;
 }
 
 int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, uint16_t iPlan, uint16_t iDist)
@@ -354,3 +358,5 @@ void AdvanceTutor(void)
 
     /* TODO: implement */
 }
+
+#endif /* _WIN32 */

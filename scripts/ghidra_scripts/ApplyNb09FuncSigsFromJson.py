@@ -302,7 +302,14 @@ def calling_convention_for(types_obj):
         return "__pascal16far"
     tags = types_obj.get("tags") or []
     ret = types_obj.get("ret") or {}
-    if ("RETFAR" in tags) or ret.get("is_far_ptr"):
+    # Win16 (MSC 6.x / Stars!): some functions that return values wider than 16 bits
+    # are annotated in the NB09 with a RET32-style tag. In the original source these
+    # were typically declared far stdcall to match the compiler's 16-bit ABI helpers.
+    #
+    # We already treat far-pointer returns (*32) as stdcall; extend the same rule to
+    # 32-bit scalar returns (long/ulong/int32_t/uint32_t), which show up as RET32 in
+    # our JSON.
+    if ("RETFAR" in tags) or ret.get("is_far_ptr") or ("RET32" in tags) or ret.get("is_32bit") or (ret.get("size") == 4):
         return "__stdcall16far"
     return "__cdecl16far"
 
@@ -409,24 +416,27 @@ def _get_stack_offset(var):
     Works across a couple of Ghidra versions by trying multiple APIs.
     """
     try:
-        # Many variable implementations expose this directly
+        # Many variable implementations expose this directly.
+        # In some cases (e.g. register-backed storage) Ghidra throws
+        # java.lang.UnsupportedOperationException: "Storage does not have a stack varnode".
         return int(var.getStackOffset())
-    except Exception:
+    except:
+        # Jython may not reliably map Java runtime exceptions to `Exception`.
         pass
     try:
         vs = var.getVariableStorage()
         if vs is not None and vs.isStackStorage():
             try:
                 return int(vs.getStackOffset())
-            except Exception:
+            except:
                 # Some versions: stack offset comes from first varnode
-                vn = vs.getVarnodes()
-                if vn and len(vn) > 0:
-                    try:
+                try:
+                    vn = vs.getVarnodes()
+                    if vn and len(vn) > 0:
                         return int(vn[0].getOffset())
-                    except Exception:
-                        return None
-    except Exception:
+                except:
+                    return None
+    except:
         pass
     return None
 

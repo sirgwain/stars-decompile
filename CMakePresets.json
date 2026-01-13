@@ -28,8 +28,9 @@
       "name": "win32",
       "displayName": "Windows (CLI + Win32)",
       "inherits": "base",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build-win",
       "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchains/mingw-w64.cmake",
         "STARS_BUILD_CLI": "ON",
         "STARS_BUILD_WIN32": "ON"
       }

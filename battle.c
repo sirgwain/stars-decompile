@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "battle.h"
 
@@ -189,32 +190,6 @@ void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef)
     SHDEF *lpshdef;
 
     /* TODO: implement */
-}
-
-int16_t BattlePlansDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t (*lpProc)(void);
-    int16_t idc;
-    int16_t i;
-    int16_t fRet;
-    RECT rc;
-    int16_t cLen;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_BATTLE:0x113e */
-    /* label LSelectName @ MEMORY_BATTLE:0x14a5 */
-    /* label LRename @ MEMORY_BATTLE:0x0f9c */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t NewPlanNameDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    RECT rc;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void CreateSalvage(FLEET *pfl, THING **plpth)
@@ -411,23 +386,6 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
     return 0;
 }
 
-int16_t RelationsDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hdc;
-    int16_t mdSBase;
-    PAINTSTRUCT ps;
-    RECT rcGBox;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_BATTLE:0x019f */
-    /* block (block) @ MEMORY_BATTLE:0x0464 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t FHullHasTeeth(HUL *lphul)
 {
     HS *lphs;
@@ -615,8 +573,8 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     int16_t itok;
     PLANET *lppl;
     int32_t lwt;
-    int16_t env[9];
-    int16_t (*penvMemSav)[9];
+    MemJump env;
+    MemJump *penvMemSav;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x8be9 */
@@ -653,9 +611,18 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit)
 
 SHDEF *LpshdefFromTok(TOK *ptok)
 {
+    /* Uses ptok->iplr (byte at +2) and ptok->ishdef (byte at +4). */
+    uint8_t iplr = ptok->iplr;
+    uint8_t ishdef = ptok->ishdef;
 
-    /* TODO: implement */
-    return NULL;
+    if (ishdef < ishdefMax)
+    {
+        return &rglpshdef[iplr][ishdef];
+    }
+    else
+    {
+        return &rglpshdefSB[iplr][ishdef];
+    }
 }
 
 int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator)
@@ -880,3 +847,49 @@ int16_t FHullHasBombs(HUL *lphul)
     /* TODO: implement */
     return 0;
 }
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t (*lpProc)(void);
+    int16_t idc;
+    int16_t i;
+    int16_t fRet;
+    RECT rc;
+    int16_t cLen;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_BATTLE:0x113e */
+    /* label LSelectName @ MEMORY_BATTLE:0x14a5 */
+    /* label LRename @ MEMORY_BATTLE:0x0f9c */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HDC hdc;
+    int16_t mdSBase;
+    PAINTSTRUCT ps;
+    RECT rcGBox;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_BATTLE:0x019f */
+    /* block (block) @ MEMORY_BATTLE:0x0464 */
+
+    /* TODO: implement */
+    return 0;
+}
+#endif /* _WIN32 */

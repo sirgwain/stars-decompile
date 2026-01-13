@@ -1,12 +1,81 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+#include <assert.h>
 #include "types.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif /* _WIN32 */
+
+#ifdef NDEBUG
+#define Assert(expr) ((void)0)
+#else
+#define Assert(expr) assert(expr)
+#endif
+
+#define IDOK 1
+#define IDYES 6
+#define IDNO 7
+
+// guessed defines from the decompile
+#define MsgYesNo(ids) AlertSz(PszFormatIds((ids), NULL), MB_YESNO | MB_ICONQUESTION)
+#define Error(ids) AlertSz(PszFormatIds((ids), NULL), MB_OK | MB_ICONHAND)
+
+/* Message box helpers used by decompiled/ported code. */
+#ifndef MessageSz
+#define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
+#endif
+
+/* These are constants in the original; keep them header-only without creating
+ * multiple definitions across TUs.
+ */
+#define dGalOff 1000 /* map border inset ("off") */
+#define ishdefMax 16
+#define ishdefSBMax 10
+#define cbAllocMac 65480
+#define BTLPLANMAX 16
+#define cPlanetAbsMax 999
+#define cThingAbsMax 4050
+
+/* Stream helper: treat EOF like the Win16 macro. */
+static bool AtEOF(FILE *fp)
+{
+    long pos = ftell(fp);
+    if (pos < 0)
+        return true;
+
+    if (fseek(fp, 0, SEEK_END) != 0)
+        return true;
+
+    long end = ftell(fp);
+    if (end < 0)
+        return true;
+
+    /* Restore position */
+    fseek(fp, pos, SEEK_SET);
+
+    return pos >= end;
+}
+
+/* UI helper used in a few places in the original. */
+#ifndef MessageSz
+#define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
+#endif
+
+// platform independent jmp_buf wrapper
+typedef struct MemJump
+{
+    jmp_buf env;
+} MemJump;
+
+extern MemJump *penvMem; // pointer to wrapper is fine
 
 /* Unassigned symbols (no file inferred) */
 
 /* globals */
-extern BTLDATA *vlpbdVCR;
+
+extern BTLDATA *
+    vlpbdVCR;
 extern BTLDATA *vlpbdVCRNext;
 extern BTLPLAN *rglpbtlplan[1];
 extern BTLPLAN btlplan;
@@ -24,7 +93,6 @@ extern char *PCTDPCTPCT;
 extern char *PCTDXPCTDPCTPCT;
 extern char *PCTLD;
 extern char *PCTLD00;
-extern char *rgchcompstrlower;
 extern char *rgszMineField[5];
 extern char *rgszMinerals[6];
 extern char *rgszPlanetAttr[3];
@@ -45,8 +113,7 @@ extern char *vrgszUnits[6];
 extern char iLastGet;
 extern char iLastMsgGet;
 extern char iLastStrGet;
-extern char rgbCur[1024];
-extern char rgchcomp[13];
+extern uint8_t rgbCur[1024];
 extern char rgszArial[4][32];
 extern char rgszSpeed[30];
 extern char szBackup[0];
@@ -86,20 +153,6 @@ extern HDR hdrCur;
 extern HDR hdrPrev;
 extern HS rghsFutureTech[8];
 extern INI ini;
-extern int16_t (*lpfnBrowserDlgProc)(void);
-extern int16_t (*lpfnFakeCEProc)(void);
-extern int16_t (*lpfnFakeComboProc)(void);
-extern int16_t (*lpfnFakeEditProc)(void);
-extern int16_t (*lpfnFakeListProc)(void);
-extern int16_t (*lpfnGaugeDlgProc)(void);
-extern int16_t (*lpfnHostTimerProc)(void);
-extern int16_t (*lpfnRealCEProc)(void);
-extern int16_t (*lpfnRealComboProc)(void);
-extern int16_t (*lpfnRealEditProc)(void);
-extern int16_t (*lpfnRealListProc)(void);
-extern int16_t (*lpfnReportDlgProc)(void);
-extern int16_t (*lpfnTutorDlgProc)(void);
-extern int16_t (*penvMem)[9];
 extern int16_t *lpMsg;
 extern int16_t *rgXferValidHulls;
 extern int16_t *vrgiflMerge;
@@ -158,7 +211,7 @@ extern int16_t fAnimate;
 extern int16_t fBrowserValid;
 extern int16_t fDirtyPlan;
 extern int16_t fDlgUp;
-extern int16_t fFileErrSilent;
+extern bool fFileErrSilent;
 extern int16_t fFreeingTitle;
 extern int16_t fHullCopy;
 extern int16_t fInEditUpdate;
@@ -176,7 +229,6 @@ extern int16_t fStarbaseMode;
 extern int16_t fValidLx;
 extern int16_t fValidLxf;
 extern int16_t fViewFilteredMsg;
-extern int16_t hf;
 extern int16_t iAbout1st;
 extern int16_t iAboutPartial;
 extern int16_t idBattle;
@@ -204,7 +256,6 @@ extern int16_t mdBuild;
 extern int16_t mdMsgObj;
 extern int16_t mdXferDlg;
 extern int16_t pctResGlob;
-extern int16_t rgcompstrlower[26];
 extern int16_t rgcsxPlr[16];
 extern int16_t rgdxOrderDD[3];
 extern int16_t rgidPlan[999];
@@ -317,9 +368,9 @@ extern SCOREX *rgsxPlr[1];
 extern SCOREX *vlprgScoreX;
 extern SEL sel;
 extern SHDEF *lpshdefBuild;
-extern SHDEF *rglpshdef[1];
-extern SHDEF *rglpshdefSB[1];
-extern SHDEF rgshdef[16];
+extern SHDEF *rglpshdef[cPlayerMax];
+extern SHDEF *rglpshdefSB[cPlayerMax];
+extern SHDEF rgshdef[cPlayerMax];
 extern SHDEF shdefBuild;
 extern THING *lpthBattle;
 extern THING *lpThings;
@@ -341,111 +392,6 @@ extern uint16_t grbitScanEShip;
 extern uint16_t grbitScanMines;
 extern uint16_t grbitScanShip;
 extern uint16_t grfMissed;
-extern uint16_t hAccel;
-extern uint16_t hAccelTitle;
-extern uint16_t hbmpBackBld;
-extern uint16_t hbmpMono;
-extern uint16_t hbmpMsg;
-extern uint16_t hbmpNumbers;
-extern uint16_t hbmpScanner;
-extern uint16_t hbmpScanShip;
-extern uint16_t hbmpUnknownPlanet;
-extern uint16_t hbr50Screen;
-extern uint16_t hbrBBlue;
-extern uint16_t hbrBlue;
-extern uint16_t hbrButtonFace;
-extern uint16_t hbrButtonHilite;
-extern uint16_t hbrButtonShadow;
-extern uint16_t hbrButtonText;
-extern uint16_t hbrCargo;
-extern uint16_t hbrDesktop;
-extern uint16_t hbrDkYellow;
-extern uint16_t hbrDock;
-extern uint16_t hbrEnemy;
-extern uint16_t hbrGray;
-extern uint16_t hbrGreen;
-extern uint16_t hbrLightGray;
-extern uint16_t hbrPurple;
-extern uint16_t hbrRadar;
-extern uint16_t hbrRadarNear;
-extern uint16_t hbrRed;
-extern uint16_t hbrSelect;
-extern uint16_t hbrShip;
-extern uint16_t hbrStarbase;
-extern uint16_t hbrTooltip;
-extern uint16_t hbrWindow;
-extern uint16_t hbrWindowFrame;
-extern uint16_t hbrWindowText;
-extern uint16_t hbrYellow;
-extern uint16_t hcurArrowHelp;
-extern uint16_t hcurCloseGrab;
-extern uint16_t hcurHand;
-extern uint16_t hcurNoWay;
-extern uint16_t hcurOpenGrab;
-extern uint16_t hcurResize4Way;
-extern uint16_t hcurResizeNS;
-extern uint16_t hcurResizeWE;
-extern uint16_t hcurScanAdd;
-extern uint16_t hcurScanner;
-extern uint16_t hcurTrashCan;
-extern uint16_t hdibPlanets;
-extern uint16_t hdibPlaque;
-extern uint16_t hdibRaces;
-extern uint16_t hdibRacesT;
-extern uint16_t hdibRacesX;
-extern uint16_t hdibThings;
-extern uint16_t hdibToolbar;
-extern uint16_t hiconHost;
-extern uint16_t hiconStars;
-extern uint16_t hiconWait;
-extern uint16_t hInst;
-extern uint16_t hpenDkBlue;
-extern uint16_t hpenDkGreen;
-extern uint16_t hpenDkPurple;
-extern uint16_t hpenDkYellow;
-extern uint16_t hpenEnemy;
-extern uint16_t hpenMassPath;
-extern uint16_t hpenRadar;
-extern uint16_t hpenRadarNear;
-extern uint16_t hpenShip;
-extern uint16_t hpenStarbase;
-extern uint16_t hpenYellow;
-extern uint16_t hrgnHuge;
-extern uint16_t hrgnScratch;
-extern uint16_t hwndActive;
-extern uint16_t hwndBattleDD;
-extern uint16_t hwndBrowser;
-extern uint16_t hwndBrowserChild;
-extern uint16_t hwndFleetCompLB;
-extern uint16_t hwndFrame;
-extern uint16_t hwndMain;
-extern uint16_t hwndMDIClient;
-extern uint16_t hwndMessage;
-extern uint16_t hwndMine;
-extern uint16_t hwndMineCB;
-extern uint16_t hwndMsgDrop;
-extern uint16_t hwndMsgEdit;
-extern uint16_t hwndMsgScroll;
-extern uint16_t hwndOrderED;
-extern uint16_t hwndPlanet;
-extern uint16_t hwndPlanetProdLB;
-extern uint16_t hwndPopup;
-extern uint16_t hwndProdDlg;
-extern uint16_t hwndProgressGauge;
-extern uint16_t hwndRaceParent;
-extern uint16_t hwndRepCB;
-extern uint16_t hwndReportDlg;
-extern uint16_t hwndScanner;
-extern uint16_t hwndScoreXDlg;
-extern uint16_t hwndShipDD;
-extern uint16_t hwndShipLB;
-extern uint16_t hwndSlotDlg;
-extern uint16_t hwndTb;
-extern uint16_t hwndTBRadar;
-extern uint16_t hwndTitle;
-extern uint16_t hwndTooltip;
-extern uint16_t hwndVCRDlg;
-extern uint16_t hwndZipOrderDlg;
 extern uint16_t rghbrCache[32];
 extern uint16_t rghbrMineral[5];
 extern uint16_t rghbrMinSum[4][2];
@@ -472,7 +418,6 @@ extern uint16_t vhdibTitle;
 extern uint16_t vhpal;
 extern uint16_t vhpalSplash;
 extern uint16_t wVersFile;
-extern uint32_t bogi[25];
 extern uint32_t crButtonFace;
 extern uint32_t crButtonHilite;
 extern uint32_t crButtonShadow;
@@ -480,9 +425,6 @@ extern uint32_t crButtonText;
 extern uint32_t crWindow;
 extern uint32_t crWindowText;
 extern uint32_t ctickLast;
-extern uint32_t rgcrCache[32];
-extern uint32_t rgcrMinerals[6];
-extern uint32_t rgcrPlrHistory[16];
 extern uint32_t vtickTooltip1stVis;
 extern uint32_t vtickTooltipLast;
 extern uint8_t *lpb2k;
@@ -513,5 +455,118 @@ extern XFER *pxfer;
 extern XFERFULL *lpxf;
 extern ZIPORDER vrgZip[4];
 extern ZIPPRODQ vrgZipProd[5];
+
+#ifdef _WIN32
+// win32 only globals
+
+extern COLORREF rgcrCache[32];
+extern COLORREF rgcrMinerals[6];
+extern COLORREF rgcrPlrHistory[16];
+extern HINSTANCE hInst;
+extern HPEN hpenDkBlue;
+extern HPEN hpenDkGreen;
+extern HPEN hpenDkPurple;
+extern HPEN hpenDkYellow;
+extern HPEN hpenEnemy;
+extern HPEN hpenMassPath;
+extern HPEN hpenRadar;
+extern HPEN hpenRadarNear;
+extern HPEN hpenShip;
+extern HPEN hpenStarbase;
+extern HPEN hpenYellow;
+extern HRGN hrgnHuge;
+extern HRGN hrgnScratch;
+extern HWND hwndActive;
+extern HWND hwndBattleDD;
+extern HWND hwndBrowser;
+extern HWND hwndBrowserChild;
+extern HWND hwndFleetCompLB;
+extern HWND hwndFrame;
+extern HWND hwndMain;
+extern HWND hwndMDIClient;
+extern HWND hwndMessage;
+extern HWND hwndMine;
+extern HWND hwndMineCB;
+extern HWND hwndMsgDrop;
+extern HWND hwndMsgEdit;
+extern HWND hwndMsgScroll;
+extern HWND hwndOrderED;
+extern HWND hwndPlanet;
+extern HWND hwndPlanetProdLB;
+extern HWND hwndPopup;
+extern HWND hwndProdDlg;
+extern HWND hwndProgressGauge;
+extern HWND hwndRaceParent;
+extern HWND hwndRepCB;
+extern HWND hwndReportDlg;
+extern HWND hwndScanner;
+extern HWND hwndScoreXDlg;
+extern HWND hwndShipDD;
+extern HWND hwndShipLB;
+extern HWND hwndSlotDlg;
+extern HWND hwndTb;
+extern HWND hwndTBRadar;
+extern HWND hwndTitle;
+extern HWND hwndTooltip;
+extern HWND hwndVCRDlg;
+extern HWND hwndZipOrderDlg;
+extern HACCEL hAccel;
+extern HACCEL hAccelTitle;
+extern HBITMAP hbmpBackBld;
+extern HBITMAP hbmpMono;
+extern HBITMAP hbmpMsg;
+extern HBITMAP hbmpNumbers;
+extern HBITMAP hbmpScanner;
+extern HBITMAP hbmpScanShip;
+extern HBITMAP hbmpUnknownPlanet;
+extern HBRUSH hbr50Screen;
+extern HBRUSH hbrBBlue;
+extern HBRUSH hbrBlue;
+extern HBRUSH hbrButtonFace;
+extern HBRUSH hbrButtonHilite;
+extern HBRUSH hbrButtonShadow;
+extern HBRUSH hbrButtonText;
+extern HBRUSH hbrCargo;
+extern HBRUSH hbrDesktop;
+extern HBRUSH hbrDkYellow;
+extern HBRUSH hbrDock;
+extern HBRUSH hbrEnemy;
+extern HBRUSH hbrGray;
+extern HBRUSH hbrGreen;
+extern HBRUSH hbrLightGray;
+extern HBRUSH hbrPurple;
+extern HBRUSH hbrRadar;
+extern HBRUSH hbrRadarNear;
+extern HBRUSH hbrRed;
+extern HBRUSH hbrSelect;
+extern HBRUSH hbrShip;
+extern HBRUSH hbrStarbase;
+extern HBRUSH hbrTooltip;
+extern HBRUSH hbrWindow;
+extern HBRUSH hbrWindowFrame;
+extern HBRUSH hbrWindowText;
+extern HBRUSH hbrYellow;
+extern HCURSOR hcurArrowHelp;
+extern HCURSOR hcurCloseGrab;
+extern HCURSOR hcurHand;
+extern HCURSOR hcurNoWay;
+extern HCURSOR hcurOpenGrab;
+extern HCURSOR hcurResize4Way;
+extern HCURSOR hcurResizeNS;
+extern HCURSOR hcurResizeWE;
+extern HCURSOR hcurScanAdd;
+extern HCURSOR hcurScanner;
+extern HCURSOR hcurTrashCan;
+extern HGLOBAL hdibPlanets;
+extern HGLOBAL hdibPlaque;
+extern HGLOBAL hdibRaces;
+extern HGLOBAL hdibRacesT;
+extern HGLOBAL hdibRacesX;
+extern HGLOBAL hdibThings;
+extern HGLOBAL hdibToolbar;
+extern HICON hiconHost;
+extern HICON hiconStars;
+extern HICON hiconWait;
+#endif /* _WIN32 */
 
 #endif /* GLOBALS_H_ */

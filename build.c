@@ -12,7 +12,72 @@ int16_t rgidsParts[13] = {1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 
 int16_t rgidsPartsSB[8] = {1087, 1088, 1089, 1091, 1096, 1099, 1103, 1104};                                                               /* 10c8:007c */
 
 /* functions */
-int16_t FCheckQueuedShip(uint16_t hwnd, SHDEF *lpshdef, int16_t fEdit)
+
+void KillQueuedMassPackets(PLANET *lppl)
+{
+    int16_t iprod;
+    int16_t iDst;
+    PROD *lpprod;
+
+    /* TODO: implement */
+}
+
+int16_t IEmptyBmpFromGrhst(HullSlotType grhst)
+{
+    int16_t i;
+
+    /* TODO: implement */
+    return 0;
+}
+
+SHDEF *NthValidShdef(int16_t n)
+{
+    int16_t i;
+
+    /* TODO: implement */
+    return NULL;
+}
+
+SHDEF *NthValidEnemyShdef(int16_t n)
+{
+    int16_t i;
+    int16_t j;
+
+    /* TODO: implement */
+    return NULL;
+}
+
+int16_t PctJammerFromHul(HUL *lphul)
+{
+    int32_t pctJam;
+    int16_t ihs;
+    int16_t i;
+    int32_t pctHit;
+    PART part;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void MakeNewName(char *lpsz)
+{
+    int16_t cLen;
+
+    /* TODO: implement */
+}
+
+void KillQueuedShips(PLANET *lppl)
+{
+    int16_t iprod;
+    int16_t iDst;
+    PROD *lpprod;
+
+    /* TODO: implement */
+}
+
+#ifdef _WIN32
+
+int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit)
 {
     char rgch[40];
     int16_t fProgress;
@@ -24,15 +89,15 @@ int16_t FCheckQueuedShip(uint16_t hwnd, SHDEF *lpshdef, int16_t fEdit)
     return 0;
 }
 
-int16_t SlotDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     RECT rcWindow;
-    uint16_t hdc;
+    HDC hdc;
     RECT rcGBox;
     SHDEF *lpshdef;
     int16_t left;
     PAINTSTRUCT ps;
-    uint16_t hwndItem;
+    HWND hwndItem;
     int16_t cch;
     int32_t lSel;
     RECT rc;
@@ -81,24 +146,7 @@ void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)
     /* TODO: implement */
 }
 
-void KillQueuedMassPackets(PLANET *lppl)
-{
-    int16_t iprod;
-    int16_t iDst;
-    PROD *lpprod;
-
-    /* TODO: implement */
-}
-
-int16_t IEmptyBmpFromGrhst(HullSlotType grhst)
-{
-    int16_t i;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void DrawBuildSelHull(uint16_t hwnd, uint16_t hdc, int16_t iDraw, RECT *prc)
+void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc)
 {
     char rgch[20];
     DV dv;
@@ -143,7 +191,7 @@ int16_t ShipBuilder(POINT ptDlgSize)
     return 0;
 }
 
-void DrawBuildSelComp(uint16_t hwnd, uint16_t hdc, int16_t iDraw)
+void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw)
 {
     uint16_t grhst;
     HS hsShip;
@@ -174,13 +222,13 @@ void DrawBuildSelComp(uint16_t hwnd, uint16_t hdc, int16_t iDraw)
     /* TODO: implement */
 }
 
-void DrawSlotDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t iDraw)
+void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
 {
     int16_t yTop;
     int16_t iMax;
     int16_t cSlot;
     int16_t fCreatedDC;
-    uint16_t hdcMem;
+    HDC hdcMem;
     int16_t c;
     int16_t i;
     int16_t bkMode;
@@ -204,13 +252,13 @@ void DrawSlotDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t iDraw)
     /* TODO: implement */
 }
 
-void ShowMainControls(uint16_t hwnd, int16_t sw)
+void ShowMainControls(HWND hwnd, int16_t sw)
 {
 
     /* TODO: implement */
 }
 
-void FillBuildDD(uint16_t hwndDD, int16_t md)
+void FillBuildDD(HWND hwndDD, int16_t md)
 {
     int16_t ishdefMac;
     int16_t fProgress;
@@ -222,23 +270,6 @@ void FillBuildDD(uint16_t hwndDD, int16_t md)
     PART part;
 
     /* TODO: implement */
-}
-
-SHDEF *NthValidShdef(int16_t n)
-{
-    int16_t i;
-
-    /* TODO: implement */
-    return NULL;
-}
-
-SHDEF *NthValidEnemyShdef(int16_t n)
-{
-    int16_t i;
-    int16_t j;
-
-    /* TODO: implement */
-    return NULL;
 }
 
 int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify)
@@ -254,35 +285,7 @@ int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify)
     return 0;
 }
 
-int16_t PctJammerFromHul(HUL *lphul)
-{
-    int32_t pctJam;
-    int16_t ihs;
-    int16_t i;
-    int32_t pctHit;
-    PART part;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void MakeNewName(char *lpsz)
-{
-    int16_t cLen;
-
-    /* TODO: implement */
-}
-
-void KillQueuedShips(PLANET *lppl)
-{
-    int16_t iprod;
-    int16_t iDst;
-    PROD *lpprod;
-
-    /* TODO: implement */
-}
-
-void FillBuildPartsLB(uint16_t hwndLB, int16_t grbit)
+void FillBuildPartsLB(HWND hwndLB, int16_t grbit)
 {
     int16_t mdAvail;
     int16_t i;
@@ -293,7 +296,7 @@ void FillBuildPartsLB(uint16_t hwndLB, int16_t grbit)
     /* TODO: implement */
 }
 
-int32_t FakeListProc(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     int16_t iSel;
     POINT pt;
@@ -318,9 +321,9 @@ void UpdateSlotGlobals(void)
     /* TODO: implement */
 }
 
-int16_t FTrackSlot(uint16_t hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBox, int16_t fRightBtn)
+int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBox, int16_t fRightBtn)
 {
-    uint16_t hdc;
+    HDC hdc;
     POINT ptOld;
     POINT ptTileSize;
     int16_t ibmpY;
@@ -329,7 +332,7 @@ int16_t FTrackSlot(uint16_t hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fLi
     int16_t iSrc;
     POINT ptDNew;
     int16_t ibmpX;
-    uint16_t hdcMem;
+    HDC hdcMem;
     int16_t i;
     uint16_t hbmpFullSav;
     RECT rcStart;
@@ -337,7 +340,7 @@ int16_t FTrackSlot(uint16_t hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fLi
     uint16_t hbmpScreen;
     int16_t ibmp;
     uint16_t hbmpOld;
-    uint16_t hdcMemFull;
+    HDC hdcMemFull;
     POINT ptD;
     int16_t iSel;
     uint16_t hbmpSav;
@@ -374,3 +377,5 @@ void SetBuildSelection(int16_t iSrc)
 
     /* TODO: implement */
 }
+
+#endif

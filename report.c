@@ -1,17 +1,142 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "report.h"
 
 /* globals */
 uint16_t mpicolgrbitBU[12] = {0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
 
+void DumpUniverse(void)
+{
+    int16_t ids;
+    int16_t i;
+    MemJump env;
+    int16_t fOpen;
+    int16_t fSuccess;
+    int16_t fSilentSav;
+    MemJump *penvMemSav;
+    int16_t cch;
+
+    /* debug symbols */
+    /* label DisplayStatus @ MEMORY_REPORT:0x866b */
+
+    /* TODO: implement */
+}
+
+void DumpFleets(void)
+{
+    int16_t iplr;
+    int16_t ids;
+    char szFile[256];
+    char szForm[256];
+    int16_t ifl;
+    FLEET *lpfl;
+    int16_t j;
+    int16_t i;
+    MemJump env;
+    ;
+    int16_t fOpen;
+    int16_t fSuccess;
+    int16_t fSilentSav;
+    MemJump *penvMemSav;
+    char *psz;
+    int16_t cch;
+    int32_t l;
+
+    /* debug symbols */
+    /* label DisplayStatus @ MEMORY_REPORT:0xa144 */
+
+    /* TODO: implement */
+}
+
+void DumpPlanets(void)
+{
+    PLANET *lpplMac;
+    int16_t ids;
+    PLANET *lppl;
+    char szFile[256];
+    char szForm[256];
+    int16_t j;
+    int16_t i;
+    MemJump env;
+    ;
+    int16_t fOpen;
+    int16_t fSuccess;
+    int16_t fSilentSav;
+    MemJump *penvMemSav;
+    char *psz;
+    int16_t cch;
+    int32_t l;
+    float pct;
+    PART part;
+    int32_t rgl[4];
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_REPORT:0x8ac2 */
+    /* block (block) @ MEMORY_REPORT:0x8c01 */
+    /* block (block) @ MEMORY_REPORT:0x8e3b */
+    /* block (block) @ MEMORY_REPORT:0x9348 */
+    /* label DisplayStatus @ MEMORY_REPORT:0x94b2 */
+
+    /* TODO: implement */
+}
+
+char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears)
+{
+    POINT pt;
+    int16_t c;
+    int16_t i;
+    ORDER ord;
+    char *psz;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_REPORT:0x5339 */
+    /* label LNoETA @ MEMORY_REPORT:0x539c */
+
+    /* TODO: implement */
+    return NULL;
+}
+
+char *PszGetTaskName(FLEET *lpfl, int16_t *picr)
+{
+    int16_t icr;
+    int16_t ids;
+    int16_t opOrd;
+    int16_t iZip;
+    int16_t i;
+    ORDER ord;
+    int16_t fPercent;
+    char *psz;
+
+    /* debug symbols */
+    /* label LShowTask @ MEMORY_REPORT:0x54a6 */
+
+    /* TODO: implement */
+    return NULL;
+}
+
+char *PszGetDestName(FLEET *lpfl, HDC hdc)
+{
+    int16_t i;
+    ORDER ord;
+
+    /* debug symbols */
+    /* label LDelayed @ MEMORY_REPORT:0x500e */
+    /* label LNoDest @ MEMORY_REPORT:0x50a7 */
+
+    /* TODO: implement */
+    return NULL;
+}
+
+#ifdef _WIN32
+
 /* functions */
-int16_t ScoreXDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     int16_t i;
     RECT rc;
-    uint16_t hdc;
+    HDC hdc;
     POINT pt;
     PAINTSTRUCT ps;
     char szT[40];
@@ -32,10 +157,10 @@ int16_t ScoreXDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lPar
     return 0;
 }
 
-int32_t ReportDlg(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+INT_PTR CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    uint16_t hdc;
-    uint16_t hmenu;
+    HDC hdc;
+    HMENU hmenu;
     RECT rc;
     int16_t i;
     uint16_t swp;
@@ -65,11 +190,11 @@ int32_t ReportDlg(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
     return 0;
 }
 
-int16_t PrintMapDlg(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     int16_t i;
     RECT rc;
-    uint16_t hwndEdit;
+    HWND hwndEdit;
 
     /* debug symbols */
     /* block (block) @ MEMORY_REPORT:0xa1d9 */
@@ -108,9 +233,9 @@ void SortReportCache(int16_t irpt, int16_t icol)
     /* TODO: implement */
 }
 
-void InitScoreDlg(uint16_t hwnd, int16_t fVictory)
+void InitScoreDlg(HWND hwnd, int16_t fVictory)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t dxDig;
     int16_t dy;
     int16_t dyFrame;
@@ -125,7 +250,7 @@ void InitScoreDlg(uint16_t hwnd, int16_t fVictory)
 
 void ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn)
 {
-    uint16_t hdc;
+    HDC hdc;
     char szT[50];
     char rgsz[32][50];
     int16_t iBase;
@@ -203,7 +328,7 @@ int16_t ICompReport(void *arg1, void *arg2)
     return 0;
 }
 
-void DrawReport(uint16_t hwnd, uint16_t hdc, RECT *prc)
+void DrawReport(HWND hwnd, HDC hdc, RECT *prc)
 {
     char szTit[40];
     int16_t irowLast;
@@ -232,49 +357,7 @@ void InvalidateReport(int16_t irpt, int16_t fReload)
     /* TODO: implement */
 }
 
-void DumpUniverse(void)
-{
-    int16_t ids;
-    int16_t i;
-    int16_t env[9];
-    int16_t fOpen;
-    int16_t fSuccess;
-    int16_t fSilentSav;
-    int16_t (*penvMemSav)[9];
-    int16_t cch;
-
-    /* debug symbols */
-    /* label DisplayStatus @ MEMORY_REPORT:0x866b */
-
-    /* TODO: implement */
-}
-
-void DumpFleets(void)
-{
-    int16_t iplr;
-    int16_t ids;
-    char szFile[256];
-    char szForm[256];
-    int16_t ifl;
-    FLEET *lpfl;
-    int16_t j;
-    int16_t i;
-    int16_t env[9];
-    int16_t fOpen;
-    int16_t fSuccess;
-    int16_t fSilentSav;
-    int16_t (*penvMemSav)[9];
-    char *psz;
-    int16_t cch;
-    int32_t l;
-
-    /* debug symbols */
-    /* label DisplayStatus @ MEMORY_REPORT:0xa144 */
-
-    /* TODO: implement */
-}
-
-int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, uint16_t hdc)
+int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, HDC hdc)
 {
     char szT[40];
     int16_t ids;
@@ -291,37 +374,6 @@ int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, uint16_t hdc)
     return 0;
 }
 
-void DumpPlanets(void)
-{
-    PLANET *lpplMac;
-    int16_t ids;
-    PLANET *lppl;
-    char szFile[256];
-    char szForm[256];
-    int16_t j;
-    int16_t i;
-    int16_t env[9];
-    int16_t fOpen;
-    int16_t fSuccess;
-    int16_t fSilentSav;
-    int16_t (*penvMemSav)[9];
-    char *psz;
-    int16_t cch;
-    int32_t l;
-    float pct;
-    PART part;
-    int32_t rgl[4];
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_REPORT:0x8ac2 */
-    /* block (block) @ MEMORY_REPORT:0x8c01 */
-    /* block (block) @ MEMORY_REPORT:0x8e3b */
-    /* block (block) @ MEMORY_REPORT:0x9348 */
-    /* label DisplayStatus @ MEMORY_REPORT:0x94b2 */
-
-    /* TODO: implement */
-}
-
 int32_t LFetchScoreXVal(SCOREX *lpsx, int16_t iVal)
 {
 
@@ -329,25 +381,9 @@ int32_t LFetchScoreXVal(SCOREX *lpsx, int16_t iVal)
     return 0;
 }
 
-char *PszGetETA(uint16_t hdc, FLEET *lpfl, int16_t *pcYears)
-{
-    POINT pt;
-    int16_t c;
-    int16_t i;
-    ORDER ord;
-    char *psz;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_REPORT:0x5339 */
-    /* label LNoETA @ MEMORY_REPORT:0x539c */
-
-    /* TODO: implement */
-    return NULL;
-}
-
 void ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow)
 {
-    uint16_t hdc;
+    HDC hdc;
     BTLDATA *lpbd;
     PLANET *lppl;
     int16_t i;
@@ -366,7 +402,7 @@ void ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow)
     /* TODO: implement */
 }
 
-void DrawVCReport(uint16_t hdc)
+void DrawVCReport(HDC hdc)
 {
     int16_t grbitVC;
     int16_t xStart;
@@ -375,14 +411,14 @@ void DrawVCReport(uint16_t hdc)
     POINT pt;
     int16_t cCurSav;
     int16_t ids;
-    uint32_t cr;
+    COLORREF cr;
     int16_t cCur;
-    uint16_t hdcMem;
+    HDC hdcMem;
     int16_t j;
     int16_t i;
     int16_t iPass;
     char *psz;
-    uint16_t hbmpSav;
+    HBITMAP hbmpSav;
     int16_t cch;
     int16_t xLeft;
     int32_t l;
@@ -396,7 +432,7 @@ void DrawVCReport(uint16_t hdc)
     /* TODO: implement */
 }
 
-void DrawReportItem(uint16_t hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol)
+void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol)
 {
     BTLDATA *lpbd;
     char szT[100];
@@ -411,7 +447,7 @@ void DrawReportItem(uint16_t hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t
     int16_t xCur;
     int16_t cch;
     int32_t l;
-    uint16_t hbr;
+    HBRUSH hbr;
     int16_t iItem;
     int16_t fEnough;
     float pct;
@@ -435,38 +471,7 @@ void DrawReportItem(uint16_t hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t
     /* TODO: implement */
 }
 
-char *PszGetTaskName(FLEET *lpfl, int16_t *picr)
-{
-    int16_t icr;
-    int16_t ids;
-    int16_t opOrd;
-    int16_t iZip;
-    int16_t i;
-    ORDER ord;
-    int16_t fPercent;
-    char *psz;
-
-    /* debug symbols */
-    /* label LShowTask @ MEMORY_REPORT:0x54a6 */
-
-    /* TODO: implement */
-    return NULL;
-}
-
-char *PszGetDestName(FLEET *lpfl, uint16_t hdc)
-{
-    int16_t i;
-    ORDER ord;
-
-    /* debug symbols */
-    /* label LDelayed @ MEMORY_REPORT:0x500e */
-    /* label LNoDest @ MEMORY_REPORT:0x50a7 */
-
-    /* TODO: implement */
-    return NULL;
-}
-
-void DrawMineralItem(uint16_t hdc, int16_t x, int16_t y, int16_t iMineral, int32_t l)
+void DrawMineralItem(HDC hdc, int16_t x, int16_t y, int16_t iMineral, int32_t l)
 {
     char *psz;
     int16_t cch;
@@ -474,7 +479,7 @@ void DrawMineralItem(uint16_t hdc, int16_t x, int16_t y, int16_t iMineral, int32
     /* TODO: implement */
 }
 
-void DrawHistoryReport(uint16_t hdc)
+void DrawHistoryReport(HDC hdc)
 {
     char szT[100];
     RECT rcChart;
@@ -496,8 +501,8 @@ void DrawHistoryReport(uint16_t hdc)
     int16_t cch;
     RECT rcDiamond;
     RECT rc;
-    uint16_t hpenSav;
-    uint16_t hpen;
+    HPEN hpenSav;
+    HPEN hpen;
     SCOREX *lpsx;
 
     /* debug symbols */
@@ -507,14 +512,14 @@ void DrawHistoryReport(uint16_t hdc)
     /* TODO: implement */
 }
 
-void DrawScoreReport(uint16_t hdc)
+void DrawScoreReport(HDC hdc)
 {
     int16_t dxDig;
     int16_t yTop;
     POINT pt;
     int16_t dx45;
     int16_t ids;
-    uint32_t cr;
+    COLORREF cr;
     int32_t lMax;
     int16_t j;
     int16_t i;
@@ -527,3 +532,5 @@ void DrawScoreReport(uint16_t hdc)
 
     /* TODO: implement */
 }
+
+#endif /* _WIN32 */

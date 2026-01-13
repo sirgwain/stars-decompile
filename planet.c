@@ -5,26 +5,6 @@
 #include "globals.h"
 
 /* functions */
-void DrawPlanShip(uint16_t hdc, int16_t grbit)
-{
-    uint16_t hfontSav;
-    OBJ objNull;
-    int16_t ctile;
-    uint32_t crFore;
-    OBJ obj;
-    int16_t fMin;
-    int16_t i;
-    uint32_t crBack;
-    int16_t fErase;
-    TILE *ptile;
-    int16_t fDC;
-    RECT rc;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x0e3a */
-
-    /* TODO: implement */
-}
 
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal)
 {
@@ -55,42 +35,76 @@ int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr)
     return 0;
 }
 
-int16_t IWarpMAFromLppl(PLANET *lppl, int16_t *pfTwo)
+// Returns the highest warp speed of any Mass Accelerator on the planet's starbase
+// that the caller is allowed to see. If there are at least two MAs at that warp,
+// sets *fTwo = true so the caller can add +1 warp. Returns 0 if no MA or no access.
+int16_t IWarpMAFromLppl(PLANET *lppl, bool *pfTwo)
 {
-    int16_t fTwo;
-    int16_t iWarp;
-    int16_t i;
-    HUL *lphul;
-    int16_t iNew;
+    int iWarp = 0;
+    bool fTwo = false;
 
-    /* TODO: implement */
+    if (pfTwo)
+        *pfTwo = false;
+
+    // must be owned and have a starbase
+    if (lppl && lppl->iPlayer != -1 && lppl->fStarbase)
+    {
+        const int owner = lppl->iPlayer;
+
+        // pick this player's SB design table and the planet's SB design index (low 4 bits)
+        SHDEF *tab = rglpshdefSB[owner];
+        if (!tab)
+            return 0;
+
+        SHDEF *sb = &tab[lppl->isb & 0x0F];
+
+        // visibility: owner, omniscient (-1), or det == 7 (matches ES:[+0x7B] == 7)
+        if (owner == idPlayer || idPlayer == -1 || sb->det == detAll)
+        {
+
+            // iterate hull slots: rghs starts at old +0x3A, count is chs at old +0x7A
+            const int cSlots = sb->hul.chs;
+            for (int i = 0; i < cSlots; ++i)
+            {
+                const HS *hs = &sb->hul.rghs[i];
+
+                if (hs->grhst == hstSpecialSB)
+                {                                          // Mass Accelerator bucket
+                    uint8_t warpCode = (uint8_t)hs->iItem; // low byte
+                    uint8_t count = (uint8_t)hs->cItem;    // high byte
+
+                    // #define ispecialSBMassDriver5    7
+                    // #define ispecialSBMassDriver6    8
+                    // #define ispecialSBMassDriver7    9
+                    // #define ispecialSBSuperDriver8   10
+                    // #define ispecialSBSuperDriver9   11
+                    // #define ispecialSBUltraDriver10  12
+                    // #define ispecialSBUltraDriver11  13
+                    // #define ispecialSBUltraDriver12  14
+                    // #define ispecialSBUltraDriver13  15
+                    if (count != 0 && warpCode > 6 && warpCode < 16)
+                    {
+                        int w = (int)warpCode - 2; // 7..15 -> Warp 5..13
+                        if (w > iWarp)
+                        {
+                            iWarp = w;
+                            fTwo = false;
+                        }
+                        else if (w == iWarp)
+                        {
+                            fTwo = true; // two MAs at top warp → caller adds +1
+                        }
+                    }
+                }
+            }
+
+            if (pfTwo)
+                *pfTwo = fTwo;
+            return iWarp;
+        }
+    }
+
     return 0;
-}
-
-void DrawPlanetStats(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t dxRight;
-    int32_t l2;
-    int16_t yTop;
-    int16_t xRight;
-    int16_t c;
-    int16_t cRes;
-    int16_t dRangeP;
-    float pct;
-    int16_t cResAvail;
-    int16_t dRange;
-    char *psz;
-    int16_t xLeft;
-    uint16_t hbrSav;
-    int32_t l;
-    RECT rc;
-    PART part;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x1ca1 */
-    /* block (block) @ MEMORY_PLANET:0x2034 */
-
-    /* TODO: implement */
 }
 
 int16_t FGetBestDefensePart(PART *ppart)
@@ -101,51 +115,6 @@ int16_t FGetBestDefensePart(PART *ppart)
 
     /* TODO: implement */
     return 0;
-}
-
-void DrawPlanetShipList(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t swp;
-    int16_t fDoneDrawing;
-    int32_t l2;
-    int16_t yTop;
-    int16_t fObjIsThing;
-    int16_t fUnknown;
-    int16_t idSkip;
-    int16_t xStart;
-    int16_t xRight;
-    int16_t i;
-    int16_t c;
-    RECT rcGauge;
-    XFER xf;
-    FLEET *pfl;
-    int32_t lSel;
-    int16_t xLeft;
-    int32_t l;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
-void DrawPlanetStarbase(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t fTwo;
-    int16_t dxRight;
-    int16_t iWarp;
-    int16_t bt;
-    int16_t yTop;
-    int16_t xRight;
-    int16_t c;
-    SHDEF *lpshdef;
-    uint32_t crForeSav;
-    uint16_t w;
-    char *psz;
-    int16_t xLeft;
-    uint16_t hbrSav;
-    int32_t l;
-    RECT rc;
-
-    /* TODO: implement */
 }
 
 int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
@@ -159,25 +128,29 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
     /* pctMod is a scaling factor in 1/10000ths (starts at 100%). */
     int32_t pctMod = 10000;
 
-    for (int16_t i = 0; i < 3; i++) {
+    for (int16_t i = 0; i < 3; i++)
+    {
         /* Planet current env (-??..?? stored as signed char). */
         int32_t iPlanet = (int32_t)lppl->rgEnvVar[i];
 
         /* Player environment prefs/ranges (signed char). */
-        int32_t iPref = (int32_t)rgplr[iPlr].rgEnvVar[i];       /* “ideal” / preferred */
+        int32_t iPref = (int32_t)rgplr[iPlr].rgEnvVar[i]; /* “ideal” / preferred */
         int32_t iMin = (int32_t)rgplr[iPlr].rgEnvVarMin[i];
         int32_t iMax = (int32_t)rgplr[iPlr].rgEnvVarMax[i];
 
         /* Special case: “immune” / no-penalty axis (original checked iMax < 0). */
-        if (iMax < 0) {
+        if (iMax < 0)
+        {
             pctPos += 10000;
             continue;
         }
 
         /* Outside range => negative penalty by distance to nearest bound, capped at 15. */
-        if (iPlanet < iMin || iPlanet > iMax) {
+        if (iPlanet < iMin || iPlanet > iMax)
+        {
             int32_t delta = (iPlanet < iMin) ? (iMin - iPlanet) : (iPlanet - iMax);
-            if (delta > 15) delta = 15;
+            if (delta > 15)
+                delta = 15;
             pctNeg += delta;
             continue;
         }
@@ -185,14 +158,18 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
         /* In range: compute squared “percent ideal” contribution, plus a modifier penalty
            when you’re more than halfway from ideal toward the nearer edge. */
         int32_t absdiff = iPlanet - iPref;
-        if (absdiff < 0) absdiff = -absdiff;
+        if (absdiff < 0)
+            absdiff = -absdiff;
 
-        int32_t d;         /* range from ideal to nearest edge in the direction of iPlanet */
-        int32_t dPenalty;  /* (2*absdiff - d) */
-        if (iPlanet < iPref) {
+        int32_t d;        /* range from ideal to nearest edge in the direction of iPlanet */
+        int32_t dPenalty; /* (2*absdiff - d) */
+        if (iPlanet < iPref)
+        {
             d = iPref - iMin;
             dPenalty = (iPref - iPlanet) * 2 - d;
-        } else {
+        }
+        else
+        {
             d = iMax - iPref;
             dPenalty = (iPlanet - iPref) * 2 - d;
         }
@@ -208,7 +185,8 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
               pctMod = floor(pctMod * (2*d - dPenalty) / (2*d))
            (matches the original mul/div helper behavior, using truncating integer division).
         */
-        if (dPenalty > 0 && d > 0) {
+        if (dPenalty > 0 && d > 0)
+        {
             int32_t denom = d * 2;
             int32_t numer_factor = denom - dPenalty; /* (2*d - dPenalty) */
             pctMod = (int32_t)((pctMod * (int32_t)numer_factor) / (int32_t)denom);
@@ -216,7 +194,8 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
     }
 
     /* If any env var was out of range, result is a negative penalty (sum of capped deltas). */
-    if (pctNeg != 0) {
+    if (pctNeg != 0)
+    {
         return (int16_t)(-pctNeg);
     }
 
@@ -232,22 +211,6 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
         int32_t result = (base * pctMod) / 10000;
         return (int16_t)result;
     }
-}
-
-
-void DrawPlanetMinSum(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t dxRight;
-    int16_t yTop;
-    int16_t xRight;
-    int16_t c;
-    int16_t i;
-    int16_t xLeft;
-    uint16_t hbrSav;
-    PLANET *ppl;
-    RECT rc;
-
-    /* TODO: implement */
 }
 
 int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr)
@@ -311,15 +274,6 @@ int16_t FCanTerraformLppl(PLANET *lppl, int16_t *rgEnvMin, int16_t *rgEnvMax, in
     return 0;
 }
 
-void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)
-{
-    int16_t fListbox;
-    int16_t fSelected;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
 char *PszCalcEnvVar(int16_t iEnv, int16_t iVar)
 {
     switch (iEnv)
@@ -364,19 +318,6 @@ int16_t CMaxFactories(PLANET *lppl, int16_t iplr)
 
     /* TODO: implement */
     return 0;
-}
-
-void DrawMassWarpGauge(uint16_t hdc, RECT *prc, int16_t iBest, int16_t iCur)
-{
-    int32_t lMax;
-    int16_t c;
-    int16_t fTwoMAs;
-    int16_t iMode;
-    uint16_t hbr;
-    int32_t lCur;
-    int32_t l;
-
-    /* TODO: implement */
 }
 
 /*
@@ -442,59 +383,6 @@ int16_t CMaxDefenses(PLANET *lppl, int16_t iplr)
     return 0;
 }
 
-void DrawPlanetProduction(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t swp;
-    int16_t dxRight;
-    int16_t yTop;
-    int16_t xStart;
-    int16_t xRight;
-    char szT[40];
-    int16_t i;
-    int16_t c;
-    int16_t dyWrong;
-    char *psz;
-    int16_t iSel;
-    int16_t cch;
-    int16_t xLeft;
-    RECT rcT;
-    PLANET *ppl;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
-void DrawPlanShipBitmap(uint16_t hdc, TILE *ptile, OBJ obj)
-{
-    int16_t yTop;
-    int16_t dy;
-    int16_t xRight;
-    int16_t i;
-    char *psz;
-    int16_t dx;
-    int16_t xLeft;
-    uint16_t hbrSav;
-    int16_t iOffset;
-    RECT rc;
-
-    /* debug symbols */
-    /* label DoBtns @ MEMORY_PLANET:0x368d */
-
-    /* TODO: implement */
-}
-
-int16_t FDrawTileNC(uint16_t hdc, TILE *ptile, RECT *prc, char *pszTitle)
-{
-    int16_t bt;
-    RECT rcT;
-
-    /* debug symbols */
-    /* label FinishUp @ MEMORY_PLANET:0x128f */
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t IBestTerraform(PLANET *lppl, int16_t fHelp)
 {
     int16_t iSave;
@@ -514,20 +402,6 @@ int16_t IBestTerraform(PLANET *lppl, int16_t fHelp)
     return 0;
 }
 
-void SetPlanetTitleBar(uint16_t hwnd)
-{
-    char szTitle[30];
-    char *psz;
-
-    /* TODO: implement */
-}
-
-void HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate)
-{
-
-    /* TODO: implement */
-}
-
 int16_t IpctCanTerraformLppl(PLANET *lppl)
 {
     int16_t rgMax[3];
@@ -540,9 +414,88 @@ int16_t IpctCanTerraformLppl(PLANET *lppl)
     return 0;
 }
 
-int32_t PlanetWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr)
 {
-    uint16_t hdc;
+    PLANET pl;
+    int32_t lMaxPop;
+    int32_t pctDesire;
+    int16_t ihuldef;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_PLANET:0x70ce */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void UninhabitPlanet(PLANET *lppl)
+{
+    int16_t i;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_PLANET:0x876c */
+
+    /* TODO: implement */
+}
+
+int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish)
+{
+    int16_t i;
+    HUL *lphul;
+    PART part;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_PLANET:0x7e3b */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear)
+{
+    int16_t cMax;
+    int32_t cCur;
+    int32_t lPop;
+    int16_t iEff;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t CMinesOperating(PLANET *lppl)
+{
+    int16_t iplr;
+    int16_t cMinesOp;
+    int16_t cMines;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t PctPlanetCapacity(PLANET *lppl)
+{
+    int32_t pctCap;
+    int32_t lPopMax;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t CFactoriesOperating(PLANET *lppl)
+{
+    int16_t iplr;
+    int16_t cFacts;
+    int16_t cFactsOp;
+
+    /* TODO: implement */
+    return 0;
+}
+
+#ifdef _WIN32
+
+LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
     PAINTSTRUCT ps;
     XFER xf;
     int16_t i;
@@ -570,6 +523,201 @@ int32_t PlanetWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t 
     return 0;
 }
 
+void DrawPlanShip(HDC hdc, int16_t grbit)
+{
+    uint16_t hfontSav;
+    OBJ objNull;
+    int16_t ctile;
+    COLORREF crFore;
+    OBJ obj;
+    int16_t fMin;
+    int16_t i;
+    COLORREF crBack;
+    int16_t fErase;
+    TILE *ptile;
+    int16_t fDC;
+    RECT rc;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_PLANET:0x0e3a */
+
+    /* TODO: implement */
+}
+
+void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t dxRight;
+    int32_t l2;
+    int16_t yTop;
+    int16_t xRight;
+    int16_t c;
+    int16_t cRes;
+    int16_t dRangeP;
+    float pct;
+    int16_t cResAvail;
+    int16_t dRange;
+    char *psz;
+    int16_t xLeft;
+    HBRUSH hbrSav;
+    int32_t l;
+    RECT rc;
+    PART part;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_PLANET:0x1ca1 */
+    /* block (block) @ MEMORY_PLANET:0x2034 */
+
+    /* TODO: implement */
+}
+
+void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t swp;
+    int16_t fDoneDrawing;
+    int32_t l2;
+    int16_t yTop;
+    int16_t fObjIsThing;
+    int16_t fUnknown;
+    int16_t idSkip;
+    int16_t xStart;
+    int16_t xRight;
+    int16_t i;
+    int16_t c;
+    RECT rcGauge;
+    XFER xf;
+    FLEET *pfl;
+    int32_t lSel;
+    int16_t xLeft;
+    int32_t l;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawPlanetStarbase(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t fTwo;
+    int16_t dxRight;
+    int16_t iWarp;
+    int16_t bt;
+    int16_t yTop;
+    int16_t xRight;
+    int16_t c;
+    SHDEF *lpshdef;
+    COLORREF crForeSav;
+    uint16_t w;
+    char *psz;
+    int16_t xLeft;
+    HBRUSH hbrSav;
+    int32_t l;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t dxRight;
+    int16_t yTop;
+    int16_t xRight;
+    int16_t c;
+    int16_t i;
+    int16_t xLeft;
+    HBRUSH hbrSav;
+    PLANET *ppl;
+    RECT rc;
+
+    /* TODO: implement */
+}
+void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)
+{
+    int16_t fListbox;
+    int16_t fSelected;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur)
+{
+    int32_t lMax;
+    int16_t c;
+    int16_t fTwoMAs;
+    int16_t iMode;
+    HBRUSH hbr;
+    int32_t lCur;
+    int32_t l;
+
+    /* TODO: implement */
+}
+
+void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t swp;
+    int16_t dxRight;
+    int16_t yTop;
+    int16_t xStart;
+    int16_t xRight;
+    char szT[40];
+    int16_t i;
+    int16_t c;
+    int16_t dyWrong;
+    char *psz;
+    int16_t iSel;
+    int16_t cch;
+    int16_t xLeft;
+    RECT rcT;
+    PLANET *ppl;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawPlanShipBitmap(HDC hdc, TILE *ptile, OBJ obj)
+{
+    int16_t yTop;
+    int16_t dy;
+    int16_t xRight;
+    int16_t i;
+    char *psz;
+    int16_t dx;
+    int16_t xLeft;
+    HBRUSH hbrSav;
+    int16_t iOffset;
+    RECT rc;
+
+    /* debug symbols */
+    /* label DoBtns @ MEMORY_PLANET:0x368d */
+
+    /* TODO: implement */
+}
+
+int16_t FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle)
+{
+    int16_t bt;
+    RECT rcT;
+
+    /* debug symbols */
+    /* label FinishUp @ MEMORY_PLANET:0x128f */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void SetPlanetTitleBar(HWND hwnd)
+{
+    char szTitle[30];
+    char *psz;
+
+    /* TODO: implement */
+}
+
+void HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate)
+{
+
+    /* TODO: implement */
+}
+
 int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)
 {
     PLANET *lpplMac;
@@ -578,20 +726,6 @@ int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)
     PLANET *lppl;
     int16_t idAfter;
     int16_t idBefore;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr)
-{
-    PLANET pl;
-    int32_t lMaxPop;
-    int32_t pctDesire;
-    int16_t ihuldef;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x70ce */
 
     /* TODO: implement */
     return 0;
@@ -618,22 +752,22 @@ void ChangeMainObjSel(int16_t grobjNew, int16_t iObjSel)
     /* TODO: implement */
 }
 
-void DrawProductionItem(uint16_t hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox)
+void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox)
 {
-    uint16_t hfntSav;
+    HFONT hfntSav;
     char *pch;
     int16_t ichT;
-    uint32_t cr;
+    COLORREF cr;
     int16_t pctDmg;
     char szT[20];
     RECT rcIn;
     int16_t ich;
     int16_t fDoubleDraw;
-    uint32_t crForeSav;
+    COLORREF crForeSav;
     int16_t fFleet;
     RECT rcDraw;
     int16_t dx;
-    uint16_t hbr;
+    HBRUSH hbr;
     int16_t fItalic;
     int16_t cch;
     int16_t bkSav;
@@ -647,30 +781,7 @@ void DrawProductionItem(uint16_t hdc, RECT *prc, char *psz, int16_t inflate, int
     /* TODO: implement */
 }
 
-void UninhabitPlanet(PLANET *lppl)
-{
-    int16_t i;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x876c */
-
-    /* TODO: implement */
-}
-
-int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish)
-{
-    int16_t i;
-    HUL *lphul;
-    PART part;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x7e3b */
-
-    /* TODO: implement */
-    return 0;
-}
-
-void FillPlanetProdLB(uint16_t hwnd, PLPROD *lpplprod, PLANET *lppl)
+void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl)
 {
     int16_t fMinimal;
     int32_t rgwtMin[4];
@@ -716,27 +827,6 @@ uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRi
     return 0;
 }
 
-int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear)
-{
-    int16_t cMax;
-    int32_t cCur;
-    int32_t lPop;
-    int16_t iEff;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t CMinesOperating(PLANET *lppl)
-{
-    int16_t iplr;
-    int16_t cMinesOp;
-    int16_t cMines;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)
 {
     int16_t bt;
@@ -750,7 +840,7 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)
     int16_t iCur;
     TILE *prgtile;
     RECT rc;
-    uint16_t hdc;
+    HDC hdc;
     TILE tile;
     POINT ptNew;
     BTNT btnt;
@@ -761,16 +851,6 @@ void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)
 
     /* TODO: implement */
 }
-
-int16_t PctPlanetCapacity(PLANET *lppl)
-{
-    int32_t pctCap;
-    int32_t lPopMax;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void SelectAdjPlanet(int16_t dInc, int16_t idPlanet)
 {
     PLANET *lpPlT;
@@ -787,7 +867,7 @@ void SelectAdjPlanet(int16_t dInc, int16_t idPlanet)
 
 void ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t yTop;
     int16_t ctile;
     int16_t i;
@@ -798,12 +878,4 @@ void ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw)
     /* TODO: implement */
 }
 
-int16_t CFactoriesOperating(PLANET *lppl)
-{
-    int16_t iplr;
-    int16_t cFacts;
-    int16_t cFactsOp;
-
-    /* TODO: implement */
-    return 0;
-}
+#endif /* _WIN32 */

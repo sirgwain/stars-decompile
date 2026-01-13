@@ -51,6 +51,79 @@ def _dbg(msg):
         pass
 
 
+def _bitfield_container_from_candidates(dtm, name_index, cand_fields, cat_path):
+    """Choose a stable *scalar* container field to represent bitfields.
+
+    We do not create Ghidra bitfield components, because they can be fragile
+    across Ghidra versions and we primarily care about correct Win16 layout.
+
+    Preference order:
+      1) If the offset group already contains a non-bitfield raw member
+         (e.g. 'uint16_t wMdPlr'), use that type+name.
+      2) Otherwise infer the container width from the bitfield declared type
+         (uint16_t/uint32_t) and synthesize a name.
+
+    Returns (dt_field, fname) or (None, None).
+    """
+
+    # 1) Use existing raw container if present.
+    best = None  # (flen, dt_field, fname)
+    for f in cand_fields:
+        if not isinstance(f, dict):
+            continue
+        if f.get('bitlen') is not None:
+            continue
+        c_decl = _norm(f.get('c_decl'))
+        if not c_decl:
+            continue
+        dt_try, parsed_name, _dims = _parse_type_from_cdecl(dtm, name_index, c_decl, cat_path=cat_path)
+        if dt_try is None:
+            continue
+        try:
+            flen = int(dt_try.getLength())
+        except Exception:
+            continue
+        if flen not in (2, 4):
+            continue
+        fname_try = _norm(f.get('name')) or parsed_name
+        if not fname_try:
+            continue
+        if best is None or flen > best[0]:
+            best = (flen, dt_try, fname_try)
+
+    if best is not None:
+        return best[1], best[2]
+
+    # 2) Infer from any bitfield's c_type.
+    want_name = None
+    want_bits = None
+    for f in cand_fields:
+        if not isinstance(f, dict):
+            continue
+        if f.get('bitlen') is None:
+            continue
+        c_type = _norm(f.get('c_type'))
+        if '32' in c_type:
+            want_bits = 32
+        else:
+            want_bits = 16
+        break
+
+    if want_bits is None:
+        return None, None
+
+    if want_bits == 32:
+        dt_field = _builtin_for_name(dtm, 'uint32_t') or _builtin_for_name(dtm, 'int32_t')
+        want_name = 'dwFlags'
+    else:
+        dt_field = _builtin_for_name(dtm, 'uint16_t') or _builtin_for_name(dtm, 'int16_t')
+        want_name = 'wFlags'
+
+    if dt_field is None:
+        return None, None
+
+    return dt_field, want_name
+
 
 def _safe_add_replace(dtm, dt, handler):
     """Add a datatype, and if Ghidra blows up due to a corrupted existing type,
@@ -816,7 +889,7 @@ def _create_struct_or_union_from_json(dtm, name_index, rec, cat_path):
     for off in sorted(members_by_off.keys()):
         cand_fields = members_by_off.get(off) or []
 
-        # If any candidate is a bitfield member, emit a single container and skip the rest.
+        # If any candidate is a bitfield member, emit a single scalar container and skip the rest.
         has_bitfield = False
         for cf in cand_fields:
             if isinstance(cf, dict) and cf.get('bitlen') is not None:
@@ -826,13 +899,17 @@ def _create_struct_or_union_from_json(dtm, name_index, rec, cat_path):
             if off in placed_bitfield_offsets:
                 continue
             placed_bitfield_offsets.add(off)
-            # Use 1-based word index for naming: +0 -> flags1, +2 -> flags2, etc.
-            fname = "flags%d" % (off // 2 + 1)
-            dt_field = _builtin_for_name(dtm, "uint16_t") or _builtin_for_name(dtm, "int16_t")
+            dt_field, fname = _bitfield_container_from_candidates(dtm, name_index, cand_fields, cat_path)
             if dt_field is None:
                 continue
-            flen = int(dt_field.getLength())
-            _dbg("[FIELD] %s +0x%x len=%d decl='<bitfield-container>'" % (dt.getPathName(), off, flen))
+            try:
+                flen = int(dt_field.getLength())
+            except Exception:
+                continue
+            # Fall back to a deterministic name if necessary.
+            if not fname:
+                fname = "flags%d" % (off // 2 + 1)
+            _dbg("[FIELD] %s +0x%x len=%d decl='<bitfield-container %s>'" % (dt.getPathName(), off, flen, fname))
             _ensure_len(dt, off + flen)
             _delete_overlaps(dt, off, flen)
             _ensure_len(dt, off + flen)

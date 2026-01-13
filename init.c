@@ -3,11 +3,12 @@
 
 #include "init.h"
 
+#ifdef _WIN32
 /* globals */
 uint8_t rgPalGray[20] = {0x0a, 0x14, 0x1e, 0x28, 0x3d, 0x47, 0x51, 0x5c, 0x70, 0x7a, 0x85, 0x8f, 0xa1, 0xab, 0xb6, 0xc1, 0xd7, 0xe1, 0xeb, 0xf5};
 
 /* functions */
-int16_t FCreateStuff(void)
+bool FCreateStuff(void)
 {
     int16_t fFailed;
     int16_t dy;
@@ -19,7 +20,7 @@ int16_t FCreateStuff(void)
     return 0;
 }
 
-int16_t FCreateFonts(uint16_t hdc)
+bool FCreateFonts(HDC hdc)
 {
     int16_t i;
     LOGFONT *plf;
@@ -107,3 +108,5 @@ void InitTiles(void)
 
     /* TODO: implement */
 }
+
+#endif

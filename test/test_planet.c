@@ -5,6 +5,7 @@
 
 #include "globals.h"
 #include "types.h"
+#include "parts.h"
 #include "planet.h" /* PctPlanetDesirability */
 
 typedef struct HabCase
@@ -141,6 +142,112 @@ static void test_PctPlanetDesirability_table_stars_defaults(void)
     }
 }
 
+static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
+{
+    /* Save/restore globals we touch. */
+    const int16_t idPlayer_old = idPlayer;
+
+    /* Pick an arbitrary owner slot that exists. */
+    const int owner = 0;
+    SHDEF *sbtab_old = rglpshdefSB[owner];
+
+    /* Provide a small SB design table with at least 16 entries (isb low 4 bits). */
+    static SHDEF sbtab[16];
+    memset(sbtab, 0, sizeof(sbtab));
+    rglpshdefSB[owner] = sbtab;
+
+    PLANET pl;
+    memset(&pl, 0, sizeof(pl));
+    pl.iPlayer = (int16_t)owner;
+    pl.fStarbase = 1;
+    pl.isb = 3; /* use design index 3 */
+
+    SHDEF *sb = &sbtab[pl.isb & 0x0F];
+
+    /* Subcase A: no visibility (not owner, not omniscient, and det != detAll). */
+    {
+        idPlayer = 1; /* some other player */
+        sb->det = 0;  /* not detAll */
+        sb->hul.chs = 1;
+        sb->hul.rghs[0].grhst = hstSpecialSB;
+        sb->hul.rghs[0].iItem = ispecialSBUltraDriver10; /* warpCode -> warp 10 */
+        sb->hul.rghs[0].cItem = 1;
+
+        bool two = true;
+        int16_t got = IWarpMAFromLppl(&pl, &two);
+        TEST_CHECK_(got == 0, "no visibility: got=%d want=0", (int)got);
+        TEST_CHECK_(two == false, "no visibility: pfTwo should be false");
+    }
+
+    /* Subcase B: visibility as owner; single MA at top warp => pfTwo false. */
+    {
+        idPlayer = (int16_t)owner;
+        sb->det = 0;
+        memset(&sb->hul, 0, sizeof(sb->hul));
+        sb->hul.chs = 2;
+        sb->hul.rghs[0].grhst = hstSpecialSB;
+        sb->hul.rghs[0].iItem = ispecialSBUltraDriver10; /* warp 10 */
+        sb->hul.rghs[0].cItem = 1;
+        sb->hul.rghs[1].grhst = hstSpecialSB;
+        sb->hul.rghs[1].iItem = ispecialSBMassDriver7; /* warp 7 (lower) */
+        sb->hul.rghs[1].cItem = 1;
+
+        bool two = true;
+        int16_t got = IWarpMAFromLppl(&pl, &two);
+        TEST_CHECK_(got == 10, "owner visibility: got=%d want=10", (int)got);
+        TEST_CHECK_(two == false, "owner visibility: pfTwo should be false for single top MA");
+    }
+
+    /* Subcase C: two MAs at the highest warp => pfTwo true. */
+    {
+        idPlayer = (int16_t)owner;
+        sb->det = 0;
+        memset(&sb->hul, 0, sizeof(sb->hul));
+        sb->hul.chs = 3;
+        sb->hul.rghs[0].grhst = hstSpecialSB;
+        sb->hul.rghs[0].iItem = ispecialSBUltraDriver10; /* warp 10 */
+        sb->hul.rghs[0].cItem = 1;
+        sb->hul.rghs[1].grhst = hstSpecialSB;
+        sb->hul.rghs[1].iItem = ispecialSBUltraDriver10; /* warp 10 again */
+        sb->hul.rghs[1].cItem = 1;
+        sb->hul.rghs[2].grhst = hstSpecialSB;
+        sb->hul.rghs[2].iItem = ispecialSBMassDriver7; /* warp 7 (lower) */
+        sb->hul.rghs[2].cItem = 1;
+
+        bool two = false;
+        int16_t got = IWarpMAFromLppl(&pl, &two);
+        TEST_CHECK_(got == 10, "two at top: got=%d want=10", (int)got);
+        TEST_CHECK_(two == true, "two at top: pfTwo should be true");
+    }
+
+    /* Subcase D: higher warp found later should clear pfTwo unless duplicated at that warp. */
+    {
+        idPlayer = (int16_t)owner;
+        sb->det = 0;
+        memset(&sb->hul, 0, sizeof(sb->hul));
+        sb->hul.chs = 3;
+        sb->hul.rghs[0].grhst = hstSpecialSB;
+        sb->hul.rghs[0].iItem = ispecialSBUltraDriver10; /* warp 10 */
+        sb->hul.rghs[0].cItem = 1;
+        sb->hul.rghs[1].grhst = hstSpecialSB;
+        sb->hul.rghs[1].iItem = ispecialSBUltraDriver10; /* warp 10 again (would set two) */
+        sb->hul.rghs[1].cItem = 1;
+        sb->hul.rghs[2].grhst = hstSpecialSB;
+        sb->hul.rghs[2].iItem = ispecialSBUltraDriver13; /* warp 13 (higher) */
+        sb->hul.rghs[2].cItem = 1;
+
+        bool two = true;
+        int16_t got = IWarpMAFromLppl(&pl, &two);
+        TEST_CHECK_(got == 13, "higher overrides: got=%d want=13", (int)got);
+        TEST_CHECK_(two == false, "higher overrides: pfTwo should be false (single at top warp)");
+    }
+
+    /* Restore globals. */
+    rglpshdefSB[owner] = sbtab_old;
+    idPlayer = idPlayer_old;
+}
+
 TEST_LIST = {
     {"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
+    {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},
     {NULL, NULL}};

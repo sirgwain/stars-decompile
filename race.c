@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "race.h"
 
 /* globals */
@@ -9,144 +10,16 @@ int16_t rgRaceDisEnvPts[6] = {150, 330, 540, 780, 1050, 1380};
 int16_t rgRacePrimaryTrait[10] = {40, 95, 45, 10, -100, -150, 120, 180, 90, -66};
 char rgRaceStatMax[16] = {25, 15, 25, 25, 25, 15, 25, 6, 2, 2, 2, 2, 2, 2, 9, 0};
 char rgRaceStatMin[16] = {7, 5, 5, 5, 5, 2, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+#ifdef _WIN32
+
 char rgRW3IStat[7] = {0, 1, 2, 3, 4, 5, 6};
 char rgRW3Spacing[7] = {4, 3, 3, 3, 3, 3, 3};
 char rgRW3Width[7] = {-2, 2, 2, 2, -2, 2, 2};
 
+#endif /* _WIN32 */
+
 /* functions */
-int16_t RaceWizardDlg6(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hdc;
-    PAINTSTRUCT ps;
-    int16_t cch;
-    RECT rcGBox;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x3dd9 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RaceWizardDlg5(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hwndCtl;
-    uint16_t hdc;
-    PAINTSTRUCT ps;
-    int16_t cch;
-    RECT rcGBox;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x379d */
-    /* block (block) @ MEMORY_RACE:0x38e5 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RaceWizardDlg4(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hdc;
-    char szT[600];
-    int16_t ids;
-    PAINTSTRUCT ps;
-    int16_t cch;
-    RECT rcGBox;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x3338 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RaceWizardDlg3(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hdc;
-    POINT pt;
-    PAINTSTRUCT ps;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x28ac */
-    /* block (block) @ MEMORY_RACE:0x28ef */
-    /* block (block) @ MEMORY_RACE:0x2927 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RaceWizardDlg2(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    uint16_t hdc;
-    int16_t iVar;
-    int16_t yTop;
-    POINT pt;
-    int16_t dy;
-    int16_t dxMiddle;
-    int16_t dxLabel;
-    int16_t cch;
-    char szTemp[20];
-    uint16_t hfontSav;
-    PAINTSTRUCT ps;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x106f */
-    /* block (block) @ MEMORY_RACE:0x155e */
-    /* block (block) @ MEMORY_RACE:0x159d */
-    /* block (block) @ MEMORY_RACE:0x15e0 */
-    /* block (block) @ MEMORY_RACE:0x16ac */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RaceWizardDlg1(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    int16_t i;
-    RECT rc;
-    int16_t iPlrBmp;
-    int16_t iOffset;
-    PLAYER *pplr;
-    uint16_t hwndCB;
-    POINT pt;
-    uint16_t hdc;
-    int16_t j;
-    char *psz;
-    uint8_t k;
-    BTNT btnt;
-    int16_t bt;
-    RECT *prc;
-    char szBuf[32];
-    int16_t iDir;
-    int16_t iCur;
-    PAINTSTRUCT ps;
-    int16_t cch;
-    RECT rcGBox;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x03bb */
-    /* block (block) @ MEMORY_RACE:0x0699 */
-    /* block (block) @ MEMORY_RACE:0x06f7 */
-    /* block (block) @ MEMORY_RACE:0x08ef */
-    /* block (block) @ MEMORY_RACE:0x0937 */
-    /* block (block) @ MEMORY_RACE:0x0c31 */
-    /* block (block) @ MEMORY_RACE:0x0c76 */
-    /* block (block) @ MEMORY_RACE:0x0daa */
-    /* block (block) @ MEMORY_RACE:0x0e66 */
-
-    /* TODO: implement */
-    return 0;
-}
 
 void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet)
 {
@@ -189,26 +62,6 @@ int16_t GetRaceGrbit(PLAYER *pplr, RaceGrbit ibit)
     return (pplr->grbitAttr & grMask) ? 1 : 0;
 }
 
-void DrawRaceAdvantagePoints(uint16_t hdc, RECT *prc, PLAYER *pplr)
-{
-    TEXTMETRIC tm;
-    LOGFONT *plf;
-    uint32_t crBkSav;
-    int16_t bkMode;
-    int16_t dyBig;
-    char szAdvantage[32];
-    int16_t c;
-    uint32_t crSav;
-    uint16_t hfont;
-    int16_t dx;
-    int16_t iPts;
-    int16_t cch;
-    RECT rc;
-    uint16_t hfontSav;
-
-    /* TODO: implement */
-}
-
 int16_t CAdvantagePoints(PLAYER *pplr)
 {
     int16_t pctGrowth;
@@ -231,139 +84,8 @@ int16_t CAdvantagePoints(PLAYER *pplr)
     return 0;
 }
 
-int16_t RaceCreationWizard(uint16_t hwndParent, int16_t fReadOnly, int16_t fDontWrite)
-{
-    int16_t mdRet;
-    int16_t (*lpProc)(void);
-    RECT rgrcStack[17];
-    int16_t cpts;
-
-    /* debug symbols */
-    /* label Step2 @ MEMORY_RACE:0x007d */
-    /* label Step3 @ MEMORY_RACE:0x00ea */
-    /* label Step4 @ MEMORY_RACE:0x0157 */
-    /* label Step5 @ MEMORY_RACE:0x01c4 */
-    /* label Step6 @ MEMORY_RACE:0x0231 */
-    /* label Step1 @ MEMORY_RACE:0x001c */
-    /* label Finish @ MEMORY_RACE:0x029e */
-
-    /* TODO: implement */
-    return 0;
-}
-
-void DrawRace3(uint16_t hwnd, uint16_t hdc, int16_t iDraw)
-{
-    int16_t dxItem;
-    int16_t idsT;
-    int16_t fMacintosh;
-    int16_t yTop;
-    int16_t bt;
-    int16_t ids;
-    uint32_t crBkSav;
-    int16_t bkMode;
-    int16_t fCreatedDC;
-    int16_t dxkT;
-    int16_t i;
-    int16_t irc;
-    int16_t dxDig;
-    int16_t dx;
-    int16_t cch;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
-void InvalidateAdvPtsRect(uint16_t hwnd)
-{
-    uint16_t hdc;
-    TEXTMETRIC tm;
-    LOGFONT *plf;
-    int16_t dyBig;
-    uint16_t hfont;
-    int16_t dx;
-    RECT rc;
-    uint16_t hfontSav;
-
-    /* TODO: implement */
-}
-
 int16_t SetRaceStat(PLAYER *pplr, int16_t iStat, int16_t iVal)
 {
-
-    /* TODO: implement */
-    return 0;
-}
-
-void SetRCWTitle(uint16_t hwnd, int16_t iStep)
-{
-    char szBuf[50];
-    int16_t cch;
-
-    /* TODO: implement */
-}
-
-void DrawRace2(uint16_t hwnd, uint16_t hdc, int16_t iDraw)
-{
-    int16_t iPit;
-    int16_t bt;
-    int16_t iMax;
-    char szT[32];
-    int16_t dy;
-    int16_t iMin;
-    int16_t bkMode;
-    int16_t fCreatedDC;
-    int16_t xRLabel;
-    int16_t i;
-    int16_t iMod;
-    char *psz;
-    int16_t dx;
-    int16_t cch;
-    int16_t bt1;
-    RECT rc;
-    int32_t l2;
-    int16_t iStore;
-    int32_t l;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x1d2d */
-    /* block (block) @ MEMORY_RACE:0x1e61 */
-
-    /* TODO: implement */
-}
-
-int16_t FTrackRaceDlg3(uint16_t hwnd, POINT pt, int16_t kbd)
-{
-    BTNT btnt;
-    int16_t bt;
-    int16_t dShift;
-    int16_t i;
-    int16_t irc;
-    int16_t iMod;
-    int16_t iStat;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x3073 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t FTrackRaceDlg2(uint16_t hwnd, POINT pt, int16_t kbd)
-{
-    BTNT btnt;
-    int16_t bt;
-    int16_t dShift;
-    char iMax;
-    char iMin;
-    int16_t i;
-    int16_t irc;
-    int16_t iMod;
-    char *psz;
-    int16_t dWidth;
-    int16_t dx;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RACE:0x252b */
 
     /* TODO: implement */
     return 0;
@@ -384,7 +106,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr)
     char szFilter[256];
     uint16_t i;
     char szFile[256];
-    OFN ofn;
+    // OFN ofn;
 
     /* TODO: implement */
     return 0;
@@ -411,14 +133,6 @@ void BoundsCheckPlayer(PLAYER *pplr)
     int16_t i;
 
     /* TODO: implement */
-}
-
-int16_t IrcRaceDlgHitTest(POINT pt)
-{
-    int16_t i;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void CreateRandomRace(PLAYER *pplr)
@@ -465,3 +179,305 @@ int32_t LInnateRaceHabitability(PLAYER *pplr)
     /* TODO: implement */
     return 0;
 }
+
+int16_t RaMajor(int16_t iplr)
+{
+    /* rsMajorAdv encodes the primary race attribute (HE/SS/WM/... in Stars!). */
+    return GetRaceStat(&rgplr[iplr], rsMajorAdv);
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HDC hdc;
+    PAINTSTRUCT ps;
+    int16_t cch;
+    RECT rcGBox;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x3dd9 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HWND hwndCtl;
+    HDC hdc;
+    PAINTSTRUCT ps;
+    int16_t cch;
+    RECT rcGBox;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x379d */
+    /* block (block) @ MEMORY_RACE:0x38e5 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HDC hdc;
+    char szT[600];
+    int16_t ids;
+    PAINTSTRUCT ps;
+    int16_t cch;
+    RECT rcGBox;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x3338 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HDC hdc;
+    POINT pt;
+    PAINTSTRUCT ps;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x28ac */
+    /* block (block) @ MEMORY_RACE:0x28ef */
+    /* block (block) @ MEMORY_RACE:0x2927 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    HDC hdc;
+    int16_t iVar;
+    int16_t yTop;
+    POINT pt;
+    int16_t dy;
+    int16_t dxMiddle;
+    int16_t dxLabel;
+    int16_t cch;
+    char szTemp[20];
+    HFONT hfontSav;
+    PAINTSTRUCT ps;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x106f */
+    /* block (block) @ MEMORY_RACE:0x155e */
+    /* block (block) @ MEMORY_RACE:0x159d */
+    /* block (block) @ MEMORY_RACE:0x15e0 */
+    /* block (block) @ MEMORY_RACE:0x16ac */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    int16_t i;
+    RECT rc;
+    int16_t iPlrBmp;
+    int16_t iOffset;
+    PLAYER *pplr;
+    HWND hwndCB;
+    POINT pt;
+    HDC hdc;
+    int16_t j;
+    char *psz;
+    uint8_t k;
+    BTNT btnt;
+    int16_t bt;
+    RECT *prc;
+    char szBuf[32];
+    int16_t iDir;
+    int16_t iCur;
+    PAINTSTRUCT ps;
+    int16_t cch;
+    RECT rcGBox;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x03bb */
+    /* block (block) @ MEMORY_RACE:0x0699 */
+    /* block (block) @ MEMORY_RACE:0x06f7 */
+    /* block (block) @ MEMORY_RACE:0x08ef */
+    /* block (block) @ MEMORY_RACE:0x0937 */
+    /* block (block) @ MEMORY_RACE:0x0c31 */
+    /* block (block) @ MEMORY_RACE:0x0c76 */
+    /* block (block) @ MEMORY_RACE:0x0daa */
+    /* block (block) @ MEMORY_RACE:0x0e66 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void DrawRaceAdvantagePoints(HDC hdc, RECT *prc, PLAYER *pplr)
+{
+    TEXTMETRIC tm;
+    LOGFONT *plf;
+    COLORREF crBkSav;
+    int16_t bkMode;
+    int16_t dyBig;
+    char szAdvantage[32];
+    int16_t c;
+    COLORREF crSav;
+    HFONT hfont;
+    int16_t dx;
+    int16_t iPts;
+    int16_t cch;
+    RECT rc;
+    HFONT hfontSav;
+
+    /* TODO: implement */
+}
+int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrite)
+{
+    int16_t mdRet;
+    int16_t (*lpProc)(void);
+    RECT rgrcStack[17];
+    int16_t cpts;
+
+    /* debug symbols */
+    /* label Step2 @ MEMORY_RACE:0x007d */
+    /* label Step3 @ MEMORY_RACE:0x00ea */
+    /* label Step4 @ MEMORY_RACE:0x0157 */
+    /* label Step5 @ MEMORY_RACE:0x01c4 */
+    /* label Step6 @ MEMORY_RACE:0x0231 */
+    /* label Step1 @ MEMORY_RACE:0x001c */
+    /* label Finish @ MEMORY_RACE:0x029e */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw)
+{
+    int16_t dxItem;
+    int16_t idsT;
+    int16_t fMacintosh;
+    int16_t yTop;
+    int16_t bt;
+    int16_t ids;
+    COLORREF crBkSav;
+    int16_t bkMode;
+    int16_t fCreatedDC;
+    int16_t dxkT;
+    int16_t i;
+    int16_t irc;
+    int16_t dxDig;
+    int16_t dx;
+    int16_t cch;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void InvalidateAdvPtsRect(HWND hwnd)
+{
+    HDC hdc;
+    TEXTMETRIC tm;
+    LOGFONT *plf;
+    int16_t dyBig;
+    HFONT hfont;
+    int16_t dx;
+    RECT rc;
+    HFONT hfontSav;
+
+    /* TODO: implement */
+}
+
+void SetRCWTitle(HWND hwnd, int16_t iStep)
+{
+    char szBuf[50];
+    int16_t cch;
+
+    /* TODO: implement */
+}
+
+void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw)
+{
+    int16_t iPit;
+    int16_t bt;
+    int16_t iMax;
+    char szT[32];
+    int16_t dy;
+    int16_t iMin;
+    int16_t bkMode;
+    int16_t fCreatedDC;
+    int16_t xRLabel;
+    int16_t i;
+    int16_t iMod;
+    char *psz;
+    int16_t dx;
+    int16_t cch;
+    int16_t bt1;
+    RECT rc;
+    int32_t l2;
+    int16_t iStore;
+    int32_t l;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x1d2d */
+    /* block (block) @ MEMORY_RACE:0x1e61 */
+
+    /* TODO: implement */
+}
+
+int16_t FTrackRaceDlg3(HWND hwnd, POINT pt, int16_t kbd)
+{
+    BTNT btnt;
+    int16_t bt;
+    int16_t dShift;
+    int16_t i;
+    int16_t irc;
+    int16_t iMod;
+    int16_t iStat;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x3073 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd)
+{
+    BTNT btnt;
+    int16_t bt;
+    int16_t dShift;
+    char iMax;
+    char iMin;
+    int16_t i;
+    int16_t irc;
+    int16_t iMod;
+    char *psz;
+    int16_t dWidth;
+    int16_t dx;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RACE:0x252b */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t IrcRaceDlgHitTest(POINT pt)
+{
+    int16_t i;
+
+    /* TODO: implement */
+    return 0;
+}
+
+#endif /* _WIN32 */

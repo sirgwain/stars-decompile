@@ -3,6 +3,8 @@
 #include "globals.h"
 
 #include "msg.h"
+#include "memory.h"
+#include "file.h"
 #include "strings.h"
 #include "util.h"
 #include "utilgen.h"
@@ -14,6 +16,7 @@ char aMSGCmpr[22836] = {0};
 uint8_t acMSG[387] = {0x62, 0xa5, 0x7c, 0x63, 0x69, 0x99, 0x6c, 0x9b, 0x7c, 0x83, 0x2d, 0x84, 0x5a, 0x53, 0x6f, 0x49, 0x43, 0x44, 0x31, 0x4f, 0x5e, 0x6e, 0x6d, 0x5f, 0x37, 0x37, 0x54, 0x3d, 0x70, 0x69, 0x56, 0x53, 0x67, 0x65, 0x4b, 0x59, 0x84, 0x42, 0x56, 0x1a, 0xa6, 0x9e, 0xcc, 0x26, 0x24, 0x24, 0x20, 0x2f, 0x37, 0x4f, 0x58, 0x6b, 0x73, 0x26, 0x28, 0x22, 0x24, 0x2e, 0x30, 0x47, 0xb1, 0x98, 0x48, 0x2e, 0x5f, 0x69, 0x33, 0x2f, 0x34, 0x30, 0x5d, 0x97, 0x71, 0xa9, 0x5f, 0x98, 0x6e, 0xc0, 0x29, 0x69, 0x89, 0x71, 0x6f, 0x87, 0x8c, 0xaa, 0xba, 0xb5, 0x6c, 0x56, 0x57, 0x49, 0xed, 0xee, 0x75, 0x4e, 0x33, 0x36, 0x4a, 0x5b, 0x6b, 0x6e, 0x75, 0x79, 0x97, 0xa6, 0x42, 0x4a, 0x59, 0x71, 0x84, 0x87, 0x8f, 0x9e, 0xba, 0xc9, 0x45, 0x7c, 0x81, 0x6c, 0xf4, 0x26, 0x2a, 0x43, 0x2f, 0x5b, 0x74, 0xe1, 0xd6, 0xb3, 0xc7, 0x6e, 0x7b, 0x91, 0x90, 0xb1, 0xc6, 0xd5, 0xca, 0x55, 0x82, 0x78, 0x7c, 0x42, 0x3a, 0x54, 0x62, 0x71, 0x6d, 0x61, 0x60, 0x6e, 0x7d, 0x79, 0x7b, 0x83, 0x7a, 0x9d, 0xb5, 0xaf, 0x6c, 0x6c, 0x87, 0xa2, 0x8d, 0x8b, 0xb8, 0x9d, 0x84, 0x78, 0x5d, 0x9e, 0x82, 0xb8, 0xc5, 0x85, 0x6a, 0x8d, 0x72, 0x8b, 0x70, 0xa6, 0xad, 0xd3, 0x5c, 0x5c, 0xcc, 0x62, 0x84, 0x6f, 0x4c, 0x7d, 0x7b, 0x5e, 0x41, 0x1e, 0x30, 0x3a, 0x94, 0x91, 0x42, 0x39, 0xa2, 0x99, 0x3f, 0x1c, 0x73, 0x50, 0xfe, 0x73, 0xcb, 0x48, 0x6c, 0x6e, 0xdb, 0xdd, 0x7b, 0x99, 0x5e, 0xae, 0x7f, 0x4b, 0x4c, 0x78, 0x42, 0x5b, 0x83, 0x73, 0x7a, 0xc1, 0x89, 0xab, 0xad, 0xa8, 0xac, 0xa8, 0x68, 0x64, 0x7e, 0x69, 0x78, 0x78, 0x9d, 0x54, 0x55, 0x65, 0x66, 0x21, 0x90, 0x65, 0x4f, 0x7b, 0x57, 0x9e, 0x93, 0x38, 0xcc, 0xf6, 0xc1, 0xd3, 0xc6, 0xb6, 0x8d, 0x90, 0xb0, 0xdf, 0x7e, 0xc2, 0xb6, 0x7f, 0xd4, 0xc6, 0x92, 0x8c, 0x55, 0x63, 0x64, 0x99, 0x82, 0x8f, 0x97, 0x26, 0x11, 0x36, 0x78, 0x72, 0x4f, 0x5e, 0x5d, 0xab, 0xb5, 0x57, 0x5d, 0x59, 0x24, 0x2c, 0xb7, 0xb0, 0x99, 0x6f, 0x3b, 0x4a, 0x48, 0x84, 0x84, 0x53, 0x51, 0x39, 0x37, 0xa3, 0x97, 0x4e, 0x5f, 0xe4, 0x7a, 0x65, 0x94, 0x96, 0xd8, 0xd2, 0x54, 0x55, 0xeb, 0xec, 0x6e, 0xb3, 0xb2, 0x78, 0x40, 0x5a, 0x7e, 0x85, 0x3c, 0x2d, 0x1e, 0x9f, 0xc1, 0x87, 0x61, 0x38, 0x38, 0x3f, 0x38, 0xb4, 0x7c, 0x93, 0x39, 0x48, 0x59, 0x63, 0x72, 0x3e, 0xa2, 0xa1, 0x3d, 0xb0, 0xa7, 0x53, 0x44, 0x47, 0x5b, 0x6c, 0x7c, 0x7f, 0x86, 0x8a, 0xa8, 0xb7, 0x49, 0x51, 0x60, 0x78, 0x8b, 0x8e, 0x96, 0xa5, 0xc1, 0xd0, 0x59, 0x54, 0x53, 0x46, 0x46, 0x4c, 0xce, 0x6f, 0x82};
 char rgMSGLookupTable[72] = " eotasnirldh\\ucpfybm.gvwk,YT0'AzPMSXFxOIj%UVL-CDEN!GHq*W()25:QR1B/46Z78?";
 int16_t aiMSGChunkOffset[7] = {0, 2854, 6582, 10933, 14692, 18914, 22612};
+char rgcMsgArgs[387] = {4, 5, 3, 4, 4, 2, 2, 4, 2, 3, 1, 1, 2, 1, 4, 3, 3, 3, 2, 2, 4, 4, 3, 3, 4, 4, 4, 3, 3, 3, 3, 4, 4, 3, 3, 1, 1, 5, 3, 1, 2, 2, 1, 6, 6, 6, 6, 2, 3, 3, 4, 3, 4, 1, 2, 1, 2, 1, 2, 4, 5, 5, 1, 1, 1, 1, 5, 5, 5, 5, 7, 7, 7, 7, 5, 5, 5, 5, 1, 2, 3, 1, 3, 2, 3, 2, 2, 1, 1, 4, 4, 2, 6, 6, 3, 3, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 2, 2, 2, 1, 3, 5, 5, 4, 3, 6, 2, 0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 4, 4, 2, 2, 5, 5, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 4, 4, 5, 5, 7, 5, 5, 6, 6, 4, 5, 5, 6, 7, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 3, 1, 0, 2, 6, 1, 1, 3, 7, 3, 3, 5, 6, 7, 6, 4, 5, 6, 5, 2, 3, 2, 3, 1, 1, 2, 2, 4, 5, 6, 5, 6, 2, 4, 2, 4, 3, 1, 2, 1, 4, 3, 4, 4, 3, 3, 4, 4, 4, 5, 4, 4, 6, 5, 5, 5, 1, 2, 7, 1, 1, 2, 1, 1, 3, 2, 1, 2, 2, 2, 0, 1, 1, 0, 1, 2, 2, 3, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 6, 6, 0, 1, 5, 1, 1, 2, 2, 2, 2, 2, 6, 6, 2, 5, 5, 3, 3, 3, 1, 1, 1, 4, 3, 3, 1, 1, 4, 4, 4, 4, 2, 3, 1, 1, 4, 2, 2, 4, 5, 6, 7, 4, 4, 6, 6, 5, 3, 4, 3, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 0, 1, 1, 2, 3, 4, 2, 4, 3, 2, 2, 2, 5, 6, 7, 4, 5, 6, 1, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 3, 3, 2, 2, 1, 1, 2, 4, 1}; /* 1030:5b0e */
 
 extern const char *const aMSGUncompressed[];
 
@@ -29,39 +32,85 @@ int16_t FFindPlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
 
 int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
 {
-    uint8_t *lpbMax;
-    int16_t iMax;
-    MSGHDR *lpmh;
-    int16_t i;
-    uint8_t *lpb;
-    uint16_t u;
+    const uint8_t *lpb;
+    const uint8_t *end;
 
-    /* TODO: implement */
-    return 0;
-}
+    if (iMsg < 0 || iMsg >= cMsg || pmb == NULL)
+    {
+        return 0;
+    }
 
-void DecorateMsgTitleBar(uint16_t hdc, RECT *prc)
-{
-    int16_t xDst;
-    int16_t ySrcMask;
-    uint16_t hbrSav;
-    uint16_t hbmpSav;
-    int16_t dySrc;
-    int16_t i;
-    uint16_t hdcMem;
-    int16_t idm;
-    int16_t ySrc;
-    int16_t yDst;
-    int16_t dxSrc;
-    int16_t xyStart;
-    uint32_t crBkSav;
-    uint32_t crTextSav;
+    lpb = (const uint8_t *)lpMsg;
+    end = (const uint8_t *)lpMsg + imemMsgCur;
 
-    /* debug symbols */
-    /* label Cleanup @ MEMORY_MSG:0x7cbf */
-    /* label DoMinMax @ MEMORY_MSG:0x7b18 */
+    /* Walk forward iMsg records; when iMsg==0, decode into *pmb. */
+    for (;;)
+    {
+        if (lpb + sizeof(MSGHDR) > end)
+        {
+            /* Shouldn’t happen if cMsg/imemMsgCur are consistent. */
+            return 0;
+        }
 
-    /* TODO: implement */
+        const MSGHDR *mh = (const MSGHDR *)lpb;
+        uint16_t idm = (uint16_t)mh->iMsg; /* 9-bit id */
+        uint16_t u = (uint16_t)mh->grWord; /* 7-bit “param is word” bitfield */
+        lpb += sizeof(MSGHDR);
+
+        if (iMsg == 0)
+        {
+            pmb->iMsg = (int16_t)idm;
+            pmb->wGoto = mh->wGoto;
+            for (int k = 0; k < 7; k++)
+                pmb->rgParam[k] = 0;
+        }
+
+        /* Param count comes from rgcMsgArgs[idm] (asm proves this). */
+        uint8_t cParam = 0;
+        if (idm < (uint16_t)sizeof(rgcMsgArgs))
+        {
+            cParam = (uint8_t)rgcMsgArgs[idm];
+        }
+
+        /* Safety: MSGBIG only has 7 params. Stars messages should never exceed that. */
+        if (cParam > 7)
+        {
+            cParam = 7;
+        }
+
+        for (uint8_t i = 0; i < cParam; ++i)
+        {
+            if (lpb >= end)
+                return 0;
+
+            if (iMsg == 0)
+            {
+                if ((u & 1u) == 0)
+                {
+                    /* byte param */
+                    pmb->rgParam[i] = (int16_t)(uint16_t)(*lpb);
+                }
+                else
+                {
+                    /* word param */
+                    if (lpb + 2 > end)
+                        return 0;
+                    pmb->rgParam[i] = *(const int16_t *)lpb;
+                }
+            }
+
+            lpb += ((u & 1u) ? 2u : 1u);
+            u >>= 1;
+        }
+
+        if (iMsg == 0)
+        {
+            return 1;
+        }
+
+        /* next record */
+        --iMsg;
+    }
 }
 
 int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
@@ -89,9 +138,11 @@ char *PszGetMessageN(int16_t iMsg)
 int16_t IdmGetMessageN(int16_t iMsg)
 {
     MSGBIG mb;
-
-    /* TODO: implement */
-    return 0;
+    if (!FGetNMsgbig(iMsg, &mb))
+    {
+        return -1;
+    }
+    return mb.iMsg;
 }
 
 int16_t FFinishPlrMsgEntry(int16_t dInc)
@@ -106,24 +157,6 @@ int16_t FFinishPlrMsgEntry(int16_t dInc)
 
     /* TODO: implement */
     return 0;
-}
-
-void SetMsgTitle(uint16_t hwnd)
-{
-    int16_t cMsgTot;
-    int16_t i;
-    MSGBIG mb;
-    char ch;
-    char szT[80];
-    int16_t sw;
-    MSGPLR *lpmp;
-    RECT rc;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x732e */
-    /* label FinishUp @ MEMORY_MSG:0x77de */
-
-    /* TODO: implement */
 }
 
 void MarkPlanetsPlayerLost(int16_t iPlayer)
@@ -177,22 +210,118 @@ int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int
 
 void ReadPlayerMessages(void)
 {
-    uint8_t *lpbMax;
-    int16_t iMax;
-    int16_t fOOM;
-    int16_t (*penvMemSav)[9];
-    MSGHDR *lpmh;
-    uint16_t imemMsgT;
-    int16_t i;
-    int16_t env[9];
-    MSGPLR *lpmp;
-    uint8_t *lpb;
-    uint16_t u;
+    MemJump env;
+    MemJump *penvMemSav = penvMem;
 
-    /* debug symbols */
-    /* label LOutOfMem @ MEMORY_MSG:0x9bb2 */
+    uint16_t imemMsgT = 0;
+    int fOOM = 0;
 
-    /* TODO: implement */
+    /* Append any rtMsg blocks (rt == 0x0c per decompile) into lpMsg at imemMsgCur. */
+    penvMem = &env;
+    if (setjmp(env.env))
+    {
+        fOOM = 1;
+    }
+
+    while (hdrCur.rt == rtMsg)
+    {
+        uint16_t cb = hdrCur.cb;
+
+        if (!fOOM)
+        {
+            /* Bounds check matches decompile intent: avoid wrapping far offsets. */
+            if (cb != 0 && (uint32_t)imemMsgCur + imemMsgT < (uint32_t)(0xFFFFu - cb - 0x38u))
+            {
+                memmove(lpMsg + imemMsgCur + imemMsgT, rgbCur, cb);
+                imemMsgT = (uint16_t)(imemMsgT + cb);
+            }
+        }
+        ReadRt();
+    }
+
+    imemMsgCur = (uint16_t)(imemMsgCur + imemMsgT);
+
+    /* Walk newly appended messages to:
+       - set bitfMsgSent for each idm,
+       - increment cMsg,
+       - skip params according to the packing bits and param count table.
+     */
+    {
+        uint8_t *lpb = (uint8_t *)lpMsg + (uint16_t)(imemMsgCur - imemMsgT);
+        uint8_t *end = lpb + imemMsgT;
+
+        while (lpb < end)
+        {
+            MSGHDR *mh = (MSGHDR *)lpb;
+            uint16_t idm = mh->iMsg;
+            uint16_t u = mh->grWord;
+
+            /* mark sent */
+            bitfMsgSent[idm >> 3] |= (uint8_t)(1u << (idm & 7));
+
+            ++cMsg;
+
+            lpb += 4; /* sizeof(MSGHDR) */
+
+            {
+                uint8_t cParam = (uint8_t)rgplr[1].szNames[0x0c + idm];
+                for (uint8_t i = 0; i < cParam; ++i)
+                {
+                    lpb += ((u & 1u) ? 2 : 1);
+                    u >>= 1;
+                }
+            }
+        }
+    }
+
+    /* Find tail of incoming MSGPLR list (vlpmsgplrIn is head pointer). */
+    {
+        MSGPLR **lpmp = &vlpmsgplrIn;
+
+        /* Walk "pointer to next" until we reach a NULL next. */
+        while (*lpmp != NULL)
+        {
+            lpmp = &(*lpmp)->lpmsgplrNext;
+        }
+
+        /* Now read rtPlrMsg blocks (rt == 0x28 per decompile) and chain them. */
+        for (;;)
+        {
+            if (hdrCur.rt != rtPlrMsg)
+            {
+                break;
+            }
+
+            if (!fOOM)
+            {
+                uint16_t cb = hdrCur.cb;
+                MSGPLR *node = (MSGPLR *)LpAlloc(cb, htPlrMsg);
+                if (node == NULL)
+                {
+                    fOOM = 1;
+                }
+                else
+                {
+                    memcpy(node, rgbCur, cb);
+
+                    /* terminate and link */
+                    node->lpmsgplrNext = NULL;
+                    *lpmp = node;
+                    lpmp = &node->lpmsgplrNext;
+
+                    ++vcmsgplrIn;
+                }
+            }
+
+            ReadRt();
+        }
+    }
+
+    /* Initialize current message cursor to first “next” message. */
+    iMsgCur = -1;
+    iMsgCur = IMsgNext(0);
+
+    penvMem = penvMemSav;
 }
 
 int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
@@ -213,8 +342,18 @@ void MarkPlayersThatSentMsgs(int16_t iPlayer)
 
 void ResetMessages(void)
 {
+    imemMsgCur = 0;
+    iMsgCur = -1;
+    cMsg = 0;
+    iMsgSendCur = 0;
 
-    /* TODO: implement */
+    memset(bitfMsgSent, 0, sizeof(bitfMsgSent));
+    memset(bitfMsgFiltered, 0, sizeof(bitfMsgFiltered));
+
+    vlpmsgplrIn = NULL;
+    vlpmsgplrOut = NULL;
+    vcmsgplrIn = 0;
+    vcmsgplrOut = 0;
 }
 
 int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
@@ -676,24 +815,6 @@ char *PszGetCompressedMessage(MessageId idm)
     return szLastMsgGet;
 }
 
-int16_t MsgDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    RECT rc;
-    uint16_t hdc;
-    POINT pt;
-    RECT rcEdit;
-    int16_t cch;
-    char szT[256];
-    PAINTSTRUCT ps;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x8f77 */
-    /* block (block) @ MEMORY_MSG:0x9031 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 void WritePlayerMessages(int16_t iPlayer)
 {
     uint8_t *lpbMax;
@@ -705,33 +826,105 @@ void WritePlayerMessages(int16_t iPlayer)
     /* TODO: implement */
 }
 
-int16_t HtMsgBox(POINT pt)
-{
-    int16_t i;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x7e19 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t IMsgPrev(int16_t fFilteredOnly)
 {
-    int16_t i;
-    int16_t idm;
+    int16_t i = iMsgCur;
 
-    /* TODO: implement */
-    return 0;
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
+    {
+        /* If we're in the "incoming player msg" region (iMsgCur > cMsg), just step back. */
+        if (cMsg < iMsgCur)
+        {
+            i = (int16_t)(iMsgCur - 1);
+        }
+        else
+        {
+            for (;;)
+            {
+                int16_t idm;
+                int not_set;
+
+                i = (int16_t)(i - 1);
+                if (i < 0)
+                {
+                    return -1;
+                }
+
+                idm = IdmGetMessageN(i);
+
+                /* Inline bit test: bitfMsgFiltered[idm] */
+                not_set = ((bitfMsgFiltered[(uint16_t)idm >> 3] &
+                            (uint8_t)(1u << ((uint16_t)idm & 7u))) == 0);
+
+                /* If fFilteredOnly==1: skip until bit is set.
+                   If fFilteredOnly==0: skip while bit is set. */
+                if (not_set != (fFilteredOnly != 0))
+                {
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        /* Viewing filtered messages normally: no filtering logic, just step back. */
+        if (iMsgCur < 1)
+        {
+            i = -1;
+        }
+        else
+        {
+            i = (int16_t)(iMsgCur - 1);
+        }
+    }
+
+    return i;
 }
 
 int16_t IMsgNext(int16_t fFilteredOnly)
 {
-    int16_t i;
-    int16_t idm;
+    int16_t i = iMsgCur;
 
-    /* TODO: implement */
-    return 0;
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
+    {
+        for (;;)
+        {
+            ++i;
+
+            if ((int16_t)cMsg <= i)
+            {
+                /* Past end of normal messages: allow “incoming player messages” region. */
+                if (i < (int16_t)(cMsg + vcmsgplrIn))
+                {
+                    return i;
+                }
+                return -1;
+            }
+
+            {
+                int16_t idm = IdmGetMessageN(i);
+                int filtered =
+                    (bitfMsgFiltered[idm >> 3] & (1 << (idm & 7))) != 0;
+
+                /* Decompile does: while ( (filtered==0) == fFilteredOnly ) keep looping.
+                   That means:
+                   - if fFilteredOnly==0: stop when filtered==0 (i.e., NOT filtered out)
+                   - if fFilteredOnly==1: stop when filtered!=0 (i.e., filtered)
+                 */
+                if ((filtered ? 1 : 0) == (fFilteredOnly ? 1 : 0))
+                {
+                    return i;
+                }
+            }
+        }
+    }
+
+    /* Not filtering-only, but the view is filtered: just step within the extended range. */
+    if (iMsgCur < (int16_t)(cMsg + vcmsgplrIn - 1))
+    {
+        return (int16_t)(iMsgCur + 1);
+    }
+    return -1;
 }
 
 char *PszFormatIds(StringId ids, int16_t *pParams)
@@ -753,9 +946,82 @@ int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int1
     return 0;
 }
 
-int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+#ifdef _WIN32
+
+void DecorateMsgTitleBar(HDC hdc, RECT *prc)
 {
-    uint16_t hdc;
+    int16_t xDst;
+    int16_t ySrcMask;
+    uint16_t hbrSav;
+    uint16_t hbmpSav;
+    int16_t dySrc;
+    int16_t i;
+    HDC hdcMem;
+    int16_t idm;
+    int16_t ySrc;
+    int16_t yDst;
+    int16_t dxSrc;
+    int16_t xyStart;
+    uint32_t crBkSav;
+    uint32_t crTextSav;
+
+    /* debug symbols */
+    /* label Cleanup @ MEMORY_MSG:0x7cbf */
+    /* label DoMinMax @ MEMORY_MSG:0x7b18 */
+
+    /* TODO: implement */
+}
+
+int16_t HtMsgBox(POINT pt)
+{
+    int16_t i;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x7e19 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void SetMsgTitle(HWND hwnd)
+{
+    int16_t cMsgTot;
+    int16_t i;
+    MSGBIG mb;
+    char ch;
+    char szT[80];
+    int16_t sw;
+    MSGPLR *lpmp;
+    RECT rc;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x732e */
+    /* label FinishUp @ MEMORY_MSG:0x77de */
+
+    /* TODO: implement */
+}
+
+INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
+    HDC hdc;
+    POINT pt;
+    RECT rcEdit;
+    int16_t cch;
+    char szT[256];
+    PAINTSTRUCT ps;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x8f77 */
+    /* block (block) @ MEMORY_MSG:0x9031 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
     int16_t i;
     char *psz;
     PAINTSTRUCT ps;
@@ -809,7 +1075,8 @@ int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t
     /* label PrevMsg @ MEMORY_MSG:0x6ba0 */
     /* label ToggleMsgMode @ MEMORY_MSG:0x6298 */
     /* label GotoMsg @ MEMORY_MSG:0x6d8d */
-
     /* TODO: implement */
     return 0;
 }
+
+#endif

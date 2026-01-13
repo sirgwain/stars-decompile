@@ -1,7 +1,9 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "research.h"
+#include "parts.h"
 
 /* globals */
 uint16_t rggrbitBrParts[17] = {0x19ff, 0x0008, 0x0010, 0x0040, 0x0800, 0x0001, 0x1000, 0x0100, 0x0080, 0x0200, 0x8000, 0x0002, 0x0004, 0x4000, 0x0400, 0x2000, 0x0020};
@@ -32,16 +34,132 @@ int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr)
     return 0;
 }
 
-int16_t ResearchDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
+int32_t ProjectedResearchSpending(int32_t pct)
 {
-    uint16_t hdc;
+    int32_t lRes;
+    PLANET *lppl;
+    int16_t cRes;
+    int32_t lSpend;
+    PLANET *lpplMac;
+    char pctSav;
+    int16_t cBogus;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FShouldPartBeHidden(PART *ppart)
+{
+    int16_t iItem;
+    uint16_t grbitTrader;
+
+    if (idPlayer == -1)
+        return false; // no player context => don't block here
+
+    iItem = ppart->hs.iItem;
+    const uint16_t grhst = ppart->hs.grhst;
+
+    unsigned required_mask = grbitTraderNone;
+
+    switch (grhst)
+    {
+    case hstBomb:
+        // Hush-A-Boom
+        if (iItem == ibombHushABoom)
+            required_mask = grbitTraderBomb;
+        break;
+
+    case hstTorp:
+        // Anti-Matter Torpedo
+        if (iItem == itorpAntiMatterTorpedo)
+            required_mask = grbitTraderTorp;
+        break;
+
+    case hstEngine:
+        // Enigma Pulsar
+        if (iItem == iengineEnigmaPulsar)
+            required_mask = grbitTraderEngine;
+        break;
+
+    case hstShield:
+        // Langston Shell
+        if (iItem == ishieldLangstonShell)
+            required_mask = grbitTraderShield;
+        break;
+
+    case hstArmor:
+        // Mega Poly Shell
+        if (iItem == iarmorMegaPolyShell)
+            required_mask = grbitTraderArmor;
+        break;
+
+    case hstBeam:
+        // Multi-Contained Munition
+        if (iItem == ibeamMultiContainedMunition)
+            required_mask = grbitTraderBeam;
+        break;
+
+    case hstMining:
+        // Alien Miner
+        if (iItem == iminingAlienMiner)
+            required_mask = grbitTraderMiner;
+        break;
+
+    case hstSpecialE:
+        // Multi-Function Pod
+        if (iItem == ispecialEMultiFunctionPod)
+            required_mask = grbitTraderSpecial;
+        break;
+
+    case hstSpecialM:
+        // Multi Cargo Pod or Jump Gate
+        if (iItem == ispecialMMultiCargoPod)
+            required_mask = grbitTraderCargo;
+        else if (iItem == ispecialMJumpGate)
+            required_mask = grbitTraderJumpgate;
+        break;
+
+    case hstHull:
+        // Mini Morph hull needs a hull trader perk in the original code.
+        if (iItem == ihuldefMiniMorph)
+            required_mask = grbitTraderHull;
+        break;
+
+    case hstPlanetary:
+        // Genesis Device
+        if (iItem == iplanetaryGenesisDevice)
+            required_mask = grbitTraderGenesis;
+        break;
+
+    default:
+        break;
+    }
+
+    if (required_mask != grbitTraderNone)
+    {
+        // Same field the original used (rgplr[idPlayer].grbitTrader)
+        const unsigned grbitTrader = *(const unsigned *)((const char *)&rgplr[0].grbitTrader + idPlayer * 0xC0);
+
+        // If the needed perk bit is not set, this component is blocked
+        if ((grbitTrader & required_mask) == 0)
+            return true;
+    }
+
+    return false;
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
     int16_t y;
     int16_t i;
     PAINTSTRUCT ps;
     int16_t dx;
     RECT rc;
     int16_t iResTechNext;
-    uint16_t hwndRad;
+    HWND hwndRad;
     POINT pt;
     int16_t fChg;
     int16_t dxCurrent;
@@ -61,7 +179,54 @@ int16_t ResearchDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lP
     return 0;
 }
 
-int16_t FTrackResearchDlg(uint16_t hwnd, int16_t x, int16_t y, int16_t fkb)
+INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
+    uint16_t hmenu;
+    int16_t i;
+    int16_t c;
+    PAINTSTRUCT ps;
+    uint16_t hfontSav;
+    int16_t dx;
+    RECT rc;
+    HWND hwndDD;
+    int16_t fAllHsts;
+    int32_t lSel;
+    uint16_t iItemStart;
+    int16_t md;
+    int16_t fShowAll;
+    int16_t iStart;
+    int16_t cIter;
+    int16_t iOff;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_RESEARCH:0x1ee7 */
+    /* block (block) @ MEMORY_RESEARCH:0x2453 */
+    /* block (block) @ MEMORY_RESEARCH:0x2586 */
+    /* label Top @ MEMORY_RESEARCH:0x2675 */
+    /* label NullItem @ MEMORY_RESEARCH:0x280e */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK BrowserWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
+    POINT pt;
+    int16_t i;
+    PAINTSTRUCT ps;
+    RECT rc;
+
+    /* debug symbols */
+    /* label Validate @ MEMORY_RESEARCH:0x2939 */
+    /* label Default @ MEMORY_RESEARCH:0x2a6f */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FTrackResearchDlg(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
 {
     int16_t bt;
     POINT pt;
@@ -76,21 +241,7 @@ int16_t FTrackResearchDlg(uint16_t hwnd, int16_t x, int16_t y, int16_t fkb)
     return 0;
 }
 
-int32_t ProjectedResearchSpending(int32_t pct)
-{
-    int32_t lRes;
-    PLANET *lppl;
-    int16_t cRes;
-    int32_t lSpend;
-    PLANET *lpplMac;
-    char pctSav;
-    int16_t cBogus;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void DrawResearchDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t grbitDraw)
+void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw)
 {
     int16_t dxCurrent;
     char szTemp[60];
@@ -103,8 +254,8 @@ void DrawResearchDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t grbitDraw)
     int16_t i;
     int16_t c;
     int16_t grbitCur;
-    uint32_t crBackSav;
-    uint32_t crForeSav;
+    COLORREF crBackSav;
+    COLORREF crForeSav;
     uint16_t hfontSav;
     int16_t xNum;
     int16_t xCtr;
@@ -114,7 +265,7 @@ void DrawResearchDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t grbitDraw)
     int32_t l;
     int16_t iMin;
     RECT rc;
-    uint16_t hbrSav;
+    HBRUSH hbrSav;
     int16_t cch;
     int32_t lSpent;
     int32_t lRBEffective;
@@ -141,7 +292,7 @@ void DrawResearchDlg(uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t grbitDraw)
     /* TODO: implement */
 }
 
-void DisplayComponentInfo(uint16_t hdc, int16_t dx, int16_t dy, PART *ppart)
+void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart)
 {
     uint16_t rgCosts[4];
     int16_t idsT;
@@ -176,13 +327,13 @@ void DisplayComponentInfo(uint16_t hdc, int16_t dx, int16_t dy, PART *ppart)
     int16_t dmgMinRam;
     int16_t fWarp10;
     int16_t iEff;
-    uint32_t crFore;
+    COLORREF crFore;
     int16_t cch;
     int16_t x;
     uint16_t hpenSav;
     int16_t pctT;
-    uint32_t crBack;
-    uint16_t hbrSav;
+    COLORREF crBack;
+    HBRUSH hbrSav;
     char szT[256];
     int16_t dyText;
     int16_t dmgFloor;
@@ -217,58 +368,4 @@ void DisplayComponentInfo(uint16_t hdc, int16_t dx, int16_t dy, PART *ppart)
     /* TODO: implement */
 }
 
-int16_t FShouldPartBeHidden(PART *ppart)
-{
-    int16_t iItem;
-    uint16_t grbitTrader;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t BrowserDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hdc;
-    uint16_t hmenu;
-    int16_t i;
-    int16_t c;
-    PAINTSTRUCT ps;
-    uint16_t hfontSav;
-    int16_t dx;
-    RECT rc;
-    uint16_t hwndDD;
-    int16_t fAllHsts;
-    int32_t lSel;
-    uint16_t iItemStart;
-    int16_t md;
-    int16_t fShowAll;
-    int16_t iStart;
-    int16_t cIter;
-    int16_t iOff;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_RESEARCH:0x1ee7 */
-    /* block (block) @ MEMORY_RESEARCH:0x2453 */
-    /* block (block) @ MEMORY_RESEARCH:0x2586 */
-    /* label Top @ MEMORY_RESEARCH:0x2675 */
-    /* label NullItem @ MEMORY_RESEARCH:0x280e */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int32_t BrowserWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hdc;
-    POINT pt;
-    int16_t i;
-    PAINTSTRUCT ps;
-    RECT rc;
-
-    /* debug symbols */
-    /* label Validate @ MEMORY_RESEARCH:0x2939 */
-    /* label Default @ MEMORY_RESEARCH:0x2a6f */
-
-    /* TODO: implement */
-    return 0;
-}
+#endif /* _WIN32 */
