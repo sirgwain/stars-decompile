@@ -8,13 +8,17 @@
 #include "strings.h"
 
 /* globals */
-uint32_t rgcrDrawStars[5] = {0x007f7f7f, 0x00ffffff, 0x000000ff, 0x0000ff00, 0x00ff0000};
-uint32_t rgcrDrawStars2a[5] = {0x00c0c0c0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000};
-uint32_t rgcrDrawStars2b[5] = {0x007f7f7f, 0x0000007f, 0x00007f00, 0x007f0000, 0x00000000};
 int32_t rgDSDivCnt[5] = {28000, 28000, 63000, 95000, 73000};
 int32_t rgDSDivCnt2[5] = {80000, 210000, 310000, 260000, 0};
 uint8_t vrgbTachyon[18] = {0x64, 0x5f, 0x5d, 0x5b, 0x5a, 0x59, 0x58, 0x57, 0x56, 0x56, 0x55, 0x54, 0x54, 0x53, 0x53, 0x52, 0x52, 0x51};
 
+#ifdef _WIN32
+
+COLORREF rgcrDrawStars[5] = {0x007f7f7f, 0x00ffffff, 0x000000ff, 0x0000ff00, 0x00ff0000};
+COLORREF rgcrDrawStars2a[5] = {0x00c0c0c0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x00000000};
+COLORREF rgcrDrawStars2b[5] = {0x007f7f7f, 0x0000007f, 0x00007f00, 0x007f0000, 0x00000000};
+
+#endif /* _WIN32 */
 /* functions */
 
 char *SzVersion(void)
@@ -554,25 +558,6 @@ void SelectOursAtObject(POINT *ppt)
     /* TODO: implement */
 }
 
-int16_t CchGetETA(uint16_t hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall)
-{
-    int16_t iWarp;
-    double dbl;
-    ORDER *lpord;
-    int16_t i;
-    int16_t c;
-    int16_t iSpeed;
-    int16_t j;
-    int16_t cYears;
-    int16_t ids;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTIL:0x3d24 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 char *PszGetPlanetName(int16_t id)
 {
     char *pszPlan;
@@ -655,20 +640,6 @@ int16_t FValidSerialNo(char *psz, int32_t *plSerial)
 
     /* TODO: implement */
     return 0;
-}
-
-void DrawABunchOfStars(uint16_t hdc, RECT *prc)
-{
-    int32_t lPixTot;
-    int16_t iMax;
-    int16_t dy;
-    int16_t i;
-    int16_t iClr;
-    int16_t dx;
-    RECT rcOut;
-    RECT rc;
-
-    /* TODO: implement */
 }
 
 char *PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
@@ -1172,12 +1143,6 @@ void GetTrueHullCost(int16_t iPlayer, HUL *lphul, uint16_t *rgCost)
     /* TODO: implement */
 }
 
-void DrawPlanetPrintDot(uint16_t hdc, int16_t x, int16_t y, int16_t iSize)
-{
-
-    /* TODO: implement */
-}
-
 int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)
 {
     int16_t chs;
@@ -1353,3 +1318,47 @@ int16_t FFindNearestObject(POINT pt, GrobjClass grobj, SCAN *pscan)
     /* TODO: implement */
     return 0;
 }
+
+#ifdef _WIN32
+
+// TODO: this should be platform independent eventually, it's used by DumpFleets
+int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall)
+{
+    int16_t iWarp;
+    double dbl;
+    ORDER *lpord;
+    int16_t i;
+    int16_t c;
+    int16_t iSpeed;
+    int16_t j;
+    int16_t cYears;
+    int16_t ids;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTIL:0x3d24 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void DrawABunchOfStars(HDC hdc, RECT *prc)
+{
+    int32_t lPixTot;
+    int16_t iMax;
+    int16_t dy;
+    int16_t i;
+    int16_t iClr;
+    int16_t dx;
+    RECT rcOut;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize)
+{
+
+    /* TODO: implement */
+}
+
+#endif /* _WIN32 */

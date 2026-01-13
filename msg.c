@@ -113,30 +113,6 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
     }
 }
 
-void DecorateMsgTitleBar(uint16_t hdc, RECT *prc)
-{
-    int16_t xDst;
-    int16_t ySrcMask;
-    uint16_t hbrSav;
-    uint16_t hbmpSav;
-    int16_t dySrc;
-    int16_t i;
-    uint16_t hdcMem;
-    int16_t idm;
-    int16_t ySrc;
-    int16_t yDst;
-    int16_t dxSrc;
-    int16_t xyStart;
-    uint32_t crBkSav;
-    uint32_t crTextSav;
-
-    /* debug symbols */
-    /* label Cleanup @ MEMORY_MSG:0x7cbf */
-    /* label DoMinMax @ MEMORY_MSG:0x7b18 */
-
-    /* TODO: implement */
-}
-
 int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
 {
     int16_t *pi;
@@ -181,24 +157,6 @@ int16_t FFinishPlrMsgEntry(int16_t dInc)
 
     /* TODO: implement */
     return 0;
-}
-
-void SetMsgTitle(uint16_t hwnd)
-{
-    int16_t cMsgTot;
-    int16_t i;
-    MSGBIG mb;
-    char ch;
-    char szT[80];
-    int16_t sw;
-    MSGPLR *lpmp;
-    RECT rc;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x732e */
-    /* label FinishUp @ MEMORY_MSG:0x77de */
-
-    /* TODO: implement */
 }
 
 void MarkPlanetsPlayerLost(int16_t iPlayer)
@@ -857,26 +815,6 @@ char *PszGetCompressedMessage(MessageId idm)
     return szLastMsgGet;
 }
 
-int16_t MsgDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-#ifdef _WIN32
-    RECT rc;
-    uint16_t hdc;
-    POINT pt;
-    RECT rcEdit;
-    int16_t cch;
-    char szT[256];
-    PAINTSTRUCT ps;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x8f77 */
-    /* block (block) @ MEMORY_MSG:0x9031 */
-
-#endif
-    /* TODO: implement */
-    return 0;
-}
-
 void WritePlayerMessages(int16_t iPlayer)
 {
     uint8_t *lpbMax;
@@ -886,17 +824,6 @@ void WritePlayerMessages(int16_t iPlayer)
     uint8_t *lpb;
 
     /* TODO: implement */
-}
-
-int16_t HtMsgBox(POINT pt)
-{
-    int16_t i;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x7e19 */
-
-    /* TODO: implement */
-    return 0;
 }
 
 int16_t IMsgPrev(int16_t fFilteredOnly)
@@ -1019,10 +946,82 @@ int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int1
     return 0;
 }
 
-int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
 #ifdef _WIN32
-    uint16_t hdc;
+
+void DecorateMsgTitleBar(HDC hdc, RECT *prc)
+{
+    int16_t xDst;
+    int16_t ySrcMask;
+    uint16_t hbrSav;
+    uint16_t hbmpSav;
+    int16_t dySrc;
+    int16_t i;
+    HDC hdcMem;
+    int16_t idm;
+    int16_t ySrc;
+    int16_t yDst;
+    int16_t dxSrc;
+    int16_t xyStart;
+    uint32_t crBkSav;
+    uint32_t crTextSav;
+
+    /* debug symbols */
+    /* label Cleanup @ MEMORY_MSG:0x7cbf */
+    /* label DoMinMax @ MEMORY_MSG:0x7b18 */
+
+    /* TODO: implement */
+}
+
+int16_t HtMsgBox(POINT pt)
+{
+    int16_t i;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x7e19 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+void SetMsgTitle(HWND hwnd)
+{
+    int16_t cMsgTot;
+    int16_t i;
+    MSGBIG mb;
+    char ch;
+    char szT[80];
+    int16_t sw;
+    MSGPLR *lpmp;
+    RECT rc;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x732e */
+    /* label FinishUp @ MEMORY_MSG:0x77de */
+
+    /* TODO: implement */
+}
+
+INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
+    HDC hdc;
+    POINT pt;
+    RECT rcEdit;
+    int16_t cch;
+    char szT[256];
+    PAINTSTRUCT ps;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MSG:0x8f77 */
+    /* block (block) @ MEMORY_MSG:0x9031 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
     int16_t i;
     char *psz;
     PAINTSTRUCT ps;
@@ -1076,7 +1075,8 @@ int32_t MessageWndProc(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t
     /* label PrevMsg @ MEMORY_MSG:0x6ba0 */
     /* label ToggleMsgMode @ MEMORY_MSG:0x6298 */
     /* label GotoMsg @ MEMORY_MSG:0x6d8d */
-#endif
     /* TODO: implement */
     return 0;
 }
+
+#endif

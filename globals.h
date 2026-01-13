@@ -425,9 +425,6 @@ extern uint32_t crButtonText;
 extern uint32_t crWindow;
 extern uint32_t crWindowText;
 extern uint32_t ctickLast;
-extern uint32_t rgcrCache[32];
-extern uint32_t rgcrMinerals[6];
-extern uint32_t rgcrPlrHistory[16];
 extern uint32_t vtickTooltip1stVis;
 extern uint32_t vtickTooltipLast;
 extern uint8_t *lpb2k;
@@ -461,6 +458,10 @@ extern ZIPPRODQ vrgZipProd[5];
 
 #ifdef _WIN32
 // win32 only globals
+
+extern COLORREF rgcrCache[32];
+extern COLORREF rgcrMinerals[6];
+extern COLORREF rgcrPlrHistory[16];
 extern HINSTANCE hInst;
 extern HPEN hpenDkBlue;
 extern HPEN hpenDkGreen;

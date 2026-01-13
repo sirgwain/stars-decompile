@@ -6,21 +6,6 @@
 #include "strings.h"
 
 /* functions */
-int16_t About(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    RECT rc;
-    uint16_t hdc;
-    int16_t i;
-    int16_t (*lpProc)(void);
-    uint16_t hwndCtl;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_MAIN:0x12d1 */
-    /* block (block) @ MEMORY_MAIN:0x14a3 */
-
-    /* TODO: implement */
-    return 0;
-}
 
 int16_t FSetUpBatchProcessing(void)
 {
@@ -31,6 +16,40 @@ int16_t FSetUpBatchProcessing(void)
 
     /* debug symbols */
     /* label LError @ MEMORY_MAIN:0x0785 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t IPlrAlsoCheater(int16_t iplr)
+{
+    int16_t i;
+
+    /* TODO: implement */
+    return 0;
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK About(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
+    uint16_t hdc;
+    int16_t i;
+    int16_t (*lpProc)(void);
+    HWND hwndCtl;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_MAIN:0x12d1 */
+    /* block (block) @ MEMORY_MAIN:0x14a3 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    RECT rc;
 
     /* TODO: implement */
     return 0;
@@ -49,22 +68,6 @@ int16_t FGetSystemColors(void)
     return 0;
 }
 
-int16_t OrderInfoDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    RECT rc;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t IPlrAlsoCheater(int16_t iplr)
-{
-    int16_t i;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void FreeStuff(void)
 {
     int16_t i;
@@ -73,16 +76,16 @@ void FreeStuff(void)
     /* TODO: implement */
 }
 
-int16_t FHandleKey(uint16_t hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
+int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
 {
-    uint16_t hwndF;
+    HWND hwndF;
     int16_t i;
     int16_t itb;
     int16_t iWarp;
     POINT pt;
     uint16_t md;
     int16_t iwp;
-    uint16_t hwndOver;
+    HWND hwndOver;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MAIN:0x1772 */
@@ -96,10 +99,12 @@ int16_t FHandleKey(uint16_t hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
     return 0;
 }
 
-int16_t FHandleChar(uint16_t hwnd, uint16_t ch, int32_t lParam)
+int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam)
 {
-    uint16_t hwndF;
+    HWND hwndF;
 
     /* TODO: implement */
     return 0;
 }
+
+#endif /* _WIN32 */

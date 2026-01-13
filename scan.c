@@ -4,76 +4,50 @@
 #include "scan.h"
 
 /* globals */
-uint32_t rgcrScanMine[3] = {0x00ff0000, 0x0000ffff, 0x000000ff};                                                                        /* 1058:0026 */
 int16_t vrgPopRad[19] = {25, 50, 100, 200, 400, 800, 1000, 1500, 2250, 3000, 4000, 5000, 6000, 7500, 9000, 11000, 14000, 18000, 25000}; /* 1058:0000 */
 
+#ifdef _WIN32
+
+COLORREF rgcrScanMine[3] = {0x00ff0000, 0x0000ffff, 0x000000ff}; /* 1058:0026 */
+
+#endif /* _WIN32 */
+
 /* functions */
-int16_t FindDlg(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
+
+int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
 {
-    char szName[40];
-    RECT rc;
+    int32_t lFuel;
+    int16_t iWarp;
+    int16_t cTravel;
+    int16_t iwp;
+    int16_t lDist;
+    int16_t cSpeed;
+    int16_t fGoFlatOutAi;
+    int16_t fGoFlatOut;
+    int16_t iWarpAi;
+    int16_t iWarpSav;
+    int16_t j;
+    int16_t i;
+    PLANET *lppl;
+    int16_t iWarpOld;
+    SCAN scan;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_SCAN:0x7afd */
+    /* block (block) @ MEMORY_SCAN:0x7c4f */
+    /* label LTryLimitedSpeed @ MEMORY_SCAN:0x7e27 */
+    /* label LOptimizeSpeed @ MEMORY_SCAN:0x7f83 */
+    /* label LDecWarp @ MEMORY_SCAN:0x7f39 */
 
     /* TODO: implement */
     return 0;
 }
 
-void DrawScannerSBar(uint16_t hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw)
+#ifdef _WIN32
+
+LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    int16_t fhdc;
-    uint32_t crText;
-    POINT pt2;
-    int16_t id;
-    POINT pt;
-    int16_t grReal;
-    int16_t iBkPrev;
-    int16_t c;
-    uint32_t crBk;
-    int16_t dxHole;
-    uint16_t hfontSav;
-    RECT rcClip;
-    char *psz;
-    uint16_t hbrSav;
-    int16_t fDoName;
-    int32_t l;
-    int16_t grobj;
-    RECT rcT;
-    RECT rc;
-    char szBuf[100];
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_SCAN:0x69a6 */
-    /* label GotCoords @ MEMORY_SCAN:0x6602 */
-    /* label DrawTheName @ MEMORY_SCAN:0x66d7 */
-
-    /* TODO: implement */
-}
-
-void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
-{
-    int16_t y2;
-    int32_t r2;
-    uint32_t crSav;
-    int16_t dy;
-    int16_t y;
-    int16_t iFree;
-    int16_t i;
-    int16_t dx;
-    int16_t x2;
-    int16_t rad;
-    int32_t l;
-    int16_t x;
-    RECT rc;
-
-    /* debug symbols */
-    /* label DrawEllipse @ MEMORY_SCAN:0x5002 */
-    /* label L2ndEl @ MEMORY_SCAN:0x5316 */
-
-    /* TODO: implement */
-}
-
-int32_t ScannerWndProc(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hdc;
+    HDC hdc;
     POINT pt;
     PAINTSTRUCT ps;
     RECT rc;
@@ -115,36 +89,70 @@ int32_t ScannerWndProc(uint16_t hwnd, uint16_t msg, uint16_t wParam, int32_t lPa
     return 0;
 }
 
-int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
+INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    int32_t lFuel;
-    int16_t iWarp;
-    int16_t cTravel;
-    int16_t iwp;
-    int16_t lDist;
-    int16_t cSpeed;
-    int16_t fGoFlatOutAi;
-    int16_t fGoFlatOut;
-    int16_t iWarpAi;
-    int16_t iWarpSav;
-    int16_t j;
-    int16_t i;
-    PLANET *lppl;
-    int16_t iWarpOld;
-    SCAN scan;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_SCAN:0x7afd */
-    /* block (block) @ MEMORY_SCAN:0x7c4f */
-    /* label LTryLimitedSpeed @ MEMORY_SCAN:0x7e27 */
-    /* label LOptimizeSpeed @ MEMORY_SCAN:0x7f83 */
-    /* label LDecWarp @ MEMORY_SCAN:0x7f39 */
+    char szName[40];
+    RECT rc;
 
     /* TODO: implement */
     return 0;
 }
 
-void SetScanScrollBars(uint16_t hwnd)
+void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw)
+{
+    int16_t fhdc;
+    uint32_t crText;
+    POINT pt2;
+    int16_t id;
+    POINT pt;
+    int16_t grReal;
+    int16_t iBkPrev;
+    int16_t c;
+    uint32_t crBk;
+    int16_t dxHole;
+    uint16_t hfontSav;
+    RECT rcClip;
+    char *psz;
+    HBRUSH hbrSav;
+    int16_t fDoName;
+    int32_t l;
+    int16_t grobj;
+    RECT rcT;
+    RECT rc;
+    char szBuf[100];
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_SCAN:0x69a6 */
+    /* label GotCoords @ MEMORY_SCAN:0x6602 */
+    /* label DrawTheName @ MEMORY_SCAN:0x66d7 */
+
+    /* TODO: implement */
+}
+
+void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
+{
+    int16_t y2;
+    int32_t r2;
+    uint32_t crSav;
+    int16_t dy;
+    int16_t y;
+    int16_t iFree;
+    int16_t i;
+    int16_t dx;
+    int16_t x2;
+    int16_t rad;
+    int32_t l;
+    int16_t x;
+    RECT rc;
+
+    /* debug symbols */
+    /* label DrawEllipse @ MEMORY_SCAN:0x5002 */
+    /* label L2ndEl @ MEMORY_SCAN:0x5316 */
+
+    /* TODO: implement */
+}
+
+void SetScanScrollBars(HWND hwnd)
 {
     int16_t xMax;
     int16_t dy;
@@ -170,7 +178,7 @@ int32_t CShipsScanVis(FLEET *lpfl)
     return 0;
 }
 
-void DrawShipScanPath(uint16_t hdc, int16_t fShow)
+void DrawShipScanPath(HDC hdc, int16_t fShow)
 {
     ORDER *lpord2;
     int16_t rgDup[87];
@@ -248,7 +256,7 @@ int16_t SetScanWp(int16_t iNew)
 
 int16_t FAddWayPoint(POINT ptIn, SCAN *pscan)
 {
-    uint16_t hdc;
+    HDC hdc;
     int16_t id;
     int16_t dy;
     ORDER *lpord;
@@ -303,7 +311,7 @@ void ScanToLogical(POINT *ppt)
     /* TODO: implement */
 }
 
-void DrawLockLight(uint16_t hdc, RECT *prc, int16_t fFullRedraw)
+void DrawLockLight(HDC hdc, RECT *prc, int16_t fFullRedraw)
 {
     int16_t dy;
     int16_t dx;
@@ -324,7 +332,7 @@ int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs)
 
 int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt)
 {
-    uint16_t hdc;
+    HDC hdc;
     uint16_t hpenSav;
     SBAR sbar;
     POINT ptLogLast;
@@ -360,7 +368,7 @@ void ChangeScanSel(SCAN *pscan, int16_t fValidScan)
     RECT rcMine;
     int16_t fChgWp;
     int16_t iRad;
-    uint16_t hdc;
+    HDC hdc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x8d78 */
@@ -371,7 +379,7 @@ void ChangeScanSel(SCAN *pscan, int16_t fValidScan)
     /* TODO: implement */
 }
 
-void RedrawScanSel(uint16_t hdc, int16_t fVis)
+void RedrawScanSel(HDC hdc, int16_t fVis)
 {
     int16_t sel_grobj;
     int16_t fhdc;
@@ -389,7 +397,7 @@ void RedrawScanSel(uint16_t hdc, int16_t fVis)
 int16_t FHandleWayPointDrag(POINT pt)
 {
     int16_t fChg;
-    uint16_t hdc;
+    HDC hdc;
     uint16_t hpenSav;
     SBAR sbar;
     int16_t fMarker;
@@ -437,7 +445,7 @@ int16_t FNearAWayPoint(POINT pt, int16_t fLogical)
 
 void ScrollScanner(int16_t dx, int16_t dy)
 {
-    uint16_t hdc;
+    HDC hdc;
     RECT rcUpd;
     RECT rcUpd2;
     RECT rc;
@@ -448,7 +456,7 @@ void ScrollScanner(int16_t dx, int16_t dy)
     /* TODO: implement */
 }
 
-void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, uint16_t hdc, uint16_t hdcMem)
+void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, HDC hdc, HDC hdcMem)
 {
     int32_t l2;
     int16_t f999;
@@ -461,7 +469,7 @@ void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, uint16_t hdc, uint16_
     /* TODO: implement */
 }
 
-int16_t DrawScanner(uint16_t hdc, RECT *prc)
+int16_t DrawScanner(HDC hdc, RECT *prc)
 {
     int16_t xOff;
     int16_t dExpand;
@@ -481,11 +489,11 @@ int16_t DrawScanner(uint16_t hdc, RECT *prc)
     uint16_t hbmpXSav;
     uint16_t hbmpScreen;
     int16_t id2;
-    uint16_t hdcScreen;
+    HDC hdcScreen;
     PLANET *lppl;
     int16_t yMax;
     char rgWhatsHere[999];
-    uint16_t hdcMem;
+    HDC hdcMem;
     THING *lpth;
     FLEET *lpfl;
     int16_t i;
@@ -507,7 +515,7 @@ int16_t DrawScanner(uint16_t hdc, RECT *prc)
     uint16_t mdScanBase;
     int16_t yMin;
     int16_t dx;
-    uint16_t hbrSav;
+    HBRUSH hbrSav;
     int16_t xLeft;
     int16_t fDoDraw;
     POINT ptOrigin;
@@ -523,7 +531,7 @@ int16_t DrawScanner(uint16_t hdc, RECT *prc)
     int16_t pctDesire;
     int16_t xOut;
     THING *lpthDest;
-    uint16_t hbr;
+    HBRUSH hbr;
     int16_t fConc;
     int16_t yOut;
     int32_t lPop;
@@ -574,7 +582,7 @@ void CtrPointScan(POINT pt, int16_t fScroll)
     /* TODO: implement */
 }
 
-void DrawScanXorLines(uint16_t hdc, POINT *rgpt, int16_t cpt)
+void DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt)
 {
     uint16_t hpenSav;
     int16_t iRopSav;
@@ -583,3 +591,5 @@ void DrawScanXorLines(uint16_t hdc, POINT *rgpt, int16_t cpt)
 
     /* TODO: implement */
 }
+
+#endif /* _WIN32 */

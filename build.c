@@ -89,7 +89,7 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit)
     return 0;
 }
 
-LRESULT SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     RECT rcWindow;
     HDC hdc;

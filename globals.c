@@ -359,9 +359,6 @@ uint32_t crButtonText = 0;
 uint32_t crWindow = 0;
 uint32_t crWindowText = 0;
 uint32_t ctickLast = 0x00000000;
-uint32_t rgcrCache[32] = {0};
-uint32_t rgcrMinerals[6] = {0x00ff0000, 0x00007f00, 0x0000ffff, 0x00ffffff, 0x000000ff, 0x00000000};
-uint32_t rgcrPlrHistory[16] = {0x003ff0f0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x0000ffff, 0x00ff00ff, 0x00ffff00, 0x0000007f, 0x00007f00, 0x007f0000, 0x007f7f7f, 0x0067c839, 0x00237fff, 0x00ff7f23, 0x00007f7f, 0x00606060};
 uint32_t vtickTooltip1stVis = 0;
 uint32_t vtickTooltipLast = 0x00000000;
 uint8_t *lpb2k;
@@ -394,6 +391,10 @@ ZIPORDER vrgZip[4] = {0};
 ZIPPRODQ vrgZipProd[5] = {0};
 
 #ifdef _WIN32
+
+COLORREF rgcrCache[32] = {0};
+COLORREF rgcrMinerals[6] = {0x00ff0000, 0x00007f00, 0x0000ffff, 0x00ffffff, 0x000000ff, 0x00000000};
+COLORREF rgcrPlrHistory[16] = {0x003ff0f0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x0000ffff, 0x00ff00ff, 0x00ffff00, 0x0000007f, 0x00007f00, 0x007f0000, 0x007f7f7f, 0x0067c839, 0x00237fff, 0x00ff7f23, 0x00007f7f, 0x00606060};
 
 HINSTANCE hInst = 0;
 HPEN hpenDkBlue = 0;

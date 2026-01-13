@@ -277,23 +277,6 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut)
 }
 
 /* functions */
-void DrawProgressGauge(uint16_t hdcOrig, int16_t fFull, int16_t iNumOnly)
-{
-    uint16_t hdc;
-    int16_t dy;
-    int16_t fNumOnly;
-    int16_t dx2;
-    int16_t dx;
-    RECT rc;
-    int16_t c;
-    char szT[8];
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x675d */
-    /* label LRelease @ MEMORY_UTILGEN:0x6841 */
-
-    /* TODO: implement */
-}
 
 int16_t AlertSz(char *sz, int16_t mbType)
 {
@@ -322,45 +305,6 @@ int16_t FCheckPassword(void)
     return 1;
 }
 
-int16_t PasswordDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    char szPass[60];
-    RECT rc;
-    int32_t lSalt;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x5b3d */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t ProgressGaugeDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    uint16_t hdc;
-    PAINTSTRUCT ps;
-    RECT rc;
-    int16_t dy;
-    char *psz;
-    int16_t dx;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x648d */
-
-    /* TODO: implement */
-    return 0;
-}
-
-uint16_t HbrGet(uint32_t cr)
-{
-    int16_t iFree;
-    int16_t i;
-    uint16_t hbr;
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax)
 {
     int16_t iRead;
@@ -373,74 +317,6 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax)
 
 void ExpandRc(RECT *prc, int16_t dx, int16_t dy)
 {
-
-    /* TODO: implement */
-}
-
-void CtrTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen)
-{
-    int16_t dx;
-
-    /* TODO: implement */
-}
-
-#ifdef _WIN32
-HGLOBAL HdibLoadBigResource(int idb)
-{
-    HRSRC hRsrc = FindResource(hInst, MAKEINTRESOURCE(idb), RT_BITMAP);
-    if (!hRsrc)
-        return NULL;
-
-    HGLOBAL hRes = LoadResource(hInst, hRsrc);
-    if (!hRes)
-        return NULL;
-
-    return hRes; /* This already contains the bitmap bits */
-}
-#endif
-
-void HideProgressGauge(void)
-{
-
-    /* TODO: implement */
-}
-
-void InitBtnTrack(BTNT *pbtnt, uint16_t hwnd, uint16_t hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText)
-{
-
-    /* TODO: implement */
-}
-
-void RcCtrTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
-{
-    int16_t y;
-    int16_t x;
-    int32_t l;
-
-    /* TODO: implement */
-}
-
-uint16_t DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, uint16_t hpal)
-{
-    uint16_t hdc;
-    uint16_t h;
-    uint32_t dwLen;
-    BITMAP bm;
-    BITMAPINFOHEADER bi;
-    uint16_t hdib;
-    BITMAPINFOHEADER *lpbi;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void DrawFuzzyBorder(uint16_t hdc, RECT *prc)
-{
-    uint32_t crBack;
-    int16_t dy;
-    int16_t dx;
-    uint16_t hbrSav;
-    uint32_t crFore;
 
     /* TODO: implement */
 }
@@ -479,17 +355,6 @@ uint32_t GetDiskSerialNumber(void)
 
     /* debug symbols */
     /* label NoDrive @ MEMORY_UTILGEN:0x6180 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-uint16_t HpalBlackReserved(void)
-{
-    uint16_t hpal;
-    int16_t cColors;
-    int16_t i;
-    LOGPALETTE *ppal;
 
     /* TODO: implement */
     return 0;
@@ -576,99 +441,6 @@ int32_t LSaltFromSz(char *psz)
 
     /* TODO: implement */
     return 0;
-}
-
-int16_t FGetRMouseMove(POINT *ppt)
-{
-    MSG msg;
-
-    /* TODO: implement */
-    return 0;
-}
-
-uint16_t HfontPrinterCreate(uint16_t hdc, int16_t iSize, int16_t *pdyFont)
-{
-    uint16_t hfontNew;
-    LOGFONT *plf;
-    TEXTMETRIC tm;
-    uint16_t hfontSav;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x6b28 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t FStringFitsScreen(char *lpsz, int16_t dxMax)
-{
-    uint16_t hdc;
-    int16_t c;
-    int16_t fFit;
-    uint16_t hfontSav;
-
-    /* TODO: implement */
-    return 0;
-}
-
-uint16_t DibNumColors(void *pv)
-{
-    int16_t bits;
-    BITMAPCOREHEADER *lpbc;
-    BITMAPINFOHEADER *lpbi;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void RightTextOut(uint16_t hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase)
-{
-    int16_t dx;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
-void DrawBtn(uint16_t hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText)
-{
-    int32_t dxFace;
-    int16_t ipt;
-    int16_t dyOffset;
-    int16_t d;
-    int16_t fBar;
-    int16_t fDisabled;
-    int16_t dxOffset;
-    int16_t dy;
-    int16_t fNoShaft;
-    int16_t y;
-    POINT rgptDraw[6];
-    uint16_t hbrCur;
-    uint32_t crSav;
-    int16_t dx;
-    uint16_t hbrSav;
-    int16_t cpt;
-    int16_t x;
-    RECT rc;
-    int16_t dxyT;
-    int16_t bkMode;
-    uint16_t hfontSav;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x3d00 */
-    /* block (block) @ MEMORY_UTILGEN:0x404f */
-    /* label DrawAgain @ MEMORY_UTILGEN:0x3e1e */
-
-    /* TODO: implement */
-}
-
-void _Draw3dFrame(uint16_t hdc, RECT *prc, int16_t fErase)
-{
-    int16_t dy;
-    int16_t dx;
-    uint16_t hbrSav;
-    RECT rc;
-
-    /* TODO: implement */
 }
 
 void CopyStarsFile(char *szSrc, char *szDst)
@@ -760,52 +532,10 @@ void BoundPoints(RECT *prc, POINT *rgpt, int16_t cpt)
     prc->bottom = (int16_t)(yMax + 1);
 }
 
-uint16_t HpalFromDib(uint16_t hdib)
-{
-    uint16_t hpal;
-    int16_t cColors;
-    int16_t i;
-    uint8_t bT;
-    char *lpb;
-    BITMAPINFOHEADER *lpbi;
-    LOGPALETTE *ppal;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t DibBlt(uint16_t hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, uint16_t hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop)
-{
-    char *pBuf;
-    BITMAPINFOHEADER *lpbi;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t RandomSeedDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    char szValue[33];
-    char *pch;
-    uint32_t dw;
-    RECT rc;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void ChopTrailingSpaces(char *pBeg, char **ppEnd)
 {
 
     /* TODO: implement */
-}
-
-int16_t FGetMouseMove(POINT *ppt)
-{
-    MSG msg;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void PopRandom(void)
@@ -982,24 +712,6 @@ void OffsetRc(RECT *prc, int16_t dx, int16_t dy)
     /* TODO: implement */
 }
 
-void StickyDlgPos(uint16_t hwnd, POINT *ppt, int16_t fInit)
-{
-    POINT ptScreenMax;
-    RECT rc;
-
-    /* TODO: implement */
-}
-
-void UpdateProgressGauge(int16_t pctX10)
-{
-    int16_t iNum;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x63ed */
-
-    /* TODO: implement */
-}
-
 int16_t ICompLong(void *arg1, void *arg2)
 {
 
@@ -1021,15 +733,6 @@ void AddBackTrailingSpaces(char **ppch, char *pchEnd)
     /* TODO: implement */
 }
 
-uint16_t PaletteSize(void *pv)
-{
-    uint16_t NumColors;
-    BITMAPINFOHEADER *lpbi;
-
-    /* TODO: implement */
-    return 0;
-}
-
 int32_t LDistance2(POINT pt1, POINT pt2)
 {
     int32_t dy;
@@ -1045,70 +748,10 @@ void ChopLastWord(char *pBeg, char **ppEnd)
     /* TODO: implement */
 }
 
-void FreeHbr(uint16_t hbr)
-{
-    int16_t i;
-
-    /* debug symbols */
-    /* label DeleteBrush @ MEMORY_UTILGEN:0x457d */
-
-    /* TODO: implement */
-}
-
-int16_t FTrackBtn(BTNT *pbtnt)
-{
-    POINT pt;
-    int16_t fInBtn;
-    int32_t ticksNew;
-
-    /* TODO: implement */
-    return 0;
-}
-
 void IntToRoman(int16_t i, char *pszOut)
 {
 
     /* TODO: implement */
-}
-
-int16_t NewPasswordDlg(uint16_t hwnd, uint16_t message, uint16_t wParam, int32_t lParam)
-{
-    char szPass[20];
-    RECT rc;
-    int32_t lSalt2;
-    int32_t lSalt;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x5de8 */
-
-    /* TODO: implement */
-    return 0;
-}
-
-void WrapTextOut(uint16_t hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)
-{
-    int16_t dxRemain;
-    char *pchEnd;
-    int16_t fItFit;
-    int16_t xRight;
-    int16_t dx;
-    char *pchStart;
-    char *pch;
-
-    /* debug symbols */
-    /* label WrapIt @ MEMORY_UTILGEN:0x27c5 */
-    /* label Done @ MEMORY_UTILGEN:0x2802 */
-    /* label Top @ MEMORY_UTILGEN:0x2656 */
-
-    /* TODO: implement */
-}
-
-int16_t DxStreamTextOut(uint16_t hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint)
-{
-    int16_t dx;
-
-    /* TODO: implement */
-    return 0;
 }
 
 void OutputFileString(char *szFile, char *sz)
@@ -1151,7 +794,359 @@ char *PszGetCompressedPlanet(int16_t id)
     return szLastGet;
 }
 
-int32_t LDrawGauge(uint16_t hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, uint16_t *rghbr, int32_t cTot)
+int16_t CommaFormatLong(char *psz, int32_t l)
+{
+    char rgch[15];
+    int16_t c;
+    int16_t cSkip;
+    char *pchOut;
+    char *pch;
+
+    /* TODO: implement */
+    return 0;
+}
+
+#ifdef _WIN32
+
+INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    char szValue[33];
+    char *pch;
+    uint32_t dw;
+    RECT rc;
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    char szPass[60];
+    RECT rc;
+    int32_t lSalt;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x5b3d */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HDC hdc;
+    PAINTSTRUCT ps;
+    RECT rc;
+    int16_t dy;
+    char *psz;
+    int16_t dx;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x648d */
+
+    /* TODO: implement */
+    return 0;
+}
+
+INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    char szPass[20];
+    RECT rc;
+    int32_t lSalt2;
+    int32_t lSalt;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x5de8 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+HGLOBAL HdibLoadBigResource(int idb)
+{
+    HRSRC hRsrc = FindResource(hInst, MAKEINTRESOURCE(idb), RT_BITMAP);
+    if (!hRsrc)
+        return NULL;
+
+    HGLOBAL hRes = LoadResource(hInst, hRsrc);
+    if (!hRes)
+        return NULL;
+
+    return hRes; /* This already contains the bitmap bits */
+}
+
+HBRUSH HbrGet(COLORREF cr)
+{
+    int16_t iFree;
+    int16_t i;
+    HBRUSH hbr;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen)
+{
+    int16_t dx;
+
+    /* TODO: implement */
+}
+
+void HideProgressGauge(void)
+{
+
+    /* TODO: implement */
+}
+
+void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText)
+{
+
+    /* TODO: implement */
+}
+
+void RcCtrTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)
+{
+    int16_t y;
+    int16_t x;
+    int32_t l;
+
+    /* TODO: implement */
+}
+
+HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal)
+{
+    HDC hdc;
+    uint16_t h;
+    uint32_t dwLen;
+    BITMAP bm;
+    BITMAPINFOHEADER bi;
+    HGLOBAL hdib;
+    BITMAPINFOHEADER *lpbi;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void DrawFuzzyBorder(HDC hdc, RECT *prc)
+{
+    COLORREF crBack;
+    int16_t dy;
+    int16_t dx;
+    HBRUSH hbrSav;
+    COLORREF crFore;
+
+    /* TODO: implement */
+}
+
+HPALETTE HpalBlackReserved(void)
+{
+    HPALETTE hpal;
+    int16_t cColors;
+    int16_t i;
+    LOGPALETTE *ppal;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FGetRMouseMove(POINT *ppt)
+{
+    MSG msg;
+
+    /* TODO: implement */
+    return 0;
+}
+
+HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont)
+{
+    HFONT hfontNew;
+    LOGFONT *plf;
+    TEXTMETRIC tm;
+    HFONT hfontSav;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x6b28 */
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FStringFitsScreen(char *lpsz, int16_t dxMax)
+{
+    HDC hdc;
+    int16_t c;
+    int16_t fFit;
+    HFONT hfontSav;
+
+    /* TODO: implement */
+    return 0;
+}
+
+uint16_t DibNumColors(void *pv)
+{
+    int16_t bits;
+    BITMAPCOREHEADER *lpbc;
+    BITMAPINFOHEADER *lpbi;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase)
+{
+    int16_t dx;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText)
+{
+    int32_t dxFace;
+    int16_t ipt;
+    int16_t dyOffset;
+    int16_t d;
+    int16_t fBar;
+    int16_t fDisabled;
+    int16_t dxOffset;
+    int16_t dy;
+    int16_t fNoShaft;
+    int16_t y;
+    POINT rgptDraw[6];
+    HBRUSH hbrCur;
+    COLORREF crSav;
+    int16_t dx;
+    HBRUSH hbrSav;
+    int16_t cpt;
+    int16_t x;
+    RECT rc;
+    int16_t dxyT;
+    int16_t bkMode;
+    HFONT hfontSav;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x3d00 */
+    /* block (block) @ MEMORY_UTILGEN:0x404f */
+    /* label DrawAgain @ MEMORY_UTILGEN:0x3e1e */
+
+    /* TODO: implement */
+}
+
+void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase)
+{
+    int16_t dy;
+    int16_t dx;
+    HBRUSH hbrSav;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+HPALETTE HpalFromDib(HGLOBAL hdib)
+{
+    HPALETTE hpal;
+    int16_t cColors;
+    int16_t i;
+    uint8_t bT;
+    char *lpb;
+    BITMAPINFOHEADER *lpbi;
+    LOGPALETTE *ppal;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop)
+{
+    char *pBuf;
+    BITMAPINFOHEADER *lpbi;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int16_t FGetMouseMove(POINT *ppt)
+{
+    MSG msg;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)
+{
+    POINT ptScreenMax;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
+void UpdateProgressGauge(int16_t pctX10)
+{
+    int16_t iNum;
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x63ed */
+
+    /* TODO: implement */
+}
+
+uint16_t PaletteSize(void *pv)
+{
+    uint16_t NumColors;
+    BITMAPINFOHEADER *lpbi;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void FreeHbr(HBRUSH hbr)
+{
+    int16_t i;
+
+    /* debug symbols */
+    /* label DeleteBrush @ MEMORY_UTILGEN:0x457d */
+
+    /* TODO: implement */
+}
+
+int16_t FTrackBtn(BTNT *pbtnt)
+{
+    POINT pt;
+    int16_t fInBtn;
+    int32_t ticksNew;
+
+    /* TODO: implement */
+    return 0;
+}
+
+void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)
+{
+    int16_t dxRemain;
+    char *pchEnd;
+    int16_t fItFit;
+    int16_t xRight;
+    int16_t dx;
+    char *pchStart;
+    char *pch;
+
+    /* debug symbols */
+    /* label WrapIt @ MEMORY_UTILGEN:0x27c5 */
+    /* label Done @ MEMORY_UTILGEN:0x2802 */
+    /* label Top @ MEMORY_UTILGEN:0x2656 */
+
+    /* TODO: implement */
+}
+
+int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint)
+{
+    int16_t dx;
+
+    /* TODO: implement */
+    return 0;
+}
+
+int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot)
 {
     int16_t fHuge;
     int16_t i;
@@ -1166,22 +1161,10 @@ int32_t LDrawGauge(uint16_t hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, uint
     return 0;
 }
 
-int16_t CommaFormatLong(char *psz, int32_t l)
-{
-    char rgch[15];
-    int16_t c;
-    int16_t cSkip;
-    char *pchOut;
-    char *pch;
-
-    /* TODO: implement */
-    return 0;
-}
-
-void DiaganolTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
+void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)
 {
     double angle;
-    uint16_t hfont;
+    HFONT hfont;
     int16_t dxFlat;
     int16_t yStart;
     int16_t dy;
@@ -1192,7 +1175,7 @@ void DiaganolTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
     int16_t dxText;
     LOGFONT *plf;
     double dsin;
-    uint16_t hfontSav;
+    HFONT hfontSav;
     int16_t dx;
     int16_t dyFlat;
     double rotate;
@@ -1207,3 +1190,23 @@ void DiaganolTextOut(uint16_t hdc, RECT *prc, char *psz, int16_t cLen)
 
     /* TODO: implement */
 }
+
+void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly)
+{
+    HDC hdc;
+    int16_t dy;
+    int16_t fNumOnly;
+    int16_t dx2;
+    int16_t dx;
+    RECT rc;
+    int16_t c;
+    char szT[8];
+
+    /* debug symbols */
+    /* block (block) @ MEMORY_UTILGEN:0x675d */
+    /* label LRelease @ MEMORY_UTILGEN:0x6841 */
+
+    /* TODO: implement */
+}
+
+#endif
