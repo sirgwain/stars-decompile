@@ -573,8 +573,8 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     int16_t itok;
     PLANET *lppl;
     int32_t lwt;
-    int16_t env[9];
-    int16_t (*penvMemSav)[9];
+    MemJump env;
+    MemJump *penvMemSav;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x8be9 */

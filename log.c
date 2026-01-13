@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "log.h"
 
@@ -7,19 +8,19 @@
 void WriteMemRt(int16_t rt, int16_t cb, void *rg)
 {
     HDR hdr;
-    uint8_t * lpv;
+    uint8_t *lpv;
 
     /* TODO: implement */
 }
 
 int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer)
 {
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    int16_t (*penvMemSav)[9];
+    MemJump env;
     int16_t iCur;
-    HDR * lprts;
+    HDR *lprts;
     RTLOGHDR rtlh;
-    MSGPLR * lpmp;
+    MSGPLR *lpmp;
     int16_t cb;
 
     /* debug symbols */
@@ -42,12 +43,12 @@ void LogMergeFleet(int16_t id)
 int16_t FLoadLogFile(char *pszLog)
 {
     uint16_t hres;
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    int16_t (*penvMemSav)[9];
+    MemJump env;
     int16_t fRet;
     int16_t cbLog;
     int16_t iCur;
-    MSGPLR * lpmp;
+    MSGPLR *lpmp;
     uint16_t hrsrc;
     int16_t cSkip;
 
@@ -79,8 +80,8 @@ int16_t FWriteTutorialMFile(int16_t iTurn)
     uint16_t hrsrc;
     char szT[30];
     uint16_t hres;
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    int16_t (*penvMemSav)[9];
+    MemJump env;
     int16_t cch;
     int16_t cSkip;
 
@@ -96,14 +97,14 @@ void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void 
     int16_t fLogOld;
     int16_t fRet;
     int16_t iCur;
-    HDR * lprts;
+    HDR *lprts;
 
     /* TODO: implement */
 }
 
 int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb)
 {
-    uint8_t * lpv;
+    uint8_t *lpv;
 
     /* TODO: implement */
     return 0;
@@ -133,8 +134,8 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew)
 
 int16_t FCheckLogFile(int16_t iplr, int16_t *pfError)
 {
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    int16_t (*penvMemSav)[9];
+    MemJump env;
     int16_t fRet;
     int16_t cbLog;
     int16_t iCur;
@@ -163,27 +164,27 @@ int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb)
 {
     int16_t fExtra;
     int32_t cXfer;
-    XFERFULL * lpxfCur;
-    PLANET * lppl;
+    XFERFULL *lpxfCur;
+    PLANET *lppl;
     int32_t rgcXfer[5];
     XFER rgxf[2];
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t ifl;
     int16_t i;
     uint16_t grbit;
     int16_t rgifl[512];
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     int16_t iPass;
     int16_t iLook;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     char ch;
     int32_t l;
     int16_t id;
     int16_t iColDrop;
     int16_t idm;
-    THING * lpth;
-    XFERFULL * lpxfMax;
-    COLDROP * lpcdT;
+    THING *lpth;
+    XFERFULL *lpxfMax;
+    COLDROP *lpcdT;
     char szT[33];
     int16_t cOut;
 
@@ -205,15 +206,15 @@ int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb)
 
 int16_t FWriteHistFile(int16_t iPlayer)
 {
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
-    int16_t (* penvMemSav)[9];
-    int16_t env[9];
+    int16_t (*penvMemSav)[9];
+    MemJump env;
     uint16_t cTurnBase;
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     int16_t j;
     RTHISTHDR rthh;
-    uint8_t * lpb;
+    uint8_t *lpb;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0xd658 */
@@ -230,7 +231,7 @@ void CancelMemRt(int16_t rt)
 
 void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)
 {
-    RTXFERF * prt;
+    RTXFERF *prt;
     int16_t iOff;
     int16_t i;
     char rgbuf[41];
@@ -246,7 +247,7 @@ int16_t FRunLogFile(void)
     int16_t fLogOld;
     int16_t fRet;
     int16_t iCur;
-    HDR * lprts;
+    HDR *lprts;
 
     /* TODO: implement */
     return 0;
@@ -255,14 +256,14 @@ int16_t FRunLogFile(void)
 void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
 {
     int32_t rgQuan[5];
-    RTXFER * prt;
+    RTXFER *prt;
     int16_t iOff;
-    RTXFERL * prtl;
+    RTXFERL *prtl;
     int16_t rt;
     int16_t i;
     char rgbuf[28];
     int16_t grbit;
-    RTXFERX * prtx;
+    RTXFERX *prtx;
     int16_t grFlag;
     int32_t iBiggest;
     int16_t cb;
@@ -281,7 +282,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew)
     int16_t iordNew;
     int16_t iordOld;
     int16_t cbWp;
-    char * pbWp;
+    char *pbWp;
     HDR hdr;
     LOGXFERF lxfNew;
 
@@ -298,7 +299,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew)
 
 void LogChangeName(GrobjClass grobj, int16_t id, char *szName)
 {
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t cOut;
     RTCHGNAME rtchgname;
 
@@ -308,7 +309,7 @@ void LogChangeName(GrobjClass grobj, int16_t id, char *szName)
 void LogChangeShDef(SHDEF *lpshdefNew)
 {
     uint8_t rgb[149];
-    uint8_t * pb;
+    uint8_t *pb;
 
     /* TODO: implement */
 }

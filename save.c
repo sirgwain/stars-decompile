@@ -151,8 +151,9 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f)
 {
     int16_t ids;
     RTBOF rtbof;
-    int16_t (*penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
+    ;
     int16_t fChange;
     int16_t fSuccess;
     int16_t fSilentSav;
@@ -205,12 +206,13 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend)
     int16_t fNoAutoTrack;
     BTLPLAN *lpbtlplan;
     int16_t j;
-    int16_t (*penvMemSav)[9];
+    MemJump *penvMemSav;
     int16_t i;
     ORDER *lpord;
     THING *lpth;
     FLEET *lpfl;
-    int16_t env[9];
+    MemJump env;
+    ;
     int16_t iord;
     SHDEF *lpshdef;
     THING *lpthMac;
@@ -263,8 +265,9 @@ void SetVisPFFinish(int16_t iPlr)
 
 int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName)
 {
-    int16_t (*penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
+    ;
     char *psz;
 
     /* TODO: implement */

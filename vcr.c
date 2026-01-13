@@ -393,8 +393,9 @@ void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, 
 void BattleVCR(int16_t iBattle)
 {
     int16_t (*lpProc)(void);
-    int16_t (*penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
+    ;
     HB *lphb;
 
     /* debug symbols */

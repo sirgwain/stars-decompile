@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "mdi.h"
 
@@ -60,8 +61,8 @@ int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
     int16_t idsError;
     int32_t lSaltSav;
     PLAYER plr;
-    int16_t (*penvMemSav)[9];
-    int16_t env[9];
+    MemJump *penvMemSav;
+    MemJump env;
     int16_t fRet;
     int16_t fSav;
 

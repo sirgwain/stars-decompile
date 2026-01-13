@@ -10,7 +10,8 @@
 int16_t FSetUpBatchProcessing(void)
 {
     char *pch;
-    int16_t env[9];
+    MemJump env;
+    ;
     int16_t fSuccess;
     int16_t cb;
 

@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "turn.h"
 
@@ -44,12 +45,13 @@ int16_t FGenerateTurn(void)
     int16_t j;
     uint8_t mpiplr2[16];
     uint8_t rgfNoXFile[16];
-    int16_t (*penvMemSav)[9];
+    MemJump *penvMemSav;
     int16_t ifl;
     FLEET *lpfl;
     char *pchCur;
     int16_t i;
-    int16_t env[9];
+    MemJump env;
+    ;
     char szT[256];
     uint16_t hcurSav;
     int16_t idCur;

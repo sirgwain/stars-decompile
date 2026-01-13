@@ -448,7 +448,8 @@ void CopyStarsFile(char *szSrc, char *szDst)
     char rgb[2048];
     int16_t fFileErrSav;
     OFSTRUCT of;
-    int16_t env[9];
+    MemJump env;
+    ;
     int16_t hfDst;
     int32_t cb;
     int16_t (*penvSav)[9];

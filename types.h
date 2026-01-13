@@ -14,6 +14,10 @@
 #ifdef _WIN32
 #include <windows.h>
 #else /* !_WIN32 */
+
+// TODO: remove this when we make the few non win32 methods requiring HDCs better
+typedef uint16_t HDC;
+
 /* MessageBox-style flags (Win16/Win32 compatible values) */
 typedef enum MBFlags
 {
