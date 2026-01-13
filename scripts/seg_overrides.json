@@ -1,0 +1,87 @@
+{
+  "windows_retypes": {
+    "enabled": true,
+    "rules": [
+      {
+        "from": "uint16_t",
+        "prefix": "hwnd",
+        "to": "HWND"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hinst",
+        "to": "HINSTANCE"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hpen",
+        "to": "HPEN"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "haccel",
+        "to": "HACCEL"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hbmp",
+        "to": "HBITMAP"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hbm",
+        "to": "HBITMAP"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hbr",
+        "to": "HBRUSH"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hcur",
+        "to": "HCURSOR"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hdib",
+        "to": "HGLOBAL"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hicon",
+        "to": "HICON"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hdc",
+        "to": "HDC"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hfont",
+        "to": "HFONT"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hmenu",
+        "to": "HMENU"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hpal",
+        "to": "HPALETTE"
+      },
+      {
+        "from": "uint16_t",
+        "prefix": "hrgn",
+        "to": "HRGN"
+      },
+      {
+        "from": "uint32_t",
+        "prefix": "cr",
+        "to": "COLORREF"
+      }
+    ]
+  }
+}

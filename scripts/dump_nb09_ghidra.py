@@ -770,6 +770,134 @@ def compute_ghidra_addr(
     }
 
 
+
+# --- segment/global override mapping ---
+
+def load_seg_overrides(path: Optional[str]) -> Dict[str, Any]:
+    """Load segment/global override JSON.
+
+    Currently supported:
+      {
+        "windows_retypes": {
+          "enabled": true,
+          "rules": [
+            {"from": "uint16_t", "prefix": "hwnd", "to": "HWND"},
+            {"from": "uint32_t", "prefix": "cr",   "to": "COLORREF"}
+          ]
+        }
+      }
+    """
+    if not path:
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            obj = json.load(f)
+        return obj if isinstance(obj, dict) else {}
+    except Exception as e:
+        print(f"warning: could not load seg overrides {path}: {e}", file=sys.stderr)
+        return {}
+
+
+def build_windows_retype_rules(seg_overrides: Dict[str, Any]) -> List[Dict[str, str]]:
+    """Return ordered retype rules: [{from, prefix, to}, ...].
+
+    Fully data-driven: no built-in defaults. Provide rules in seg_overrides.json:
+
+      {
+        "windows_retypes": {
+          "enabled": true,
+          "rules": [
+            {"from": "uint16_t", "prefix": "hwnd", "to": "HWND"},
+            {"from": "uint32_t", "prefix": "cr",   "to": "COLORREF"}
+          ]
+        }
+      }
+    """
+    cfg = (seg_overrides or {}).get("windows_retypes") or {}
+    if not isinstance(cfg, dict):
+        return []
+    if not cfg.get("enabled", False):
+        return []
+
+    rules: List[Dict[str, str]] = []
+    extra = cfg.get("rules", [])
+    if isinstance(extra, list):
+        for r in extra:
+            if not isinstance(r, dict):
+                continue
+            frm = r.get("from")
+            pfx = r.get("prefix")
+            to = r.get("to")
+            if not (isinstance(frm, str) and isinstance(pfx, str) and isinstance(to, str)):
+                continue
+            rules.append({"from": frm.strip(), "prefix": pfx.strip(), "to": to.strip()})
+
+    return rules
+
+
+def _rewrite_decl_leading_type(c_decl: Optional[str], old_type: str, new_type: str) -> Optional[str]:
+    if c_decl is None:
+        return None
+    # Replace only the leading type token(s).
+    # Common forms:
+    #   "uint16_t hwnd" -> "HWND hwnd"
+    #   "uint16_t __far *hwnd" -> "HWND __far *hwnd"
+    #   "uint32_t crFoo" -> "COLORREF crFoo"
+    pat = r'^\s*' + re.escape(old_type) + r'(\b)'
+    if re.match(pat, c_decl):
+        return re.sub(pat, new_type + r'\1', c_decl, count=1)
+    return c_decl
+
+
+def apply_windows_retypes_to_var(name: str, tyrec: Dict[str, Any], rules: List[Dict[str, str]]) -> bool:
+    """Mutate tyrec {c_type,c_decl} based on name/type rules. Returns True if changed."""
+    if not rules:
+        return False
+    if not isinstance(tyrec, dict):
+        return False
+    c_type = tyrec.get("c_type")
+    c_decl = tyrec.get("c_decl")
+    if not isinstance(c_type, str) or not isinstance(name, str) or not name:
+        return False
+
+    nl = name.lower()
+    for r in rules:
+        frm = r.get("from")
+        pfx = r.get("prefix")
+        to = r.get("to")
+        if not (isinstance(frm, str) and isinstance(pfx, str) and isinstance(to, str)):
+            continue
+        if c_type == frm and nl.startswith(pfx.lower()):
+            tyrec["c_type"] = to
+            tyrec["c_decl"] = _rewrite_decl_leading_type(c_decl if isinstance(c_decl, str) else None, frm, to)
+            tyrec["note"] = (tyrec.get("note") + "; " if tyrec.get("note") else "") + "windows_retype"
+            return True
+    return False
+
+
+def apply_windows_retypes_to_proc(proc_rec: Dict[str, Any], rules: List[Dict[str, str]]) -> int:
+    """Apply name-based retyping to proc params/locals. Returns count changed."""
+    if not rules:
+        return 0
+    if not isinstance(proc_rec, dict):
+        return 0
+    types = proc_rec.get("types")
+    if not isinstance(types, dict):
+        return 0
+
+    changed = 0
+    for k in ("params", "locals"):
+        lst = types.get(k)
+        if not isinstance(lst, list):
+            continue
+        for ent in lst:
+            if not isinstance(ent, dict):
+                continue
+            nm = ent.get("name") or ""
+            if apply_windows_retypes_to_var(str(nm), ent, rules):
+                changed += 1
+    return changed
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Emit Ghidra JSON for renaming globals/procs/labels from NB09.")
     ap.add_argument("nb09", help="Path to extracted CodeView NB09 blob (e.g., stars26jrc3.codeview.nb09.bin)")
@@ -778,9 +906,13 @@ def main() -> int:
     ap.add_argument("--include-unmapped", action="store_true", help="Include globals we cannot map to a Ghidra address")
     ap.add_argument("--sig-overrides", dest="sig_overrides", default=None,
                     help="Path to JSON mapping function->arg->c_type overrides (e.g. {\"LpAlloc\": {\"ht\": \"HeapType\"}})")
+    ap.add_argument("--seg-overrides", dest="seg_overrides", default=None,
+                    help="Path to JSON mapping for segment/global retyping overrides (e.g. windows handle heuristics)")
     args = ap.parse_args()
 
     sig_overrides = load_signature_overrides(args.sig_overrides)
+    seg_overrides = load_seg_overrides(args.seg_overrides)
+    win_retype_rules = build_windows_retype_rules(seg_overrides)
 
     db = load_nb09(args.nb09)
 
@@ -823,6 +955,8 @@ def main() -> int:
             "segmap": None,
             "ghidra": gh,
         }
+
+        apply_windows_retypes_to_var(rec["name"], rec["types"], win_retype_rules)
 
         if seg_ent:
             iSegName = seg_ent.get("iSegName")
@@ -870,6 +1004,8 @@ def main() -> int:
             "segmap": None,
             "ghidra": gh,
         }
+
+        apply_windows_retypes_to_proc(rec, win_retype_rules)
 
         if seg_ent:
             iSegName = seg_ent.get("iSegName")
