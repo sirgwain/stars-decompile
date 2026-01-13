@@ -436,27 +436,6 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     return 0;
 }
 
-int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
-{
-    POINT ptOld;
-    POINT pt;
-    int32_t dChg;
-    BTNT btnt;
-    int32_t cCur;
-    int16_t i;
-    int16_t iBtn;
-    int16_t iVal;
-    BTN btn;
-    int32_t cNew;
-    RECT rc;
-
-    /* debug symbols */
-    /* label FinishUp @ MEMORY_SHIP:0x5f70 */
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t FCanSplit(int32_t cBoat)
 {
 
@@ -1239,6 +1218,27 @@ void GetXferLeftRightRcs(RECT *prcWhole, RECT *prcLeft, RECT *prcRight)
 {
 
     /* TODO: implement */
+}
+
+int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
+{
+    POINT ptOld;
+    POINT pt;
+    int32_t dChg;
+    BTNT btnt;
+    int32_t cCur;
+    int16_t i;
+    int16_t iBtn;
+    int16_t iVal;
+    BTN btn;
+    int32_t cNew;
+    RECT rc;
+
+    /* debug symbols */
+    /* label FinishUp @ MEMORY_SHIP:0x5f70 */
+
+    /* TODO: implement */
+    return 0;
 }
 
 #endif /* _WIN32 */
