@@ -542,6 +542,7 @@ python3 $PROJECT_DIR/scripts/dump_nb09_ghidra.py \
   $PROJECT_DIR/scripts/stars26jrc3.codeview.nb09.bin \
   --segments $PROJECT_DIR/scripts/segments.csv \
   --sig-overrides $PROJECT_DIR/scripts/sig_overrides.json \
+  --seg-overrides $PROJECT_DIR/scripts/seg_overrides.json \
   --out $PROJECT_DIR/scripts/nb09_ghidra_globals.json
 
 echo ""
