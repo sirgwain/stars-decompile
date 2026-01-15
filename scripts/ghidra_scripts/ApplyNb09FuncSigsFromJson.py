@@ -19,6 +19,7 @@ import json
 import os
 import re
 import traceback
+from java.math import BigInteger
 
 from ghidra.util import Msg
 from ghidra.util.exception import DuplicateNameException
@@ -61,6 +62,11 @@ ALLOW_REMOVE_USER_DEFINED_OVERLAPS = False
 # This is often required for by-value structs/arrays (e.g., PAINTSTRUCT, char[32]).
 ALLOW_RECREATE_STACK_VAR_ON_TYPEFAIL = True
 
+# When true, set the CS register value in program context at each function entry
+# based on the function's entry address segment selector (e.g. "1008:1234" -> 0x1008).
+# This helps the decompiler form concrete far pointers instead of unaff_CS.
+SET_CS_ON_ENTRY = True
+
 # ------------------------------------------------------------
 # helpers
 # ------------------------------------------------------------
@@ -80,6 +86,36 @@ def _parse_seg_selector(addr_s):
         return int(addr_s.split(":")[0], 16)
     except:
         return None
+
+def set_cs_at_function_entry(func):
+    """Set CS register context at the function entry to the entry segment selector."""
+    if not SET_CS_ON_ENTRY or func is None:
+        return False
+    try:
+        entry = func.getEntryPoint()
+        seg = _parse_seg_selector(entry.toString())
+        if seg is None:
+            _warn(f"{func.getName()} seg selector for entry {entry.toString()} is empty")
+            return False
+
+        reg = currentProgram.getRegister("CS")
+        if reg is None:
+            _warn("CS register not found")
+            return False
+
+        ctx = currentProgram.getProgramContext()
+        # Apply only at the entry point; keep the range minimal to avoid stepping
+        # on other context propagation.
+        ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))
+        return True
+    except Throwable as t: 
+        _err(f"{func.getName()} failed to set cs at entry")
+        _err(traceback.format_exc())
+        return False
+    except Exception as e:
+        _err(f"{func.getName()} failed to set cs at entry")
+        _err(traceback.format_exc())
+        return False
 
 def build_logical_seg_map_from_memory():
     """
@@ -885,6 +921,7 @@ def main():
     misses = 0
     fails = 0
     skipped = 0
+    cs_set = 0
 
     # filter procs
     procs = []
@@ -927,6 +964,10 @@ def main():
             _warn("No function at %s for %s" % (addr_str, name))
             continue
 
+        # Set CS register context at entry (helps decompiler remove unaff_CS for far pointers)
+        if set_cs_at_function_entry(func):
+            cs_set += 1
+
         # NOTE: Renaming is handled by ApplyNb09NamesFromJson.py
         # We skip renaming here to avoid duplicate work and potential inconsistencies.
         # The naming script should be run before this one.
@@ -957,10 +998,12 @@ def main():
     _log("")
     _log("done")
     _log("  applied:  %d" % applied)
+    _log("  cs_set:   %d" % cs_set)
     _log("  renamed:  %d" % renamed)
     _log("  misses:   %d" % misses)
     _log("  skipped:  %d" % skipped)
     _log("  failed:   %d" % fails)
+    _log("  cs_set:   %d" % cs_set)
 
 if __name__ == "__main__":
     main()

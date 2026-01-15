@@ -12,7 +12,7 @@
 [env]
 # Default Ghidra path - override with: export GHIDRA_HOME=/path/to/ghidra
 # Uses shell's GHIDRA_HOME if set, otherwise falls back to default in scripts
-GHIDRA_HOME_ = "~/.local/ghidra/ghidra_10.3_DEV"
+GHIDRA_HOME_ = "~/.local/ghidra/ghidra_12.1_DEV"
 
 # Project paths (relative to this file)
 PROJECT_DIR = "{{ cwd }}"
@@ -52,7 +52,7 @@ mkdir -p "$GHIDRA_PROJECT"
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 # Expand tilde
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -64,7 +64,7 @@ fi
 chmod +x "$GHIDRA_EXPANDED/Ghidra/Features/Decompiler/os/linux_x86_64/decompile" 2>/dev/null || true
 
 echo "Importing $TARGET_EXE into Ghidra project..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -import "$TARGET_EXE" \
     -processor "x86:LE:16:Protected Mode" \
     -overwrite
@@ -78,7 +78,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -86,7 +86,7 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 echo "Applying struct definitions from $JSON_STRUCTS..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -101,7 +101,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -109,7 +109,7 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 echo "Applying names from $JSON_GLOBALS..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -124,7 +124,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -132,7 +132,7 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 echo "Applying global types from $JSON_GLOBALS..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -147,7 +147,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -155,7 +155,7 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 echo "Applying function signatures from $JSON_GLOBALS..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -170,7 +170,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -178,13 +178,14 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 echo "Renaming Win16 API functions..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
     -postScript FixWin16LibraryFunctionNames.java
 
 echo "Applying Win16 API signatures..."
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -213,7 +214,7 @@ run = '''
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
 
-if [ ! -f "$GHIDRA_EXPANDED/ghidraRun" ]; then
+if [ ! -f "$GHIDRA_EXPANDED/support/pyghidraRun" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
     echo "Set GHIDRA_HOME environment variable to your Ghidra installation"
     exit 1
@@ -221,7 +222,7 @@ fi
 
 echo "Launching Ghidra..."
 echo "Project location: $GHIDRA_PROJECT/Stars.gpr"
-"$GHIDRA_EXPANDED/ghidraRun" &
+"$GHIDRA_EXPANDED/support/pyghidraRun" &
 '''
 
 [tasks.ghidra-parse-windowsh]
@@ -232,7 +233,7 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$WINDOWS_H" ]; then
     echo "Error: WINDOWS.H not found at $WINDOWS_H"
@@ -248,7 +249,7 @@ echo "  3. Add: $WINDOWS_H"
 echo "  4. Parse"
 echo ""
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -263,12 +264,12 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 echo "Updating runtime helper signatures..."
 echo ""
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -283,12 +284,12 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 echo "Updating runtime helper signatures..."
 echo ""
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -303,12 +304,12 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 echo "Updating runtime helper signatures..."
 echo ""
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -331,9 +332,9 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -358,14 +359,14 @@ fi
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
     exit 1
 fi
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -387,14 +388,14 @@ fi
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
     exit 1
 fi
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -416,7 +417,7 @@ fi
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 OUTPUT_FILE="$1"
 shift
@@ -424,7 +425,7 @@ shift
 # Create output directory if needed
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -447,7 +448,7 @@ fi
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 OUTPUT_FILE="$1"
 ROOT_FUNC="$2"
@@ -456,7 +457,7 @@ MAX_DEPTH="${3:-3}"
 # Create output directory if needed
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -471,12 +472,12 @@ set -e
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 mkdir -p "$PROJECT_DIR/decompiled"
 
 # P1 utility functions (using actual Ghidra function names)
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
@@ -501,7 +502,7 @@ SEGMENT="${2:-}"
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
 GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/analyzeHeadless"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
 
 if [ ! -f "$ANALYZER" ]; then
     echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
@@ -516,7 +517,7 @@ if [ -n "$SEGMENT" ]; then
     echo "Filtering to segment: $SEGMENT"
 fi
 
-bash "$ANALYZER" "$GHIDRA_PROJECT" Stars \
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
