@@ -1,10 +1,16 @@
 
 #include "types.h"
-
-#include "planet.h"
 #include "globals.h"
 
+#include "planet.h"
+#include "race.h"
+
 /* functions */
+
+int32_t PopFromLppl(PLANET *lppl)
+{
+    return lppl->rgwtMin[3];
+}
 
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal)
 {
@@ -213,22 +219,62 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr)
     }
 }
 
-int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iplr)
+int16_t CResourcesAtPlanet(PLANET *lppl, int16_t iPlr)
 {
+    if (!lppl)
+        return 0;
+
+    // must have population to generate any resources
+    if (PopFromLppl(lppl) == 0)
+        return 0;
+
+    int16_t iEffRes = GetRaceStat(&rgplr[iPlr], rsResGen);
+
+    int64_t pop = PopFromLppl(lppl);
+    int64_t popMax = CalcPlanetMaxPop(lppl->id, iPlr);
+
+    if (pop > popMax)
+    {
+        pop = popMax + (pop - popMax) / 2;
+        if (pop > 2 * popMax)
+            pop = 2 * popMax;
+    }
+
     int16_t cRes;
-    int32_t lPop;
-    int16_t cFact;
-    int32_t lPopMax;
-    int16_t iEff;
-    int16_t pctVal;
-    int16_t iEnergy;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x7990 */
-    /* label LFinishUp @ MEMORY_PLANET:0x7af5 */
+    if (RaMajor(iPlr) == raMacintosh)
+    {
+        // Macint16_tosh special formula
+        int16_t iEnergy = rgplr[iPlr].rgTech[iEnergy];
+        int16_t pctVal = PctPlanetDesirability(lppl, iPlr);
 
-    /* TODO: implement */
-    return 0;
+        if (iEnergy < 1)
+            iEnergy = 1;
+        if (pctVal < 25)
+            pctVal = 25;
+
+        // ceil-like behavior via +0.999
+        double val = sqrt((double)pop * (double)iEnergy / (double)iEffRes) * (double)pctVal / 10.0;
+        cRes = (int16_t)(val + 0.999);
+    }
+    else
+    {
+        // baseline: resources from population
+        cRes = (int16_t)(pop / iEffRes);
+
+        // add factory output up to operable cap
+        int16_t cFact = CMaxOperableFactories(lppl, iPlr, /*assumeMaxPop*/ false);
+        if ((int16_t)lppl->cFactories < cFact)
+            cFact = (int16_t)lppl->cFactories;
+
+        int16_t iEffFact = GetRaceStat(&rgplr[iPlr], rsFactProd);
+        // ((cFact * iEffFact) + 9) / 10  → int16_teger divide w/ rounding
+        cRes += (int16_t)(((int64_t)cFact * (int64_t)iEffFact + 9LL) / 10LL);
+    }
+
+    if (cRes == 0)
+        cRes = 1;
+    return cRes;
 }
 
 int16_t CMaxOperableDefenses(PLANET *lppl, int16_t iplr, int16_t fNextYear)

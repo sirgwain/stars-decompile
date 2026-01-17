@@ -192,6 +192,26 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript UpdateWin16WindowsApiSignatures.py "$WINDOWS_H"
 '''
 
+[tasks.ghidra-analyze]
+description = "Run the analyzer"
+run = '''
+#!/bin/bash
+set -e
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+echo "Applying struct definitions from $JSON_STRUCTS..."
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe
+'''
+
 [tasks.ghidra-setup]
 description = "Full Ghidra setup: import binary and apply all symbol scripts"
 run = [

@@ -576,17 +576,160 @@ void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr)
     /* TODO: implement */
 }
 
-void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCost)
+void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
 {
-    int16_t cExcess;
-    int16_t cCur;
-    int16_t i;
-    COMPART *lpcom;
+    const COMPART *lpcom = ppart->pcom;
 
-    /* debug symbols */
-    /* label LOtherDiddles @ MEMORY_SHIP:0xcf99 */
+    // 1) Base costs
+    rgCosts[Ironium] = lpcom->rgwtOreCost[Ironium];
+    rgCosts[Boranium] = lpcom->rgwtOreCost[Boranium];
+    rgCosts[Germanium] = lpcom->rgwtOreCost[Germanium];
+    rgCosts[Resources] = lpcom->resCost;
 
-    /* TODO: implement */
+    if (iPlayer == -1)
+    {
+        // No player context → raw costs only
+        return;
+    }
+
+    PLAYER *plr = &rgplr[iPlayer];
+
+    // 2) Tech-based discount (skip certain categories/items per original)
+    const uint16_t grhst_hi = ppart->hs.grhst & 0xFF00;
+    const uint16_t iItem = ppart->hs.iItem;
+
+    const bool skipTechDiscount =
+        ((grhst_hi & hstTorp) != 0) || (((grhst_hi & hstMining) != 0) && (iItem < 9 || iItem > 13)) || (((grhst_hi & hstMining) != 0) && (iItem <= 8));
+
+    int pctDiscount = 0; // % to subtract (0..75 normal, 0..80 with BET)
+
+    if (!skipTechDiscount)
+    {
+        // Find smallest positive (have-req) across 6 techs; if none, use min(have)
+        int bestGap = 100;
+        for (int t = 0; t < 6; ++t)
+        {
+            const int req = (int)(signed char)lpcom->rgTech[t];
+            const int have = (int)(signed char)plr->rgTech[t];
+            const int gap = have - req;
+            if (req > 0 && gap < bestGap)
+                bestGap = gap;
+        }
+        if (bestGap == 100)
+        {
+            for (int t = 0; t < 6; ++t)
+            {
+                const int have = (int)(signed char)plr->rgTech[t];
+                if (have < bestGap)
+                    bestGap = have;
+            }
+        }
+        if (bestGap > 19)
+            bestGap = 19;
+
+        if (bestGap > 0)
+        {
+            const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
+            if (!fBET)
+            {
+                pctDiscount = bestGap * 4;
+                if (pctDiscount > 75)
+                    pctDiscount = 75;
+            }
+            else
+            {
+                pctDiscount = bestGap * 5;
+                if (pctDiscount > 80)
+                    pctDiscount = 80;
+            }
+
+            for (int k = 0; k < 4; ++k)
+            {
+                if (rgCosts[k] != 0)
+                {
+                    const int cut = (rgCosts[k] * pctDiscount) / 100;
+                    rgCosts[k] -= cut;
+                    if (rgCosts[k] == 0)
+                        rgCosts[k] = 1;
+                }
+            }
+        }
+    }
+
+    // 3) Race modifiers
+
+    // Stargate PRT: small starbase items cheaper
+    if (ppart->hs.grhst == hstSpecialSB)
+    {
+        if (GetRaceStat(plr, rsMajorAdv) == raStargate && ppart->hs.iItem <= ispecialSBStargateAnyAny)
+        {
+            for (int k = 0; k < 4; ++k)
+                rgCosts[k] -= rgCosts[k] / 4; // -25%
+        }
+    }
+
+    // Weapons: Attack -25%, Defend +25%
+    if (ppart->hs.grhst == hstBeam || ppart->hs.grhst == hstTorp || ppart->hs.grhst == hstBomb)
+    {
+        const int ra = GetRaceStat(plr, rsMajorAdv);
+        if (ra == raAttack)
+        {
+            for (int k = 0; k < 4; ++k)
+                rgCosts[k] -= rgCosts[k] / 4;
+        }
+        else if (ra == raDefend)
+        {
+            for (int k = 0; k < 4; ++k)
+                rgCosts[k] += rgCosts[k] / 4;
+        }
+    }
+    // Terraformers: Terra halves resource cost only
+    else if (ppart->hs.grhst == hstTerra)
+    {
+        if (GetRaceStat(plr, rsMajorAdv) == raTerra)
+        {
+            rgCosts[Resources] = rgCosts[Resources] / 2;
+        }
+    }
+    // Cheap Engines LRT: engines -50% (all four slots)
+    else if (ppart->hs.grhst == hstEngine)
+    {
+        if (GetRaceGrbit(plr, ibitRaceCheapEngines))
+        {
+            for (int k = 0; k < 4; ++k)
+                rgCosts[k] -= rgCosts[k] / 2;
+        }
+    }
+
+    // 4) Bleeding Edge Tech surcharge:
+    // only if no tech discount was applied, BET is on, not suppressed, and some req > 0
+    const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
+    const bool fSuppressBET = gd.fDontCalcBleed ? true : false;
+
+    if (pctDiscount < 1 && fBET && !fSuppressBET)
+    {
+        bool requiresTech = false;
+        for (int t = 0; t < 6; ++t)
+        {
+            if ((int)(signed char)lpcom->rgTech[t] > 0)
+            {
+                requiresTech = true;
+                break;
+            }
+        }
+        if (requiresTech)
+        {
+            gd.fBleedingEdge = 1; // mark applied
+            for (int k = 0; k < 4; ++k)
+            {
+                rgCosts[k] = rgCosts[k] * 2; // double all costs
+            }
+            return;
+        }
+    }
+
+    // If we didn’t apply the surcharge, ensure the flag is clear
+    gd.fBleedingEdge = 0;
 }
 
 void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks)

@@ -213,115 +213,100 @@ void ReadPlayerMessages(void)
     MemJump env;
     MemJump *penvMemSav = penvMem;
 
-    uint16_t imemMsgT = 0;
-    int fOOM = 0;
+    // Stage 1: append rt==0x0c payload blocks into lpMsg
+    uint16_t bytesAppended = 0;
+    bool oomHappened = false;
 
-    /* Append any rtMsg blocks (rt == 0x0c per decompile) into lpMsg at imemMsgCur. */
-    penvMem = &env;
-    if (setjmp(env.env))
-    {
-        fOOM = 1;
-    }
+    uint8_t *writeBase = (uint8_t *)lpMsg + imemMsgCur;
 
     while (hdrCur.rt == rtMsg)
-    {
-        uint16_t cb = hdrCur.cb;
+    {                            // was: (wFlags >> 10) == 0x0c
+        uint16_t cb = hdrCur.cb; // was: (wFlags & 0x03ff)
 
-        if (!fOOM)
+        if (cb != 0)
         {
-            /* Bounds check matches decompile intent: avoid wrapping far offsets. */
-            if (cb != 0 && (uint32_t)imemMsgCur + imemMsgT < (uint32_t)(0xFFFFu - cb - 0x38u))
+            // Preserve the original weird bounds check shape exactly
+            int32_t cur = (int32_t)(uint16_t)(imemMsgCur + bytesAppended);
+            int32_t limit = (int32_t)(-(int32_t)cb - 0x38);
+            if (cur < limit)
             {
-                memmove(lpMsg + imemMsgCur + imemMsgT, rgbCur, cb);
-                imemMsgT = (uint16_t)(imemMsgT + cb);
+                memmove(writeBase + bytesAppended, rgbCur, cb);
+                bytesAppended = (uint16_t)(bytesAppended + cb);
             }
         }
+
         ReadRt();
     }
 
-    imemMsgCur = (uint16_t)(imemMsgCur + imemMsgT);
+    imemMsgCur = (uint16_t)(imemMsgCur + bytesAppended);
 
-    /* Walk newly appended messages to:
-       - set bitfMsgSent for each idm,
-       - increment cMsg,
-       - skip params according to the packing bits and param count table.
-     */
+    // Stage 2: walk the newly appended bytes and parse MSGHDR + arg payloads
+    uint8_t *p = writeBase;
+    uint8_t *pEnd = writeBase + bytesAppended;
+
+    while (p < pEnd)
     {
-        uint8_t *lpb = (uint8_t *)lpMsg + (uint16_t)(imemMsgCur - imemMsgT);
-        uint8_t *end = lpb + imemMsgT;
+        MSGHDR *mh = (MSGHDR *)p;
 
-        while (lpb < end)
+        // bitfMsgSent[msgId] = 1
+        uint16_t msgId = (uint16_t)mh->iMsg; // was: (wFlags & 0x01ff)
+        bitfMsgSent[msgId >> 3] |= (uint8_t)(1u << (msgId & 7));
+
+        cMsg++;
+
+        // After MSGHDR comes a packed args blob; bit 0 of grWord controls +1 byte per arg
+        uint16_t argBits = (uint16_t)mh->grWord; // was: (wFlags >> 9)
+        p += sizeof(MSGHDR);
+
+        for (int16_t ai = 0; ai < (int16_t)rgcMsgArgs[msgId]; ai++)
         {
-            MSGHDR *mh = (MSGHDR *)lpb;
-            uint16_t idm = mh->iMsg;
-            uint16_t u = mh->grWord;
-
-            /* mark sent */
-            bitfMsgSent[idm >> 3] |= (uint8_t)(1u << (idm & 7));
-
-            ++cMsg;
-
-            lpb += 4; /* sizeof(MSGHDR) */
-
-            {
-                uint8_t cParam = (uint8_t)rgplr[1].szNames[0x0c + idm];
-                for (uint8_t i = 0; i < cParam; ++i)
-                {
-                    lpb += ((u & 1u) ? 2 : 1);
-                    u >>= 1;
-                }
-            }
+            p += 1u + (uint8_t)(argBits & 1u);
+            argBits >>= 1;
         }
     }
 
-    /* Find tail of incoming MSGPLR list (vlpmsgplrIn is head pointer). */
+    // Stage 3: find tail of incoming MSGPLR list
+    MSGPLR *tail = (MSGPLR *)&vlpmsgplrIn;
+    while (tail->lpmsgplrNext != NULL)
     {
-        MSGPLR **lpmp = &vlpmsgplrIn;
-
-        /* Walk "pointer to next" until we reach a NULL next. */
-        while (*lpmp != NULL)
-        {
-            lpmp = &(*lpmp)->lpmsgplrNext;
-        }
-
-        /* Now read rtPlrMsg blocks (rt == 0x28 per decompile) and chain them. */
-        for (;;)
-        {
-            if (hdrCur.rt != rtPlrMsg)
-            {
-                break;
-            }
-
-            if (!fOOM)
-            {
-                uint16_t cb = hdrCur.cb;
-                MSGPLR *node = (MSGPLR *)LpAlloc(cb, htPlrMsg);
-                if (node == NULL)
-                {
-                    fOOM = 1;
-                }
-                else
-                {
-                    memcpy(node, rgbCur, cb);
-
-                    /* terminate and link */
-                    node->lpmsgplrNext = NULL;
-                    *lpmp = node;
-                    lpmp = &node->lpmsgplrNext;
-
-                    ++vcmsgplrIn;
-                }
-            }
-
-            ReadRt();
-        }
+        tail = tail->lpmsgplrNext;
     }
 
-    /* Initialize current message cursor to first “next” message. */
+    // Stage 4: guarded alloc loop for rt==0x28 records
+    penvMem = &env;
+
+    if (setjmp(env.env) != 0)
+    {
+        oomHappened = true;
+        penvMem = penvMemSav;
+    }
+
+    while (true)
+    {
+        if (hdrCur.rt != rtPlrMsg)
+        { // was: (wFlags >> 10) != 0x28
+            break;
+        }
+
+        if (!oomHappened)
+        {
+            uint16_t cb = hdrCur.cb; // was: (wFlags & 0x03ff)
+
+            MSGPLR *node = (MSGPLR *)LpAlloc(cb, htPlrMsg);
+            tail->lpmsgplrNext = node;
+            tail = node;
+
+            memcpy(node, rgbCur, cb);
+            tail->lpmsgplrNext = NULL;
+
+            vcmsgplrIn++;
+        }
+        
+        ReadRt();
+    }
+
     iMsgCur = -1;
     iMsgCur = IMsgNext(0);
-
-    penvMem = penvMemSav;
 }
 
 int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)

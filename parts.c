@@ -3575,11 +3575,18 @@ SPECIALSB rgspecialSB[16] = {
     },
 };
 
-/* functions */
 void LookupBestPlanetaryScanner(PART *ppart)
 {
+    /* Set planetary and start at iItem=8, preserving cItem. */
+    ppart->hs.grhst = hstPlanetary;
+    ppart->hs.iItem = 8;
 
-    /* TODO: implement */
+    /* Walk downward until the part becomes legal or iItem reaches 0. */
+    while (FLookupPart(ppart) != 1 && ppart->hs.iItem != 0)
+    {
+        /* Preserve 8-bit wrap/truncation explicitly. */
+        ppart->hs.iItem = (uint8_t)(ppart->hs.iItem - 1u);
+    }
 }
 
 // attach union pointer so CheckTechRequirements sees the right record
@@ -3910,7 +3917,7 @@ HULDEF *LphuldefFromId(HullDef id)
     }
 
     /* "Starbase" hulls are indexed after the normal hull set. */
-    return LphuldefSBFromId((int16_t)(id - 32));
+    return LphuldefSBFromId((int16_t)(id - ihuldefOrbitalFort));
 }
 
 int16_t TechStatus(char *rgTech)
@@ -3973,42 +3980,39 @@ HULDEF *LphuldefSBFromId(int16_t id)
 
 SHDEF *LpshdefT(void)
 {
-
-    /* TODO: implement */
-    return NULL;
+    return rgshdefT;
 }
 
 PLANETARY *LpplanetaryFromId(int16_t id)
 {
-
-    /* TODO: implement */
-    return NULL;
+    /* Ghidra showed a bogus symbol; stride 0x1b is PLANETARY size. */
+    return &rgplanetary[id];
 }
 
 SHDEF *LpshdefSBT(void)
 {
-
-    /* TODO: implement */
-    return NULL;
+    return rgshdefSBT;
 }
 
 int16_t FLookupPartX(PART *ppart, HullSlotType grhst, uint16_t iItem)
 {
+    ppart->hs.grhst = grhst;
 
-    /* TODO: implement */
-    return 0;
+    /* Decompile behavior: write low byte, then clear high byte. */
+    ppart->hs.iItem = (uint8_t)iItem;
+    ppart->hs.cItem = 0;
+
+    return FLookupPart(ppart);
 }
 
 SCANNER *LpscannerFromId(int16_t id)
 {
-
-    /* TODO: implement */
-    return NULL;
+    /* stride 0x38 is SCANNER size */
+    return &rgscanner[id];
 }
 
 ENGINE *LpengineFromId(int16_t id)
 {
-
-    /* TODO: implement */
-    return NULL;
+    /* stride 0x4e is ENGINE size */
+    return &rgengine[id];
 }

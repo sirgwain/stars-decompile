@@ -247,6 +247,21 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
     idPlayer = idPlayer_old;
 }
 
+static void test_PopFromLppl(void)
+{
+    PLANET pl;
+    memset(&pl, 0, sizeof(pl));
+
+    // 0 case
+    int32_t got = PopFromLppl(&pl);
+    TEST_CHECK_(got == 0, "no visibility: got=%d want=0", (int)got);
+
+    // 25kT of pop
+    pl.rgwtMin[3] = 25;
+    got = PopFromLppl(&pl);
+    TEST_CHECK_(got == 25, "no visibility: got=%d want=0", (int)got);
+}
+
 TEST_LIST = {
     {"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
     {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},

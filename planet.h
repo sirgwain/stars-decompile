@@ -5,6 +5,7 @@
 
 /* functions */
 
+int32_t PopFromLppl(PLANET *lppl);
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal);                                         /* MEMORY_PLANET:0x88c0 */
 int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr);                                                            /* MEMORY_PLANET:0x6b88 */
 int16_t IWarpMAFromLppl(PLANET *lppl, bool *pfTwo);                                                               /* MEMORY_PLANET:0x7b10 */
