@@ -3917,7 +3917,7 @@ HULDEF *LphuldefFromId(HullDef id)
     }
 
     /* "Starbase" hulls are indexed after the normal hull set. */
-    return LphuldefSBFromId((int16_t)(id - ihuldefOrbitalFort));
+    return LphuldefSBFromId((int16_t)(id - ihuldefCount));
 }
 
 int16_t TechStatus(char *rgTech)

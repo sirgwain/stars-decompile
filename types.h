@@ -140,6 +140,7 @@ typedef struct tagOFSTRUCT
 
 #define iPlayerNil -1
 #define cPlayerMax 16
+#define cDefenseCount 5
 #define iPlanetPartNone -1
 
 typedef enum CostType
@@ -278,12 +279,18 @@ typedef enum HullDef
     ihuldefNubian = 29,
     ihuldefMiniMorph = 30,
     ihuldefMetaMorph = 31,
-    ihuldefOrbitalFort = 32,
-    ihuldefSpaceDock = 33,
-    ihuldefSpaceStation = 34,
-    ihuldefUltraStation = 35,
-    ihuldefDeathStar = 36,
+    ihuldefCount = 32,
 } HullDef;
+
+typedef enum HulDefSB
+{
+    ihuldefSBOrbitalFort = 0,
+    ihuldefSBSpaceDock = 1,
+    ihuldefSBSpaceStation = 2,
+    ihuldefSBUltraStation = 3,
+    ihuldefSBDeathStar = 4,
+} HulDefSB;
+
 
 typedef enum StartingStarbase
 {
@@ -326,52 +333,6 @@ typedef enum ThingType
     ithWormhole = 2,
     ithMysteryTrader = 3,
 } ThingType;
-
-typedef enum HulDefSB
-{
-    ihuldefSBOrbitalFort = 0,
-    ihuldefSBSpaceDock = 1,
-    ihuldefSBSpaceStation = 2,
-    ihuldefSBUltraStation = 3,
-    ihuldefSBDeathStar = 4,
-} HulDefSB;
-
-typedef enum HullDef
-{
-    ihuldefSmallFreighter = 0,
-    ihuldefMediumFreighter = 1,
-    ihuldefLargeFreighter = 2,
-    ihuldefSuperFreighter = 3,
-    ihuldefScout = 4,
-    ihuldefFrigate = 5,
-    ihuldefDestroyer = 6,
-    ihuldefCruiser = 7,
-    ihuldefBattleCruiser = 8,
-    ihuldefBattleship = 9,
-    ihuldefDreadnought = 10,
-    ihuldefPrivateer = 11,
-    ihuldefRogue = 12,
-    ihuldefGalleon = 13,
-    ihuldefMiniColonyShip = 14,
-    ihuldefColonyShip = 15,
-    ihuldefMiniBomber = 16,
-    ihuldefB17Bomber = 17,
-    ihuldefStealthBomber = 18,
-    ihuldefB52Bomber = 19,
-    ihuldefMidgetMiner = 20,
-    ihuldefMiniMiner = 21,
-    ihuldefMiner = 22,
-    ihuldefMaxiMiner = 23,
-    ihuldefUltraMiner = 24,
-    ihuldefFuelTransport = 25,
-    ihuldefSuperFuelXport = 26,
-    ihuldefMiniMineLayer = 27,
-    ihuldefSuperMineLayer = 28,
-    ihuldefNubian = 29,
-    ihuldefMiniMorph = 30,
-    ihuldefMetaMorph = 31,
-    ihuldefCount = 32,
-} HullDef;
 
 typedef enum BattleUnitFlags
 {

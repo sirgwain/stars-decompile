@@ -192,6 +192,32 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript UpdateWin16WindowsApiSignatures.py "$WINDOWS_H"
 '''
 
+
+[tasks.ghidra-apply-race-attributes]
+description = "Apply Win16 Windows API signatures to Ghidra project"
+run = '''
+#!/bin/bash
+set -e
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+echo "Applying race attribute equates..."
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript ApplyRaceAttributeEquates.java
+
+'''
+
+
 [tasks.ghidra-analyze]
 description = "Run the analyzer"
 run = '''
@@ -517,7 +543,7 @@ run = '''
 #!/bin/bash
 set -e
 
-OUTPUT_FILE="${1:-decompiled/all_funcs.c}"
+OUTPUT_DIR="${1:-decompiled/all}"
 SEGMENT="${2:-}"
 
 GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
@@ -530,9 +556,9 @@ if [ ! -f "$ANALYZER" ]; then
 fi
 
 # Create output directory if needed
-mkdir -p "$(dirname "$OUTPUT_FILE")"
+mkdir -p "$(dirname "$OUTPUT_DIR")"
 
-echo "Exporting all decompiled functions to $OUTPUT_FILE..."
+echo "Exporting all decompiled functions to $OUTPUT_DIR..."
 if [ -n "$SEGMENT" ]; then
     echo "Filtering to segment: $SEGMENT"
 fi
@@ -541,7 +567,7 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript ExportAllDecompiled.py "$OUTPUT_FILE" "$SEGMENT" 2>&1
+    -postScript ExportAllDecompiled.py "$OUTPUT_DIR" $PROJECT_DIR/scripts/nb09_ghidra_globals.json "$SEGMENT" 2>&1
 '''
 
 [tasks.dump-structmeta-json]

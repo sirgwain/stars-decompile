@@ -126,11 +126,7 @@ typedef enum HullDef
     ihuldefNubian = 29,
     ihuldefMiniMorph = 30,
     ihuldefMetaMorph = 31,
-    ihuldefOrbitalFort = 32,
-    ihuldefSpaceDock = 33,
-    ihuldefSpaceStation = 34,
-    ihuldefUltraStation = 35,
-    ihuldefDeathStar = 36,
+    ihuldefCount = 32,
 } HullDef;
 
 typedef enum StartingStarbase
