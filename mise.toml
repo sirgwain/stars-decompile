@@ -251,6 +251,7 @@ run = [
     { task = "ghidra-apply-funcsigs" },
     { task = "ghidra-update-runtime-helpers" },
     { task = "ghidra-retype-doubles" },
+    { task = "ghidra-apply-race-attributes" }, # VERY LONG
 ]
 
 [tasks.ghidra-gui]

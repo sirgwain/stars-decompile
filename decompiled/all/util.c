@@ -10,7 +10,7 @@
 // ======================================================================
 
 
-short FLookupSelPlanet(PLANET *param_1)
+short FLookupSelPlanet(PLANET *ppl)
 
 {
   short sVar1;
@@ -27,7 +27,7 @@ short FLookupSelPlanet(PLANET *param_1)
                            Impure (Non-shareable)
                         */
   if (sel.scan.grobj == grobjPlanet) {
-    sVar1 = FLookupPlanet(sel.scan.idpl,param_1);
+    sVar1 = FLookupPlanet(sel.scan.idpl,ppl);
   }
   else {
     sVar1 = 0;
@@ -376,22 +376,21 @@ long DpOfLpflIshdef(FLEET *lpfl,short ishdef)
   FLEET *pFVar1;
   int iVar2;
   undefined2 uVar3;
-  ulong uVar4;
-  long lVar5;
+  ulong num;
+  long lVar4;
   long dp;
   short dpShdef;
   
   uVar3 = (undefined2)((ulong)lpfl >> 0x10);
   pFVar1 = (FLEET *)lpfl;
   iVar2 = pFVar1->iPlayer * 4;
-  lVar5 = 5000;
-  uVar4 = __aFulmul((long)pFVar1->rgcsh[ishdef],
-                            (long)(int)(((int)(((pFVar1->rgdv + ishdef)->dp & 0x7fU) *
-                                              *(int *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93 + 0x38
-                                                      )) / 10) *
-                                       ((uint)(pFVar1->rgdv + ishdef)->dp >> 7)));
-  lVar5 = __aFldiv(uVar4,lVar5);
-  return lVar5;
+  lVar4 = 5000;
+  num = __aFulmul((long)pFVar1->rgcsh[ishdef],
+                          (long)(int)(((int)(((pFVar1->rgdv + ishdef)->dp & 0x7fU) *
+                                            *(int *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93 + 0x38))
+                                      / 10) * ((uint)(pFVar1->rgdv + ishdef)->dp >> 7)));
+  lVar4 = __aFldiv(num,lVar4);
+  return lVar4;
 }
 
 
@@ -564,8 +563,8 @@ long LComputePower(SHDEF *lpshdef)
   bool bVar9;
   ulong uVar10;
   ulong uVar11;
-  ulong uVar12;
-  long lVar13;
+  ulong a;
+  long lVar12;
   PART part;
   long dp;
   long dpBombs;
@@ -579,7 +578,7 @@ long LComputePower(SHDEF *lpshdef)
   
   dpBombs._0_2_ = 0;
   dpBombs._2_2_ = 0;
-  uVar12 = 0;
+  a = 0;
   lVar1 = 0;
   uVar11 = 1000;
   ihs = 0;
@@ -593,27 +592,27 @@ long LComputePower(SHDEF *lpshdef)
       pCVar7 = (COMPART *)part.pcom;
       uVar8 = (undefined2)((ulong)part.pcom >> 0x10);
       if (part.hs.grhst == hstBeam) {
-        lVar13 = 4;
+        lVar12 = 4;
         iVar2 = (pCVar7 + 1)->id + 3;
         iVar5 = iVar2 >> 0xf;
         uVar10 = __aFulmul((long)*(int *)pCVar7[1].rgTech,(ulong)((uint)part.hs.wFlags >> 8)
                                   );
         uVar10 = __aFulmul(uVar10,CONCAT22(iVar5,iVar2));
-        lVar13 = __aFldiv(uVar10,lVar13);
+        lVar12 = __aFldiv(uVar10,lVar12);
         if ((*(uint *)(((COMPART *)part.pcom)[1].rgTech + 4) & 1) != 0) {
-          lVar13 = __aFldiv(lVar13,3);
+          lVar12 = __aFldiv(lVar12,3);
         }
-        uVar12 = lVar13 + uVar12;
+        a = lVar12 + a;
       }
       else if (part.hs.grhst == hstTorp) {
-        lVar13 = 2;
+        lVar12 = 2;
         iVar2 = (pCVar7 + 1)->id + -2;
         iVar5 = iVar2 >> 0xf;
         uVar10 = __aFulmul((long)*(int *)pCVar7[1].rgTech,(ulong)((uint)part.hs.wFlags >> 8)
                                   );
         uVar10 = __aFulmul(uVar10,CONCAT22(iVar5,iVar2));
-        lVar13 = __aFldiv(uVar10,lVar13);
-        lVar1 = lVar13 + lVar1;
+        lVar12 = __aFldiv(uVar10,lVar12);
+        lVar1 = lVar12 + lVar1;
       }
       else if (part.hs.grhst == hstBomb) {
         uVar3 = (*(int *)pCVar7[1].rgTech + *(int *)(pCVar7[1].rgTech + 2)) *
@@ -625,11 +624,11 @@ long LComputePower(SHDEF *lpshdef)
       else if ((part.hs.grhst == hstSpecialE) &&
               (((part.hs.wFlags & 0xffU) == 0xc || ((part.hs.wFlags & 0xffU) == 0xd)))) {
         for (i = (uint)part.hs.wFlags >> 8; 0 < i; i = i + -1) {
-          lVar13 = 100;
+          lVar12 = 100;
           uVar3 = ((COMPART *)part.pcom + 1)->id;
           uVar11 = __aFulmul(uVar11,CONCAT22(((int)uVar3 >> 0xf) + (uint)(0xff9b < uVar3),
                                                      uVar3 + 100));
-          uVar11 = __aFldiv(uVar11,lVar13);
+          uVar11 = __aFldiv(uVar11,lVar12);
         }
       }
     }
@@ -640,15 +639,15 @@ long LComputePower(SHDEF *lpshdef)
     if (0xff < (long)uVar11) {
       uVar11 = 0xff;
     }
-    lVar13 = 100;
-    uVar11 = __aFulmul(uVar12,uVar11);
-    uVar12 = __aFldiv(uVar11,lVar13);
+    lVar12 = 100;
+    uVar11 = __aFulmul(a,uVar11);
+    a = __aFldiv(uVar11,lVar12);
   }
   sVar4 = SpdOfShip((FLEET *)0x0,0,(TOK *)0x0,0,lpshdef);
-  lVar13 = 10;
-  uVar11 = __aFulmul(uVar12,(long)(sVar4 + -4));
-  lVar13 = __aFldiv(uVar11,lVar13);
-  return lVar1 + uVar12 + lVar13 + CONCAT22(dpBombs._2_2_,(uint)dpBombs);
+  lVar12 = 10;
+  uVar11 = __aFulmul(a,(long)(sVar4 + -4));
+  lVar12 = __aFldiv(uVar11,lVar12);
+  return lVar1 + a + lVar12 + CONCAT22(dpBombs._2_2_,(uint)dpBombs);
 }
 
 
@@ -710,7 +709,7 @@ long DpShieldOfShdef(SHDEF *lpshdef,short iplr)
   undefined2 uVar6;
   bool bVar7;
   long lVar8;
-  long lVar9;
+  long den;
   PART part;
   HUL *lphul;
   long dpShdef;
@@ -752,9 +751,9 @@ long DpShieldOfShdef(SHDEF *lpshdef,short iplr)
   }
   sVar4 = GetRaceGrbit((PLAYER *)rgplr + iplr,ibitRaceRegeneratingShields);
   if (sVar4 != 0) {
-    lVar9 = 5;
+    den = 5;
     lVar8 = __aFlshl(5,unaff_DI);
-    lVar8 = __aFldiv(lVar8,lVar9);
+    lVar8 = __aFldiv(lVar8,den);
     lVar2 = lVar8 + lVar2;
   }
   dpShdef._2_2_ = (int)((ulong)lVar2 >> 0x10);
@@ -2571,21 +2570,21 @@ char * PszGetDistance(short x1,short y1,short x2,short y2)
   char *pcVar2;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
-  long lVar3;
-  ulong uVar4;
+  long num;
+  ulong a;
   long d2;
   short fStarted;
   long d;
   
   DGetDistance(x1,y1,x2,y2);
-  lVar3 = __ftol((double)CONCAT26(d2._2_2_,CONCAT24((undefined2)d2,
-                                                            CONCAT22(unaff_SI,unaff_DI))));
-  uVar4 = __aFldiv(lVar3,100);
-  uVar1 = (undefined2)uVar4;
-  __aFulmul(uVar4,100);
+  num = __ftol((double)CONCAT26(d2._2_2_,CONCAT24((undefined2)d2,CONCAT22(unaff_SI,unaff_DI)
+                                                         )));
+  a = __aFldiv(num,100);
+  uVar1 = (undefined2)a;
+  __aFulmul(a,100);
   if (dyArial8 < 0xf) {
     pcVar2 = PszGetCompressedString(idsLdLdLightYears);
-    _WSPRINTF((LPSTR)CONCAT22((int)uVar4,(char *)&DAT_1120_1120),
+    _WSPRINTF((LPSTR)CONCAT22((int)a,(char *)&DAT_1120_1120),
               (LPCSTR)CONCAT22(pcVar2,(char *)&DAT_1120_1120),(char *)szWork);
   }
   else {
@@ -3040,7 +3039,7 @@ short GetPlanetScannerRange(PLANET *lppl,short *pDeep)
     *pDeep = 0;
   }
   sVar2 = GetRaceStat((PLAYER *)rgplr + pPVar4->iPlayer,rsMajorAdv);
-  if (sVar2 == 8) {
+  if (sVar2 == raMacintosh) {
     uVar9 = __aFulmul(CONCAT22(*(undefined2 *)((int)pPVar4->rgwtMin + 0xe),
                                        (int)pPVar4->rgwtMin[3]),10);
     _sqrt(SUB84((double)(long)uVar9,0),
@@ -3277,7 +3276,7 @@ LAB_1038_513f:
     in_stack_0000ffaa = (char *)&DAT_1120_1038;
     in_stack_0000ffa8 = (char *)szLastMsgGet + 0xd2;
     sVar6 = GetRaceStat((PLAYER *)rgplr + iplr,rsMajorAdv);
-    if (sVar6 != 9) goto LAB_1038_513f;
+    if (sVar6 != raNone) goto LAB_1038_513f;
     bVar8 = true;
   }
   _lBIR4 = DOUBLE_m1_0__1120_1cca;
@@ -3810,8 +3809,8 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  ulong uVar2;
-  long lVar3;
+  ulong num;
+  long lVar2;
   RECT rc;
   RECT rcOut;
   short dx;
@@ -3829,11 +3828,11 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
   InflateRect((undefined2 *)CONCAT22(unaff_SS,&rc),-3,-3);
   c = rc.right - rc.left;
   c_00 = rc.bottom - rc.top;
-  uVar2 = __aFulmul((long)c,(long)c_00);
+  num = __aFulmul((long)c,(long)c_00);
   for (iClr = 0; iClr < 5; iClr = iClr + 1) {
-    lVar3 = __aFldiv(uVar2,CONCAT22(*(undefined2 *)((int)(long *)rgDSDivCnt + iClr * 4 + 2),
-                                            (int)((long *)rgDSDivCnt)[iClr]));
-    for (i = 0; i < (int)lVar3; i = i + 1) {
+    lVar2 = __aFldiv(num,CONCAT22(*(undefined2 *)((int)(long *)rgDSDivCnt + iClr * 4 + 2),
+                                          (int)((long *)rgDSDivCnt)[iClr]));
+    for (i = 0; i < (int)lVar2; i = i + 1) {
       sVar1 = Random(c);
       rcOut.left = sVar1 + rc.left;
       sVar1 = Random(c_00);
@@ -3846,9 +3845,9 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
     }
   }
   for (iClr = 0; iClr < 4; iClr = iClr + 1) {
-    lVar3 = __aFldiv(uVar2,CONCAT22(*(undefined2 *)((int)(long *)rgDSDivCnt2 + iClr * 4 + 2)
-                                            ,(int)((long *)rgDSDivCnt2)[iClr]));
-    for (i = 0; i < (int)lVar3 + 1; i = i + 1) {
+    lVar2 = __aFldiv(num,CONCAT22(*(undefined2 *)((int)(long *)rgDSDivCnt2 + iClr * 4 + 2),
+                                          (int)((long *)rgDSDivCnt2)[iClr]));
+    for (i = 0; i < (int)lVar2 + 1; i = i + 1) {
       sVar1 = Random(c);
       rcOut.left = sVar1 + rc.left;
       sVar1 = Random(c_00);
@@ -4577,7 +4576,7 @@ short FCanFleetUseStargates(FLEET *lpfl,POINT ptSrc,POINT ptDst)
 LAB_1038_77e5:
   bVar2 = false;
   sVar4 = GetRaceStat((PLAYER *)rgplr + pFVar6->iPlayer,rsMajorAdv);
-  if (sVar4 != 7) {
+  if (sVar4 != raStargate) {
     for (i = 0; i < 4; i = i + 1) {
       iVar7 = *(int *)((int)(pFVar6->rgwtMin + i) + 2);
       if ((-1 < iVar7) && ((0 < iVar7 || ((int)pFVar6->rgwtMin[i] != 0)))) {

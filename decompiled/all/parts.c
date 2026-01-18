@@ -169,7 +169,7 @@ short FLookupPart(PART *ppart)
     *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x4e;
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
     if (idPlayer != -1) {
-      if (((uVar2 & 0xff) == 0) && (sVar3 != 0)) {
+      if (((uVar2 & 0xff) == 0) && (sVar3 != raCheapCol)) {
         return -1;
       }
       if ((((10 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0x10)) || ((uVar2 & 0xff) == 10)) &&
@@ -206,7 +206,7 @@ short FLookupPart(PART *ppart)
         return -1;
       }
       if (((((uVar2 & 0xff) == 6) || ((uVar2 & 0xff) == 5)) || ((uVar2 & 0xff) == 0xe)) &&
-         (sVar3 != 1)) {
+         (sVar3 != raStealth)) {
         return -1;
       }
     }
@@ -217,10 +217,10 @@ short FLookupPart(PART *ppart)
     }
     *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x36 + 0xae8;
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
-    if (((uVar2 & 0xff) == 4) && (sVar3 != 1)) {
+    if (((uVar2 & 0xff) == 4) && (sVar3 != raStealth)) {
       return -1;
     }
-    if (((uVar2 & 0xff) == 3) && (sVar3 != 4)) {
+    if (((uVar2 & 0xff) == 3) && (sVar3 != raDefend)) {
       return -1;
     }
     sVar3 = FShouldPartBeHidden(ppart);
@@ -234,10 +234,10 @@ short FLookupPart(PART *ppart)
     }
     *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x36 + 0x4e0;
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
-    if (((uVar2 & 0xff) == 7) && (sVar3 != 1)) {
+    if (((uVar2 & 0xff) == 7) && (sVar3 != raStealth)) {
       return -1;
     }
-    if (((uVar2 & 0xff) == 6) && (sVar3 != 4)) {
+    if (((uVar2 & 0xff) == 6) && (sVar3 != raDefend)) {
       return -1;
     }
     sVar3 = FShouldPartBeHidden(ppart);
@@ -251,10 +251,10 @@ short FLookupPart(PART *ppart)
     }
     *(BEAM **)&ppart->pcom = (BEAM *)rgbeam + (uVar2 & 0xff);
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
-    if (((uVar2 & 0xff) == 2) && (sVar3 != 4)) {
+    if (((uVar2 & 0xff) == 2) && (sVar3 != raDefend)) {
       return -1;
     }
-    if ((((uVar2 & 0xff) == 0x10) || ((uVar2 & 0xff) == 0xe)) && (sVar3 != 2)) {
+    if ((((uVar2 & 0xff) == 0x10) || ((uVar2 & 0xff) == 0xe)) && (sVar3 != raAttack)) {
       return -1;
     }
     sVar3 = FShouldPartBeHidden(ppart);
@@ -279,10 +279,10 @@ short FLookupPart(PART *ppart)
     *(BOMB **)&ppart->pcom = (BOMB *)rgbomb + (uVar2 & 0xff);
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
     if (idPlayer != -1) {
-      if (((9 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xf)) && (sVar3 == 4)) {
+      if (((9 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xf)) && (sVar3 == raDefend)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 9) && (sVar3 != 3)) {
+      if (((uVar2 & 0xff) == 9) && (sVar3 != raTerra)) {
         return -1;
       }
       sVar3 = FShouldPartBeHidden(ppart);
@@ -309,7 +309,7 @@ short FLookupPart(PART *ppart)
          sVar4 == 0)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 7) && (sVar3 != 3)) {
+      if (((uVar2 & 0xff) == 7) && (sVar3 != raTerra)) {
         return -1;
       }
       sVar3 = FShouldPartBeHidden(ppart);
@@ -328,13 +328,13 @@ short FLookupPart(PART *ppart)
       if (((((uVar2 & 0xff) == 0) || ((uVar2 & 0xff) == 2)) ||
           (((uVar2 & 0xff) == 3 ||
            (((((uVar2 & 0xff) == 4 || ((uVar2 & 0xff) == 5)) || ((uVar2 & 0xff) == 6)) ||
-            (((uVar2 & 0xff) == 8 || ((uVar2 & 0xff) == 9)))))))) && (sVar3 != 5)) {
+            (((uVar2 & 0xff) == 8 || ((uVar2 & 0xff) == 9)))))))) && (sVar3 != raMines)) {
         return -1;
       }
-      if ((((uVar2 & 0xff) == 7) && (sVar3 != 5)) && (sVar3 != 4)) {
+      if ((((uVar2 & 0xff) == 7) && (sVar3 != raMines)) && (sVar3 != raDefend)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 1) && (sVar3 == 2)) {
+      if (((uVar2 & 0xff) == 1) && (sVar3 == raAttack)) {
         return -1;
       }
     }
@@ -348,15 +348,15 @@ short FLookupPart(PART *ppart)
     if (idPlayer != -1) {
       if (((uVar2 & 0xff) < 7) || (0xf < (uVar2 & 0xff))) {
         if ((uVar2 & 0xff) < 7) {
-          if ((sVar3 != 7) && (((uVar2 & 0xff) == 1 || (3 < (uVar2 & 0xff))))) {
+          if ((sVar3 != raStargate) && (((uVar2 & 0xff) == 1 || (3 < (uVar2 & 0xff))))) {
             return -1;
           }
-          if (sVar3 == 0) {
+          if (sVar3 == raCheapCol) {
             return -1;
           }
         }
       }
-      else if ((((uVar2 & 0xff) != 9) && ((uVar2 & 0xff) != 0xc)) && (sVar3 != 6)) {
+      else if ((((uVar2 & 0xff) != 9) && ((uVar2 & 0xff) != 0xc)) && (sVar3 != raMassAccel)) {
         return -1;
       }
     }
@@ -373,7 +373,7 @@ short FLookupPart(PART *ppart)
          sVar4 == 0)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 4) && (sVar3 != 8)) {
+      if (((uVar2 & 0xff) == 4) && (sVar3 != raMacintosh)) {
         return -1;
       }
     }
@@ -392,29 +392,29 @@ short FLookupPart(PART *ppart)
       switch(uVar2 & 0xff) {
       case 0:
       case 3:
-        if (sVar3 != 1) {
+        if (sVar3 != raStealth) {
           return -1;
         }
         break;
       case 8:
       case 0xb:
       case 0xf:
-        if (sVar3 != 4) {
+        if (sVar3 != raDefend) {
           return -1;
         }
         break;
       case 0xd:
-        if (sVar3 != 0) {
+        if (sVar3 != raCheapCol) {
           return -1;
         }
         break;
       case 0xe:
-        if (sVar3 != 5) {
+        if (sVar3 != raMines) {
           return -1;
         }
         break;
       case 0x10:
-        if (sVar3 != 7) {
+        if (sVar3 != raStargate) {
           return -1;
         }
       }
@@ -431,10 +431,10 @@ short FLookupPart(PART *ppart)
       if (sVar4 != 0) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 0) && (sVar3 == 8)) {
+      if (((uVar2 & 0xff) == 0) && (sVar3 == raMacintosh)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 1) && (sVar3 != 8)) {
+      if (((uVar2 & 0xff) == 1) && (sVar3 != raMacintosh)) {
         return -1;
       }
     }
@@ -458,10 +458,10 @@ short FLookupPart(PART *ppart)
     *(HULDEF **)&ppart->pcom = (HULDEF *)rghuldef + (uVar2 & 0xff);
     *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
     if (idPlayer != -1) {
-      if ((((uVar2 & 0xff) == 0xe) || ((uVar2 & 0xff) == 0x1f)) && (sVar3 != 0)) {
+      if ((((uVar2 & 0xff) == 0xe) || ((uVar2 & 0xff) == 0x1f)) && (sVar3 != raCheapCol)) {
         return -1;
       }
-      if ((((uVar2 & 0xff) == 0x19) || ((uVar2 & 0xff) == 3)) && (sVar3 != 4)) {
+      if ((((uVar2 & 0xff) == 0x19) || ((uVar2 & 0xff) == 3)) && (sVar3 != raDefend)) {
         return -1;
       }
       if (((((uVar2 & 0xff) == 0x16) || ((uVar2 & 0xff) == 0x17)) ||
@@ -475,16 +475,16 @@ short FLookupPart(PART *ppart)
          sVar4 == 0)) {
         return -1;
       }
-      if ((((uVar2 & 0xff) == 10) || ((uVar2 & 0xff) == 8)) && (sVar3 != 2)) {
+      if ((((uVar2 & 0xff) == 10) || ((uVar2 & 0xff) == 8)) && (sVar3 != raAttack)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 0xc) && (sVar3 != 1)) {
+      if (((uVar2 & 0xff) == 0xc) && (sVar3 != raStealth)) {
         return -1;
       }
-      if (((uVar2 & 0xff) == 0x12) && (sVar3 != 1)) {
+      if (((uVar2 & 0xff) == 0x12) && (sVar3 != raStealth)) {
         return -1;
       }
-      if ((((uVar2 & 0xff) == 0x1b) || ((uVar2 & 0xff) == 0x1c)) && (sVar3 != 5)) {
+      if ((((uVar2 & 0xff) == 0x1b) || ((uVar2 & 0xff) == 0x1c)) && (sVar3 != raMines)) {
         return -1;
       }
       sVar3 = FShouldPartBeHidden(ppart);
@@ -508,13 +508,13 @@ short FLookupPart(PART *ppart)
                                      ibitRaceNoAdvScanner), sVar4 != 0)) {
         return -1;
       }
-      if (((uVar2 & 0xff) < 9) && (sVar3 == 8)) {
+      if (((uVar2 & 0xff) < 9) && (sVar3 == raMacintosh)) {
         return -1;
       }
-      if (((8 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xe)) && (sVar3 == 8)) {
+      if (((8 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xe)) && (sVar3 == raMacintosh)) {
         return -1;
       }
-      if (((10 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xe)) && (sVar3 == 2)) {
+      if (((10 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xe)) && (sVar3 == raAttack)) {
         return -1;
       }
       sVar3 = FShouldPartBeHidden(ppart);

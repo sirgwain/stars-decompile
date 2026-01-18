@@ -487,7 +487,7 @@ LAB_1030_626c:
     return 0;
   }
   hdc = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,auStack_2a));
-  _Draw3dFrame();
+  _Draw3dFrame(hdc,(RECT *)&rcMsgTitle,0);
   lSerial = SetTextColor(hdc,CONCAT22(crButtonText._2_2_,
                                       (undefined2)crButtonText));
   auStack_3e._2_4_ =
@@ -1448,9 +1448,9 @@ char * PszFormatString(char *pszFormat,short *pParamsReal)
   long lVar9;
   long lVar10;
   uint in_stack_0000fe00;
-  HullSlotType HStack_1fe;
-  uint uStack_1fc;
   SHDEF *lpshdef;
+  COMPART *pCStack_1fa;
+  uint uStack_1f8;
   char *pch;
   ushort w;
   char szBuf [480];
@@ -1517,8 +1517,8 @@ switchD_1030_8edc_caseD_3:
       pchT = PszPlayerName(w,0,0,0,0,(PLAYER *)0x0);
       break;
     case 0xb:
-      HStack_1fe = *pParams / 100;
-      uStack_1fc = (int)HStack_1fe >> 0xf;
+      lpshdef._0_2_ = (SHDEF *)(*pParams / 100);
+      lpshdef._2_2_ = (int)(SHDEF *)lpshdef >> 0xf;
       __aFfcompp();
       if (bVar8) {
         c = _WSPRINTF((LPSTR)CONCAT22(*pParams / 100,(char *)&DAT_1120_1120),
@@ -1545,13 +1545,13 @@ switchD_1030_8edc_caseD_3:
     case 0x10:
     case 0x11:
     case 0x31:
-      HStack_1fe = *pParams;
-      uStack_1fc = 0;
+      lpshdef._0_2_ = (SHDEF *)*pParams;
+      lpshdef._2_2_ = 0;
       lVar9 = __aFlshl(lVar10,in_stack_0000fe00);
-      lpshdef._0_2_ = (SHDEF *)((HullSlotType)lVar9 | HStack_1fe);
-      lpshdef._2_2_ = (uint)((ulong)lVar9 >> 0x10) | uStack_1fc;
+      pCStack_1fa = (COMPART *)((uint)lVar9 | (uint)(SHDEF *)lpshdef);
+      uStack_1f8 = (uint)((ulong)lVar9 >> 0x10) | lpshdef._2_2_;
       pParams = (short *)CONCAT22(pParams._2_2_,(short *)pParams + 2);
-      iVar4 = _WSPRINTF((LPSTR)CONCAT22((SHDEF *)lpshdef,(char *)&DAT_1120_1120),
+      iVar4 = _WSPRINTF((LPSTR)CONCAT22(pCStack_1fa,(char *)&DAT_1120_1120),
                         (LPCSTR)CONCAT22(PCTLD,(char *)&DAT_1120_1120),pch);
       pch = pch + iVar4;
       if (*pszFormat != 'v') {
@@ -1661,14 +1661,14 @@ MSG_DoInt:
       pchT = PszGetCompressedString(*pParams + idsEnergy);
       break;
     case 0x26:
-      HStack_1fe = *pParams;
+      lpshdef._0_2_ = (SHDEF *)*pParams;
       pParams = (short *)CONCAT22(pParams._2_2_,(short *)pParams + 1);
       in_stack_0000fe00 = *pParams;
-      uStack_1fc = uStack_1fc & 0xff00 | in_stack_0000fe00 & 0xff;
-      FLookupPart((PART *)&stack0xfe02);
+      lpshdef._2_2_ = lpshdef._2_2_ & 0xff00 | in_stack_0000fe00 & 0xff;
+      FLookupPart((PART *)&lpshdef);
       __fstrcpy((char *)CONCAT22((undefined1 *)&DAT_1120_1120,pch),
-                        (char *)CONCAT22(lpshdef._2_2_,(((SHDEF *)lpshdef)->hul).szClass));
-      uVar6 = __fstrlen((char *)CONCAT22(lpshdef._2_2_,(((SHDEF *)lpshdef)->hul).szClass));
+                        (char *)CONCAT22(uStack_1f8,pCStack_1fa->szName));
+      uVar6 = __fstrlen((char *)CONCAT22(uStack_1f8,pCStack_1fa->szName));
       pch = pch + uVar6;
       pParams = (short *)CONCAT22(pParams._2_2_,psVar2 + 2);
       goto LAB_1030_8f4d;
@@ -1713,16 +1713,16 @@ MSG_DoFleet:
       iVar4 = *pParams >> 5;
       w = *pParams & 0x1f;
       if (w < 0x10) {
-        lpshdef._2_2_ = *(uint *)(iVar4 * 4 + 0x100);
-        lpshdef._0_2_ = (SHDEF *)(*(int *)(iVar4 * 4 + 0xfe) + w * 0x93);
+        uStack_1f8 = *(uint *)(iVar4 * 4 + 0x100);
+        pCStack_1fa = (COMPART *)(*(int *)(iVar4 * 4 + 0xfe) + w * 0x93);
       }
       else {
-        lpshdef._2_2_ = *(uint *)(iVar4 * 4 + 0x14e);
-        lpshdef._0_2_ = (SHDEF *)(*(int *)(iVar4 * 4 + 0x14c) + (w - 0x10) * 0x93);
+        uStack_1f8 = *(uint *)(iVar4 * 4 + 0x14e);
+        pCStack_1fa = (COMPART *)(*(int *)(iVar4 * 4 + 0x14c) + (w - 0x10) * 0x93);
       }
       if (iVar4 == idPlayer) {
         __fstrcpy((char *)CONCAT22((undefined1 *)&DAT_1120_1120,pch),
-                          (char *)CONCAT22(lpshdef._2_2_,(((SHDEF *)lpshdef)->hul).szClass));
+                          (char *)CONCAT22(uStack_1f8,pCStack_1fa->szName));
       }
       else {
         pcVar5 = PszPlayerName(iVar4,0,0,1,0,(PLAYER *)0x0);
@@ -1758,46 +1758,48 @@ LAB_1030_8f4d:
 short MsgDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
-  HDC HVar1;
-  HWND HVar2;
-  short sVar3;
+  HWND HVar1;
+  short sVar2;
   char *sz;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  ulong uVar4;
+  ulong uVar3;
   PAINTSTRUCT ps;
   char szT [256];
   short cch;
-  RECT rcEdit;
+  undefined2 uStack_16;
+  int iStack_14;
+  int iStack_12;
   HDC hdc;
+  HDC HStack_e;
   RECT rc;
   
   if (message == WM_PAINT) {
-    HVar1 = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
+    HStack_e = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
     GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    HVar2 = GetDlgItem(hwnd,0x10c);
-    GetWindowRect(HVar2,(undefined2 *)CONCAT22(unaff_SS,&rcEdit));
-    ScreenToClient(hwnd,(short *)CONCAT22(unaff_SS,&rcEdit.right));
-    rcEdit.left = 8;
-    rcEdit.right = rc.right + -8;
-    rcEdit.top = rcEdit.bottom + 8;
-    rcEdit.bottom = rcEdit.bottom + 0x6c;
-    SelectObject(HVar1,rghfontArial8[1]);
-    SetBkColor(HVar1,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    SetTextColor(HVar1,0);
-    sVar3 = CchGetString
+    HVar1 = GetDlgItem(hwnd,0x10c);
+    GetWindowRect(HVar1,(undefined2 *)CONCAT22(unaff_SS,&uStack_16));
+    ScreenToClient(hwnd,(int *)CONCAT22(unaff_SS,&iStack_12));
+    uStack_16 = 8;
+    iStack_12 = rc.right + -8;
+    iStack_14 = hdc + 8;
+    hdc = hdc + 0x6c;
+    SelectObject(HStack_e,rghfontArial8[1]);
+    SetBkColor(HStack_e,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+    SetTextColor(HStack_e,0);
+    sVar2 = CchGetString
                       ((int)szWork[200] + idsPleaseEnterUniqueEightCharacterSerialNumber,
                        szT);
-    DRAWTEXT(HVar1,(LPCSTR)CONCAT22(unaff_SS,szT),sVar3,(undefined2 *)CONCAT22(unaff_SS,&rcEdit),
-             0x810);
+    DRAWTEXT(HStack_e,(LPCSTR)CONCAT22(unaff_SS,szT),sVar2,
+             (undefined2 *)CONCAT22(unaff_SS,&uStack_16),0x810);
     EndPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
     return 1;
   }
   if (message != WM_ERASEBKGND) {
     if (message == WM_CTLCOLOR) {
-      uVar4 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),ps.hdc);
-      if ((int)uVar4 == 6) {
+      uVar3 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),ps.hdc);
+      if ((int)uVar3 == 6) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -1805,25 +1807,26 @@ short MsgDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     else {
       if (message == WM_INITDIALOG) {
-        rcEdit.bottom = -1;
+        hdc = 0xffff;
+        HStack_e = -1;
         szWork[0] = '\0';
         SendDlgItemMessage(hwnd,0x10c,0x415,8,0);
-        HVar2 = GetDlgItem(hwnd,0x10c);
-        SetWindowText(HVar2,szWork);
-        StickyDlgPos(hwnd,(POINT *)&rcEdit.bottom,1);
+        HVar1 = GetDlgItem(hwnd,0x10c);
+        SetWindowText(HVar1,szWork);
+        StickyDlgPos(hwnd,(POINT *)&hdc,1);
         return 1;
       }
       if (message == WM_COMMAND) {
         if ((wParam == 1) || (wParam == 2)) {
           if (wParam == 1) {
             GetDlgItemText(hwnd,0x10c,szWork,9);
-            sVar3 = FValidSerialNo((char *)szWork,(long *)0x0);
-            if (sVar3 == 0) {
-              sVar3 = 0x10;
+            sVar2 = FValidSerialNo((char *)szWork,(long *)0x0);
+            if (sVar2 == 0) {
+              sVar2 = 0x10;
               sz = PszFormatIds(idsSerialNumberHaveEnteredValid,(short *)0x0);
-              AlertSz(sz,sVar3);
-              HVar2 = GetDlgItem(hwnd,0x10c);
-              SetFocus(HVar2);
+              AlertSz(sz,sVar2);
+              HVar1 = GetDlgItem(hwnd,0x10c);
+              SetFocus(HVar1);
               return 0;
             }
           }

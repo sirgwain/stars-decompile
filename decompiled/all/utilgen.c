@@ -1425,17 +1425,17 @@ long LDrawGauge(HDC hdc,RECT *prc,short cSegs,long *rgSize,ushort *rghbr,long cT
   int iVar1;
   undefined2 unaff_SS;
   long lVar2;
-  ulong uVar3;
-  ulong uVar4;
-  undefined2 uVar5;
-  undefined2 uVar6;
+  ulong num;
+  ulong a;
+  undefined2 uVar3;
+  undefined2 uVar4;
   RECT rc;
   long dx;
   long lSum;
   short i;
   short fHuge;
   
-  uVar4 = 0;
+  a = 0;
   rc.left = prc->left;
   rc.top = prc->top;
   rc.right = prc->right;
@@ -1456,11 +1456,11 @@ long LDrawGauge(HDC hdc,RECT *prc,short cSegs,long *rgSize,ushort *rghbr,long cT
         lVar2 = __aFldiv(CONCAT22(*(undefined2 *)((int)(rgSize + i) + 2),(int)rgSize[i]),
                                  1000);
       }
-      uVar4 = lVar2 + uVar4;
-      uVar5 = (undefined2)cTot;
-      uVar6 = cTot._2_2_;
-      uVar3 = __aFulmul((long)iVar1,uVar4);
-      lVar2 = __aFldiv(uVar3,CONCAT22(uVar6,uVar5));
+      a = lVar2 + a;
+      uVar3 = (undefined2)cTot;
+      uVar4 = cTot._2_2_;
+      num = __aFulmul((long)iVar1,a);
+      lVar2 = __aFldiv(num,CONCAT22(uVar4,uVar3));
       rc.right = prc->left + 1 + (int)lVar2;
       if (rc.left < rc.right) {
         FillRect(hdc,(undefined2 *)CONCAT22(unaff_SS,&rc),rghbr[i]);
@@ -1473,9 +1473,9 @@ long LDrawGauge(HDC hdc,RECT *prc,short cSegs,long *rgSize,ushort *rghbr,long cT
     FillRect(hdc,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
   }
   if (fHuge != 0) {
-    uVar4 = __aFulmul(uVar4,1000);
+    a = __aFulmul(a,1000);
   }
-  return uVar4;
+  return a;
 }
 
 
@@ -3034,28 +3034,28 @@ long LSaltFromSz(char *psz)
 
 {
   char *pcVar1;
-  ulong uVar2;
+  ulong a;
   long lSalt;
   
-  uVar2 = 0;
+  a = 0;
   pcVar1 = psz;
   if (*psz == '\0') {
-    uVar2 = 0;
+    a = 0;
   }
   else {
     while (psz = pcVar1, *psz != '\0') {
-      uVar2 = uVar2 + (long)(int)*psz;
+      a = a + (long)(int)*psz;
       pcVar1 = psz + 1;
       if (*pcVar1 != '\0') {
-        uVar2 = __aFulmul(uVar2,(long)(int)*pcVar1);
+        a = __aFulmul(a,(long)(int)*pcVar1);
         pcVar1 = psz + 2;
       }
     }
-    if (uVar2 == 0) {
-      uVar2 = 1;
+    if (a == 0) {
+      a = 1;
     }
   }
-  return uVar2;
+  return a;
 }
 
 

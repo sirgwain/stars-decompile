@@ -54,9 +54,13 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   short i_2;
   SCAN scan;
   short fChgScan;
-  undefined1 auStack_6a [52];
-  short dx;
   short d;
+  int iStack_68;
+  undefined4 uStack_3e;
+  int iStack_3a;
+  short sStack_38;
+  short dx;
+  uint uStack_34;
   RECT rc;
   PAINTSTRUCT ps;
   POINT pt;
@@ -92,59 +96,58 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           pt.x = sel.scan.pt.x;
           pt.y = sel.scan.pt.y;
           LogicalToScan(&pt);
-          auStack_6a._50_2_ = SetROP2(HVar4,7);
+          sStack_38 = SetROP2(HVar4,7);
           dx = SelectObject(HVar4,hpenYellow);
-          for (auStack_6a._48_2_ = 0; (int)auStack_6a._48_2_ < 2;
-              auStack_6a._48_2_ = auStack_6a._48_2_ + 1) {
+          for (iStack_3a = 0; iStack_3a < 2; iStack_3a = iStack_3a + 1) {
             MoveTo(HVar4,pt.x + -300,pt.y + -300);
             LineTo(HVar4,pt.x + 300,pt.y + 300);
             MoveTo(HVar4,pt.x + -300,pt.y + 300);
             LineTo(HVar4,pt.x + 300,pt.y + -300);
-            if (auStack_6a._48_2_ == 0) {
+            if (iStack_3a == 0) {
               DVar11 = GetTickCount();
-              auStack_6a._44_4_ = DVar11;
+              uStack_3e = DVar11;
               while( true ) {
                 DVar11 = GetTickCount();
-                if (auStack_6a._44_4_ + 0x96 <= DVar11) break;
+                if (uStack_3e + 0x96 <= DVar11) break;
                 Yield();
               }
             }
           }
           SelectObject(HVar4,dx);
-          SetROP2(HVar4,auStack_6a._50_2_);
+          SetROP2(HVar4,sStack_38);
           ReleaseDC(hwndScanner,HVar4);
         }
         else {
           if (wParam == 0x2d) {
-            d = iScanZoom + -1;
-            if (d < -4) {
-              d = -4;
+            uStack_34 = iScanZoom + -1;
+            if ((int)uStack_34 < -4) {
+              uStack_34 = -4;
             }
           }
           else {
-            d = iScanZoom + 1;
-            if (4 < d) {
-              d = 4;
+            uStack_34 = iScanZoom + 1;
+            if (4 < (int)uStack_34) {
+              uStack_34 = 4;
             }
           }
-          if (d != iScanZoom) {
-            SendMessage(hwndFrame,0x111,d + 0xf41,0);
+          if (uStack_34 != iScanZoom) {
+            SendMessage(hwndFrame,0x111,uStack_34 + 0xf41,0);
           }
         }
       }
       else if ((msg == 0x114) || (msg == 0x115)) {
         switch(wParam) {
         case 0:
-          d = -dScanInc;
+          uStack_34 = -dScanInc;
           break;
         case 1:
-          d = dScanInc;
+          uStack_34 = dScanInc;
           break;
         case 2:
-          d = -dScanPage;
+          uStack_34 = -dScanPage;
           break;
         case 3:
-          d = dScanPage;
+          uStack_34 = dScanPage;
           break;
         case 4:
         case 5:
@@ -152,22 +155,22 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           if (msg != 0x115) {
             sVar6 = xScanTop;
           }
-          d = (int)lParam - sVar6 & 0xfffc;
+          uStack_34 = (int)lParam - sVar6 & 0xfffc;
           break;
         default:
-          d = 0;
+          uStack_34 = 0;
         }
-        if (d != 0) {
+        if (uStack_34 != 0) {
           if (msg == 0x115) {
             dx = yScanTop;
-            SetScrollPos(hwnd,1,yScanTop + d,1);
+            SetScrollPos(hwnd,1,yScanTop + uStack_34,1);
             yScanTop = GetScrollPos(hwnd,1);
             sVar6 = PtToScan(dx - yScanTop);
             ScrollScanner(0,sVar6);
           }
           else {
             dx = xScanTop;
-            SetScrollPos(hwnd,0,xScanTop + d,1);
+            SetScrollPos(hwnd,0,xScanTop + uStack_34,1);
             xScanTop = GetScrollPos(hwnd,0);
             dy = 0;
             sVar6 = PtToScan(dx - xScanTop);
@@ -295,11 +298,11 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
                   }
                   ChangeScanSel(&scan,2);
                   if (scan.grobj == grobjPlanet) {
-                    sVar6 = FLookupPlanet(scan.idpl,(PLANET *)auStack_6a);
+                    sVar6 = FLookupPlanet(scan.idpl,(PLANET *)&d);
                     if (sVar6 == 0) {
                       return 0;
                     }
-                    if (auStack_6a._2_2_ != idPlayer) {
+                    if (iStack_68 != idPlayer) {
                       return 0;
                     }
                   }
@@ -341,11 +344,11 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
                     }
                   }
                   else if (scan.grobj == grobjPlanet) {
-                    sVar6 = FLookupPlanet(scan.idpl,(PLANET *)auStack_6a);
+                    sVar6 = FLookupPlanet(scan.idpl,(PLANET *)&d);
                     if (sVar6 == 0) {
                       return 0;
                     }
-                    if ((auStack_6a._2_2_ != idPlayer) ||
+                    if ((iStack_68 != idPlayer) ||
                        ((((scan.grobjFull & grobjFleet) != grobjNone &&
                          (sel.grobj == grobjPlanet)) && (scan.idpl == sel.id))))
                     {
@@ -639,7 +642,7 @@ short DrawScanner(HDC hdc,RECT *prc)
   short ropSav;
   short asStack_672 [240];
   THING *pTStack_492;
-  HBITMAP hbmpTrSav;
+  PLANET *pPStack_490;
   THING *pTStack_48e;
   long l_2;
   long lPop;
@@ -931,7 +934,7 @@ short DrawScanner(HDC hdc,RECT *prc)
         }
       }
       sVar21 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-      if (sVar21 == 6) {
+      if (sVar21 == raMassAccel) {
         fDetonating = (short)lpThings._2_2_;
         pTVar33 = (THING *)lpThings + cThing;
         lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
@@ -1168,7 +1171,7 @@ LAB_1058_243c:
       HVar27 = SelectObject(hdc,hbrShip);
       HVar26 = SelectObject(hdc,hpenDkPurple);
       pTStack_492 = (THING *)lpThings;
-      hbmpTrSav = (HBITMAP)lpThings._2_2_;
+      pPStack_490 = lpThings._2_2_;
       pTStack_48e = (THING *)lpThings + cThing;
       l_2._0_2_ = lpThings._2_2_;
       stack0xfb76 = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
@@ -1201,7 +1204,7 @@ LAB_1058_243c:
             BitBlt(hdc,pt.x + -4,pt.y + -4,9,9,HVar20,0,0x5c,0xee0086);
           }
           else if ((uint)stack0xfb76->idFull >> 0xd == 3) {
-            hbmpTrSav = SelectObject(HVar20,hbmpScanShip);
+            pPStack_490 = (PLANET *)SelectObject(HVar20,hbmpScanShip);
             CVar38 = SetTextColor(hdc,0xffff00);
             CVar39 = SetBkColor(hdc,0);
             uStack_47c = (undefined2)(CVar39 >> 0x10);
@@ -1213,7 +1216,7 @@ LAB_1058_243c:
             BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,HVar20,ptO.x,ptO.y,0xee0086);
             SetTextColor(hdc,CVar38);
             SetBkColor(hdc,CONCAT22(uStack_47c,cr._2_2_));
-            SelectObject(HVar20,hbmpTrSav);
+            SelectObject(HVar20,(HGDIOBJ)pPStack_490);
           }
           else {
             if (iScanZoom < 1) {
@@ -1451,14 +1454,14 @@ LAB_1058_343d:
                 if (-1 < sVar21) {
                   sVar21 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv)
                   ;
-                  if (sVar21 != 3) {
+                  if (sVar21 != raTerra) {
                     cr._0_2_ = 1;
                   }
                 }
               }
               else {
                 sVar21 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-                if (sVar21 == 3) goto LAB_1058_343d;
+                if (sVar21 == raTerra) goto LAB_1058_343d;
               }
               HVar24 = hbrRadar;
               if ((-1 < (long)stack0xfb7a) && (HVar24 = hbrDkYellow, (uint)cr == 0)) {
@@ -2307,9 +2310,8 @@ void DrawShipScanPath(HDC hdc,short fShow)
   POINT ptTick;
   short dx5;
   POINT rgptArrow [2];
+  double dAngle;
   short fDoneRoute;
-  double dStack_ee;
-  short id;
   RECT rc;
   short dx;
   short dRad;
@@ -2465,20 +2467,20 @@ SCAN_LNextCheck:
                                                      (long)((qword)(double)(long)-dy >> 0x20))),
                            (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)dVar1 >> 0x20))
                                            ));
-  dStack_ee = *(double *)pdVar17 - DOUBLE_0_7853982__1120_1cea;
+  _dAngle = *(double *)pdVar17 - DOUBLE_0_7853982__1120_1cea;
   for (i = 0; i < 2; i = i + 1) {
     uVar13 = SUB102((longdouble)5,0);
     uVar21 = (undefined2)((unkuint10)(longdouble)5 >> 0x10);
-    uVar2 = (undefined4)((qword)dStack_ee >> 0x20);
-    _cos(SUB84(dStack_ee,0),(double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,uVar2)));
+    uVar2 = (undefined4)((qword)_dAngle >> 0x20);
+    _cos(SUB84(_dAngle,0),(double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,uVar2)));
     lVar16 = __ftol((double)CONCAT26(uVar21,CONCAT24(uVar13,CONCAT22(unaff_SI,unaff_DI))));
     (rgptArrow + i)->x = (short)lVar16;
     uVar13 = SUB102((longdouble)5,0);
     uVar21 = (undefined2)((unkuint10)(longdouble)5 >> 0x10);
-    _sin(SUB84(dStack_ee,0),(double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,uVar2)));
+    _sin(SUB84(_dAngle,0),(double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,uVar2)));
     lVar16 = __ftol((double)CONCAT26(uVar21,CONCAT24(uVar13,CONCAT22(unaff_SI,unaff_DI))));
     rgptArrow[i].y = (short)lVar16;
-    dStack_ee = DOUBLE_1_5707964__1120_1cfa + dStack_ee;
+    _dAngle = DOUBLE_1_5707964__1120_1cfa + _dAngle;
   }
   j = -5;
   for (i = -5; i < 6; i = i + 1) {
@@ -2528,7 +2530,7 @@ SCAN_LNoObjPath:
       bVar3 = true;
       hpenSav = SelectObject(hdc,hpenDkGreen);
 SCAN_LDrawPath:
-      id = (uVar4 & 0x3ff) - 1;
+      fDoneRoute = (uVar4 & 0x3ff) - 1;
       sVar8 = SetROP2(hdc,7);
       GetClientRect(hwndScanner,(undefined2 *)CONCAT22(unaff_SS,&rc));
       ExcludeClipRect(hdc,rc.left,rc.bottom - dySBar,rc.right,rc.bottom);
@@ -2536,8 +2538,8 @@ SCAN_LDrawPath:
       pt.y = *(short *)((int)&rgptPlan[0].y + sel.pl.id * 4);
       LogicalToScan(&pt);
       MoveTo(hdc,pt.x,pt.y);
-      pt.x = ((POINT *)rgptPlan + id)->x;
-      pt.y = *(short *)((int)&rgptPlan[0].y + id * 4);
+      pt.x = ((POINT *)rgptPlan + fDoneRoute)->x;
+      pt.y = *(short *)((int)&rgptPlan[0].y + fDoneRoute * 4);
       LogicalToScan(&pt);
       LineTo(hdc,pt.x,pt.y);
       SetROP2(hdc,sVar8);
@@ -3623,8 +3625,8 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
   undefined2 in_stack_0000ffce;
   SCAN scan;
   short iWarpOld;
-  undefined1 auStack_1e [2];
   PLANET *lppl;
+  short j;
   short iWarpAi;
   short fGoFlatOut;
   short fGoFlatOutAi;
@@ -3659,27 +3661,29 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
   }
   else {
     bVar2 = false;
-    for (auStack_1e = (undefined1  [2])0x0; lppl._0_2_ = (PLANET *)0x0, (int)auStack_1e < 0x10;
-        auStack_1e = (undefined1  [2])((int)auStack_1e + 1)) {
-      if (0 < pFVar8->rgcsh[(int)auStack_1e]) {
-        for (; iVar9 = pFVar8->iPlayer * 4,
-            (int)(PLANET *)lppl <
-            (int)(uint)*(byte *)(*(int *)(iVar9 + 0xfe) + (int)auStack_1e * 0x93 + 0x7a);
-            lppl._0_2_ = (PLANET *)((int)&((PLANET *)lppl)->id + 1)) {
+    lppl = (PLANET *)0x0;
+    while ((int)(PLANET *)lppl < 0x10) {
+      if (0 < pFVar8->rgcsh[(int)(PLANET *)lppl]) {
+        while( true ) {
           iVar9 = pFVar8->iPlayer * 4;
-          if ((*(int *)(*(int *)(iVar9 + 0xfe) + (int)auStack_1e * 0x93 + 0x3a +
-                       (int)(PLANET *)lppl * 4) == 0x1000) &&
+          if ((int)(uint)*(byte *)(*(int *)(iVar9 + 0xfe) + (int)(PLANET *)lppl * 0x93 + 0x7a) <=
+              lppl._2_2_) break;
+          iVar9 = pFVar8->iPlayer * 4;
+          if ((*(int *)(*(int *)(iVar9 + 0xfe) + (int)(PLANET *)lppl * 0x93 + 0x3a + lppl._2_2_ * 4)
+               == 0x1000) &&
              ((iVar9 = pFVar8->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar9 + 0xfe) + (int)auStack_1e * 0x93 + (int)(PLANET *)lppl * 4 +
-                        0x3c) & 0xff) == 0 ||
+              (*(uint *)(*(int *)(iVar9 + 0xfe) + (int)(PLANET *)lppl * 0x93 + lppl._2_2_ * 4 + 0x3c
+                        ) & 0xff) == 0 ||
               (iVar9 = pFVar8->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar9 + 0xfe) + (int)auStack_1e * 0x93 + (int)(PLANET *)lppl * 4 +
-                        0x3c) & 0xff) == 1)))) {
+              (*(uint *)(*(int *)(iVar9 + 0xfe) + (int)(PLANET *)lppl * 0x93 + lppl._2_2_ * 4 + 0x3c
+                        ) & 0xff) == 1)))) {
             bVar2 = true;
             break;
           }
+          lppl = (PLANET *)CONCAT22(lppl._2_2_ + 1,(PLANET *)lppl);
         }
       }
+      lppl = (PLANET *)ZEXT24((undefined1 *)((int)&((PLANET *)lppl)->id + 1));
     }
   }
   if ((bVar2) || (fAi == 0)) {
@@ -3695,21 +3699,20 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
     pt.x = (lpord->pt).x;
     sVar6 = FFindNearestObject(pt,0x81,&scan);
     if (sVar6 == 0) {
-      _auStack_1e = (PLANET *)0x0;
+      lppl = (PLANET *)0x0;
     }
     else {
-      _auStack_1e = LpplFromId(scan.idpl);
+      lppl = LpplFromId(scan.idpl);
     }
     lVar16 = CONCAT22(in_stack_0000ffce,in_stack_0000ffcc);
     if ((bVar2) ||
-       (((auStack_1e != (undefined1  [2])0x0 || ((PLANET *)lppl != (PLANET *)0x0)) &&
-        ((*(short *)((int)auStack_1e + 2) == -1 ||
-         (*(short *)((int)auStack_1e + 2) == idPlayer)))))) {
+       ((((PLANET *)lppl != (PLANET *)0x0 || (lppl._2_2_ != 0)) &&
+        ((((PLANET *)lppl)->iPlayer == -1 || (((PLANET *)lppl)->iPlayer == idPlayer)))))) {
       if ((bVar3) &&
-         ((((auStack_1e != (undefined1  [2])0x0 || ((PLANET *)lppl != (PLANET *)0x0)) &&
-           (*(short *)((int)auStack_1e + 2) == idPlayer)) &&
+         (((((PLANET *)lppl != (PLANET *)0x0 || (lppl._2_2_ != 0)) &&
+           (((PLANET *)lppl)->iPlayer == idPlayer)) &&
           (*(int *)(*(int *)(idPlayer * 4 + 0x14c) +
-                   (*(uint *)(undefined1 *)((int)auStack_1e + 0x2c) & 0xf) * 0x93) != 0x20)))) {
+                   (*(uint *)&((PLANET *)lppl)->field11_0x2c & 0xf) * 0x93) != 0x20)))) {
         bVar3 = false;
       }
       iWarp = 9;
@@ -3742,14 +3745,14 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
       pOVar7->wFlags = pOVar7->wFlags & 0xff0fU | (iWarp & 0xfU) << 4;
       lVar13 = LFuelUseToWaypoint(lpfl,iwp,1);
       if ((lVar13 <= CONCAT22(*(undefined2 *)((int)pFVar8->rgwtMin + 0x12),(int)pFVar8->rgwtMin[4]))
-         && (((((auStack_1e != (undefined1  [2])0x0 || ((PLANET *)lppl != (PLANET *)0x0)) &&
-               (((uint)*(short *)((int)auStack_1e + 4) >> 9 & 1) != 0)) &&
-              ((*(short *)((int)auStack_1e + 2) == idPlayer &&
+         && ((((((PLANET *)lppl != (PLANET *)0x0 || (lppl._2_2_ != 0)) &&
+               (((uint)((PLANET *)lppl)->wFlags >> 9 & 1) != 0)) &&
+              ((((PLANET *)lppl)->iPlayer == idPlayer &&
                (pHVar14 = LphuldefFromId
                                     (*(HullDef *)
                                       (*(int *)(idPlayer * 4 + 0x14c) +
-                                      (*(uint *)(undefined1 *)((int)auStack_1e + 0x2c) & 0xf) * 0x93
-                                      )), (((HULDEF *)pHVar14)->hul).wtCargoMax != 0)))) ||
+                                      (*(uint *)&((PLANET *)lppl)->field11_0x2c & 0xf) * 0x93)),
+               (((HULDEF *)pHVar14)->hul).wtCargoMax != 0)))) ||
              ((lVar15 = __aFldiv(CONCAT22(*(undefined2 *)((int)pFVar8->rgwtMin + 0x12),
                                                   (int)pFVar8->rgwtMin[4]),2), lVar13 <= lVar15 ||
               (bVar2)))))) break;

@@ -42,13 +42,14 @@ void DoCyberAiTurn(PROD *rgprod)
   long lVar19;
   long *rgResAvail_00;
   long *rgResCost_00;
-  undefined1 auStack_124 [134];
+  undefined1 auStack_124 [132];
+  short iSBDef;
   byte bStack_9e;
   undefined1 uStack_9d;
   short sStack_9c;
   uint uStack_9a;
   PLANET *lpplEnemy;
-  short iSBDef;
+  ITEMACTION IStack_90;
   short fWrite;
   short idPlanDst;
   CYBERINFOTEMP *lpciPlanTemp;
@@ -113,8 +114,8 @@ void DoCyberAiTurn(PROD *rgprod)
     iAttackStr = (game.turn - 0x32U) / 10 + 1;
   }
   if (100 < (uint)game.turn) {
-    iSBDef = (game.turn - 100U) / 10;
-    iAttackStr = iAttackStr + iSBDef * ((uint)game.turn / 100);
+    IStack_90.wFlags = (game.turn - 100U) / 10;
+    iAttackStr = iAttackStr + IStack_90.wFlags * ((uint)game.turn / 100);
   }
   j = 3;
   if (0x82 < (uint)game.turn) {
@@ -166,12 +167,12 @@ void DoCyberAiTurn(PROD *rgprod)
        (cRecyclePeriod <
         (uint)(game.turn - *(int *)((int)&rgshdef[0].turn + (i * 4 + 6) * 0x93))))
     {
-      iSBDef = 1;
+      IStack_90.wFlags = 1;
       for (j = i * 4 + 9; i * 4 + 6 <= j; j = j + -1) {
         if ((*(uint *)((int)&rgshdef[0].wFlags + j * 0x93) >> 9 & 1) == 0) {
           if (((*(int *)((int)&rgshdef[0].cExist + j * 0x93) == 0) &&
               (*(int *)((int)&rgshdef[0].cExist + 2 + j * 0x93) == 0)) &&
-             ((iSBDef != 0 || (j != i * 4 + 6)))) {
+             ((IStack_90.wFlags != 0 || (j != i * 4 + 6)))) {
             puVar13 = (undefined2 *)(j * 0x93 + 0x3f00);
             puVar14 = (undefined2 *)auStack_124;
             for (iVar9 = 0x49; iVar9 != 0; iVar9 = iVar9 + -1) {
@@ -187,30 +188,30 @@ void DoCyberAiTurn(PROD *rgprod)
           }
           else {
             rgRecycleShdef[j] = 1;
-            iSBDef = 0;
+            IStack_90.wFlags = 0;
           }
         }
       }
     }
     if (((*(uint *)((int)&rgshdef[0].wFlags + (i * 4 + 6) * 0x93) >> 9 & 1) == 0) &&
        ((iLatestBattle == -1 ||
-        (iSBDef = *(uint *)((int)&rgshdef[0].turn + (i * 4 + 6) * 0x93),
-        *(uint *)((int)&rgshdef[0].turn + (iLatestBattle * 4 + 6) * 0x93) < (uint)iSBDef))
-       )) {
+        (IStack_90.wFlags = *(uint *)((int)&rgshdef[0].turn + (i * 4 + 6) * 0x93),
+        *(uint *)((int)&rgshdef[0].turn + (iLatestBattle * 4 + 6) * 0x93) <
+        (uint)IStack_90.wFlags)))) {
       iLatestBattle = i;
     }
   }
   if (0x50 < (uint)game.turn) {
     SplitOutShdefs(rgRecycleShdef);
-    _memset(&bStack_9e,0,0x10);
-    bStack_9e = 2;
-    SplitOutShdefs(&bStack_9e);
-    _memset(&bStack_9e,0,0x10);
-    uStack_9d = 2;
-    SplitOutShdefs(&bStack_9e);
-    _memset(&bStack_9e,0,0x10);
+    _memset(&stack0xff62,0,0x10);
+    _bStack_9e = CONCAT11(uStack_9d,2);
+    SplitOutShdefs(&stack0xff62);
+    _memset(&stack0xff62,0,0x10);
+    _bStack_9e = CONCAT11(2,bStack_9e);
+    SplitOutShdefs(&stack0xff62);
+    _memset(&stack0xff62,0,0x10);
     sStack_9c = 0x202;
-    SplitOutShdefs(&bStack_9e);
+    SplitOutShdefs(&stack0xff62);
   }
   lpciPlanTemp = (CYBERINFOTEMP *)
                  CONCAT22(vlpbAiData._2_2_,
@@ -220,7 +221,7 @@ void DoCyberAiTurn(PROD *rgprod)
                              (CYBERINFOTEMP *)((byte *)vlpbAiData + dOffsetPlanTemp)),0,
                     game.cPlanMax << 1);
   lpplEnemy = (PLANET *)CONCAT22((PLANET *)lpPlanets,(PLANET *)lpplEnemy);
-  iSBDef = lpPlanets._2_2_;
+  IStack_90.wFlags = lpPlanets._2_2_;
   lpplMac._0_2_ = (PLANET *)lpPlanets + cPlanet;
   lpplMac._2_2_ = lpPlanets._2_2_;
   lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,(PLANET *)lpPlanets);
@@ -233,9 +234,9 @@ void DoCyberAiTurn(PROD *rgprod)
                             (CYBERINFOTEMP *)
                             ((byte *)vlpbAiData + lppl->id * 2 + dOffsetPlanTemp));
     if (((uint)lpciPlan->wInfo >> 5 & 3) != 0) {
-      iSBDef = lpciPlan->wInfo - 0x20U & 0x60;
+      IStack_90.wFlags = lpciPlan->wInfo - 0x20U & 0x60;
       lpciPlan->wInfo = lpciPlan->wInfo & 0xff9f;
-      lpciPlan->wInfo = lpciPlan->wInfo | iSBDef;
+      lpciPlan->wInfo = lpciPlan->wInfo | IStack_90.wFlags;
     }
     uVar15 = (undefined2)((ulong)lppl >> 0x10);
     if ((((PLANET *)lppl)->iPlayer == idPlayer) || (((PLANET *)lppl)->iPlayer == -1)) {
@@ -324,14 +325,15 @@ void DoCyberAiTurn(PROD *rgprod)
           else {
             if ((pFVar11->cord < 2) ||
                (((uint)((PLORD *)pFVar11->lpplord + 7)->wFlags >> 8 & 0xf) != 1)) {
-              iSBDef = pFVar11->idPlanet;
+              IStack_90.wFlags = pFVar11->idPlanet;
             }
             else {
-              iSBDef = *(short *)&((PLORD *)pFVar11->lpplord)[6].iordMax;
+              IStack_90.wFlags = *(short *)&((PLORD *)pFVar11->lpplord)[6].iordMax;
             }
             lpplEnemy = (PLANET *)
                         CONCAT22(vlpbAiPlanet._2_2_,
-                                 (PLANET *)((byte *)vlpbAiPlanet + iSBDef * 0x10 + 10));
+                                 (PLANET *)
+                                 ((byte *)vlpbAiPlanet + IStack_90.wFlags * 0x10 + 10));
             if ((char)lpplEnemy->id != '\0') {
               *(byte *)&lpplEnemy->id = (byte)lpplEnemy->id | 0x80;
             }
@@ -345,14 +347,15 @@ void DoCyberAiTurn(PROD *rgprod)
                  (((uint)((PLORD *)pFVar11->lpplord + 7)->wFlags >> 8 & 0xf) == 1)))) {
           if (((uint)((CYBERINFOTEMP *)lpciPlanTemp +
                      *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->wInfo1 >> 3 & 3) < 3) {
-            iSBDef = ((CYBERINFOTEMP *)lpciPlanTemp +
-                     *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->wInfo1 + 8U & 0x18;
+            IStack_90.wFlags =
+                 ((CYBERINFOTEMP *)lpciPlanTemp + *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->
+                 wInfo1 + 8U & 0x18;
             ((CYBERINFOTEMP *)lpciPlanTemp + *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->
             wInfo1 = ((CYBERINFOTEMP *)lpciPlanTemp +
                      *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->wInfo1 & 0xffe7;
             ((CYBERINFOTEMP *)lpciPlanTemp + *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->
             wInfo1 = ((CYBERINFOTEMP *)lpciPlanTemp +
-                     *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->wInfo1 | iSBDef;
+                     *(int *)&((PLORD *)pFVar11->lpplord)[6].iordMax)->wInfo1 | IStack_90.wFlags;
           }
         }
       }
@@ -464,10 +467,10 @@ LAB_10a8_111c:
                     else {
                       ClearAiCurrentTask(lpfl,1);
                       sStack_9c = idPlanDst;
-                      auStack_124._132_2_ = ((POINT *)rgptPlan + idPlanDst)->x;
-                      _bStack_9e = *(undefined2 *)((int)&rgptPlan[0].y + idPlanDst * 4);
+                      iSBDef = ((POINT *)rgptPlan + idPlanDst)->x;
+                      _bStack_9e = *(short *)((int)&rgptPlan[0].y + idPlanDst * 4);
                       uStack_9a = uStack_9a & 0xe000 | 0x1146;
-                      FMoveAiFleet(lpfl,(ORDER *)(auStack_124 + 0x84),0);
+                      FMoveAiFleet(lpfl,(ORDER *)&iSBDef,0);
                     }
                   }
                 }
@@ -520,17 +523,17 @@ LAB_10a8_111c:
         }
       }
       else {
-        iSBDef = 0;
+        IStack_90.wFlags = 0;
         if ((uint)(game.turn - rgshdef[0xe].turn) < cRecyclePeriod - 10) {
-          iSBDef = pFVar11->rgcsh[0xe];
+          IStack_90.wFlags = pFVar11->rgcsh[0xe];
         }
         if ((uint)(game.turn - rgshdef[0xf].turn) < cRecyclePeriod - 10) {
-          iSBDef = iSBDef + pFVar11->rgcsh[0xf];
+          IStack_90.wFlags = IStack_90.wFlags + pFVar11->rgcsh[0xf];
         }
-        if (0 < iSBDef) {
+        if (0 < IStack_90.wFlags) {
           ((CYBERINFOTEMP *)lpciPlanTemp + pFVar11->idPlanet)->wInfo1 =
                ((CYBERINFOTEMP *)lpciPlanTemp + pFVar11->idPlanet)->wInfo1 & 0xffbfU | 0x40;
-          bVar5 = iSBDef < iAttackStr * 2;
+          bVar5 = IStack_90.wFlags < iAttackStr * 2;
           lpplEnemy = (PLANET *)(ulong)CONCAT12(bVar5,(PLANET *)lpplEnemy);
           pPVar18 = lpplEnemy;
           lpplEnemy._2_2_ = (uint)bVar5;
@@ -634,7 +637,7 @@ LAB_10a8_16c6:
           sVar8 = Random(4);
           pPVar18 = lpplEnemy;
           if ((sVar8 == 0) && (cMineLayers < 10000)) {
-            iSBDef = lppl->id;
+            IStack_90.wFlags = lppl->id;
             lpplEnemy = (PLANET *)((ulong)lpplEnemy & 0xffff);
             for (ifl = 0; ifl < cFleet; ifl = ifl + 1) {
                     /* WARNING: Load size is inaccurate */
@@ -642,7 +645,7 @@ LAB_10a8_16c6:
               iVar10 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
               lpfl = (FLEET *)CONCAT22(iVar10,pFVar11);
               if ((pFVar11 == (FLEET *)0x0) && (iVar10 == 0)) break;
-              if ((pFVar11->idPlanet == iSBDef) &&
+              if ((pFVar11->idPlanet == IStack_90.wFlags) &&
                  ((0 < pFVar11->rgcsh[0] && (pFVar11->iPlayer == idPlayer)))) {
                 lpplEnemy._0_2_ = (PLANET *)pPVar18;
                 lpplEnemy = (PLANET *)CONCAT22(pFVar11->rgcsh[0],(PLANET *)lpplEnemy);
@@ -663,11 +666,11 @@ LAB_10a8_185b:
             }
           }
         }
-        iSBDef = iLatestSBDefender;
+        IStack_90.wFlags = iLatestSBDefender;
         if (((uint)lpciPlanTemp->wInfo1 >> 5 & 1) == 0) {
-          iSBDef = -1;
+          IStack_90.wFlags = 0xffff;
         }
-        if (((iSBDef == -1) && (((uint)lpciPlanTemp->wInfo1 >> 6 & 1) == 0)) &&
+        if (((IStack_90.wFlags == 0xffff) && (((uint)lpciPlanTemp->wInfo1 >> 6 & 1) == 0)) &&
            (cSBDefenderFleets < 0x28)) {
           lpplEnemy = LpplFindClosestEnum(lppl,FEnumCalcEnemyPlanets);
           if (((PLANET *)lpplEnemy != (PLANET *)0x0) || ((int)((ulong)lpplEnemy >> 0x10) != 0)) {
@@ -678,17 +681,17 @@ LAB_10a8_185b:
             lVar19 = LDistance2(pt1,pt2);
             if (lVar19 < 0x15f91) {
               sVar8 = Random(100);
-              iSBDef = iLatestSBDefender;
+              IStack_90.wFlags = iLatestSBDefender;
               if (0x31 < sVar8) {
-                iSBDef = -1;
+                IStack_90.wFlags = 0xffff;
               }
               goto LAB_10a8_199f;
             }
           }
           sVar8 = Random(100);
-          iSBDef = iLatestSBDefender;
+          IStack_90.wFlags = iLatestSBDefender;
           if (9 < sVar8) {
-            iSBDef = -1;
+            IStack_90.wFlags = 0xffff;
           }
         }
 LAB_10a8_199f:
@@ -698,7 +701,7 @@ LAB_10a8_199f:
         if (0xfa < cFlArmadas) {
           iLatestBattle = -1;
         }
-        iBuilt = iAddAttackFleet(lppl,iAttackStr,iLatestDestroyer,iLatestBattle,iSBDef);
+        iBuilt = iAddAttackFleet(lppl,iAttackStr,iLatestDestroyer,iLatestBattle,IStack_90.wFlags);
         fWrite = fWrite | (uint)(iBuilt != 0);
         if (iBuilt == 1) {
           cFlArmadas = cFlArmadas + 1;
@@ -779,13 +782,14 @@ void DoCyberPackets(void)
   short iPacketAdd_2;
   short cPacket [3];
   double dMod;
-  short iWarpDst_2;
   double dDistance;
+  short iWarpDst_2;
+  short iWarpSrc;
   short cResLeft;
-  long lMineral;
+  int iStack_14e;
   long lPackets;
   CYBERINFO *lpciPlanDst_3;
-  short fWrite;
+  int iStack_144;
   CYBERINFOTEMP *lpciPlanTemp;
   short idPlanDst;
   short dOffsetPlanTemp;
@@ -820,7 +824,7 @@ void DoCyberPackets(void)
                           (CYBERINFO *)((byte *)vlpbAiData + lppl->id * 2 + 2));
       ChangeMainObjSel(1,lppl->id);
       InitProduction(rgprod);
-      fWrite = 0;
+      iStack_144 = 0;
       GetResourcesAvailable((PLANET *)CONCAT22(iVar5,pPVar4),rgResAvail);
       GetProdQCost((PLANET *)CONCAT22(iVar5,pPVar4),rgResCost);
       if (((((uint)lpciPlan->wInfo >> 7 & 1) == 0) &&
@@ -868,7 +872,7 @@ void DoCyberPackets(void)
           lpciPlanDst_3 =
                (CYBERINFO *)CONCAT22(lpciPlanDst_3._2_2_ - uVar11,(CYBERINFO *)lpciPlanDst_3);
           *(uint *)CONCAT22(uVar7,puVar15) = *(uint *)CONCAT22(uVar7,puVar15) & 0xfeff;
-          fWrite = 1;
+          iStack_144 = 1;
         }
         iVar12 = *(int *)((int)((PLANET *)lpplDst)->rgwtMin + 6);
         if (((iVar12 < 1) &&
@@ -884,7 +888,7 @@ void DoCyberPackets(void)
           lpciPlanDst_3 =
                (CYBERINFO *)CONCAT22(lpciPlanDst_3._2_2_ - uVar11,(CYBERINFO *)lpciPlanDst_3);
           *(uint *)CONCAT22(uVar7,puVar15) = *(uint *)CONCAT22(uVar7,puVar15) & 0xfdff;
-          fWrite = 1;
+          iStack_144 = 1;
         }
         iVar12 = *(int *)((int)((PLANET *)lpplDst)->rgwtMin + 10);
         if (((iVar12 < 1) &&
@@ -897,9 +901,9 @@ void DoCyberPackets(void)
           }
           AddItemToQueue(0x10,lpciPlanDst_3._2_2_,grobjPlanet,0);
           *(uint *)CONCAT22(uVar7,puVar15) = *(uint *)CONCAT22(uVar7,puVar15) & 0xfbff;
-          fWrite = 1;
+          iStack_144 = 1;
         }
-        if (fWrite != 0) {
+        if (iStack_144 != 0) {
           sVar13 = IWarpMAFromLppl((PLANET *)CONCAT22(iVar5,pPVar4),&fTwoMA);
           uVar14 = sVar13 - 4;
           if (fTwoMA != 0) {
@@ -1016,8 +1020,8 @@ LAB_10a8_1fa3:
             }
             _auStack_188 = (longdouble)lVar20;
             while( true ) {
-              lMineral._2_2_ = (int)((ulong)lVar21 >> 0x10);
-              lMineral._0_2_ = (uint)lVar21;
+              iStack_14e = (int)((ulong)lVar21 >> 0x10);
+              cResLeft = (short)lVar21;
               auVar8 = auStack_188;
               if (lVar21 < 1) break;
               _auStack_188 = (longdouble)(unkuint10)(qword)auStack_188;
@@ -1038,8 +1042,7 @@ LAB_10a8_1fa3:
               *puVar1 = *puVar1 - 0x46;
               piVar2 = (int *)((int)rgResAvail + iMin * 4 + 2);
               *piVar2 = *piVar2 - (uint)(uVar14 < 0x46);
-              lVar21 = CONCAT22(lMineral._2_2_ - (uint)((uint)lMineral < 0x46),(uint)lMineral - 0x46
-                               );
+              lVar21 = CONCAT22(iStack_14e - (uint)((uint)cResLeft < 0x46),cResLeft + -0x46);
             }
             if (0 < cPacket[0]) {
               AddItemToQueue(0xe,cPacket[0],grobjPlanet,0);
@@ -1061,7 +1064,7 @@ LAB_10a8_1fa3:
               lpciPlan->wInfo = lpciPlan->wInfo & 0xff7fU | 0x80;
             }
             lpciPlan->wInfo = lpciPlan->wInfo & 0xffef;
-            fWrite = 1;
+            iStack_144 = 1;
             goto AI4_LFinish;
           }
         }
@@ -1086,7 +1089,7 @@ LAB_10a8_1fa3:
               lpciPlanDst_3->wInfo = lpciPlanDst_3->wInfo & 0xff9fU | 0x60;
               lpciPlan->wInfo =
                    lpciPlan->wInfo & 0xffefU | (uint)(((uint)lpciPlan->wInfo >> 7 & 1) == 0) << 4;
-              fWrite = 1;
+              iStack_144 = 1;
             }
             else {
               lpciPlan->wInfo = lpciPlan->wInfo & 0xffef;
@@ -1109,7 +1112,7 @@ LAB_10a8_1fa3:
         }
       }
 AI4_LFinish:
-      FinishProduction(fWrite);
+      FinishProduction(iStack_144);
     }
     ipl = ipl + 1;
   } while( true );
@@ -1800,7 +1803,7 @@ void DoCyberFreighter(FLEET *lpfl,CYBERINFOTEMP *lpciPlanTemp)
     }
     else if (((pPVar4->iPlayer == -1) ||
              (sVar7 = GetRaceStat((PLAYER *)rgplr + pPVar4->iPlayer,rsMajorAdv),
-             sVar7 == 8)) || (((uint)pPVar4->wFlags >> 9 & 1) != 0)) {
+             sVar7 == raMacintosh)) || (((uint)pPVar4->wFlags >> 9 & 1) != 0)) {
       iVar8 = *(int *)((int)pFVar10->rgwtMin + 0xe);
       if ((iVar8 < 0) || ((iVar8 < 1 && ((int)pFVar10->rgwtMin[3] == 0)))) {
         bVar5 = false;
@@ -2153,8 +2156,8 @@ short FEnumPktAttack(PLANET *lpplSrc,PLANET *lpplTest)
   pPVar4 = (PLANET *)lpplTest;
   if ((((pPVar4->iPlayer == idPlayer) || (pPVar4->iPlayer == -1)) ||
       ((*(uint *)((byte *)vlpbAiData + lpplTest->id * 2 + 2) >> 5 & 3) != 0)) ||
-     (sVar3 = GetRaceStat((PLAYER *)rgplr + pPVar4->iPlayer,rsMajorAdv), sVar3 == 8)
-     ) {
+     (sVar3 = GetRaceStat((PLAYER *)rgplr + pPVar4->iPlayer,rsMajorAdv),
+     sVar3 == raMacintosh)) {
     sVar3 = 0;
   }
   else {

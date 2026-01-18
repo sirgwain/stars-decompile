@@ -705,19 +705,22 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
   HWND HVar1;
   char *pcVar2;
   short sVar3;
-  HDC hdc;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
   ulong uVar4;
   FARPROC pvVar5;
   HWND hwndCtl;
+  short sStack_10;
   void *lpProc;
-  RECT rc;
+  int iStack_a;
+  short sStack_8;
+  short sStack_6;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,(undefined2 *)((int)&lpProc + 2)));
+    FillRect(wParam,(undefined2 *)CONCAT22(unaff_SS,(undefined2 *)((int)&lpProc + 2)),
+             hbrButtonFace);
     sVar3 = 1;
   }
   else {
@@ -748,8 +751,9 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if (wParam == 0x76) {
           pvVar5 = MakeProcInstance(OrderInfoDlg,hInst);
-          DialogBox(0,(LPCSTR)CONCAT22(0x61,hwnd),(HWND)((ulong)pvVar5 >> 0x10),(void *)pvVar5);
-          FreeProcInstance(pvVar5);
+          lpProc._0_2_ = (void *)((ulong)pvVar5 >> 0x10);
+          DialogBox(0,(LPCSTR)CONCAT22(0x61,hwnd),(HWND)(void *)lpProc,(void *)pvVar5);
+          FreeProcInstance((FARPROC)CONCAT22((void *)lpProc,(void *)pvVar5));
         }
       }
       else if (message == WM_TIMER) {
@@ -762,32 +766,36 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
             iAbout1st = -0xb;
           }
         }
-        GetClientRect(HVar1,(undefined2 *)CONCAT22(unaff_SS,&rc));
-        hdc = GetDC(HVar1);
-        SelectObject(hdc,rghfontArial8[1]);
-        SetBkMode(hdc,2);
-        SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-        SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
-        IntersectClipRect(hdc,0,0,rc.right,rc.bottom);
-        rc.top = rc.top - iAboutPartial;
-        rc.bottom = rc.top + dyArial8;
-        for (lpProc._0_2_ = (void *)iAbout1st;
-            (int)(void *)lpProc < iAbout1st + 10;
-            lpProc._0_2_ = (void *)((int)(void *)lpProc + 1)) {
-          if (((int)(void *)lpProc < 0) || (0x4c < (int)(void *)lpProc)) {
-            if (0x4c < (int)(void *)lpProc) break;
+        GetClientRect(HVar1,(undefined2 *)CONCAT22(unaff_SS,(undefined2 *)((int)&lpProc + 2)));
+        lpProc._0_2_ = (void *)GetDC(HVar1);
+        SelectObject((HDC)(void *)lpProc,rghfontArial8[1]);
+        SetBkMode((HDC)(void *)lpProc,2);
+        SetBkColor((HDC)(void *)lpProc,
+                   CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+        SetTextColor((HDC)(void *)lpProc,
+                     CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
+        IntersectClipRect((HDC)(void *)lpProc,0,0,sStack_8,sStack_6);
+        iStack_a = iStack_a - iAboutPartial;
+        sStack_6 = iStack_a + dyArial8;
+        for (sStack_10 = iAbout1st; sStack_10 < iAbout1st + 10;
+            sStack_10 = sStack_10 + 1) {
+          if ((sStack_10 < 0) || (0x4c < sStack_10)) {
+            if (0x4c < sStack_10) break;
           }
           else {
             sVar3 = -1;
-            pcVar2 = PszGetCompressedString((int)(void *)lpProc + idsDesignProgramming);
-            RcCtrTextOut(hdc,&rc,pcVar2,sVar3);
+            pcVar2 = PszGetCompressedString(sStack_10 + idsDesignProgramming);
+            RcCtrTextOut((HDC)(void *)lpProc,(RECT *)((int)&lpProc + 2),pcVar2,sVar3);
           }
-          OffsetRect((undefined2 *)CONCAT22(unaff_SS,&rc),0,dyArial8);
+          OffsetRect((undefined2 *)CONCAT22(unaff_SS,(undefined2 *)((int)&lpProc + 2)),0,
+                     dyArial8);
         }
-        rc.bottom = 1000;
-        FillRect(hdc,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
-        SelectClipRgn(hdc,0);
-        ReleaseDC(hwnd,hdc);
+        sStack_6 = 1000;
+        FillRect((HDC)(void *)lpProc,
+                 (undefined2 *)CONCAT22(unaff_SS,(undefined2 *)((int)&lpProc + 2)),
+                 hbrButtonFace);
+        SelectClipRgn((HDC)(void *)lpProc,0);
+        ReleaseDC(hwnd,(HDC)(void *)lpProc);
       }
     }
     sVar3 = 0;
@@ -880,12 +888,13 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
 
 {
   HWND HVar1;
-  uint uVar2;
-  short sVar3;
+  HWND HVar2;
+  uint uVar3;
+  short sVar4;
   undefined2 unaff_SS;
   HWND hwndOver;
-  uint uStack_a;
   POINT pt_2;
+  short iWarp;
   
   if (iMsg == 0x100) {
     if (((iKey == 0x1b) && (hwndBrowser != 0)) &&
@@ -904,14 +913,14 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
   }
   else if (((iMsg == 0x101) && (hwndTb != 0)) && ((iKey == 0x1b || (iKey == 0xd)))) {
     HVar1 = GetFocus();
-    pt_2.y = GetParent(HVar1);
-    if ((pt_2.y == hwndTb) || (HVar1 = GetParent(pt_2.y), HVar1 == hwndTb)) {
+    HVar1 = GetParent(HVar1);
+    if ((HVar1 == hwndTb) || (HVar1 = GetParent(HVar1), HVar1 == hwndTb)) {
       TerminateToolbarFocus((uint)(iKey == 0x1b));
     }
   }
   if ((iKey == 0x10) && (hwndScanner != 0)) {
-    GetCursorPos((uint *)CONCAT22(unaff_SS,&uStack_a));
-    HVar1 = WindowFromPoint(uStack_a);
+    GetCursorPos((undefined2 *)CONCAT22(unaff_SS,&pt_2));
+    HVar1 = WindowFromPoint(pt_2.x);
     if (HVar1 == hwndScanner) {
       SendMessage(HVar1,0x20,HVar1,0);
     }
@@ -924,70 +933,70 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
      ((iKey != 0xbc && (((iKey != 0xbe && (iKey != 0xdb)) && (iKey != 0xdd)))))) {
     return 0;
   }
-  pt_2.y = GetFocus();
+  HVar1 = GetFocus();
   if (hwndMessage != 0) {
     if (hwndTb != 0) {
-      if ((hwndTb == pt_2.y) || (HVar1 = GetParent(pt_2.y), HVar1 == hwndTb)) {
+      if ((hwndTb == HVar1) || (HVar2 = GetParent(HVar1), HVar2 == hwndTb)) {
         return 0;
       }
-      HVar1 = GetParent(pt_2.y);
-      HVar1 = GetParent(HVar1);
-      if (HVar1 == hwndTb) {
-        return 0;
-      }
-    }
-    for (pt_2.x = 0; pt_2.x < 3; pt_2.x = pt_2.x + 1) {
-      if (pt_2.y == ((ushort *)rghwndOrderDD)[pt_2.x]) {
+      HVar2 = GetParent(HVar1);
+      HVar2 = GetParent(HVar2);
+      if (HVar2 == hwndTb) {
         return 0;
       }
     }
-    if ((((pt_2.y == hwndFleetCompLB) || (pt_2.y == hwndPlanetProdLB)) ||
-        ((pt_2.y == hwndMsgEdit ||
-         (((pt_2.y == hwndMsgDrop || (pt_2.y == hwndOrderED)) ||
-          (pt_2.y == hwndMsgScroll)))))) ||
-       ((pt_2.y == hwndFleetCompLB || (pt_2.y == hwndShipDD)))) {
+    for (pt_2.y = 0; pt_2.y < 3; pt_2.y = pt_2.y + 1) {
+      if (HVar1 == ((ushort *)rghwndOrderDD)[pt_2.y]) {
+        return 0;
+      }
+    }
+    if ((((HVar1 == hwndFleetCompLB) || (HVar1 == hwndPlanetProdLB)) ||
+        ((HVar1 == hwndMsgEdit ||
+         (((HVar1 == hwndMsgDrop || (HVar1 == hwndOrderED)) ||
+          (HVar1 == hwndMsgScroll)))))) ||
+       ((HVar1 == hwndFleetCompLB || (HVar1 == hwndShipDD)))) {
       return 0;
     }
-    if ((hwndBrowser != 0) && (HVar1 = GetDlgItem(hwndBrowser,0x10b), pt_2.y == HVar1)
-       ) {
+    if ((hwndBrowser != 0) && (HVar2 = GetDlgItem(hwndBrowser,0x10b), HVar1 == HVar2))
+    {
       return 0;
     }
   }
   if ((0x2f < iKey) && (iKey < 0x3a)) {
     if ((0x30 < iKey) && (iKey < 0x37)) {
-      uStack_a = iKey - 0x31;
-      if (uStack_a != (grbitScan & 0xf)) {
+      pt_2.x = iKey - 0x31;
+      if (pt_2.x != (grbitScan & 0xf)) {
         ExecuteButton(iKey + -0x31,1);
         InvalidateRect(hwndTb,(undefined2 *)0x0,0);
       }
       return 1;
     }
     if (iKey == 0x30) {
-      sVar3 = GetKeyState(0x10);
-      if (sVar3 < 0) {
-        pt_2.x = 0x11;
+      sVar4 = GetKeyState(0x10);
+      if (sVar4 < 0) {
+        pt_2.y = 0x11;
       }
       else {
-        pt_2.x = 0xb;
+        pt_2.y = 0xb;
       }
     }
     else if (iKey == 0x37) {
-      pt_2.x = 7;
+      pt_2.y = 7;
     }
     else if (iKey == 0x38) {
-      pt_2.x = 8;
+      pt_2.y = 8;
     }
     else if (iKey == 0x39) {
-      pt_2.x = 9;
+      pt_2.y = 9;
     }
-    sVar3 = FIsButtonDown(pt_2.x);
-    ExecuteButton(pt_2.x,(uint)(sVar3 == 0));
+    sVar4 = FIsButtonDown(pt_2.y);
+    ExecuteButton(pt_2.y,(uint)(sVar4 == 0));
     InvalidateRect(hwndTb,(undefined2 *)0x0,0);
     return 1;
   }
   if (iKey != 8) {
     if ((((iKey == 0x23) || (iKey == 0x24)) || (iKey == 0x26)) || (iKey == 0x28)) {
-      if (pt_2.y != hwndShipLB) {
+      if (HVar1 != hwndShipLB) {
         SendMessage(hwndMessage,0x100,iKey,dw);
         return 1;
       }
@@ -997,22 +1006,21 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
       if ((iKey == 0xbc) || (iKey == 0xbe)) {
         if ((sel.grobj == grobjFleet) &&
            ((0 < sel.iwpAct || (1 < sel.fl.cord)))) {
-          uStack_a = sel.iwpAct;
+          pt_2.x = sel.iwpAct;
           if (sel.iwpAct < 1) {
-            uStack_a = 1;
+            pt_2.x = 1;
           }
-          uVar2 = *(uint *)((int)(PLORD *)sel.fl.lpplord + uStack_a * 0x12 + 10) >> 4 &
-                  0xf;
+          uVar3 = *(uint *)((int)(PLORD *)sel.fl.lpplord + pt_2.x * 0x12 + 10) >> 4 & 0xf;
           if (iKey == 0xbc) {
-            pt_2.x = uVar2 - 1;
+            pt_2.y = uVar3 - 1;
           }
           else {
-            pt_2.x = uVar2 + 1;
+            pt_2.y = uVar3 + 1;
           }
-          if ((-1 < pt_2.x) && (pt_2.x < 0xc)) {
-            *(uint *)((int)(PLORD *)sel.fl.lpplord + uStack_a * 0x12 + 10) =
-                 *(uint *)((int)(PLORD *)sel.fl.lpplord + uStack_a * 0x12 + 10) & 0xff0f |
-                 (pt_2.x & 0xfU) << 4;
+          if ((-1 < pt_2.y) && (pt_2.y < 0xc)) {
+            *(uint *)((int)(PLORD *)sel.fl.lpplord + pt_2.x * 0x12 + 10) =
+                 *(uint *)((int)(PLORD *)sel.fl.lpplord + pt_2.x * 0x12 + 10) & 0xff0f |
+                 (pt_2.y & 0xfU) << 4;
             FLookupFleet(-1,(FLEET *)&sel.fl);
             DrawPlanShip(0,0x4220);
           }
@@ -1022,15 +1030,15 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
       if ((iKey != 0xdb) && (iKey != 0xdd)) {
         return 0;
       }
-      uStack_a = 0;
       pt_2.x = 0;
+      pt_2.y = 0;
       if (iKey == 0xdb) {
-        sVar3 = -2;
+        sVar4 = -2;
       }
       else {
-        sVar3 = -1;
+        sVar4 = -1;
       }
-      ExecuteReportClick((POINT)0x0,2,0,sVar3);
+      ExecuteReportClick((POINT)0x0,2,0,sVar4);
       return 1;
     }
   }

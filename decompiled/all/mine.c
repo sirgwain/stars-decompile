@@ -32,8 +32,7 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
   char *pcVar9;
   undefined1 *puVar10;
   RECT rc2;
-  short cch;
-  COLORREF crBack;
+  ushort uStack_3a;
   RTLOGTHING rtlt;
   short fDetonate;
   RECT rc;
@@ -55,21 +54,21 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     hdc_00 = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
     GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
     SetRect((undefined2 *)CONCAT22(unaff_SS,&rc2),4,4,rc.right + -4,dyArial8 * 2 + -4);
-    _Draw3dFrame();
+    _Draw3dFrame(hdc_00,&rc2,0);
     CVar4 = SetTextColor(hdc_00,CONCAT22(crButtonText._2_2_,
                                          (undefined2)crButtonText));
     rtlt.fDetonate = (short)CVar4;
     CVar5 = SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,
                                        (undefined2)crButtonFace));
-    cch = _strlen((char *)szMineralTitle);
+    uStack_3a = _strlen((char *)szMineralTitle);
     rtlt.idFull = (rc2.right - rc2.left) + -0x18;
-    while ((0 < cch &&
-           (DVar6 = GetTextExtent(hdc_00,szMineralTitle,cch),
+    while ((0 < (int)uStack_3a &&
+           (DVar6 = GetTextExtent(hdc_00,szMineralTitle,uStack_3a),
            (uint)rtlt.idFull < (uint)DVar6))) {
-      cch = cch + -1;
+      uStack_3a = uStack_3a - 1;
     }
     rc2.right = rc2.right + -8;
-    RcCtrTextOut(hdc_00,&rc2,(char *)szMineralTitle,cch);
+    RcCtrTextOut(hdc_00,&rc2,(char *)szMineralTitle,uStack_3a);
     rc2.right = rc2.right + 8;
     SetTextColor(hdc_00,CONCAT22((int)(CVar4 >> 0x10),rtlt.fDetonate));
     SetBkColor(hdc_00,CVar5);
@@ -336,7 +335,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
   undefined2 uStack_de;
   short iMax;
   short dyRow;
-  uint uStack_d8;
+  short xL;
   short rgMin [3];
   HBITMAP hbmpSav_2;
   RECT rc;
@@ -602,7 +601,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         rc.right = prc->right;
         rc.bottom = prc->bottom;
         sVar16 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-        if (((sVar16 == 3) && (pl.iPlayer != -1)) &&
+        if (((sVar16 == raTerra) && (pl.iPlayer != -1)) &&
            ((idPlayer == pl.iPlayer ||
             (*(char *)(idPlayer * 0xc0 + 0x5a12 + pl.iPlayer) == '\x01')))) {
           for (c_2 = 0; c_2 < 3; c_2 = c_2 + 1) {
@@ -1234,26 +1233,26 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         pt.x = *(short *)(iVar20 + 2);
         sVar46 = CPlanetsInCircle
                            (pt,CONCAT22(*(undefined2 *)(iVar20 + 8),*(undefined2 *)(iVar20 + 6)));
-        uStack_d8 = ((uint)(sVar16 != 5) * 3 + 1) * sVar46 + 2;
-        rgMin[0] = (int)uStack_d8 >> 0xf;
-        if ((-1 < rgMin[0]) && ((0 < rgMin[0] || (0x32 < uStack_d8)))) {
-          uStack_d8 = 0x32;
+        xL = ((uint)(sVar16 != raMines) * 3 + 1) * sVar46 + 2;
+        rgMin[0] = xL >> 0xf;
+        if ((-1 < rgMin[0]) && ((0 < rgMin[0] || (0x32 < (uint)xL)))) {
+          xL = 0x32;
           rgMin[0] = 0;
         }
         sVar16 = SUB42(rgMin._2_4_,2);
         iVar20 = (int)rgMin._2_4_;
         if (*(char *)(iVar20 + 0xd) != '\0') {
-          bVar33 = 0xffe6 < uStack_d8;
-          uStack_d8 = uStack_d8 + 0x19;
+          bVar33 = 0xffe6 < (uint)xL;
+          xL = xL + 0x19;
           rgMin[0] = rgMin[0] + (uint)bVar33;
         }
         uVar45 = 0;
         uVar42 = 100;
         uVar39 = __aFulmul(CONCAT22(*(undefined2 *)(iVar20 + 8),*(undefined2 *)(iVar20 + 6))
-                                   ,CONCAT22(rgMin[0],uStack_d8));
+                                   ,CONCAT22(rgMin[0],xL));
         lVar40 = __aFldiv(uVar39,CONCAT22(uVar45,uVar42));
-        if (lVar40 < CONCAT22(rgMin[0],uStack_d8)) {
-          lVar40 = CONCAT22(rgMin[0],uStack_d8);
+        if (lVar40 < CONCAT22(rgMin[0],xL)) {
+          lVar40 = CONCAT22(rgMin[0],xL);
         }
         uStack_de = (undefined2)lVar40;
         if ((*(char *)((int)rgMin._2_4_ + 0xc) != '\x02') && (lVar40 < 10)) {
@@ -1508,7 +1507,7 @@ void SetMineralTitleBar(HWND hwnd)
         (((uint)((THING *)lpThings + sel.scan.ith)->idFull >> 9 & 0xf) ==
          idPlayer)) &&
        (sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv),
-       sVar3 == 5)) {
+       sVar3 == raMines)) {
       bVar1 = true;
     }
     else {
@@ -1883,26 +1882,26 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
   FLEET *pFVar3;
   int iVar4;
   uint uVar5;
-  int iVar6;
+  uint uVar6;
   bool bVar7;
   bool bVar8;
   short sVar9;
   PLANET *pPVar10;
   ushort unaff_DI;
   undefined2 uVar11;
-  ulong uVar12;
+  ulong a;
+  long lVar12;
   long lVar13;
-  long lVar14;
-  ulong uVar15;
-  long lVar16;
+  ulong uVar14;
+  long lVar15;
+  undefined2 uVar16;
   undefined2 uVar17;
-  undefined2 uVar18;
-  uint uVar19;
+  uint uVar18;
   FLEET *lpfl;
   short ifl;
+  uint auStack_2a [2];
+  long lLeft;
   long rglQuan [3];
-  long lMineEff;
-  long lMine;
   short fRemote;
   short fMacintosh;
   long lQuan;
@@ -1914,8 +1913,8 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
   uVar11 = (undefined2)((ulong)lppl >> 0x10);
   pPVar10 = (PLANET *)lppl;
   if ((pPVar10->iPlayer == -1) ||
-     (sVar9 = GetRaceStat((PLAYER *)rgplr + pPVar10->iPlayer,rsMajorAdv), sVar9 != 8
-     )) {
+     (sVar9 = GetRaceStat((PLAYER *)rgplr + pPVar10->iPlayer,rsMajorAdv),
+     sVar9 != raMacintosh)) {
     bVar7 = false;
   }
   else {
@@ -1930,22 +1929,23 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
       }
       return;
     }
-    sVar9 = CMinesOperating(lppl);
-    cMines = (long)sVar9;
+    rglQuan[2]._0_2_ = CMinesOperating(lppl);
+    rglQuan[2]._2_2_ = (short)rglQuan[2] >> 0xf;
     if (bVar7) {
-      lMineEff._0_2_ = 10;
-      lMineEff._2_2_ = 0;
+      rglQuan[1]._0_2_ = 10;
+      rglQuan[1]._2_2_ = 0;
     }
     else {
-      lMineEff._0_2_ = GetRaceStat((PLAYER *)rgplr + pPVar10->iPlayer,rsMineProd);
-      lMineEff._2_2_ = (short)lMineEff >> 0xf;
+      rglQuan[1]._0_2_ = GetRaceStat((PLAYER *)rgplr + pPVar10->iPlayer,rsMineProd);
+      rglQuan[1]._2_2_ = (short)rglQuan[1] >> 0xf;
     }
+    cMines = CONCAT22(rglQuan[2]._2_2_,(short)rglQuan[2]);
   }
   else {
-    lMineEff._0_2_ = 10;
-    lMineEff._2_2_ = 0;
+    rglQuan[1]._0_2_ = 10;
+    rglQuan[1]._2_2_ = 0;
   }
-  lVar16 = CONCAT22(rglQuan[1]._2_2_,(undefined2)rglQuan[1]);
+  lVar15 = CONCAT22(lLeft._2_2_,(undefined2)lLeft);
   i = 0;
   do {
     if (2 < i) {
@@ -1961,21 +1961,24 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
               (((uint)pFVar3->wFlags >> 10 & 1) == 0)) &&
              ((pFVar3->cord < 2 && ((*(uint *)&((PLORD *)pFVar3->lpplord)[2].iordMax & 0xf) == 3))))
           {
-            rglQuan[1] = lVar16;
-            lVar14 = CMineFromLpfl((FLEET *)CONCAT22(iVar4,pFVar3));
-            lVar16 = rglQuan[1];
-            if ((-1 < lVar14) && ((0 < (int)((ulong)lVar14 >> 0x10) || ((int)lVar14 != 0)))) {
-              EstMineralsMined(lppl,rglQuan,lVar14,fApply);
+            lLeft = lVar15;
+            rglQuan[2] = cMines;
+            lVar13 = CMineFromLpfl((FLEET *)CONCAT22(iVar4,pFVar3));
+            lVar15 = lLeft;
+            cMines = rglQuan[2];
+            if ((-1 < lVar13) && ((0 < (int)((ulong)lVar13 >> 0x10) || ((int)lVar13 != 0)))) {
+              EstMineralsMined(lppl,(long *)auStack_2a,lVar13,fApply);
               for (i = 0; i < 3; i = i + 1) {
-                uVar5 = *(uint *)(rglQuan + i);
-                iVar6 = *(int *)((int)rglQuan + i * 4 + 2);
+                uVar5 = auStack_2a[i * 2];
+                uVar6 = auStack_2a[i * 2 + 1];
                 puVar1 = (uint *)(plQuan + i);
-                uVar19 = *puVar1;
+                uVar18 = *puVar1;
                 *puVar1 = *puVar1 + uVar5;
                 puVar1 = (uint *)((int)(plQuan + i) + 2);
-                *puVar1 = *puVar1 + iVar6 + (uint)CARRY2(uVar19,uVar5);
+                *puVar1 = *puVar1 + uVar6 + (uint)CARRY2(uVar18,uVar5);
               }
-              lVar16 = rglQuan[1];
+              lVar15 = lLeft;
+              cMines = rglQuan[2];
               if (fApply != 0) {
                 pFVar3->wFlags = pFVar3->wFlags & 0xdfff;
               }
@@ -1985,55 +1988,58 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
       }
       return;
     }
-    rglQuan[2]._0_2_ = (uint)pPVar10->rgMinConc[i];
-    if ((((uint)rglQuan[2] < 0x1e) && (((uint)pPVar10->wFlags >> 10 & 1) != 0)) &&
+    rglQuan[0]._0_2_ = (uint)pPVar10->rgMinConc[i];
+    if ((((uint)rglQuan[0] < 0x1e) && (((uint)pPVar10->wFlags >> 10 & 1) != 0)) &&
        ((bVar8 || (bVar7)))) {
-      rglQuan[2]._0_2_ = 0x1e;
+      rglQuan[0]._0_2_ = 0x1e;
     }
-    rglQuan[2]._2_2_ = 0;
-    rglQuan[1] = lVar16;
-    uVar12 = __aFulmul(cMines,(ulong)(uint)rglQuan[2]);
-    uVar15 = uVar12;
+    rglQuan[0]._2_2_ = 0;
+    lLeft = lVar15;
+    rglQuan[2] = cMines;
+    a = __aFulmul(cMines,(ulong)(uint)rglQuan[0]);
+    uVar14 = a;
     if (bVar8) {
-      uVar18 = 0;
-      uVar17 = 10;
-      uVar15 = __aFulmul(uVar12,CONCAT22(lMineEff._2_2_,(short)lMineEff));
-      uVar15 = __aFldiv(uVar15,CONCAT22(uVar18,uVar17));
+      uVar17 = 0;
+      uVar16 = 10;
+      uVar14 = __aFulmul(a,CONCAT22(rglQuan[1]._2_2_,(short)rglQuan[1]));
+      uVar14 = __aFldiv(uVar14,CONCAT22(uVar17,uVar16));
     }
-    lVar13 = __aFlrem(uVar15,100);
-    lVar14 = __aFldiv(uVar15,100);
-    lQuanRem._0_2_ = (int)lVar13;
-    lVar16 = rglQuan[1];
-    if ((lVar13 != 0) && (((uint)gd._0_2_ >> 1 & 1) != 0)) {
+    lVar12 = __aFlrem(uVar14,100);
+    lVar13 = __aFldiv(uVar14,100);
+    lQuanRem._0_2_ = (int)lVar12;
+    lVar15 = lLeft;
+    if ((lVar12 != 0) && (((uint)gd._0_2_ >> 1 & 1) != 0)) {
       sVar9 = Random(100);
-      lVar16 = CONCAT22(sVar9,(undefined2)rglQuan[1]);
+      lVar15 = CONCAT22(sVar9,(undefined2)lLeft);
       if (sVar9 < (int)lQuanRem) {
-        lVar14 = lVar14 + 1;
-        lVar16 = CONCAT22(sVar9,(undefined2)rglQuan[1]);
+        lVar13 = lVar13 + 1;
+        lVar15 = CONCAT22(sVar9,(undefined2)lLeft);
       }
     }
-    lQuan._2_2_ = (uint)((ulong)lVar14 >> 0x10);
-    lQuan._0_2_ = (uint)lVar14;
+    lQuan._2_2_ = (uint)((ulong)lVar13 >> 0x10);
+    lQuan._0_2_ = (uint)lVar13;
     *(uint *)(plQuan + i) = (uint)lQuan;
     *(uint *)((int)(plQuan + i) + 2) = lQuan._2_2_;
+    cMines = rglQuan[2];
     if (fApply != 0) {
       puVar1 = (uint *)(pPVar10->rgwtMin + i);
-      uVar19 = *puVar1;
+      uVar18 = *puVar1;
       *puVar1 = *puVar1 + (uint)lQuan;
       puVar1 = (uint *)((int)(pPVar10->rgwtMin + i) + 2);
-      *puVar1 = *puVar1 + lQuan._2_2_ + (uint)CARRY2(uVar19,(uint)lQuan);
-      rglQuan[1] = lVar16;
-      lVar14 = __aFldiv(uVar12,100);
-      lVar16 = rglQuan[1];
+      *puVar1 = *puVar1 + lQuan._2_2_ + (uint)CARRY2(uVar18,(uint)lQuan);
+      lLeft = lVar15;
+      lVar13 = __aFldiv(a,100);
+      lVar15 = lLeft;
       while( true ) {
-        if ((lVar14 < 1) || (pPVar10->rgMinConc[i] < 2)) goto LAB_1028_588f;
-        rglQuan[0]._0_2_ = (uint)pPVar10->rgpctMinLevel[i];
+        cMines = rglQuan[2];
+        if ((lVar13 < 1) || (pPVar10->rgMinConc[i] < 2)) goto LAB_1028_588f;
+        auStack_2a[0] = (uint)pPVar10->rgpctMinLevel[i];
         bVar2 = pPVar10->rgMinConc[i];
         lpfl._2_2_ = (uint)bVar2;
-        if ((uint)rglQuan[0] == 0) {
-          rglQuan[0]._0_2_ = 0x100;
+        if (auStack_2a[0] == 0) {
+          auStack_2a[0] = 0x100;
         }
-        rglQuan[0]._2_2_ = 0;
+        auStack_2a[1] = 0;
         if (bVar2 < 0x65) {
           if (bVar2 < 5) {
             lpfl._2_2_ = 10;
@@ -2046,31 +2052,31 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
           lpfl._2_2_ = 100;
         }
         ifl = 0;
-        uVar18 = 0;
-        uVar17 = 0x100;
-        uVar19 = lpfl._2_2_;
-        rglQuan[1] = lVar16;
-        uVar15 = __aFulmul((ulong)(uint)rglQuan[0],0x30d4);
-        lVar16 = __aFldiv(uVar15,CONCAT22(uVar18,uVar17));
-        lVar16 = __aFldiv(lVar16,CONCAT22(ifl,uVar19));
-        if (lVar14 < lVar16) break;
-        lVar14 = lVar14 - lVar16;
+        uVar17 = 0;
+        uVar16 = 0x100;
+        uVar18 = lpfl._2_2_;
+        lLeft = lVar15;
+        uVar14 = __aFulmul((ulong)auStack_2a[0],0x30d4);
+        lVar15 = __aFldiv(uVar14,CONCAT22(uVar17,uVar16));
+        lVar15 = __aFldiv(lVar15,CONCAT22(ifl,uVar18));
+        if (lVar13 < lVar15) break;
+        lVar13 = lVar13 - lVar15;
         pPVar10->rgMinConc[i] = pPVar10->rgMinConc[i] - 1;
         pPVar10->rgpctMinLevel[i] = 0;
       }
-      rglQuan[1] = lVar16;
-      lVar16 = __aFldiv(0x30d4,(ulong)lpfl._2_2_);
-      lVar14 = __aFlshl(lVar16,unaff_DI);
-      lVar16 = __aFldiv(lVar14,lVar16);
-      if (lVar16 < 1) {
-        lVar16 = 1;
+      lLeft = lVar15;
+      lVar15 = __aFldiv(0x30d4,(ulong)lpfl._2_2_);
+      lVar13 = __aFlshl(lVar15,unaff_DI);
+      lVar15 = __aFldiv(lVar13,lVar15);
+      if (lVar15 < 1) {
+        lVar15 = 1;
       }
-      if (CONCAT22(rglQuan[0]._2_2_,(uint)rglQuan[0]) <= lVar16) {
-        lVar16 = CONCAT22(rglQuan[0]._2_2_ + -1 + (uint)((uint)rglQuan[0] != 0),(uint)rglQuan[0] - 1
-                         );
+      if (CONCAT22(auStack_2a[1],auStack_2a[0]) <= lVar15) {
+        lVar15 = CONCAT22(auStack_2a[1] + -1 + (uint)(auStack_2a[0] != 0),auStack_2a[0] - 1);
       }
-      pPVar10->rgpctMinLevel[i] = (byte)lVar16;
-      if (lVar16 == 0) {
+      pPVar10->rgpctMinLevel[i] = (byte)lVar15;
+      cMines = rglQuan[2];
+      if (lVar15 == 0) {
         pPVar10->rgMinConc[i] = pPVar10->rgMinConc[i] - 1;
       }
     }

@@ -1190,7 +1190,7 @@ void SetAiFleetIdealSpeed(FLEET *lpfl,short wtFuelMax,short cMinefields,THING **
       }
     }
     sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-    if (sVar3 == 1) {
+    if (sVar3 == raStealth) {
       i = i + 1;
     }
   }
@@ -4505,11 +4505,11 @@ short FAIFling(PLANET *lppl,long *rgResAvail)
                 ((((PLANET *)lpplHit)->uGuesses & 0xfffU) < 0x2ee)))) {
               sVar4 = GetRaceStat((PLAYER *)rgplr + ((PLANET *)lpplHit)->iPlayer,
                                         rsMajorAdv);
-              if (sVar4 != 8) {
+              if (sVar4 != raMacintosh) {
                 if (((uint)((PLANET *)lpplHit)->wFlags >> 9 & 1) != 0) {
                   sVar4 = GetRaceStat((PLAYER *)rgplr + ((PLANET *)lpplHit)->iPlayer
                                             ,rsMajorAdv);
-                  if (sVar4 == 6) goto LAB_1090_819e;
+                  if (sVar4 == raMassAccel) goto LAB_1090_819e;
                 }
                 iVar6 = pt.x - ((POINT *)rgptPlan + lpplHit->id)->x;
                 dy._0_2_ = pt.y - *(int *)((int)&rgptPlan[0].y + lpplHit->id * 4);

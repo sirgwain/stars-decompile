@@ -1650,7 +1650,7 @@ void CommandHandler(HWND hwnd,ushort wParam)
   short dxMax;
   short xPage;
   short cPageY;
-  short fRet_2;
+  int iStack_66;
   undefined2 uStack_64;
   undefined2 uStack_62;
   HGLOBAL HStack_5e;
@@ -2076,10 +2076,10 @@ LAB_1020_47b3:
           pvVar28 = MakeProcInstance(PrintMapDlg,hInst);
           psz_3 = (char *)((ulong)pvVar28 >> 0x10);
           lpplMac_2._2_2_ = (PLANET *)pvVar28;
-          fRet_2 = DialogBox(0,(LPCSTR)CONCAT22(0xd6,hwndFrame),(HWND)psz_3,
-                             lpplMac_2._2_2_);
+          iStack_66 = DialogBox(0,(LPCSTR)CONCAT22(0xd6,hwndFrame),(HWND)psz_3,
+                                lpplMac_2._2_2_);
           FreeProcInstance((FARPROC)CONCAT22(psz_3,lpplMac_2._2_2_));
-          if (fRet_2 == 0) {
+          if (iStack_66 == 0) {
             return;
           }
           pt_3.y = vrgcPrintMapPage[0];
@@ -3735,24 +3735,30 @@ LAB_1020_6aae:
 // ======================================================================
 
 
-/* WARNING: Type propagation algorithm not settling */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
-  uint uVar1;
-  HDC hdcIn;
-  HWND HVar2;
-  BOOL BVar3;
-  int iVar4;
-  char *pcVar5;
-  short sVar6;
+  int iVar1;
+  HMENU HVar2;
+  uint uVar3;
+  HWND HVar4;
+  BOOL BVar5;
+  char *pcVar6;
+  short sVar7;
   undefined2 unaff_SS;
-  FARPROC pvVar7;
+  FARPROC pvVar8;
   undefined *mbType;
-  undefined2 uStack_36;
-  PAINTSTRUCT ps;
+  MSG msg;
+  HMENU hmenuPopup;
+  short iDiamond;
+  short iSel;
+  short iRet;
+  short i;
+  short tpm;
+  int iStack_18;
+  int iStack_16;
   HDC hdc;
   RECT rc;
   short fRet;
@@ -3764,23 +3770,23 @@ short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
     return 0;
   }
   if (message == WM_PAINT) {
-    hdcIn = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
+    hdc = BeginPaint(hwnd,(short *)CONCAT22(unaff_SS,&msg.message));
     if (((int)ctickLast == 0) && (ctickLast._2_2_ == 0)) {
       CFindTurnsOutstanding();
     }
     if (((uint)gd.wFlags >> 5 & 1) == 0) {
-      HVar2 = GetDlgItem(hwnd,0x408);
+      HVar4 = GetDlgItem(hwnd,0x408);
       if ((((uint)gd.wFlags >> 4 & 1) == 0) &&
          ((vtimer.fAutoGenWhenIn != 0 || (vtimer.mdForce != 0)))) {
-        BVar3 = 1;
+        BVar5 = 1;
       }
       else {
-        BVar3 = 0;
+        BVar5 = 0;
       }
-      EnableWindow(HVar2,BVar3);
+      EnableWindow(HVar4,BVar5);
     }
-    DrawHostDialog2(hwnd,hdcIn);
-    EndPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
+    DrawHostDialog2(hwnd,hdc);
+    EndPaint(hwnd,(short *)CONCAT22(unaff_SS,&msg.message));
     return 1;
   }
   if (message == WM_ERASEBKGND) {
@@ -3794,108 +3800,92 @@ short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   if (message == WM_SETCURSOR) {
 LAB_1020_6db6:
-    GetCursorPos((undefined2 *)CONCAT22(unaff_SS,ps.rgbReserved + 0xc));
-    ScreenToClient(hwnd,(undefined2 *)CONCAT22(unaff_SS,ps.rgbReserved + 0xc));
-    if ((((5 < (int)ps.rgbReserved._12_2_) && ((int)ps.rgbReserved._12_2_ < dyArial8 + 7))
-        && (0x2f < (int)ps.rgbReserved._14_2_)) &&
-       ((ps.rgbReserved._2_2_ = (ps.rgbReserved._14_2_ + -0x30) / (dyArial8 + 4),
-        (int)ps.rgbReserved._2_2_ < game.cPlayer &&
-        ((ps.rgbReserved._14_2_ + -0x30) % (dyArial8 + 4) < dyArial8 + 1)))) {
+    GetCursorPos((int *)CONCAT22(unaff_SS,&iStack_18));
+    ScreenToClient(hwnd,(int *)CONCAT22(unaff_SS,&iStack_18));
+    if ((((5 < iStack_18) && (iStack_18 < dyArial8 + 7)) && (0x2f < iStack_16)) &&
+       ((iVar1 = (iStack_16 + -0x30) / (dyArial8 + 4), iVar1 < game.cPlayer &&
+        ((iStack_16 + -0x30) % (dyArial8 + 4) < dyArial8 + 1)))) {
       if (message == WM_SETCURSOR) {
         setcursor(hcurHand);
         return 1;
       }
-      if ((*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 9 & 1) == 0)
-      {
-        ps.rgbReserved[4] = 0;
-        ps.rgbReserved[5] = 0;
+      if ((*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 9 & 1) == 0) {
+        iSel = 0;
       }
-      else if (*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 0xd == 7)
-      {
-        ps.rgbReserved[4] = 2;
-        ps.rgbReserved[5] = 0;
+      else if (*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 0xd == 7) {
+        iSel = 2;
       }
       else {
-        ps.rgbReserved[4] = 1;
-        ps.rgbReserved[5] = 0;
+        iSel = 1;
       }
-      ps.rgbReserved._0_2_ = CreatePopupMenu();
+      HVar2 = CreatePopupMenu();
       iPopMenuSel = -1;
-      ps.rgbReserved[8] = 0;
-      ps.rgbReserved[9] = 0;
-      for (; (int)ps.rgbReserved._8_2_ < 3; ps.rgbReserved._8_2_ = ps.rgbReserved._8_2_ + 1) {
-        CchGetString(ps.rgbReserved._8_2_ + idsHumanControlled,(char *)szWork);
-        if (ps.rgbReserved._8_2_ == 1) {
-          if (((*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 9 & 1)
-               == 0) ||
-             (*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 0xd == 7))
-          {
+      for (i = 0; i < 3; i = i + 1) {
+        CchGetString(i + idsHumanControlled,(char *)szWork);
+        if (i == 1) {
+          if (((*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 9 & 1) == 0) ||
+             (*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 0xd == 7)) {
             hdc = 3;
           }
           else {
             hdc = 0;
           }
         }
-        else if (((*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 9 & 1
-                  ) == 0) ||
-                (*(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) >> 0xd ==
-                 7)) {
+        else if (((*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 9 & 1) == 0) ||
+                (*(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) >> 0xd == 7)) {
           hdc = 0;
         }
         else {
           hdc = 3;
         }
-        if (ps.rgbReserved._8_2_ == ps.rgbReserved._4_2_) {
-          uVar1 = 8;
+        if (i == iSel) {
+          uVar3 = 8;
         }
         else {
-          uVar1 = 0;
+          uVar3 = 0;
         }
-        AppendMenu(ps.rgbReserved._0_2_,uVar1 | hdc,ps.rgbReserved._8_2_ + 15000,szWork);
+        AppendMenu(HVar2,uVar3 | hdc,i + 15000,szWork);
       }
-      ClientToScreen(hwnd,(undefined2 *)CONCAT22(unaff_SS,ps.rgbReserved + 0xc));
+      ClientToScreen(hwnd,(int *)CONCAT22(unaff_SS,&iStack_18));
       if (message == WM_LBUTTONDOWN) {
-        ps.rgbReserved._10_2_ = 0;
+        uVar3 = 0;
       }
       else {
-        ps.rgbReserved._10_2_ = 2;
+        uVar3 = 2;
       }
-      TrackPopupMenu(ps.rgbReserved._0_2_,ps.rgbReserved._10_2_ | 4,ps.rgbReserved._12_2_,
-                     ps.rgbReserved._14_2_,0,hwnd,(undefined2 *)0x0);
-      DestroyMenu(ps.rgbReserved._0_2_);
-      ps.rgbReserved[6] = 0xff;
-      ps.rgbReserved[7] = 0xff;
-      BVar3 = PeekMessage((undefined2 *)CONCAT22(unaff_SS,&uStack_36),hwnd,0x111,0x111,2);
-      if (((BVar3 != 0) && (14999 < (uint)ps.fErase)) && ((uint)ps.fErase < 0x3afc)) {
-        ps.rgbReserved._6_2_ = ps.fErase + -15000;
+      TrackPopupMenu(HVar2,uVar3 | 4,iStack_18,iStack_16,0,hwnd,(undefined2 *)0x0);
+      DestroyMenu(HVar2);
+      iRet = -1;
+      BVar5 = PeekMessage((undefined2 *)CONCAT22(unaff_SS,&msg),hwnd,0x111,0x111,2);
+      if (((BVar5 != 0) && (14999 < (uint)msg.wParam)) && ((uint)msg.wParam < 0x3afc)) {
+        iRet = msg.wParam + -15000;
       }
-      if ((ps.rgbReserved._6_2_ != -1) && (ps.rgbReserved._4_2_ != ps.rgbReserved._6_2_)) {
-        *(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) =
-             *(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) & 0xfdff |
-             (uint)(0 < (int)ps.rgbReserved._6_2_) << 9;
-        if (ps.rgbReserved._6_2_ == 2) {
-          *(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) =
-               *(uint *)((int)&rgplr[0].wMdPlr + ps.rgbReserved._2_2_ * 0xc0) & 0x1fff |
-               0xe000;
+      if ((iRet != -1) && (iSel != iRet)) {
+        *(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) =
+             *(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) & 0xfdff |
+             (uint)(0 < iRet) << 9;
+        if (iRet == 2) {
+          *(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) =
+               *(uint *)((int)&rgplr[0].wMdPlr + iVar1 * 0xc0) & 0x1fff | 0xe000;
         }
-        uVar1 = *(uint *)((int)&rgplr[0].lSalt + 2 + ps.rgbReserved._2_2_ * 0xc0);
-        *(uint *)((int)&rgplr[0].lSalt + ps.rgbReserved._2_2_ * 0xc0) =
-             ~*(uint *)((int)&rgplr[0].lSalt + ps.rgbReserved._2_2_ * 0xc0);
-        *(uint *)((int)&rgplr[0].lSalt + 2 + ps.rgbReserved._2_2_ * 0xc0) = ~uVar1;
-        FMarkFile(dtTurn,ps.rgbReserved._2_2_,8,(uint)(ps.rgbReserved._6_2_ != 0));
-        FMarkFile(dtHost,ps.rgbReserved._2_2_,8,(uint)(ps.rgbReserved._6_2_ != 0));
+        uVar3 = *(uint *)((int)&rgplr[0].lSalt + 2 + iVar1 * 0xc0);
+        *(uint *)((int)&rgplr[0].lSalt + iVar1 * 0xc0) =
+             ~*(uint *)((int)&rgplr[0].lSalt + iVar1 * 0xc0);
+        *(uint *)((int)&rgplr[0].lSalt + 2 + iVar1 * 0xc0) = ~uVar3;
+        FMarkFile(dtTurn,iVar1,8,(uint)(iRet != 0));
+        FMarkFile(dtHost,iVar1,8,(uint)(iRet != 0));
         gd._0_2_ = gd._0_2_ & 0xfbff;
         fProcessingTimer = 1;
         CFindTurnsOutstanding();
-        HVar2 = GetDlgItem(hwnd,0x408);
+        HVar4 = GetDlgItem(hwnd,0x408);
         if ((((uint)gd.wFlags >> 4 & 1) == 0) &&
            ((vtimer.fAutoGenWhenIn != 0 || (vtimer.mdForce != 0)))) {
-          BVar3 = 1;
+          BVar5 = 1;
         }
         else {
-          BVar3 = 0;
+          BVar5 = 0;
         }
-        EnableWindow(HVar2,BVar3);
+        EnableWindow(HVar4,BVar5);
         DrawHostDialog2(hwnd,0);
         fProcessingTimer = 0;
       }
@@ -3905,33 +3895,33 @@ LAB_1020_6db6:
   }
   if (message == WM_INITDIALOG) {
     StickyDlgPos(hwnd,(POINT *)&ptStickyHostModeDlg,1);
-    HVar2 = GetDlgItem(hwnd,0x409);
-    SetWindowText(HVar2,game.szName);
-    HVar2 = GetDlgItem(hwnd,0x40a);
-    SetWindowText(HVar2,szBase);
-    HVar2 = GetDlgItem(hwnd,0x408);
+    HVar4 = GetDlgItem(hwnd,0x409);
+    SetWindowText(HVar4,game.szName);
+    HVar4 = GetDlgItem(hwnd,0x40a);
+    SetWindowText(HVar4,szBase);
+    HVar4 = GetDlgItem(hwnd,0x408);
     if ((((uint)gd.wFlags >> 5 & 1) == 0) &&
        ((vtimer.fAutoGenWhenIn != 0 || (vtimer.mdForce != 0)))) {
-      BVar3 = 1;
+      BVar5 = 1;
     }
     else {
-      BVar3 = 0;
+      BVar5 = 0;
     }
-    EnableWindow(HVar2,BVar3);
-    HVar2 = GetDlgItem(hwnd,0x407);
-    EnableWindow(HVar2,(uint)(((uint)gd.wFlags >> 5 & 1) == 0));
-    HVar2 = GetDlgItem(hwnd,0x7df);
-    EnableWindow(HVar2,(uint)(((uint)gd.wFlags >> 5 & 1) == 0));
+    EnableWindow(HVar4,BVar5);
+    HVar4 = GetDlgItem(hwnd,0x407);
+    EnableWindow(HVar4,(uint)(((uint)gd.wFlags >> 5 & 1) == 0));
+    HVar4 = GetDlgItem(hwnd,0x7df);
+    EnableWindow(HVar4,(uint)(((uint)gd.wFlags >> 5 & 1) == 0));
     uTimerId = SetTimer(0xd,10000,0,0);
   }
   else {
     if (message == WM_COMMAND) {
       if (((wParam == 0x407) || (wParam == 2)) || (wParam == 0x408)) {
         if (wParam == 0x407) {
-          sVar6 = GetAsyncKeyState(0x10);
-          if (sVar6 < 0) {
-            sVar6 = GetAsyncKeyState(0x11);
-            if (sVar6 < 0) {
+          sVar7 = GetAsyncKeyState(0x10);
+          if (sVar7 < 0) {
+            sVar7 = GetAsyncKeyState(0x11);
+            if (sVar7 < 0) {
               iPassCnt = 999;
             }
             else {
@@ -3939,8 +3929,8 @@ LAB_1020_6db6:
             }
           }
           else {
-            sVar6 = GetAsyncKeyState(0x11);
-            if (sVar6 < 0) {
+            sVar7 = GetAsyncKeyState(0x11);
+            if (sVar7 < 0) {
               iPassCnt = 99;
             }
             else {
@@ -3948,25 +3938,25 @@ LAB_1020_6db6:
             }
           }
           if (iPassCnt == 0) {
-            sVar6 = CFindTurnsOutstanding();
-            if (sVar6 != 0) {
+            sVar7 = CFindTurnsOutstanding();
+            if (sVar7 != 0) {
               mbType = (undefined *)&DAT_1120_1024;
-              pcVar5 = PszFormatIds(idsSureWishGenerateOptionDoesGuaranteePlayers,(short *)0x0)
+              pcVar6 = PszFormatIds(idsSureWishGenerateOptionDoesGuaranteePlayers,(short *)0x0)
               ;
-              sVar6 = AlertSz(pcVar5,(short)mbType);
-              if (sVar6 != 6) {
+              sVar7 = AlertSz(pcVar6,(short)mbType);
+              if (sVar7 != 6) {
                 return 1;
               }
             }
           }
           else {
-            iVar4 = iPassCnt + 1;
-            pcVar5 = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
-            _WSPRINTF((LPSTR)CONCAT22(iVar4,(char *)&DAT_1120_1120),
-                      (LPCSTR)CONCAT22(pcVar5,(char *)&DAT_1120_1120),(char *)szWork);
-            HVar2 = GetFocus();
-            sVar6 = MessageBox(HVar2,szWork,(LPCSTR)0x1120041a,0x2034);
-            if (sVar6 != 6) {
+            iVar1 = iPassCnt + 1;
+            pcVar6 = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
+            _WSPRINTF((LPSTR)CONCAT22(iVar1,(char *)&DAT_1120_1120),
+                      (LPCSTR)CONCAT22(pcVar6,(char *)&DAT_1120_1120),(char *)szWork);
+            HVar4 = GetFocus();
+            sVar7 = MessageBox(HVar4,szWork,(LPCSTR)0x1120041a,0x2034);
+            if (sVar7 != 6) {
               iPassCnt = 0;
               return 1;
             }
@@ -3974,15 +3964,15 @@ LAB_1020_6db6:
         }
         StickyDlgPos(hwnd,(POINT *)&ptStickyHostModeDlg,0);
         if (wParam == 2) {
-          sVar6 = 0;
+          sVar7 = 0;
         }
         else if (wParam == 0x408) {
-          sVar6 = -1;
+          sVar7 = -1;
         }
         else {
-          sVar6 = 1;
+          sVar7 = 1;
         }
-        EndDialog(hwnd,sVar6);
+        EndDialog(hwnd,sVar7);
         if (wParam == 0x408) {
           EnsureAis();
         }
@@ -3992,16 +3982,16 @@ LAB_1020_6db6:
         return 1;
       }
       if (wParam == 0x7df) {
-        sVar6 = FCheckPassword();
-        if (sVar6 == 0) {
+        sVar7 = FCheckPassword();
+        if (sVar7 == 0) {
           return 0;
         }
-        pvVar7 = MakeProcInstance(NewPasswordDlg,hInst);
-        sVar6 = DialogBox(0,(LPCSTR)CONCAT22(0x8d,hwnd),(HWND)((ulong)pvVar7 >> 0x10),(void *)pvVar7
+        pvVar8 = MakeProcInstance(NewPasswordDlg,hInst);
+        sVar7 = DialogBox(0,(LPCSTR)CONCAT22(0x8d,hwnd),(HWND)((ulong)pvVar8 >> 0x10),(void *)pvVar8
                          );
-        FreeProcInstance(pvVar7);
+        FreeProcInstance(pvVar8);
         SetFocus(hwnd);
-        return sVar6;
+        return sVar7;
       }
       if (wParam != 0x405) {
         if (wParam != 0x76) {
@@ -4010,27 +4000,27 @@ LAB_1020_6db6:
         WinHelp(hwnd,(LPCSTR)CONCAT22((undefined1 *)&DAT_1120_1120,_szHelpFile),1,0x440);
         return 1;
       }
-      pvVar7 = MakeProcInstance(HostOptionsDialog,hInst);
-      sVar6 = DialogBox(0,(LPCSTR)CONCAT22(0x402,hwnd),(HWND)((ulong)pvVar7 >> 0x10),(void *)pvVar7)
+      pvVar8 = MakeProcInstance(HostOptionsDialog,hInst);
+      sVar7 = DialogBox(0,(LPCSTR)CONCAT22(0x402,hwnd),(HWND)((ulong)pvVar8 >> 0x10),(void *)pvVar8)
       ;
-      FreeProcInstance(pvVar7);
+      FreeProcInstance(pvVar8);
       SetFocus(hwnd);
-      if (sVar6 == 0) {
+      if (sVar7 == 0) {
         return 0;
       }
       if (((uint)gd.wFlags >> 5 & 1) == 0) {
-        HVar2 = GetDlgItem(hwnd,0x408);
+        HVar4 = GetDlgItem(hwnd,0x408);
         if ((((uint)gd.wFlags >> 4 & 1) == 0) &&
            ((vtimer.fAutoGenWhenIn != 0 || (vtimer.mdForce != 0)))) {
-          BVar3 = 1;
+          BVar5 = 1;
         }
         else {
-          BVar3 = 0;
+          BVar5 = 0;
         }
-        EnableWindow(HVar2,BVar3);
-        return sVar6;
+        EnableWindow(HVar4,BVar5);
+        return sVar7;
       }
-      return sVar6;
+      return sVar7;
     }
     if (message != WM_TIMER) {
       if ((message != WM_LBUTTONDOWN) && (message != WM_RBUTTONDOWN)) {

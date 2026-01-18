@@ -513,7 +513,7 @@ void ExecuteButton(short itb,short fDown)
   char *rgszScan_4 [1];
   short sStack_c;
   POINT pt_4;
-  ushort grbitNew;
+  uint uStack_6;
   
   gd._4_2_ = gd._4_2_ & 0xffbf | 0x40;
   switch(itb) {
@@ -531,10 +531,10 @@ void ExecuteButton(short itb,short fDown)
     grbitScan = itb + (grbitScan & 0x3ff0);
     goto LAB_1068_1644;
   case 6:
-    grbitNew = 0x10;
+    uStack_6 = 0x10;
     break;
   case 7:
-    grbitNew = 0x20;
+    uStack_6 = 0x20;
     break;
   case 8:
     rgid_4[7]._0_2_ = 1;
@@ -603,16 +603,16 @@ void ExecuteButton(short itb,short fDown)
     InvalidateRect(hwndTb,(undefined2 *)0x0,1);
     goto LAB_1068_1644;
   case 9:
-    grbitNew = 0x80;
+    uStack_6 = 0x80;
     break;
   case 10:
-    grbitNew = 0x100;
+    uStack_6 = 0x100;
     break;
   case 0xb:
-    grbitNew = 0x400;
+    uStack_6 = 0x400;
     break;
   case 0xc:
-    grbitNew = 0x200;
+    uStack_6 = 0x200;
     break;
   case 0xd:
     rgid_4[2]._2_2_ = 0;
@@ -685,7 +685,7 @@ joined_r0x10681246:
     uVar4 = grbitScan & 0x200;
     goto joined_r0x1068150e;
   case 0xe:
-    grbitNew = 0x800;
+    uStack_6 = 0x800;
     break;
   case 0xf:
     rgid_4[7]._0_2_ = 1;
@@ -778,16 +778,16 @@ joined_r0x1068150e:
     CommandHandler(hwndFrame,iSel_4 + 0xf3d);
     return;
   case 0x11:
-    grbitNew = 0x1000;
+    uStack_6 = 0x1000;
     break;
   default:
     goto switchD_1068_161b_default;
   }
   if (fDown == 0) {
-    grbitScan = grbitScan & ~grbitNew;
+    grbitScan = grbitScan & ~uStack_6;
   }
   else {
-    grbitScan = grbitScan | grbitNew;
+    grbitScan = grbitScan | uStack_6;
   }
 LAB_1068_1644:
   if (itb != 6) {

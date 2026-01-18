@@ -44,6 +44,7 @@ typedef enum RaceGrbit
     ibitRaceCheapFact = 0x1f,
     ibitRaceLast = 32,
 } RaceGrbit;
+
 typedef enum RaceStat
 {
     rsResGen = 0,
@@ -62,6 +63,21 @@ typedef enum RaceStat
     rsTechBonus6 = 13,
     rsMajorAdv = 14,
 } RaceStat;
+
+typedef enum RaceAttribute
+{
+    raCheapCol = 0,
+    raStealth = 1,
+    raAttack = 2,
+    raTerra = 3,
+    raDefend = 4,
+    raMines = 5,
+    raMassAccel = 6,
+    raStargate = 7,
+    raMacintosh = 8,
+    raNone = 9,
+    raMax = 10,
+} RaceAttribute;
 
 typedef enum GrobjClass
 {

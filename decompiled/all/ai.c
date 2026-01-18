@@ -674,7 +674,7 @@ LAB_1088_15d1:
             iVar14 = *(int *)((int)((FLEET *)lpfl)->rgwtMin + 0xe);
             if ((-1 < iVar14) && ((0 < iVar14 || ((int)((FLEET *)lpfl)->rgwtMin[3] != 0)))) {
               sVar8 = GetRaceStat((PLAYER *)rgplr + pPVar13->iPlayer,rsMajorAdv);
-              if (sVar8 != 8) {
+              if (sVar8 != raMacintosh) {
                 _memset(&ord_2,0,0x12);
                 ord_2.pt.x = ((POINT *)rgptPlan + pPVar23->id)->x;
                 ord_2.pt.y = *(short *)((int)&rgptPlan[0].y + pPVar23->id * 4);
@@ -906,22 +906,22 @@ void EnsureRobotoidShdefs(void)
 
 {
   SHDEF *pSVar1;
-  SHDEF *pSVar2;
+  HullDef *pHVar2;
   int iVar3;
   short sVar4;
   SHDEF *pSVar5;
-  SHDEF *pSVar6;
+  HullDef *pHVar6;
   undefined2 unaff_SS;
-  SHDEF shdef;
+  undefined1 auStack_9c [148];
   short i;
   short ish;
   
   for (ish = 0xb; ish < 0xe; ish = ish + 1) {
     if (((((*(uint *)((int)&rgshdef[0].wFlags + ish * 0x93) >> 9 & 1) != 0) &&
          ('\x01' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
-        (register0x00000000 =
-              (int)*(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0),
-        (ish + -0xb) * 3 + 4 <= register0x00000000)) &&
+        (auStack_9c._146_2_ =
+              SEXT12(*(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0)),
+        (ish + -0xb) * 3 + 4 <= (int)auStack_9c._146_2_)) &&
        ((ish == 0xb ||
         (0xe < (uint)(game.turn -
                      *(int *)((int)&rgshdef[0].turn + (ish + -1) * 0x93)))))) {
@@ -992,17 +992,17 @@ void EnsureRobotoidShdefs(void)
           (0xc < (uint)(game.turn -
                        *(int *)((int)&rgshdef[0].turn + (ish + -1) * 0x93)))))))))) {
       if ((ish - 2U & 1) == 0) {
-        register0x00000000 = 0;
+        auStack_9c._146_2_ = 0;
       }
       else {
-        register0x00000000 = 4;
+        auStack_9c._146_2_ = 4;
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
         sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22((undefined *)&DAT_1120_1088,
                                                               (byte *)(((ushort *)vrgRobIshAip)
-                                                                       [sVar4 + stack0xfff6] +
-                                                                      0x1f80)));
+                                                                       [sVar4 + auStack_9c._146_2_]
+                                                                      + 0x1f80)));
         if (sVar4 != 0) break;
       }
     }
@@ -1041,17 +1041,17 @@ void EnsureRobotoidShdefs(void)
             ('\x05' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0)))))))
          && ('\x05' < *(char *)((int)rgplr[0].rgTech + idPlayer * 0xc0))) {
         pSVar5 = (SHDEF *)rgshdef;
-        pSVar6 = &shdef;
+        pHVar6 = (HullDef *)auStack_9c;
         for (iVar3 = 0x49; iVar3 != 0; iVar3 = iVar3 + -1) {
-          pSVar2 = pSVar6;
-          pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+          pHVar2 = pHVar6;
+          pHVar6 = pHVar6 + 1;
           pSVar1 = pSVar5;
           pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
-          (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
+          *pHVar2 = (pSVar1->hul).ihuldef;
         }
-        *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
-        shdef.wFlags = shdef.wFlags & 0xfdffU | 0x200;
-        FChangeAiShdef(&shdef,0);
+        *(char *)pHVar6 = (char)(pSVar5->hul).ihuldef;
+        auStack_9c._123_2_ = auStack_9c._123_2_ & 0xfdff | 0x200;
+        FChangeAiShdef((SHDEF *)auStack_9c,0);
         FCreateAiShdef(0,5,(byte *)CONCAT22((undefined *)&DAT_1120_1088,
                                                  (byte *)(vrgRobIshAip[0x1a] + 0x1f80)));
       }
@@ -1069,17 +1069,17 @@ void EnsureRobotoidShdefs(void)
           (0x14 < (uint)(game.turn -
                         *(int *)((int)&rgshdef[0].turn + (ish + -1) * 0x93)))))))))) {
       if (ish == 6) {
-        register0x00000000 = 0x1b;
+        auStack_9c._146_2_ = 0x1b;
       }
       else {
-        register0x00000000 = 0x1f;
+        auStack_9c._146_2_ = 0x1f;
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
         sVar4 = FCreateAiShdef(ish,9,(byte *)CONCAT22((undefined *)&DAT_1120_1088,
                                                            (byte *)(((ushort *)vrgRobIshAip)
-                                                                    [sVar4 + stack0xfff6] + 0x1f80))
-                                   );
+                                                                    [sVar4 + auStack_9c._146_2_] +
+                                                                   0x1f80)));
         if (sVar4 != 0) break;
       }
     }
@@ -2131,7 +2131,7 @@ AI_LCheckForColDrop_3:
                 if ((-1 < iVar6) &&
                    ((((0 < iVar6 || ((int)((FLEET *)lpfl)->rgwtMin[3] != 0)) &&
                      (sVar8 = GetRaceStat((PLAYER *)rgplr + pPVar11->iPlayer,
-                                                rsMajorAdv), sVar8 != 8)) &&
+                                                rsMajorAdv), sVar8 != raMacintosh)) &&
                     (((uint)((PLANET *)lppl)->wFlags >> 9 & 1) == 0)))) {
                   _memset(&ord,0,0x12);
                   ord.pt.x = ((POINT *)rgptPlan + idPlanDst)->x;
@@ -2654,7 +2654,7 @@ short FEnumCalcColonistDrop(PLANET *lpplSrc,PLANET *lpplTest)
     if ((((byte *)vlpbAiPlanet)[lpplTest->id * 0x10 + 10] == 1) && (bVar1 != 0)) {
       sVar2 = GetRaceStat((PLAYER *)rgplr + ((PLANET *)lpplTest)->iPlayer,rsMajorAdv
                                );
-      if (sVar2 == 8) {
+      if (sVar2 == raMacintosh) {
         uVar3 = 0;
       }
       else {
