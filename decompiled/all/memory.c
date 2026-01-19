@@ -157,7 +157,6 @@ void FreeHb(HB *lphb)
   HB *pHVar1;
   undefined2 uVar2;
   HGLOBAL HVar3;
-  HB *lphbNext;
   ushort hmem;
   
   if (((HB *)lphb != (HB *)0x0) || (lphb._2_2_ != 0)) {
@@ -336,7 +335,6 @@ void * LpReAlloc(void *lp,ushort cb,HeapType ht)
   ushort cbGrow;
   ushort cbCur;
   HB *lphb;
-  void *lpNew;
   
   uVar1 = *(uint *)((int)(void *)lp + -2);
   cb_00 = cb + 1 & 0xfffe;

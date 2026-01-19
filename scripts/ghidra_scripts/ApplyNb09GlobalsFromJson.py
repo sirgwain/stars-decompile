@@ -54,7 +54,6 @@ except Exception:
 
 PREFERRED_CATEGORY_PREFIXES = [
     "/stars",     # your structs
-    "/NB09",      # if you store NB09 stuff here
     "/windows",   # if you imported windows types into a folder
     "/",          # anything else
 ]

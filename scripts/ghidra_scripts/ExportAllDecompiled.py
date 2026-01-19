@@ -299,6 +299,8 @@ def main():
             return out_path
         segname = addr_to_segname.get(addr_str)
         mod = _slugify_module(segname)
+        if mod == "unknown":
+            return None
         return os.path.join(out_path, "%s.c" % mod)
 
     def _get_handle(path):
@@ -349,6 +351,9 @@ def main():
                 println("Progress: %d functions processed" % count)
 
             out_file = _get_out_file_for(addr_str)
+            if out_file == None:
+                println("skipping unknown function %s" % name)
+                continue
             f = _get_handle(out_file)
 
             f.write("// " + "=" * 70 + "\n")
@@ -356,7 +361,7 @@ def main():
             f.write("// Address: %s\n" % addr_str)
             if per_module:
                 segname = addr_to_segname.get(addr_str) or "(unknown)"
-                if not segname:
+                if segname == "(unknown)":
                     # skip unkonwn
                     continue
                 f.write("// Segment: %s\n" % segname)

@@ -39,6 +39,16 @@ _ARRAY_RE = re.compile(r"\[([0-9]+)\]")
 # Verbose debug logging (set False to quiet)
 _DEBUG = True
 
+_DEFAULT_CAT_PATH = CategoryPath("/stars")
+_WIN16_CAT_PATH = CategoryPath("/win16/typedefs")
+
+# Some Win16 "typedef" structs live under a separate category path.
+# Map struct/typedef name -> CategoryPath.
+# TODO: we probably should not create at all if we can create them with the UpdateWin16WindowsApiSignatures.py script
+_STRUCT_CAT_PATH_OVERRIDES = {
+    "RECT": _WIN16_CAT_PATH,
+    "PAINTSTRUCT": _WIN16_CAT_PATH,
+}
 _EXCLUDE_STRUCTS = [] # ["RECT", "POINT"]
 
 
@@ -152,6 +162,63 @@ def _norm(s):
     if s is None:
         return ""
     return str(s).strip()
+
+
+def _cat_path_for_name(name, fallback):
+    """Return CategoryPath override for specific Win16 typedef structs, else fallback."""
+    n = _norm(name)
+    if not n:
+        return fallback
+
+    # Exact
+    cp = _STRUCT_CAT_PATH_OVERRIDES.get(n)
+    if cp is not None:
+        return cp
+
+    # tagRECT -> RECT
+    if n.startswith('tag') and len(n) > 3:
+        cp = _STRUCT_CAT_PATH_OVERRIDES.get(n[3:])
+        if cp is not None:
+            return cp
+
+    # _RECT -> RECT (common typedef aliasing)
+    if n.startswith('_') and len(n) > 1:
+        cp = _STRUCT_CAT_PATH_OVERRIDES.get(n[1:])
+        if cp is not None:
+            return cp
+        cp = _STRUCT_CAT_PATH_OVERRIDES.get(n[1:].upper())
+        if cp is not None:
+            return cp
+
+    return fallback
+
+
+def _candidate_cat_paths_for_name(name, preferred):
+    """Return an ordered, de-duplicated list of CategoryPaths to search."""
+    cps = []
+
+    # Override first (RECT/PAINTSTRUCT, etc.)
+    try:
+        cps.append(_cat_path_for_name(name, None))
+    except Exception:
+        cps.append(None)
+
+    cps.append(preferred)
+    cps.append(_DEFAULT_CAT_PATH)
+    cps.append(_WIN16_CAT_PATH)
+    cps.append(CategoryPath('/'))
+
+    out = []
+    seen = set()
+    for cp in cps:
+        if cp is None:
+            continue
+        key = str(cp)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(cp)
+    return out
 
 
 def _unwrap_typedef(dt):
@@ -623,7 +690,6 @@ def _builtin_for_name(dtm, base_name):
             return ByteDataType.dataType
 
     return None
-_DEFAULT_CAT_PATH = CategoryPath("/stars")
 
 # Populated in main(): name -> size (bytes) for NB09 structs/unions.
 _SIZE_BY_NAME = {}
@@ -661,7 +727,7 @@ def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
 
     # 2) Try live lookups in dtm (keeps us correct after we create types)
     for c in cand:
-        for cp in (cat_path or _DEFAULT_CAT_PATH, _DEFAULT_CAT_PATH, CategoryPath("/")):
+        for cp in _candidate_cat_paths_for_name(c, cat_path or _DEFAULT_CAT_PATH):
             try:
                 dt = dtm.getDataType(cp, c)
             except Exception:
@@ -689,7 +755,7 @@ def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
             try:
                 sdt = StructureDataType(c, int(sz))
                 try:
-                    sdt.setCategoryPath(cat_path or _DEFAULT_CAT_PATH)
+                    sdt.setCategoryPath(_cat_path_for_name(c, cat_path or _DEFAULT_CAT_PATH))
                 except Exception:
                     pass
                 sdt = dtm.addDataType(sdt, DataTypeConflictHandler.KEEP_HANDLER)
@@ -710,7 +776,7 @@ def _resolve_base_type(dtm, name_index, base_name, cat_path=None):
     try:
         td = TypedefDataType(base_name, _builtin_for_name(dtm, "char") or ByteDataType.dataType)
         try:
-            td.setCategoryPath(cat_path or _DEFAULT_CAT_PATH)
+            td.setCategoryPath(_cat_path_for_name(base_name, cat_path or _DEFAULT_CAT_PATH))
         except Exception:
             pass
         _dbg("[FWD-TYPEDEF] created placeholder typedef %s under %s" % (
@@ -1020,7 +1086,8 @@ def main():
     except Exception as e:
         _dbg("[WARN] size preindex failed: %s" % str(e))
 
-    cat_path = CategoryPath("/stars")
+    # Default category for Stars! project datatypes
+    default_cat_path = _DEFAULT_CAT_PATH
 
     created = 0
     for rec in recs:
@@ -1040,6 +1107,7 @@ def main():
         if nm in name_index:
             _dbg("[EXISTS] %s already in DataTypeManager; will replace" % nm)
 
+        cat_path = _cat_path_for_name(nm, default_cat_path)
         dt = _create_struct_or_union_from_json(dtm, name_index, rec, cat_path)
         if dt is not None:
             created += 1

@@ -17,50 +17,48 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
 {
   WPARAM WVar1;
   char *sz;
-  ushort uVar2;
-  short sVar3;
+  short sVar2;
   undefined2 unaff_SS;
-  FARPROC pvVar4;
+  FARPROC pvVar3;
   short fRet;
-  void *lpProc;
   RECT rc;
   HMENU hmenu;
   
   if (message == WM_DESTROY) {
     StickyDlgPos(hwnd,(POINT *)&ptStickyTutorDlg,0);
     tutor.hwnd = 0;
-    uVar2 = GetASubMenu(hwndFrame,5);
-    CheckMenuItem(uVar2,0x9c5,0);
+    hmenu = GetASubMenu(hwndFrame,5);
+    CheckMenuItem(hmenu,0x9c5,0);
     EndDialog(hwnd,1);
     EndTutor(1);
-    sVar3 = 1;
+    sVar2 = 1;
   }
   else if (message == WM_PAINT) {
     DrawTutorText(hwnd);
-    sVar3 = 1;
+    sVar2 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
-    sVar3 = 1;
+    GetClientRect(hwnd,(RECT *)&rc);
+    FillRect(wParam,(RECT *)&rc,hbrButtonFace);
+    sVar2 = 1;
   }
   else if (message == WM_CHAR) {
     PostMessage(hwndFrame,0x102,wParam,lParam);
-    sVar3 = 0;
+    sVar2 = 0;
   }
   else if (message == WM_INITDIALOG) {
     tutor.hwnd = hwnd;
     SetWindowPos(hwnd,0xffff,0,0,0,0,3);
     StickyDlgPos(hwnd,(POINT *)&ptStickyTutorDlg,1);
-    sVar3 = 1;
+    sVar2 = 1;
   }
   else {
     if (message == WM_COMMAND) {
       if (wParam == 0x9c7) {
-        pvVar4 = MakeProcInstance(PanicDlg,hInst);
-        WVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x9c8,hwnd),(HWND)((ulong)pvVar4 >> 0x10),
-                          (void *)pvVar4);
-        FreeProcInstance(pvVar4);
+        pvVar3 = MakeProcInstance(PanicDlg,hInst);
+        WVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x9c8,hwnd),(HWND)((ulong)pvVar3 >> 0x10),
+                          (void *)pvVar3);
+        FreeProcInstance(pvVar3);
         if (WVar1 != 0) {
           tutor.wFlags = tutor.wFlags & 0xfdffU | (uint)(WVar1 == 0x9ca) << 9;
           PostMessage(hwndFrame,0x466,WVar1,0);
@@ -70,23 +68,22 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         if (wParam == 2) {
           ShowTutor(0);
           if (((uint)tutor.wFlags >> 0xe & 1) != 0) {
-            sVar3 = 0x40;
+            sVar2 = 0x40;
             sz = PszFormatIds(idsMakeTutorialReappearCompleteTaskChooseTutorial,(short *)0x0);
-            AlertSz(sz,sVar3);
+            AlertSz(sz,sVar2);
             tutor.wFlags = tutor.wFlags & 0xbfff;
           }
           return 1;
         }
         if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)CONCAT22((undefined1 *)&DAT_1120_1120,_szHelpFile),1,
-                  (long)tutor.idh);
+          WinHelp(hwnd,(LPCSTR)_szHelpFile,1,(long)tutor.idh);
           return 1;
         }
       }
     }
-    sVar3 = 0;
+    sVar2 = 0;
   }
-  return sVar3;
+  return sVar2;
 }
 
 
@@ -98,7 +95,6 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: rc */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
@@ -108,15 +104,15 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_DI;
   undefined2 unaff_SS;
   ulong uVar1;
-  RECT rc;
+  ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)(RECT *)&stack0xfff4);
+    FillRect(wParam,(RECT *)(RECT *)&stack0xfff4,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
-    uVar1 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),rc.left);
+    uVar1 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000fff4);
     if ((int)uVar1 == 6) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       return hbrButtonFace;
@@ -128,8 +124,7 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       return 1;
     }
     if (wParam == 0x76) {
-      WinHelp(hwnd,(LPCSTR)CONCAT22((undefined1 *)&DAT_1120_1120,_szHelpFile),1,
-              (long)tutor.idh);
+      WinHelp(hwnd,(LPCSTR)_szHelpFile,1,(long)tutor.idh);
       return 1;
     }
     if ((wParam == 0x9c9) || (wParam == 0x9ca)) {
@@ -179,12 +174,10 @@ void ShowTutor(short fShow)
 void DrawTutorText(HWND hwnd)
 
 {
-  byte bVar1;
-  HWND HVar2;
-  short cLen;
+  HWND HVar1;
   short fNewLine;
   undefined2 unaff_SS;
-  RECT rc;
+  undefined8 rc;
   RECT rcBtn;
   char rgch [256];
   short cch;
@@ -195,55 +188,54 @@ void DrawTutorText(HWND hwnd)
   short yTop;
   HDC hdc;
   
-  hdc = BeginPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
+  hdc = BeginPaint(hwnd,(PAINTSTRUCT *)&ps);
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[0]);
-  GetWindowRect(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-  HVar2 = GetDlgItem(hwnd,2);
-  GetWindowRect(HVar2,(undefined2 *)CONCAT22(unaff_SS,&rcBtn));
-  rc.bottom = rcBtn.top;
-  ScreenToClient(hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-  ScreenToClient(hwnd,(short *)CONCAT22(unaff_SS,&rc.right));
-  rc.top = rc.top + dyArial8 * 2;
-  rc.bottom = rc.bottom - (dyArial8 << 1) / 3;
-  rc.left = rc.left + (dyArial8 << 1) / 3;
-  rc.right = rc.right - (dyArial8 << 1) / 3;
+  GetWindowRect(hwnd,(RECT *)(RECT *)&rc);
+  HVar1 = GetDlgItem(hwnd,2);
+  GetWindowRect(HVar1,(RECT *)&rcBtn);
+  rc._6_2_ = rcBtn.top;
+  ScreenToClient(hwnd,(POINT *)(POINT *)&rc);
+  ScreenToClient(hwnd,(POINT *)(POINT *)((int)&rc + 4));
+  rc._2_2_ = rc._2_2_ + dyArial8 * 2;
+  rc._6_2_ = rc._6_2_ - (dyArial8 << 1) / 3;
+  rc._0_2_ = (int)rc + (dyArial8 << 1) / 3;
+  rc._4_2_ = rc._4_2_ - (dyArial8 << 1) / 3;
   SelectObject(hdc,hbrButtonShadow);
-  PatBlt(hdc,rc.left,rc.top,rc.right - rc.left,1,0xf00021);
-  PatBlt(hdc,rc.left,rc.top,1,rc.bottom - rc.top,0xf00021);
+  PatBlt(hdc,(int)rc,rc._2_2_,rc._4_2_ - (int)rc,1,0xf00021);
+  PatBlt(hdc,(int)rc,rc._2_2_,1,rc._6_2_ - rc._2_2_,0xf00021);
   SelectObject(hdc,hbrButtonHilite);
-  PatBlt(hdc,rc.left,rc.bottom + -1,rc.right - rc.left,1,0xf00021);
-  PatBlt(hdc,rc.right + -1,rc.top,1,rc.bottom - rc.top,0xf00021);
-  ExpandRc(&rc,-(dyArial8 / 2),-(dyArial8 / 2));
-  yTop = rc.top;
-  FillRect(hdc,(undefined2 *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+  PatBlt(hdc,(int)rc,rc._6_2_ + -1,rc._4_2_ - (int)rc,1,0xf00021);
+  PatBlt(hdc,rc._4_2_ + -1,rc._2_2_,1,rc._6_2_ - rc._2_2_,0xf00021);
+  ExpandRc((RECT *)&rc,-(dyArial8 / 2),-(dyArial8 / 2));
+  yTop = rc._2_2_;
+  FillRect(hdc,(RECT *)(RECT *)&rc,hbrButtonFace);
   SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
   didt = 0;
-  while ((didt < 8 && (cLen = CchTutorString(rgch,tutor.idt + didt), cLen != 1)))
-  {
-    bVar1 = ((undefined *)&DAT_1120_175f)[rgch[0]];
-    if (((bVar1 & 1) != 0) && (xLeft = rc.left, didt != 0)) {
+  while ((didt < 8 && (cch = CchTutorString(rgch,tutor.idt + didt), cch != 1))) {
+    fPara = (byte)((undefined *)&DAT_1120_175f)[rgch[0]] & 1;
+    if (((((undefined *)&DAT_1120_175f)[rgch[0]] & 1) != 0) && (xLeft = (int)rc, didt != 0)) {
       yTop = yTop + dyArial8 / 2;
     }
     if (tutor.idt + didt == tutor.idtBold) {
       SetTextColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       SetBkColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
     }
-    if ((didt == 0) || ((bVar1 & 1) == 0)) {
+    if ((didt == 0) || (fPara == 0)) {
       fNewLine = 0;
     }
     else {
       fNewLine = 1;
     }
     WrapTextOut
-              (hdc,&xLeft,&yTop,rgch,cLen,rc.left,rc.right - rc.left,(short *)0x0,fNewLine,1);
+              (hdc,&xLeft,&yTop,rgch,cch,(int)rc,rc._4_2_ - (int)rc,(short *)0x0,fNewLine,1);
     if (tutor.idt + didt == tutor.idtBold) {
       SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
       SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     }
     didt = didt + 1;
   }
-  EndPaint(hwnd,(undefined2 *)CONCAT22(unaff_SS,&ps));
+  EndPaint(hwnd,(PAINTSTRUCT *)&ps);
   return;
 }
 
@@ -370,7 +362,7 @@ void StartTutor(short fRestart)
     }
   }
   ShowTutor(1);
-  InvalidateRect(tutor.hwnd,(undefined2 *)0x0,1);
+  InvalidateRect(tutor.hwnd,(RECT *)0x0,1);
   pfVar4 = lpfnTutorDlgProc;
 LAB_10f8_0a29:
   lpfnTutorDlgProc._2_2_ = (HWND)((ulong)pfVar4 >> 0x10);
@@ -394,15 +386,18 @@ void AdvanceTutor(void)
   short sVar2;
   int iVar3;
   char *pcVar4;
-  char *unaff_SS;
+  undefined2 unaff_SI;
+  undefined2 unaff_DI;
+  undefined2 unaff_SS;
   bool bVar5;
-  RECT rc;
+  undefined4 uVar6;
   short fTaskDone;
   short idtT;
   short fRedraw;
-  char szTitle [50];
+  char szTitle [52];
   
   sVar2 = tutor.idtBold;
+  uVar6 = CONCAT22(unaff_SI,unaff_DI);
   tutor.wFlags = tutor.wFlags & 0xfffb;
   sVar1 = FTutorTaskDone();
   bVar5 = sVar2 != tutor.idtBold;
@@ -433,15 +428,14 @@ void AdvanceTutor(void)
   if (bVar5) {
     iVar3 = tutor.idt / 8 + 1;
     pcVar4 = PszGetCompressedString(idsStarsTutorPageD80);
-    _WSPRINTF((LPSTR)CONCAT22(iVar3,(char *)&DAT_1120_1120),(LPCSTR)CONCAT22(pcVar4,unaff_SS),
-              szTitle);
-    SetWindowText(tutor.hwnd,(LPCSTR)CONCAT22(unaff_SS,szTitle));
+    wsprintf((char *)szTitle,(char *)pcVar4,iVar3,uVar6);
+    SetWindowText(tutor.hwnd,(LPCSTR)szTitle);
     ShowTutor(1);
-    GetWindowRect(tutor.hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    ScreenToClient(tutor.hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc));
-    ScreenToClient(tutor.hwnd,(short *)CONCAT22(unaff_SS,&rc.right));
-    ExpandRc(&rc,-dyArial8,dyArial8 * -2);
-    InvalidateRect(tutor.hwnd,(undefined2 *)CONCAT22(unaff_SS,&rc),1);
+    GetWindowRect(tutor.hwnd,(RECT *)(RECT *)&stack0xffbc);
+    ScreenToClient(tutor.hwnd,(POINT *)(POINT *)&stack0xffbc);
+    ScreenToClient(tutor.hwnd,(POINT *)(POINT *)&stack0xffc0);
+    ExpandRc((RECT *)&stack0xffbc,-dyArial8,dyArial8 * -2);
+    InvalidateRect(tutor.hwnd,(RECT *)(RECT *)&stack0xffbc,1);
   }
   return;
 }
@@ -668,8 +662,8 @@ short FTutorTaskDone(void)
   short sVar10;
   short sVar11;
   short sVar12;
-  HS hs_3;
-  HS hs2;
+  HS hs;
+  HS hs1;
   
   switch(game.turn) {
   case 0:
@@ -2138,10 +2132,10 @@ short FTutorTaskDone(void)
       }
     }
     else if (tutor.idt == 0x148) {
-      hs_3.grhst = hstEngine;
-      hs_3.wFlags = 0x103;
-      hs2.grhst = hstScanner;
-      hs2.wFlags = 0x101;
+      hs.grhst = hstEngine;
+      hs.wFlags = 0x103;
+      hs1.grhst = hstScanner;
+      hs1.wFlags = 0x101;
       if ((hwndSlotDlg == 0) && (rgplr[0].cShDef == '\a')) {
         uVar4 = 1;
       }
@@ -2166,12 +2160,12 @@ short FTutorTaskDone(void)
         else {
           tutor.idh = 0xbdf;
           if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
-             (sVar3 = FCheckBuilderPart(0,&hs_3,1), sVar3 == 0)) {
+             (sVar3 = FCheckBuilderPart(0,&hs,1), sVar3 == 0)) {
             tutor.idtBold = 0x14c;
             uVar4 = 0;
           }
           else if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[1].wFlags >> 8 == 0) ||
-                  (sVar3 = FCheckBuilderPart(1,&hs2,1), sVar3 == 0)) {
+                  (sVar3 = FCheckBuilderPart(1,&hs1,1), sVar3 == 0)) {
             tutor.idtBold = 0x14d;
             uVar4 = 0;
           }
@@ -2800,10 +2794,10 @@ short FTutorTaskDone(void)
             uVar4 = 0;
           }
           else if ((rgplr[0].cShDef < '\b') || (hwndSlotDlg != 0)) {
-            hs_3.grhst = hstEngine;
-            hs_3.wFlags = 0x104;
-            hs2.grhst = hstMines;
-            hs2.wFlags = 0x301;
+            hs.grhst = hstEngine;
+            hs.wFlags = 0x104;
+            hs1.grhst = hstMines;
+            hs1.wFlags = 0x301;
             if (hwndSlotDlg == 0) {
               tutor.idtBold = 0x1c2;
               tutor.idh = 0x3e9;
@@ -2817,11 +2811,11 @@ short FTutorTaskDone(void)
             else {
               tutor.idh = 0xbdf;
               if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
-                 (sVar3 = FCheckBuilderPart(0,&hs_3,1), sVar3 == 0)) {
+                 (sVar3 = FCheckBuilderPart(0,&hs,1), sVar3 == 0)) {
                 tutor.idtBold = 0x1c4;
               }
               else if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags >> 8 == 0) ||
-                      (sVar3 = FCheckBuilderPart(2,&hs2,1), sVar3 == 0)) {
+                      (sVar3 = FCheckBuilderPart(2,&hs1,1), sVar3 == 0)) {
                 tutor.idtBold = 0x1c5;
               }
               else {
@@ -3113,10 +3107,10 @@ short FTutorTaskDone(void)
         uVar4 = 1;
       }
       else {
-        hs_3.grhst = hstEngine;
-        hs_3.wFlags = 0x104;
-        hs2.grhst = hstSpecialM;
-        hs2.wFlags = 0x100;
+        hs.grhst = hstEngine;
+        hs.wFlags = 0x104;
+        hs1.grhst = hstSpecialM;
+        hs1.wFlags = 0x100;
         sVar3 = FCheckScanner(3,-1);
         if (sVar3 == 0) {
           tutor.idtBold = 0x1f1;
@@ -3146,7 +3140,7 @@ short FTutorTaskDone(void)
             uVar6 = (undefined2)((ulong)lpshdefBuild >> 0x10);
             if ((((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
                 (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags & 0xffU) != 4)) ||
-               (sVar3 = FCheckBuilderPart(1,&hs2,1), sVar3 == 0)) {
+               (sVar3 = FCheckBuilderPart(1,&hs1,1), sVar3 == 0)) {
               tutor.idtBold = 0x1f6;
             }
             else {
@@ -3855,9 +3849,9 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
   short sVar1;
   short sVar2;
   short idhSav;
-  char szT [33];
+  char szT [34];
   short i;
-  ITEMACTION *piaCur;
+  ZIPORDER *piaCur;
   
   sVar1 = tutor.idh;
   tutor.idh = 0x44a;
@@ -3869,15 +3863,15 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
       sVar2 = 0;
     }
     else {
-      piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
+      piaCur = (ZIPORDER *)vrgZip + iZip;
       tutor.idh = 0x5ef;
       for (i = 0; i < 5; i = i + 1) {
-        if (((uint)piaCur->wFlags >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) &&
-           ((uint)piaCur->wFlags >> 0xc != 0)) {
+        if (((uint)(piaCur->txp).rgia[0].wFlags >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) &&
+           ((uint)(piaCur->txp).rgia[0].wFlags >> 0xc != 0)) {
           tutor.idh = 0x5ef;
           return 0;
         }
-        piaCur = piaCur + 1;
+        piaCur = (ZIPORDER *)((piaCur->txp).rgia + 1);
         lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
       }
       CchGetString(ids,szT);
@@ -3894,10 +3888,11 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
   }
   else {
     *(undefined1 *)((int)&vrgZip[0].fValid + iZip * 0x18) = 1;
-    piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
+    piaCur = (ZIPORDER *)vrgZip + iZip;
     for (i = 0; i < 5; i = i + 1) {
-      piaCur->wFlags = piaCur->wFlags & 0xfffU | lpiaGoal->wFlags & 0xf000U;
-      piaCur = piaCur + 1;
+      (piaCur->txp).rgia[0].wFlags =
+           (piaCur->txp).rgia[0].wFlags & 0xfffU | lpiaGoal->wFlags & 0xf000U;
+      piaCur = (ZIPORDER *)((piaCur->txp).rgia + 1);
       lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
     }
     CchGetString(ids,szT);
@@ -4064,17 +4059,17 @@ short FCheckFleetName(short id,short ids)
   short sVar3;
   uint uVar4;
   int iVar5;
+  undefined2 uVar6;
   undefined2 unaff_SS;
-  FLEET *pFVar6;
   short idhSav;
-  char szT [33];
+  char szT [34];
   FLEET *lpfl;
   
   sVar2 = tutor.idh;
   tutor.idh = 0xbee;
-  pFVar6 = LpflFromId(id);
-  iVar5 = (int)((ulong)pFVar6 >> 0x10);
-  pFVar1 = (FLEET *)pFVar6;
+  lpfl = LpflFromId(id);
+  iVar5 = (int)((ulong)lpfl >> 0x10);
+  pFVar1 = (FLEET *)lpfl;
   if ((pFVar1 == (FLEET *)0x0) && (iVar5 == 0)) {
     uVar4 = 1;
   }
@@ -4089,10 +4084,11 @@ short FCheckFleetName(short id,short ids)
   }
   else {
     CchGetString(ids,szT);
+    uVar6 = (undefined2)((ulong)lpfl >> 0x10);
                     /* WARNING: Load size is inaccurate */
-    sVar3 = __fstricmp((char *)CONCAT22(unaff_SS,szT),
-                               (char *)CONCAT22(*(undefined2 *)((int)&pFVar1->lpszName + 2),
-                                                pFVar1->lpszName));
+    sVar3 = __fstricmp((char *)szT,
+                               (char *)CONCAT22(*(undefined2 *)((int)&((FLEET *)lpfl)->lpszName + 2)
+                                                ,((FLEET *)lpfl)->lpszName));
     if (sVar3 == 0) {
       uVar4 = 1;
       tutor.idh = sVar2;
@@ -4317,23 +4313,25 @@ short FCheckResearch(short iTech,short iTechNext,short pct)
 short FCheckFleetWP(ushort ifl,short iord,GrobjClass grobj,short id,ushort grTask,ushort iWarp)
 
 {
-  short *psVar1;
-  ORDER *pOVar2;
+  undefined2 *puVar1;
+  undefined2 *puVar2;
   undefined2 uVar3;
   FLEET *pFVar4;
   short sVar5;
   short sVar6;
   short sVar7;
   int iVar8;
-  short *psVar9;
-  ORDER *pOVar10;
+  undefined2 *puVar9;
+  undefined2 *puVar10;
   undefined2 unaff_SS;
   FLEET *pFVar11;
   short idhSav;
   short idh;
   FLEET *lpfl;
   short fRet;
-  ORDER ord;
+  undefined2 ord [2];
+  int local_12;
+  uint local_10;
   
   sVar5 = tutor.idh;
   fRet = 0;
@@ -4344,30 +4342,30 @@ short FCheckFleetWP(ushort ifl,short iord,GrobjClass grobj,short id,ushort grTas
   if (((pFVar4 != (FLEET *)0x0) || (iVar8 != 0)) &&
      (tutor.idh = 0xbf6, iord + 1 <= pFVar4->cord)) {
     uVar3 = *(undefined2 *)((int)&pFVar4->lpplord + 2);
-    psVar9 = (short *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
-    pOVar10 = &ord;
+    puVar9 = (undefined2 *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
+    puVar10 = ord;
     for (iVar8 = 9; iVar8 != 0; iVar8 = iVar8 + -1) {
-      pOVar2 = pOVar10;
-      pOVar10 = (ORDER *)&(pOVar10->pt).y;
-      psVar1 = psVar9;
-      psVar9 = psVar9 + 1;
-      (pOVar2->pt).x = *psVar1;
+      puVar2 = puVar10;
+      puVar10 = puVar10 + 1;
+      puVar1 = puVar9;
+      puVar9 = puVar9 + 1;
+      *puVar2 = *puVar1;
     }
     if (((id & 0x7fffU) == 0x7fff) ||
-       ((((uint)ord.wFlags >> 8 & (grobjThing|grobjOther|grobjFleet|grobjPlanet)) == grobj &&
-        (ord.id == id)))) {
-      if (((ord.wFlags & 0xfU) == grTask) || (grTask == 0xffff)) {
+       (((local_10 >> 8 & (grobjThing|grobjOther|grobjFleet|grobjPlanet)) == grobj &&
+        (local_12 == id)))) {
+      if (((local_10 & 0xf) == grTask) || (grTask == 0xffff)) {
         tutor.idh = 0x5ee;
         if (iWarp == 0xffff) {
           fRet = 1;
         }
         else {
-          fRet = (short)(((uint)ord.wFlags >> 4 & 0xf) == iWarp);
+          fRet = (short)((local_10 >> 4 & 0xf) == iWarp);
         }
       }
       else {
         tutor.idh = 0x5ef;
-        if ((ord.wFlags & 0xfU) != 0) {
+        if ((local_10 & 0xf) != 0) {
           if (grTask == 0) {
             sVar6 = 0x1ed;
           }
@@ -4603,27 +4601,27 @@ short FCheckPatrolWP(ushort ifl,short iord,short id,ushort iWarp,ushort iPlan,us
 short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaGoal)
 
 {
-  short *psVar1;
-  ORDER *pOVar2;
+  undefined2 *puVar1;
+  undefined2 *puVar2;
   undefined2 uVar3;
   FLEET *pFVar4;
   short sVar5;
   short sVar6;
-  uint uVar7;
-  short sVar8;
-  int iVar9;
-  short *psVar10;
-  ORDER *pOVar11;
+  short sVar7;
+  int iVar8;
+  undefined2 *puVar9;
+  undefined2 *puVar10;
   undefined2 unaff_SS;
-  FLEET *pFVar12;
+  FLEET *pFVar11;
   short idhSav;
   short grobj;
   short idh;
   FLEET *lpfl;
   short i;
-  ITEMACTION *piaCur;
+  uint *piaCur;
   short fRet;
-  ORDER ord;
+  undefined2 ord [4];
+  uint local_e [6];
   
   sVar5 = tutor.idh;
   fRet = 0;
@@ -4634,10 +4632,10 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
     id = id & 0x7fff;
     grobj = 2;
   }
-  pFVar12 = LpflFromId(ifl);
-  iVar9 = (int)((ulong)pFVar12 >> 0x10);
-  pFVar4 = (FLEET *)pFVar12;
-  if ((pFVar4 == (FLEET *)0x0) && (iVar9 == 0)) {
+  pFVar11 = LpflFromId(ifl);
+  iVar8 = (int)((ulong)pFVar11 >> 0x10);
+  pFVar4 = (FLEET *)pFVar11;
+  if ((pFVar4 == (FLEET *)0x0) && (iVar8 == 0)) {
     fRet = 0;
     sVar5 = tutor.idh;
   }
@@ -4649,34 +4647,33 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
     }
     else {
       uVar3 = *(undefined2 *)((int)&pFVar4->lpplord + 2);
-      psVar10 = (short *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
-      pOVar11 = &ord;
-      for (iVar9 = 9; iVar9 != 0; iVar9 = iVar9 + -1) {
-        pOVar2 = pOVar11;
-        pOVar11 = (ORDER *)&(pOVar11->pt).y;
-        psVar1 = psVar10;
-        psVar10 = psVar10 + 1;
-        (pOVar2->pt).x = *psVar1;
+      puVar9 = (undefined2 *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
+      puVar10 = ord;
+      for (iVar8 = 9; iVar8 != 0; iVar8 = iVar8 + -1) {
+        puVar2 = puVar10;
+        puVar10 = puVar10 + 1;
+        puVar1 = puVar9;
+        puVar9 = puVar9 + 1;
+        *puVar2 = *puVar1;
       }
-      piaCur = ord.txp.rgia;
+      piaCur = local_e;
       tutor.idh = 0x5ef;
       for (i = 0; i < 5; i = i + 1) {
-        if ((uint)piaCur->wFlags >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) {
-          if ((uint)piaCur->wFlags >> 0xc != 0) {
+        if (*piaCur >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) {
+          if (*piaCur >> 0xc != 0) {
             TutorError(0x268);
           }
           goto TUTOR_LReturn_2;
         }
-        uVar7 = (uint)piaCur->wFlags >> 0xc;
-        if (((uVar7 == 4) || (uVar7 == 8)) &&
-           ((piaCur->wFlags & 0xfffU) != (lpiaGoal->wFlags & 0xfffU))) goto TUTOR_LReturn_2;
+        if (((*piaCur >> 0xc == 4) || (*piaCur >> 0xc == 8)) &&
+           ((*piaCur & 0xfff) != (lpiaGoal->wFlags & 0xfffU))) goto TUTOR_LReturn_2;
         piaCur = piaCur + 1;
         lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
       }
       fRet = 1;
 TUTOR_LReturn_2:
       sVar6 = tutor.idh;
-      if ((fRet == 0) && (sVar8 = FCheckSelection(grobjFleet,ifl), sVar8 == 0)) {
+      if ((fRet == 0) && (sVar7 = FCheckSelection(grobjFleet,ifl), sVar7 == 0)) {
         sVar6 = tutor.idh;
       }
       tutor.idh = sVar6;
@@ -4718,7 +4715,6 @@ short FCheckQueue(short ipl,short iprod,GrobjClass grobj,ushort iItem,ushort cIt
   ulong uVar9;
   short idhSav;
   short idh;
-  PROD prod;
   PLANET *lppl;
   short fRet;
   
@@ -4787,7 +4783,6 @@ short FCheckBtlPlan
   short sVar1;
   short sVar2;
   short idhSav;
-  BTLPLAN *lpbtlplan;
   
   sVar1 = tutor.idh;
   tutor.idh = 0xc21;
@@ -4980,11 +4975,11 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
   short sVar1;
   char *pcVar2;
   char *pcVar3;
-  HS hs_5;
-  HS hs3_2;
-  HS hs_6;
-  HS hs1_3;
-  HS hs2_4;
+  HS hs;
+  HS hs3;
+  HS hs__16;
+  HS hs3__12;
+  HS hs2;
   
   if (itutsbAction == 0) {
     TutorError(0x1f1);
@@ -5071,20 +5066,20 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
       }
       switch(game.turn) {
       case 0xd:
-        hs_6.grhst = hstScanner;
-        hs_6.wFlags = 0x101;
-        hs2_4.grhst = hstEngine;
-        hs2_4.wFlags = 0x103;
-        hs1_3.grhst = hstMining;
-        hs1_3.wFlags = 0x102;
+        hs__16.grhst = hstScanner;
+        hs__16.wFlags = 0x101;
+        hs2.grhst = hstEngine;
+        hs2.wFlags = 0x103;
+        hs3__12.grhst = hstMining;
+        hs3__12.wFlags = 0x102;
         if (tutor.idt != 0x150) {
           TutorError(0x1f8);
           return 0;
         }
-        sVar1 = FCheckBuilderPart(0,&hs2_4,1);
-        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs_6,1), sVar1 == 0)) ||
-            (sVar1 = FCheckBuilderPart(2,&hs1_3,1), sVar1 == 0)) ||
-           (sVar1 = FCheckBuilderPart(3,&hs1_3,1), sVar1 == 0)) {
+        sVar1 = FCheckBuilderPart(0,&hs2,1);
+        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs__16,1), sVar1 == 0)) ||
+            (sVar1 = FCheckBuilderPart(2,&hs3__12,1), sVar1 == 0)) ||
+           (sVar1 = FCheckBuilderPart(3,&hs3__12,1), sVar1 == 0)) {
           TutorError(0x1fb);
           return 0;
         }
@@ -5096,9 +5091,9 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           TutorError(0x1f8);
           return 0;
         }
-        hs2_4.grhst = hstSpecialSB;
-        hs2_4.wFlags = 0x100;
-        sVar1 = FCheckBuilderPart(0,&hs2_4,1);
+        hs2.grhst = hstSpecialSB;
+        hs2.wFlags = 0x100;
+        sVar1 = FCheckBuilderPart(0,&hs2,1);
         if (sVar1 == 0) {
           TutorError(0x203);
           return 0;
@@ -5106,7 +5101,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsGater);
-        sVar1 = __fstricmp((char *)CONCAT22((undefined1 *)&DAT_1120_1120,pcVar2),pcVar3);
+        sVar1 = __fstricmp((char *)pcVar2,pcVar3);
         if (sVar1 != 0) {
           TutorError(0x200);
           return 0;
@@ -5121,31 +5116,31 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           TutorError(0x1f8);
           return 0;
         }
-        hs1_3.grhst = hstEngine;
-        hs1_3.wFlags = 0x104;
-        hs2_4.grhst = hstMines;
-        hs2_4.wFlags = 0x301;
-        sVar1 = FCheckBuilderPart(0,&hs1_3,1);
-        if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(2,&hs2_4,3), sVar1 == 0)) {
+        hs3__12.grhst = hstEngine;
+        hs3__12.wFlags = 0x104;
+        hs2.grhst = hstMines;
+        hs2.wFlags = 0x301;
+        sVar1 = FCheckBuilderPart(0,&hs3__12,1);
+        if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(2,&hs2,3), sVar1 == 0)) {
           TutorError(0x1fc);
           return 0;
         }
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsMineLayer);
-        sVar1 = __fstricmp((char *)CONCAT22((undefined1 *)&DAT_1120_1120,pcVar2),pcVar3);
+        sVar1 = __fstricmp((char *)pcVar2,pcVar3);
         if (sVar1 != 0) {
           TutorError(0x201);
           return 0;
         }
         break;
       case 0x19:
-        hs1_3.grhst = hstEngine;
-        hs1_3.wFlags = 0x104;
-        hs2_4.grhst = hstSpecialM;
-        hs2_4.wFlags = 0x100;
-        sVar1 = FCheckBuilderPart(0,&hs1_3,1);
-        if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2_4,1), sVar1 == 0)) {
+        hs3__12.grhst = hstEngine;
+        hs3__12.wFlags = 0x104;
+        hs2.grhst = hstSpecialM;
+        hs2.wFlags = 0x100;
+        sVar1 = FCheckBuilderPart(0,&hs3__12,1);
+        if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2,1), sVar1 == 0)) {
           TutorError(0x1fb);
           return 0;
         }
@@ -5155,23 +5150,23 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           TutorError(0x1f8);
           return 0;
         }
-        hs_5.grhst = hstEngine;
-        hs_5.wFlags = 0x10a;
-        hs_6.grhst = hstSpecialM;
-        hs_6.wFlags = 0x105;
-        hs2_4.grhst = hstSpecialE;
-        hs2_4.wFlags = 0x105;
-        hs3_2.grhst = hstBeam;
-        hs3_2.wFlags = 0x103;
-        hs1_3.grhst = hstArmor;
-        hs1_3.wFlags = 0x202;
-        sVar1 = FCheckBuilderPart(0,&hs_5,1);
-        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs3_2,1), sVar1 == 0)) ||
-            ((sVar1 = FCheckBuilderPart(2,&hs3_2,1), sVar1 == 0 ||
-             ((sVar1 = FCheckBuilderPart(3,&hs3_2,1), sVar1 == 0 ||
-              (sVar1 = FCheckBuilderPart(4,&hs1_3,2), sVar1 == 0)))))) ||
-           ((sVar1 = FCheckBuilderPart(5,&hs_6,1), sVar1 == 0 ||
-            (sVar1 = FCheckBuilderPart(6,&hs2_4,1), sVar1 == 0)))) {
+        hs.grhst = hstEngine;
+        hs.wFlags = 0x10a;
+        hs__16.grhst = hstSpecialM;
+        hs__16.wFlags = 0x105;
+        hs2.grhst = hstSpecialE;
+        hs2.wFlags = 0x105;
+        hs3.grhst = hstBeam;
+        hs3.wFlags = 0x103;
+        hs3__12.grhst = hstArmor;
+        hs3__12.wFlags = 0x202;
+        sVar1 = FCheckBuilderPart(0,&hs,1);
+        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs3,1), sVar1 == 0)) ||
+            ((sVar1 = FCheckBuilderPart(2,&hs3,1), sVar1 == 0 ||
+             ((sVar1 = FCheckBuilderPart(3,&hs3,1), sVar1 == 0 ||
+              (sVar1 = FCheckBuilderPart(4,&hs3__12,2), sVar1 == 0)))))) ||
+           ((sVar1 = FCheckBuilderPart(5,&hs__16,1), sVar1 == 0 ||
+            (sVar1 = FCheckBuilderPart(6,&hs2,1), sVar1 == 0)))) {
           TutorError(0x1fa);
           return 0;
         }
@@ -5185,16 +5180,16 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           TutorError(0x1f8);
           return 0;
         }
-        hs_6.grhst = hstEngine;
-        hs_6.wFlags = 0x20a;
-        hs1_3.grhst = hstSpecialM;
-        hs1_3.wFlags = 0x105;
-        hs2_4.grhst = hstBomb;
-        hs2_4.wFlags = 0x401;
-        sVar1 = FCheckBuilderPart(0,&hs_6,2);
-        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2_4,4), sVar1 == 0)) ||
-            (sVar1 = FCheckBuilderPart(2,&hs2_4,4), sVar1 == 0)) ||
-           (sVar1 = FCheckBuilderPart(3,&hs1_3,1), sVar1 == 0)) {
+        hs__16.grhst = hstEngine;
+        hs__16.wFlags = 0x20a;
+        hs3__12.grhst = hstSpecialM;
+        hs3__12.wFlags = 0x105;
+        hs2.grhst = hstBomb;
+        hs2.wFlags = 0x401;
+        sVar1 = FCheckBuilderPart(0,&hs__16,2);
+        if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2,4), sVar1 == 0)) ||
+            (sVar1 = FCheckBuilderPart(2,&hs2,4), sVar1 == 0)) ||
+           (sVar1 = FCheckBuilderPart(3,&hs3__12,1), sVar1 == 0)) {
           TutorError(0x1fd);
           return 0;
         }

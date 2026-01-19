@@ -29,6 +29,13 @@ from ghidra.program.model.symbol import SourceType, SymbolType
 from ghidra.program.model.listing import ParameterImpl
 from ghidra.program.model.data import CategoryPath, TypedefDataType, PointerDataType
 
+# Optional structure helpers (availability varies by Ghidra version)
+try:
+    from ghidra.program.model.data import StructureDataType, ArrayDataType
+except Exception:
+    StructureDataType = None
+    ArrayDataType = None
+
 # Prefer concrete BuiltIn datatypes over DataTypeManager.parseDataType(),
 # which is inconsistent across Ghidra versions and can yield Undefined types.
 _BUILTIN_DT = {}
@@ -105,6 +112,34 @@ STRIP_TOKENS = set([
     "EXPORT", "__export",
     "extern",
 ])
+
+# should be short __stdcallfar wsprintf (char *32 dst, char *32 fmt, ...) 
+API_OVERRIDES = [
+    {
+        "name": "wsprintf",
+        "ret": "short",
+        "cc": "__cdecl16far",
+        "args": [
+            "char *32 dst",
+            "char *32 fmt",
+            "..."
+        ],
+        "varargs": True,
+    },
+    {
+        "name": "_wsprintf",
+        "ret": "short",
+        "cc": "__cdecl16far",
+        "args": [
+            "char *32 dst",
+            "char *32 fmt",
+            "..."
+        ],
+        "varargs": True,
+    },
+]
+
+
 
 def _strip_comments(text):
     text = _re_comment_block.sub(" ", text)
@@ -208,7 +243,7 @@ def _parse_prototype(stmt):
 
     raw_args = _split_args(args)
     param_types = [_drop_param_name(a) for a in raw_args]
-    return (ret, name, param_types, stmt)
+    return (ret, name, param_types, stmt, False)
 
 # ------------------------------------------------------------
 # Data type helpers
@@ -249,6 +284,47 @@ def _ensure_typedef(dtm, cat, name, base_dt):
             return dtm.getDataType(cat, name)
         except Exception:
             return base_dt
+
+
+def _ensure_struct(dtm, cat, name, total_size, fields=None, min_align=2):
+    """Create/replace a structure under cat.
+
+    fields: optional list of tuples:
+        (offset, DataType, field_name)
+
+    If StructureDataType is unavailable (older Ghidra), returns None.
+    """
+    if StructureDataType is None:
+        return None
+
+    try:
+        st = StructureDataType(cat, name, 0)
+        try:
+            st.setExplicitMinimumAlignment(int(min_align))
+        except Exception:
+            pass
+
+        # Ensure backing size exists
+        st.growStructure(int(total_size))
+
+        if fields:
+            for off, dt, fname in fields:
+                if dt is None:
+                    continue
+                try:
+                    st.replaceAtOffset(int(off), dt, int(dt.getLength()), fname, None)
+                except Exception:
+                    # If replaceAtOffset is not available, fall back to just leaving padding.
+                    pass
+
+        if DataTypeConflictHandler is not None:
+            return dtm.addDataType(st, DataTypeConflictHandler.REPLACE_HANDLER)
+        return dtm.addDataType(st, None)
+    except Exception:
+        try:
+            return dtm.getDataType(cat, name)
+        except Exception:
+            return None
 
 def _build_win16_typedefs(program):
     """Inject minimal Win16 typedefs so WINDOWS.H prototypes resolve in this program."""
@@ -312,6 +388,74 @@ def _build_win16_typedefs(program):
     for nm, base in scalars.items():
         typedefs[nm] = _ensure_typedef(dtm, cat, nm, base)
 
+    # --------------------------------------------------------
+    # Common Win16 API structs used in signatures.
+    #
+    # This script often runs before your NB09 struct import, so we create
+    # minimal (but correctly-sized) definitions here under /win16/typedefs.
+    # Your later struct-packing/import script can REPLACE these with the
+    # authoritative layouts.
+    # --------------------------------------------------------
+
+    # Helpers to fetch common scalar typedefs we just created
+    t_BOOL = typedefs.get("BOOL", t_i16)
+    t_HDC  = typedefs.get("HDC",  t_u16)
+    t_BYTE = typedefs.get("BYTE", t_undef1)
+
+    # POINT: 2x int16
+    dt_POINT = dtm.getDataType(cat, "POINT")
+    if dt_POINT is None:
+        dt_POINT = _ensure_struct(dtm, cat, "POINT", 4, fields=[
+            (0, t_i16, "x"),
+            (2, t_i16, "y"),
+        ])
+    if dt_POINT is not None:
+        typedefs["POINT"] = dt_POINT
+
+    # RECT: 4x int16
+    dt_RECT = dtm.getDataType(cat, "RECT")
+    if dt_RECT is None:
+        dt_RECT = _ensure_struct(dtm, cat, "RECT", 8, fields=[
+            (0, t_i16, "left"),
+            (2, t_i16, "top"),
+            (4, t_i16, "right"),
+            (6, t_i16, "bottom"),
+        ])
+    if dt_RECT is not None:
+        typedefs["RECT"] = dt_RECT
+
+    # PAINTSTRUCT:
+    #   HDC  hdc;            0
+    #   BOOL fErase;         2
+    #   RECT rcPaint;        4
+    #   BOOL fRestore;       12
+    #   BOOL fIncUpdate;     14
+    #   BYTE rgbReserved[16] 16
+    # total: 32
+    dt_PAINTSTRUCT = dtm.getDataType(cat, "PAINTSTRUCT")
+    if dt_PAINTSTRUCT is None:
+        rgb_dt = None
+        if ArrayDataType is not None and t_BYTE is not None:
+            try:
+                rgb_dt = ArrayDataType(t_BYTE, 16, int(t_BYTE.getLength()))
+            except Exception:
+                rgb_dt = None
+
+        fields = [
+            (0,  t_HDC,        "hdc"),
+            (2,  t_BOOL,       "fErase"),
+            (4,  dt_RECT,      "rcPaint"),
+            (12, t_BOOL,       "fRestore"),
+            (14, t_BOOL,       "fIncUpdate"),
+        ]
+        if rgb_dt is not None:
+            fields.append((16, rgb_dt, "rgbReserved"))
+
+        dt_PAINTSTRUCT = _ensure_struct(dtm, cat, "PAINTSTRUCT", 32, fields=fields)
+
+    if dt_PAINTSTRUCT is not None:
+        typedefs["PAINTSTRUCT"] = dt_PAINTSTRUCT
+
     # pointer typedefs (far)
     typedefs["LPSTR"]   = _ensure_typedef(dtm, cat, "LPSTR",   _pointer_of(dtm, t_char, FAR_PTR_SIZE))
     typedefs["LPCSTR"]  = _ensure_typedef(dtm, cat, "LPCSTR",  _pointer_of(dtm, t_char, FAR_PTR_SIZE))
@@ -330,6 +474,11 @@ def _resolve_type(program, typedefs, type_str):
     if not s:
         return _dt_path(dtm, "/undefined2")
 
+    # Count explicit "*32" occurrences and normalize them to '*' so base parsing
+    # doesn't see the "32" as a token.
+    ptr32_count = len(re.findall(r"\*\s*32\b", s))
+    s = re.sub(r"\*\s*32\b", "*", s)
+
     # Count pointers, strip '*' from tokens
     star_count = s.count('*')
     s = s.replace('*', ' ')
@@ -337,33 +486,46 @@ def _resolve_type(program, typedefs, type_str):
     toks = [t for t in s.split(' ') if t]
     toks = [t for t in toks if t not in STRIP_TOKENS and t not in ("const", "volatile")]
 
+    # Drop any bare numeric tokens that can show up after "*" stripping.
+    toks = [t for t in toks if not re.match(r"^\d+$", t)]
+
     signed = None
     if toks and toks[0] in ("signed", "unsigned"):
         signed = toks[0]
         toks = toks[1:]
 
-    base = _collapse_ws(' '.join(toks))
-    base_lower = base.lower()
+    def resolve_base(base):
+        base_lower = base.lower()
 
-    # Prefer Win16-sized primitives and known typedefs first.
-    if base_lower == 'void':
-        dt = _BUILTIN_DT.get('void') or _dt_path(dtm, "/undefined2")
-    elif base_lower == 'char':
-        dt = _BUILTIN_DT.get('char') or _dt_path(dtm, "/undefined1")
-    elif base_lower in ('int', 'short', 'short int'):
-        dt = _BUILTIN_DT.get('u16' if signed == 'unsigned' else 'i16') or _dt_path(dtm, "/undefined2")
-    elif base_lower in ('long', 'long int'):
-        dt = _BUILTIN_DT.get('u32' if signed == 'unsigned' else 'i32') or (_BUILTIN_DT.get('u4') or _dt_path(dtm, "/undefined2"))
-    elif base in typedefs:
-        dt = typedefs[base]
-    else:
-        # Direct parse can help with more complex types (struct pointers, etc),
-        # but we don't want it to override Win16 'int' sizing.
+        if base_lower == 'void':
+            return _BUILTIN_DT.get('void') or _dt_path(dtm, "/undefined2")
+        if base_lower == 'char':
+            return _BUILTIN_DT.get('char') or _dt_path(dtm, "/undefined1")
+        if base_lower in ('int', 'short', 'short int'):
+            return _BUILTIN_DT.get('u16' if signed == 'unsigned' else 'i16') or _dt_path(dtm, "/undefined2")
+        if base_lower in ('long', 'long int'):
+            return _BUILTIN_DT.get('u32' if signed == 'unsigned' else 'i32') or (_BUILTIN_DT.get('u4') or _dt_path(dtm, "/undefined2"))
+        if base in typedefs:
+            return typedefs[base]
+
         dt_direct = _dt_parse(dtm, base)
         if dt_direct is not None:
-            dt = dt_direct
-        else:
-            dt = None
+            return dt_direct
+
+        return None
+
+    # First try with all tokens (some types are multiword)
+    base = _collapse_ws(' '.join(toks))
+    dt = resolve_base(base)
+
+    # If that failed and we have >1 token, assume last token may be a parameter name
+    # and retry without it (e.g. "char dst", "POINT *32 pt").
+    if dt is None and len(toks) > 1:
+        base2 = _collapse_ws(' '.join(toks[:-1]))
+        dt = resolve_base(base2)
+        if dt is not None:
+            base = base2  # for later heuristics
+
     if dt is None:
         # Heuristic: LPXxx => far pointer to Xxx
         if base.startswith('LP') and len(base) > 2:
@@ -376,12 +538,25 @@ def _resolve_type(program, typedefs, type_str):
                     inner_dt = _dt_path(dtm, "/undefined1")
             dt = _pointer_of(dtm, inner_dt, FAR_PTR_SIZE)
             star_count = 0
+            ptr32_count = 0  # already applied
         elif re.match(r"^H[A-Z0-9_]+$", base):
             dt = typedefs.get('HANDLE', _dt_parse(dtm, "unsigned short") or _dt_path(dtm, "/undefined2"))
         else:
             dt = _dt_path(dtm, "/undefined2")
 
-    for _ in range(star_count):
+    # Apply pointers:
+    try:
+        from ghidra.program.model.data import Pointer32DataType
+    except Exception:
+        Pointer32DataType = None
+
+    for _ in range(ptr32_count):
+        if Pointer32DataType is not None:
+            dt = Pointer32DataType(dt)
+        else:
+            dt = _pointer_of(dtm, dt, 4)
+
+    for _ in range(star_count - ptr32_count):
         dt = _pointer_of(dtm, dt, FAR_PTR_SIZE)
 
     return dt
@@ -519,7 +694,25 @@ def _find_target_functions(program, name):
 
     return found
 
-def _apply_signature_to_function(program, fn, name, ret_dt, param_dts, raw_stmt):
+def _set_varargs(fn, is_varargs):
+    """Best-effort toggle of a Function's varargs flag across Ghidra versions."""
+    try:
+        fn.setVarArgs(is_varargs)
+        return True
+    except Exception:
+        pass
+
+    return False
+    try:
+        # Some older branches only expose isVarArgs(); if so, we can't set.
+        if hasattr(fn, "isVarArgs"):
+            # nothing we can do
+            return False
+    except Exception:
+        pass
+    return False
+
+def _apply_signature_to_function(program, fn, name, ret_dt, param_dts, raw_stmt, is_varargs=False, cc_override=None):
     ep = fn.getEntryPoint()
     print("[APPLY] %s  %-24s <- %s" % (ep, fn.getName(), raw_stmt))
 
@@ -539,8 +732,13 @@ def _apply_signature_to_function(program, fn, name, ret_dt, param_dts, raw_stmt)
         ok = False
         print("  [ERR] replaceParameters failed: %s" % err)
 
+    if is_varargs:
+        if not _set_varargs(fn, True):
+            # Not fatal; some versions don't allow toggling.
+            print("  [WARN] could not mark function as varargs")
+
     try:
-        fn.setCallingConvention(PREFERRED_CALLING_CONVENTION)
+        fn.setCallingConvention(cc_override or PREFERRED_CALLING_CONVENTION)
     except Exception as e:
         # Keep going; not fatal.
         print("  [WARN] calling convention not set: %s" % e)
@@ -595,6 +793,16 @@ def run():
         if p is not None:
             protos.append(p)
 
+    # Append hard-coded overrides (applied even if not present in the header).
+    for o in API_OVERRIDES:
+        nm = o.get("name")
+        if not nm:
+            continue
+        ret_s = o.get("ret", "void")
+        args_s = o.get("args", [])
+        is_va = bool(o.get("varargs", False))
+        protos.append((ret_s, nm, args_s, "override %s" % nm, is_va))
+
     print("UpdateWin16WindowsApiSignatures.py> preferred calling convention: %s" % PREFERRED_CALLING_CONVENTION)
     print("UpdateWin16WindowsApiSignatures.py> extracted %d candidate prototypes" % len(protos))
 
@@ -604,7 +812,14 @@ def run():
     applyFail = 0
     multi = 0
 
-    for (ret_str, name, arg_strs, raw_stmt) in protos:
+    # Map of name -> calling convention override (from API_OVERRIDES)
+    cc_overrides = {}
+    for o in API_OVERRIDES:
+        nm = o.get("name")
+        if nm and o.get("cc"):
+            cc_overrides[nm] = o.get("cc")
+
+    for (ret_str, name, arg_strs, raw_stmt, is_varargs) in protos:
         targets = _find_target_functions(prog, name)
         if not targets:
             missing += 1
@@ -615,6 +830,11 @@ def run():
 
         try:
             ret_dt = _resolve_type(prog, typedefs, ret_str)
+
+            # If prototype is varargs, drop the trailing "..." from the concrete parameter list.
+            if is_varargs and arg_strs and arg_strs[-1].strip() == "...":
+                arg_strs = arg_strs[:-1]
+
             param_dts = [_resolve_type(prog, typedefs, a) for a in arg_strs]
         except Exception as e:
             parseFail += 1
@@ -623,7 +843,16 @@ def run():
 
         any_ok = False
         for fn in targets:
-            ok = _apply_signature_to_function(prog, fn, name, ret_dt, param_dts, raw_stmt)
+            ok = _apply_signature_to_function(
+                prog,
+                fn,
+                name,
+                ret_dt,
+                param_dts,
+                raw_stmt,
+                is_varargs=is_varargs,
+                cc_override=cc_overrides.get(name),
+            )
             any_ok = any_ok or ok
 
         if any_ok:

@@ -19,6 +19,12 @@ import json
 import os
 import re
 import traceback
+try:
+    from ghidra.ghidra_builtins import *
+    from ghidra.program.model.listing import *
+except:
+    pass
+
 from java.math import BigInteger
 
 from ghidra.util import Msg
@@ -27,6 +33,7 @@ from java.lang import Throwable
 from java.util import ConcurrentModificationException
 from ghidra.program.model.symbol import SourceType
 from ghidra.program.model.data import (
+    DataType,
     VoidDataType,
     ByteDataType,
     CharDataType,
@@ -194,7 +201,7 @@ def normalize_c_type(c_type):
 
 def find_datatype_by_name(name):
     """
-    Find a DataType by name, preferring /stars/* then /NB09/* then anything.
+    Find a DataType by name, preferring /stars/* then /win16/typedefs/* then anything.
     """
     dtm = currentProgram.getDataTypeManager()
 
@@ -212,28 +219,24 @@ def find_datatype_by_name(name):
     if name == "int":
         # under your 16-bit compiler spec, this should be 2 bytes
         return ShortDataType.dataType
+    if name == "uint8_t":
+        return ByteDataType.dataType  # close enough for signatures
+    if name == "int8_t":
+        return Undefined1DataType.dataType
     if name == "uint":
         return UnsignedShortDataType.dataType
     if name == "long":
         return LongDataType.dataType
     if name == "ulong":
         return UnsignedLongDataType.dataType
-    if name == "int32_t":
-        return LongDataType.dataType
-    if name == "uint32_t":
-        return UnsignedLongDataType.dataType
-    if name == "uint8_t":
-        return ByteDataType.dataType  # close enough for signatures
-    if name == "int8_t":
-        return Undefined1DataType.dataType
     if name == "uint16_t":
         return UnsignedShortDataType.dataType
     if name == "int16_t":
         return ShortDataType.dataType
-    if name == "uint32_t":
-        return UnsignedLongDataType.dataType
     if name == "int32_t":
         return LongDataType.dataType
+    if name == "uint32_t":
+        return UnsignedLongDataType.dataType
     if name == "float":
         return FloatDataType.dataType
 
@@ -241,7 +244,7 @@ def find_datatype_by_name(name):
     dt = dtm.getDataType("/stars/" + name)
     if dt is not None:
         return dt
-    dt = dtm.getDataType("/NB09/" + name)
+    dt = dtm.getDataType("/win16/typedefs/" + name)
     if dt is not None:
         return dt
 
@@ -257,7 +260,7 @@ def find_datatype_by_name(name):
         rank = 100
         if cat.startswith("/stars"):
             rank = 0
-        elif cat.startswith("/NB09"):
+        elif cat.startswith("/win16/typedefs"):
             rank = 10
         if rank < best_rank:
             best_rank = rank
@@ -327,7 +330,7 @@ def datatype_from_c_type(c_type):
     return dt
 
 def function_at(addr):
-    fm = currentProgram.getFunctionManager()
+    fm: FunctionManager = currentProgram.getFunctionManager()
     return fm.getFunctionAt(addr)
 
 
@@ -476,7 +479,7 @@ def _get_stack_offset(var):
         pass
     return None
 
-def _collect_stack_vars(func):
+def _collect_stack_vars(func: Function) -> dict[int, Variable]:
     """
     Build map stackOffset -> [vars...] for all variables that live on stack (params + locals).
     """
@@ -502,382 +505,271 @@ def _collect_stack_vars(func):
         m.setdefault(off, []).append(v)
     return m
 
-def _try_create_stack_var(func, name, stack_off, dt):
+def _choose_stack_var_for_rename(vars_here, want_len):
     """
-    Try to create a new stack variable at stack_off (Ghidra stack offset).
-    Returns (var, errstr_or_None).
+    Pick a single existing stack var to rename/retype, conservatively.
+
+    - If want_len is known (>0), prefer a var with matching length.
+    - If exactly one var exists at offset, pick it.
+    - Otherwise return None (ambiguous).
     """
-    sf = None
-    try:
-        sf = func.getStackFrame()
-    except Exception as e:
-        return None, "getStackFrame failed: %s" % str(e)
+    if not vars_here:
+        return None
 
-    # Different Ghidra versions have different overloads; try a few.
-    tries = []
-    if sf is not None:
-        tries.append(lambda: sf.createVariable(name, stack_off, dt, SourceType.USER_DEFINED))
-        tries.append(lambda: sf.createVariable(name, stack_off, dt))
-        tries.append(lambda: sf.createVariable(stack_off, name, dt, SourceType.USER_DEFINED))
-        tries.append(lambda: sf.createVariable(stack_off, name, dt))
-        tries.append(lambda: sf.createVariable(stack_off, dt, name, SourceType.USER_DEFINED))
-        tries.append(lambda: sf.createVariable(stack_off, dt, name))
-
-    last_err = None
-    for t in tries:
+    # Filter out stale/deleted vars
+    live = []
+    for v in vars_here:
         try:
-            v = t()
-            if v is not None:
-                return v, None
-        except Exception as e:
-            last_err = e
-            continue
+            _ = v.getName()
+            live.append(v)
+        except Throwable:
+            pass
+    vars_here = live
+    if not vars_here:
+        return None
 
-    return None, ("createVariable failed (%s)" % str(last_err) if last_err else "createVariable failed")
+    if want_len is not None and int(want_len) > 0:
+        matches = []
+        for v in vars_here:
+            try:
+                if int(v.getLength()) == int(want_len):
+                    matches.append(v)
+            except Exception:
+                pass
+        if len(matches) == 1:
+            return matches[0]
+        if len(matches) > 1:
+            return None  # ambiguous
+
+    if len(vars_here) == 1:
+        return vars_here[0]
+
+    return None  # ambiguous
+
+
+def _rename_var_user_defined(func: Function, v: Variable, new_name: str, stack_off: int):
+    """
+    Rename v to new_name as USER_DEFINED, handling duplicates.
+    Returns True if renamed/changed.
+    """
+    try:
+        cur = v.getName()
+    except Throwable:
+        cur = None
+
+    if cur == new_name:
+        return False
+
+    try:
+        v.setName(new_name, SourceType.USER_DEFINED)
+        return True
+    except DuplicateNameException:
+        # Deterministic unique suffix
+        uniq = "%s_%+d" % (new_name, int(stack_off))
+        try:
+            v.setName(uniq, SourceType.USER_DEFINED)
+            return True
+        except Throwable as ex:
+            _warn("[BPVAR-NAMEFAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+            return False
+    except Throwable as ex:
+        _warn("[BPVAR-NAMEFAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+        return False
+
+
+def _is_undefined_like_datatype(dt):
+    """
+    True if dt is undefined/unknown-ish, including arrays of undefined.
+    We key off the datatype name because exact classes vary by Ghidra version.
+    """
+    if dt is None:
+        return True
+    try:
+        # Peel arrays: undefined2[16] should count as undefined-like
+        while hasattr(dt, "getDataType") and dt.getClass().getName().endswith("ArrayDataType"):
+            dt = dt.getDataType()
+            if dt is None:
+                return True
+    except Exception:
+        pass
+
+    try:
+        nm = dt.getName() or ""
+        return nm.lower().startswith("undefined")
+    except Exception:
+        return False
+
+
+def _maybe_retype_stack_var(func: Function, v: Variable, desired_dt: DataType, want_len: int, stack_off: int):
+    """
+    Retype v to desired_dt ONLY if:
+      - current dt is undefined-like
+      - v.getLength == want_len (if provided)
+      - desired_dt.getLength == v.getLength
+    Returns True if changed.
+    """
+    if desired_dt is None:
+        return False
+
+    try:
+        v_len = int(v.getLength())
+    except Exception:
+        return False
+
+    if want_len is not None and int(want_len) > 0 and v_len != int(want_len):
+        _log("[BPVAR-RETYPE] %s sp=%+d %s v_dt=%s v_len=%d want_len=%d" % (func.getName(), int(stack_off), desired_dt.getName(), v.getDataType().getName(), v_len, want_len))
+        return False
+
+    try:
+        dt_len = int(desired_dt.getLength())
+    except Exception:
+        return False
+
+    if dt_len != v_len:
+        _log("[BPVAR-RETYPE] %s sp=%+d %s is %d vs desired %d" % (func.getName(), int(stack_off), desired_dt.getName(), dt_len, v_len))
+        return False
+
+    try:
+        cur_dt = v.getDataType()
+    except Exception:
+        _log("[BPVAR-RETYPE] %s sp=%+d %s no cur_dt" % (func.getName(), int(stack_off), desired_dt.getName()))
+        cur_dt = None
+
+    if not _is_undefined_like_datatype(cur_dt):
+        _log("[BPVAR-RETYPE] %s sp=%+d %s %s is not undefined" % (func.getName(), int(stack_off), desired_dt.getName(), cur_dt.getName()))
+        return False
+
+    # Already correct?
+    try:
+        if cur_dt is not None and cur_dt.equals(desired_dt):
+            return False
+    except Exception:
+        pass
+
+    try:
+        # Variable.setDataType(DataType, SourceType) exists on most versions
+        v.setDataType(desired_dt, SourceType.USER_DEFINED)
+        _log("[BPVAR-RETYPE] %s sp=%+d <- %s" % (func.getName(), int(stack_off), desired_dt.getName()))
+        return True
+    except VariableSizeException:
+        # We explicitly do not resize/recreate in this mode.
+        _log("[BPVAR-RETYPE-SKIP] %s sp=%+d : size mismatch (len=%d)" %
+             (func.getName(), int(stack_off), v_len))
+        return False
+    except Throwable as ex:
+        _warn("[BPVAR-RETYPE-FAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+        return False
 
 def apply_bp_relative_vars(func, types_obj):
     """
-    Apply names + datatypes for parameters and locals based on bp_off from NB09.
+    Rename locals by NB09 bp_off when unambiguous.
+    Additionally, retype ONLY when:
+      - existing stack var length matches NB09 size
+      - desired datatype length matches that exact length
+      - current datatype is undefined-like (including arrays of undefined)
 
-    IMPORTANT: NB09 bp_off is BP-relative *after* 'push bp; mov bp, sp'.
-    Ghidra stack offsets (Variable.getStackOffset / Stack[0x..]) are effectively SP-relative at entry,
-    which are typically (bp_off - 2) because of the pushed BP word.
+    Never creates locals, never deletes overlaps, never resizes vars.
 
-        ghidra_stack_off = nb09_bp_off - 2
-
-    Returns number of vars updated/created.
+    Returns number of changes (renames + retypes).
     """
     if types_obj is None:
+        _log("[BPVAR] %s no types_obj" % (func.getName()))
         return 0
 
-    wanted = []
-    # NOTE: We intentionally skip "params" here. Parameters are already applied
-    # by ApplyFunctionSignatureCmd above, and Ghidra often won't let us create/resize
-    # stack storage for params via StackFrame APIs. Focusing on locals yields better results.
-    for key in ("locals",):
-        for e in (types_obj.get(key) or []):
-            if not isinstance(e, dict):
-                continue
-            bp_off = e.get("bp_off")
-            if bp_off is None:
-                continue
-            nm = e.get("name") or ""
-            ct = normalize_c_type(e.get("c_type") or "")
-            if not nm or not ct:
-                continue
-            kind = e.get("kind") or "local"
-            wanted.append((kind, int(bp_off), nm, ct))
-
-    if not wanted:
+    locals_list = types_obj.get("locals") or []
+    if not locals_list:
+        _log("[BPVAR] %s no locals" % (func.getName()))
         return 0
 
-    # Make names unique within this function (Ghidra rejects duplicates)
-    name_counts = {}
-    uniq_wanted = []
-    for kind, bp_off, nm, ct in wanted:
-        base = nm
-        n = name_counts.get(base, 0) + 1
-        name_counts[base] = n
-        if n == 1:
-            uniq = base
-        else:
-            uniq = "%s_%d" % (base, n)
-        uniq_wanted.append((kind, bp_off, uniq, ct))
-    wanted = uniq_wanted
+    _log("[BPVAR] %s collecting stack vars" % (func.getName()))
+    by_off = _collect_stack_vars(func)
 
-    by_off = _collect_stack_vars(func)  # ghidra stack offsets
+    # One NB09 local per stack slot (CodeView slot reuse is common).
+    # Prefer larger known sizes (arrays/structs win).
+    best_by_stack = {}
+    for e in locals_list:
+        if not isinstance(e, dict):
+            continue
+        bp_off = e.get("bp_off")
+        nm = e.get("name") or ""
+        if bp_off is None or not nm:
+            _log("[BPVAR] %s local has no name or offset" % (func.getName()))
+            continue
+
+        try:
+            bp_off = int(bp_off)
+        except Exception:
+            _log("[BPVAR] %s local %s is has invalid offset %s" % (func.getName(), nm, bp_off))
+            continue
+
+        stack_off = bp_off - 2
+        _log("[BPVAR] %s local %s stack_off %s" % (func.getName(), nm, stack_off))
+
+        want_len = e.get("size", None)
+        try:
+            want_len = int(want_len) if want_len is not None else None
+        except Exception:
+            _log("[BPVAR] %s local %s unable to determine want_len %s" % (func.getName(), nm, want_len))
+            want_len = None
+
+        c_type = normalize_c_type(e.get("c_type") or "")
+        cur = best_by_stack.get(stack_off)
+        if cur is None:
+            best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
+            _log("[BPVAR] %s local %s best by stack stack_off %s" % (func.getName(), nm, stack_off))
+            continue
+
+        _log("[BPVAR] %s sp=%+d bp=%+d name=%s c_type: %s" %
+                (func.getName(), int(stack_off), int(bp_off), nm, c_type))
+
+        _, _, cur_len, _ = cur
+        if (want_len is not None and want_len > 0) and not (cur_len is not None and cur_len > 0):
+            best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
+        elif (want_len is not None and cur_len is not None and want_len > cur_len):
+            best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
+
     changed = 0
 
-    for kind, bp_off, name, ctype in wanted:
-        stack_off = int(bp_off) - 2  # BP-relative -> Ghidra stack offset
 
-        dt = datatype_from_c_type(ctype)
-        if dt is None:
-            _warn("[BPVAR-UNKTYPE] %s bp=%+d sp=%+d : %s (name=%s kind=%s)" %
-                  (func.getName(), bp_off, stack_off, ctype, name, kind))
+    for stack_off in sorted(best_by_stack.keys()):
+        bp_off, nm, want_len, c_type = best_by_stack[stack_off]
+
+        # We only target locals (negative stack offsets). Safety belt:
+        if stack_off >= 0:
             continue
-
-        # If earlier iterations deleted/recreated stack vars, refresh the cache.
-        global _g_stackvars_dirty
-        if _g_stackvars_dirty:
-            by_off = _collect_stack_vars(func)
-            _g_stackvars_dirty = False
 
         vars_here = by_off.get(stack_off, [])
-        v = None
-        if vars_here:
-            # Filter out deleted vars (stale references after conflict resolution).
-            live = []
-            for cand in vars_here:
-                try:
-                    _ = cand.getName()
-                    live.append(cand)
-                except Throwable:
-                    pass
-            vars_here = live
-
-            # Prefer matching length where possible
-            want_len = -1
-            try:
-                want_len = int(dt.getLength())
-            except Exception:
-                want_len = -1
-
-            if want_len > 0 and len(vars_here) > 1:
-                for cand in vars_here:
-                    try:
-                        if int(cand.getLength()) == want_len:
-                            v = cand
-                            break
-                    except Exception:
-                        pass
-            if v is None:
-                v = vars_here[0]
-
-        # Create missing locals (Ghidra generally doesn't allow creating params this way)
-        if v is None and kind == "local":
-            try:
-                newv, err = _try_create_stack_var(func, name, stack_off, dt)
-                if newv is None:
-                    _warn("[BPVAR-FAIL] %s bp=%+d sp=%+d : %s (name=%s type=%s)" %
-                        (func.getName(), bp_off, stack_off, err, name, ctype))
-                    continue
-                v = newv
-                by_off.setdefault(stack_off, []).append(v)
-                _log("[BPVAR-CREATE] %s bp=%+d sp=%+d %s : %s" %
-                    (func.getName(), bp_off, stack_off, name, ctype))
-                changed += 1
-            except: 
-                _warn("[BPVAR-MISS] %s bp=%+d sp=%+d : no existing var (name=%s type=%s kind=%s)" %
-                    (func.getName(), bp_off, stack_off, name, ctype, kind))
-                continue
-
+        v = _choose_stack_var_for_rename(vars_here, want_len)
         if v is None:
-            _warn("[BPVAR-MISS] %s bp=%+d sp=%+d : no existing var (name=%s type=%s kind=%s)" %
-                  (func.getName(), bp_off, stack_off, name, ctype, kind))
+            _log("[BPVAR-SKIP] %s sp=%+d bp=%+d name=%s (ambiguous or missing)" %
+                 (func.getName(), int(stack_off), int(bp_off), nm))
             continue
 
-        # name (force unique) - catch Throwable because deleted vars throw ConcurrentModificationException
-        try:
-            cur_nm = None
-            try:
-                cur_nm = v.getName()
-            except Throwable:
-                cur_nm = None
-
-            if cur_nm != name:
-                try:
-                    v.setName(name, SourceType.USER_DEFINED)
-                except DuplicateNameException:
-                    uniq = "%s_%+d" % (name, stack_off)
-                    v.setName(uniq, SourceType.USER_DEFINED)
-                except ConcurrentModificationException:
-                    # The var reference is stale (deleted). Refresh and retry once.
-                    by_off = _collect_stack_vars(func)
-                    _g_stackvars_dirty = False
-                    vars_here2 = by_off.get(stack_off, [])
-                    v2 = None
-                    for cand in vars_here2:
-                        try:
-                            _ = cand.getName()
-                            v2 = cand
-                            break
-                        except Throwable:
-                            pass
-                    if v2 is not None:
-                        v = v2
-                        try:
-                            v.setName(name, SourceType.USER_DEFINED)
-                        except DuplicateNameException:
-                            uniq = "%s_%+d" % (name, stack_off)
-                            v.setName(uniq, SourceType.USER_DEFINED)
-                changed += 1
-        except Throwable as ex:
-            _warn("[BPVAR-NAMEFAIL] %s bp=%+d sp=%+d : %s" %
-                  (func.getName(), bp_off, stack_off, str(ex)))
-
-        # type (force). NOTE: _set_var_dtype_force handles overlap deletion + retries.
-        try:
-            ok = _set_var_dtype_force(func, v, dt)
-        except Throwable as ex:
-            ok = False
-            _warn("[BPVAR-TYPEEX] %s bp=%+d sp=%+d %s : %s" %
-                  (func.getName(), bp_off, stack_off, name, str(ex)))
-
-        if ok:
+        if _rename_var_user_defined(func, v, nm, stack_off):
             changed += 1
+            _log("[BPVAR-RENAME] %s sp=%+d bp=%+d <- %s" %
+                 (func.getName(), int(stack_off), int(bp_off), nm))
+
+        # Safe retype: only if same size and current is undefined-like
+        if c_type:
+            desired_dt = datatype_from_c_type(c_type)
+            if desired_dt is not None:
+                if _maybe_retype_stack_var(func, v, desired_dt, want_len, stack_off):
+                    changed += 1
+                    _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s <- %s" %
+                    (func.getName(), int(stack_off), int(bp_off), nm, desired_dt.getName()))
+                else:
+                    _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s not retyping to %s" %
+                    (func.getName(), int(stack_off), int(bp_off), nm, desired_dt.getName()))
+            else:
+                _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no desired_dt" %
+                 (func.getName(), int(stack_off), int(bp_off), nm))
         else:
-            _warn("[BPVAR-TYPEFAIL] %s bp=%+d sp=%+d %s : could not set type %s" %
-                  (func.getName(), bp_off, stack_off, name, ctype))
+            _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no c_type" %
+                 (func.getName(), int(stack_off), int(bp_off), nm))
 
     return changed
 
-def _ranges_overlap(a_off, a_len, b_off, b_len):
-    try:
-        a_off = int(a_off); a_len = int(a_len)
-        b_off = int(b_off); b_len = int(b_len)
-    except Exception:
-        return False
-    if a_len <= 0 or b_len <= 0:
-        return False
-    a0, a1 = a_off, a_off + a_len
-    b0, b1 = b_off, b_off + b_len
-    return not (a1 <= b0 or b1 <= a0)
-
-
-def _resolve_stack_conflicts(func, target_off, target_len, keep_var=None, remove_user_defined=False):
-    """Remove overlapping stack variables so we can apply a new type.
-
-    By default, we avoid deleting USER_DEFINED vars (to preserve manual work).
-    If remove_user_defined=True, we will delete *all* overlapping vars except keep_var.
-
-    Returns number of variables removed.
-    """
-    removed = 0
-    try:
-        frame = func.getStackFrame()
-        svars = list(frame.getStackVariables())
-    except Exception:
-        return 0
-
-    for sv in svars:
-        try:
-            if keep_var is not None and sv == keep_var:
-                continue
-            if not sv.isStackVariable():
-                continue
-            off = sv.getStackOffset()
-            ln = sv.getLength()
-            if not _ranges_overlap(target_off, target_len, off, ln):
-                continue
-
-            # By default, only remove non-user-defined vars (avoid nuking manual work).
-            # If remove_user_defined=True, we will also remove USER_DEFINED overlaps.
-            if not remove_user_defined:
-                try:
-                    src = sv.getSource()
-                    if src == SourceType.USER_DEFINED:
-                        continue
-                except Exception:
-                    pass
-
-            # Capture name/len BEFORE deletion, because the var object becomes invalid after removeVariable.
-            sv_name = None
-            try:
-                sv_name = sv.getName()
-            except Throwable:
-                sv_name = "<unknown>"
-
-            try:
-                func.removeVariable(sv)
-                removed += 1
-                _warn("[BPVAR-DEL] %s %+d : removed overlapping var '%s' len=%d" %
-                      (func.getName(), int(target_off), sv_name, int(ln)))
-            except Throwable:
-                pass
-        except Exception:
-            pass
-
-    return removed
-
-
-# Set when we delete stack vars; callers should rebuild any cached offset maps.
-_g_stackvars_dirty = False
-
-
-def _set_var_dtype_force(func, var, dt):
-    """Try hard to set a stack var's datatype.
-
-    Ghidra often throws VariableSizeException if any other stack variable overlaps the storage.
-    In that case, we delete overlapping vars and retry.
-
-    Returns True on success, False otherwise.
-    """
-    if var is None or dt is None:
-        return False
-
-    # Fast path: already the desired type (or equivalent)
-    try:
-        if var.getDataType() == dt:
-            return True
-    except Exception:
-        pass
-
-    # First attempt: just set it
-    try:
-        var.setDataType(dt, SourceType.USER_DEFINED)
-        return True
-    except VariableSizeException:
-        pass
-    except Throwable:
-        # Not a size conflict; still may succeed after overlap clear, but treat similarly.
-        pass
-
-    # Determine desired length for overlap clearing
-    want_len = -1
-    try:
-        want_len = int(dt.getLength())
-    except Exception:
-        want_len = -1
-    if want_len <= 0:
-        # Can't reason about overlap clearing
-        return False
-
-    target_off = None
-    try:
-        target_off = int(var.getStackOffset())
-    except Exception:
-        return False
-
-    # Pass 1: remove non-user-defined overlaps
-    global _g_stackvars_dirty
-    if _resolve_stack_conflicts(func, target_off, want_len, keep_var=var, remove_user_defined=False) > 0:
-        _g_stackvars_dirty = True
-    try:
-        var.setDataType(dt, SourceType.USER_DEFINED)
-        return True
-    except VariableSizeException:
-        pass
-    except Throwable:
-        pass
-
-    # Pass 2: optionally remove USER_DEFINED overlaps too.
-    if ALLOW_REMOVE_USER_DEFINED_OVERLAPS:
-        if _resolve_stack_conflicts(func, target_off, want_len, keep_var=var, remove_user_defined=True) > 0:
-            _g_stackvars_dirty = True
-        try:
-            var.setDataType(dt, SourceType.USER_DEFINED)
-            return True
-        except Throwable:
-            pass
-
-    # Last resort: delete/recreate the local at this stack offset with the desired datatype.
-    if not ALLOW_RECREATE_STACK_VAR_ON_TYPEFAIL:
-        return False
-    try:
-        nm = None
-        try:
-            nm = var.getName()
-        except Throwable:
-            nm = "var_%+d" % int(target_off)
-
-        # Removing the existing variable (if allowed) then creating a fresh one
-        # is often required for by-value structs/arrays where the old var has the wrong size.
-        try:
-            func.removeVariable(var)
-            _g_stackvars_dirty = True
-        except Throwable:
-            # If we can't remove it, don't try to create another on top.
-            return False
-
-        newv, err = _try_create_stack_var(func, nm, target_off, dt)
-        if newv is None:
-            _warn("[BPVAR-RECREATEFAIL] %s %+d : %s" % (func.getName(), int(target_off), err))
-            return False
-        _log("[BPVAR-RECREATED] %s %+d %s : %s" % (func.getName(), int(target_off), nm, dt.getName()))
-        return True
-    except Throwable:
-        return False
 
 # ------------------------------------------------------------
 # main

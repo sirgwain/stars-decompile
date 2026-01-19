@@ -64134,38 +64134,38 @@
             "bp_off": 6
           },
           {
-            "name": "msg",
-            "kind": "param",
-            "typind": 115,
-            "c_type": "uint16_t",
-            "c_decl": "uint16_t msg",
-            "size": 2,
-            "is_far_ptr": false,
-            "bp_off": 12
-          }
-        ],
-        "locals": [
-          {
-            "name": "hwnd",
-            "kind": "local",
-            "typind": 115,
-            "c_type": "HWND",
-            "c_decl": "HWND hwnd",
-            "size": 2,
-            "is_far_ptr": false,
-            "reg": 15,
-            "note": "windows_retype"
-          },
-          {
             "name": "wParam",
-            "kind": "local",
+            "kind": "param",
             "typind": 115,
             "c_type": "uint16_t",
             "c_decl": "uint16_t wParam",
             "size": 2,
             "is_far_ptr": false,
-            "reg": 16
+            "bp_off": 10
           },
+          {
+            "name": "message",
+            "kind": "param",
+            "typind": 115,
+            "c_type": "WMType",
+            "c_decl": "WMType message",
+            "size": 2,
+            "is_far_ptr": false,
+            "bp_off": 12
+          },
+          {
+            "name": "hwnd",
+            "kind": "param",
+            "typind": 115,
+            "c_type": "HWND",
+            "c_decl": "HWND hwnd",
+            "size": 2,
+            "is_far_ptr": false,
+            "bp_off": 14,
+            "note": "windows_retype"
+          }
+        ],
+        "locals": [
           {
             "name": "hdc",
             "kind": "local",

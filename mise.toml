@@ -217,6 +217,29 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
 
 '''
 
+[tasks.ghidra-fix-dat-strings]
+description = "Fix short DAT_ strings"
+run = '''
+#!/bin/bash
+set -e
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+echo "Applying race attribute equates..."
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript FixShortDatStrings.py
+
+'''
 
 [tasks.ghidra-analyze]
 description = "Run the analyzer"
@@ -248,6 +271,7 @@ run = [
     { task = "ghidra-apply-structs" },
     { task = "ghidra-apply-names" },
     { task = "ghidra-apply-globals" },
+    { task = "ghidra-analyze" }, # analyze again once we have globals
     { task = "ghidra-apply-funcsigs" },
     { task = "ghidra-update-runtime-helpers" },
     { task = "ghidra-retype-doubles" },
