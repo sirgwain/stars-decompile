@@ -37,9 +37,16 @@ from ghidra.program.model.data import (
     ByteDataType,
     Structure,
     TypeDef,
+    TypedefDataType,
+    DoubleDataType,
+    LongDoubleDataType,
 )
 from ghidra.program.model.address import Address
 
+# ----- category paths -----
+_DEFAULT_CAT_PATH = CategoryPath("/stars")
+_WINDOWS_CAT_PATH = CategoryPath("/windows")
+_CATEGORY_PATHS = [_DEFAULT_CAT_PATH, _WINDOWS_CAT_PATH, CategoryPath("/")]
 
 _RE_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _RE_ARRAY = re.compile(r"\[(\d+)\]")
@@ -168,6 +175,7 @@ class StructField:
     c_type: str
     c_decl: str
     override_c_type: str
+    is_far_ptr: bool
 
 
 @dataclass
@@ -289,6 +297,7 @@ def _struct_field(d: dict[str, Any]) -> StructField:
         c_type=d.get("c_type"),
         c_decl=d.get("c_decl"),
         override_c_type=d.get("override_c_type"),
+        is_far_ptr=d.get("is_far_ptr", False),
     )
 
 
@@ -311,6 +320,10 @@ def c_type_to_data_type(c_type: str) -> DataType | None:
         return LongDataType.dataType
     if n in ("uint32_t", "unsigned long"):
         return UnsignedLongDataType.dataType
+    if n in ("double"):
+        return DoubleDataType.dataType
+    if n in ("long double"):
+        return LongDoubleDataType.dataType
     if n == "void":
         return VoidDataType.dataType
     return None
@@ -359,6 +372,161 @@ def dts_by_name(dtm: DataTypeManager) -> dict[str, DataType]:
 
     return idx
 
+
+def make_func_def(
+    dtm: DataTypeManager, ret_name: str, args_text: str, unique_name: str
+) -> FunctionDefinitionDataType:
+    # make a FunctionDefinitionDataType for a function pointer
+    # Return type
+    ret_dt = c_type_to_data_type(ret_name)
+    if ret_dt is None:
+        ret_dt = VoidDataType.dataType
+
+    # Construct function definition datatype
+    fd = FunctionDefinitionDataType(CategoryPath.ROOT, unique_name, dtm)
+
+    fd.setReturnType(ret_dt)
+
+    args_text = args_text.strip()
+    if args_text == "" or args_text == "void":
+        return fd
+
+    # Parameter details don't matter; keep placeholders
+    try:
+        argn = 1 + args_text.count(",")
+        params = []
+        for i in range(argn):
+            params.append(
+                ParameterDefinitionImpl(
+                    "a%d" % i, PointerDataType(VoidDataType.dataType), ""
+                )
+            )
+        fd.setArguments(params)
+    except Exception:
+        pass
+
+    return fd
+
+
+def pointer_dt(base_dt: DataType, is_far_ptr: bool) -> DataType:
+    # Turn a DataType into a pointer to the DataType
+    if is_far_ptr:
+        # FAR pointer => 4 bytes
+        return Pointer32DataType(base_dt)
+    # NEAR pointer => default pointer size (Win16 segments: 2 bytes in your setup)
+    return PointerDataType(base_dt)
+
+
+def wrap_pointers(base_dt: DataType, star_count: int, is_far_ptr: bool) -> DataType:
+    # For each *, wrap the base DataType as a pointer
+    dt = base_dt
+    for _ in range(star_count):
+        dt = pointer_dt(dt, is_far_ptr)
+    return dt
+
+
+def wrap_arrays(base_dt: DataType, dims: list[int]) -> DataType:
+    # For each dimension of an array, wrap the base DataType as an array
+    dt = base_dt
+    # Build from inner to outer
+    for n in reversed(dims):
+        # TODO: does this need to be removed for struct fields that are char rgb[0] or equivalent?
+        n_int = n or 1  # treat 0 length arrays as length 1
+        el_len = dt.getLength()
+        if el_len <= 0:
+            el_len = 1
+        dt = ArrayDataType(dt, n_int, el_len)
+    return dt
+
+
+def _unwrap_typedef(dt: DataType) -> DataType:
+    if isinstance(dt, TypedefDataType):
+        dt = dt  # type: TypedefDataType
+        b = dt.getBaseDataType()
+        if b is not None:
+            return b
+    return dt
+
+
+def lookup_type(dtm: DataTypeManager, name: str, cat_paths=_CATEGORY_PATHS) -> DataType:
+    """
+    Lookup a DataType by name, from a given list of category paths
+    """
+    for cat_path in cat_paths:
+        dt = dtm.getDataType(cat_path, name)
+        if dt is not None:
+            return _unwrap_typedef(dt)
+    return None
+
+
+def wrapped_datatype(dt: DataType, decl_info: DeclInfo, is_far_ptr: bool) -> DataType:
+    stars = decl_info.stars
+    dims = decl_info.dims
+    wrapped_dt = dt
+
+    if decl_info.kind == "normal" and decl_info.ptr_to_array:
+        # pointer-to-array: build the array first, then apply pointer(s)
+        if dims:
+            wrapped_dt = wrap_arrays(wrapped_dt, dims)
+        if stars > 0:
+            wrapped_dt = wrap_pointers(wrapped_dt, stars, is_far_ptr)
+    else:
+        # normal: pointers bind before arrays (array-of-pointers)
+        if stars > 0:
+            wrapped_dt = wrap_pointers(wrapped_dt, stars, is_far_ptr)
+        if dims:
+            wrapped_dt = wrap_arrays(wrapped_dt, dims)
+
+    return wrapped_dt
+
+
+def datatype_from_c_decl(
+    dtm: DataTypeManager,
+    name: str,
+    c_decl: str,
+    is_far_ptr: bool,
+    cat_paths=_CATEGORY_PATHS,
+) -> tuple[DataType, DeclInfo, str]:
+    """
+    Return a DataType from a c_decl
+
+    ex:
+    c_decl: "uint8_t rgPalGray[20]"
+    """
+
+    if not c_decl:
+        return None, "empty type"
+
+    decl_info = parse_c_decl(c_decl)
+
+    if decl_info.kind == "funcptr":
+        fn_name = "fn_%s" % sanitize_name(name, "sym")
+        fd = make_func_def(dtm, decl_info.ret, decl_info.args, fn_name)
+        return pointer_dt(fd, is_far_ptr), decl_info, None
+
+    base_name = decl_info.base
+    if not base_name:
+        return None, decl_info, "could not parse base type from '%s'" % c_decl
+
+    base_dt = c_type_to_data_type(base_name)
+    if base_dt is None:
+        base_dt = lookup_type(dtm, base_name, cat_paths)
+    if base_dt is None:
+        return (
+            None,
+            decl_info,
+            "could not resolve base type '%s' (from '%s')"
+            % (
+                base_name,
+                c_decl,
+            ),
+        )
+
+    dt = wrapped_datatype(base_dt, decl_info, is_far_ptr)
+
+    return dt, decl_info, None
+
+
 # --- typed DeclInfo ---
 
 
@@ -376,6 +544,7 @@ class FuncPtrDeclInfo:
     kind: Literal["funcptr"]
     ret: str  # return type text (as captured)
     args: str  # argument text inside (...)
+    base: str = ""
 
 
 DeclInfo: TypeAlias = NormalDeclInfo | FuncPtrDeclInfo
@@ -453,7 +622,6 @@ def parse_c_decl(c_decl: str) -> DeclInfo:
     base = re.sub(r"\s+", " ", s_no_arr.replace("*", " ")).strip()
 
     return NormalDeclInfo(kind="normal", base=base, stars=stars, dims=dims)
-
 
 
 def load_nb09_structs(path: str) -> Nb09GhidraStructs:

@@ -24,7 +24,8 @@ import traceback
 try:
     from ghidra.ghidra_builtins import *
     from ghidra.program.model.listing import *
-    currentProgram = currentProgram # type: Program
+
+    currentProgram = currentProgram  # type: Program
 except:
     pass
 
@@ -58,7 +59,10 @@ from ghidra.program.model.data import (
 from ghidra.program.model.listing import ParameterImpl
 from ghidra.program.model.listing import VariableSizeException
 from ghidra.app.cmd.function import ApplyFunctionSignatureCmd
-from ghidra.program.model.data import FunctionDefinitionDataType, ParameterDefinitionImpl
+from ghidra.program.model.data import (
+    FunctionDefinitionDataType,
+    ParameterDefinitionImpl,
+)
 
 # ------------------------------------------------------------
 # knobs
@@ -81,14 +85,18 @@ SET_CS_ON_ENTRY = True
 # helpers
 # ------------------------------------------------------------
 
+
 def _log(s):
     print(s)
+
 
 def _warn(s):
     print("[WARN] " + s)
 
+
 def _err(s):
     print("[ERR] " + s)
+
 
 def _parse_seg_selector(addr_s):
     # "1038:7fe6" -> 0x1038
@@ -96,6 +104,7 @@ def _parse_seg_selector(addr_s):
         return int(addr_s.split(":")[0], 16)
     except:
         return None
+
 
 def set_cs_at_function_entry(func):
     """Set CS register context at the function entry to the entry segment selector."""
@@ -105,7 +114,9 @@ def set_cs_at_function_entry(func):
         entry = func.getEntryPoint()
         seg = _parse_seg_selector(entry.toString())
         if seg is None:
-            _warn(f"{func.getName()} seg selector for entry {entry.toString()} is empty")
+            _warn(
+                f"{func.getName()} seg selector for entry {entry.toString()} is empty"
+            )
             return False
 
         reg = currentProgram.getRegister("CS")
@@ -116,9 +127,11 @@ def set_cs_at_function_entry(func):
         ctx = currentProgram.getProgramContext()
         # Apply only at the entry point; keep the range minimal to avoid stepping
         # on other context propagation.
-        ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))
+        ctx.setValue(
+            reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg)
+        )
         return True
-    except Throwable as t: 
+    except Throwable as t:
         _err(f"{func.getName()} failed to set cs at entry")
         _err(traceback.format_exc())
         return False
@@ -126,6 +139,7 @@ def set_cs_at_function_entry(func):
         _err(f"{func.getName()} failed to set cs at entry")
         _err(traceback.format_exc())
         return False
+
 
 def build_logical_seg_map_from_memory():
     """
@@ -145,12 +159,16 @@ def build_logical_seg_map_from_memory():
     m = {}
     for i, seg in enumerate(segs):
         m[i + 1] = seg
-    _log("Built logical segment map from memory: %d segments (min=%s max=%s)" % (
-        len(segs),
-        ("0x%04x" % segs[0]) if segs else "n/a",
-        ("0x%04x" % segs[-1]) if segs else "n/a",
-    ))
+    _log(
+        "Built logical segment map from memory: %d segments (min=%s max=%s)"
+        % (
+            len(segs),
+            ("0x%04x" % segs[0]) if segs else "n/a",
+            ("0x%04x" % segs[-1]) if segs else "n/a",
+        )
+    )
     return m
+
 
 _INT_REMAP = {
     "int16_t": "int",
@@ -164,6 +182,7 @@ _INT_REMAP = {
     "INT": "int",
     "BOOL": "int",  # win16 BOOL is 16-bit
 }
+
 
 def normalize_c_type(c_type):
     """
@@ -202,9 +221,10 @@ def normalize_c_type(c_type):
 
     return t
 
+
 def find_datatype_by_name(name):
     """
-    Find a DataType by name, preferring /stars/* then /win16/typedefs/* then anything.
+    Find a DataType by name, preferring /stars/* then /windows/* then anything.
     """
     dtm = currentProgram.getDataTypeManager()
 
@@ -247,7 +267,7 @@ def find_datatype_by_name(name):
     dt = dtm.getDataType("/stars/" + name)
     if dt is not None:
         return dt
-    dt = dtm.getDataType("/win16/typedefs/" + name)
+    dt = dtm.getDataType("/windows/" + name)
     if dt is not None:
         return dt
 
@@ -263,7 +283,7 @@ def find_datatype_by_name(name):
         rank = 100
         if cat.startswith("/stars"):
             rank = 0
-        elif cat.startswith("/win16/typedefs"):
+        elif cat.startswith("/windows"):
             rank = 10
         if rank < best_rank:
             best_rank = rank
@@ -271,6 +291,7 @@ def find_datatype_by_name(name):
             if rank == 0:
                 break
     return best
+
 
 def datatype_from_c_type(c_type):
     """
@@ -296,24 +317,36 @@ def datatype_from_c_type(c_type):
         base = t[:-4].strip()
         base_dt = datatype_from_c_type(base)
         if base_dt is None:
-            _warn("Unknown base type for pointer32: '%s' (from '%s') -> using undefined4*32" % (base, c_type))
+            _warn(
+                "Unknown base type for pointer32: '%s' (from '%s') -> using undefined4*32"
+                % (base, c_type)
+            )
             base_dt = Undefined4DataType.dataType
         try:
             return Pointer32DataType(base_dt)
         except Exception as e:
-            _warn("Pointer32DataType failed for base '%s': %s; using Undefined4*32" % (base, str(e)))
+            _warn(
+                "Pointer32DataType failed for base '%s': %s; using Undefined4*32"
+                % (base, str(e))
+            )
             return Pointer32DataType(Undefined4DataType.dataType)
 
     if t.endswith(" *"):
         base = t[:-2].strip()
         base_dt = datatype_from_c_type(base)
         if base_dt is None:
-            _warn("Unknown base type for pointer: '%s' (from '%s') -> using undefined2*" % (base, c_type))
+            _warn(
+                "Unknown base type for pointer: '%s' (from '%s') -> using undefined2*"
+                % (base, c_type)
+            )
             base_dt = Undefined2DataType.dataType
         try:
             return PointerDataType(base_dt)
         except Exception as e:
-            _warn("PointerDataType failed for base '%s': %s; using Undefined2*" % (base, str(e)))
+            _warn(
+                "PointerDataType failed for base '%s': %s; using Undefined2*"
+                % (base, str(e))
+            )
             return PointerDataType(Undefined2DataType.dataType)
 
     # array (locals)
@@ -331,6 +364,7 @@ def datatype_from_c_type(c_type):
 
     dt = find_datatype_by_name(t)
     return dt
+
 
 def function_at(addr):
     fm: FunctionManager = currentProgram.getFunctionManager()
@@ -351,9 +385,16 @@ def calling_convention_for(types_obj):
     # We already treat far-pointer returns (*32) as stdcall; extend the same rule to
     # 32-bit scalar returns (long/ulong/int32_t/uint32_t), which show up as RET32 in
     # our JSON.
-    if ("RETFAR" in tags) or ret.get("is_far_ptr") or ("RET32" in tags) or ret.get("is_32bit") or (ret.get("size") == 4):
+    if (
+        ("RETFAR" in tags)
+        or ret.get("is_far_ptr")
+        or ("RET32" in tags)
+        or ret.get("is_32bit")
+        or (ret.get("size") == 4)
+    ):
         return "__stdcall16far"
     return "__cdecl16far"
+
 
 def build_function_def(name, types_obj, cc_name):
     """
@@ -382,7 +423,10 @@ def build_function_def(name, types_obj, cc_name):
         p_type_s = p.get("c_type")
         p_dt = datatype_from_c_type(p_type_s)
         if p_dt is None:
-            _warn("Unknown param type '%s' for %s(%s); using undefined2" % (p_type_s, name, p_name))
+            _warn(
+                "Unknown param type '%s' for %s(%s); using undefined2"
+                % (p_type_s, name, p_name)
+            )
             p_dt = Undefined2DataType.dataType
         params.append(ParameterDefinitionImpl(p_name, p_dt, None))
     if types_obj.get("is_pascal"):
@@ -390,6 +434,7 @@ def build_function_def(name, types_obj, cc_name):
         params.reverse()
     fdef.setArguments(params)
     return fdef
+
 
 def apply_signature(func, fdef, cc_name):
     """
@@ -411,7 +456,10 @@ def apply_signature(func, fdef, cc_name):
     try:
         func.setCustomVariableStorage(False)
     except Exception as e:
-        _warn("setCustomVariableStorage(False) failed for %s: %s" % (func.getName(), str(e)))
+        _warn(
+            "setCustomVariableStorage(False) failed for %s: %s"
+            % (func.getName(), str(e))
+        )
 
     # Some Ghidra versions require an explicit update to re-assign storage after CC changes.
     # Unfortunately, the FunctionUpdateType enum moved/changed across versions.
@@ -420,37 +468,43 @@ def apply_signature(func, fdef, cc_name):
         update_type = None
         try:
             from ghidra.program.model.listing import FunctionUpdateType as _FUT
+
             # Common value name in newer versions
-            update_type = getattr(_FUT, 'DYNAMIC_STORAGE_ALL_PARAMS', None)
+            update_type = getattr(_FUT, "DYNAMIC_STORAGE_ALL_PARAMS", None)
         except Exception:
             update_type = None
 
         if update_type is not None:
             new_params = []
             for pd in fdef.getArguments():
-                new_params.append(ParameterImpl(pd.getName(), pd.getDataType(), currentProgram))
+                new_params.append(
+                    ParameterImpl(pd.getName(), pd.getDataType(), currentProgram)
+                )
             func.updateFunction(
                 cc_name,
                 fdef.getReturnType(),
                 new_params,
                 update_type,
                 True,
-                SourceType.USER_DEFINED
+                SourceType.USER_DEFINED,
             )
             try:
                 func.setCustomVariableStorage(False)
             except Exception:
                 pass
     except Exception as e:
-        _warn("updateFunction dynamic storage step failed for %s: %s" % (func.getName(), str(e)))
+        _warn(
+            "updateFunction dynamic storage step failed for %s: %s"
+            % (func.getName(), str(e))
+        )
 
     return True, None
-
 
 
 # ------------------------------------------------------------
 # stack var (bp relative) application for locals/params
 # ------------------------------------------------------------
+
 
 def _get_stack_offset(var):
     """
@@ -482,6 +536,7 @@ def _get_stack_offset(var):
         pass
     return None
 
+
 def _collect_stack_vars(func: Function) -> dict[int, Variable]:
     """
     Build map stackOffset -> [vars...] for all variables that live on stack (params + locals).
@@ -507,6 +562,7 @@ def _collect_stack_vars(func: Function) -> dict[int, Variable]:
             continue
         m.setdefault(off, []).append(v)
     return m
+
 
 def _choose_stack_var_for_rename(vars_here, want_len):
     """
@@ -550,7 +606,9 @@ def _choose_stack_var_for_rename(vars_here, want_len):
     return None  # ambiguous
 
 
-def _rename_var_user_defined(func: Function, v: Variable, new_name: str, stack_off: int):
+def _rename_var_user_defined(
+    func: Function, v: Variable, new_name: str, stack_off: int
+):
     """
     Rename v to new_name as USER_DEFINED, handling duplicates.
     Returns True if renamed/changed.
@@ -573,10 +631,16 @@ def _rename_var_user_defined(func: Function, v: Variable, new_name: str, stack_o
             v.setName(uniq, SourceType.USER_DEFINED)
             return True
         except Throwable as ex:
-            _warn("[BPVAR-NAMEFAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+            _warn(
+                "[BPVAR-NAMEFAIL] %s sp=%+d : %s"
+                % (func.getName(), int(stack_off), str(ex))
+            )
             return False
     except Throwable as ex:
-        _warn("[BPVAR-NAMEFAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+        _warn(
+            "[BPVAR-NAMEFAIL] %s sp=%+d : %s"
+            % (func.getName(), int(stack_off), str(ex))
+        )
         return False
 
 
@@ -589,7 +653,9 @@ def _is_undefined_like_datatype(dt):
         return True
     try:
         # Peel arrays: undefined2[16] should count as undefined-like
-        while hasattr(dt, "getDataType") and dt.getClass().getName().endswith("ArrayDataType"):
+        while hasattr(dt, "getDataType") and dt.getClass().getName().endswith(
+            "ArrayDataType"
+        ):
             dt = dt.getDataType()
             if dt is None:
                 return True
@@ -603,7 +669,9 @@ def _is_undefined_like_datatype(dt):
         return False
 
 
-def _maybe_retype_stack_var(func: Function, v: Variable, desired_dt: DataType, want_len: int, stack_off: int):
+def _maybe_retype_stack_var(
+    func: Function, v: Variable, desired_dt: DataType, want_len: int, stack_off: int
+):
     """
     Retype v to desired_dt ONLY if:
       - current dt is undefined-like
@@ -620,7 +688,17 @@ def _maybe_retype_stack_var(func: Function, v: Variable, desired_dt: DataType, w
         return False
 
     if want_len is not None and int(want_len) > 0 and v_len != int(want_len):
-        _log("[BPVAR-RETYPE] %s sp=%+d %s v_dt=%s v_len=%d want_len=%d" % (func.getName(), int(stack_off), desired_dt.getName(), v.getDataType().getName(), v_len, want_len))
+        _log(
+            "[BPVAR-RETYPE] %s sp=%+d %s v_dt=%s v_len=%d want_len=%d"
+            % (
+                func.getName(),
+                int(stack_off),
+                desired_dt.getName(),
+                v.getDataType().getName(),
+                v_len,
+                want_len,
+            )
+        )
         return False
 
     try:
@@ -629,17 +707,26 @@ def _maybe_retype_stack_var(func: Function, v: Variable, desired_dt: DataType, w
         return False
 
     if dt_len != v_len:
-        _log("[BPVAR-RETYPE] %s sp=%+d %s is %d vs desired %d" % (func.getName(), int(stack_off), desired_dt.getName(), dt_len, v_len))
+        _log(
+            "[BPVAR-RETYPE] %s sp=%+d %s is %d vs desired %d"
+            % (func.getName(), int(stack_off), desired_dt.getName(), dt_len, v_len)
+        )
         return False
 
     try:
         cur_dt = v.getDataType()
     except Exception:
-        _log("[BPVAR-RETYPE] %s sp=%+d %s no cur_dt" % (func.getName(), int(stack_off), desired_dt.getName()))
+        _log(
+            "[BPVAR-RETYPE] %s sp=%+d %s no cur_dt"
+            % (func.getName(), int(stack_off), desired_dt.getName())
+        )
         cur_dt = None
 
     if not _is_undefined_like_datatype(cur_dt):
-        _log("[BPVAR-RETYPE] %s sp=%+d %s %s is not undefined" % (func.getName(), int(stack_off), desired_dt.getName(), cur_dt.getName()))
+        _log(
+            "[BPVAR-RETYPE] %s sp=%+d %s %s is not undefined"
+            % (func.getName(), int(stack_off), desired_dt.getName(), cur_dt.getName())
+        )
         return False
 
     # Already correct?
@@ -652,16 +739,25 @@ def _maybe_retype_stack_var(func: Function, v: Variable, desired_dt: DataType, w
     try:
         # Variable.setDataType(DataType, SourceType) exists on most versions
         v.setDataType(desired_dt, SourceType.USER_DEFINED)
-        _log("[BPVAR-RETYPE] %s sp=%+d <- %s" % (func.getName(), int(stack_off), desired_dt.getName()))
+        _log(
+            "[BPVAR-RETYPE] %s sp=%+d <- %s"
+            % (func.getName(), int(stack_off), desired_dt.getName())
+        )
         return True
     except VariableSizeException:
         # We explicitly do not resize/recreate in this mode.
-        _log("[BPVAR-RETYPE-SKIP] %s sp=%+d : size mismatch (len=%d)" %
-             (func.getName(), int(stack_off), v_len))
+        _log(
+            "[BPVAR-RETYPE-SKIP] %s sp=%+d : size mismatch (len=%d)"
+            % (func.getName(), int(stack_off), v_len)
+        )
         return False
     except Throwable as ex:
-        _warn("[BPVAR-RETYPE-FAIL] %s sp=%+d : %s" % (func.getName(), int(stack_off), str(ex)))
+        _warn(
+            "[BPVAR-RETYPE-FAIL] %s sp=%+d : %s"
+            % (func.getName(), int(stack_off), str(ex))
+        )
         return False
+
 
 def apply_bp_relative_vars(func, types_obj):
     """
@@ -702,7 +798,10 @@ def apply_bp_relative_vars(func, types_obj):
         try:
             bp_off = int(bp_off)
         except Exception:
-            _log("[BPVAR] %s local %s is has invalid offset %s" % (func.getName(), nm, bp_off))
+            _log(
+                "[BPVAR] %s local %s is has invalid offset %s"
+                % (func.getName(), nm, bp_off)
+            )
             continue
 
         stack_off = bp_off - 2
@@ -712,27 +811,36 @@ def apply_bp_relative_vars(func, types_obj):
         try:
             want_len = int(want_len) if want_len is not None else None
         except Exception:
-            _log("[BPVAR] %s local %s unable to determine want_len %s" % (func.getName(), nm, want_len))
+            _log(
+                "[BPVAR] %s local %s unable to determine want_len %s"
+                % (func.getName(), nm, want_len)
+            )
             want_len = None
 
         c_type = normalize_c_type(e.get("c_type") or "")
         cur = best_by_stack.get(stack_off)
         if cur is None:
             best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
-            _log("[BPVAR] %s local %s best by stack stack_off %s" % (func.getName(), nm, stack_off))
+            _log(
+                "[BPVAR] %s local %s best by stack stack_off %s"
+                % (func.getName(), nm, stack_off)
+            )
             continue
 
-        _log("[BPVAR] %s sp=%+d bp=%+d name=%s c_type: %s" %
-                (func.getName(), int(stack_off), int(bp_off), nm, c_type))
+        _log(
+            "[BPVAR] %s sp=%+d bp=%+d name=%s c_type: %s"
+            % (func.getName(), int(stack_off), int(bp_off), nm, c_type)
+        )
 
         _, _, cur_len, _ = cur
-        if (want_len is not None and want_len > 0) and not (cur_len is not None and cur_len > 0):
+        if (want_len is not None and want_len > 0) and not (
+            cur_len is not None and cur_len > 0
+        ):
             best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
-        elif (want_len is not None and cur_len is not None and want_len > cur_len):
+        elif want_len is not None and cur_len is not None and want_len > cur_len:
             best_by_stack[stack_off] = (bp_off, nm, want_len, c_type)
 
     changed = 0
-
 
     for stack_off in sorted(best_by_stack.keys()):
         bp_off, nm, want_len, c_type = best_by_stack[stack_off]
@@ -744,14 +852,18 @@ def apply_bp_relative_vars(func, types_obj):
         vars_here = by_off.get(stack_off, [])
         v = _choose_stack_var_for_rename(vars_here, want_len)
         if v is None:
-            _log("[BPVAR-SKIP] %s sp=%+d bp=%+d name=%s (ambiguous or missing)" %
-                 (func.getName(), int(stack_off), int(bp_off), nm))
+            _log(
+                "[BPVAR-SKIP] %s sp=%+d bp=%+d name=%s (ambiguous or missing)"
+                % (func.getName(), int(stack_off), int(bp_off), nm)
+            )
             continue
 
         if _rename_var_user_defined(func, v, nm, stack_off):
             changed += 1
-            _log("[BPVAR-RENAME] %s sp=%+d bp=%+d <- %s" %
-                 (func.getName(), int(stack_off), int(bp_off), nm))
+            _log(
+                "[BPVAR-RENAME] %s sp=%+d bp=%+d <- %s"
+                % (func.getName(), int(stack_off), int(bp_off), nm)
+            )
 
         # Safe retype: only if same size and current is undefined-like
         if c_type:
@@ -759,17 +871,37 @@ def apply_bp_relative_vars(func, types_obj):
             if desired_dt is not None:
                 if _maybe_retype_stack_var(func, v, desired_dt, want_len, stack_off):
                     changed += 1
-                    _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s <- %s" %
-                    (func.getName(), int(stack_off), int(bp_off), nm, desired_dt.getName()))
+                    _log(
+                        "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s <- %s"
+                        % (
+                            func.getName(),
+                            int(stack_off),
+                            int(bp_off),
+                            nm,
+                            desired_dt.getName(),
+                        )
+                    )
                 else:
-                    _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s not retyping to %s" %
-                    (func.getName(), int(stack_off), int(bp_off), nm, desired_dt.getName()))
+                    _log(
+                        "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s not retyping to %s"
+                        % (
+                            func.getName(),
+                            int(stack_off),
+                            int(bp_off),
+                            nm,
+                            desired_dt.getName(),
+                        )
+                    )
             else:
-                _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no desired_dt" %
-                 (func.getName(), int(stack_off), int(bp_off), nm))
+                _log(
+                    "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no desired_dt"
+                    % (func.getName(), int(stack_off), int(bp_off), nm)
+                )
         else:
-            _log("[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no c_type" %
-                 (func.getName(), int(stack_off), int(bp_off), nm))
+            _log(
+                "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no c_type"
+                % (func.getName(), int(stack_off), int(bp_off), nm)
+            )
 
     return changed
 
@@ -777,6 +909,7 @@ def apply_bp_relative_vars(func, types_obj):
 # ------------------------------------------------------------
 # main
 # ------------------------------------------------------------
+
 
 def main():
     json_path = askFile("Select nb09_ghidra_globals.json", "OK").getAbsolutePath()
@@ -799,8 +932,16 @@ def main():
         # fall back: find first list value
         if isinstance(data, dict):
             for k, v in data.items():
-                if isinstance(v, list) and v and isinstance(v[0], dict) and ("cv" in v[0] or "name" in v[0]):
-                    _warn("No 'procs' key; using list at key '%s' (%d records)" % (k, len(v)))
+                if (
+                    isinstance(v, list)
+                    and v
+                    and isinstance(v[0], dict)
+                    and ("cv" in v[0] or "name" in v[0])
+                ):
+                    _warn(
+                        "No 'procs' key; using list at key '%s' (%d records)"
+                        % (k, len(v))
+                    )
                     recs = v
                     break
 
@@ -874,12 +1015,17 @@ def main():
             ok, why = apply_signature(func, fdef, cc_name)
             if ok:
                 applied += 1
-                _log("[APPLY] %s <- %s  cc=%s" % (addr_str, (types_obj.get("proto") or "<no proto>"), cc_name))
+                _log(
+                    "[APPLY] %s <- %s  cc=%s"
+                    % (addr_str, (types_obj.get("proto") or "<no proto>"), cc_name)
+                )
                 # locals/params by bp-relative offsets (from JSON)
                 try:
                     c_changed = apply_bp_relative_vars(func, types_obj)
                     if c_changed:
-                        _log("[BPVARS] %s updated %d stack vars" % (addr_str, c_changed))
+                        _log(
+                            "[BPVARS] %s updated %d stack vars" % (addr_str, c_changed)
+                        )
                 except Exception as e:
                     _warn("[BPVARS-ERR] %s : %s" % (addr_str, str(e)))
             else:
@@ -899,6 +1045,7 @@ def main():
     _log("  skipped:  %d" % skipped)
     _log("  failed:   %d" % fails)
     _log("  cs_set:   %d" % cs_set)
+
 
 if __name__ == "__main__":
     main()
