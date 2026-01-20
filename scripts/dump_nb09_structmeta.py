@@ -114,9 +114,7 @@ def main() -> None:
         raise SystemExit("NB09 blob has no global type table (global_types is None)")
 
     out: Dict[str, Any] = {
-        "source": str(args.nb09_bin),
         "structs": [],
-        "meta": {"struct_overrides": str(args.struct_overrides) if args.struct_overrides else None},
     }
 
     # Iterate all LF_* records; pick structs/unions.

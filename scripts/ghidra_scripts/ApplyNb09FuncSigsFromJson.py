@@ -19,9 +19,12 @@ import json
 import os
 import re
 import traceback
+
+# make IDE register built ins
 try:
     from ghidra.ghidra_builtins import *
     from ghidra.program.model.listing import *
+    currentProgram = currentProgram # type: Program
 except:
     pass
 

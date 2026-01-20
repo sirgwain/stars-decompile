@@ -1,5 +1,4 @@
 {
-  "source": "/Users/craigpost/stars-decompile/scripts/stars26jrc3.codeview.nb09.bin",
   "structs": [
     {
       "typind": 5360,
@@ -19657,8 +19656,5 @@
         }
       ]
     }
-  ],
-  "meta": {
-    "struct_overrides": "/Users/craigpost/stars-decompile/scripts/struct_overrides.json"
-  }
+  ]
 }

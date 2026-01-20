@@ -25,6 +25,15 @@ from __future__ import print_function
 
 import re
 
+# make IDE register built ins
+try:
+    from ghidra.ghidra_builtins import *
+    from ghidra.program.model.listing import *
+
+    currentProgram = currentProgram  # type: Program
+except:
+    pass
+
 from ghidra.program.model.symbol import SourceType, SymbolType
 from ghidra.program.model.listing import ParameterImpl
 from ghidra.program.model.data import CategoryPath, TypedefDataType, PointerDataType
@@ -326,7 +335,7 @@ def _ensure_struct(dtm, cat, name, total_size, fields=None, min_align=2):
         except Exception:
             return None
 
-def _build_win16_typedefs(program):
+def _build_win16_typedefs(program: Program):
     """Inject minimal Win16 typedefs so WINDOWS.H prototypes resolve in this program."""
     dtm = program.getDataTypeManager()
     cat = CategoryPath("/win16/typedefs")
@@ -402,59 +411,26 @@ def _build_win16_typedefs(program):
     t_HDC  = typedefs.get("HDC",  t_u16)
     t_BYTE = typedefs.get("BYTE", t_undef1)
 
-    # POINT: 2x int16
-    dt_POINT = dtm.getDataType(cat, "POINT")
-    if dt_POINT is None:
-        dt_POINT = _ensure_struct(dtm, cat, "POINT", 4, fields=[
-            (0, t_i16, "x"),
-            (2, t_i16, "y"),
-        ])
-    if dt_POINT is not None:
-        typedefs["POINT"] = dt_POINT
-
-    # RECT: 4x int16
-    dt_RECT = dtm.getDataType(cat, "RECT")
-    if dt_RECT is None:
-        dt_RECT = _ensure_struct(dtm, cat, "RECT", 8, fields=[
-            (0, t_i16, "left"),
-            (2, t_i16, "top"),
-            (4, t_i16, "right"),
-            (6, t_i16, "bottom"),
-        ])
-    if dt_RECT is not None:
-        typedefs["RECT"] = dt_RECT
-
-    # PAINTSTRUCT:
-    #   HDC  hdc;            0
-    #   BOOL fErase;         2
-    #   RECT rcPaint;        4
-    #   BOOL fRestore;       12
-    #   BOOL fIncUpdate;     14
-    #   BYTE rgbReserved[16] 16
-    # total: 32
-    dt_PAINTSTRUCT = dtm.getDataType(cat, "PAINTSTRUCT")
-    if dt_PAINTSTRUCT is None:
-        rgb_dt = None
-        if ArrayDataType is not None and t_BYTE is not None:
-            try:
-                rgb_dt = ArrayDataType(t_BYTE, 16, int(t_BYTE.getLength()))
-            except Exception:
-                rgb_dt = None
-
-        fields = [
-            (0,  t_HDC,        "hdc"),
-            (2,  t_BOOL,       "fErase"),
-            (4,  dt_RECT,      "rcPaint"),
-            (12, t_BOOL,       "fRestore"),
-            (14, t_BOOL,       "fIncUpdate"),
-        ]
-        if rgb_dt is not None:
-            fields.append((16, rgb_dt, "rgbReserved"))
-
-        dt_PAINTSTRUCT = _ensure_struct(dtm, cat, "PAINTSTRUCT", 32, fields=fields)
-
-    if dt_PAINTSTRUCT is not None:
-        typedefs["PAINTSTRUCT"] = dt_PAINTSTRUCT
+    typedefs["POINT"] = dtm.getDataType(cat, "POINT")
+    typedefs["POINT"] = dtm.getDataType(cat, "POINT")
+    typedefs["RECT"] = dtm.getDataType(cat, "RECT")
+    typedefs["LOGFONT"] = dtm.getDataType(cat, "LOGFONT")
+    typedefs["TEXTMETRIC"] = dtm.getDataType(cat, "TEXTMETRIC")
+    typedefs["PAINTSTRUCT"] = dtm.getDataType(cat, "PAINTSTRUCT")
+    typedefs["DRAWITEMSTRUCT"] = dtm.getDataType(cat, "DRAWITEMSTRUCT")
+    typedefs["MEASUREITEMSTRUCT"] = dtm.getDataType(cat, "MEASUREITEMSTRUCT")
+    typedefs["WNDCLASS"] = dtm.getDataType(cat, "WNDCLASS")
+    typedefs["WINDOWPLACEMENT"] = dtm.getDataType(cat, "WINDOWPLACEMENT")
+    typedefs["MSG"] = dtm.getDataType(cat, "MSG")
+    typedefs["OPENFILENAME"] = dtm.getDataType(cat, "OPENFILENAME")
+    typedefs["TIMERINFO"] = dtm.getDataType(cat, "TIMERINFO")
+    typedefs["PD"] = dtm.getDataType(cat, "PD")
+    typedefs["BITMAP"] = dtm.getDataType(cat, "BITMAP")
+    typedefs["BITMAPCOREHEADER"] = dtm.getDataType(cat, "BITMAPCOREHEADER")
+    typedefs["BITMAPINFOHEADER"] = dtm.getDataType(cat, "BITMAPINFOHEADER")
+    typedefs["BITMAPINFO"] = dtm.getDataType(cat, "BITMAPINFO")
+    typedefs["LOGPALETTE"] = dtm.getDataType(cat, "LOGPALETTE")
+    typedefs["OFSTRUCT"] = dtm.getDataType(cat, "OFSTRUCT")
 
     # pointer typedefs (far)
     typedefs["LPSTR"]   = _ensure_typedef(dtm, cat, "LPSTR",   _pointer_of(dtm, t_char, FAR_PTR_SIZE))
