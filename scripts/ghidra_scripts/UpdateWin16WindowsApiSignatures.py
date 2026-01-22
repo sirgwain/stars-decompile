@@ -102,7 +102,8 @@ except Exception:
 
 WINDOWS_H_PROMPT = "Select WINDOWS.H (Win16 SDK header)"
 PREFERRED_CALLING_CONVENTION = "__pascal16far"
-_WINDOWS_CAT_PATH = CategoryPath("/windows")
+# _WINDOWS_CAT_PATH = CategoryPath("/windows")
+_WINDOWS_CAT_PATH = CategoryPath("/stars")
 
 # Far pointer size (your project uses 32-bit pointers for Win16 far pointers)
 FAR_PTR_SIZE = 4
@@ -409,25 +410,26 @@ def _build_win16_typedefs(program: Program):
 
     # Win16 handles are 16-bit
     for hn in [
-        "HWND",
-        "HINSTANCE",
-        "HICON",
-        "HCURSOR",
-        "HMENU",
-        "HBRUSH",
-        "HFONT",
-        "HPEN",
-        "HDC",
-        "HBITMAP",
-        "HGLOBAL",
-        "HLOCAL",
-        "HANDLE",
-        "HFILE",
-        "HHOOK",
         "HACCEL",
-        "HRSRC",
+        "HANDLE",
+        "HBITMAP",
+        "HBRUSH",
+        "HCURSOR",
+        "HDC",
+        "HFILE",
+        "HFONT",
         "HGDIOBJ",
+        "HGLOBAL",
+        "HHOOK",
+        "HICON",
+        "HINSTANCE",
+        "HLOCAL",
+        "HMENU",
+        "HPALETTE",
+        "HPEN",
         "HRGN",
+        "HRSRC",
+        "HWND",
     ]:
         scalars[hn] = t_u16
 

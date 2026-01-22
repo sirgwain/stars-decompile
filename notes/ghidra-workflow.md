@@ -33,7 +33,7 @@ cp scripts/ghidra_scripts/*.py ~/.ghidra/.ghidra_<version>/Extensions/Ghidra/ghi
 
 **Order of execution:**
 
-1. **ApplyNb09StructPackingFromJson.py**
+1. **ApplyNb09StructsFromJson.py**
    - Creates DataTypes for all structs
    - Input: `scripts/nb09_structmeta.json`
 
@@ -41,11 +41,11 @@ cp scripts/ghidra_scripts/*.py ~/.ghidra/.ghidra_<version>/Extensions/Ghidra/ghi
    - Renames all symbols (functions, globals)
    - Input: `scripts/nb09_ghidra_globals.json`
 
-3. **ApplyNb09GlobalsFromJson.py**
+3. **ApplyNb09TypesFromJson.py**
    - Applies types to global variables
    - Input: `scripts/nb09_ghidra_globals.json`
 
-4. **ApplyNb09FuncSigsFromJson.py**
+4. **ApplyNb09FuncLocalsFromJson.py**
    - Applies function signatures and local variables
    - Input: `scripts/nb09_ghidra_globals.json`
 
@@ -81,19 +81,21 @@ cp scripts/ghidra_scripts/*.py ~/.ghidra/.ghidra_<version>/Extensions/Ghidra/ghi
 
 From `scripts/segments.csv`:
 
-| Segment | Selector | Description |
-|---------|----------|-------------|
+| Segment      | Selector  | Description     |
+| ------------ | --------- | --------------- |
 | Code1-Code36 | 1000-1118 | Executable code |
-| Data37 | 1120 | Global data |
-| Rsrc0-Rsrc11 | 1128-1180 | Resources |
+| Data37       | 1120      | Global data     |
+| Rsrc0-Rsrc11 | 1128-1180 | Resources       |
 
 ## Address Translation
 
 The scripts handle translation between:
+
 - **CodeView addresses**: segment:offset from debug symbols
 - **Ghidra addresses**: selector:offset in the loaded program
 
 Example:
+
 ```
 CodeView: MEMORY_UTIL:0x3b68
 Ghidra:   1058:3b68
@@ -104,6 +106,7 @@ Ghidra:   1058:3b68
 ### Wrong Calling Convention
 
 16-bit Pascal calling convention:
+
 - Arguments pushed left-to-right
 - Callee cleans stack
 - Return in AX (or DX:AX for 32-bit)

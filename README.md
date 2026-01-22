@@ -57,7 +57,6 @@ cmake --build --preset run-tests
   - `build-win/` for MinGW / Crossover builds
 - If you change compiler or toolchain settings, it’s often easiest to delete the corresponding build directory and reconfigure.
 
-
 ## scripts
 
 - [`nb09_model.py`](scripts/nb09_model.py) / [`nb09_parser.py`](scripts/nb09_parser.py)  
@@ -81,10 +80,10 @@ cmake --build --preset run-tests
 
 ## ghidra scripts
 
-- ApplyNb09StructPackingFromJson.py - generate DataTypes for all structs in types.h
+- ApplyNb09StructsFromJson.py - generate DataTypes for all structs in types.h
 - ApplyNb09NamesFromJson.py - rename all function and data values (no typing)
-- ApplyNb09GlobalsFromJson.py - apply typing to all data values
-- ApplyNb09FuncSigsFromJson.py - apply function signatures and local variable reassignment
+- ApplyNb09TypesFromJson.py - apply typing to all data values
+- ApplyNb09FuncLocalsFromJson.py - apply function signatures and local variable reassignment
 - DecompileFunction.py - decompile a single function by name
 - ListFunctions.py - list functions matching a pattern
 - ExportDecompiled.py - export decompiled code for multiple functions to a file

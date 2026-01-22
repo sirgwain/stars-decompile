@@ -12,7 +12,8 @@
 [env]
 # Default Ghidra path - override with: export GHIDRA_HOME=/path/to/ghidra
 # Uses shell's GHIDRA_HOME if set, otherwise falls back to default in scripts
-GHIDRA_HOME_ = "~/.local/ghidra/ghidra_12.1_DEV"
+# GHIDRA_HOME_ = "~/.local/ghidra/ghidra_12.1_DEV"
+GHIDRA_HOME_ = "~/ghidra/Ghidra/RuntimeScripts/Linux"
 
 # Project paths (relative to this file)
 PROJECT_DIR = "{{ cwd }}"
@@ -66,6 +67,7 @@ chmod +x "$GHIDRA_EXPANDED/Ghidra/Features/Decompiler/os/linux_x86_64/decompile"
 echo "Importing $TARGET_EXE into Ghidra project..."
 bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -import "$TARGET_EXE" \
+    -noanalysis \
     -processor "x86:LE:16:Protected Mode" \
     -overwrite
 '''
@@ -90,7 +92,7 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript ApplyNb09StructPackingFromJson.py "$JSON_STRUCTS"
+    -postScript ApplyNb09StructsFromJson.py "$JSON_STRUCTS"
 '''
 
 [tasks.ghidra-apply-names]
@@ -116,8 +118,8 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript ApplyNb09NamesFromJson.py "$JSON_GLOBALS"
 '''
 
-[tasks.ghidra-apply-globals]
-description = "Apply NB09 global variable types to Ghidra project"
+[tasks.ghidra-apply-types]
+description = "Apply global variable types and function signatures to Ghidra project"
 run = '''
 #!/bin/bash
 set -e
@@ -136,11 +138,11 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript ApplyNb09GlobalsFromJson.py "$JSON_GLOBALS"
+    -postScript ApplyNb09TypesFromJson.py "$JSON_GLOBALS"
 '''
 
-[tasks.ghidra-apply-funcsigs]
-description = "Apply NB09 function signatures to Ghidra project"
+[tasks.ghidra-apply-funclocals]
+description = "Apply NB09 function local vars to Ghidra project"
 run = '''
 #!/bin/bash
 set -e
@@ -159,7 +161,7 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript ApplyNb09FuncSigsFromJson.py "$JSON_GLOBALS"
+    -postScript ApplyNb09FuncLocalsFromJson.py "$JSON_GLOBALS"
 '''
 
 [tasks.ghidra-apply-win16api]
@@ -217,29 +219,6 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
 
 '''
 
-[tasks.ghidra-fix-dat-strings]
-description = "Fix short DAT_ strings"
-run = '''
-#!/bin/bash
-set -e
-
-GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
-GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
-ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
-
-if [ ! -f "$ANALYZER" ]; then
-    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
-    exit 1
-fi
-
-echo "Applying race attribute equates..."
-bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
-    -process stars.exe \
-    -noanalysis \
-    -scriptPath "$SCRIPTS_DIR" \
-    -postScript FixShortDatStrings.py
-
-'''
 
 [tasks.ghidra-analyze]
 description = "Run the analyzer"
@@ -267,15 +246,16 @@ run = [
     { task = "unzip-stars" },
     { task = "ghidra-import" },
     { task = "ghidra-create-enums" },
-    { task = "ghidra-apply-win16api" },
     { task = "ghidra-apply-structs" },
+    { task = "ghidra-apply-win16api" },
     { task = "ghidra-apply-names" },
-    { task = "ghidra-apply-globals" },
-    { task = "ghidra-analyze" }, # analyze again once we have globals
-    { task = "ghidra-apply-funcsigs" },
+    { task = "ghidra-apply-types" },
     { task = "ghidra-update-runtime-helpers" },
+    { task = "ghidra-analyze" },                # analyze again once we all our symbols in place
     { task = "ghidra-retype-doubles" },
-    { task = "ghidra-apply-race-attributes" }, # VERY LONG
+    { task = "ghidra-delete-default-dat" },
+    { task = "ghidra-apply-race-attributes" },  # VERY LONG
+    { task = "ghidra-apply-funclocals" },
 ]
 
 [tasks.ghidra-gui]
@@ -365,6 +345,26 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
     -postScript RetypeUndefined8Doubles1120.py  2>&1
+'''
+
+[tasks.ghidra-delete-default-dat]
+description = "Delete any analyzer created DAT_ references"
+run = '''
+#!/bin/bash
+set -e
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+echo "Updating runtime helper signatures..."
+echo ""
+
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript DeleteDefaultDatSymbols.py  2>&1
 '''
 
 [tasks.ghidra-create-enums]

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# ApplyNb09StructPackingFromJson.py
+# ApplyNb09StructsFromJson.py
 # @category: Stars
 
 
@@ -7,7 +7,8 @@ from ghidra_utils import (
     StructEntry,
     StructField,
     c_type_to_data_type,
-    datatype_from_c_decl,
+    datatype_from_decl_info,
+    datatype_from_decl_info,
     load_nb09_structs,
     parse_c_decl,
     wrapped_datatype,
@@ -28,6 +29,7 @@ from ghidra.program.model.data import (
     CategoryPath,
     DataTypeConflictHandler,
     StructureDataType,
+    UnionDataType,
 )
 
 
@@ -37,29 +39,30 @@ _WINDOWS_CAT_PATH = CategoryPath("/windows")
 # Some Win16 "typedef" structs live under a separate category path.
 # Map struct/typedef name -> CategoryPath.
 _STRUCT_CAT_PATH_OVERRIDES = {
-    "POINT": _WINDOWS_CAT_PATH,
-    "RECT": _WINDOWS_CAT_PATH,
-    "LOGFONT": _WINDOWS_CAT_PATH,
-    "TEXTMETRIC": _WINDOWS_CAT_PATH,
-    "PAINTSTRUCT": _WINDOWS_CAT_PATH,
-    "DRAWITEMSTRUCT": _WINDOWS_CAT_PATH,
-    "MEASUREITEMSTRUCT": _WINDOWS_CAT_PATH,
-    "WNDCLASS": _WINDOWS_CAT_PATH,
-    "WINDOWPLACEMENT": _WINDOWS_CAT_PATH,
-    "MSG": _WINDOWS_CAT_PATH,
-    "OPENFILENAME": _WINDOWS_CAT_PATH,
-    "TIMERINFO": _WINDOWS_CAT_PATH,
-    "PD": _WINDOWS_CAT_PATH,
-    "BITMAP": _WINDOWS_CAT_PATH,
-    "BITMAPCOREHEADER": _WINDOWS_CAT_PATH,
-    "BITMAPINFOHEADER": _WINDOWS_CAT_PATH,
-    "BITMAPINFO": _WINDOWS_CAT_PATH,
-    "LOGPALETTE": _WINDOWS_CAT_PATH,
-    "OFSTRUCT": _WINDOWS_CAT_PATH,
+    # "POINT": _WINDOWS_CAT_PATH,
+    # "RECT": _WINDOWS_CAT_PATH,
+    # "LOGFONT": _WINDOWS_CAT_PATH,
+    # "TEXTMETRIC": _WINDOWS_CAT_PATH,
+    # "PAINTSTRUCT": _WINDOWS_CAT_PATH,
+    # "DRAWITEMSTRUCT": _WINDOWS_CAT_PATH,
+    # "MEASUREITEMSTRUCT": _WINDOWS_CAT_PATH,
+    # "WNDCLASS": _WINDOWS_CAT_PATH,
+    # "WINDOWPLACEMENT": _WINDOWS_CAT_PATH,
+    # "MSG": _WINDOWS_CAT_PATH,
+    # "OPENFILENAME": _WINDOWS_CAT_PATH,
+    # "TIMERINFO": _WINDOWS_CAT_PATH,
+    # "PD": _WINDOWS_CAT_PATH,
+    # "BITMAP": _WINDOWS_CAT_PATH,
+    # "BITMAPCOREHEADER": _WINDOWS_CAT_PATH,
+    # "BITMAPINFOHEADER": _WINDOWS_CAT_PATH,
+    # "BITMAPINFO": _WINDOWS_CAT_PATH,
+    # "LOGPALETTE": _WINDOWS_CAT_PATH,
+    # "OFSTRUCT": _WINDOWS_CAT_PATH,
 }
 
 # Populated in main(): name -> size (bytes) for NB09 structs/unions.
 _STRUCT_BY_NAME: dict[str, StructEntry] = {}
+_DT_STRUCT_BY_NAME: dict[str, StructureDataType] = {}
 
 
 def _bitfield_container_from_candidates(
@@ -85,7 +88,7 @@ def _bitfield_container_from_candidates(
     for f in cand_fields:
         if f.bitlen:
             continue
-        dt, decl_info, err = datatype_from_c_decl(dtm, f.name, f.c_decl, f.is_far_ptr)
+        dt, err = datatype_from_decl_info(dtm, f.name, f.decl, f.is_far_ptr)
 
         if dt is None:
             continue
@@ -102,10 +105,9 @@ def _bitfield_container_from_candidates(
     for f in cand_fields:
         if f.bitlen is None:
             continue
-        c_type = _norm(f.c_type)
-        if "32" in c_type:
+        if "32" in f.c_type:
             want_bits = 32
-        elif "16" in c_type:
+        elif "16" in f.c_type:
             want_bits = 16
         else:
             want_bits = 8
@@ -132,10 +134,61 @@ def _bitfield_container_from_candidates(
     return dt_field, want_name
 
 
-def _norm(s):
-    if s is None:
-        return ""
-    return str(s).strip()
+def build_union_from_candidate_fields(
+    rec: StructEntry, cand_fields: list[StructField]
+) -> UnionDataType:
+    """
+    Build a Ghidra UnionDataType from NB09 "same offset" candidates.
+
+    Assumptions (matches your current pipeline):
+      - Each StructField in cand_fields already has .base_dt computed (wrapped for pointers/arrays).
+      - Bitfields are NOT passed here (your caller should route bitfield groups elsewhere).
+
+    Raises:
+      - ValueError if cand_fields is empty or any member datatype is unresolved.
+    """
+
+    if not cand_fields:
+        raise ValueError("cand_fields is empty")
+
+    off = int(cand_fields[0].offset)
+    udt = UnionDataType("u_%s_0x%04x" % (rec.name, off))
+
+    used_names: set[str] = set()
+    for f in cand_fields:
+        dt: DataType = f.base_dt
+        if dt is None:
+            raise ValueError(
+                "union member unresolved: name=%s offset=0x%x c_decl=%s"
+                % (f.name, int(f.offset), f.c_decl)
+            )
+
+        # Ensure unique member names (Ghidra unions dislike duplicates)
+        base_name = f.name or "m"
+        name = base_name
+        if name in used_names:
+            i = 2
+            while True:
+                cand = "%s_%d" % (base_name, i)
+                if cand not in used_names:
+                    name = cand
+                    break
+                i += 1
+        used_names.add(name)
+
+        # UnionDataType.add(DataType, int length, String name, String comment)
+        # The length parameter is ignored by unions in practice; pass dt.getLength()
+        # so it’s consistent and explicit.
+        dt_len = dt.getLength()
+        if dt_len <= 0:
+            raise ValueError(
+                "union member has non-positive length: name=%s dt=%s len=%d"
+                % (name, dt.getName(), dt_len)
+            )
+
+        udt.add(dt, dt_len, name, "")
+
+    return udt
 
 
 def _cat_path_for_name(name, fallback):
@@ -177,6 +230,7 @@ def _create_struct_or_union_from_json(
     cat_path: CategoryPath,
 ):
     global _STRUCT_BY_NAME
+    global _DT_STRUCT_BY_NAME
 
     name = rec.name
     size = rec.size
@@ -192,6 +246,50 @@ def _create_struct_or_union_from_json(
     # replace the existing struct with our new struct of size 1
     # we will add to it as we go
     struct_dt = dtm.addDataType(struct_dt, DataTypeConflictHandler.REPLACE_HANDLER)
+
+    for f in rec.fields:
+        decl_info = f.decl
+        if decl_info.base == rec.name:
+            f.base_dt = wrapped_datatype(struct_dt, decl_info, f.is_far_ptr)
+            continue
+        if f.base_dt is not None:
+            continue
+        if _DT_STRUCT_BY_NAME.get(decl_info.base) is not None:
+            f.base_dt = wrapped_datatype(
+                _DT_STRUCT_BY_NAME.get(decl_info.base), decl_info, f.is_far_ptr
+            )
+            continue
+        if _DT_STRUCT_BY_NAME.get(decl_info.base) is None:
+            # this isn't a struct we are going to reload, so try and load the DataType from the decl_info
+            dt, err = datatype_from_decl_info(dtm, f.name, decl_info, f.is_far_ptr)
+            if dt is not None:
+                f.base_dt = dt
+                continue
+
+        # create any structs we depend on first
+        if (
+            _STRUCT_BY_NAME.get(decl_info.base, None) is not None
+            and _DT_STRUCT_BY_NAME.get(decl_info.base) is None
+        ):
+            println(
+                f"[FIELD] {struct_dt.getPathName()} {f.name} off={f.offset} {decl_info.base} has no base_dt"
+            )
+            # this is a struct, create it first
+            dt = _create_struct_or_union_from_json(
+                dtm,
+                _STRUCT_BY_NAME[decl_info.base],
+                _cat_path_for_name(decl_info.base, _DEFAULT_CAT_PATH),
+            )
+            # turn this into an array or pointer if necessary
+            dt = wrapped_datatype(dt, decl_info, f.is_far_ptr)
+            f.base_dt = dt
+            println(
+                f"[FIELD] {struct_dt.getPathName()} {f.name} off={f.offset} created dt {dt.getName()}"
+            )
+        else:
+            println(
+                f"[FIELD] {struct_dt.getPathName()} {f.name} off={f.offset} {decl_info.base} base_dt already in _DT_STRUCT_BY_NAME, or not struct"
+            )
 
     # Process in offset order to avoid back-filling issues.
     #
@@ -216,41 +314,43 @@ def _create_struct_or_union_from_json(
             continue
         cand_fields = members_by_off.get(off) or []
         if len(cand_fields) > 1:
-            println(f"[FIELD] {struct_dt.getPathName()} off={off} bitfields")
-            dt, field_name = _bitfield_container_from_candidates(dtm, cand_fields)
-            if dt is None:
+            has_bitfield = False
+            for cf in cand_fields:
+                if cf.bitlen is not None and cf.bitlen > 0:
+                    has_bitfield = True
+                    break
+            if has_bitfield:
+                println(f"[FIELD] {struct_dt.getPathName()} off={off} bitfields")
+                dt, field_name = _bitfield_container_from_candidates(dtm, cand_fields)
+                if dt is None:
+                    println(
+                        f"[WARN] {struct_dt.getPathName()} off={off} UNABLE TO DETERMINE"
+                    )
+                    continue
+
+                # add the bit field
+                struct_dt.add(dt, field_name, "")
+                next_off = off + dt.getLength()
                 println(
-                    f"[WARN] {struct_dt.getPathName()} off={off} UNABLE TO DETERMINE"
+                    f"[FIELD] {struct_dt.getPathName()} off={off} bitfield {field_name} {dt.getLength()} bytes, next_off={next_off}"
                 )
                 continue
-
-            # add the bit field
-            struct_dt.add(dt, field_name, "")
-            next_off = off + dt.getLength()
-            println(
-                f"[FIELD] {struct_dt.getPathName()} off={off} bitfield {field_name} {dt.getLength()} bytes, next_off={next_off}"
-            )
-            continue
+            else:
+                # add a union
+                println(
+                    f"[FIELD] {struct_dt.getPathName()} off={off} is union of {len(cand_fields)} fields"
+                )
+                udt = build_union_from_candidate_fields(rec, cand_fields)
+                struct_dt.add(udt, udt.getName(), "")
 
         if len(cand_fields) == 1:
-            f = cand_fields[0]
-            dt, decl_info, err = datatype_from_c_decl(
-                dtm, f.name, f.c_decl, f.is_far_ptr
-            )
+            cf = cand_fields[0]
+            dt = cf.base_dt
 
             if dt is None:
                 if decl_info.base == rec.name:
                     # pointer to ourselves
                     dt = struct_dt
-                elif _STRUCT_BY_NAME.get(decl_info.base, None) is not None:
-                    # this is a struct, create it first
-                    dt = _create_struct_or_union_from_json(
-                        dtm,
-                        _STRUCT_BY_NAME[decl_info.base],
-                        _cat_path_for_name(decl_info.base, _DEFAULT_CAT_PATH),
-                    )
-                    # turn this into an array or pointer if necessary
-                    dt = wrapped_datatype(dt, decl_info, f.is_far_ptr)
                 else:
                     println(
                         f"[FIELD] {struct_dt.getPathName()} off={off} field={cf.name} c_decl={cf.c_decl} UNABLE TO RESOLVE BASE TYPE"
@@ -258,9 +358,10 @@ def _create_struct_or_union_from_json(
                     continue
 
             # add the field with this datatype
-            struct_dt.add(dt, f.name, "")
+            struct_dt.add(dt, cf.name, "")
 
     struct_dt = dtm.addDataType(struct_dt, DataTypeConflictHandler.REPLACE_HANDLER)
+    _DT_STRUCT_BY_NAME[rec.name] = struct_dt
 
     println(
         "[STRUCT] %s created/replaced size_json=%d ghidra_len=%d"
@@ -308,7 +409,7 @@ def main():
             created += 1
             println("[CREATED] %s size=%d" % (name, dt.getLength()))
 
-    println("ApplyNb09StructPackingFromJson.py> Created: %d" % created)
+    println("ApplyNb09StructsFromJson.py> Created: %d" % created)
 
 
 main()
