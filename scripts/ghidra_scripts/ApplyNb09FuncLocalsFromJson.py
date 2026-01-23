@@ -214,7 +214,7 @@ def _maybe_retype_stack_var(
         dt_len = desired_dt.getLength()
     if dt_len != v_len:
         log(
-            "[BPVAR-RETYPE] skip %s:%s sp=%+d is %d vs desired %d"
+            "[BPVAR-RETYPE] skip %s:%s sp=%+d dt_len=%d vs desired v_len=%d"
             % (func.getName(), name, stack_off, dt_len, v_len)
         )
         return False

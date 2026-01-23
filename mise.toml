@@ -12,8 +12,8 @@
 [env]
 # Default Ghidra path - override with: export GHIDRA_HOME=/path/to/ghidra
 # Uses shell's GHIDRA_HOME if set, otherwise falls back to default in scripts
-# GHIDRA_HOME_ = "~/.local/ghidra/ghidra_12.1_DEV"
-GHIDRA_HOME_ = "~/ghidra/Ghidra/RuntimeScripts/Linux"
+GHIDRA_HOME_ = "~/.local/ghidra/ghidra_12.0.1_DEV"
+# GHIDRA_HOME_ = "~/ghidra/Ghidra/RuntimeScripts/Linux"
 
 # Project paths (relative to this file)
 PROJECT_DIR = "{{ cwd }}"
@@ -183,7 +183,6 @@ echo "Renaming Win16 API functions..."
 bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
-    -scriptPath "$SCRIPTS_DIR" \
     -postScript FixWin16LibraryFunctionNames.java
 
 echo "Applying Win16 API signatures..."

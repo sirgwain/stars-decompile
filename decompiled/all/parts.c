@@ -13,7 +13,7 @@
 HULDEF * LphuldefSBFromId(short id)
 
 {
-  return (HULDEF *)CONCAT22(0x1008,(HULDEF *)rghuldefSB + id);
+  return (HULDEF *)CONCAT22(0x1008,(HULDEF *)((char *)szMsgTitle + 0x26 + id * 0x8f));
 }
 
 
@@ -31,7 +31,8 @@ HULDEF * LphuldefFromId(HullDef id)
   HULDEF *pHVar1;
   
   if ((int)id < 0x20) {
-    pHVar1 = (HULDEF *)CONCAT22(0x1008,(HULDEF *)rghuldef + id);
+    pHVar1 = (HULDEF *)
+             CONCAT22(0x1008,(HULDEF *)((int)(short *)(rgidPlan + 0x141) + id * 0x8f));
   }
   else {
     pHVar1 = LphuldefSBFromId(id - ihuldefCount);
@@ -129,8 +130,8 @@ short FLookupPartX(PART *ppart,ushort grhst,ushort iItem)
   short sVar1;
   
   (ppart->hs).grhst = grhst;
-  (ppart->hs).wFlags = (ppart->hs).wFlags & 0xff00U | iItem & 0xff;
-  (ppart->hs).wFlags = (ppart->hs).wFlags & 0xff;
+  (ppart->hs).wFlags_0x2 = (ppart->hs).wFlags_0x2 & 0xff00 | iItem & 0xff;
+  (ppart->hs).wFlags_0x2 = (ppart->hs).wFlags_0x2 & 0xff;
   sVar1 = FLookupPart(ppart);
   return sVar1;
 }
@@ -160,13 +161,13 @@ short FLookupPart(PART *ppart)
   
   sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
   HVar1 = (ppart->hs).grhst;
-  uVar2 = (ppart->hs).wFlags;
+  uVar2 = (ppart->hs).wFlags_0x2;
   if (HVar1 == hstEngine) {
     if (0xf < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x4e;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x4e;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if (((uVar2 & 0xff) == 0) && (sVar3 != raCheapCol)) {
         return -1;
@@ -196,8 +197,8 @@ short FLookupPart(PART *ppart)
     if (0xf < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x38 + 0x768;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x38 + 0x768;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if (((((uVar2 & 0xff) == 7) || ((uVar2 & 0xff) == 8)) || ((uVar2 & 0xff) == 0xc)) &&
          (sVar4 = GetRaceGrbit((PLAYER *)rgplr + idPlayer,
@@ -214,8 +215,8 @@ short FLookupPart(PART *ppart)
     if (9 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x36 + 0xae8;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0xae8;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (((uVar2 & 0xff) == 4) && (sVar3 != raStealth)) {
       return -1;
     }
@@ -231,8 +232,8 @@ short FLookupPart(PART *ppart)
     if (0xb < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x36 + 0x4e0;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0x4e0;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (((uVar2 & 0xff) == 7) && (sVar3 != raStealth)) {
       return -1;
     }
@@ -248,8 +249,8 @@ short FLookupPart(PART *ppart)
     if (0x17 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(BEAM **)&ppart->pcom = (BEAM *)rgbeam + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x3c + 0x2450;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (((uVar2 & 0xff) == 2) && (sVar3 != raDefend)) {
       return -1;
     }
@@ -265,8 +266,9 @@ short FLookupPart(PART *ppart)
     if (0xb < (uVar2 & 0xff)) {
       return 0;
     }
-    *(TORP **)&ppart->pcom = (TORP *)rgtorp + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(char **)&(&ppart->u_PART_0x0004)->parmor =
+         (char *)s_M6108__MATH___floating_point_err_1120_2153 + 0x2d + (uVar2 & 0xff) * 0x3c;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if ((idPlayer != -1) && (sVar3 = FShouldPartBeHidden(ppart), sVar3 != 0)) {
       return -1;
     }
@@ -275,8 +277,8 @@ short FLookupPart(PART *ppart)
     if (0xe < (uVar2 & 0xff)) {
       return 0;
     }
-    *(BOMB **)&ppart->pcom = (BOMB *)rgbomb + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x3a + 0x1e1a;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if (((9 < (uVar2 & 0xff)) && ((uVar2 & 0xff) < 0xf)) && (sVar3 == raDefend)) {
         return -1;
@@ -294,8 +296,8 @@ short FLookupPart(PART *ppart)
     if (7 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(MINING **)&ppart->pcom = (MINING *)rgmining + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0x1508;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if ((((((uVar2 & 0xff) == 2) || ((uVar2 & 0xff) == 3)) || ((uVar2 & 0xff) == 4)) ||
           (((uVar2 & 0xff) == 0 || ((uVar2 & 0xff) == 5)))) &&
@@ -321,8 +323,9 @@ short FLookupPart(PART *ppart)
     if (9 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (int)(POINT *)&ptStickyRaceDlg + (uVar2 & 0xff) * 0x36;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor =
+         (int)(POINT *)&ptStickyRaceDlg + (uVar2 & 0xff) * 0x36;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if (((((uVar2 & 0xff) == 0) || ((uVar2 & 0xff) == 2)) ||
           (((uVar2 & 0xff) == 3 ||
@@ -342,8 +345,9 @@ short FLookupPart(PART *ppart)
     if (0xf < (uVar2 & 0xff)) {
       return 0;
     }
-    *(SPECIALSB **)&ppart->pcom = (SPECIALSB *)rgspecialSB + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(char **)&(&ppart->u_PART_0x0004)->parmor =
+         (char *)rgbCur + 0x1f2 + (uVar2 & 0xff) * 0x38;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if (((uVar2 & 0xff) < 7) || (0xf < (uVar2 & 0xff))) {
         if ((uVar2 & 0xff) < 7) {
@@ -364,8 +368,9 @@ short FLookupPart(PART *ppart)
     if (4 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(HULDEF **)&ppart->pcom = (HULDEF *)rghuldefSB + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(char **)&(&ppart->u_PART_0x0004)->parmor =
+         (char *)szMsgTitle + 0x26 + (uVar2 & 0xff) * 0x8f;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if ((((uVar2 & 0xff) == 1) || ((uVar2 & 0xff) == 3)) &&
          (sVar4 = GetRaceGrbit((PLAYER *)rgplr + idPlayer,ibitRaceISB),
@@ -381,8 +386,8 @@ short FLookupPart(PART *ppart)
     if (0x10 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(uint *)&ppart->pcom = (uVar2 & 0xff) * 0x36 + 0xd04;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0xd04;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       sVar4 = FShouldPartBeHidden(ppart);
       if (sVar4 != 0) {
@@ -423,8 +428,8 @@ short FLookupPart(PART *ppart)
     if (10 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(undefined **)&ppart->pcom = (undefined *)&DAT_1120_109a + (uVar2 & 0xff) * 0x36;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0x109a;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       sVar4 = FShouldPartBeHidden(ppart);
       if (sVar4 != 0) {
@@ -442,8 +447,8 @@ short FLookupPart(PART *ppart)
     if (0x13 < (uVar2 & 0xff)) {
       return 0;
     }
-    *(undefined **)&ppart->pcom = (undefined *)&DAT_1120_19e2 + (uVar2 & 0xff) * 0x36;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x36 + 0x19e2;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (((idPlayer != -1) && ((uVar2 & 0xff) < 8)) &&
        (sVar3 = GetRaceGrbit((PLAYER *)rgplr + idPlayer,ibitRaceTT),
        sVar3 == 0)) {
@@ -454,8 +459,8 @@ short FLookupPart(PART *ppart)
     if (0x1f < (uVar2 & 0xff)) {
       return 0;
     }
-    *(HULDEF **)&ppart->pcom = (HULDEF *)rghuldef + (uVar2 & 0xff);
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(uint *)&(&ppart->u_PART_0x0004)->parmor = (uVar2 & 0xff) * 0x8f + 0x29f0;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
       if ((((uVar2 & 0xff) == 0xe) || ((uVar2 & 0xff) == 0x1f)) && (sVar3 != raCheapCol)) {
         return -1;
@@ -499,10 +504,11 @@ short FLookupPart(PART *ppart)
     if (0xe < (uVar2 & 0xff)) {
       return 0;
     }
-    *(HWND **)&ppart->pcom = (HWND *)&hwndZipOrderDlg + (uVar2 & 0xff) * 0x1b;
-    *(undefined2 *)((int)&ppart->pcom + 2) = (undefined *)&DAT_1120_10e0;
+    *(HWND **)&(&ppart->u_PART_0x0004)->parmor =
+         (HWND *)&hwndZipOrderDlg + (uVar2 & 0xff) * 0x1b;
+    *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2) = 0x10e0;
     if (idPlayer != -1) {
-      if ((((uVar2 & 0xff) < 9) && (((COMPART *)ppart->pcom + 1)->id < 0)) &&
+      if ((((uVar2 & 0xff) < 9) && (((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp < 0)) &&
          (sVar4 = GetRaceGrbit((PLAYER *)rgplr + idPlayer,
                                      ibitRaceNoAdvScanner), sVar4 != 0)) {
         return -1;
@@ -522,8 +528,8 @@ short FLookupPart(PART *ppart)
       }
     }
   }
-  sVar3 = TechStatus((char *)CONCAT22(*(undefined2 *)((int)&ppart->pcom + 2),
-                                      (char *)(*(int *)&ppart->pcom + 2)));
+  sVar3 = TechStatus((char *)CONCAT22(*(undefined2 *)((int)&ppart->u_PART_0x0004 + 2),
+                                      (char *)(*(int *)&(&ppart->u_PART_0x0004)->parmor + 2)));
   return sVar3;
 }
 
@@ -542,17 +548,17 @@ void LookupBestPlanetaryScanner(PART *ppart)
 
 {
   uint *puVar1;
-  int iVar2;
+  ushort uVar2;
   short sVar3;
   
-  (ppart->hs).wFlags = (ppart->hs).wFlags & 0xff00U | 8;
+  (ppart->hs).wFlags_0x2 = (ppart->hs).wFlags_0x2 & 0xff00 | 8;
   (ppart->hs).grhst = hstPlanetary;
-  while ((sVar3 = FLookupPart(ppart), sVar3 != 1 && (((ppart->hs).wFlags & 0xffU) != 0))) {
-    iVar2 = (ppart->hs).wFlags;
-    puVar1 = (uint *)&(ppart->hs).wFlags;
+  while ((sVar3 = FLookupPart(ppart), sVar3 != 1 && (((ppart->hs).wFlags_0x2 & 0xff) != 0))) {
+    uVar2 = (ppart->hs).wFlags_0x2;
+    puVar1 = &(ppart->hs).wFlags_0x2;
     *puVar1 = *puVar1 & 0xff00;
-    puVar1 = (uint *)&(ppart->hs).wFlags;
-    *puVar1 = *puVar1 | iVar2 - 1U & 0xff;
+    puVar1 = &(ppart->hs).wFlags_0x2;
+    *puVar1 = *puVar1 | uVar2 - 1 & 0xff;
   }
   return;
 }

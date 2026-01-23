@@ -21,11 +21,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
   undefined2 unaff_SS;
   DWORD dw;
   long lVar6;
-  HWND msg;
-  int local_1c;
-  ushort local_1a;
-  undefined2 local_18;
-  undefined2 local_16;
+  MSG msg;
   short i;
   char *lpT;
   char *pch;
@@ -52,7 +48,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
     pcVar3 = PszFormatIds(idsUnableInitializeStars,(short *)0x0);
     AlertSz(pcVar3,sVar2);
     lVar6 = CONCAT22(lSaltLast._2_2_,(undefined2)lSaltLast);
-    local_1a = 0;
+    msg.wParam = 0;
   }
   else {
     dw = GetTickCount();
@@ -60,7 +56,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
     sVar2 = FCreateStuff();
     lVar6 = CONCAT22(lSaltLast._2_2_,(undefined2)lSaltLast);
     if (sVar2 == 0) {
-      local_1a = 0;
+      msg.wParam = 0;
     }
     else {
       sVar2 = FGetSystemColors();
@@ -69,7 +65,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
         pcVar3 = PszFormatIds(idsUnableInitializeStars,(short *)0x0);
         AlertSz(pcVar3,sVar2);
         lVar6 = CONCAT22(lSaltLast._2_2_,(undefined2)lSaltLast);
-        local_1a = 0;
+        msg.wParam = 0;
       }
       else {
         sVar2 = InitInstance(nCmdShow);
@@ -78,7 +74,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
           pcVar3 = PszFormatIds(idsUnableInitializeStars,(short *)0x0);
           AlertSz(pcVar3,sVar2);
           lVar6 = CONCAT22(lSaltLast._2_2_,(undefined2)lSaltLast);
-          local_1a = 0;
+          msg.wParam = 0;
         }
         else {
           lpT = lpCmdLine;
@@ -93,7 +89,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
                 switch(*lpT) {
                 case 'A':
                 case 'a':
-                  ini.wFlags = ini.wFlags & 0xfbffU | 0x400;
+                  ini.wFlags = ini.wFlags & 0xfbff | 0x400;
                   break;
                 case 'B':
                 case 'b':
@@ -112,13 +108,13 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
                   lpT = (char *)CONCAT22(lpT._2_2_,(char *)lpT + -1);
                   sVar2 = FSetUpBatchProcessing();
                   if (sVar2 != 0) {
-                    ini.wFlags = ini.wFlags & 0xfdf4U | 0x20b;
+                    ini.wFlags = ini.wFlags & 0xfdf4 | 0x20b;
                   }
                   break;
                 case 'C':
                 case 'c':
                   ini.wFlags =
-                       ini.wFlags & 0xfffdU | (uint)(szBase[0] != '\0') << 1;
+                       ini.wFlags & 0xfffd | (uint)(szBase[0] != '\0') << 1;
                   break;
                 case 'D':
                 case 'd':
@@ -128,15 +124,15 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
                     cVar1 = *lpT;
                     if (cVar1 == 'F') {
 LAB_1018_01ce:
-                      ini.wFlags = ini.wFlags & 0xf7ffU | 0x800;
+                      ini.wFlags = ini.wFlags & 0xf7ff | 0x800;
                     }
                     else if (cVar1 == 'M') {
 LAB_1018_01ec:
-                      ini.wFlags = ini.wFlags & 0xdfffU | 0x2000;
+                      ini.wFlags = ini.wFlags & 0xdfff | 0x2000;
                     }
                     else if (cVar1 == 'P') {
 LAB_1018_01dd:
-                      ini.wFlags = ini.wFlags & 0xefffU | 0x1000;
+                      ini.wFlags = ini.wFlags & 0xefff | 0x1000;
                     }
                     else {
                       if (cVar1 == 'f') goto LAB_1018_01ce;
@@ -151,7 +147,7 @@ LAB_1018_01dd:
                   break;
                 case 'G':
                 case 'g':
-                  ini.wFlags = ini.wFlags & 0xfff7U | 8;
+                  ini.wFlags = ini.wFlags & 0xfff7 | 8;
                   i = 0;
                   do {
                     uVar5 = (undefined2)((ulong)lpT >> 0x10);
@@ -174,11 +170,11 @@ LAB_1018_02cb:
                   break;
                 case 'H':
                 case 'h':
-                  gd._4_2_ = gd._4_2_ & 0xfdff | 0x200;
+                  gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfdff | 0x200;
                   break;
                 case 'L':
                 case 'l':
-                  ini.wFlags = ini.wFlags & 0x7fffU | 0x8000;
+                  ini.wFlags = ini.wFlags & 0x7fff | 0x8000;
                   break;
                 case 'P':
                 case 'p':
@@ -201,19 +197,19 @@ LAB_1018_02cb:
                   break;
                 case 'T':
                 case 't':
-                  ini.wFlags = ini.wFlags & 0xffefU | 0x10;
+                  ini.wFlags = ini.wFlags & 0xffef | 0x10;
                   break;
                 case 'V':
                 case 'v':
-                  ini.wFlags = ini.wFlags & 0xbfffU | 0x4000;
+                  ini.wFlags = ini.wFlags & 0xbfff | 0x4000;
                   break;
                 case 'W':
                 case 'w':
-                  ini.wFlags = ini.wFlags & 0xfffbU | 4;
+                  ini.wFlags = ini.wFlags & 0xfffb | 4;
                   break;
                 case 'X':
                 case 'x':
-                  gd.wFlags = gd.wFlags & 0xffbfU | 0x40;
+                  gd.grBits._2_2_ = gd.grBits._2_2_ & 0xffbf | 0x40;
                 }
                 lpT = (char *)CONCAT22(lpT._2_2_,(char *)lpT + 1);
               }
@@ -226,23 +222,25 @@ LAB_1018_02cb:
                 lpT = (char *)CONCAT22(lpT._2_2_,(char *)lpT + 1);
               }
               *pch = '\0';
-              ini.wFlags = ini.wFlags & 0xfffcU | 3;
+              ini.wFlags = ini.wFlags & 0xfffc | 3;
             }
           }
           PostMessage(hwndFrame,0x464,0,0);
 LAB_1018_058a:
           while( true ) {
-            BVar4 = GetMessage((HWND *)&msg,0,0,0);
+            BVar4 = GetMessage((MSG *)CONCAT22(unaff_SS,&msg),0,0,0);
             if (BVar4 == 0) break;
             if (hwndTitle == 0) {
               BVar4 = IsIconic(hwndFrame);
               if (BVar4 == 0) goto LAB_1018_05fc;
               goto LAB_1018_0618;
             }
-            sVar2 = TranslateAccelerator(hwndFrame,hAccelTitle,(HWND *)&msg);
+            sVar2 = TranslateAccelerator
+                              (hwndFrame,hAccelTitle,
+                               (MSG *)CONCAT22(unaff_SS,&msg));
             if (sVar2 == 0) {
-              TranslateMessage((HWND *)&msg);
-              DispatchMessage((HWND *)&msg);
+              TranslateMessage((MSG *)CONCAT22(unaff_SS,&msg));
+              DispatchMessage((MSG *)CONCAT22(unaff_SS,&msg));
             }
           }
           FreeStuff();
@@ -253,21 +251,22 @@ LAB_1018_058a:
   }
   lSaltLast._2_2_ = (undefined2)((ulong)lVar6 >> 0x10);
   lSaltLast._0_2_ = (undefined2)lVar6;
-  return local_1a;
+  return msg.wParam;
 LAB_1018_05fc:
-  sVar2 = TranslateAccelerator(hwndFrame,hAccel,(HWND *)&msg);
+  sVar2 = TranslateAccelerator(hwndFrame,hAccel,(MSG *)CONCAT22(unaff_SS,&msg));
   if (sVar2 == 0) {
 LAB_1018_0618:
-    TranslateMessage((HWND *)&msg);
-    if ((local_1c == 0x100) || (local_1c == 0x101)) {
-      sVar2 = FHandleKey(msg,local_1c,local_1a,CONCAT22(local_16,local_18));
+    TranslateMessage((MSG *)CONCAT22(unaff_SS,&msg));
+    if ((msg.message == 0x100) || (msg.message == 0x101)) {
+      sVar2 = FHandleKey(msg.hwnd,msg.message,msg.wParam,
+                         CONCAT22(msg.lParam._2_2_,(undefined2)msg.lParam));
       if (sVar2 != 0) goto LAB_1018_058a;
     }
-    if (local_1c == 0x102) {
-      sVar2 = FHandleChar(msg,local_1a,CONCAT22(local_16,local_18));
+    if (msg.message == 0x102) {
+      sVar2 = FHandleChar(msg.hwnd,msg.wParam,CONCAT22(msg.lParam._2_2_,(undefined2)msg.lParam));
       if (sVar2 != 0) goto LAB_1018_058a;
     }
-    DispatchMessage((HWND *)&msg);
+    DispatchMessage((MSG *)CONCAT22(unaff_SS,&msg));
   }
   goto LAB_1018_058a;
 }
@@ -291,11 +290,11 @@ short FSetUpBatchProcessing(void)
   long lVar2;
   short cb;
   short fSuccess;
-  undefined1 env [18];
+  short env [9];
   char *pch;
   
   fSuccess = 0;
-  penvMem = env;
+  penvMem = &env;
   sVar1 = __setjmp(env);
   if (sVar1 == 0) {
     StreamOpen((char *)szBase,0x20);
@@ -304,20 +303,20 @@ short FSetUpBatchProcessing(void)
     _lpchBatch = LpAlloc(cb_00,htPerm);
     RgFromStream(_lpchBatch,cb_00);
     _lpchBatchMac = _lpchBatch + cb_00;
-    DAT_1120_51b2 = DAT_1120_01a0;
+    iRam112051b2 = lpchBatch_2;
     pch = (char *)szBase;
     while( true ) {
       if ((*_lpchBatch == '\n') ||
-         ((_lpchBatch == _lpchBatchMac && (DAT_1120_01a0 == DAT_1120_51b2)))) break;
+         ((_lpchBatch == _lpchBatchMac && (lpchBatch_2 == iRam112051b2)))) break;
       *pch = *_lpchBatch;
-      _lpchBatch = (char *)CONCAT22(DAT_1120_01a0,_lpchBatch + 1);
+      _lpchBatch = (char *)CONCAT22(lpchBatch_2,_lpchBatch + 1);
       pch = pch + 1;
     }
-    _lpchBatch = (char *)CONCAT22(DAT_1120_01a0,_lpchBatch + 1);
+    _lpchBatch = (char *)CONCAT22(lpchBatch_2,_lpchBatch + 1);
     pch[-1] = '\0';
     fSuccess = 1;
   }
-  penvMem = (undefined1 *)0x0;
+  penvMem = (short (*) [9])0x0;
   StreamClose();
   if (fSuccess == 0) {
     szBase[0] = '\0';
@@ -561,7 +560,7 @@ void FreeStuff(void)
   }
   DeleteObject(hrgnHuge);
   DeleteObject(hrgnScratch);
-  HVar1 = LoadCursor(0,&DAT_0000_7f00);
+  HVar1 = LoadCursor(0,(LPCSTR)0x7f00);
   setcursor(HVar1);
   DestroyCursor(hcurScanner);
   DestroyCursor(hcurOpenGrab);
@@ -687,7 +686,7 @@ char * SzVersion(void)
   uVar3 = 0x3c;
   uVar2 = 2;
   pcVar1 = PszGetCompressedString(idsVersionD02dC);
-  wsprintf(szWork,(char *)pcVar1,uVar2,uVar3,uVar4);
+  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2,uVar3,uVar4);
   return (char *)szWork;
 }
 
@@ -720,8 +719,8 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
   RECT rc;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)&rc);
-    FillRect(wParam,(RECT *)&rc,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
     sVar3 = 1;
   }
   else {
@@ -739,7 +738,7 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
         iAboutPartial = 0;
         HVar1 = GetDlgItem(hwnd,0x401);
         pcVar2 = SzVersion();
-        SetWindowText(HVar1,(LPCSTR)pcVar2);
+        SetWindowText(HVar1,(LPCSTR)CONCAT22(0x1120,pcVar2));
         uTimerId = SetTimer(0xe,0x32,0,0);
         return 1;
       }
@@ -752,7 +751,7 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if (wParam == 0x76) {
           pvVar5 = MakeProcInstance(OrderInfoDlg,hInst);
-          DialogBox(0,(LPCSTR)CONCAT22(0x61,hwnd),(HWND)((ulong)pvVar5 >> 0x10),(void *)pvVar5);
+          DialogBox(0,(LPCSTR)CONCAT22(0x61,hwnd),(HWND)((ulong)pvVar5 >> 0x10),(char)pvVar5);
           FreeProcInstance(pvVar5);
         }
       }
@@ -766,7 +765,7 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
             iAbout1st = -0xb;
           }
         }
-        GetClientRect(HVar1,(RECT *)&rc);
+        GetClientRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rc));
         hdc_00 = GetDC(HVar1);
         SelectObject(hdc_00,rghfontArial8[1]);
         SetBkMode(hdc_00,2);
@@ -786,10 +785,10 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
             pcVar2 = PszGetCompressedString(i + idsDesignProgramming);
             RcCtrTextOut(hdc_00,&rc,pcVar2,sVar3);
           }
-          OffsetRect((RECT *)&rc,0,dyArial8);
+          OffsetRect((RECT *)CONCAT22(unaff_SS,&rc),0,dyArial8);
         }
         rc.bottom = 1000;
-        FillRect(hdc_00,(RECT *)&rc,hbrButtonFace);
+        FillRect(hdc_00,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
         SelectClipRgn(hdc_00,0);
         ReleaseDC(hwnd,hdc_00);
       }
@@ -819,8 +818,8 @@ short OrderInfoDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)(RECT *)&stack0xfff4);
-    FillRect(wParam,(RECT *)(RECT *)&stack0xfff4,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4),hbrButtonFace);
     sVar1 = 1;
   }
   else {
@@ -914,7 +913,7 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
     }
   }
   if ((iKey == 0x10) && (hwndScanner != 0)) {
-    GetCursorPos((POINT *)(POINT *)&stack0xfff6);
+    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xfff6));
     PVar1.y = i;
     PVar1.x = pt;
     HVar2 = WindowFromPoint(PVar1);

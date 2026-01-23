@@ -36,13 +36,13 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   else {
     if (message == WM_PAINT) {
-      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)&ps);
+      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
       HVar2 = GetDlgItem(hwnd,0x7d5);
-      GetWindowRect(HVar2,(RECT *)&rcGBox);
-      ScreenToClient(hwnd,(POINT *)&rcGBox);
+      GetWindowRect(HVar2,(RECT *)CONCAT22(unaff_SS,&rcGBox));
+      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&rcGBox));
       HVar2 = GetDlgItem(hwnd,0x7d6);
-      GetWindowRect(HVar2,(RECT *)(RECT *)&rc);
-      ScreenToClient(hwnd,(POINT *)(POINT *)((int)&rc + 4));
+      GetWindowRect(HVar2,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
       rcGBox.right = rc._4_2_;
       rcGBox.bottom = rc._6_2_;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
@@ -52,13 +52,13 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       i = CchGetString(idsRelation,(char *)szWork);
       TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,i);
       SelectObject(hdc,rghfontArial8[0]);
-      EndPaint(hwnd,(PAINTSTRUCT *)&ps);
+      EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
       return 1;
     }
     if (message == WM_ERASEBKGND) {
 LAB_10f0_0177:
-      GetClientRect(hwnd,(RECT *)(RECT *)&rc);
-      FillRect(wParam,(RECT *)(RECT *)&rc,hbrButtonFace);
+      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
       return 1;
     }
     if (message == WM_CTLCOLOR) {
@@ -81,7 +81,7 @@ LAB_10f0_0177:
             UVar5 = 0x401;
             WVar4 = 0;
             pcVar1 = PszPlayerName(i,0,0,0,0,(PLAYER *)0x0);
-            SendMessage(HVar2,UVar5,WVar4,(LPARAM)pcVar1);
+            SendMessage(HVar2,UVar5,WVar4,(LPARAM)CONCAT22(0x1120,pcVar1));
           }
         }
         HVar2 = GetDlgItem(hwnd,0x7d3);
@@ -113,7 +113,7 @@ LAB_10f0_0177:
                             );
           }
           else if (wParam == 0x76) {
-            WinHelp(hwnd,(LPCSTR)_szHelpFile,1,0x43b);
+            WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x43b);
             return 1;
           }
         }
@@ -154,8 +154,8 @@ short NewPlanNameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)(RECT *)&stack0xfff4);
-    FillRect(wParam,(RECT *)(RECT *)&stack0xfff4,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4),hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -183,7 +183,7 @@ short NewPlanNameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         return 1;
       }
       if (wParam == 0x76) {
-        WinHelp(hwnd,(LPCSTR)_szHelpFile,1,0x439);
+        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x439);
         return 1;
       }
     }
@@ -234,8 +234,8 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar12 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)&rc);
-    FillRect(wParam,(RECT *)&rc,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -255,20 +255,20 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (sel.grobj == grobjFleet) {
       iPlanSelDlg = (short)sel.fl.iplan;
     }
-    uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+    uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
     pBVar10 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
     pBVar11 = (BTLPLAN *)&btlplan;
     for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
       pBVar3 = pBVar11;
-      pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+      pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
       pBVar2 = pBVar10;
-      pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+      pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
       pBVar3->wFlags = pBVar2->wFlags;
     }
     for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,0x41e);
       SendMessage(HVar6,0x403,0,
-                  (LPARAM)CONCAT22(((undefined2 *)&DAT_1120_593a)[idPlayer * 2],
+                  (LPARAM)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x593a),
                                    ((BTLPLAN **)rglpbtlplan)[idPlayer * 2][i].
                                    szName));
     }
@@ -283,26 +283,26 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
     }
     HVar6 = GetDlgItem(hwnd,0x421);
-    SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 8 & 0xf,0);
+    SendMessage(HVar6,0x40e,btlplan.wFlags >> 8 & 0xf,0);
     for (i = 400; i < 0x198; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,0x41f);
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
     }
     HVar6 = GetDlgItem(hwnd,0x41f);
-    SendMessage(HVar6,0x40e,btlplan.wFlags & 0xf,0);
-    if (((uint)game.wCrap >> 2 & 1) == 0) {
+    SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 & 0xf,0);
+    if ((game.wCrap >> 2 & 1) == 0) {
       for (i = 0x78; i < 0x7c; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,0x422);
         UVar15 = 0x403;
         WVar14 = 0;
         pcVar5 = PszGetCompressedString(i);
-        SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+        SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
       }
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (i != idPlayer) {
@@ -310,10 +310,10 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           UVar15 = 0x403;
           WVar14 = 0;
           pcVar5 = PszPlayerName(i,0,1,0,0,(PLAYER *)0x0);
-          SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+          SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
         }
       }
-      i = (uint)btlplan.wFlags >> 8 & 0x1f;
+      i = btlplan.wFlags_0x2 >> 8 & 0x1f;
       if (idPlayer + 4 <= i) {
         i = i - 1;
       }
@@ -325,7 +325,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(idsEveryone);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
       HVar6 = GetDlgItem(hwnd,0x422);
       SendMessage(HVar6,0x40e,0,0);
       HVar6 = GetDlgItem(hwnd,0x422);
@@ -336,14 +336,14 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
     }
     HVar6 = GetDlgItem(hwnd,0x420);
-    SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 4 & 0xf,0);
+    SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 >> 4 & 0xf,0);
     HVar6 = GetDlgItem(hwnd,0x41d);
-    SendMessage(HVar6,0x401,(uint)btlplan.wFlags >> 0xf,0);
+    SendMessage(HVar6,0x401,btlplan.wFlags >> 0xf,0);
     fDirtyPlan = 0;
-    if (((uint)gd._0_2_ >> 0xb & 1) != 0) {
+    if (((uint)gd.grBits >> 0xb & 1) != 0) {
       AdvanceTutor();
     }
     return 1;
@@ -353,14 +353,14 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   if ((wParam == 1) || (wParam == 2)) {
     if (fDirtyPlan != 0) {
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -376,48 +376,47 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (wParam == 0x41d) {
     LVar13 = SendDlgItemMessage(hwnd,0x41d,0x400,0,0);
     fDirtyPlan = 1;
-    btlplan.wFlags = btlplan.wFlags & 0x7fffU | (int)LVar13 << 0xf;
+    btlplan.wFlags = btlplan.wFlags & 0x7fff | (int)LVar13 << 0xf;
     return 0;
   }
   if (wParam == 0x817) {
     if (fDirtyPlan != 0) {
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       LogChangeBtlplan((BTLPLAN *)&btlplan);
       fDirtyPlan = 0;
     }
-    btlplan.wFlags = btlplan.wFlags & 0xbfffU | 0x4000;
-    uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+    btlplan.wFlags = btlplan.wFlags & 0xbfff | 0x4000;
+    uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
     pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
     pBVar10 = (BTLPLAN *)&btlplan;
     for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
       pBVar3 = pBVar11;
-      pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+      pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
       pBVar2 = pBVar10;
-      pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+      pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
       pBVar3->wFlags = pBVar2->wFlags;
     }
-    btlplan.wFlags = btlplan.wFlags & 0xff0fU | (iPlanSelDlg & 0xfU) << 4
-    ;
+    btlplan.wFlags = btlplan.wFlags & 0xff0f | (iPlanSelDlg & 0xfU) << 4;
     sVar7 = FDeleteBattlePlan(iPlanSelDlg,1);
     if (sVar7 == 0) {
       btlplan.wFlags = btlplan.wFlags & 0xbfff;
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       return 0;
@@ -430,7 +429,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,0x41e);
       SendMessage(HVar6,0x403,0,
-                  (LPARAM)CONCAT22(((undefined2 *)&DAT_1120_593a)[idPlayer * 2],
+                  (LPARAM)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x593a),
                                    ((BTLPLAN **)rglpbtlplan)[idPlayer * 2][i].
                                    szName));
     }
@@ -442,43 +441,43 @@ BATTLE_LSelectName:
     i = (short)LVar13;
     if (i != iPlanSelDlg) {
       if (fDirtyPlan != 0) {
-        uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+        uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
         pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
         pBVar10 = (BTLPLAN *)&btlplan;
         for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
           pBVar3 = pBVar11;
-          pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+          pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
           pBVar2 = pBVar10;
-          pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+          pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
           pBVar3->wFlags = pBVar2->wFlags;
         }
         LogChangeBtlplan((BTLPLAN *)&btlplan);
         fDirtyPlan = 0;
       }
       iPlanSelDlg = i;
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar10 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i;
       pBVar11 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x41f);
-      SendMessage(HVar6,0x40e,btlplan.wFlags & 0xf,0);
+      SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x420);
-      SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 4 & 0xf,0);
+      SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 >> 4 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x41d);
-      SendMessage(HVar6,0x401,(uint)btlplan.wFlags >> 0xf,0);
+      SendMessage(HVar6,0x401,btlplan.wFlags >> 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x41b);
       EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
       HVar6 = GetDlgItem(hwnd,0x817);
       EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
       HVar6 = GetDlgItem(hwnd,0x421);
-      SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 8 & 0xf,0);
-      i = (uint)btlplan.wFlags >> 8 & 0x1f;
+      SendMessage(HVar6,0x40e,btlplan.wFlags >> 8 & 0xf,0);
+      i = btlplan.wFlags_0x2 >> 8 & 0x1f;
       if (idPlayer + 4 <= i) {
         i = i - 1;
       }
@@ -491,21 +490,22 @@ BATTLE_LSelectName:
       HVar6 = GetDlgItem(hwnd,0x41f);
       LVar13 = SendMessage(HVar6,0x407,0,0);
       fDirtyPlan = 1;
-      btlplan.wFlags = btlplan.wFlags & 0xfff0U | (uint)LVar13 & 0xf;
+      btlplan.wFlags_0x2 = btlplan.wFlags_0x2 & 0xfff0 | (uint)LVar13 & 0xf;
       return 0;
     }
     if (wParam == 0x420) {
       HVar6 = GetDlgItem(hwnd,0x420);
       LVar13 = SendMessage(HVar6,0x407,0,0);
       fDirtyPlan = 1;
-      btlplan.wFlags = btlplan.wFlags & 0xff0fU | ((uint)LVar13 & 0xf) << 4;
+      btlplan.wFlags_0x2 =
+           btlplan.wFlags_0x2 & 0xff0f | ((uint)LVar13 & 0xf) << 4;
       return 0;
     }
     if (wParam == 0x422) {
       HVar6 = GetDlgItem(hwnd,0x422);
       LVar13 = SendMessage(HVar6,0x407,0,0);
       i = (short)LVar13;
-      if (((uint)game.wCrap >> 2 & 1) == 0) {
+      if ((game.wCrap >> 2 & 1) == 0) {
         if (idPlayer + 4 <= i) {
           i = i + 1;
         }
@@ -514,14 +514,14 @@ BATTLE_LSelectName:
         i = 3;
       }
       fDirtyPlan = 1;
-      btlplan.wFlags = btlplan.wFlags & 0xe0ffU | (i & 0x1fU) << 8;
+      btlplan.wFlags_0x2 = btlplan.wFlags_0x2 & 0xe0ff | (i & 0x1fU) << 8;
       return 0;
     }
     if (wParam == 0x421) {
       HVar6 = GetDlgItem(hwnd,0x421);
       LVar13 = SendMessage(HVar6,0x407,0,0);
       fDirtyPlan = 1;
-      btlplan.wFlags = btlplan.wFlags & 0xf0ffU | ((uint)LVar13 & 0xf) << 8;
+      btlplan.wFlags = btlplan.wFlags & 0xf0ff | ((uint)LVar13 & 0xf) << 8;
       return 0;
     }
     if (wParam != 0x41b) {
@@ -530,7 +530,7 @@ BATTLE_LSelectName:
           if (wParam != 0x76) {
             return 0;
           }
-          WinHelp(hwnd,(LPCSTR)_szHelpFile,1,0x439);
+          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x439);
           return 1;
         }
         goto BATTLE_LSelectName;
@@ -539,14 +539,14 @@ BATTLE_LSelectName:
         return 0;
       }
       if (fDirtyPlan != 0) {
-        uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+        uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
         pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
         pBVar10 = (BTLPLAN *)&btlplan;
         for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
           pBVar3 = pBVar11;
-          pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+          pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
           pBVar2 = pBVar10;
-          pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+          pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
           pBVar3->wFlags = pBVar2->wFlags;
         }
         LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -557,14 +557,14 @@ BATTLE_LSelectName:
            ((byte *)rgcbtlplan)[idPlayer] + 1;
       uVar8 = _strlen((char *)btlplan.szName);
       if ((int)uVar8 < 0x1c) {
-        if (((*(char *)((int)&btlplan.wFlags + 1 + uVar8) == ')') &&
-            ((((undefined *)&DAT_1120_175f)[*(byte *)((int)&btlplan.wFlags + uVar8)] & 4)
-             != 0)) && (*(char *)((int)&btlplan.wFlags + 1 + uVar8) == '(')) {
-          if (*(char *)((int)&btlplan.wFlags + uVar8) == '9') {
-            *(undefined1 *)((int)&btlplan.wFlags + uVar8) = 0x30;
+        if (((*(char *)((int)&btlplan.wFlags_0x2 + 1 + uVar8) == ')') &&
+            ((*(byte *)(*(byte *)((int)&btlplan.wFlags_0x2 + uVar8) + 0x175f) & 4) != 0))
+           && (*(char *)((int)&btlplan.wFlags + 1 + uVar8) == '(')) {
+          if (*(char *)((int)&btlplan.wFlags_0x2 + uVar8) == '9') {
+            *(undefined1 *)((int)&btlplan.wFlags_0x2 + uVar8) = 0x30;
           }
           else {
-            pcVar1 = (char *)((int)&btlplan.wFlags + uVar8);
+            pcVar1 = (char *)((int)&btlplan.wFlags_0x2 + uVar8);
             *pcVar1 = *pcVar1 + '\x01';
           }
         }
@@ -573,37 +573,37 @@ BATTLE_LSelectName:
         }
       }
       btlplan.wFlags =
-           btlplan.wFlags & 0xff0fU | (iPlanSelDlg & 0xfU) << 4;
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+           btlplan.wFlags & 0xff0f | (iPlanSelDlg & 0xfU) << 4;
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x421);
-      SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 8 & 0xf,0);
+      SendMessage(HVar6,0x40e,btlplan.wFlags >> 8 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x41e);
       SendMessage(HVar6,0x40b,0,0);
       for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,0x41e);
         SendMessage(HVar6,0x403,0,
-                    (LPARAM)CONCAT22(((undefined2 *)&DAT_1120_593a)[idPlayer * 2],
+                    (LPARAM)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x593a),
                                      ((BTLPLAN **)rglpbtlplan)[idPlayer * 2][i].
                                      szName));
       }
       HVar6 = GetDlgItem(hwnd,0x41e);
       SendMessage(HVar6,0x40e,iPlanSelDlg,0);
       HVar6 = GetDlgItem(hwnd,0x41f);
-      SendMessage(HVar6,0x40e,btlplan.wFlags & 0xf,0);
+      SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x420);
-      SendMessage(HVar6,0x40e,(uint)btlplan.wFlags >> 4 & 0xf,0);
+      SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 >> 4 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,0x41d);
-      SendMessage(HVar6,0x401,(uint)btlplan.wFlags >> 0xf,0);
-      i = (uint)btlplan.wFlags >> 8 & 0x1f;
+      SendMessage(HVar6,0x401,btlplan.wFlags >> 0xf,0);
+      i = btlplan.wFlags_0x2 >> 8 & 0x1f;
       if (idPlayer + 4 <= i) {
         i = i - 1;
       }
@@ -616,18 +616,18 @@ BATTLE_LSelectName:
     StickyDlgPos(hwnd,(POINT *)&ptStickyBattlePlansDlg,0);
     lpProc = MakeProcInstance(NewPlanNameDlg,hInst);
     fRet = DialogBox(0,(LPCSTR)CONCAT22(0x7e3,hwndFrame),(HWND)((ulong)lpProc >> 0x10),
-                     (void *)lpProc);
+                     (char)lpProc);
     FreeProcInstance(lpProc);
     SetFocus(hwnd);
     if (fRet != 0) {
-      uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+      uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
       pBVar11 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + iPlanSelDlg;
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags;
+        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags;
+        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x41e);
@@ -635,7 +635,7 @@ BATTLE_LSelectName:
       for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,0x41e);
         SendMessage(HVar6,0x403,0,
-                    (LPARAM)CONCAT22(((undefined2 *)&DAT_1120_593a)[idPlayer * 2],
+                    (LPARAM)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x593a),
                                      ((BTLPLAN **)rglpbtlplan)[idPlayer * 2][i].
                                      szName));
       }
@@ -716,19 +716,19 @@ BATTLE_LCommit:
       ((byte *)rgcbtlplan)[idPlayer] =
            ((byte *)rgcbtlplan)[idPlayer] - 1;
       for (i = iplan; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
-        uVar4 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+        uVar4 = *(undefined2 *)(idPlayer * 4 + 0x593a);
         pBVar8 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i + 1;
-        uVar5 = ((undefined2 *)&DAT_1120_593a)[idPlayer * 2];
+        uVar5 = *(undefined2 *)(idPlayer * 4 + 0x593a);
         pBVar9 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i;
         for (iVar7 = 0x12; iVar7 != 0; iVar7 = iVar7 + -1) {
           pBVar2 = pBVar9;
-          pBVar9 = (BTLPLAN *)&pBVar9->wFlags;
+          pBVar9 = (BTLPLAN *)&pBVar9->wFlags_0x2;
           pBVar1 = pBVar8;
-          pBVar8 = (BTLPLAN *)&pBVar8->wFlags;
+          pBVar8 = (BTLPLAN *)&pBVar8->wFlags_0x2;
           pBVar2->wFlags = pBVar1->wFlags;
         }
         (((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i)->wFlags =
-             (((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i)->wFlags & 0xff0fU |
+             (((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i)->wFlags & 0xff0f |
              (i & 0xfU) << 4;
       }
       return 1;
@@ -791,19 +791,19 @@ void SpankTheCheaters(void)
       fCheater = 1;
     }
   }
-  if ((fCheater != 0) && (9 < (uint)game.turn)) {
+  if ((fCheater != 0) && (9 < game.turn)) {
     for (ifl = 0; ifl < cFleet; ifl = ifl + 1) {
                     /* WARNING: Load size is inaccurate */
       pFVar7 = ((FLEET **)rglpfl)[ifl];
       iVar2 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
       lpfl = (FLEET *)CONCAT22(iVar2,pFVar7);
       if ((pFVar7 == (FLEET *)0x0) && (iVar2 == 0)) break;
-      if ((((uint)pFVar7->wFlags >> 10 & 1) == 0) && (rgfCheater[pFVar7->iPlayer] != 0)) {
+      if (((pFVar7->wFlags_0x4 >> 10 & 1) == 0) && (rgfCheater[pFVar7->iPlayer] != 0)) {
         sVar4 = Random(0xc);
         if (sVar4 == 0) {
           uVar9 = (undefined2)((ulong)lpfl >> 0x10);
           pFVar7 = (FLEET *)lpfl;
-          pFVar7->wFlags = pFVar7->wFlags & 0xfbffU | 0x400;
+          pFVar7->wFlags_0x4 = pFVar7->wFlags_0x4 & 0xfbff | 0x400;
           FSendPlrMsg2(pFVar7->iPlayer,idmHasDefectedRanksDueInabilityProjectLegitimate,-5,
                             lpfl->id,0);
         }
@@ -877,15 +877,14 @@ void SpankTheCheaters(void)
             lSell._0_2_ = (uint)lVar11;
             uVar9 = (undefined2)((ulong)lppl >> 0x10);
             pPVar8 = (PLANET *)lppl;
-            uVar3 = *(uint *)&pPVar8->dwFlags;
-            iVar2 = *(int *)((int)&pPVar8->dwFlags + 2);
+            uVar3 = *(uint *)pPVar8->rgbImp;
+            iVar2 = *(int *)(pPVar8->rgbImp + 2);
             pPVar6 = (PLANET *)(uVar3 + (uint)lSell * -0x100 & 0xff00);
-            *(uint *)&pPVar8->dwFlags = *(uint *)&pPVar8->dwFlags & 0xff;
-            puVar1 = (uint *)((int)&pPVar8->dwFlags + 2);
-            *puVar1 = *puVar1 & 0xfff0;
-            *(uint *)&pPVar8->dwFlags = *(uint *)&pPVar8->dwFlags | (uint)pPVar6;
-            puVar1 = (uint *)((int)&pPVar8->dwFlags + 2);
-            *puVar1 = *puVar1 | iVar2 - (uint)(uVar3 < (uint)lSell * 0x100) & 0xf;
+            *(uint *)pPVar8->rgbImp = *(uint *)pPVar8->rgbImp & 0xff;
+            *(uint *)(pPVar8->rgbImp + 2) = *(uint *)(pPVar8->rgbImp + 2) & 0xfff0;
+            *(uint *)pPVar8->rgbImp = *(uint *)pPVar8->rgbImp | (uint)pPVar6;
+            *(uint *)(pPVar8->rgbImp + 2) =
+                 *(uint *)(pPVar8->rgbImp + 2) | iVar2 - (uint)(uVar3 < (uint)lSell * 0x100) & 0xf;
             FSendPlrMsg2(pPVar8->iPlayer,idmFreedomFightersHaveAttackedDestroyedMinesPress,-5,
                               lppl->id,(uint)lSell);
             lSell = lVar11;
@@ -989,15 +988,15 @@ short FHullHasBombs(HUL *lphul)
     if ((int)(uint)((HUL *)lphul)->chs <= ihs) {
       return 0;
     }
-    if ((lphs->grhst == hstBomb) && ((uint)((HS *)lphs)->wFlags >> 8 != 0)) {
+    if ((lphs->grhst == hstBomb) && (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) {
       return 1;
     }
-    if (((lphs->grhst == hstBeam) && ((((HS *)lphs)->wFlags & 0xffU) == 0x12)) &&
-       ((uint)((HS *)lphs)->wFlags >> 8 != 0)) {
+    if (((lphs->grhst == hstBeam) && ((((HS *)lphs)->wFlags_0x2 & 0xff) == 0x12)) &&
+       (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) {
       return 1;
     }
-    if (((lphs->grhst == hstSpecialM) && ((((HS *)lphs)->wFlags & 0xffU) == 1)) &&
-       ((uint)((HS *)lphs)->wFlags >> 8 != 0)) break;
+    if (((lphs->grhst == hstSpecialM) && ((((HS *)lphs)->wFlags_0x2 & 0xff) == 1)) &&
+       (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) break;
     ihs = ihs + 1;
     lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
   }
@@ -1061,7 +1060,7 @@ short FHullHasTeeth(HUL *lphul)
     if (((lphs->grhst & (hstTorp|hstBeam)) !=
          ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
            hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
-       ((uint)((HS *)lphs)->wFlags >> 8 != 0)) break;
+       (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) break;
     ihs = ihs + 1;
     lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
   }
@@ -1128,36 +1127,36 @@ void CheckTarget(TOK *ptok,FLEET *lpfl,short ishdef)
       if (sVar3 == 0) {
         sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(uVar1,pSVar4),2);
         if (sVar3 == 0) {
-          pTVar6->wFlags = pTVar6->wFlags & 0xfffU | 0x5000;
+          pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x5000;
         }
         else {
-          pTVar6->wFlags = pTVar6->wFlags & 0xfffU | 0x7000;
+          pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x7000;
         }
       }
       else {
-        pTVar6->wFlags = pTVar6->wFlags & 0xfffU | 0x6000;
+        pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x6000;
       }
     }
     else {
-      pTVar6->wFlags = pTVar6->wFlags & 0xfffU | 0x4000;
+      pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x4000;
     }
   }
   else {
-    pTVar6->wFlags = pTVar6->wFlags & 0xfffU | 0x3000;
+    pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x3000;
   }
-  uVar1 = ((undefined2 *)&DAT_1120_593a)[uVar2 * 2];
+  uVar1 = *(undefined2 *)(uVar2 * 4 + 0x593a);
   pBVar5 = ((BTLPLAN **)rglpbtlplan)[uVar2 * 2] + ((FLEET *)lpfl)->iplan;
   lpbtlplan = (BTLPLAN *)CONCAT22(uVar1,pBVar5);
-  pTVar6->wFlags = pTVar6->wFlags & 0xfff0U | pBVar5->wFlags & 0xfU;
-  pTVar6->wFlags = pTVar6->wFlags & 0xff0fU | ((uint)pBVar5->wFlags >> 4 & 0xf) << 4;
-  if ((uint)pTVar6->wFlags >> 0xc == 3) {
-    pTVar6->wFlags = pTVar6->wFlags & 0xf0ffU | ((uint)lpbtlplan->wFlags >> 8 & 0xf) << 8;
+  pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff0 | pBVar5->wFlags_0x2 & 0xf;
+  pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xff0f | (pBVar5->wFlags_0x2 >> 4 & 0xf) << 4;
+  if (pTVar6->wFlags_0x17 >> 0xc == 3) {
+    pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xf0ff | (lpbtlplan->wFlags >> 8 & 0xf) << 8;
   }
   else {
-    pTVar6->wFlags = pTVar6->wFlags & 0xf0ff;
+    pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xf0ff;
   }
-  if (((uint)pTVar6->wFlags >> 8 & 0xf) == 0) {
-    pTVar6->wFlags = pTVar6->wFlags & 0xfc1fU | 0xe0;
+  if ((pTVar6->wFlags_0x17 >> 8 & 0xf) == 0) {
+    pTVar6->wFlags = pTVar6->wFlags & 0xfc1f | 0xe0;
   }
   return;
 }
@@ -1193,7 +1192,8 @@ short FDumpCargo(FLEET *lpfl)
   }
   if (i < 3) {
     uVar6 = (uint)lpfl->id >> 9 & 0xf;
-    if ((((BTLPLAN **)rglpbtlplan)[uVar6 * 2] + ((FLEET *)lpfl)->iplan)->wFlags < 0) {
+    if ((int)(((BTLPLAN **)rglpbtlplan)[uVar6 * 2] + ((FLEET *)lpfl)->iplan)->wFlags < 0)
+    {
       if (((FLEET *)lpfl)->idPlanet == -1) {
         pt.x = (&((FLEET *)lpfl)->pt)->x;
         pt.y = (((FLEET *)lpfl)->pt).y;
@@ -1244,24 +1244,24 @@ void DropSalvage(THING **plpth,long *rgwtMinerals,short iplr,POINT *ppt)
 
 {
   uint *puVar1;
-  uint uVar2;
-  short sVar3;
-  uint uVar4;
-  int iVar5;
-  THING *pTVar6;
-  undefined2 uVar7;
-  bool bVar8;
-  ulong uVar9;
-  long lVar10;
+  THING *pTVar2;
+  uint uVar3;
+  short sVar4;
+  uint uVar5;
+  int iVar6;
+  THING *pTVar7;
+  undefined2 uVar8;
+  bool bVar9;
+  ulong uVar10;
+  long lVar11;
   THING *lpth;
   short i;
   uint wtTotal;
   int local_6;
   
-                    /* WARNING: Load size is inaccurate */
-  pTVar6 = *plpth;
-  iVar5 = *(int *)((int)plpth + 2);
-  lpth = (THING *)CONCAT22(iVar5,pTVar6);
+  pTVar7 = *plpth;
+  pTVar2 = plpth[1];
+  lpth = (THING *)CONCAT22(pTVar2,pTVar7);
   wtTotal = 0;
   local_6 = 0;
   for (i = 0; i < game.cPlanMax; i = i + 1) {
@@ -1273,108 +1273,118 @@ void DropSalvage(THING **plpth,long *rgwtMinerals,short iplr,POINT *ppt)
   i = 0;
   while( true ) {
     if (2 < i) break;
-    uVar4 = *(uint *)((long *)rgwtMinerals + i);
-    bVar8 = CARRY2(wtTotal,uVar4);
-    wtTotal = wtTotal + uVar4;
-    local_6 = local_6 + *(uint *)((int)((long *)rgwtMinerals + i) + 2) + (uint)bVar8;
+    uVar5 = *(uint *)((long *)rgwtMinerals + i);
+    bVar9 = CARRY2(wtTotal,uVar5);
+    wtTotal = wtTotal + uVar5;
+    local_6 = local_6 + *(uint *)((int)((long *)rgwtMinerals + i) + 2) + (uint)bVar9;
     i = i + 1;
   }
   while ((wtTotal == 0 && (local_6 == 0))) {
     for (i = 0; i < 3; i = i + 1) {
-      sVar3 = Random(10);
-      *(short *)((long *)rgwtMinerals + i) = sVar3;
-      *(short *)((int)((long *)rgwtMinerals + i) + 2) = sVar3 >> 0xf;
-      uVar4 = *(uint *)((long *)rgwtMinerals + i);
-      bVar8 = CARRY2(wtTotal,uVar4);
-      wtTotal = wtTotal + uVar4;
-      local_6 = local_6 + *(uint *)((int)((long *)rgwtMinerals + i) + 2) + (uint)bVar8;
+      sVar4 = Random(10);
+      *(short *)((long *)rgwtMinerals + i) = sVar4;
+      *(short *)((int)((long *)rgwtMinerals + i) + 2) = sVar4 >> 0xf;
+      uVar5 = *(uint *)((long *)rgwtMinerals + i);
+      bVar9 = CARRY2(wtTotal,uVar5);
+      wtTotal = wtTotal + uVar5;
+      local_6 = local_6 + *(uint *)((int)((long *)rgwtMinerals + i) + 2) + (uint)bVar9;
     }
   }
-  if ((pTVar6 == (THING *)0x0) && (iVar5 == 0)) {
+  if ((pTVar7 == (THING *)0x0) && (pTVar2 == (THING *)0x0)) {
     lpth = LpthNew(iplr,ithMineralPacket);
-    iVar5 = (int)((ulong)lpth >> 0x10);
-    pTVar6 = (THING *)lpth;
-    if ((pTVar6 == (THING *)0x0) && (iVar5 == 0)) {
+    iVar6 = (int)((ulong)lpth >> 0x10);
+    pTVar7 = (THING *)lpth;
+    if ((pTVar7 == (THING *)0x0) && (iVar6 == 0)) {
       return;
     }
-    *(uint *)pTVar6->rgb = *(uint *)pTVar6->rgb & 0xc3ff;
-    sVar3 = ppt->y;
-    (&pTVar6->pt)->x = ppt->x;
-    (pTVar6->pt).y = sVar3;
-    *(uint *)pTVar6->rgb = *(uint *)pTVar6->rgb & 0xfc00 | 0x3ff;
+    ((&pTVar7->u_THING_0x0006)->thp).wFlags = ((&pTVar7->u_THING_0x0006)->thp).wFlags & 0xc3ff;
+    sVar4 = ppt->y;
+    (&pTVar7->pt)->x = ppt->x;
+    (pTVar7->pt).y = sVar4;
+    ((&pTVar7->u_THING_0x0006)->thp).wFlags =
+         ((&pTVar7->u_THING_0x0006)->thp).wFlags & 0xfc00 | 0x3ff;
   }
   else {
     for (i = 0; i < 3; i = i + 1) {
-      uVar2 = *(uint *)(pTVar6->rgb + i * 2 + 2);
+      uVar3 = *(uint *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2);
       puVar1 = (uint *)((long *)rgwtMinerals + i);
-      uVar4 = *puVar1;
-      *puVar1 = *puVar1 + uVar2;
+      uVar5 = *puVar1;
+      *puVar1 = *puVar1 + uVar3;
       puVar1 = (uint *)((int)((long *)rgwtMinerals + i) + 2);
-      *puVar1 = *puVar1 + ((int)uVar2 >> 0xf) + (uint)CARRY2(uVar4,uVar2);
-      uVar4 = *(uint *)(pTVar6->rgb + i * 2 + 2);
-      bVar8 = CARRY2(wtTotal,uVar4);
-      wtTotal = wtTotal + uVar4;
-      local_6 = local_6 + ((int)uVar4 >> 0xf) + (uint)bVar8;
-      (pTVar6->rgb + i * 2 + 2)[0] = 0;
-      (pTVar6->rgb + i * 2 + 2)[1] = 0;
+      *puVar1 = *puVar1 + ((int)uVar3 >> 0xf) + (uint)CARRY2(uVar5,uVar3);
+      uVar5 = *(uint *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2);
+      bVar9 = CARRY2(wtTotal,uVar5);
+      wtTotal = wtTotal + uVar5;
+      local_6 = local_6 + ((int)uVar5 >> 0xf) + (uint)bVar9;
+      ((pTVar7->u_THING_0x0006).rgb + i * 2 + 2)[0] = 0;
+      ((pTVar7->u_THING_0x0006).rgb + i * 2 + 2)[1] = 0;
     }
-    *(uint *)(pTVar6->rgb + 8) = *(uint *)(pTVar6->rgb + 8) & 0xc000;
+    *(uint *)((int)&pTVar7->u_THING_0x0006 + 8) =
+         *(uint *)((int)&pTVar7->u_THING_0x0006 + 8) & 0xc000;
   }
-  uVar7 = (undefined2)((ulong)lpth >> 0x10);
-  *(uint *)((THING *)lpth)->rgb = *(uint *)((THING *)lpth)->rgb & 0xbfff | 0x4000;
+  uVar8 = (undefined2)((ulong)lpth >> 0x10);
+  ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags =
+       ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags & 0xbfff | 0x4000;
   do {
     if ((local_6 < 1) && ((local_6 < 0 || (wtTotal == 0)))) {
-      *(THING **)plpth = (THING *)lpth;
-      *(undefined2 *)((int)plpth + 2) = lpth._2_2_;
+      *plpth = (THING *)lpth;
+      plpth[1] = lpth._2_2_;
       return;
     }
     for (i = 0; i < 3; i = i + 1) {
-      uVar7 = (undefined2)((ulong)lpth >> 0x10);
-      pTVar6 = (THING *)lpth;
-      uVar9 = __aFulmul((ulong)*(uint *)(pTVar6->rgb + 8) & 0xffff3fff,10);
+      uVar8 = (undefined2)((ulong)lpth >> 0x10);
+      pTVar7 = (THING *)lpth;
+      uVar10 = __aFulmul((ulong)*(uint *)((int)&pTVar7->u_THING_0x0006 + 8) & 0xffff3fff,10)
+      ;
       puVar1 = (uint *)((long *)rgwtMinerals + i);
-      iVar5 = (int)(uVar9 >> 0x10) + *(uint *)((int)((long *)rgwtMinerals + i) + 2) +
-              (uint)CARRY2((uint)uVar9,*puVar1);
-      if ((iVar5 < 0) || ((iVar5 < 1 && ((uint)uVar9 + *puVar1 < 0x7531)))) {
-        uVar4 = *(uint *)((long *)rgwtMinerals + i);
-        lVar10 = __aFldiv(CONCAT22(*(uint *)((int)((long *)rgwtMinerals + i) + 2) +
-                                           (uint)(0xfff6 < uVar4),uVar4 + 9),10);
-        iVar5 = *(int *)(pTVar6->rgb + 8);
-        *(uint *)(pTVar6->rgb + 8) = *(uint *)(pTVar6->rgb + 8) & 0xc000;
-        *(uint *)(pTVar6->rgb + 8) = *(uint *)(pTVar6->rgb + 8) | (int)lVar10 + iVar5 & 0x3fffU;
-        *(int *)(pTVar6->rgb + i * 2 + 2) =
-             *(int *)(pTVar6->rgb + i * 2 + 2) + (int)((long *)rgwtMinerals)[i];
-        uVar4 = *(uint *)((long *)rgwtMinerals + i);
+      iVar6 = (int)(uVar10 >> 0x10) + *(uint *)((int)((long *)rgwtMinerals + i) + 2) +
+              (uint)CARRY2((uint)uVar10,*puVar1);
+      if ((iVar6 < 0) || ((iVar6 < 1 && ((uint)uVar10 + *puVar1 < 0x7531)))) {
+        uVar5 = *(uint *)((long *)rgwtMinerals + i);
+        lVar11 = __aFldiv(CONCAT22(*(uint *)((int)((long *)rgwtMinerals + i) + 2) +
+                                           (uint)(0xfff6 < uVar5),uVar5 + 9),10);
+        iVar6 = *(int *)((int)&pTVar7->u_THING_0x0006 + 8);
+        puVar1 = (uint *)((int)&pTVar7->u_THING_0x0006 + 8);
+        *puVar1 = *puVar1 & 0xc000;
+        puVar1 = (uint *)((int)&pTVar7->u_THING_0x0006 + 8);
+        *puVar1 = *puVar1 | (int)lVar11 + iVar6 & 0x3fffU;
+        *(int *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2) =
+             *(int *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2) + (int)((long *)rgwtMinerals)[i];
+        uVar5 = *(uint *)((long *)rgwtMinerals + i);
         local_6 = (local_6 - *(uint *)((int)((long *)rgwtMinerals + i) + 2)) -
-                  (uint)(wtTotal < uVar4);
+                  (uint)(wtTotal < uVar5);
         *(undefined2 *)((long *)rgwtMinerals + i) = 0;
         *(undefined2 *)((int)((long *)rgwtMinerals + i) + 2) = 0;
       }
       else {
-        uVar9 = __aFulmul((ulong)*(uint *)(pTVar6->rgb + 8) & 0xffff3fff,10);
-        uVar4 = 30000 - (uint)uVar9;
-        iVar5 = -(uint)(30000 < (uint)uVar9) - (int)(uVar9 >> 0x10);
-        local_6 = (local_6 - iVar5) - (uint)(wtTotal < uVar4);
-        *(uint *)(pTVar6->rgb + 8) = *(uint *)(pTVar6->rgb + 8) & 0xc000 | 3000;
-        *(uint *)(pTVar6->rgb + i * 2 + 2) = *(int *)(pTVar6->rgb + i * 2 + 2) + uVar4;
+        uVar10 = __aFulmul((ulong)*(uint *)((int)&pTVar7->u_THING_0x0006 + 8) & 0xffff3fff,
+                                   10);
+        uVar5 = 30000 - (uint)uVar10;
+        iVar6 = -(uint)(30000 < (uint)uVar10) - (int)(uVar10 >> 0x10);
+        local_6 = (local_6 - iVar6) - (uint)(wtTotal < uVar5);
+        *(uint *)((int)&pTVar7->u_THING_0x0006 + 8) =
+             *(uint *)((int)&pTVar7->u_THING_0x0006 + 8) & 0xc000 | 3000;
+        *(uint *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2) =
+             *(int *)((pTVar7->u_THING_0x0006).rgb + i * 2 + 2) + uVar5;
         puVar1 = (uint *)((long *)rgwtMinerals + i);
-        uVar2 = *puVar1;
-        *puVar1 = *puVar1 - uVar4;
+        uVar3 = *puVar1;
+        *puVar1 = *puVar1 - uVar5;
         puVar1 = (uint *)((int)((long *)rgwtMinerals + i) + 2);
-        *puVar1 = (*puVar1 - iVar5) - (uint)(uVar2 < uVar4);
+        *puVar1 = (*puVar1 - iVar6) - (uint)(uVar3 < uVar5);
         lpth = LpthNew(iplr,ithMineralPacket);
-        iVar5 = (int)((ulong)lpth >> 0x10);
-        pTVar6 = (THING *)lpth;
-        if ((pTVar6 == (THING *)0x0) && (iVar5 == 0)) {
+        iVar6 = (int)((ulong)lpth >> 0x10);
+        pTVar7 = (THING *)lpth;
+        if ((pTVar7 == (THING *)0x0) && (iVar6 == 0)) {
           return;
         }
-        *(uint *)pTVar6->rgb = *(uint *)pTVar6->rgb & 0xc3ff;
-        *(uint *)pTVar6->rgb = *(uint *)pTVar6->rgb & 0xfc00 | 0x3ff;
-        sVar3 = ppt->y;
-        (&pTVar6->pt)->x = ppt->x;
-        (pTVar6->pt).y = sVar3;
+        ((&pTVar7->u_THING_0x0006)->thp).wFlags = ((&pTVar7->u_THING_0x0006)->thp).wFlags & 0xc3ff;
+        ((&pTVar7->u_THING_0x0006)->thp).wFlags =
+             ((&pTVar7->u_THING_0x0006)->thp).wFlags & 0xfc00 | 0x3ff;
+        sVar4 = ppt->y;
+        (&pTVar7->pt)->x = ppt->x;
+        (pTVar7->pt).y = sVar4;
       }
-      wtTotal = wtTotal - uVar4;
+      wtTotal = wtTotal - uVar5;
       if ((local_6 < 1) && ((local_6 < 0 || (wtTotal == 0)))) break;
     }
   } while( true );
@@ -1438,7 +1448,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
     lppl = LpplFromId(((FLEET *)lpfl)->idPlanet);
     uVar10 = (undefined2)((ulong)lppl >> 0x10);
     pPVar4 = (PLANET *)lppl;
-    if (((uint)pPVar4->wFlags >> 9 & 1) == 0) {
+    if ((pPVar4->wFlags_0x4 >> 9 & 1) == 0) {
       if (pPVar4->iPlayer != -1) {
         *pgrfSpectator = *pgrfSpectator | 1 << ((byte)pPVar4->iPlayer & 0x1f);
       }
@@ -1450,7 +1460,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
                        2) >> 8 & 0x1f;
       sVar6 = FHullHasTeeth((HUL *)CONCAT22(*(undefined2 *)(iplrStarbase * 4 + 0x14e),
                                             (HUL *)(*(int *)(iplrStarbase * 4 + 0x14c) +
-                                                   (*(uint *)&pPVar4->field11_0x2c & 0xf) * 0x93)));
+                                                   (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93)));
       if ((sVar6 != 0) && (uVar9 != 0)) {
         if ((uVar9 == 1) || (uVar9 == 2)) {
           for (i = 0; i < game.cPlayer; i = i + 1) {
@@ -1474,21 +1484,21 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
   do {
     uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
     pFVar8 = (FLEET *)lpflCur;
-    if (((uint)pFVar8->wFlags >> 10 & 1) == 0) {
+    if ((pFVar8->wFlags_0x4 >> 10 & 1) == 0) {
       iplrCur = pFVar8->iPlayer;
       grfPlayer = grfPlayer | 1 << ((byte)iplrCur & 0x1f);
       uVar9 = (uint)lpflCur->id >> 9 & 0xf;
-      if ((((((BTLPLAN **)rglpbtlplan)[uVar9 * 2][pFVar8->iplan].wFlags & 0xfU) != 0) &&
-          (uVar9 = (uint)lpflCur->id >> 9 & 0xf,
-          ((uint)((BTLPLAN **)rglpbtlplan)[uVar9 * 2][pFVar8->iplan].wFlags >> 8 & 0x1f)
-          != 0)) && (sVar6 = FFleetHasTeeth(lpflCur), sVar6 != 0)) {
+      if ((((((BTLPLAN **)rglpbtlplan)[uVar9 * 2][pFVar8->iplan].wFlags_0x2 & 0xf) != 0)
+          && (uVar9 = (uint)lpflCur->id >> 9 & 0xf,
+             (((BTLPLAN **)rglpbtlplan)[uVar9 * 2][pFVar8->iplan].wFlags_0x2 >> 8 & 0x1f)
+             != 0)) && (sVar6 = FFleetHasTeeth(lpflCur), sVar6 != 0)) {
         bVar5 = true;
         uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
-        iplrAttack = (uint)((BTLPLAN **)rglpbtlplan)[iplrCur * 2]
-                           [((FLEET *)lpflCur)->iplan].wFlags >> 8 & 0x1f;
+        iplrAttack = ((BTLPLAN **)rglpbtlplan)[iplrCur * 2][((FLEET *)lpflCur)->iplan].
+                     wFlags_0x2 >> 8 & 0x1f;
         uVar9 = (uint)lpflCur->id >> 9 & 0xf;
-        if ((((BTLPLAN **)rglpbtlplan)[uVar9 * 2][((FLEET *)lpflCur)->iplan].wFlags & 0xfU
-            ) == 0) {
+        if ((((BTLPLAN **)rglpbtlplan)[uVar9 * 2][((FLEET *)lpflCur)->iplan].wFlags_0x2 &
+            0xf) == 0) {
           iplrAttack = 0;
         }
         if (iplrAttack != 0) {
@@ -1511,8 +1521,8 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
       }
       uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
       pFVar8 = (FLEET *)lpflCur;
-      pFVar8->wFlags = pFVar8->wFlags & 0xf7ffU | 0x800;
-      pFVar8->wFlags = pFVar8->wFlags & 0xfeffU | 0x100;
+      pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xf7ff | 0x800;
+      pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xfeff | 0x100;
     }
     sVar6 = iplrStarbase;
     uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
@@ -1586,14 +1596,14 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
         grPlr = 1 << ((byte)iplrCur & 0x1f);
         if ((grfPlayer & grPlr) == 0) {
           *pgrfSpectator = *pgrfSpectator | grPlr;
-          pFVar8->wFlags = pFVar8->wFlags & 0xfeff;
+          pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xfeff;
         }
         else {
           for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
             if (((FLEET *)lpflCur)->rgcsh[ishdef] != 0) {
               pHVar11 = LphuldefFromId
                                   (*(HullDef *)(*(int *)(iplrCur * 4 + 0xfe) + ishdef * 0x93));
-              if (((uint)((HULDEF *)pHVar11)->wFlags >> 6 & 0xf) != 0) {
+              if ((((HULDEF *)pHVar11)->wFlags_0x7b >> 6 & 0xf) != 0) {
                 uVar3 = ((FLEET *)lpflCur)->rgcsh[ishdef];
                 puVar1 = rgcsh + iplrCur * 2;
                 uVar9 = *puVar1;
@@ -1626,7 +1636,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
         do {
           uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
           pFVar8 = (FLEET *)lpflCur;
-          if (((uint)pFVar8->wFlags >> 8 & 1) != 0) {
+          if ((pFVar8->wFlags_0x4 >> 8 & 1) != 0) {
             ctokFleet = 0;
             iplrCur = pFVar8->iPlayer;
             for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
@@ -1635,9 +1645,10 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
               }
             }
             if (i < (int)((uint)rgctok[iplrCur] + ctokFleet)) {
-              pFVar8->wFlags = pFVar8->wFlags & 0xfeff;
-              pFVar8->wFlags = pFVar8->wFlags & 0xefffU | 0x1000;
-              pFVar8->wFlags = pFVar8->wFlags & 0xff7fU | 0x80;
+              pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xfeff;
+              pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xefff | 0x1000;
+              *(uint *)((int)&pFVar8->dirLong + 2) =
+                   *(uint *)((int)&pFVar8->dirLong + 2) & 0xff7f | 0x80;
             }
             else {
               rgctok[iplrCur] = rgctok[iplrCur] + (char)ctokFleet;
@@ -1653,7 +1664,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
           do {
             uVar10 = (undefined2)((ulong)lpflCur >> 0x10);
             pFVar8 = (FLEET *)lpflCur;
-            if (((uint)pFVar8->wFlags >> 7 & 1) != 0) {
+            if ((*(uint *)((int)&pFVar8->dirLong + 2) >> 7 & 1) != 0) {
               ctokFleet = 0;
               iplrCur = pFVar8->iPlayer;
               for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
@@ -1662,9 +1673,10 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
                 }
               }
               if (ctokNew + ctokFleet < 0x100) {
-                pFVar8->wFlags = pFVar8->wFlags & 0xfeffU | 0x100;
-                pFVar8->wFlags = pFVar8->wFlags & 0xefff;
-                pFVar8->wFlags = pFVar8->wFlags & 0xff7f;
+                pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xfeff | 0x100;
+                pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xefff;
+                *(uint *)((int)&pFVar8->dirLong + 2) = *(uint *)((int)&pFVar8->dirLong + 2) & 0xff7f
+                ;
                 rgctok[iplrCur] = rgctok[iplrCur] + (char)ctokFleet;
                 ctokNew = ctokNew + ctokFleet;
               }
@@ -1737,32 +1749,32 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
     uVar11 = (undefined2)((ulong)lpshdef >> 0x10);
     pSVar8 = (SHDEF *)lpshdef;
     if ((int)(uint)(pSVar8->hul).chs <= j) break;
-    if ((uint)(pSVar8->hul).rghs[j].wFlags >> 8 != 0) {
+    if ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8 != 0) {
       HVar1 = ((pSVar8->hul).rghs + j)->grhst;
       if (HVar1 == hstEngine) {
-        iEngine = (pSVar8->hul).rghs[j].wFlags & 0xff;
-        cEngineT = (uint)(pSVar8->hul).rghs[j].wFlags >> 8;
+        iEngine = (pSVar8->hul).rghs[j].wFlags_0x2 & 0xff;
+        cEngineT = (pSVar8->hul).rghs[j].wFlags_0x2 >> 8;
         if (iEngine == 8) {
-          cHalfThruster = cHalfThruster + ((uint)(pSVar8->hul).rghs[j].wFlags >> 8);
+          cHalfThruster = cHalfThruster + ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8);
         }
       }
       else if (HVar1 == hstMining) {
-        if (((pSVar8->hul).rghs[j].wFlags & 0xffU) == 6) {
-          cHalfThruster = cHalfThruster + ((uint)(pSVar8->hul).rghs[j].wFlags >> 8);
+        if (((pSVar8->hul).rghs[j].wFlags_0x2 & 0xff) == 6) {
+          cHalfThruster = cHalfThruster + ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8);
         }
       }
       else if (HVar1 == hstSpecialE) {
-        if (((pSVar8->hul).rghs[j].wFlags & 0xffU) == 4) {
-          cThruster = cThruster + ((uint)(pSVar8->hul).rghs[j].wFlags >> 8);
+        if (((pSVar8->hul).rghs[j].wFlags_0x2 & 0xff) == 4) {
+          cThruster = cThruster + ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8);
         }
       }
       else if (HVar1 == hstSpecialM) {
-        uVar2 = (pSVar8->hul).rghs[j].wFlags & 0xff;
+        uVar2 = (pSVar8->hul).rghs[j].wFlags_0x2 & 0xff;
         if (uVar2 == 7) {
-          cThruster = cThruster + ((uint)(pSVar8->hul).rghs[j].wFlags >> 8);
+          cThruster = cThruster + ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8);
         }
         else if (uVar2 == 8) {
-          cThruster = cThruster + ((uint)(pSVar8->hul).rghs[j].wFlags >> 8) * 2;
+          cThruster = cThruster + ((pSVar8->hul).rghs[j].wFlags_0x2 >> 8) * 2;
         }
       }
     }
@@ -1815,12 +1827,12 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
         spd = spd + -1;
       }
       uVar2 = Random(0xf);
-      pTVar9->wFlags = pTVar9->wFlags & 0xc3ffU | (uVar2 & 0xf) << 10;
+      pTVar9->wFlags = pTVar9->wFlags & 0xc3ff | (uVar2 & 0xf) << 10;
     }
     if (ptok != (TOK *)0x0) {
       pTVar9->wt = wt;
     }
-    uVar2 = spd - (int)(((ulong)wt / 0x46) / (ulong)((uint)(pSVar8->hul).rghs[0].wFlags >> 8));
+    uVar2 = spd - (int)(((ulong)wt / 0x46) / (ulong)((pSVar8->hul).rghs[0].wFlags_0x2 >> 8));
     uVar4 = uVar2;
     if (8 < (int)uVar2) {
       uVar4 = 8;
@@ -1857,15 +1869,17 @@ SHDEF * LpshdefFromTok(TOK *ptok)
   
   uVar5 = (undefined2)((ulong)ptok >> 0x10);
   pTVar3 = (TOK *)ptok;
-  if (pTVar3->ishdef < 0x10) {
+  if (*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) < 0x10) {
     iVar4 = (uint)pTVar3->iplr * 4;
     uVar2 = *(undefined2 *)(iVar4 + 0x100);
-    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0xfe) + (uint)pTVar3->ishdef * 0x93);
+    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0xfe) +
+                      (uint)*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) * 0x93);
   }
   else {
     iVar4 = (uint)pTVar3->iplr * 4;
     uVar2 = *(undefined2 *)(iVar4 + 0x14e);
-    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0x14c) + (pTVar3->ishdef - 0x10) * 0x93);
+    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0x14c) +
+                      (*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) - 0x10) * 0x93);
   }
   return (SHDEF *)CONCAT22(uVar2,pSVar1);
 }
@@ -1892,17 +1906,17 @@ short FCanKillTok(TOK *ptok1,TOK *ptok2)
   
   pSVar7 = LpshdefFromTok(ptok1);
   uVar6 = (undefined2)((ulong)pSVar7 >> 0x10);
-  uVar1 = *(uint *)&((SHDEF *)pSVar7)->lPower;
-  uVar2 = *(uint *)((int)&((SHDEF *)pSVar7)->lPower + 2);
+  uVar1 = *(uint *)&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
+  uVar2 = *(uint *)((int)&((SHDEF *)pSVar7)->u_SHDEF_0x0087 + 2);
   pSVar7 = LpshdefFromTok(ptok2);
   uVar6 = (undefined2)((ulong)pSVar7 >> 0x10);
-  uVar3 = *(uint *)&((SHDEF *)pSVar7)->lPower;
-  uVar4 = *(uint *)((int)&((SHDEF *)pSVar7)->lPower + 2);
+  uVar3 = *(uint *)&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
+  uVar4 = *(uint *)((int)&((SHDEF *)pSVar7)->u_SHDEF_0x0087 + 2);
   if (((int)uVar4 < (int)uVar2) || (((int)uVar4 <= (int)uVar2 && (uVar3 <= uVar1)))) {
     if (((uVar2 & 0x7fff) < (uVar4 & 0x7fff)) ||
        (((uVar2 & 0x7fff) <= (uVar4 & 0x7fff) && ((uVar1 & 0xf000) <= (uVar3 & 0xf000))))) {
       if ((((uVar3 & 0xff00) == (uVar1 & 0xff00)) && ((uVar4 & 0x7fff) == (uVar2 & 0x7fff))) &&
-         (((uint)((TOK *)ptok2)->wFlags >> 8 & 0xf) <= ((uint)((TOK *)ptok1)->wFlags >> 8 & 0xf))) {
+         ((((TOK *)ptok2)->wFlags_0x19 >> 8 & 0xf) <= (((TOK *)ptok1)->wFlags_0x19 >> 8 & 0xf))) {
         sVar5 = 1;
       }
       else {
@@ -1934,7 +1948,6 @@ void DoBattles(short fPostMovement)
   FLEET *pFVar1;
   int iVar2;
   byte *pbVar3;
-  ushort rggrfAttack [16];
   ushort grfPlayer;
   ushort grfSpectator;
   FLEET *lpfl;
@@ -1950,12 +1963,13 @@ void DoBattles(short fPostMovement)
     iVar2 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
     lpfl = (FLEET *)CONCAT22(iVar2,pFVar1);
     if ((pFVar1 == (FLEET *)0x0) && (iVar2 == 0)) break;
-    pFVar1->wFlags = pFVar1->wFlags & 0xefff;
-    if (((((uint)pFVar1->wFlags >> 0xb & 1) == 0) && (((uint)pFVar1->wFlags >> 10 & 1) == 0)) &&
+    pFVar1->wFlags_0x4 = pFVar1->wFlags_0x4 & 0xefff;
+    if ((((pFVar1->wFlags_0x4 >> 0xb & 1) == 0) && ((pFVar1->wFlags_0x4 >> 10 & 1) == 0)) &&
        ((*(int *)&pFVar1->lpflNext != 0 || (*(int *)((int)&pFVar1->lpflNext + 2) != 0)))) {
-      cplr = CplrBattle((FLEET *)CONCAT22(iVar2,pFVar1),rggrfAttack,&grfPlayer,&grfSpectator);
+      cplr = CplrBattle((FLEET *)CONCAT22(iVar2,pFVar1),(ushort *)&stack0xffd0,&grfPlayer,
+                        &grfSpectator);
       if ((cplr != -1) && (cplr != 0)) {
-        FDoCoolBattle(lpfl,cplr,rggrfAttack,grfPlayer,grfSpectator);
+        FDoCoolBattle(lpfl,cplr,(ushort *)&stack0xffd0,grfPlayer,grfSpectator);
       }
     }
   }
@@ -1995,29 +2009,29 @@ void DoBattles(short fPostMovement)
 void RegenShield(TOK *ptok)
 
 {
-  uint iplr;
-  TOK *pTVar1;
-  undefined2 uVar2;
+  ushort uVar1;
+  TOK *pTVar2;
+  short unaff_SI;
+  undefined2 uVar3;
   SHDEF *lpshdef;
-  long lVar3;
   long lVar4;
-  short dpOrig;
-  short dpNew;
+  ushort uVar5;
+  undefined2 uVar6;
   
-  uVar2 = (undefined2)((ulong)ptok >> 0x10);
-  pTVar1 = (TOK *)ptok;
-  iplr = (uint)pTVar1->iplr;
+  uVar3 = (undefined2)((ulong)ptok >> 0x10);
+  pTVar2 = (TOK *)ptok;
   lpshdef = LpshdefFromTok(ptok);
-  lVar3 = DpShieldOfShdef(lpshdef,iplr);
-  if (pTVar1->dpShield != 0) {
-    lVar4 = __aFldiv(lVar3,10);
-    dpOrig = (short)lVar3;
-    lVar4 = lVar4 + (ulong)(uint)pTVar1->dpShield;
-    dpNew = (short)lVar4;
-    if (lVar3 < lVar4) {
-      dpNew = dpOrig;
+  DpShieldOfShdef(lpshdef,unaff_SI);
+  if (pTVar2->dpShield != 0) {
+    uVar6 = 10;
+    uVar5 = 10;
+    lVar4 = __aFldiv(0xa000a,10);
+    lVar4 = lVar4 + (ulong)pTVar2->dpShield;
+    uVar1 = (ushort)lVar4;
+    if (CONCAT22(uVar6,uVar5) < lVar4) {
+      uVar1 = uVar5;
     }
-    pTVar1->dpShield = dpNew;
+    pTVar2->dpShield = uVar1;
   }
   return;
 }
@@ -2049,35 +2063,35 @@ short InitFromHuldef(HUL *lphul,short *ppctBC)
   pct = 0;
   cbc = 0;
   pHVar4 = LphuldefFromId(lphul->ihuldef);
-  initBase = ((HULDEF *)pHVar4)->wFlags & 0x3f;
+  initBase = ((HULDEF *)pHVar4)->wFlags_0x7b & 0x3f;
   ihs = 0;
   while( true ) {
     uVar3 = (undefined2)((ulong)lphul >> 0x10);
     if ((int)(uint)((HUL *)lphul)->chs <= ihs) break;
     pHVar2 = ((HUL *)lphul)->rghs + ihs;
     part.hs.grhst = pHVar2->grhst;
-    part.hs.wFlags = pHVar2->wFlags;
-    if ((uint)part.hs.wFlags >> 8 != 0) {
+    part.hs.wFlags_0x2 = pHVar2->wFlags_0x2;
+    if (part.hs.wFlags_0x2 >> 8 != 0) {
       if ((part.hs.grhst & hstSpecialE) ==
           ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
             hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) {
         if (((part.hs.grhst & hstBeam) !=
              ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines
                |hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
-           ((part.hs.wFlags & 0xffU) == 0x12)) {
+           ((part.hs.wFlags_0x2 & 0xff) == 0x12)) {
           pctBC = 10;
-          for (i = 0; i < (int)((uint)part.hs.wFlags >> 8); i = i + 1) {
+          for (i = 0; i < (int)(part.hs.wFlags_0x2 >> 8); i = i + 1) {
             pct = pct + ((100 - pct) * 10) / 100;
           }
         }
       }
       else {
-        uVar1 = part.hs.wFlags & 0xff;
+        uVar1 = part.hs.wFlags_0x2 & 0xff;
         if (((uVar1 == 5) || (uVar1 == 6)) || (uVar1 == 7)) {
           FLookupPart(&part);
-          cbc = cbc + ((part.hs.wFlags & 0xffU) - 4) * ((uint)part.hs.wFlags >> 8);
-          pctBC = ((COMPART *)part.pcom + 1)->id;
-          for (i = 0; i < (int)((uint)part.hs.wFlags >> 8); i = i + 1) {
+          cbc = cbc + ((part.hs.wFlags_0x2 & 0xff) - 4) * (part.hs.wFlags_0x2 >> 8);
+          pctBC = ((ARMOR *)part.u_PART_0x0004.parmor)->dp;
+          for (i = 0; i < (int)(part.hs.wFlags_0x2 >> 8); i = i + 1) {
             pct = pct + ((100 - pct) * pctBC) / 100;
           }
         }
@@ -2135,189 +2149,182 @@ void CheckInitiative(TOK *ptok)
 void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
 
 {
-  uint uVar1;
+  byte bVar1;
   TOK *pTVar2;
-  HUL *pHVar3;
-  undefined2 uVar4;
-  undefined2 uVar5;
-  ulong uVar6;
-  ulong uVar7;
-  undefined1 *puVar8;
+  SHDEF *pSVar3;
+  HS *pHVar4;
+  BEAM *pBVar5;
+  undefined2 uVar6;
+  undefined2 uVar7;
+  HullSlotType HVar8;
+  SHDEF *lpshdef;
   long lVar9;
-  undefined2 uVar10;
-  PART part;
+  ulong uVar10;
+  ulong uVar11;
+  ulong uVar12;
+  HullSlotType HVar13;
+  HS HVar14;
+  uint uVar15;
+  u_PART_0x0004 local_34;
   short dxyPart;
   HUL *lphul;
   short initBase;
   short dxyLim;
-  SHDEF *lpshdef;
-  undefined4 pctHit;
   short initMin;
-  undefined4 pctCap;
   short i;
   short dxyMax;
   short init;
   short initMac;
   short ihs;
-  undefined4 pctBeamDef;
-  undefined4 ldp;
+  ushort ldp;
+  int local_8;
   short pctJam;
   
-  pctCap._0_2_ = 1000;
-  pctCap._2_2_ = 0;
-  pctBeamDef._0_2_ = 1000;
-  pctBeamDef._2_2_ = 0;
-  pctHit._0_2_ = (undefined1 *)0x2710;
-  pctHit._2_2_ = 0;
-  uVar4 = (undefined2)((ulong)ptok >> 0x10);
+  uVar10 = 1000;
+  uVar11 = 1000;
+  uVar12 = 10000;
+  uVar6 = (undefined2)((ulong)ptok >> 0x10);
   pTVar2 = (TOK *)ptok;
-  initBase = (short)pTVar2->initBase;
+  bVar1 = pTVar2->initBase;
   initMin = -1;
   initMac = -1;
-  lphul = &LpshdefFromTok(ptok)->hul;
+  lpshdef = LpshdefFromTok(ptok);
   dxyMax = -1;
   dxyLim = -1;
-  lpshdef = (SHDEF *)lphul;
-  ldp = DpShieldOfShdef((SHDEF *)lphul,(uint)pTVar2->iplr);
-  uVar6 = CONCAT22(pctBeamDef._2_2_,(undefined2)pctBeamDef);
-  uVar7 = CONCAT22(pctCap._2_2_,(undefined2)pctCap);
-  puVar8 = (undefined1 *)CONCAT22(pctHit._2_2_,(undefined1 *)pctHit);
+  HVar8 = hstSpecialM|hstTorp|hstBeam|hstArmor;
+  lVar9 = DpShieldOfShdef(lpshdef,(uint)pTVar2->iplr);
   ihs = 0;
   while( true ) {
-    uVar5 = (undefined2)((ulong)lphul >> 0x10);
-    pHVar3 = (HUL *)lphul;
-    pctCap = uVar7;
-    pctBeamDef = uVar6;
-    pctHit = puVar8;
-    if ((int)(uint)pHVar3->chs <= ihs) break;
-    if ((((pHVar3->rghs + ihs)->grhst &
+    local_8 = (int)((ulong)lVar9 >> 0x10);
+    ldp = (ushort)lVar9;
+    uVar7 = (undefined2)((ulong)lpshdef >> 0x10);
+    pSVar3 = (SHDEF *)lpshdef;
+    if ((int)(uint)(pSVar3->hul).chs <= ihs) break;
+    if (((((pSVar3->hul).rghs + ihs)->grhst &
          (hstSpecialM|hstSpecialE|hstMining|hstTorp|hstBeam|hstArmor|hstShield|hstScanner)) !=
          ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
            hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
-       ((uint)pHVar3->rghs[ihs].wFlags >> 8 != 0)) {
+       ((pSVar3->hul).rghs[ihs].wFlags_0x2 >> 8 != 0)) {
       pctJam = 100;
       dxyPart = -1;
-      part.hs.grhst = (pHVar3->rghs + ihs)->grhst;
-      part.hs.wFlags = pHVar3->rghs[ihs].wFlags;
-      if ((part.hs.grhst & (hstTorp|hstBeam)) ==
+      pHVar4 = (pSVar3->hul).rghs + ihs;
+      HVar13 = pHVar4->grhst;
+      HVar14.wFlags_0x2 = pHVar4->wFlags_0x2;
+      HVar14.grhst = HVar13;
+      pBVar5 = (BEAM *)local_34.pbeam;
+      uVar7 = local_34._2_2_;
+      if ((HVar13 & (hstTorp|hstBeam)) ==
           ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
             hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) {
         init = -1;
       }
       else {
         idPlayer = (short)pTVar2->iplr;
-        FLookupPart(&part);
+        HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
+        HVar14.grhst = HVar8;
+        HVar8 = hstSpecialM|hstArmor;
+        FLookupPart((PART *)&stack0xffc8);
         idPlayer = -1;
-        init = initBase + *(int *)(((COMPART *)part.pcom)[1].rgTech + 2);
-        uVar7 = pctCap;
-        uVar6 = pctBeamDef;
+        init = (uint)bVar1 + pBVar5->init;
         if (0x3f < init) {
           init = 0x3f;
         }
       }
-      puVar8 = pctHit;
-      if (part.hs.grhst == hstShield) {
-        if ((part.hs.wFlags & 0xffU) == 6) {
+      HVar13 = HVar14.grhst;
+      uVar15 = HVar14.wFlags_0x2;
+      if (HVar13 == hstShield) {
+        if ((uVar15 & 0xff) == 6) {
           pctJam = 0x5f;
         }
       }
-      else if (part.hs.grhst == hstArmor) {
-        if ((part.hs.wFlags & 0xffU) == 9) {
+      else if (HVar13 == hstArmor) {
+        if ((uVar15 & 0xff) == 9) {
           pctJam = 0x50;
         }
       }
-      else {
-        uVar5 = (undefined2)((ulong)part.pcom >> 0x10);
-        if (part.hs.grhst == hstBeam) {
-          dxyPart = ((COMPART *)part.pcom + 1)->id;
+      else if (HVar13 == hstBeam) {
+        dxyPart = pBVar5->dRangeMax;
+      }
+      else if (HVar13 == hstTorp) {
+        pTVar2->wFlags = pTVar2->wFlags & 0xfffb | 4;
+        dxyPart = pBVar5->dRangeMax;
+      }
+      else if (HVar13 == hstMining) {
+        if ((uVar15 & 0xff) == 6) {
+          pctJam = 0x46;
         }
-        else if (part.hs.grhst == hstTorp) {
-          pTVar2->wFlags = pTVar2->wFlags & 0xfffbU | 4;
-          dxyPart = ((COMPART *)part.pcom + 1)->id;
+      }
+      else if (HVar13 == hstSpecialE) {
+        HVar8 = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
+        switch(uVar15 & 0xff) {
+        case 4:
+          pctJam = 0x5a;
+          HVar8 = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
+          break;
+        case 8:
+        case 9:
+        case 10:
+        case 0xb:
+          idPlayer = (short)pTVar2->iplr;
+          HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
+          HVar14.grhst = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
+          FLookupPart((PART *)&stack0xffc8);
+          idPlayer = -1;
+          pctJam = 100 - pBVar5->dRangeMax;
+          HVar8 = hstSpecialM|hstArmor;
+          break;
+        case 0xc:
+        case 0xd:
+          idPlayer = (short)pTVar2->iplr;
+          HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
+          HVar14.grhst = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
+          HVar8 = hstSpecialM|hstArmor;
+          FLookupPart((PART *)&stack0xffc8);
+          idPlayer = -1;
+          for (i = HVar14.wFlags_0x2 >> 8; 0 < i; i = i + -1) {
+            HVar14.grhst = hstBomb|hstTorp|hstShield;
+            HVar14.wFlags_0x2 = 0;
+            uVar15 = pBVar5->dRangeMax;
+            uVar10 = __aFulmul(uVar10,CONCAT22(((int)uVar15 >> 0xf) +
+                                                       (uint)(0xff9b < uVar15),uVar15 + 100));
+            HVar8 = hstSpecialM|hstMines|hstBeam|hstArmor;
+            uVar10 = __aFldiv(uVar10,(long)HVar14);
+          }
+          break;
+        case 0xe:
+          *pfDampeningField = 1;
+          HVar8 = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
+          break;
+        case 0xf:
+          pTVar2->wFlags = pTVar2->wFlags & 0xfffd | 2;
         }
-        else if (part.hs.grhst == hstMining) {
-          if ((part.hs.wFlags & 0xffU) == 6) {
-            pctJam = 0x46;
-          }
-        }
-        else {
-          pctCap = uVar7;
-          pctBeamDef = uVar6;
-          if (part.hs.grhst == hstSpecialE) {
-            switch(part.hs.wFlags & 0xff) {
-            case 4:
-              pctJam = 0x5a;
-              break;
-            case 8:
-            case 9:
-            case 10:
-            case 0xb:
-              idPlayer = (short)pTVar2->iplr;
-              FLookupPart(&part);
-              idPlayer = -1;
-              pctJam = 100 - ((COMPART *)part.pcom + 1)->id;
-              uVar7 = pctCap;
-              uVar6 = pctBeamDef;
-              break;
-            case 0xc:
-            case 0xd:
-              idPlayer = (short)pTVar2->iplr;
-              FLookupPart(&part);
-              idPlayer = -1;
-              uVar7 = pctCap;
-              uVar6 = pctBeamDef;
-              for (i = (uint)part.hs.wFlags >> 8; 0 < i; i = i + -1) {
-                uVar10 = 0;
-                uVar5 = 100;
-                uVar1 = ((COMPART *)part.pcom + 1)->id;
-                pctCap = uVar7;
-                pctBeamDef = uVar6;
-                uVar7 = __aFulmul(uVar7,CONCAT22(((int)uVar1 >> 0xf) +
-                                                         (uint)(0xff9b < uVar1),uVar1 + 100));
-                uVar7 = __aFldiv(uVar7,CONCAT22(uVar10,uVar5));
-                uVar6 = pctBeamDef;
-              }
-              break;
-            case 0xe:
-              *pfDampeningField = 1;
-              break;
-            case 0xf:
-              pTVar2->wFlags = pTVar2->wFlags & 0xfffdU | 2;
-            }
-            puVar8 = pctHit;
-          }
-          else if ((part.hs.grhst == hstSpecialM) && ((part.hs.wFlags & 0xffU) == 10)) {
-            idPlayer = (short)pTVar2->iplr;
-            FLookupPart(&part);
-            idPlayer = -1;
-            uVar6 = pctBeamDef;
-            uVar7 = pctCap;
-            for (i = (uint)part.hs.wFlags >> 8; puVar8 = pctHit, 0 < i; i = i + -1) {
-              uVar10 = 0;
-              uVar5 = 100;
-              uVar1 = ((COMPART *)part.pcom + 1)->id;
-              pctBeamDef = uVar6;
-              pctCap = uVar7;
-              uVar7 = __aFulmul(uVar6,CONCAT22(-(uint)(100 < uVar1) - ((int)uVar1 >> 0xf),
-                                                       100 - uVar1));
-              uVar6 = __aFldiv(uVar7,CONCAT22(uVar10,uVar5));
-              uVar7 = pctCap;
-            }
-          }
+      }
+      else if ((HVar13 == hstSpecialM) && ((uVar15 & 0xff) == 10)) {
+        idPlayer = (short)pTVar2->iplr;
+        HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
+        HVar14.grhst = HVar8;
+        HVar8 = hstSpecialM|hstArmor;
+        FLookupPart((PART *)&stack0xffc8);
+        idPlayer = -1;
+        for (i = HVar14.wFlags_0x2 >> 8; 0 < i; i = i + -1) {
+          HVar14.grhst = hstBomb|hstTorp|hstShield;
+          HVar14.wFlags_0x2 = 0;
+          uVar15 = pBVar5->dRangeMax;
+          uVar11 = __aFulmul(uVar11,CONCAT22(-(uint)(100 < uVar15) - ((int)uVar15 >> 0xf),
+                                                     100 - uVar15));
+          HVar8 = hstSpecialM|hstMines|hstBeam|hstArmor;
+          uVar11 = __aFldiv(uVar11,(long)HVar14);
         }
       }
       if (pctJam < 100) {
-        pctCap = uVar7;
-        pctBeamDef = uVar6;
-        for (i = (uint)part.hs.wFlags >> 8; uVar7 = pctCap, uVar6 = pctBeamDef, 0 < i; i = i + -1) {
-          pctHit = puVar8;
-          uVar7 = __aFulmul((ulong)puVar8,(long)pctJam);
-          pctHit = (undefined1 *)uVar7;
-          puVar8 = (undefined1 *)__aFldiv(uVar7,100);
+        for (i = HVar14.wFlags_0x2 >> 8; 0 < i; i = i + -1) {
+          uVar12 = __aFulmul(uVar12,(long)pctJam);
+          HVar8 = hstSpecialM|hstMines|hstBeam|hstArmor;
+          uVar12 = __aFldiv(uVar12,100);
         }
       }
       if (dxyPart != -1) {
-        if (pTVar2->field2_0x3 == '\x01') {
+        if (*(char *)&pTVar2->u_TOK_0x0003 == '\x01') {
           dxyPart = dxyPart + 1;
         }
         if ((dxyMax < 0) || (dxyPart < dxyMax)) {
@@ -2337,37 +2344,37 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
     }
     ihs = ihs + 1;
   }
-  if (puVar8 == &DAT_0000_2710) {
+  if (uVar12 == 10000) {
     pTVar2->pctJam = 0;
   }
   else {
-    lVar9 = __aFldiv((long)(puVar8 + 0x32),100);
+    lVar9 = __aFldiv(uVar12 + 0x32,100);
     pTVar2->pctJam = 100 - (char)lVar9;
     if (0x5f < pTVar2->pctJam) {
       pTVar2->pctJam = 0x5f;
     }
   }
-  if (pTVar2->field2_0x3 == '\x01') {
+  if (*(char *)&pTVar2->u_TOK_0x0003 == '\x01') {
     pTVar2->pctJam = pTVar2->pctJam - pTVar2->pctJam / 4;
   }
-  if (pctCap != 1000) {
-    if (0x9f6 < (long)pctCap) {
-      pctCap = 0x9f6;
+  if (uVar10 != 1000) {
+    if (0x9f6 < (long)uVar10) {
+      uVar10 = 0x9f6;
     }
-    lVar9 = __aFldiv(pctCap,10);
+    lVar9 = __aFldiv(uVar10,10);
     pTVar2->pctCap = (byte)lVar9;
   }
-  lVar9 = __aFldiv(pctBeamDef,10);
+  lVar9 = __aFldiv(uVar11,10);
   pTVar2->pctBeamDef = (byte)lVar9;
-  pTVar2->wFlags = pTVar2->wFlags & 0xff0fU | (dxyMax & 0xfU) << 4;
-  pTVar2->wFlags = pTVar2->wFlags & 0xfff0U | dxyLim & 0xfU;
+  pTVar2->wFlags_0x19 = pTVar2->wFlags_0x19 & 0xff0f | (dxyMax & 0xfU) << 4;
+  pTVar2->wFlags_0x19 = pTVar2->wFlags_0x19 & 0xfff0 | dxyLim & 0xfU;
   pTVar2->initMin = (byte)initMin;
   pTVar2->initMac = (byte)initMac;
-  if (ldp._2_2_ == 0) {
-    pTVar2->dpShield = (short)ldp;
+  if (local_8 == 0) {
+    pTVar2->dpShield = ldp;
   }
   else {
-    pTVar2->dpShield = -1;
+    pTVar2->dpShield = 0xffff;
   }
   return;
 }
@@ -2385,19 +2392,19 @@ void RandomizeTokOrder(void)
 
 {
   TOK *pTVar1;
-  short *psVar2;
+  ushort *puVar2;
   TOK *pTVar3;
   undefined2 uVar4;
   short sVar5;
   int iVar6;
   int iVar7;
   TOK *pTVar8;
-  short *psVar9;
+  ushort *puVar9;
   TOK *pTVar10;
   undefined2 unaff_SS;
   short itok;
   short itokSwap;
-  short tok [16];
+  ushort tok [16];
   
   for (itok = 0; itok < vctok; itok = itok + 1) {
     sVar5 = Random(vctok - itok);
@@ -2405,15 +2412,15 @@ void RandomizeTokOrder(void)
     iVar6 = sVar5 + itok;
     if (iVar6 != itok) {
       pTVar8 = (TOK *)vrgtok + iVar6;
-      psVar9 = tok;
+      puVar9 = tok;
       for (iVar7 = 0xe; iVar7 != 0; iVar7 = iVar7 + -1) {
-        psVar2 = psVar9;
-        psVar9 = psVar9 + 1;
+        puVar2 = puVar9;
+        puVar9 = puVar9 + 1;
         pTVar1 = pTVar8;
         pTVar8 = (TOK *)&pTVar8->iplr;
-        *psVar2 = pTVar1->id;
+        *puVar2 = pTVar1->id;
       }
-      *(char *)psVar9 = (char)pTVar8->id;
+      *(char *)puVar9 = (char)pTVar8->id;
       pTVar8 = (TOK *)vrgtok + itok;
       pTVar10 = (TOK *)vrgtok + iVar6;
       for (iVar6 = 0xe; iVar6 != 0; iVar6 = iVar6 + -1) {
@@ -2426,15 +2433,15 @@ void RandomizeTokOrder(void)
       *(char *)&pTVar10->id = (char)pTVar8->id;
       uVar4 = vrgtok._2_2_;
       pTVar8 = (TOK *)vrgtok + itok;
-      psVar9 = tok;
+      puVar9 = tok;
       for (iVar6 = 0xe; iVar6 != 0; iVar6 = iVar6 + -1) {
         pTVar1 = pTVar8;
         pTVar8 = (TOK *)&pTVar8->iplr;
-        psVar2 = psVar9;
-        psVar9 = psVar9 + 1;
-        pTVar1->id = *psVar2;
+        puVar2 = puVar9;
+        puVar9 = puVar9 + 1;
+        pTVar1->id = *puVar2;
       }
-      *(char *)&pTVar8->id = (char)*psVar9;
+      *(char *)&pTVar8->id = (char)*puVar9;
     }
   }
   return;
@@ -2454,7 +2461,7 @@ void InitializeBoard
 
 {
   TOK *pTVar1;
-  byte *pbVar2;
+  ushort *puVar2;
   PLANET *pPVar3;
   short sVar4;
   int iVar5;
@@ -2462,7 +2469,7 @@ void InitializeBoard
   FLEET *pFVar7;
   TOK *pTVar8;
   TOK *pTVar9;
-  byte *pbVar10;
+  ushort *puVar10;
   undefined2 uVar11;
   undefined2 uVar12;
   byte rgfTorp [16];
@@ -2501,69 +2508,70 @@ void InitializeBoard
     uVar11 = (undefined2)((ulong)lppl >> 0x10);
     pPVar3 = (PLANET *)lppl;
     iplr = pPVar3->iPlayer;
-    if (((iplr != -1) && (((uint)pPVar3->wFlags >> 9 & 1) != 0)) &&
+    if (((iplr != -1) && ((pPVar3->wFlags_0x4 >> 9 & 1) != 0)) &&
        ((1 << ((byte)iplr & 0x1f) & grfPlayer) != 0)) {
       uVar12 = (undefined2)((ulong)ptok >> 0x10);
       pTVar8 = (TOK *)ptok;
-      pTVar8->field2_0x3 = 1;
-      pPVar3->wFlags = pPVar3->wFlags & 0xbfffU | 0x4000;
+      *(undefined1 *)&pTVar8->u_TOK_0x0003 = 1;
+      *(uint *)((int)&pPVar3->lStarbase + 2) =
+           *(uint *)((int)&pPVar3->lStarbase + 2) & 0xbfff | 0x4000;
       pTVar8->brc = *(byte *)((uint)mpiplrdibrc[iplr] + ibrc);
       ptok->id = lppl->id;
       pTVar8->iplr = (byte)iplr;
       pTVar8->csh = 1;
-      pTVar8->ishdef = ((byte)*(undefined2 *)&pPVar3->field11_0x2c & 0xf) + 0x10;
+      *(char *)((int)&pTVar8->u_TOK_0x0003 + 1) = ((byte)(int)pPVar3->lStarbase & 0xf) + 0x10;
       CheckInitiative(ptok);
       CheckWeapons(ptok,&fDampeningField,pinit);
-      rgfTorp[iplr] = rgfTorp[iplr] | (byte)((uint)((TOK *)ptok)->wFlags >> 2) & 1;
+      rgfTorp[iplr] = rgfTorp[iplr] | (byte)(((TOK *)ptok)->wFlags >> 2) & 1;
       uVar11 = (undefined2)((ulong)ptok >> 0x10);
       pTVar8 = (TOK *)ptok;
       if (pTVar8->initBase == 0xff) {
-        pTVar8->wFlags = pTVar8->wFlags & 0xfffU | 0x5000;
+        pTVar8->wFlags_0x17 = pTVar8->wFlags_0x17 & 0xfff | 0x5000;
       }
       else {
-        pTVar8->wFlags = pTVar8->wFlags & 0xfffU | 0x3000;
+        pTVar8->wFlags_0x17 = pTVar8->wFlags_0x17 & 0xfff | 0x3000;
       }
-      pTVar8->wFlags = pTVar8->wFlags & 0xfff0U | 1;
-      pTVar8->wFlags = pTVar8->wFlags & 0xff0fU | 0x10;
+      pTVar8->wFlags_0x17 = pTVar8->wFlags_0x17 & 0xfff0 | 1;
+      pTVar8->wFlags_0x17 = pTVar8->wFlags_0x17 & 0xff0f | 0x10;
       (&pTVar8->dv)->dp =
-           (&pTVar8->dv)->dp & 0x7fU | (*(uint *)&((PLANET *)lppl)->field11_0x2c >> 4) << 7;
-      pTVar8->wFlags = pTVar8->wFlags & 0xf0ffU | 0x500;
-      if ((uint)(&pTVar8->dv)->dp >> 7 != 0) {
-        (&pTVar8->dv)->dp = (&pTVar8->dv)->dp & 0xff80U | 100;
+           (&pTVar8->dv)->dp & 0x7f | (*(uint *)&((PLANET *)lppl)->lStarbase >> 4) << 7;
+      pTVar8->wFlags_0x17 = pTVar8->wFlags_0x17 & 0xf0ff | 0x500;
+      if ((&pTVar8->dv)->dp >> 7 != 0) {
+        (&pTVar8->dv)->dp = (&pTVar8->dv)->dp & 0xff80 | 100;
       }
-      pTVar8->wFlags = pTVar8->wFlags & 0xf0ff;
-      pTVar8->wt = -1;
+      pTVar8->wFlags_0x19 = pTVar8->wFlags_0x19 & 0xf0ff;
+      pTVar8->wt = 0xffff;
       ptok = (TOK *)CONCAT22(uVar11,pTVar8 + 1);
     }
   }
   do {
     uVar11 = (undefined2)((ulong)lpflCur >> 0x10);
     pFVar7 = (FLEET *)lpflCur;
-    if (((uint)pFVar7->wFlags >> 10 & 1) == 0) {
-      if (((uint)pFVar7->wFlags >> 7 & 1) == 0) {
-        if (((uint)pFVar7->wFlags >> 8 & 1) != 0) {
-          pFVar7->wFlags = pFVar7->wFlags & 0xbfffU | 0x4000;
+    if ((pFVar7->wFlags_0x4 >> 10 & 1) == 0) {
+      if ((*(uint *)((int)&pFVar7->dirLong + 2) >> 7 & 1) == 0) {
+        if ((pFVar7->wFlags_0x4 >> 8 & 1) != 0) {
+          pFVar7->wFlags_0x4 = pFVar7->wFlags_0x4 & 0xbfff | 0x4000;
           iplr = pFVar7->iPlayer;
           fDumpCargo = FDumpCargo(lpflCur);
           for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
             if (((FLEET *)lpflCur)->rgcsh[ishdef] != 0) {
               uVar11 = (undefined2)((ulong)ptok >> 0x10);
               pTVar8 = (TOK *)ptok;
-              pTVar8->field2_0x3 = 2;
+              *(undefined1 *)&pTVar8->u_TOK_0x0003 = 2;
               pTVar8->brc = *(byte *)((uint)mpiplrdibrc[iplr] + ibrc);
               ptok->id = lpflCur->id;
               pTVar8->iplr = (byte)((uint)lpflCur->id >> 9) & 0xf;
-              pTVar8->ishdef = (byte)ishdef;
+              *(undefined1 *)((int)&pTVar8->u_TOK_0x0003 + 1) = (char)ishdef;
               pTVar8->csh = ((FLEET *)lpflCur)->rgcsh[ishdef];
-              (&pTVar8->dv)->dp = (((FLEET *)lpflCur)->rgdv + ishdef)->dp;
+              (&pTVar8->dv)->dp = ((FLEET *)lpflCur)->rgcsh[ishdef + 0x10];
               CheckInitiative(ptok);
               CheckWeapons(ptok,&fDampeningField,pinit);
-              rgfTorp[iplr] = rgfTorp[iplr] | (byte)((uint)((TOK *)ptok)->wFlags >> 2) & 1;
+              rgfTorp[iplr] = rgfTorp[iplr] | (byte)(((TOK *)ptok)->wFlags >> 2) & 1;
               CheckTarget(ptok,lpflCur,ishdef);
               uVar6 = SpdOfShip(lpflCur,ishdef,ptok,fDumpCargo,(SHDEF *)0x0);
               uVar11 = (undefined2)((ulong)ptok >> 0x10);
               pTVar8 = (TOK *)ptok;
-              pTVar8->wFlags = pTVar8->wFlags & 0xf0ffU | (uVar6 & 0xf) << 8;
+              pTVar8->wFlags_0x19 = pTVar8->wFlags_0x19 & 0xf0ff | (uVar6 & 0xf) << 8;
               ptok = (TOK *)CONCAT22(uVar11,pTVar8 + 1);
               if (0xff < ((int)(pTVar8 + 1) - (int)(TOK *)vrgtok) / 0x1d)
               goto BATTLE_LTooManyTokens;
@@ -2587,10 +2595,10 @@ BATTLE_LTooManyTokens:
   while( true ) {
     if ((TOK *)ptok <= (TOK *)ptokT) break;
     uVar11 = (undefined2)((ulong)ptokT >> 0x10);
-    ((TOK *)ptokT)->wFlags = ((TOK *)ptokT)->wFlags & 0xffefU | 0x10;
-    ((TOK *)ptokT)->wFlags = ((TOK *)ptokT)->wFlags & 0xfffeU | 1;
+    ((TOK *)ptokT)->wFlags = ((TOK *)ptokT)->wFlags & 0xffef | 0x10;
+    ((TOK *)ptokT)->wFlags = ((TOK *)ptokT)->wFlags & 0xfffe | 1;
     if (((TOK *)ptokT)->initMin == 0xff) {
-      ((TOK *)ptokT)->wFlags = ((TOK *)ptokT)->wFlags & 0xfff0;
+      ((TOK *)ptokT)->wFlags_0x17 = ((TOK *)ptokT)->wFlags_0x17 & 0xfff0;
     }
     if ((((TOK *)ptokT)->dpShield == 0) ||
        (sVar4 = GetRaceGrbit((PLAYER *)rgplr + ((TOK *)ptokT)->iplr,
@@ -2602,27 +2610,27 @@ BATTLE_LTooManyTokens:
     }
     uVar11 = (undefined2)((ulong)ptokT >> 0x10);
     pTVar8 = (TOK *)ptokT;
-    pTVar8->wFlags = pTVar8->wFlags & 0xfff7U | iVar5 << 3;
-    if ((fDampeningField != 0) && (pTVar8->field2_0x3 != '\x01')) {
-      if ((int)(((uint)pTVar8->wFlags >> 8 & 0xf) - 4) < 1) {
+    pTVar8->wFlags = pTVar8->wFlags & 0xfff7 | iVar5 << 3;
+    if ((fDampeningField != 0) && (*(char *)&pTVar8->u_TOK_0x0003 != '\x01')) {
+      if ((int)((pTVar8->wFlags_0x19 >> 8 & 0xf) - 4) < 1) {
         uVar6 = 0;
       }
       else {
-        uVar6 = ((uint)pTVar8->wFlags >> 8 & 0xf) - 4;
+        uVar6 = (pTVar8->wFlags_0x19 >> 8 & 0xf) - 4;
       }
-      pTVar8->wFlags = pTVar8->wFlags & 0xf0ffU | (uVar6 & 0xf) << 8;
+      pTVar8->wFlags_0x19 = pTVar8->wFlags_0x19 & 0xf0ff | (uVar6 & 0xf) << 8;
     }
     uVar12 = (undefined2)((ulong)lpbBattleCur >> 0x10);
-    pbVar10 = (byte *)lpbBattleCur;
+    puVar10 = (ushort *)lpbBattleCur;
     pTVar9 = pTVar8;
     for (iVar5 = 0xe; iVar5 != 0; iVar5 = iVar5 + -1) {
-      pbVar2 = pbVar10;
-      pbVar10 = pbVar10 + 2;
+      puVar2 = puVar10;
+      puVar10 = puVar10 + 1;
       pTVar1 = pTVar9;
       pTVar9 = (TOK *)&pTVar9->iplr;
-      *(short *)pbVar2 = pTVar1->id;
+      *puVar2 = pTVar1->id;
     }
-    *pbVar10 = (byte)pTVar9->id;
+    *(byte *)puVar10 = (byte)pTVar9->id;
     lpbBattleCur =
          (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 0x1d);
     if ((pTVar8->initMin != 0xff) && ((initMin == -1 || ((int)(uint)pTVar8->initMin < initMin)))) {
@@ -2679,181 +2687,168 @@ short DzFromBrcBrc(byte brc1,byte brc2)
 long DpFromPtokBrcToBrc(TOK *ptok,byte brcSrc,byte brcTarget,TOK *ptokTarget,short fProximity)
 
 {
-  uint uVar1;
-  HUL *pHVar2;
-  undefined2 uVar3;
-  ulong uVar4;
-  SHDEF *pSVar5;
-  ulong uVar6;
-  long lVar7;
-  long lVar8;
-  ulong uVar9;
-  long lVar10;
-  PART part;
-  undefined4 dp;
-  undefined4 cTorpHit;
+  ulong uVar1;
+  bool bVar2;
+  uint uVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  int iVar7;
+  SHDEF *pSVar8;
+  HS *pHVar9;
+  undefined2 uVar10;
+  SHDEF *pSVar11;
+  long lVar12;
+  ulong uVar13;
+  HS HVar14;
+  HS HVar15;
+  ulong uVar16;
+  ulong uVar17;
+  long lVar18;
+  ulong uVar19;
+  long lVar20;
+  u_PART_0x0004 in_stack_0000ffd2;
   HUL *lphul;
-  uint dRange;
-  int local_1c;
   short fOutOfRange;
-  undefined4 dpTotal;
-  undefined4 cTorpBase;
   short ihs;
-  uint dpShdef;
-  undefined2 local_c;
-  ulong dpMax;
   short dz;
   
-  dz = DzFromBrcBrc(brcSrc,brcTarget);
-  dpTotal._0_2_ = 0;
-  dpTotal._2_2_ = 0;
-  if ((fProximity == 0) && ((int)(((TOK *)ptok)->wFlags & 0xfU) < dz)) {
-    uVar4 = 0;
+  uVar3 = DzFromBrcBrc(brcSrc,brcTarget);
+  uVar1 = 0;
+  if ((fProximity == 0) && ((int)(((TOK *)ptok)->wFlags_0x19 & 0xf) < (int)uVar3)) {
+    uVar17 = 0;
   }
   else {
-    lphul = &LpshdefFromTok(ptok)->hul;
-    uVar6 = CONCAT22(dp._2_2_,(undefined2)dp);
+    pSVar11 = LpshdefFromTok(ptok);
     ihs = 0;
     while( true ) {
-      uVar3 = (undefined2)((ulong)lphul >> 0x10);
-      pHVar2 = (HUL *)lphul;
-      dp = uVar6;
-      if ((int)(uint)pHVar2->chs <= ihs) break;
-      if ((((pHVar2->rghs + ihs)->grhst & (hstTorp|hstBeam)) !=
+      uVar10 = (undefined2)((ulong)pSVar11 >> 0x10);
+      pSVar8 = (SHDEF *)pSVar11;
+      if ((int)(uint)(pSVar8->hul).chs <= ihs) break;
+      if (((((pSVar8->hul).rghs + ihs)->grhst & (hstTorp|hstBeam)) !=
            ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
              hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
-         ((uint)pHVar2->rghs[ihs].wFlags >> 8 != 0)) {
-        part.hs.grhst = (pHVar2->rghs + ihs)->grhst;
-        part.hs.wFlags = pHVar2->rghs[ihs].wFlags;
+         ((pSVar8->hul).rghs[ihs].wFlags_0x2 >> 8 != 0)) {
+        pHVar9 = (pSVar8->hul).rghs + ihs;
+        HVar15.wFlags_0x2 = pHVar9->wFlags_0x2;
+        HVar15.grhst = pHVar9->grhst;
         idPlayer = (short)((TOK *)ptok)->iplr;
-        FLookupPart(&part);
+        FLookupPart((PART *)&stack0xffce);
         idPlayer = -1;
-        uVar3 = (undefined2)((ulong)part.pcom >> 0x10);
-        dRange = (uint)(((TOK *)ptok)->field2_0x3 == '\x01') + ((COMPART *)part.pcom + 1)->id;
-        local_1c = (int)dRange >> 0xf;
-        if ((dz >> 0xf < local_1c) || ((dz >> 0xf <= local_1c && ((uint)dz <= dRange)))) {
-          fOutOfRange = 0;
+        uVar4 = (uint)(*(char *)&((TOK *)ptok)->u_TOK_0x0003 == '\x01') +
+                ((BEAM *)in_stack_0000ffd2.pbeam)->dRangeMax;
+        iVar7 = (int)uVar4 >> 0xf;
+        if (((int)uVar3 >> 0xf < iVar7) || (((int)uVar3 >> 0xf <= iVar7 && (uVar3 <= uVar4)))) {
+          bVar2 = false;
         }
         else {
-          fOutOfRange = 1;
+          bVar2 = true;
         }
-        if ((fOutOfRange == 0) || (uVar6 = dp, fProximity != 0)) {
-          uVar6 = __aFulmul((long)*(int *)((COMPART *)part.pcom)[1].rgTech,
-                                    (ulong)((uint)part.hs.wFlags >> 8));
-          dp = uVar6;
-          if (part.hs.grhst == hstBeam) {
+        if ((!bVar2) || (fProximity != 0)) {
+          uVar16 = __aFulmul((long)((BEAM *)in_stack_0000ffd2.pbeam)->dp,
+                                     (ulong)HVar15 >> 0x18);
+          if (HVar15.grhst == hstBeam) {
             if (((TOK *)ptok)->pctCap != 0) {
-              lVar7 = 100;
-              uVar6 = __aFulmul(uVar6,(ulong)((TOK *)ptok)->pctCap);
-              uVar6 = __aFldiv(uVar6,lVar7);
+              lVar12 = 100;
+              uVar16 = __aFulmul(uVar16,(ulong)((TOK *)ptok)->pctCap);
+              uVar16 = __aFldiv(uVar16,lVar12);
             }
-            if (((0 < dz) && (-1 < local_1c)) && ((0 < local_1c || (dRange != 0)))) {
-              lVar8 = CONCAT22(local_1c,dRange);
-              lVar7 = 10;
-              dp = uVar6;
-              uVar6 = __aFulmul(uVar6,(long)dz);
-              lVar7 = __aFldiv(uVar6,lVar7);
-              lVar7 = __aFldiv(lVar7,lVar8);
-              uVar6 = dp - lVar7;
+            uVar6 = HVar15.wFlags_0x2;
+            if (((0 < (int)uVar3) && (-1 < iVar7)) && ((0 < iVar7 || (uVar4 != 0)))) {
+              lVar18 = (long)(int)uVar4;
+              lVar12 = 10;
+              uVar17 = __aFulmul(uVar16,(long)(int)uVar3);
+              lVar12 = __aFldiv(uVar17,lVar12);
+              lVar12 = __aFldiv(lVar12,lVar18);
+              uVar16 = uVar16 - lVar12;
             }
             if (((TOK *)ptokTarget)->pctBeamDef < 100) {
-              lVar7 = 100;
-              dp = uVar6;
-              uVar6 = __aFulmul(uVar6,(ulong)((TOK *)ptokTarget)->pctBeamDef);
-              uVar6 = __aFldiv(uVar6,lVar7);
+              lVar12 = 100;
+              uVar16 = __aFulmul(uVar16,(ulong)((TOK *)ptokTarget)->pctBeamDef);
+              uVar16 = __aFldiv(uVar16,lVar12);
             }
-            if ((*(uint *)(((COMPART *)part.pcom)[1].rgTech + 4) & 1) != 0) {
-              dp = uVar6;
-              uVar4 = __aFulmul((ulong)(uint)((TOK *)ptokTarget)->dpShield,
-                                        (ulong)(uint)((TOK *)ptok)->csh);
-              uVar6 = dp;
-              if ((long)uVar4 < (long)dp) {
-                uVar6 = uVar4;
+            if (((((BEAM *)in_stack_0000ffd2.pbeam)->grfAbilities & 1U) != 0) &&
+               (uVar17 = __aFulmul((ulong)((TOK *)ptokTarget)->dpShield,
+                                           (ulong)((TOK *)ptok)->csh), (long)uVar17 < (long)uVar16))
+            {
+              uVar16 = uVar17;
+            }
+            if (bVar2) {
+              uVar5 = uVar3 + 10;
+              uVar16 = __aFldiv(uVar16,CONCAT22((((int)uVar5 >> 0xf) - iVar7) -
+                                                        (uint)(uVar5 < uVar4),uVar5 - uVar4));
+              if (((long)uVar16 < 0x10000) && (((long)uVar16 < 0 || ((uint)uVar16 < uVar6 >> 8)))) {
+                uVar16 = (ulong)(uVar6 >> 8);
               }
             }
-            if (fOutOfRange != 0) {
-              uVar1 = dz + 10;
-              dp = uVar6;
-              uVar6 = __aFldiv(uVar6,CONCAT22((((int)uVar1 >> 0xf) - local_1c) -
-                                                      (uint)(uVar1 < dRange),uVar1 - dRange));
-              if (((long)uVar6 < 0x10000) &&
-                 (((long)uVar6 < 0 || ((uint)uVar6 < (uint)part.hs.wFlags >> 8)))) {
-                uVar6 = (ulong)((uint)part.hs.wFlags >> 8);
-              }
-            }
-            dp = uVar6;
-            uVar6 = __aFulmul(uVar6,(ulong)(uint)((TOK *)ptok)->csh);
-            dpTotal = uVar6 + dpTotal;
-            uVar6 = dp;
+            uVar16 = __aFulmul(uVar16,(ulong)((TOK *)ptok)->csh);
+            uVar1 = uVar16 + uVar1;
           }
-          else if (part.hs.grhst == hstTorp) {
-            uVar4 = 200;
-            uVar6 = __aFulmul((ulong)((uint)part.hs.wFlags >> 8),
-                                      (ulong)(uint)((TOK *)ptok)->csh);
-            uVar6 = __aFulmul(uVar6,uVar4);
-            cTorpBase = uVar6;
-            uVar6 = CTorpHit(uVar6,ptokTarget,*(short *)(((COMPART *)part.pcom)[1].rgTech + 4),
-                             (uint)((TOK *)ptok)->pctBC);
-            lVar7 = 200;
-            cTorpHit = uVar6;
-            uVar6 = __aFulmul((long)*(int *)((COMPART *)part.pcom)[1].rgTech,uVar6);
-            uVar6 = __aFldiv(uVar6,lVar7);
+          else if (HVar15.grhst == hstTorp) {
+            uVar17 = 200;
+            uVar16 = __aFulmul((ulong)HVar15 >> 0x18,(ulong)((TOK *)ptok)->csh);
+            uVar16 = __aFulmul(uVar16,uVar17);
+            uVar17 = CTorpHit(uVar16,ptokTarget,((BEAM *)in_stack_0000ffd2.pbeam)->grfAbilities,
+                              (uint)((TOK *)ptok)->pctBC);
+            in_stack_0000ffd2 = (u_PART_0x0004)0xc8;
+            uVar13 = __aFulmul((long)iRam000000fe,uVar17);
+            HVar14 = (HS)__aFldiv(uVar13,(long)in_stack_0000ffd2);
             if (((TOK *)ptokTarget)->dpShield != 0) {
-              lVar7 = 0x640;
-              dp = uVar6;
-              uVar6 = __aFulmul(cTorpBase - cTorpHit,
-                                        (long)*(int *)((COMPART *)part.pcom)[1].rgTech);
-              lVar7 = __aFldiv(uVar6,lVar7);
-              uVar6 = lVar7 + dp;
+              in_stack_0000ffd2 = (u_PART_0x0004)0x640;
+              uVar16 = __aFulmul(uVar16 - uVar17,(long)iRam00000676);
+              lVar12 = __aFldiv(uVar16,(long)in_stack_0000ffd2);
+              HVar14 = (HS)(lVar12 + (long)HVar14);
             }
-            if (fOutOfRange != 0) {
-              uVar1 = dz + 10;
-              dp = uVar6;
-              uVar6 = __aFldiv(uVar6,CONCAT22((((int)uVar1 >> 0xf) - local_1c) -
-                                                      (uint)(uVar1 < dRange),uVar1 - dRange));
-              if (((long)uVar6 < 0x10000) &&
-                 (((long)uVar6 < 0 || ((uint)uVar6 < (uint)part.hs.wFlags >> 8)))) {
-                uVar6 = (ulong)((uint)part.hs.wFlags >> 8);
+            if (bVar2) {
+              uVar6 = uVar3 + 10;
+              in_stack_0000ffd2._2_2_ = (((int)uVar6 >> 0xf) - iVar7) - (uint)(uVar6 < uVar4);
+              in_stack_0000ffd2.parmor._0_2_ = (ARMOR *)(uVar6 - uVar4);
+              HVar15 = (HS)__aFldiv((long)HVar14,(long)in_stack_0000ffd2);
+              uVar4 = HVar14.wFlags_0x2;
+              HVar14 = HVar15;
+              if (((long)HVar15 < 0x10000) && (((long)HVar15 < 0 || (HVar15.grhst < uVar4 >> 8)))) {
+                HVar14.wFlags_0x2 = 0;
+                HVar14.grhst = uVar4 >> 8;
               }
             }
-            dpTotal = uVar6 + dpTotal;
+            uVar1 = uVar1 + (long)HVar14;
           }
         }
       }
       ihs = ihs + 1;
     }
-    pSVar5 = LpshdefFromTok(ptokTarget);
-    dpShdef = (((SHDEF *)pSVar5)->hul).dp;
-    local_c = 0;
-    uVar6 = __aFulmul((ulong)CONCAT12(CARRY2(((TOK *)ptokTarget)->dpShield,dpShdef),
-                                              ((TOK *)ptokTarget)->dpShield + dpShdef),
-                              (ulong)(uint)((TOK *)ptokTarget)->csh);
-    if (((&((TOK *)ptokTarget)->dv)->dp != 0) && (0 < (long)uVar6)) {
-      lVar10 = 500;
-      uVar9 = (ulong)(uint)((TOK *)ptokTarget)->csh;
-      lVar8 = 10;
-      uVar4 = (ulong)(uint)(&((TOK *)ptokTarget)->dv)->dp & 0xffff007f;
-      lVar7 = 10;
-      dpMax = uVar6;
-      uVar6 = __aFulmul(CONCAT22(local_c,dpShdef),
-                                (ulong)((uint)(&((TOK *)ptokTarget)->dv)->dp >> 7));
-      uVar6 = __aFldiv(uVar6,lVar7);
-      uVar6 = __aFulmul(uVar6,uVar4);
-      uVar6 = __aFldiv(uVar6,lVar8);
-      uVar6 = __aFulmul(uVar6,uVar9);
-      lVar7 = __aFldiv(uVar6,lVar10);
-      uVar6 = dpMax - lVar7;
-      if (((int)(dpMax - lVar7 >> 0x10) < 1) &&
-         (((long)(dpMax - lVar7) < 0 || (uVar6 = dpMax - lVar7, (int)dpMax == (int)lVar7)))) {
-        uVar6 = 1;
+    pSVar11 = LpshdefFromTok(ptokTarget);
+    uVar3 = (((SHDEF *)pSVar11)->hul).dp;
+    uVar16 = __aFulmul((ulong)CONCAT12(CARRY2(((TOK *)ptokTarget)->dpShield,uVar3),
+                                               ((TOK *)ptokTarget)->dpShield + uVar3),
+                               (ulong)((TOK *)ptokTarget)->csh);
+    iVar7 = (int)uVar16;
+    if (((&((TOK *)ptokTarget)->dv)->dp != 0) && (0 < (long)uVar16)) {
+      lVar20 = 500;
+      uVar19 = (ulong)((TOK *)ptokTarget)->csh;
+      lVar18 = 10;
+      uVar13 = (ulong)(&((TOK *)ptokTarget)->dv)->dp & 0xffff007f;
+      lVar12 = 10;
+      uVar17 = __aFulmul((ulong)uVar3,(ulong)((&((TOK *)ptokTarget)->dv)->dp >> 7));
+      uVar17 = __aFldiv(uVar17,lVar12);
+      uVar17 = __aFulmul(uVar17,uVar13);
+      uVar17 = __aFldiv(uVar17,lVar18);
+      uVar17 = __aFulmul(uVar17,uVar19);
+      lVar18 = __aFldiv(uVar17,lVar20);
+      lVar12 = uVar16 - lVar18;
+      uVar17 = uVar16 - lVar18;
+      uVar16 = uVar16 - lVar18;
+      if (((int)((ulong)lVar12 >> 0x10) < 1) &&
+         ((lVar12 < 0 || (uVar16 = uVar17, iVar7 == (int)lVar18)))) {
+        uVar16 = 1;
       }
     }
-    uVar4 = dpTotal;
-    if (((long)uVar6 < (long)dpTotal) && (uVar4 = uVar6, fProximity != 0)) {
-      uVar4 = dpTotal;
+    uVar17 = uVar1;
+    if (((long)uVar16 < (long)uVar1) && (uVar17 = uVar16, fProximity != 0)) {
+      uVar17 = uVar1;
     }
   }
-  return uVar4;
+  return uVar17;
 }
 
 
@@ -2875,7 +2870,7 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
   uint uVar3;
   TOK *pTVar4;
   HUL *pHVar5;
-  COMPART *pCVar6;
+  BEAM *pBVar6;
   undefined2 uVar7;
   undefined2 uVar8;
   long lVar9;
@@ -2897,19 +2892,19 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
   uVar7 = (undefined2)((ulong)ptok >> 0x10);
   pTVar4 = (TOK *)ptok;
   brcCur = pTVar4->brc;
-  dzMax = (pTVar4->wFlags & 0xfU) + ((uint)pTVar4->wFlags >> 0xe);
+  dzMax = (pTVar4->wFlags_0x19 & 0xf) + (pTVar4->wFlags >> 0xe);
   sVar2 = FDoesPrimaryTargetTypeExist(ptok,grfAttack);
   if (sVar2 == 0) {
-    uVar3 = (uint)pTVar4->wFlags >> 4;
+    uVar3 = pTVar4->wFlags_0x17 >> 4;
   }
   else {
-    uVar3 = pTVar4->wFlags;
+    uVar3 = pTVar4->wFlags_0x17;
   }
   mdTarget = uVar3 & 0xf;
   iplr = (short)pTVar4->iplr;
   dzBest = 10;
   *pbrc = 0xff;
-  if ((pTVar4->wFlags & 0xfU) == 3) {
+  if ((pTVar4->wFlags_0x19 & 0xf) == 3) {
     dzNonSapper = -1;
     lphul = &LpshdefFromTok(ptok)->hul;
     ihs = 0;
@@ -2918,27 +2913,27 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
       uVar8 = (undefined2)((ulong)lphul >> 0x10);
       pHVar5 = (HUL *)lphul;
       if ((int)(uint)pHVar5->chs <= ihs) break;
-      if (((pHVar5->rghs + ihs)->grhst == hstBeam) && ((uint)pHVar5->rghs[ihs].wFlags >> 8 != 0)) {
+      if (((pHVar5->rghs + ihs)->grhst == hstBeam) && (pHVar5->rghs[ihs].wFlags_0x2 >> 8 != 0)) {
         part.hs.grhst = (pHVar5->rghs + ihs)->grhst;
-        part.hs.wFlags = pHVar5->rghs[ihs].wFlags;
+        part.hs.wFlags_0x2 = pHVar5->rghs[ihs].wFlags_0x2;
         idPlayer = (short)pTVar4->iplr;
         FLookupPart(&part);
         idPlayer = -1;
-        uVar8 = (undefined2)((ulong)part.pcom >> 0x10);
-        pCVar6 = (COMPART *)part.pcom;
-        if (((*(uint *)(pCVar6[1].rgTech + 4) & 1) == 0) && (dzNonSapper < (pCVar6 + 1)->id)) {
-          dzNonSapper = (pCVar6 + 1)->id;
+        uVar8 = part.u_PART_0x0004._2_2_;
+        pBVar6 = (BEAM *)part.u_PART_0x0004.pbeam;
+        if (((pBVar6->grfAbilities & 1U) == 0) && (dzNonSapper < pBVar6->dRangeMax)) {
+          dzNonSapper = pBVar6->dRangeMax;
         }
       }
       ihs = ihs + 1;
     }
   }
   else {
-    dzNonSapper = pTVar4->wFlags & 0xf;
+    dzNonSapper = pTVar4->wFlags_0x19 & 0xf;
   }
-  if ((((uint)pTVar4->wFlags >> 4 & 0xf) < (pTVar4->wFlags & 0xfU)) &&
-     ((((uint)pTVar4->wFlags >> 8 & 0xf) == 5 || (((uint)pTVar4->wFlags >> 8 & 0xf) == 3)))) {
-    dzMax = ((uint)pTVar4->wFlags >> 4 & 0xf) + ((uint)pTVar4->wFlags >> 0xe);
+  if (((pTVar4->wFlags_0x19 >> 4 & 0xf) < (pTVar4->wFlags_0x19 & 0xf)) &&
+     (((pTVar4->wFlags_0x17 >> 8 & 0xf) == 5 || ((pTVar4->wFlags_0x17 >> 8 & 0xf) == 3)))) {
+    dzMax = (pTVar4->wFlags_0x19 >> 4 & 0xf) + (pTVar4->wFlags >> 0xe);
   }
   ptokTarget = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
   itokLook = 0;
@@ -2950,20 +2945,20 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
     bVar1 = ((TOK *)ptokTarget)->iplr;
     iplrTarget = (short)bVar1;
     if (((iplrTarget != iplr) && ((1 << (bVar1 & 0x1f) & grfAttack) != 0)) &&
-       ((((TOK *)ptokTarget)->wFlags & 1U) != 0)) {
+       ((((TOK *)ptokTarget)->wFlags & 1) != 0)) {
       sVar2 = FIsTargetOfMdTarget(ptokTarget,mdTarget);
       if (sVar2 != 0) {
         sVar2 = DzFromBrcBrc(brcCur,((TOK *)ptokTarget)->brc);
         dz = (byte)sVar2;
         uVar8 = (undefined2)((ulong)ptokTarget >> 0x10);
-        if ((uint)pTVar4->wFlags >> 0xe <= (uint)((TOK *)ptokTarget)->wFlags >> 0xe) {
+        if (pTVar4->wFlags >> 0xe <= ((TOK *)ptokTarget)->wFlags >> 0xe) {
           dz = dz + 1;
         }
         if (((int)(uint)dz <= dzMax) &&
-           (((((TOK *)ptokTarget)->dpShield != 0 || (dzNonSapper == (pTVar4->wFlags & 0xfU))) ||
-            ((uint)dz <= dzNonSapper + ((uint)pTVar4->wFlags >> 0xe))))) {
+           (((((TOK *)ptokTarget)->dpShield != 0 || (dzNonSapper == (pTVar4->wFlags_0x19 & 0xf))) ||
+            ((uint)dz <= dzNonSapper + (pTVar4->wFlags >> 0xe))))) {
           *pbrc = 0xff;
-          return (uint)pTVar4->wFlags >> 0xe;
+          return pTVar4->wFlags >> 0xe;
         }
         ihs = (short)dz;
         if ((uint)ihs < (uint)dzBest) {
@@ -2993,14 +2988,14 @@ short FDoesPrimaryTargetTypeExist(TOK *ptok,ushort grfAttack)
 
 {
   TOK *pTVar1;
-  short *psVar2;
+  ushort *puVar2;
   int iVar3;
   TOK *pTVar4;
-  short *psVar5;
+  ushort *puVar5;
   undefined2 uVar6;
   undefined2 unaff_SS;
   short itokLook;
-  short tok;
+  ushort tok;
   char local_25;
   uint local_11;
   uint local_d;
@@ -3010,21 +3005,21 @@ short FDoesPrimaryTargetTypeExist(TOK *ptok,ushort grfAttack)
   
   uVar6 = (undefined2)((ulong)ptok >> 0x10);
   iplr = (short)((TOK *)ptok)->iplr;
-  mdTarget = ((TOK *)ptok)->wFlags & 0xf;
+  mdTarget = ((TOK *)ptok)->wFlags_0x17 & 0xf;
   if (mdTarget != 0) {
     for (itokLook = 0; itokLook < vctok; itokLook = itokLook + 1) {
       if (((uint)((TOK *)vrgtok)[itokLook].iplr != iplr) &&
          ((1 << (((TOK *)vrgtok)[itokLook].iplr & 0x1f) & grfAttack) != 0)) {
         pTVar4 = (TOK *)vrgtok + itokLook;
-        psVar5 = &tok;
+        puVar5 = &tok;
         for (iVar3 = 0xe; iVar3 != 0; iVar3 = iVar3 + -1) {
-          psVar2 = psVar5;
-          psVar5 = psVar5 + 1;
+          puVar2 = puVar5;
+          puVar5 = puVar5 + 1;
           pTVar1 = pTVar4;
           pTVar4 = (TOK *)&pTVar4->iplr;
-          *psVar2 = pTVar1->id;
+          *puVar2 = pTVar1->id;
         }
-        *(char *)psVar5 = (char)pTVar4->id;
+        *(char *)puVar5 = (char)pTVar4->id;
         if ((local_d & 1) != 0) {
           switch(mdTarget) {
           case 1:
@@ -3099,15 +3094,15 @@ short FIsTargetOfMdTarget(TOK *ptok,short mdTarget)
     uVar1 = 1;
     break;
   case 2:
-    uVar1 = (uint)(pTVar2->field2_0x3 == '\x01');
+    uVar1 = (uint)(*(char *)&pTVar2->u_TOK_0x0003 == '\x01');
     break;
   case 3:
   case 6:
   case 7:
-    uVar1 = (uint)((uint)pTVar2->wFlags >> 0xc == mdTarget);
+    uVar1 = (uint)(pTVar2->wFlags_0x17 >> 0xc == mdTarget);
     break;
   case 4:
-    if (((uint)pTVar2->wFlags >> 0xc == 4) || ((uint)pTVar2->wFlags >> 0xc == 7)) {
+    if ((pTVar2->wFlags_0x17 >> 0xc == 4) || (pTVar2->wFlags_0x17 >> 0xc == 7)) {
       uVar1 = 1;
     }
     else {
@@ -3115,8 +3110,8 @@ short FIsTargetOfMdTarget(TOK *ptok,short mdTarget)
     }
     break;
   case 5:
-    if ((((uint)pTVar2->wFlags >> 0xc == 5) || ((uint)pTVar2->wFlags >> 0xc == 7)) ||
-       ((uint)pTVar2->wFlags >> 0xc == 6)) {
+    if (((pTVar2->wFlags_0x17 >> 0xc == 5) || (pTVar2->wFlags_0x17 >> 0xc == 7)) ||
+       (pTVar2->wFlags_0x17 >> 0xc == 6)) {
       uVar1 = 1;
     }
     else {
@@ -3135,6 +3130,9 @@ short FIsTargetOfMdTarget(TOK *ptok,short mdTarget)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: itok */
+/* WARNING: Variable defined which should be unmapped: dMin */
+/* WARNING: Variable defined which should be unmapped: xCur */
 /* WARNING: Removing unreachable block (ram,0x10f05d83) */
 /* WARNING: Removing unreachable block (ram,0x10f05dd7) */
 
@@ -3142,16 +3140,15 @@ long ScoreGuessBattleDamage(TOK *ptokSrc,byte brc,short fPrimary,ushort grfAttac
 
 {
   byte bVar1;
-  byte bVar2;
-  int iVar3;
-  uint uVar4;
-  short sVar5;
-  TOK *pTVar6;
-  TOK *pTVar7;
-  undefined2 uVar8;
-  undefined2 uVar9;
+  uint uVar2;
+  short sVar3;
+  TOK *pTVar4;
+  TOK *pTVar5;
+  undefined2 uVar6;
+  undefined2 uVar7;
   long dpTake;
-  long lVar10;
+  long lVar8;
+  ulong local_58;
   short itok;
   short dMin;
   short x;
@@ -3180,109 +3177,111 @@ long ScoreGuessBattleDamage(TOK *ptokSrc,byte brc,short fPrimary,ushort grfAttac
   short dMoves;
   short iBest;
   
-  lVar10 = CONCAT22(scoreThem._2_2_,(undefined2)scoreThem);
-  uVar8 = (undefined2)((ulong)ptokSrc >> 0x10);
-  pTVar6 = (TOK *)ptokSrc;
-  bVar1 = pTVar6->iplr;
-  yCur = (int)(uint)pTVar6->brc >> 4;
+  lVar8 = CONCAT22(scoreThem._2_2_,(undefined2)scoreThem);
+  uVar6 = (undefined2)((ulong)ptokSrc >> 0x10);
+  pTVar4 = (TOK *)ptokSrc;
+  bVar1 = pTVar4->iplr;
+  yCur = (int)(uint)pTVar4->brc >> 4;
   dpGivenBest = 0;
   dpTakenTotal = 0;
   ptok = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
-  for (itok = 0; scoreThem = lVar10, itok < vctok; itok = itok + 1) {
-    uVar9 = (undefined2)((ulong)ptok >> 0x10);
-    pTVar7 = (TOK *)ptok;
-    if ((((pTVar7->wFlags & 1U) != 0) && (bVar1 != pTVar7->iplr)) &&
-       ((1 << (pTVar7->iplr & 0x1f) & grfAttack) != 0)) {
-      dMin = DzFromBrcBrc(pTVar7->brc,brc);
-      dzCur = dMin;
-      uVar9 = (undefined2)((ulong)ptok >> 0x10);
-      pTVar7 = (TOK *)ptok;
-      dMoves = (short)((uint)pTVar6->wFlags >> 0xe <= (uint)pTVar7->wFlags >> 0xe);
-      dMax = dMin;
+  for (itok = 0; scoreThem = lVar8, itok < vctok; itok = itok + 1) {
+    uVar7 = (undefined2)((ulong)ptok >> 0x10);
+    pTVar5 = (TOK *)ptok;
+    if ((((pTVar5->wFlags & 1) != 0) &&
+        (local_58 = CONCAT22(itok,(uint)bVar1), (uint)bVar1 != (uint)pTVar5->iplr)) &&
+       ((1 << (pTVar5->iplr & 0x1f) & grfAttack) != 0)) {
+      dMax = DzFromBrcBrc(pTVar5->brc,brc);
+      dzCur = dMax;
+      uVar7 = (undefined2)((ulong)ptok >> 0x10);
+      pTVar5 = (TOK *)ptok;
+      dMoves = (short)(pTVar4->wFlags >> 0xe <= pTVar5->wFlags >> 0xe);
+      dMin = dMax;
       if (dMoves != 0) {
-        if ((uint)(dMin - dMoves) < 0x8000) {
-          iVar3 = dMin - dMoves;
+        if ((uint)(dMax - dMoves) < 0x8000) {
+          dMin = dMax - dMoves;
         }
         else {
-          iVar3 = 0;
+          dMin = 0;
         }
-        xEnemy = pTVar7->brc & 0xf;
-        yEnemy = (int)(uint)pTVar7->brc >> 4;
+        xEnemy = pTVar5->brc & 0xf;
+        yEnemy = (int)(uint)pTVar5->brc >> 4;
         rgx[0] = xEnemy - dMoves;
         rgx[1] = xEnemy + dMoves;
         rgy[0] = yEnemy - dMoves;
         rgy[1] = yEnemy + dMoves;
-        for (x = 0; dMin = iVar3, x < 2; x = x + 1) {
+        for (x = 0; x < 2; x = x + 1) {
           for (y = 0; y < 2; y = y + 1) {
             if (rgx[x] < 0x8000) {
-              uVar4 = rgx[x];
+              uVar2 = rgx[x];
             }
             else {
-              uVar4 = 0;
+              uVar2 = 0;
             }
-            if ((int)uVar4 < 10) {
+            if ((int)uVar2 < 10) {
               if (rgx[x] < 0x8000) {
-                bVar2 = (byte)rgx[x];
+                uVar2 = rgx[x];
               }
               else {
-                bVar2 = 0;
+                uVar2 = 0;
               }
             }
             else {
-              bVar2 = 9;
+              uVar2 = 9;
             }
+            local_58 = CONCAT22(itok,uVar2) & 0xffff000f;
             if (rgy[y] < 0x8000) {
-              uVar4 = rgy[y];
+              uVar2 = rgy[y];
             }
             else {
-              uVar4 = 0;
+              uVar2 = 0;
             }
-            if ((int)uVar4 < 10) {
+            if ((int)uVar2 < 10) {
               if (rgy[y] < 0x8000) {
-                uVar4 = rgy[y];
+                uVar2 = rgy[y];
               }
               else {
-                uVar4 = 0;
+                uVar2 = 0;
               }
             }
             else {
-              uVar4 = 9;
+              uVar2 = 9;
             }
-            dzEnemy = DzFromBrcBrc(brc,(byte)((uVar4 & 0xf) << 4) | bVar2 & 0xf);
-            sVar5 = dzEnemy;
+            dzEnemy = DzFromBrcBrc(brc,(byte)((uVar2 & 0xf) << 4) | (byte)local_58);
+            sVar3 = dzEnemy;
             if (dzEnemy <= dMax) {
-              sVar5 = dMax;
+              sVar3 = dMax;
             }
-            dMax = sVar5;
+            dMax = sVar3;
           }
         }
       }
       if (fPrimary == 0) {
-        uVar4 = (uint)pTVar6->wFlags >> 4;
+        uVar2 = pTVar4->wFlags_0x17 >> 4;
       }
       else {
-        uVar4 = pTVar6->wFlags;
+        uVar2 = pTVar4->wFlags_0x17;
       }
-      sVar5 = FIsTargetOfMdTarget(ptok,uVar4 & 0xf);
+      sVar3 = FIsTargetOfMdTarget(ptok,uVar2 & 0xf);
       scoreThemBest = 30000000;
       iBest = dMin;
-      lVar10 = scoreThem;
+      lVar8 = scoreThem;
       for (i = dMin; i <= dMax; i = i + 1) {
-        scoreThem = lVar10;
-        if (sVar5 == 0) {
+        scoreThem = lVar8;
+        if (sVar3 == 0) {
           dpTake = 0;
         }
         else {
           dpTake = DpFromPtokBrcToBrc(ptokSrc,0,(byte)((i & 0xfU) << 4),ptok,0);
         }
-        lVar10 = DpFromPtokBrcToBrc(ptok,0,(byte)((i & 0xfU) << 4),ptokSrc,
-                                    (uint)(((uint)pTVar6->wFlags >> 8 & 0xf) == 0));
-        dpTaken = lVar10;
-        lVar10 = ScoreFromGiveAndTakeAndTactic(lVar10,dpTake,(uint)((TOK *)ptok)->wFlags >> 8 & 0xf)
+        local_58 = DpFromPtokBrcToBrc(ptok,0,(byte)((i & 0xfU) << 4),ptokSrc,
+                                      (uint)((pTVar4->wFlags_0x17 >> 8 & 0xf) == 0));
+        dpTaken = local_58;
+        lVar8 = ScoreFromGiveAndTakeAndTactic(local_58,dpTake,((TOK *)ptok)->wFlags_0x17 >> 8 & 0xf)
         ;
-        if (lVar10 <= scoreThemBest) {
+        if (lVar8 <= scoreThemBest) {
           iBest = i;
-          scoreThemBest = lVar10;
+          scoreThemBest = lVar8;
           dpGivenCur = dpTake;
           dpTakenBest = dpTaken;
         }
@@ -3294,8 +3293,8 @@ long ScoreGuessBattleDamage(TOK *ptokSrc,byte brc,short fPrimary,ushort grfAttac
     }
     ptok = (TOK *)CONCAT22(ptok._2_2_,(TOK *)ptok + 1);
   }
-  lVar10 = ScoreFromGiveAndTakeAndTactic(dpGivenBest,dpTakenTotal,(uint)pTVar6->wFlags >> 8 & 0xf);
-  return lVar10;
+  lVar8 = ScoreFromGiveAndTakeAndTactic(dpGivenBest,dpTakenTotal,pTVar4->wFlags_0x17 >> 8 & 0xf);
+  return lVar8;
 }
 
 
@@ -3363,7 +3362,7 @@ short DxyMoveTokTo(TOK *ptok,short spdMove,ushort grfAttack)
   TOK *pTVar5;
   undefined2 uVar6;
   long lVar7;
-  int rgptDeltas [2];
+  int local_64;
   short cLow;
   uint lLow;
   short fXMajor;
@@ -3400,10 +3399,10 @@ short DxyMoveTokTo(TOK *ptok,short spdMove,ushort grfAttack)
   local_56 = 0;
   xCur = pTVar5->brc & 0xf;
   yCur = (int)(uint)pTVar5->brc >> 4;
-  if ((pTVar5->field2_0x3 == '\x01') || (spdMove == 0)) goto BATTLE_LReturnDxy;
+  if ((*(char *)&pTVar5->u_TOK_0x0003 == '\x01') || (spdMove == 0)) goto BATTLE_LReturnDxy;
   scoreBest._0_2_ = 0xc380;
   scoreBest._2_2_ = 0x1c9;
-  mdTactic = (uint)pTVar5->wFlags >> 8 & 0xf;
+  mdTactic = pTVar5->wFlags_0x17 >> 8 & 0xf;
   fPrimary = FDoesPrimaryTargetTypeExist(ptok,grfAttack);
   for (x = 0; x < 3; x = x + 1) {
     for (y = 0; y < 3; y = y + 1) {
@@ -3500,7 +3499,7 @@ LAB_10f0_6260:
     }
     else if (dx == 0) {
       lLow = 0xa300;
-      fXMajor = (short)&DAT_1120_11e1;
+      fXMajor = 0x11e1;
       cLow = 0;
       if (dy < 0) {
         dy = 0;
@@ -3536,7 +3535,7 @@ LAB_10f0_6260:
     }
     else if (dy == 0) {
       lLow = 0xa300;
-      fXMajor = (short)&DAT_1120_11e1;
+      fXMajor = 0x11e1;
       cLow = 0;
       if (dx < 0) {
         dx = 0;
@@ -3586,8 +3585,7 @@ LAB_10f0_6260:
       else {
         dy = 2;
       }
-      rgptDeltas[0] = dx;
-      rgptDeltas[1] = dy;
+      local_64 = dy;
       if (sVar4 < sVar3 == 0) {
         cLow = 1;
         lLow = dy;
@@ -3612,8 +3610,8 @@ LAB_10f0_66d1:
         }
         i = 1;
       }
-      xCur = xCur + rgptDeltas[i * 2] + -1;
-      yCur = yCur + rgptDeltas[i * 2 + 1] + -1;
+      xCur = xCur + *(int *)(&stack0xff9a + i * 4) + -1;
+      yCur = yCur + (&local_64)[i * 2] + -1;
     }
     brcBest = (byte)((yCur & 0xfU) << 4) | (byte)xCur & 0xf;
   }
@@ -3624,7 +3622,7 @@ LAB_10f0_66d1:
     pTVar5->brc = brcBest;
   }
 BATTLE_LReturnDxy:
-  pTVar5->wFlags = pTVar5->wFlags & 0xffefU | 0x10;
+  pTVar5->wFlags = pTVar5->wFlags & 0xffef | 0x10;
   return 1;
 }
 
@@ -3730,6 +3728,7 @@ long CTorpHit(long cTorpBase,TOK *ptok,short pctBase,short pctBC)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: fCapMissile */
 /* WARNING: Removing unreachable block (ram,0x10f0798c) */
 /* WARNING: Removing unreachable block (ram,0x10f07315) */
 /* WARNING: Removing unreachable block (ram,0x10f070f6) */
@@ -3758,43 +3757,48 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
 
 {
   uint uVar1;
-  int iVar2;
-  short sVar3;
-  uint uVar4;
+  short sVar2;
+  uint uVar3;
+  int iVar4;
   int iVar5;
-  int iVar6;
-  HUL *pHVar7;
-  BTLREC *pBVar8;
-  TOK *pTVar9;
-  COMPART *pCVar10;
-  TOK *pTVar11;
-  undefined2 unaff_SI;
-  ushort unaff_DI;
+  HUL *pHVar6;
+  BTLREC *pBVar7;
+  TOK *pTVar8;
+  BEAM *pBVar9;
+  TOK *pTVar10;
+  int iVar11;
   undefined2 uVar12;
   undefined2 uVar13;
   undefined2 uVar14;
   ulong uVar15;
   long lVar16;
-  long lVar17;
-  ulong uVar18;
-  ulong uVar19;
-  long lVar20;
-  long lVar21;
+  ulong uVar17;
+  long *plVar18;
+  long lVar19;
+  ulong uVar20;
+  ulong uVar21;
+  ulong dpTorp;
   undefined2 uVar22;
   undefined2 uVar23;
-  undefined2 uVar24;
-  undefined2 uVar25;
-  undefined2 uVar26;
-  undefined1 uVar27;
+  undefined1 uVar24;
+  undefined1 uVar25;
+  undefined1 uVar26;
+  char cVar27;
   undefined1 uVar28;
-  undefined1 uVar29;
-  undefined1 uVar30;
   undefined2 in_stack_0000ff74;
   undefined2 in_stack_0000ff76;
+  undefined2 uVar29;
+  long *in_stack_0000ff78;
+  undefined2 uVar30;
+  uint in_stack_0000ff7a;
+  undefined2 uVar31;
+  ushort uVar32;
+  undefined2 uVar33;
   short fCapMissile;
-  uint nds;
-  int local_7c;
-  PART part;
+  ulong in_stack_0000ff84;
+  HullSlotType HVar34;
+  uint uVar35;
+  u_PART_0x0004 local_76;
   TOK *ptokE;
   undefined4 dpCol;
   short itok;
@@ -3823,7 +3827,7 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
   short ctokDamaged;
   TOK *ptok;
   undefined4 scoreBest;
-  short dpSingle;
+  ushort dpSingle;
   undefined2 local_14;
   undefined4 dpArmorLeft;
   SHDEF *lpshdefE;
@@ -3834,62 +3838,63 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
   fSetItok = 0;
   ctokDamaged = 0;
   ptok = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok + itokAttacker);
-  lphul = &LpshdefFromTok((TOK *)CONCAT13((char)((uint)vrgtok._2_2_ >> 8),
-                                          CONCAT12((char)vrgtok._2_2_,
-                                                   (TOK *)vrgtok + itokAttacker)))->hul;
-  lVar17 = CONCAT22(score._2_2_,(undefined2)score);
-  lVar16 = CONCAT22(in_stack_0000ff76,in_stack_0000ff74);
-  uVar19 = CONCAT22(dpMain._2_2_,(undefined2)dpMain);
+  lphul = &LpshdefFromTok((TOK *)CONCAT22(vrgtok._2_2_,
+                                          (TOK *)vrgtok + itokAttacker))->hul;
+  lVar19 = CONCAT22(score._2_2_,(undefined2)score);
+  uVar17 = CONCAT22(in_stack_0000ff76,in_stack_0000ff74);
+  dpTorp = (ulong)in_stack_0000ff7a;
+  uVar21 = CONCAT22(dpMain._2_2_,(undefined2)dpMain);
   uVar15 = CONCAT22(cTorpsLeft._2_2_,(undefined2)cTorpsLeft);
-  uVar18 = CONCAT22(dp._2_2_,(int)dp);
+  uVar20 = CONCAT22(dp._2_2_,(int)dp);
   ihs = 0;
   lpshdef = (SHDEF *)lphul;
   do {
     uVar12 = (undefined2)((ulong)lphul >> 0x10);
-    pHVar7 = (HUL *)lphul;
-    pBVar8 = (BTLREC *)lpbtlrec;
+    pHVar6 = (HUL *)lphul;
+    pBVar7 = (BTLREC *)lpbtlrec;
     uVar13 = (undefined2)((ulong)lpbtlrec >> 0x10);
-    if ((int)(uint)pHVar7->chs <= ihs) {
-      pBVar8->ctok = ctokDamaged;
+    if ((int)(uint)pHVar6->chs <= ihs) {
+      pBVar7->ctok = ctokDamaged;
       return (uint)(ctokDamaged != 0);
     }
-    if ((((pHVar7->rghs + ihs)->grhst & (hstTorp|hstBeam)) !=
+    if ((((pHVar6->rghs + ihs)->grhst & (hstTorp|hstBeam)) !=
          ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|
            hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
-       ((uint)pHVar7->rghs[ihs].wFlags >> 8 != 0)) {
-      part.hs.grhst = (pHVar7->rghs + ihs)->grhst;
-      part.hs.wFlags = pHVar7->rghs[ihs].wFlags;
+       (pHVar6->rghs[ihs].wFlags_0x2 >> 8 != 0)) {
+      uVar35 = pHVar6->rghs[ihs].wFlags_0x2;
+      in_stack_0000ff84 = CONCAT22((pHVar6->rghs + ihs)->grhst,(int)in_stack_0000ff84);
       idPlayer = (short)((TOK *)ptok)->iplr;
-      dp = uVar18;
+      dp = uVar20;
       cTorpsLeft = uVar15;
-      dpMain = uVar19;
-      score = lVar17;
-      FLookupPart(&part);
+      dpMain = uVar21;
+      score = lVar19;
+      FLookupPart((PART *)&stack0xff86);
       idPlayer = -1;
-      cItem = (uint)((HUL *)lphul)->rghs[ihs].wFlags >> 8;
+      cItem = ((HUL *)lphul)->rghs[ihs].wFlags_0x2 >> 8;
       uVar12 = (undefined2)((ulong)ptok >> 0x10);
-      pTVar9 = (TOK *)ptok;
-      uVar14 = (undefined2)((ulong)part.pcom >> 0x10);
-      pCVar10 = (COMPART *)part.pcom;
-      i = (uint)pTVar9->initBase + *(int *)(pCVar10[1].rgTech + 2);
+      pTVar8 = (TOK *)ptok;
+      uVar14 = local_76._2_2_;
+      pBVar9 = (BEAM *)local_76.pbeam;
+      i = (uint)pTVar8->initBase + pBVar9->init;
       if (0x3f < i) {
         i = 0x3f;
       }
       uVar15 = cTorpsLeft;
-      uVar19 = dpMain;
-      uVar18 = dp;
-      lVar17 = score;
+      uVar21 = dpMain;
+      uVar20 = dp;
+      lVar19 = score;
       if (i == init) {
-        dxRangeCur = (uint)(pTVar9->field2_0x3 == '\x01') + (pCVar10 + 1)->id;
-        if ((part.hs.grhst == hstBeam) && ((*(uint *)(pCVar10[1].rgTech + 4) & 2) != 0)) {
-          uVar29 = 0;
-          uVar30 = 0;
-          uVar27 = (undefined1)pTVar9->csh;
-          uVar28 = (undefined1)((uint)pTVar9->csh >> 8);
-          uVar18 = __aFulmul((long)*(int *)pCVar10[1].rgTech,(long)cItem);
-          uVar18 = __aFulmul(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,uVar27))
+        dxRangeCur = (uint)(*(char *)&pTVar8->u_TOK_0x0003 == '\x01') + pBVar9->dRangeMax;
+        HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+        if ((HVar34 == hstBeam) && ((pBVar9->grfAbilities & 2U) != 0)) {
+          uVar26 = 0;
+          uVar28 = 0;
+          uVar24 = (undefined1)pTVar8->csh;
+          uVar25 = (undefined1)(pTVar8->csh >> 8);
+          uVar20 = __aFulmul((long)pBVar9->dp,(long)cItem);
+          uVar20 = __aFulmul(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,uVar24))
                                                     ));
-          if (*(int *)((COMPART *)part.pcom)[1].rgTech < 200) {
+          if (pBVar9->dp < 200) {
             grfWeapon = 1;
           }
           else {
@@ -3897,70 +3902,69 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
           }
           uVar12 = (undefined2)((ulong)ptok >> 0x10);
           if (((TOK *)ptok)->pctCap != 0) {
-            uVar29 = 0;
-            uVar30 = 0;
-            uVar27 = 100;
+            uVar26 = 0;
             uVar28 = 0;
-            dp = uVar18;
-            uVar18 = __aFulmul(uVar18,(ulong)((TOK *)ptok)->pctCap);
-            uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,uVar27)
+            uVar24 = 100;
+            uVar25 = 0;
+            dp = uVar20;
+            uVar20 = __aFulmul(uVar20,(ulong)((TOK *)ptok)->pctCap);
+            uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,uVar24)
                                                                      )));
           }
           ptokE = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
-          dpT = uVar18;
+          dpT = uVar20;
           uVar15 = cTorpsLeft;
-          uVar19 = dpMain;
-          lVar17 = score;
+          uVar21 = dpMain;
+          lVar19 = score;
           for (itok = 0; itok < vctok; itok = itok + 1) {
             uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-            pTVar9 = (TOK *)ptokE;
-            if ((pTVar9->wFlags & 1U) != 0) {
-              uVar14 = (undefined2)((ulong)ptok >> 0x10);
-              if ((pTVar9->iplr != ((TOK *)ptok)->iplr) &&
-                 ((1 << (pTVar9->iplr & 0x1f) & grfAttack) != 0)) {
-                dp = uVar18;
+            pTVar8 = (TOK *)ptokE;
+            if ((pTVar8->wFlags & 1) != 0) {
+              uVar29 = (undefined2)((ulong)ptok >> 0x10);
+              in_stack_0000ff84 = (ulong)(uint)pTVar8->iplr;
+              if (((uint)pTVar8->iplr != (uint)((TOK *)ptok)->iplr) &&
+                 ((1 << (pTVar8->iplr & 0x1f) & grfAttack) != 0)) {
+                dp = uVar20;
                 cTorpsLeft = uVar15;
-                dpMain = uVar19;
-                score = lVar17;
-                sVar3 = DzFromBrcBrc(pTVar9->brc,((TOK *)ptok)->brc);
-                uVar18 = dp;
+                dpMain = uVar21;
+                score = lVar19;
+                sVar2 = DzFromBrcBrc(pTVar8->brc,((TOK *)ptok)->brc);
+                uVar20 = dp;
                 uVar15 = cTorpsLeft;
-                uVar19 = dpMain;
-                lVar17 = score;
-                if (sVar3 <= dxRangeCur) {
-                  sVar3 = FIsTargetOfMdTarget(ptokE,((TOK *)ptok)->wFlags & 0xf);
-                  uVar18 = dp;
-                  if (sVar3 == 0) {
-                    sVar3 = FIsTargetOfMdTarget(ptokE,(uint)((TOK *)ptok)->wFlags >> 4 & 0xf);
-                    uVar18 = dp;
+                uVar21 = dpMain;
+                lVar19 = score;
+                if (sVar2 <= dxRangeCur) {
+                  sVar2 = FIsTargetOfMdTarget(ptokE,((TOK *)ptok)->wFlags_0x17 & 0xf);
+                  uVar20 = dp;
+                  if (sVar2 == 0) {
+                    sVar2 = FIsTargetOfMdTarget(ptokE,((TOK *)ptok)->wFlags_0x17 >> 4 & 0xf);
+                    uVar20 = dp;
                     uVar15 = cTorpsLeft;
-                    uVar19 = dpMain;
-                    lVar17 = score;
-                    if (sVar3 == 0) goto LAB_10f0_6bfa;
+                    uVar21 = dpMain;
+                    lVar19 = score;
+                    if (sVar2 == 0) goto LAB_10f0_6bfa;
                   }
-                  uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-                  if (((TOK *)ptokE)->pctBeamDef < 100) {
-                    uVar29 = 0;
-                    uVar30 = 0;
-                    uVar27 = 100;
+                  if (pTVar8->pctBeamDef < 100) {
+                    uVar26 = 0;
                     uVar28 = 0;
-                    dp = uVar18;
-                    uVar18 = __aFulmul(uVar18,(ulong)((TOK *)ptokE)->pctBeamDef);
-                    uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28
-                                                  ,uVar27))));
+                    uVar24 = 100;
+                    uVar25 = 0;
+                    dp = uVar20;
+                    uVar20 = __aFulmul(uVar20,(ulong)pTVar8->pctBeamDef);
+                    uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25
+                                                  ,uVar24))));
                   }
-                  dp = uVar18;
-                  sVar3 = FDamageTok(ptokE,itok,&dp,0,grfWeapon,
-                                     *(uint *)(((COMPART *)part.pcom)[1].rgTech + 4) & 1,(long *)0x0
+                  dp = uVar20;
+                  sVar2 = FDamageTok(ptokE,itok,&dp,0,grfWeapon,pBVar9->grfAbilities & 1,(long *)0x0
                                     );
-                  uVar18 = dpT;
+                  uVar20 = dpT;
                   uVar15 = cTorpsLeft;
-                  uVar19 = dpMain;
-                  lVar17 = score;
-                  if (sVar3 != 0) {
+                  uVar21 = dpMain;
+                  lVar19 = score;
+                  if (sVar2 != 0) {
                     if (fSetItok == 0) {
                       fSetItok = 1;
-                      pBVar8->wFlags = pBVar8->wFlags & 0xffU | itok << 8;
+                      pBVar7->wFlags_0x4 = pBVar7->wFlags_0x4 & 0xff | itok << 8;
                     }
                     ctokDamaged = ctokDamaged + 1;
                   }
@@ -3968,547 +3972,507 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
               }
             }
 LAB_10f0_6bfa:
-            ptokE = (TOK *)CONCAT22(ptokE._2_2_,(TOK *)ptokE + 1);
+            ptokE = (TOK *)CONCAT22(uVar12,pTVar8 + 1);
           }
         }
         else {
-          if (part.hs.grhst == hstBeam) {
-            uVar29 = 0;
-            uVar30 = 0;
-            uVar27 = (undefined1)pTVar9->csh;
-            uVar28 = (undefined1)((uint)pTVar9->csh >> 8);
-            uVar18 = __aFulmul((long)*(int *)pCVar10[1].rgTech,(long)cItem);
-            uVar19 = __aFulmul(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,uVar27
+          if (HVar34 == hstBeam) {
+            uVar26 = 0;
+            uVar28 = 0;
+            uVar24 = (undefined1)pTVar8->csh;
+            uVar25 = (undefined1)(pTVar8->csh >> 8);
+            uVar20 = __aFulmul((long)pBVar9->dp,(long)cItem);
+            uVar21 = __aFulmul(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,uVar24
                                                                                       ))));
             uVar15 = 0;
-            lVar17 = score;
+            lVar19 = score;
           }
           else {
             dpMain._0_2_ = 0;
             dpMain._2_2_ = 0;
-            uVar15 = __aFulmul((long)cItem,(ulong)(uint)pTVar9->csh);
-            uVar19 = CONCAT22(dpMain._2_2_,(undefined2)dpMain);
-            lVar17 = score;
+            uVar15 = __aFulmul((long)cItem,(ulong)pTVar8->csh);
+            uVar21 = CONCAT22(dpMain._2_2_,(undefined2)dpMain);
+            lVar19 = score;
           }
           do {
+            plVar18 = (long *)CONCAT22((int)dpTorp,in_stack_0000ff78);
             for (fPrimary = 1; -1 < fPrimary; fPrimary = fPrimary + -1) {
               scoreBest = 0;
               ptokTarget = (TOK *)0x0;
               ptokE = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
               for (itok = 0; itok < vctok; itok = itok + 1) {
                 uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-                pTVar9 = (TOK *)ptokE;
-                if ((pTVar9->wFlags & 1U) != 0) {
-                  uVar14 = (undefined2)((ulong)ptok >> 0x10);
-                  if ((pTVar9->iplr != ((TOK *)ptok)->iplr) &&
-                     ((1 << (pTVar9->iplr & 0x1f) & grfAttack) != 0)) {
-                    score = lVar17;
+                pTVar8 = (TOK *)ptokE;
+                if ((pTVar8->wFlags & 1) != 0) {
+                  uVar29 = (undefined2)((ulong)ptok >> 0x10);
+                  in_stack_0000ff84 =
+                       CONCAT22((HullSlotType)(in_stack_0000ff84 >> 0x10),(uint)pTVar8->iplr);
+                  if (((uint)pTVar8->iplr != (uint)((TOK *)ptok)->iplr) &&
+                     ((1 << (pTVar8->iplr & 0x1f) & grfAttack) != 0)) {
+                    score = lVar19;
                     cTorpsLeft = uVar15;
-                    dpMain = uVar19;
-                    sVar3 = DzFromBrcBrc(pTVar9->brc,((TOK *)ptok)->brc);
-                    lVar17 = score;
+                    dpMain = uVar21;
+                    sVar2 = DzFromBrcBrc(pTVar8->brc,((TOK *)ptok)->brc);
+                    lVar19 = score;
                     uVar15 = cTorpsLeft;
-                    uVar19 = dpMain;
-                    if (sVar3 <= dxRangeCur) {
-                      uVar12 = (undefined2)((ulong)ptok >> 0x10);
+                    uVar21 = dpMain;
+                    if (sVar2 <= dxRangeCur) {
+                      uVar29 = (undefined2)((ulong)ptok >> 0x10);
                       if (fPrimary == 0) {
-                        uVar4 = (uint)((TOK *)ptok)->wFlags >> 4;
+                        uVar3 = ((TOK *)ptok)->wFlags_0x17 >> 4;
                       }
                       else {
-                        uVar4 = ((TOK *)ptok)->wFlags;
+                        uVar3 = ((TOK *)ptok)->wFlags_0x17;
                       }
-                      sVar3 = FIsTargetOfMdTarget(ptokE,uVar4 & 0xf);
-                      lVar17 = score;
+                      sVar2 = FIsTargetOfMdTarget(ptokE,uVar3 & 0xf);
+                      lVar19 = score;
                       uVar15 = cTorpsLeft;
-                      uVar19 = dpMain;
-                      if (sVar3 != 0) {
+                      uVar21 = dpMain;
+                      if (sVar2 != 0) {
                         lpshdefE = LpshdefFromTok(ptokE);
-                        uVar12 = (undefined2)((ulong)lpshdefE >> 0x10);
-                        uVar4 = (((SHDEF *)lpshdefE)->hul).rgwtOreCost[1];
+                        uVar29 = (undefined2)((ulong)lpshdefE >> 0x10);
+                        uVar3 = (((SHDEF *)lpshdefE)->hul).rgwtOreCost[1];
                         uVar1 = (((SHDEF *)lpshdefE)->hul).resCost;
-                        uVar18 = __aFulmul((ulong)CONCAT12(CARRY2(uVar1,uVar4),uVar1 + uVar4
-                                                                  ),(ulong)(uint)((TOK *)ptokE)->csh
-                                                  );
-                        if ((long)uVar18 < 100000) {
-                          lValue = uVar18;
-                          uVar18 = __aFulmul(uVar18,100);
+                        uVar20 = __aFulmul((ulong)CONCAT12(CARRY2(uVar1,uVar3),uVar1 + uVar3
+                                                                  ),(ulong)pTVar8->csh);
+                        if ((long)uVar20 < 100000) {
+                          lValue = uVar20;
+                          uVar20 = __aFulmul(uVar20,100);
                         }
                         else {
-                          uVar18 = 10000000;
+                          uVar20 = 10000000;
                         }
                         dpSingle = (((SHDEF *)lpshdefE)->hul).dp;
                         local_14 = 0;
-                        uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-                        lValue = uVar18;
-                        uVar18 = __aFulmul((ulong)(uint)((TOK *)ptokE)->dpShield,
-                                                   (ulong)(uint)((TOK *)ptokE)->csh);
-                        dpShieldLeft = uVar18;
-                        uVar18 = __aFulmul(CONCAT22(local_14,dpSingle),
-                                                   (ulong)(uint)((TOK *)ptokE)->csh);
-                        uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-                        pTVar9 = (TOK *)ptokE;
-                        if ((&pTVar9->dv)->dp != 0) {
+                        lValue = uVar20;
+                        uVar20 = __aFulmul((ulong)pTVar8->dpShield,(ulong)pTVar8->csh);
+                        uVar3 = pTVar8->csh;
+                        uVar29 = 0;
+                        dpShieldLeft = uVar20;
+                        uVar20 = __aFulmul(CONCAT13((char)((uint)local_14 >> 8),
+                                                            CONCAT12((char)local_14,dpSingle)),
+                                                   (ulong)uVar3);
+                        if ((&pTVar8->dv)->dp != 0) {
                           uVar29 = 0;
-                          uVar30 = 0;
-                          uVar27 = 0xf4;
-                          uVar28 = 1;
-                          sVar3 = pTVar9->csh;
+                          uVar3 = 500;
                           uVar26 = 0;
-                          uVar25 = 0;
-                          uVar24 = 10;
-                          uVar4 = (&pTVar9->dv)->dp & 0x7f;
+                          uVar28 = 0;
+                          uVar24 = (undefined1)pTVar8->csh;
+                          uVar25 = (undefined1)(pTVar8->csh >> 8);
                           uVar23 = 0;
-                          uVar22 = 0;
-                          uVar14 = 10;
-                          dpArmorLeft = uVar18;
-                          uVar18 = __aFulmul(CONCAT22(local_14,dpSingle),
-                                                     (ulong)((uint)(&pTVar9->dv)->dp >> 7));
-                          uVar18 = __aFldiv(uVar18,CONCAT22(uVar22,uVar14));
-                          uVar18 = __aFulmul(uVar18,CONCAT22(uVar23,uVar4));
-                          uVar18 = __aFldiv(uVar18,CONCAT22(uVar25,uVar24));
-                          uVar18 = __aFulmul(uVar18,CONCAT22(uVar26,sVar3));
-                          lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(
-                                                  uVar28,uVar27))));
-                          uVar18 = dpArmorLeft - lVar17;
+                          uVar22 = 10;
+                          uVar1 = (&pTVar8->dv)->dp & 0x7f;
+                          uVar33 = 0;
+                          uVar31 = 0;
+                          uVar30 = 10;
+                          dpArmorLeft = uVar20;
+                          uVar20 = __aFulmul(CONCAT22(local_14,dpSingle),
+                                                     (ulong)((&pTVar8->dv)->dp >> 7));
+                          uVar20 = __aFldiv(uVar20,CONCAT22(uVar31,uVar30));
+                          uVar20 = __aFulmul(uVar20,CONCAT22(uVar33,uVar1));
+                          uVar20 = __aFldiv(uVar20,CONCAT22(uVar23,uVar22));
+                          uVar20 = __aFulmul(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11
+                                                  (uVar25,uVar24))));
+                          lVar19 = __aFldiv(uVar20,CONCAT22(uVar29,uVar3));
+                          uVar20 = dpArmorLeft - lVar19;
                         }
-                        if ((long)uVar18 < 1) {
-                          uVar18 = 1;
+                        if ((long)uVar20 < 1) {
+                          uVar20 = 1;
                         }
-                        pTVar9 = (TOK *)ptokE;
-                        uVar12 = (undefined2)((ulong)ptokE >> 0x10);
-                        dpArmorLeft = uVar18;
-                        if ((part.hs.grhst == hstBeam) || (part.hs.grhst != hstTorp)) {
-                          if (pTVar9->pctBeamDef < 100) {
+                        HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+                        dpArmorLeft = uVar20;
+                        if ((HVar34 == hstBeam) || (HVar34 != hstTorp)) {
+                          if (pTVar8->pctBeamDef < 100) {
                             uVar29 = 0;
-                            uVar30 = 0;
-                            uVar27 = 100;
-                            uVar28 = 0;
-                            uVar18 = __aFulmul(lValue,(ulong)pTVar9->pctBeamDef);
-                            uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                            lValue = uVar18;
+                            uVar3 = 100;
+                            uVar20 = __aFulmul(lValue,(ulong)pTVar8->pctBeamDef);
+                            uVar20 = __aFldiv(uVar20,CONCAT22(uVar29,uVar3));
+                            lValue = uVar20;
                           }
-                          if ((*(uint *)(((COMPART *)part.pcom)[1].rgTech + 4) & 1) == 0) {
-                            lVar17 = dpArmorLeft + dpShieldLeft + 1;
-                            uVar18 = __aFulmul(lValue,100);
-                            lVar17 = __aFldiv(uVar18,lVar17);
+                          uVar17 = CONCAT22(uVar29,uVar3);
+                          if ((pBVar9->grfAbilities & 1U) == 0) {
+                            uVar17 = dpArmorLeft + dpShieldLeft + 1;
+                            uVar20 = __aFulmul(lValue,100);
+                            lVar19 = __aFldiv(uVar20,uVar17);
                             uVar15 = cTorpsLeft;
-                            uVar19 = dpMain;
-                            if (lVar17 < 1) {
-                              lVar17 = 1;
+                            uVar21 = dpMain;
+                            if (lVar19 < 1) {
+                              lVar19 = 1;
                             }
                           }
                           else if ((long)dpShieldLeft < 1) {
-                            lVar17 = 0;
+                            lVar19 = 0;
                             uVar15 = cTorpsLeft;
-                            uVar19 = dpMain;
+                            uVar21 = dpMain;
                           }
                           else {
-                            uVar29 = (undefined1)(dpShieldLeft >> 0x10);
-                            uVar30 = (undefined1)(dpShieldLeft >> 0x18);
-                            uVar27 = (undefined1)dpShieldLeft;
-                            uVar28 = (undefined1)(dpShieldLeft >> 8);
-                            uVar18 = __aFulmul(lValue,100);
-                            lVar17 = __aFldiv(uVar18 + dpShieldLeft + -1,
-                                                      CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(
-                                                  uVar28,uVar27))));
+                            uVar17 = dpShieldLeft;
+                            uVar20 = __aFulmul(lValue,100);
+                            lVar19 = __aFldiv(uVar20 + dpShieldLeft + -1,uVar17);
                             uVar15 = cTorpsLeft;
-                            uVar19 = dpMain;
+                            uVar21 = dpMain;
                           }
                         }
                         else {
-                          pctHit._0_2_ = *(uint *)(((COMPART *)part.pcom)[1].rgTech + 4);
+                          pctHit._0_2_ = pBVar9->grfAbilities;
                           pctHit._2_2_ = (int)(uint)pctHit >> 0xf;
-                          uVar14 = (undefined2)((ulong)ptok >> 0x10);
-                          pTVar11 = (TOK *)ptok;
-                          if (pTVar11->pctBC < pTVar9->pctJam) {
-                            uVar29 = 0;
-                            uVar30 = 0;
-                            uVar27 = 100;
-                            uVar28 = 0;
-                            uVar18 = __aFulmul((long)(int)(uint)pctHit,
-                                                       (long)(int)((uint)pTVar9->pctJam -
-                                                                  (uint)pTVar11->pctBC));
-                            lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                            pctHit = CONCAT22((pctHit._2_2_ - (int)((ulong)lVar17 >> 0x10)) -
-                                              (uint)((uint)pctHit < (uint)lVar17),
-                                              (uint)pctHit - (uint)lVar17);
+                          uVar29 = (undefined2)((ulong)ptok >> 0x10);
+                          pTVar10 = (TOK *)ptok;
+                          if (pTVar10->pctBC < pTVar8->pctJam) {
+                            uVar31 = 0;
+                            uVar30 = 100;
+                            in_stack_0000ff84 = CONCAT22(0x20,(uint)pTVar10->pctBC);
+                            iVar11 = (uint)pTVar8->pctJam - (uint)pTVar10->pctBC;
+                            cVar27 = (char)(iVar11 >> 0xf);
+                            uVar20 = __aFulmul((long)(int)(uint)pctHit,
+                                                       CONCAT13(cVar27,CONCAT12(cVar27,iVar11)));
+                            lVar19 = __aFldiv(uVar20,CONCAT22(uVar31,uVar30));
+                            pctHit = CONCAT22((pctHit._2_2_ - (int)((ulong)lVar19 >> 0x10)) -
+                                              (uint)((uint)pctHit < (uint)lVar19),
+                                              (uint)pctHit - (uint)lVar19);
                           }
                           else {
-                            uVar29 = 0;
-                            uVar30 = 0;
-                            uVar27 = 100;
-                            uVar28 = 0;
-                            uVar18 = __aFulmul(CONCAT22(-(uint)(100 < (uint)pctHit) -
+                            uVar31 = 0;
+                            uVar30 = 100;
+                            in_stack_0000ff84 = CONCAT22(0x20,(uint)pTVar8->pctJam);
+                            iVar11 = (uint)pTVar10->pctBC - (uint)pTVar8->pctJam;
+                            cVar27 = (char)(iVar11 >> 0xf);
+                            uVar20 = __aFulmul(CONCAT22(-(uint)(100 < (uint)pctHit) -
                                                                 pctHit._2_2_,100 - (uint)pctHit),
-                                                       (long)(int)((uint)pTVar11->pctBC -
-                                                                  (uint)pTVar9->pctJam));
-                            lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                            pctHit = lVar17 + CONCAT22(pctHit._2_2_,(uint)pctHit);
+                                                       CONCAT13(cVar27,CONCAT12(cVar27,iVar11)));
+                            lVar19 = __aFldiv(uVar20,CONCAT22(uVar31,uVar30));
+                            pctHit = lVar19 + CONCAT22(pctHit._2_2_,(uint)pctHit);
                           }
+                          uVar17 = CONCAT22(uVar31,uVar30);
                           if ((long)pctHit < 1) {
-                            lVar17 = 0;
+                            lVar19 = 0;
                             uVar15 = cTorpsLeft;
-                            uVar19 = dpMain;
+                            uVar21 = dpMain;
                           }
                           else {
-                            if (((part.hs.wFlags & 0xffU) < 8) || (0xb < (part.hs.wFlags & 0xffU)))
-                            {
-                              iVar2 = 0;
+                            if (((uVar35 & 0xff) < 8) || (0xb < (uVar35 & 0xff))) {
+                              iVar11 = 0;
                             }
                             else {
-                              iVar2 = 1;
+                              iVar11 = 1;
                             }
                             if ((long)dpArmorLeft < 100000) {
-                              uVar29 = (undefined1)(pctHit >> 0x10);
-                              uVar30 = (undefined1)(pctHit >> 0x18);
-                              uVar27 = (undefined1)pctHit;
-                              uVar28 = (undefined1)(pctHit >> 8);
+                              uVar20 = pctHit;
                               __aFulmul(dpArmorLeft,100);
-                              lVar17 = __aFlshl(CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(
-                                                  uVar28,uVar27))),unaff_DI);
-                              uVar18 = __aFldiv(lVar17,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                              uVar19 = pctHit;
+                              HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+                              lVar19 = __aFlshl(uVar20,(ushort)(long *)plVar18);
+                              uVar20 = __aFldiv(lVar19,uVar20);
+                              uVar21 = pctHit;
                             }
                             else {
-                              uVar29 = 0;
                               uVar30 = 0;
-                              uVar27 = 200;
-                              uVar28 = 0;
-                              uVar18 = __aFldiv(dpArmorLeft,pctHit);
-                              uVar18 = __aFulmul(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                              uVar19 = pctHit;
+                              uVar29 = 200;
+                              uVar20 = __aFldiv(dpArmorLeft,pctHit);
+                              HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+                              uVar20 = __aFulmul(uVar20,CONCAT22(uVar30,uVar29));
+                              uVar21 = pctHit;
                             }
-                            pctHit._2_2_ = (int)(uVar19 >> 0x10);
-                            pctHit._0_2_ = (uint)uVar19;
-                            pctHit = uVar19;
+                            pctHit._2_2_ = (int)(uVar21 >> 0x10);
+                            pctHit._0_2_ = (uint)uVar21;
+                            pctHit = uVar21;
                             if ((long)dpShieldLeft < 100000) {
-                              iVar6 = 100 - (uint)pctHit;
-                              iVar5 = -(uint)(100 < (uint)pctHit) - pctHit._2_2_;
-                              lVar16 = __aFldiv(CONCAT22(iVar5,iVar6),8);
-                              lVar17 = __aFldiv(pctHit,2);
-                              lVar17 = lVar17 + lVar16;
-                              uVar29 = (undefined1)((ulong)lVar17 >> 0x10);
-                              uVar30 = (undefined1)((ulong)lVar17 >> 0x18);
-                              uVar27 = (undefined1)lVar17;
-                              uVar28 = (undefined1)((ulong)lVar17 >> 8);
-                              uVar19 = __aFulmul(dpShieldLeft,100);
-                              uVar19 = __aFldiv(uVar19,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
+                              iVar5 = 100 - (uint)pctHit;
+                              iVar4 = -(uint)(100 < (uint)pctHit) - pctHit._2_2_;
+                              lVar16 = __aFldiv(CONCAT13((char)((uint)iVar4 >> 8),
+                                                                 CONCAT12((char)iVar4,iVar5)),8);
+                              lVar19 = __aFldiv(pctHit,lVar16);
+                              lVar19 = lVar19 + lVar16;
+                              uVar21 = __aFulmul(dpShieldLeft,100);
+                              lVar19 = __aFldiv(uVar21,lVar19);
+                              uVar29 = (undefined2)lVar19;
+                              in_stack_0000ff84 = CONCAT22(HVar34,(int)((ulong)lVar19 >> 0x10));
                             }
                             else {
-                              uVar29 = 0;
-                              uVar30 = 0;
-                              uVar27 = 100;
-                              uVar28 = 0;
-                              iVar6 = 100 - (uint)pctHit;
-                              iVar5 = -(uint)(100 < (uint)pctHit) - pctHit._2_2_;
-                              lVar16 = __aFldiv(CONCAT22(iVar5,iVar6),8);
-                              lVar17 = __aFldiv(pctHit,2);
-                              uVar19 = __aFldiv(dpShieldLeft,lVar17 + lVar16);
-                              uVar19 = __aFulmul(uVar19,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
+                              iVar5 = 100 - (uint)pctHit;
+                              iVar4 = -(uint)(100 < (uint)pctHit) - pctHit._2_2_;
+                              uVar21 = __aFldiv(CONCAT22(iVar4,iVar5),8);
+                              lVar19 = __aFldiv(pctHit,2);
+                              uVar15 = __aFldiv(dpShieldLeft,lVar19 + uVar21);
+                              uVar21 = __aFulmul(uVar15,uVar21);
+                              uVar29 = (undefined2)uVar21;
+                              in_stack_0000ff84 = CONCAT22(HVar34,(int)(uVar21 >> 0x10));
                             }
-                            uVar15 = __aFulmul(pctHit,(ulong)(iVar2 + 1));
-                            uVar29 = (undefined1)(uVar15 >> 0x10);
-                            uVar30 = (undefined1)(uVar15 >> 0x18);
-                            uVar27 = (undefined1)uVar15;
-                            uVar28 = (undefined1)(uVar15 >> 8);
-                            uVar23 = 0;
-                            uVar22 = 100;
-                            uVar14 = 0;
-                            uVar12 = 200;
-                            uVar15 = __aFulmul(uVar19,pctHit);
-                            lVar17 = __aFldiv(uVar15,CONCAT22(uVar14,uVar12));
-                            uVar15 = __aFulmul(dpArmorLeft - lVar17,CONCAT22(uVar23,uVar22))
-                            ;
-                            lVar17 = __aFldiv(uVar15,CONCAT13(uVar30,CONCAT12(uVar29,
-                                                  CONCAT11(uVar28,uVar27))));
-                            if ((long)(lVar17 + uVar19) <= (long)uVar18) {
-                              uVar18 = uVar19 + lVar17;
+                            uVar17 = __aFulmul(pctHit,(long)(iVar11 + 1));
+                            uVar26 = 0;
+                            uVar28 = 0;
+                            uVar24 = 100;
+                            uVar25 = 0;
+                            uVar31 = 0;
+                            uVar30 = 200;
+                            uVar21 = __aFulmul(CONCAT22((int)in_stack_0000ff84,uVar29),
+                                                       pctHit);
+                            lVar19 = __aFldiv(uVar21,CONCAT22(uVar31,uVar30));
+                            uVar21 = __aFulmul(dpArmorLeft - lVar19,
+                                                       CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(
+                                                  uVar25,uVar24))));
+                            plVar18 = (long *)__aFldiv(uVar21,uVar17);
+                            lVar19 = CONCAT22((int)in_stack_0000ff84,uVar29);
+                            if ((long)plVar18 + lVar19 <= (long)uVar20) {
+                              uVar20 = (long)plVar18 + lVar19;
                             }
-                            if ((long)uVar18 < 1) {
-                              lVar17 = 0;
+                            if ((long)uVar20 < 1) {
+                              lVar19 = 0;
                               uVar15 = cTorpsLeft;
-                              uVar19 = dpMain;
+                              uVar21 = dpMain;
                             }
                             else {
-                              score = uVar18;
-                              lVar17 = __aFldiv(lValue,uVar18);
+                              uVar17 = uVar20;
+                              score = uVar20;
+                              lVar19 = __aFldiv(lValue,uVar20);
                               uVar15 = cTorpsLeft;
-                              uVar19 = dpMain;
-                              if (lVar17 < 1) {
-                                lVar17 = 1;
+                              uVar21 = dpMain;
+                              if (lVar19 < 1) {
+                                lVar19 = 1;
                               }
                             }
                           }
                         }
-                        if (scoreBest < lVar17) {
+                        if (scoreBest < lVar19) {
                           ptokTarget = ptokE;
                           itokTarget = itok;
-                          scoreBest = lVar17;
+                          scoreBest = lVar19;
                         }
                       }
                     }
                   }
                 }
-                ptokE = (TOK *)CONCAT22(ptokE._2_2_,(TOK *)ptokE + 1);
+                ptokE = (TOK *)CONCAT22(uVar12,pTVar8 + 1);
               }
               if (((TOK *)ptokTarget != (TOK *)0x0) || (ptokTarget._2_2_ != 0)) break;
             }
-            if (((TOK *)ptokTarget == (TOK *)0x0) && (uVar18 = dp, ptokTarget._2_2_ == 0)) break;
+            dpTorp = (ulong)plVar18 >> 0x10;
+            in_stack_0000ff78 = (long *)plVar18;
+            if (((TOK *)ptokTarget == (TOK *)0x0) && (uVar20 = dp, ptokTarget._2_2_ == 0)) break;
             cTorpsLeft = uVar15;
-            dpMain = uVar19;
-            score = lVar17;
+            dpMain = uVar21;
+            score = lVar19;
             dz = DzFromBrcBrc(((TOK *)ptokTarget)->brc,((TOK *)ptok)->brc);
-            pTVar9 = (TOK *)ptok;
+            uVar3 = (uint)((ulong)plVar18 >> 0x10);
+            in_stack_0000ff78 = (long *)plVar18;
+            HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+            pTVar8 = (TOK *)ptok;
             uVar12 = (undefined2)((ulong)ptok >> 0x10);
-            if (part.hs.grhst == hstBeam) {
+            if (HVar34 == hstBeam) {
               dp = dpMain;
-              if (pTVar9->pctCap != 0) {
-                uVar29 = 0;
-                uVar30 = 0;
-                uVar27 = 100;
+              if (pTVar8->pctCap != 0) {
+                uVar26 = 0;
                 uVar28 = 0;
-                uVar18 = __aFulmul(dpMain,(ulong)pTVar9->pctCap);
-                uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
-                dp = uVar18;
+                uVar24 = 100;
+                uVar25 = 0;
+                uVar20 = __aFulmul(dpMain,(ulong)pTVar8->pctCap);
+                uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,
+                                                  uVar24))));
+                dp = uVar20;
               }
               uVar12 = (undefined2)((ulong)ptokTarget >> 0x10);
               if (((TOK *)ptokTarget)->pctBeamDef < 100) {
-                uVar29 = 0;
-                uVar30 = 0;
-                uVar27 = 100;
+                uVar26 = 0;
                 uVar28 = 0;
-                uVar18 = __aFulmul(dp,(ulong)((TOK *)ptokTarget)->pctBeamDef);
-                uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
-                dp = uVar18;
+                uVar24 = 100;
+                uVar25 = 0;
+                uVar20 = __aFulmul(dp,(ulong)((TOK *)ptokTarget)->pctBeamDef);
+                uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,
+                                                  uVar24))));
+                dp = uVar20;
               }
-              if (0 < dz) {
-                uVar12 = (undefined2)((ulong)part.pcom >> 0x10);
-                if (0 < ((COMPART *)part.pcom + 1)->id) {
-                  uVar29 = 0;
-                  uVar30 = 0;
-                  uVar27 = 100;
-                  uVar28 = 0;
-                  iVar2 = ((COMPART *)part.pcom + 1)->id;
-                  iVar6 = iVar2 >> 0xf;
-                  uVar18 = __aFulmul((long)dz,10);
-                  lVar17 = __aFldiv(uVar18,CONCAT22(iVar6,iVar2));
-                  uVar18 = __aFulmul(dp,CONCAT22(-(uint)(100 < (uint)lVar17) -
-                                                         (int)((ulong)lVar17 >> 0x10),
-                                                         100 - (uint)lVar17));
-                  uVar18 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
-                  dp = uVar18;
-                }
+              if ((0 < dz) && (0 < pBVar9->dRangeMax)) {
+                uVar26 = 0;
+                uVar28 = 0;
+                uVar24 = 100;
+                uVar25 = 0;
+                iVar11 = pBVar9->dRangeMax;
+                iVar5 = iVar11 >> 0xf;
+                uVar20 = __aFulmul((long)dz,10);
+                lVar19 = __aFldiv(uVar20,CONCAT22(iVar5,iVar11));
+                uVar20 = __aFulmul(dp,CONCAT22(-(uint)(100 < (uint)lVar19) -
+                                                       (int)((ulong)lVar19 >> 0x10),
+                                                       100 - (uint)lVar19));
+                uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,
+                                                  uVar24))));
+                dp = uVar20;
               }
-              uVar12 = (undefined2)((ulong)part.pcom >> 0x10);
-              if (*(int *)((COMPART *)part.pcom)[1].rgTech < 200) {
+              if (pBVar9->dp < 200) {
                 grfWeapon = 1;
               }
               else {
                 grfWeapon = 2;
               }
               dpT = dp;
-              sVar3 = FDamageTok(ptokTarget,itokTarget,&dp,0,grfWeapon,
-                                 *(uint *)(((COMPART *)part.pcom)[1].rgTech + 4) & 1,(long *)0x0);
-              if (sVar3 != 0) {
+              sVar2 = FDamageTok(ptokTarget,itokTarget,&dp,0,grfWeapon,pBVar9->grfAbilities & 1,
+                                 (long *)0x0);
+              if (sVar2 != 0) {
                 if (fSetItok == 0) {
-                  pBVar8->wFlags = pBVar8->wFlags & 0xffU | itokTarget << 8;
+                  pBVar7->wFlags_0x4 = pBVar7->wFlags_0x4 & 0xff | itokTarget << 8;
                   fSetItok = 1;
                 }
                 ctokDamaged = ctokDamaged + 1;
               }
               if ((dp < 1) || (dpT < 1)) {
-                uVar15 = cTorpsLeft;
-                uVar19 = 0;
-                lVar17 = score;
+                uVar20 = lValue;
+                uVar21 = 0;
               }
               else {
                 if ((((dpMain < 0x20000) && (dpMain < 0x10000)) && (dp < 0x20000)) && (dp < 0x10000)
                    ) {
-                  uVar29 = (undefined1)((ulong)dpT >> 0x10);
-                  uVar30 = (undefined1)((ulong)dpT >> 0x18);
-                  uVar27 = (undefined1)dpT;
-                  uVar28 = (undefined1)((ulong)dpT >> 8);
-                  uVar18 = __aFulmul(dpMain,dp);
-                  uVar19 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
+                  uVar26 = (undefined1)((ulong)dpT >> 0x10);
+                  uVar28 = (undefined1)((ulong)dpT >> 0x18);
+                  uVar24 = (undefined1)dpT;
+                  uVar25 = (undefined1)((ulong)dpT >> 8);
+                  uVar20 = __aFulmul(dpMain,dp);
+                  uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,
+                                                  uVar24))));
                 }
                 else {
-                  uVar19 = __ftol((double)CONCAT26((int)((ulong)lVar16 >> 0x10),
-                                                           CONCAT24((int)lVar16,
-                                                                    CONCAT22(unaff_SI,unaff_DI))));
+                  uVar20 = __ftol((double)CONCAT26((int)((ulong)plVar18 >> 0x10),
+                                                           CONCAT24((long *)plVar18,uVar17)));
                 }
-                lValue = uVar19;
-                uVar15 = cTorpsLeft;
-                lVar17 = score;
-                if (dpMain + -1 < (long)uVar19) {
-                  uVar19 = dpMain - 1;
+                uVar21 = uVar20;
+                if (dpMain + -1 < (long)uVar20) {
+                  uVar21 = dpMain - 1;
                 }
               }
+              in_stack_0000ff78 = (long *)plVar18;
+              lValue = uVar20;
+              uVar15 = cTorpsLeft;
+              dpTorp = (ulong)plVar18 >> 0x10;
+              lVar19 = score;
             }
             else {
               uVar15 = cTorpsLeft;
-              uVar19 = dpMain;
-              lVar17 = score;
-              if ((part.hs.grhst == hstTorp) && (0 < (long)cTorpsLeft)) {
+              uVar21 = dpMain;
+              dpTorp = (ulong)uVar3;
+              lVar19 = score;
+              if ((HVar34 == hstTorp) && (dpTorp = (ulong)uVar3, 0 < (long)cTorpsLeft)) {
                 grfWeapon = 4;
                 cTorpBase = cTorpsLeft;
-                uVar18 = CTorpHit(cTorpsLeft,ptokTarget,
-                                  *(short *)(((COMPART *)part.pcom)[1].rgTech + 4),
-                                  (uint)pTVar9->pctBC);
-                cTorpHit = uVar18;
+                uVar20 = CTorpHit(cTorpsLeft,ptokTarget,pBVar9->grfAbilities,(uint)pTVar8->pctBC);
+                cTorpHit = uVar20;
                 lpshdefE = LpshdefFromTok(ptokTarget);
                 dpSingle = (((SHDEF *)lpshdefE)->hul).dp;
                 local_14 = 0;
                 uVar12 = (undefined2)((ulong)ptokTarget >> 0x10);
-                uVar18 = __aFulmul((ulong)(uint)((TOK *)ptokTarget)->dpShield,
-                                           (ulong)(uint)((TOK *)ptokTarget)->csh);
-                dpShieldLeft = uVar18;
-                uVar18 = __aFulmul(CONCAT22(local_14,dpSingle),
-                                           (ulong)(uint)((TOK *)ptokTarget)->csh);
+                _fCapMissile = (ulong)((TOK *)ptokTarget)->csh;
+                uVar20 = __aFulmul((ulong)((TOK *)ptokTarget)->dpShield,_fCapMissile);
+                _fCapMissile = (ulong)((TOK *)ptokTarget)->csh;
+                dpShieldLeft = uVar20;
+                uVar20 = __aFulmul(CONCAT22(local_14,dpSingle),_fCapMissile);
                 uVar12 = (undefined2)((ulong)ptokTarget >> 0x10);
-                pTVar9 = (TOK *)ptokTarget;
-                if ((&pTVar9->dv)->dp != 0) {
+                pTVar8 = (TOK *)ptokTarget;
+                if ((&pTVar8->dv)->dp != 0) {
+                  uVar32 = pTVar8->csh;
+                  uVar33 = 0;
+                  uVar31 = 0;
+                  uVar30 = 10;
+                  uVar3 = (&pTVar8->dv)->dp & 0x7f;
                   uVar29 = 0;
-                  uVar30 = 0;
-                  uVar27 = 0xf4;
-                  uVar28 = 1;
-                  sVar3 = pTVar9->csh;
                   uVar26 = 0;
-                  uVar25 = 0;
+                  uVar28 = 0;
                   uVar24 = 10;
-                  uVar4 = (&pTVar9->dv)->dp & 0x7f;
-                  uVar23 = 0;
-                  uVar22 = 0;
-                  uVar14 = 10;
-                  dpArmorLeft = uVar18;
-                  uVar18 = __aFulmul(CONCAT22(local_14,dpSingle),
-                                             (ulong)((uint)(&pTVar9->dv)->dp >> 7));
-                  uVar18 = __aFldiv(uVar18,CONCAT22(uVar22,uVar14));
-                  uVar18 = __aFulmul(uVar18,CONCAT22(uVar23,uVar4));
-                  uVar18 = __aFldiv(uVar18,CONCAT22(uVar25,uVar24));
-                  uVar18 = __aFulmul(uVar18,CONCAT22(uVar26,sVar3));
-                  lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
-                  uVar18 = dpArmorLeft - lVar17;
+                  uVar25 = 0;
+                  dpArmorLeft = uVar20;
+                  uVar20 = __aFulmul(CONCAT22(local_14,dpSingle),
+                                             (ulong)((&pTVar8->dv)->dp >> 7));
+                  uVar20 = __aFldiv(uVar20,CONCAT13(uVar28,CONCAT12(uVar26,CONCAT11(uVar25,
+                                                  uVar24))));
+                  uVar20 = __aFulmul(uVar20,CONCAT22(uVar29,uVar3));
+                  uVar20 = __aFldiv(uVar20,CONCAT22(uVar31,uVar30));
+                  uVar20 = __aFulmul(uVar20,CONCAT22(uVar33,uVar32));
+                  lVar19 = __aFldiv(uVar20,500);
+                  uVar20 = dpArmorLeft - lVar19;
                 }
-                dp._0_2_ = *(int *)((COMPART *)part.pcom)[1].rgTech;
+                dp._0_2_ = pBVar9->dp;
                 dp._2_2_ = (int)dp >> 0xf;
                 uVar15 = (ulong)(int)dp;
-                uVar19 = (ulong)(int)dp;
-                if ((7 < (part.hs.wFlags & 0xffU)) && ((part.hs.wFlags & 0xffU) < 0xc)) {
+                uVar21 = (ulong)(int)dp;
+                if ((7 < (uVar35 & 0xff)) && ((uVar35 & 0xff) < 0xc)) {
                   if ((long)dpShieldLeft < 1) {
-                    dpArmorLeft = uVar18;
-                    uVar19 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),(ushort)lVar16);
-                    uVar18 = dpArmorLeft;
+                    dpArmorLeft = uVar20;
+                    uVar21 = __aFlshl(in_stack_0000ff84,uVar35);
+                    uVar20 = dpArmorLeft;
                   }
                   grfWeapon = grfWeapon | 8;
-                  uVar15 = uVar19;
+                  uVar15 = uVar21;
                 }
                 i = ((TOK *)ptokTarget)->csh;
                 dp = uVar15;
-                dpArmorLeft = uVar18;
+                dpArmorLeft = uVar20;
                 if ((long)i < (long)cTorpBase) {
-                  uVar18 = __aFulmul(cTorpHit,uVar15);
-                  if ((long)uVar18 <= (long)dpArmorLeft) goto LAB_10f0_79f6;
-                  for (; (long)i <= (long)cTorpBase; i = i + 1) {
-                    uVar29 = (undefined1)(cTorpBase >> 0x10);
-                    uVar30 = (undefined1)(cTorpBase >> 0x18);
-                    uVar27 = (undefined1)cTorpBase;
-                    uVar28 = (undefined1)(cTorpBase >> 8);
-                    uVar18 = __aFulmul((long)i,cTorpHit);
-                    uVar18 = __aFldiv(uVar18 + cTorpBase + -1,
-                                              CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,uVar27
-                                                                                      ))));
-                    cTorpMiss._0_2_ = i - (uint)uVar18;
+                  uVar21 = __aFulmul(cTorpHit,uVar15);
+                  uVar20 = cTorpBase;
+                  if ((long)uVar21 <= (long)dpArmorLeft) goto LAB_10f0_79f6;
+                  for (; (long)i <= (long)uVar20; i = i + 1) {
+                    cTorpBase = uVar20;
+                    uVar21 = __aFulmul((long)i,cTorpHit);
+                    HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
+                    uVar20 = __aFldiv(uVar21 + cTorpBase + -1,uVar20);
+                    cTorpMiss._0_2_ = i - (uint)uVar20;
                     cTorpMiss._2_2_ =
-                         ((i >> 0xf) - (int)(uVar18 >> 0x10)) - (uint)((uint)i < (uint)uVar18);
-                    uVar29 = 0;
-                    uVar30 = 0;
-                    uVar27 = 8;
-                    uVar28 = 0;
-                    cTorpFire = uVar18;
-                    uVar18 = __aFulmul(CONCAT22(cTorpMiss._2_2_,(int)cTorpMiss),dp);
-                    lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28
-                                                  ,uVar27))));
-                    lVar17 = dpShieldLeft - lVar17;
-                    if ((lVar17 < 0x10000) && (lVar17 < 0)) {
-                      lVar17 = 0;
+                         ((i >> 0xf) - (int)(uVar20 >> 0x10)) - (uint)((uint)i < (uint)uVar20);
+                    cTorpFire = uVar20;
+                    uVar20 = __aFulmul(CONCAT22(cTorpMiss._2_2_,(int)cTorpMiss),dp);
+                    lVar19 = __aFldiv(uVar20,8);
+                    iVar11 = (dpShieldLeft._2_2_ - (int)((ulong)lVar19 >> 0x10)) -
+                             (uint)((uint)dpShieldLeft < (uint)lVar19);
+                    if ((iVar11 < 1) && (iVar11 < 0)) {
+                      iVar11 = 0;
                     }
-                    local_7c = (int)((ulong)lVar17 >> 0x10);
-                    nds = (uint)lVar17;
-                    uVar29 = 0;
-                    uVar30 = 0;
-                    uVar27 = 2;
-                    uVar28 = 0;
-                    uVar18 = __aFulmul(cTorpFire,dp);
-                    lVar20 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28
-                                                  ,uVar27))));
-                    iVar2 = (local_7c - (int)((ulong)lVar20 >> 0x10)) - (uint)(nds < (uint)lVar20);
-                    uVar29 = 0;
-                    uVar30 = 0;
-                    uVar27 = 2;
-                    uVar28 = 0;
-                    uVar18 = __aFulmul(cTorpFire,dp);
-                    lVar21 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28
-                                                  ,uVar27))));
-                    if ((iVar2 < 1) && (iVar2 < 0)) {
-                      lVar21 = lVar21 - (lVar17 - lVar20);
+                    uVar20 = __aFulmul(cTorpFire,dp);
+                    lVar19 = __aFldiv(uVar20,2);
+                    in_stack_0000ff84 =
+                         CONCAT22(HVar34,(iVar11 - (int)((ulong)lVar19 >> 0x10)) -
+                                         (uint)((int)lVar19 != 0));
+                    uVar20 = __aFulmul(cTorpFire,dp);
+                    lVar19 = __aFldiv(uVar20,2);
+                    if (((int)in_stack_0000ff84 < 1) && ((int)in_stack_0000ff84 < 0)) {
+                      lVar19 = lVar19 + (in_stack_0000ff84 & 0xffff) * -0x10000;
                     }
-                    if ((long)dpArmorLeft <= lVar21) break;
+                    uVar20 = cTorpBase;
+                    if ((long)dpArmorLeft <= lVar19) break;
                   }
                 }
                 else {
 LAB_10f0_79f6:
                   cTorpMiss = cTorpBase - cTorpHit;
                   cTorpFire = cTorpHit;
+                  uVar20 = cTorpBase;
                 }
-                uVar29 = 0;
-                uVar30 = 0;
-                uVar27 = 8;
-                uVar28 = 0;
-                uVar18 = __aFulmul(cTorpMiss,dp);
-                lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
-                if (0 < lVar17) {
-                  dpCol = lVar17;
-                  sVar3 = FDamageTok(ptokTarget,itokTarget,&dpCol,0,grfWeapon | 0x80,1,(long *)0x0);
-                  lVar17 = dpCol;
-                  if (sVar3 != 0) {
+                cTorpBase = uVar20;
+                uVar20 = __aFulmul(cTorpMiss,dp);
+                lVar19 = __aFldiv(uVar20,8);
+                if (0 < lVar19) {
+                  dpCol = lVar19;
+                  sVar2 = FDamageTok(ptokTarget,itokTarget,&dpCol,0,grfWeapon | 0x80,1,(long *)0x0);
+                  lVar19 = dpCol;
+                  if (sVar2 != 0) {
                     ctokDamaged = ctokDamaged + 1;
                   }
                 }
-                uVar29 = 0;
-                uVar30 = 0;
-                uVar27 = 2;
-                uVar28 = 0;
-                dpCol = lVar17;
-                uVar18 = __aFulmul(cTorpFire,dp);
-                lVar17 = __aFldiv(uVar18,CONCAT13(uVar30,CONCAT12(uVar29,CONCAT11(uVar28,
-                                                  uVar27))));
+                dpCol = lVar19;
+                uVar20 = __aFulmul(cTorpFire,dp);
+                dpTorp = __aFldiv(uVar20,2);
                 cTorpBase = cTorpFire + cTorpMiss;
-                dpT = lVar17;
-                FDamageTok(ptokTarget,itokTarget,&dpT,lVar17,grfWeapon,0,&cTorpBase);
+                in_stack_0000ff78 = &dpT;
+                uVar12 = ptokTarget._2_2_;
+                sVar2 = itokTarget;
+                dpT = dpTorp;
+                FDamageTok(ptokTarget,itokTarget,in_stack_0000ff78,dpTorp,grfWeapon,0,&cTorpBase);
+                uVar17 = CONCAT22(sVar2,uVar12);
                 ctokDamaged = ctokDamaged + 1;
                 if (fSetItok == 0) {
                   fSetItok = 1;
-                  pBVar8->wFlags = pBVar8->wFlags & 0xffU | itokTarget << 8;
+                  pBVar7->wFlags_0x4 = pBVar7->wFlags_0x4 & 0xff | itokTarget << 8;
                 }
                 uVar15 = cTorpsLeft - (cTorpFire + cTorpMiss);
-                uVar19 = dpMain;
-                lVar17 = score;
+                uVar21 = dpMain;
+                lVar19 = score;
               }
             }
-          } while ((0 < (long)uVar19) || (uVar18 = dp, 0 < (long)uVar15));
+          } while ((0 < (long)uVar21) || (uVar20 = dp, 0 < (long)uVar15));
         }
       }
     }
@@ -4530,12 +4494,13 @@ void KillShips(TOK *ptok,short cshKill,short ishdef,FLEET *lpfl,short fFallout)
 {
   FLEET *pFVar1;
   FLEET *pFVar2;
-  uint iplr;
-  int iVar3;
-  TOK *pTVar4;
-  FLEET *pFVar5;
+  ushort uVar3;
+  int iVar4;
+  TOK *pTVar5;
+  short unaff_SI;
   FLEET *pFVar6;
-  undefined2 uVar7;
+  FLEET *pFVar7;
+  undefined2 uVar8;
   undefined2 unaff_SS;
   SHDEF *lphul;
   short csh;
@@ -4544,43 +4509,43 @@ void KillShips(TOK *ptok,short cshKill,short ishdef,FLEET *lpfl,short fFallout)
   FLEET flDead;
   
   if (cshKill != 0) {
-    pTVar4 = (TOK *)ptok;
-    uVar7 = (undefined2)((ulong)ptok >> 0x10);
+    pTVar5 = (TOK *)ptok;
+    uVar8 = (undefined2)((ulong)ptok >> 0x10);
     if (fFallout != 0) {
-      iplr = (uint)pTVar4->iplr;
       lphul = LpshdefFromTok(ptok);
-      MarkTechsSeen(&lphul->hul,iplr);
+      MarkTechsSeen(&lphul->hul,unaff_SI);
     }
-    pFVar6 = &flSrc;
-    pFVar5 = (FLEET *)lpfl;
-    for (iVar3 = 0x3e; iVar3 != 0; iVar3 = iVar3 + -1) {
-      pFVar2 = pFVar6;
+    pFVar7 = &flSrc;
+    pFVar6 = (FLEET *)lpfl;
+    for (iVar4 = 0x3e; iVar4 != 0; iVar4 = iVar4 + -1) {
+      pFVar2 = pFVar7;
+      pFVar7 = (FLEET *)&pFVar7->iPlayer;
+      pFVar1 = pFVar6;
       pFVar6 = (FLEET *)&pFVar6->iPlayer;
-      pFVar1 = pFVar5;
-      pFVar5 = (FLEET *)&pFVar5->iPlayer;
       pFVar2->id = pFVar1->id;
     }
     _memset(&flDead,0,0x7c);
-    iVar3 = ((FLEET *)lpfl)->rgcsh[ishdef] - cshKill;
+    uVar3 = ((FLEET *)lpfl)->rgcsh[ishdef] - cshKill;
     flDead.rgcsh[ishdef] = cshKill;
-    flSrc.rgcsh[ishdef] = iVar3;
-    pTVar4->csh = iVar3;
-    if (iVar3 == 0) {
-      pTVar4->wFlags = pTVar4->wFlags & 0xfffe;
+    flSrc.rgcsh[ishdef] = uVar3;
+    pTVar5->csh = uVar3;
+    if (uVar3 == 0) {
+      pTVar5->wFlags = pTVar5->wFlags & 0xfffe;
       for (ishdef = 0; (ishdef < 0x10 && (flSrc.rgcsh[ishdef] == 0)); ishdef = ishdef + 1) {
       }
       if ((ishdef == 0x10) &&
-         (((FLEET *)lpfl)->wFlags = ((FLEET *)lpfl)->wFlags & 0xfbffU | 0x400, fFallout != 0)) {
+         (((FLEET *)lpfl)->wFlags_0x4 = ((FLEET *)lpfl)->wFlags_0x4 & 0xfbff | 0x400, fFallout != 0)
+         ) {
         for (i = 0; i < 3; i = i + 1) {
-          uVar7 = *(undefined2 *)((int)flSrc.rgwtMin + i * 4 + 2);
+          uVar8 = *(undefined2 *)((int)flSrc.rgwtMin + i * 4 + 2);
           *(int *)(flDead.rgwtMin + i) = (int)flSrc.rgwtMin[i];
-          *(undefined2 *)((int)flDead.rgwtMin + i * 4 + 2) = uVar7;
+          *(undefined2 *)((int)flDead.rgwtMin + i * 4 + 2) = uVar8;
         }
       }
     }
-    if (((uint)((FLEET *)lpfl)->wFlags >> 10 & 1) == 0) {
+    if ((((FLEET *)lpfl)->wFlags_0x4 >> 10 & 1) == 0) {
       flDead.iPlayer = flSrc.iPlayer;
-      flDead.wFlags = flDead.wFlags & 0xfb00U | 0x407;
+      flDead.wFlags_0x4 = flDead.wFlags_0x4 & 0xfb00 | 0x407;
       FleetTransferCargoBalance(&flSrc,&flDead);
     }
     if (fFallout != 0) {
@@ -4590,13 +4555,13 @@ void KillShips(TOK *ptok,short cshKill,short ishdef,FLEET *lpfl,short fFallout)
       flDead.idPlanet = flSrc.idPlanet;
       CreateSalvage(&flDead,(THING **)&lpthBattle);
     }
-    if (((uint)((FLEET *)lpfl)->wFlags >> 10 & 1) == 0) {
-      pFVar6 = &flSrc;
-      for (iVar3 = 0x3e; iVar3 != 0; iVar3 = iVar3 + -1) {
+    if ((((FLEET *)lpfl)->wFlags_0x4 >> 10 & 1) == 0) {
+      pFVar7 = &flSrc;
+      for (iVar4 = 0x3e; iVar4 != 0; iVar4 = iVar4 + -1) {
         pFVar2 = (FLEET *)lpfl;
         lpfl._0_2_ = (FLEET *)&((FLEET *)lpfl)->iPlayer;
-        pFVar1 = pFVar6;
-        pFVar6 = (FLEET *)&pFVar6->iPlayer;
+        pFVar1 = pFVar7;
+        pFVar7 = (FLEET *)&pFVar7->iPlayer;
         pFVar2->id = pFVar1->id;
       }
     }
@@ -4629,14 +4594,14 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
   int iVar9;
   undefined2 unaff_SI;
   undefined2 *puVar10;
-  undefined2 unaff_DI;
   undefined2 *puVar11;
   undefined2 unaff_SS;
   bool bVar12;
   ulong uVar13;
   long lVar14;
+  undefined4 in_stack_0000ff48;
   long lVar15;
-  HullDef in_stack_0000ff4a;
+  ushort in_stack_0000ff4c;
   short fBleeding;
   short j;
   uint rgwtMinerals [6];
@@ -4647,9 +4612,9 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
   uint wtTotal;
   int local_6;
   
-  lVar15 = CONCAT22(unaff_SI,unaff_DI);
+  lVar15 = CONCAT22((HullDef)((ulong)in_stack_0000ff48 >> 0x10),unaff_SI);
   sVar7 = GetRaceGrbit((PLAYER *)rgplr + pfl->iPlayer,ibitRaceBleedingEdgeTech);
-  gd._4_2_ = gd._4_2_ & 0xfff7 | 8;
+  gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfff7 | 8;
   idPlayer = pfl->iPlayer;
   if (pfl->idPlanet == -1) {
     lppl = (PLANET *)0x0;
@@ -4680,7 +4645,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
             *puVar3 = *puVar2;
           }
           *(undefined1 *)puVar11 = *(undefined1 *)puVar10;
-          UpdateShdefCost((SHDEF *)(SHDEF *)&stack0xff4a);
+          UpdateShdefCost((SHDEF *)CONCAT22(unaff_SS,(SHDEF *)&stack0xff4a));
           lpshdefT = &stack0xff4a;
           uVar16 = unaff_SS;
         }
@@ -4704,7 +4669,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
     rgwtMinerals[sVar6 * 2 + 1] = rgwtMinerals[sVar6 * 2 + 1] + uVar5 + (uint)CARRY2(uVar8,uVar4);
     if (((PLANET *)lppl != (PLANET *)0x0) || (lppl._2_2_ != 0)) {
       lVar14 = 10;
-      if (((uint)((PLANET *)lppl)->wFlags >> 9 & 1) == 0) {
+      if ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) == 0) {
         uVar8 = 5;
       }
       else {
@@ -4724,7 +4689,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
     wtTotal = 0;
     local_6 = 0;
     for (i = 0; i < 3; i = i + 1) {
-      lVar14 = __aFlshr(lVar15,in_stack_0000ff4a);
+      lVar14 = __aFlshr(lVar15,in_stack_0000ff4c);
       sVar7 = i;
       puVar1 = rgwtMinerals + i * 2;
       uVar8 = *puVar1;
@@ -4737,12 +4702,10 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
       local_6 = local_6 + rgwtMinerals[i * 2 + 1] + (uint)bVar12;
     }
     if ((wtTotal != 0) || (local_6 != 0)) {
-      DropSalvage(plpth,(long *)rgwtMinerals,pfl->iPlayer,(POINT *)&pfl->pt);
+      DropSalvage(plpth,(long *)CONCAT22(unaff_SS,rgwtMinerals),pfl->iPlayer,&pfl->pt);
     }
   }
-  uVar8 = gd._4_2_ & 0xfff7;
-  gd.field3_0x4 = (char)uVar8;
-  gd.field4_0x5 = (char)(uVar8 >> 8);
+  gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfff7;
   idPlayer = -1;
   return;
 }
@@ -4769,26 +4732,28 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
   PLANET *pPVar2;
   ulong uVar3;
   ushort uVar4;
+  ushort uVar5;
   uint ishdef_00;
-  short sVar5;
-  uint *puVar6;
-  uint uVar7;
-  TOK *pTVar8;
-  byte *pbVar9;
-  undefined2 uVar10;
-  bool bVar11;
-  SHDEF *pSVar12;
+  short sVar6;
+  uint *puVar7;
+  uint uVar8;
+  TOK *pTVar9;
+  byte *pbVar10;
+  undefined2 uVar11;
+  bool bVar12;
+  SHDEF *pSVar13;
   PLANET *lppl_00;
   FLEET *lpfl_00;
-  ulong uVar13;
   ulong uVar14;
   ulong uVar15;
-  long lVar16;
-  uint uVar17;
-  undefined2 uVar18;
+  ulong uVar16;
+  long lVar17;
+  uint uVar18;
   undefined2 uVar19;
   undefined2 uVar20;
-  int iVar21;
+  undefined2 uVar21;
+  int iVar22;
+  short sVar23;
   ushort pctDpNew;
   uint dp;
   int local_34;
@@ -4805,6 +4770,7 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
   uint ddpOrig;
   int local_12;
   short cshOrigDamaged;
+  ushort *pwLosses;
   DV dv;
   short pctSh;
   
@@ -4813,39 +4779,39 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
   __fmemset(lpbBattleCur,0,8);
   *lpbBattleCur = (byte)itok;
   ((byte *)lpbBattleCur)[1] = (byte)grfWeapon;
-  uVar10 = (undefined2)((ulong)ptok >> 0x10);
-  pTVar8 = (TOK *)ptok;
-  if (pTVar8->dpShield == 0) {
+  uVar11 = (undefined2)((ulong)ptok >> 0x10);
+  pTVar9 = (TOK *)ptok;
+  if (pTVar9->dpShield == 0) {
     if (fShieldsOnly != 0) {
       return 0;
     }
   }
   else {
-    uVar7 = pTVar8->dpShield;
-    iVar21 = pTVar8->dpShield;
-    uVar13 = __aFulmul((ulong)uVar7,(ulong)(uint)pTVar8->csh);
-    if (CONCAT22(local_34,dp) < (long)uVar13) {
+    uVar8 = pTVar9->dpShield;
+    uVar5 = pTVar9->dpShield;
+    uVar14 = __aFulmul((ulong)uVar8,(ulong)pTVar9->csh);
+    if (CONCAT22(local_34,dp) < (long)uVar14) {
       uVar4 = WPackLong(CONCAT22(local_34,dp));
       *(ushort *)((byte *)lpbBattleCur + 4) = uVar4;
-      lVar16 = __aFldiv(uVar13 - CONCAT22(local_34,dp),(ulong)(uint)pTVar8->csh);
-      pTVar8->dpShield = (int)lVar16 + (iVar21 - uVar7);
+      lVar17 = __aFldiv(uVar14 - CONCAT22(local_34,dp),(ulong)pTVar9->csh);
+      pTVar9->dpShield = (int)lVar17 + (uVar5 - uVar8);
       dp = 0;
       local_34 = 0;
     }
     else {
-      bVar11 = dp < (uint)uVar13;
-      dp = dp - (uint)uVar13;
-      local_34 = (local_34 - (int)(uVar13 >> 0x10)) - (uint)bVar11;
-      uVar4 = WPackLong(uVar13);
-      *(ushort *)((byte *)lpbBattleCur + 4) = uVar4;
-      pTVar8->dpShield = 0;
+      bVar12 = dp < (uint)uVar14;
+      dp = dp - (uint)uVar14;
+      local_34 = (local_34 - (int)(uVar14 >> 0x10)) - (uint)bVar12;
+      uVar5 = WPackLong(uVar14);
+      *(ushort *)((byte *)lpbBattleCur + 4) = uVar5;
+      pTVar9->dpShield = 0;
     }
   }
   if ((((dp == 0) && (local_34 == 0)) || (fShieldsOnly != 0)) && (dpTorp == 0)) {
-    *(short *)((byte *)lpbBattleCur + 6) = (&pTVar8->dv)->dp;
+    *(ushort *)((byte *)lpbBattleCur + 6) = (&pTVar9->dv)->dp;
     *(uint *)pdpBeam = dp;
     *(int *)((int)pdpBeam + 2) = local_34;
-    uVar10 = (undefined2)((ulong)lpbBattleCur >> 0x10);
+    uVar11 = (undefined2)((ulong)lpbBattleCur >> 0x10);
     if ((((byte *)lpbBattleCur)[1] & 4) != 0) {
       pbVar1 = (byte *)lpbBattleCur + 1;
       *pbVar1 = *pbVar1 | 0xc0;
@@ -4862,70 +4828,70 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
       cKillMax = (int)*pcTorp;
       local_26 = *(int *)((int)pcTorp + 2);
     }
-    uVar13 = dpTorp + CONCAT22(local_34,dp);
-    uVar15 = dpTorp + CONCAT22(local_34,dp);
-    ishdef_00 = (uint)pTVar8->ishdef;
-    pSVar12 = LpshdefFromTok(ptok);
-    uVar7 = (((SHDEF *)pSVar12)->hul).dp;
-    uVar3 = (ulong)uVar7;
-    uVar17 = (&pTVar8->dv)->dp;
-    if (pTVar8->field2_0x3 == '\x01') {
+    uVar14 = dpTorp + CONCAT22(local_34,dp);
+    uVar16 = dpTorp + CONCAT22(local_34,dp);
+    ishdef_00 = (uint)*(byte *)((int)&pTVar9->u_TOK_0x0003 + 1);
+    pSVar13 = LpshdefFromTok(ptok);
+    uVar8 = (((SHDEF *)pSVar13)->hul).dp;
+    uVar3 = (ulong)uVar8;
+    uVar18 = (&pTVar9->dv)->dp;
+    if (*(char *)&pTVar9->u_TOK_0x0003 == '\x01') {
       lppl_00 = LpplFromId(ptok->id);
-      uVar18 = (undefined2)((ulong)lppl_00 >> 0x10);
+      uVar19 = (undefined2)((ulong)lppl_00 >> 0x10);
       pPVar2 = (PLANET *)lppl_00;
-      if (uVar17 >> 7 != 0) {
-        uVar19 = 0;
-        uVar20 = 500;
-        uVar13 = __aFulmul((ulong)uVar7,(ulong)(uVar17 >> 7));
-        lVar16 = __aFldiv(uVar13,CONCAT22(uVar19,uVar20));
-        uVar15 = lVar16 + uVar15;
-      }
-      dp = (uint)uVar15;
-      if (((long)uVar15 < 0) || (((long)uVar15 < 0x10000 && (dp < uVar7)))) {
+      if (uVar18 >> 7 != 0) {
         uVar20 = 0;
-        uVar17 = uVar7;
-        uVar13 = __aFulmul(uVar15,500);
-        lVar16 = __aFldiv(uVar13,CONCAT22(uVar20,uVar17));
-        if (*(uint *)&pPVar2->field11_0x2c >> 4 == (uint)lVar16) {
-          iVar21 = *(int *)&pPVar2->field11_0x2c;
-          *(uint *)&pPVar2->field11_0x2c = *(uint *)&pPVar2->field11_0x2c & 0xf;
-          *(uint *)&pPVar2->field11_0x2c = *(uint *)&pPVar2->field11_0x2c | iVar21 + 0x10U & 0xfff0;
+        uVar21 = 500;
+        uVar14 = __aFulmul((ulong)uVar8,(ulong)(uVar18 >> 7));
+        lVar17 = __aFldiv(uVar14,CONCAT22(uVar20,uVar21));
+        uVar16 = lVar17 + uVar16;
+      }
+      dp = (uint)uVar16;
+      if (((long)uVar16 < 0) || (((long)uVar16 < 0x10000 && (dp < uVar8)))) {
+        uVar21 = 0;
+        uVar18 = uVar8;
+        uVar14 = __aFulmul(uVar16,500);
+        lVar17 = __aFldiv(uVar14,CONCAT22(uVar21,uVar18));
+        if (*(uint *)&pPVar2->lStarbase >> 4 == (uint)lVar17) {
+          lVar17 = pPVar2->lStarbase;
+          *(uint *)&pPVar2->lStarbase = *(uint *)&pPVar2->lStarbase & 0xf;
+          *(uint *)&pPVar2->lStarbase = *(uint *)&pPVar2->lStarbase | (int)lVar17 + 0x10U & 0xfff0;
         }
         else {
-          uVar20 = 0;
-          uVar13 = __aFulmul(uVar15,500);
-          lVar16 = __aFldiv(uVar13,CONCAT22(uVar20,uVar7));
-          *(uint *)&pPVar2->field11_0x2c = *(uint *)&pPVar2->field11_0x2c & 0xf | (int)lVar16 << 4;
+          uVar21 = 0;
+          uVar14 = __aFulmul(uVar16,500);
+          lVar17 = __aFldiv(uVar14,CONCAT22(uVar21,uVar8));
+          *(uint *)&pPVar2->lStarbase = *(uint *)&pPVar2->lStarbase & 0xf | (int)lVar17 << 4;
         }
-        uVar20 = (undefined2)((ulong)lpbBattleCur >> 0x10);
+        uVar21 = (undefined2)((ulong)lpbBattleCur >> 0x10);
         *(uint *)((byte *)lpbBattleCur + 6) =
              *(uint *)((byte *)lpbBattleCur + 6) & 0x7f |
-             (*(uint *)&pPVar2->field11_0x2c >> 4) << 7;
+             (*(uint *)&pPVar2->lStarbase >> 4) << 7;
         fStarbaseDamaged = 1;
       }
       else {
-        uVar20 = (undefined2)((ulong)lpbBattleCur >> 0x10);
+        uVar21 = (undefined2)((ulong)lpbBattleCur >> 0x10);
         *(uint *)((byte *)lpbBattleCur + 6) =
              *(uint *)((byte *)lpbBattleCur + 6) & 0x7f | 64000;
-        uVar13 = (ulong)lpbBattleCur >> 0x10;
-        pbVar9 = (byte *)lpbBattleCur;
-        (pbVar9 + 2)[0] = 1;
-        (pbVar9 + 2)[1] = 0;
-        pTVar8->wFlags = pTVar8->wFlags & 0xfffe;
-        pTVar8->csh = 0;
+        uVar14 = (ulong)lpbBattleCur >> 0x10;
+        pbVar10 = (byte *)lpbBattleCur;
+        (pbVar10 + 2)[0] = 1;
+        (pbVar10 + 2)[1] = 0;
+        pTVar9->wFlags = pTVar9->wFlags & 0xfffe;
+        pTVar9->csh = 0;
         fStarbaseDied = 1;
-        sVar5 = GetRaceStat((PLAYER *)rgplr + pPVar2->iPlayer,rsMajorAdv);
-        if (sVar5 != raMacintosh) {
-          pPVar2->wFlags = pPVar2->wFlags & 0xfdff;
+        sVar6 = GetRaceStat((PLAYER *)rgplr + pPVar2->iPlayer,rsMajorAdv);
+        if (sVar6 != raMacintosh) {
+          pPVar2->wFlags_0x4 = pPVar2->wFlags_0x4 & 0xfdff;
           KillQueuedShips(lppl_00);
           KillQueuedMassPackets(lppl_00);
         }
       }
-      uVar18 = (undefined2)((ulong)lpbBattleCur >> 0x10);
-      pbVar9 = (byte *)lpbBattleCur;
-      if (*(uint *)(pbVar9 + 6) >> 7 != 0) {
-        *(uint *)(pbVar9 + 6) = *(uint *)(pbVar9 + 6) & 0xff80 | 100;
-        (&pTVar8->dv)->dp = *(short *)((byte *)lpbBattleCur + 6);
+      uVar19 = (undefined2)((ulong)lpbBattleCur >> 0x10);
+      pbVar10 = (byte *)lpbBattleCur;
+      if (*(uint *)(pbVar10 + 6) >> 7 != 0) {
+        *(uint *)(pbVar10 + 6) = *(uint *)(pbVar10 + 6) & 0xff80 | 100;
+        (&pTVar9->dv)->dp = *(ushort *)((byte *)lpbBattleCur + 6);
       }
       *(undefined2 *)pdpBeam = 0;
       *(undefined2 *)((int)pdpBeam + 2) = 0;
@@ -4933,104 +4899,106 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
            (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 8);
     }
     else {
-      if (((uint)pTVar8->wFlags >> 8 & 0xf) == 1) {
-        pTVar8->wFlags = pTVar8->wFlags & 0xf0ff;
-        pTVar8->wFlags = pTVar8->wFlags & 0xfc1fU | 0xe0;
+      if ((pTVar9->wFlags_0x17 >> 8 & 0xf) == 1) {
+        pTVar9->wFlags_0x17 = pTVar9->wFlags_0x17 & 0xf0ff;
+        pTVar9->wFlags = pTVar9->wFlags & 0xfc1f | 0xe0;
       }
       lpfl_00 = LpflFromId(ptok->id);
-      iVar21 = pTVar8->csh;
-      if (uVar17 >> 7 == 0) {
+      uVar5 = pTVar9->csh;
+      if (uVar18 >> 7 == 0) {
         cshOrigDamaged = 0;
-        uVar15 = 0;
+        uVar16 = 0;
       }
       else {
-        uVar20 = 0;
-        uVar18 = 100;
-        uVar15 = __aFulmul((long)iVar21,(ulong)(uVar17 & 0x7f));
-        lVar16 = __aFldiv(uVar15,CONCAT22(uVar20,uVar18));
-        cshOrigDamaged = (short)lVar16;
+        uVar21 = 0;
+        uVar19 = 100;
+        uVar16 = __aFulmul((long)(int)uVar5,(ulong)(uVar18 & 0x7f));
+        lVar17 = __aFldiv(uVar16,CONCAT22(uVar21,uVar19));
+        cshOrigDamaged = (short)lVar17;
         if (cshOrigDamaged == 0) {
           cshOrigDamaged = 1;
         }
-        uVar20 = 0;
-        uVar18 = 500;
-        uVar15 = __aFulmul((ulong)uVar7,(ulong)(uVar17 >> 7));
-        uVar15 = __aFldiv(uVar15,CONCAT22(uVar20,uVar18));
-        if (uVar15 == 0) {
-          uVar15 = 1;
+        uVar21 = 0;
+        uVar19 = 500;
+        uVar16 = __aFulmul((ulong)uVar8,(ulong)(uVar18 >> 7));
+        uVar16 = __aFldiv(uVar16,CONCAT22(uVar21,uVar19));
+        if (uVar16 == 0) {
+          uVar16 = 1;
         }
       }
-      sVar5 = cshOrigDamaged;
-      local_12 = (int)(uVar15 >> 0x10);
-      ddpOrig = (uint)uVar15;
-      puVar6 = vrgPlrLosses + (uint)pTVar8->iplr * 0x10 + ishdef_00;
-      *puVar6 = *puVar6 | 0x8000;
-      csh = iVar21;
+      sVar6 = cshOrigDamaged;
+      local_12 = (int)(uVar16 >> 0x10);
+      ddpOrig = (uint)uVar16;
+      puVar7 = vrgPlrLosses + (uint)pTVar9->iplr * 0x10 + ishdef_00;
+      *puVar7 = *puVar7 | 0x8000;
+      csh = uVar5;
       if (cshOrigDamaged != 0) {
         csh = cshOrigDamaged;
-        lVar16 = CONCAT22(-(uint)(uVar7 < ddpOrig) - local_12,uVar7 - ddpOrig);
-        while (((lVar16 <= (long)uVar13 && (csh != 0)) && ((cKillMax != 0 || (local_26 != 0))))) {
-          uVar13 = uVar13 - lVar16;
+        lVar17 = CONCAT22(-(uint)(uVar8 < ddpOrig) - local_12,uVar8 - ddpOrig);
+        while (((lVar17 <= (long)uVar14 && (csh != 0)) && ((cKillMax != 0 || (local_26 != 0))))) {
+          uVar14 = uVar14 - lVar17;
           csh = csh + -1;
-          bVar11 = cKillMax == 0;
+          bVar12 = cKillMax == 0;
           cKillMax = cKillMax + -1;
-          local_26 = local_26 - (uint)bVar11;
-          if ((*puVar6 & 0x1fff) < 0x1fff) {
-            *puVar6 = *puVar6 + 1;
+          local_26 = local_26 - (uint)bVar12;
+          if ((*puVar7 & 0x1fff) < 0x1fff) {
+            *puVar7 = *puVar7 + 1;
           }
         }
-        uVar3 = uVar15 + lVar16;
+        uVar3 = uVar16 + lVar17;
         cshOrigDamaged = csh;
-        csh = csh + (iVar21 - sVar5);
+        csh = csh + (uVar5 - sVar6);
       }
-      while ((((long)uVar3 <= (long)uVar13 && (csh != 0)) && ((cKillMax != 0 || (local_26 != 0)))))
+      while ((((long)uVar3 <= (long)uVar14 && (csh != 0)) && ((cKillMax != 0 || (local_26 != 0)))))
       {
-        uVar13 = uVar13 - uVar3;
+        uVar14 = uVar14 - uVar3;
         csh = csh + -1;
-        bVar11 = cKillMax == 0;
+        bVar12 = cKillMax == 0;
         cKillMax = cKillMax + -1;
-        local_26 = local_26 - (uint)bVar11;
-        if ((*puVar6 & 0x1fff) < 0x1fff) {
-          *puVar6 = *puVar6 + 1;
+        local_26 = local_26 - (uint)bVar12;
+        if ((*puVar7 & 0x1fff) < 0x1fff) {
+          *puVar7 = *puVar7 + 1;
         }
       }
       if ((local_26 < 1) && ((local_26 < 0 || (cKillMax == 0)))) {
-        uVar13 = 0;
+        uVar14 = 0;
       }
-      iVar21 = csh >> 0xf;
-      if ((uVar13 == 0) || (csh == 0)) {
+      iVar22 = cshOrigDamaged >> 0xf;
+      if ((uVar14 == 0) || (csh == 0)) {
         if (cshOrigDamaged == 0) {
           pctSh = 0;
           pctDp = 0;
         }
         else {
-          sVar5 = csh;
-          uVar15 = __aFulmul((long)cshOrigDamaged,100);
-          lVar16 = __aFldiv(uVar15 + (long)csh + -1,CONCAT22(iVar21,sVar5));
-          pctSh = (short)lVar16;
-          pctDp = (uint)(&pTVar8->dv)->dp >> 7;
+          sVar6 = csh;
+          sVar23 = csh;
+          uVar16 = __aFulmul((long)cshOrigDamaged,100);
+          lVar17 = __aFldiv(uVar16 + CONCAT22(csh >> 0xf,sVar23) + -1,CONCAT22(sVar23,sVar6)
+                                   );
+          pctSh = (short)lVar17;
+          pctDp = (&pTVar9->dv)->dp >> 7;
         }
       }
       else {
         if (cshOrigDamaged != 0) {
-          uVar15 = __aFulmul(uVar15,(long)cshOrigDamaged);
-          uVar13 = uVar15 + (long)csh + -1 + uVar13;
+          uVar16 = __aFulmul(uVar16,(long)cshOrigDamaged);
+          uVar14 = uVar16 + CONCAT22(csh >> 0xf,iVar22) + -1 + uVar14;
         }
-        uVar13 = __aFldiv(uVar13,(long)csh);
-        if (uVar13 == 0) {
-          uVar13 = 1;
+        uVar14 = __aFldiv(uVar14,(long)csh);
+        if (uVar14 == 0) {
+          uVar14 = 1;
         }
-        uVar15 = uVar3;
-        uVar14 = __aFulmul(uVar13,500);
-        lVar16 = __aFldiv(uVar14 + uVar3 + -1,uVar15);
-        pctDp = (short)lVar16;
+        uVar16 = uVar3;
+        uVar15 = __aFulmul(uVar14,500);
+        lVar17 = __aFldiv(uVar15 + uVar3 + -1,uVar16);
+        pctDp = (short)lVar17;
         if (pctDp == 0) {
           pctDp = 1;
         }
         pctSh = 100;
       }
-      *(short *)((byte *)lpbBattleCur + 2) = pTVar8->csh - csh;
-      if (csh != pTVar8->csh) {
+      *(ushort *)((byte *)lpbBattleCur + 2) = pTVar9->csh - csh;
+      if (csh != pTVar9->csh) {
         KillShips(ptok,*(short *)((byte *)lpbBattleCur + 2),ishdef_00,lpfl_00,1);
       }
       local_22 = (undefined2)((ulong)lpfl_00 >> 0x10);
@@ -5039,20 +5007,20 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
         if (499 < pctDp) {
           pctDp = 499;
         }
-        uVar7 = pctDp << 7 | pctSh & 0x7fU;
-        (&pTVar8->dv)->dp = uVar7;
-        (lpfl->rgdv + ishdef_00)->dp = uVar7;
-        uVar13 = 0;
+        uVar8 = pctDp << 7 | pctSh & 0x7fU;
+        (&pTVar9->dv)->dp = uVar8;
+        lpfl->rgcsh[ishdef_00 + 0x10] = uVar8;
+        uVar14 = 0;
       }
-      if (dpTorp < (long)uVar13) {
-        *(int *)pdpBeam = (int)(uVar13 - dpTorp);
-        *(undefined2 *)((int)pdpBeam + 2) = (int)(uVar13 - dpTorp >> 0x10);
+      if (dpTorp < (long)uVar14) {
+        *(int *)pdpBeam = (int)(uVar14 - dpTorp);
+        *(undefined2 *)((int)pdpBeam + 2) = (int)(uVar14 - dpTorp >> 0x10);
       }
       else {
         *(undefined2 *)pdpBeam = 0;
         *(undefined2 *)((int)pdpBeam + 2) = 0;
       }
-      *(short *)((byte *)lpbBattleCur + 6) = (&pTVar8->dv)->dp;
+      *(ushort *)((byte *)lpbBattleCur + 6) = (&pTVar9->dv)->dp;
       lpbBattleCur =
            (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 8);
       if (pcTorp != (long *)0x0) {
@@ -5103,6 +5071,7 @@ short DxyFromSpdRound(ushort spd,short iRound)
 
 
 /* WARNING: Removing unreachable block (ram,0x10f098b8) */
+/* WARNING: Variable defined which should be unmapped: penvMemSav */
 
 short FDoCoolBattle
           (FLEET *lpfl,short cplr,ushort *rggrfAttack,ushort grfPlayer,ushort grfSpectator)
@@ -5110,25 +5079,25 @@ short FDoCoolBattle
 {
   FLEET *pFVar1;
   int iVar2;
-  byte *pbVar3;
-  PLANET *pPVar4;
-  byte *pbVar5;
+  ushort uVar3;
+  byte *pbVar4;
+  PLANET *pPVar5;
   byte *pbVar6;
-  short sVar7;
-  uint uVar8;
-  BTLDATA *pBVar9;
-  TOK *pTVar10;
-  undefined2 unaff_SI;
-  undefined2 unaff_DI;
-  undefined2 uVar11;
-  byte *pbVar12;
-  ulong uVar13;
-  long lVar14;
-  undefined2 uVar15;
-  long lVar16;
-  undefined1 *in_stack_0000fd74;
-  undefined1 env [12];
-  uint local_27e;
+  short (*pasVar7) [9];
+  byte *pbVar8;
+  short sVar9;
+  uint uVar10;
+  BTLDATA *pBVar11;
+  TOK *pTVar12;
+  undefined2 uVar13;
+  byte *pbVar14;
+  PLANET *pPVar15;
+  ulong uVar16;
+  long lVar17;
+  undefined2 uVar18;
+  short (*penvMemSav) [9];
+  short env;
+  ushort in_stack_0000fd78;
   long lwt;
   short itok;
   ushort wtNext;
@@ -5154,48 +5123,49 @@ short FDoCoolBattle
   undefined2 local_8;
   short cShipsInvolved;
   
-  lVar16 = CONCAT22(unaff_SI,unaff_DI);
+  pasVar7 = penvMem;
   if (lpbBattleLog == (byte *)0x0) {
-    in_stack_0000fd74 = penvMem;
-    penvMem = env;
-    sVar7 = __setjmp(env);
-    pbVar12 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
-    if (sVar7 != 0) {
-      sVar7 = -1;
-      penvMem = in_stack_0000fd74;
-      pbVar3 = lpbBattleLog;
-      pbVar5 = lpbBattleCur;
+    _penvMemSav = (short (*) [9])CONCAT22(env,penvMem);
+    penvMem = (short (*) [9])&env;
+    sVar9 = __setjmp(&env);
+    pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
+    if (sVar9 != 0) {
+      sVar9 = -1;
+      penvMem = pasVar7;
+      pbVar4 = lpbBattleLog;
+      pbVar6 = lpbBattleCur;
       goto LAB_10f0_9911;
     }
-    pbVar12 = LpAlloc(0xffc8,htBattle);
-    lpbBattleLog = pbVar12;
-    lpbBattleCur = pbVar12;
+    pbVar14 = LpAlloc(0xffc8,htBattle);
+    lpbBattleLog = pbVar14;
+    lpbBattleCur = pbVar14;
   }
-  pbVar12 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
+  pasVar7 = penvMem;
+  pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
   lpbSav = lpbBattleCur;
   if (((byte *)lpbBattleT == (byte *)0x0) &&
-     (pbVar12 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT),
+     (pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT),
      lpbBattleT._2_2_ == 0)) {
-    in_stack_0000fd74 = penvMem;
-    penvMem = env;
-    sVar7 = __setjmp(env);
-    pbVar12 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
-    if (sVar7 != 0) {
-      sVar7 = -1;
-      penvMem = in_stack_0000fd74;
-      pbVar3 = lpbBattleLog;
-      pbVar5 = lpbBattleCur;
+    _penvMemSav = (short (*) [9])CONCAT22(env,penvMem);
+    penvMem = (short (*) [9])&env;
+    sVar9 = __setjmp(&env);
+    pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
+    if (sVar9 != 0) {
+      sVar9 = -1;
+      penvMem = pasVar7;
+      pbVar4 = lpbBattleLog;
+      pbVar6 = lpbBattleCur;
       goto LAB_10f0_9911;
     }
-    pbVar12 = LpAlloc(0xffc8,htBattle);
+    pbVar14 = LpAlloc(0xffc8,htBattle);
     lpbSav = lpbBattleCur;
   }
-  lpbBattleT._2_2_ = (int)((ulong)pbVar12 >> 0x10);
-  lpbBattleT._0_2_ = (byte *)pbVar12;
+  lpbBattleT._2_2_ = (int)((ulong)pbVar14 >> 0x10);
+  lpbBattleT._0_2_ = (byte *)pbVar14;
   lpbMax = (byte *)lpbBattleT + -0x48;
   local_8 = lpbBattleT._2_2_;
-  lpbBattleT = pbVar12;
-  lpbBattleCur = pbVar12;
+  lpbBattleT = pbVar14;
+  lpbBattleCur = pbVar14;
   _memset(rgPlrLosses,0,0x200);
   vrgPlrLosses = rgPlrLosses;
   _memset(rgfInit,0,0x40);
@@ -5213,7 +5183,7 @@ short FDoCoolBattle
   fStarbaseDamaged = 0;
   lpflT = lpfl;
   do {
-    if (((uint)((FLEET *)lpflT)->wFlags >> 10 & 1) == 0) {
+    if ((((FLEET *)lpflT)->wFlags_0x4 >> 10 & 1) == 0) {
       for (i = 0; i < 0x10; i = i + 1) {
         if (0 < ((FLEET *)lpflT)->rgcsh[i]) {
           cShipsInvolved = cShipsInvolved + ((FLEET *)lpflT)->rgcsh[i];
@@ -5221,7 +5191,7 @@ short FDoCoolBattle
         }
       }
     }
-    uVar11 = (undefined2)((ulong)lpflT >> 0x10);
+    uVar13 = (undefined2)((ulong)lpflT >> 0x10);
                     /* WARNING: Load size is inaccurate */
     pFVar1 = ((FLEET *)lpflT)->lpflNext;
     iVar2 = *(int *)((int)&((FLEET *)lpflT)->lpflNext + 2);
@@ -5234,41 +5204,42 @@ short FDoCoolBattle
     }
   }
   if (((FLEET *)lpfl)->idPlanet != -1) {
-    lwt = (long)LpplFromId(((FLEET *)lpfl)->idPlanet);
-    uVar11 = (undefined2)((ulong)lwt >> 0x10);
-    pPVar4 = (PLANET *)lwt;
-    if ((((uint)pPVar4->wFlags >> 9 & 1) != 0) &&
-       ((1 << ((byte)pPVar4->iPlayer & 0x1f) & grfPlayer) != 0)) {
+    pPVar15 = LpplFromId(((FLEET *)lpfl)->idPlanet);
+    uVar13 = (undefined2)((ulong)pPVar15 >> 0x10);
+    pPVar5 = (PLANET *)pPVar15;
+    if (((pPVar5->wFlags_0x4 >> 9 & 1) != 0) &&
+       ((1 << ((byte)pPVar5->iPlayer & 0x1f) & grfPlayer) != 0)) {
       cShdefsInvolved = cShdefsInvolved + 1;
       cShipsInvolved = cShipsInvolved + 1;
-      pPVar4->wFlags = pPVar4->wFlags & 0xbfffU | 0x4000;
+      *(uint *)((int)&pPVar5->lStarbase + 2) =
+           *(uint *)((int)&pPVar5->lStarbase + 2) & 0xbfff | 0x4000;
     }
   }
   InitializeBoard(lpfl,((cplr + -1) * cplr) / 2,grfPlayer,rgfInit,&initMin,&initMac);
-  uVar11 = (undefined2)((ulong)lpbtldata >> 0x10);
-  pBVar9 = (BTLDATA *)lpbtldata;
-  pBVar9->cplr = (byte)cplr;
-  pBVar9->ctok = (byte)vctok;
-  pBVar9->idPlanet = ((FLEET *)lpfl)->idPlanet;
-  sVar7 = (((FLEET *)lpfl)->pt).y;
-  (&pBVar9->pt)->x = (&((FLEET *)lpfl)->pt)->x;
-  (pBVar9->pt).y = sVar7;
+  uVar13 = (undefined2)((ulong)lpbtldata >> 0x10);
+  pBVar11 = (BTLDATA *)lpbtldata;
+  pBVar11->cplr = (byte)cplr;
+  pBVar11->ctok = (byte)vctok;
+  pBVar11->idPlanet = ((FLEET *)lpfl)->idPlanet;
+  sVar9 = (((FLEET *)lpfl)->pt).y;
+  (&pBVar11->pt)->x = (&((FLEET *)lpfl)->pt)->x;
+  (pBVar11->pt).y = sVar9;
   iVar2 = idBattle + 1;
   lpbtldata->id = idBattle;
   idBattle = iVar2;
   for (iRound = 0; iRound < 0x10; iRound = iRound + 1) {
     grplrLeft = 0;
     for (itok = 0; itok < vctok; itok = itok + 1) {
-      if ((((TOK *)vrgtok)[itok].wFlags & 1U) != 0) {
+      if ((((TOK *)vrgtok)[itok].wFlags & 1) != 0) {
         grplrLeft = grplrLeft | 1 << (((TOK *)vrgtok)[itok].iplr & 0x1f);
-        lwt = CONCAT22(((TOK *)vrgtok)[itok].wFlags,(undefined2)lwt) & 0xfffffff;
-        ((TOK *)vrgtok)[itok].wFlags = lwt._2_2_;
+        lwt._2_2_ = ((TOK *)vrgtok)[itok].wFlags_0x19 & 0xfff;
+        ((TOK *)vrgtok)[itok].wFlags_0x19 = lwt._2_2_;
         if (((0 < iRound) && (((TOK *)vrgtok)[itok].dpShield != 0)) &&
-           ((((TOK *)vrgtok)[itok].wFlags & 1U) != 0)) {
-          sVar7 = GetRaceGrbit((PLAYER *)rgplr +
+           ((((TOK *)vrgtok)[itok].wFlags & 1) != 0)) {
+          sVar9 = GetRaceGrbit((PLAYER *)rgplr +
                                      ((TOK *)vrgtok)[itok].iplr,
                                      ibitRaceRegeneratingShields);
-          if (sVar7 != 0) {
+          if (sVar9 != 0) {
             RegenShield((TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok + itok));
           }
         }
@@ -5277,17 +5248,16 @@ short FDoCoolBattle
     if ((grplrLeft - 1 & grplrLeft) == 0) break;
     ptok = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
     for (itok = 0; itok < vctok; itok = itok + 1) {
-      uVar11 = (undefined2)((ulong)ptok >> 0x10);
-      pTVar10 = (TOK *)ptok;
-      if ((pTVar10->wFlags & 1U) != 0) {
-        if (pTVar10->field2_0x3 == '\x01') {
-          pTVar10->wFlags = pTVar10->wFlags & 0x3fff;
+      uVar13 = (undefined2)((ulong)ptok >> 0x10);
+      pTVar12 = (TOK *)ptok;
+      if ((pTVar12->wFlags & 1) != 0) {
+        if (*(char *)&pTVar12->u_TOK_0x0003 == '\x01') {
+          pTVar12->wFlags = pTVar12->wFlags & 0x3fff;
         }
         else {
-          sVar7 = DxyFromSpdRound((uint)pTVar10->wFlags >> 8 & 0xf,iRound);
-          lwt = CONCAT22(sVar7,(undefined2)lwt);
-          uVar11 = (undefined2)((ulong)ptok >> 0x10);
-          ((TOK *)ptok)->wFlags = ((TOK *)ptok)->wFlags & 0x3fffU | sVar7 << 0xe;
+          sVar9 = DxyFromSpdRound(pTVar12->wFlags_0x19 >> 8 & 0xf,iRound);
+          uVar13 = (undefined2)((ulong)ptok >> 0x10);
+          ((TOK *)ptok)->wFlags = ((TOK *)ptok)->wFlags & 0x3fff | sVar9 << 0xe;
         }
       }
       ptok = (TOK *)CONCAT22(ptok._2_2_,(TOK *)ptok + 1);
@@ -5299,70 +5269,65 @@ short FDoCoolBattle
         wtNext = 0;
         ptok = (TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok);
         for (itok = 0; itok < vctok; itok = itok + 1) {
-          uVar11 = (undefined2)((ulong)ptok >> 0x10);
-          pTVar10 = (TOK *)ptok;
-          if (((pTVar10->wFlags & 1U) == 0) || (pTVar10->wt == -1)) {
+          uVar13 = (undefined2)((ulong)ptok >> 0x10);
+          if (((((TOK *)ptok)->wFlags & 1) == 0) || (((TOK *)ptok)->wt == 0xffff)) {
             i = i + -1;
           }
           else {
-            uVar8 = (uint)pTVar10->wFlags >> 10 & 0xf;
-            lwt = CONCAT22(-(uint)(uVar8 < 7),uVar8 - 7);
-            lwt = __aFlshl(lVar16,(ushort)in_stack_0000fd74);
-            uVar15 = 0;
-            uVar11 = 100;
-            uVar13 = __aFulmul((ulong)(uint)((TOK *)ptok)->wt,lwt);
-            lVar14 = __aFldiv(uVar13,CONCAT22(uVar15,uVar11));
-            uVar11 = (undefined2)((ulong)ptok >> 0x10);
-            lwt = lVar14 + (ulong)(uint)((TOK *)ptok)->wt;
-            wtT = (ushort)lwt;
+            uVar16 = __aFlshl((long)_penvMemSav,in_stack_0000fd78);
+            uVar18 = 0;
+            uVar13 = 100;
+            uVar16 = __aFulmul((ulong)((TOK *)ptok)->wt,uVar16);
+            lVar17 = __aFldiv(uVar16,CONCAT22(uVar18,uVar13));
+            uVar13 = (undefined2)((ulong)ptok >> 0x10);
+            wtT = (int)lVar17 + ((TOK *)ptok)->wt;
             if ((wtNext < wtT) && (wtT < wt)) {
-              sVar7 = DxyFromSpdRound((uint)((TOK *)ptok)->wFlags >> 8 & 0xf,iRound);
-              if (sVar7 != 0) {
+              sVar9 = DxyFromSpdRound(((TOK *)ptok)->wFlags_0x19 >> 8 & 0xf,iRound);
+              if (sVar9 != 0) {
                 wtNext = wtT;
               }
             }
-            uVar11 = lpbBattleCur._2_2_;
-            pbVar6 = (byte *)lpbBattleCur;
+            uVar13 = lpbBattleCur._2_2_;
+            pbVar8 = (byte *)lpbBattleCur;
             if (wtT == wt) {
               i = i + -1;
-              uVar15 = (undefined2)((ulong)ptok >> 0x10);
-              pTVar10 = (TOK *)ptok;
-              if (j <= (int)((uint)pTVar10->wFlags >> 0xe)) {
+              uVar18 = (undefined2)((ulong)ptok >> 0x10);
+              pTVar12 = (TOK *)ptok;
+              if (j <= (int)(pTVar12->wFlags >> 0xe)) {
                 lpbtlrec = (BTLREC *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur)
                 ;
                 lpbBattleCur._0_2_ = (byte *)lpbBattleCur + 6;
                 lpbtlrec->itok = (byte)itok;
-                (pbVar6 + 2)[0] = 0;
-                (pbVar6 + 2)[1] = 0;
-                *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xff | itok << 8;
-                *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xfff0 | iRound & 0xfU;
-                uVar8 = (uint)pTVar10->wFlags >> 5;
-                local_27e = uVar8 & 0x1f;
-                *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xff0f | (uVar8 & 0xf) << 4;
+                (pbVar8 + 2)[0] = 0;
+                (pbVar8 + 2)[1] = 0;
+                *(uint *)(pbVar8 + 4) = *(uint *)(pbVar8 + 4) & 0xff | itok << 8;
+                *(uint *)(pbVar8 + 4) = *(uint *)(pbVar8 + 4) & 0xfff0 | iRound & 0xfU;
+                *(uint *)(pbVar8 + 4) =
+                     *(uint *)(pbVar8 + 4) & 0xff0f | (pTVar12->wFlags >> 5 & 0xf) << 4;
                 brcOrig = (ushort)((TOK *)vrgtok)[itok].brc;
-                if (((uint)pTVar10->wFlags >> 8 & 0xf) == 0) {
+                if ((pTVar12->wFlags_0x17 >> 8 & 0xf) == 0) {
                   brcOrig = 0xff;
-                  if (((uint)pTVar10->wFlags >> 5 & 0x1f) == 0) {
-                    pbVar6[1] = 0xff;
-                    pTVar10->wFlags = pTVar10->wFlags & 0xfffe;
+                  if ((pTVar12->wFlags >> 5 & 0x1f) == 0) {
+                    pbVar8[1] = 0xff;
+                    pTVar12->wFlags = pTVar12->wFlags & 0xfffe;
                     goto LAB_10f0_91a1;
                   }
-                  local_27e = pTVar10->wFlags - 0x20U & 0x3e0;
-                  pTVar10->wFlags = pTVar10->wFlags & 0xfc1f;
-                  pTVar10->wFlags = pTVar10->wFlags | local_27e;
+                  uVar3 = pTVar12->wFlags;
+                  pTVar12->wFlags = pTVar12->wFlags & 0xfc1f;
+                  pTVar12->wFlags = pTVar12->wFlags | uVar3 - 0x20 & 0x3e0;
                 }
-                DxyMoveTokTo(ptok,j,rggrfAttack[pTVar10->iplr]);
-                uVar11 = (undefined2)((ulong)ptok >> 0x10);
-                pTVar10 = (TOK *)ptok;
-                local_27e = pTVar10->wFlags + 0xc000U & 0xc000;
-                pTVar10->wFlags = pTVar10->wFlags & 0x3fff;
-                pTVar10->wFlags = pTVar10->wFlags | local_27e;
-                if ((pTVar10->field2_0x3 == '\x01') ||
-                   ((brcOrig == pTVar10->brc && (pTVar10->initMin != 0xff)))) {
+                DxyMoveTokTo(ptok,j,rggrfAttack[pTVar12->iplr]);
+                uVar13 = (undefined2)((ulong)ptok >> 0x10);
+                pTVar12 = (TOK *)ptok;
+                uVar3 = pTVar12->wFlags;
+                pTVar12->wFlags = pTVar12->wFlags & 0x3fff;
+                pTVar12->wFlags = pTVar12->wFlags | uVar3 + 0xc000 & 0xc000;
+                if ((*(char *)&pTVar12->u_TOK_0x0003 == '\x01') ||
+                   ((brcOrig == pTVar12->brc && (pTVar12->initMin != 0xff)))) {
                   lpbBattleCur._0_2_ = (byte *)lpbBattleCur + -6;
                 }
                 else {
-                  ((BTLREC *)lpbtlrec)->brcDest = pTVar10->brc;
+                  ((BTLREC *)lpbtlrec)->brcDest = pTVar12->brc;
                 }
               }
             }
@@ -5375,12 +5340,10 @@ LAB_10f0_91a1:
     }
     grplrLeft = 0;
     for (i = 0; i < vctok; i = i + 1) {
-      if ((((TOK *)vrgtok)[i].wFlags & 1U) != 0) {
-        uVar8 = Random(0xf);
-        local_27e = (uVar8 & 0xf) << 10;
-        lwt = CONCAT22(uVar8,local_27e);
-        local_27e = ((TOK *)vrgtok)[i].wFlags & 0xc3ffU | local_27e;
-        ((TOK *)vrgtok)[i].wFlags = local_27e;
+      if ((((TOK *)vrgtok)[i].wFlags & 1) != 0) {
+        uVar10 = Random(0xf);
+        ((TOK *)vrgtok)[i].wFlags =
+             ((TOK *)vrgtok)[i].wFlags & 0xc3ff | (uVar10 & 0xf) << 10;
         grplrLeft = grplrLeft | 1 << (((TOK *)vrgtok)[i].iplr & 0x1f);
       }
     }
@@ -5391,41 +5354,39 @@ LAB_10f0_91a1:
     }
     if ((grplrLeft - 1 & grplrLeft) == 0) break;
     for (init = initMac; initMin <= init; init = init + -1) {
-      iVar2 = vctok;
+      itok = vctok;
       if (rgfInit[init] != 0) {
-        while (uVar15 = vrgtok._2_2_, uVar11 = lpbBattleCur._2_2_,
-              pbVar6 = (byte *)lpbBattleCur, itok = iVar2 + -1, -1 < itok) {
-          iVar2 = itok;
+        while (uVar18 = vrgtok._2_2_, uVar13 = lpbBattleCur._2_2_,
+              pbVar8 = (byte *)lpbBattleCur, itok = itok + -1, -1 < itok) {
           if (((int)(uint)((TOK *)vrgtok)[itok].initMin <= init) &&
              (init <= (int)(uint)((TOK *)vrgtok)[itok].initMac)) {
             grplrLeft = 0;
             for (i = 0; i < vctok; i = i + 1) {
-              if ((((TOK *)vrgtok)[i].wFlags & 1U) != 0) {
+              if ((((TOK *)vrgtok)[i].wFlags & 1) != 0) {
                 grplrLeft = grplrLeft | 1 << (((TOK *)vrgtok)[i].iplr & 0x1f);
               }
             }
             if ((grplrLeft - 1 & grplrLeft) == 0) break;
-            pTVar10 = (TOK *)vrgtok + itok;
-            ptok = (TOK *)CONCAT22(vrgtok._2_2_,pTVar10);
-            if ((pTVar10->wFlags & 1U) != 0) {
+            pTVar12 = (TOK *)vrgtok + itok;
+            ptok = (TOK *)CONCAT22(vrgtok._2_2_,pTVar12);
+            if ((pTVar12->wFlags & 1) != 0) {
               lpbtlrec = (BTLREC *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur);
               lpbBattleCur._0_2_ = (byte *)lpbBattleCur + 6;
               lpbtlrec->itok = (byte)itok;
-              (pbVar6 + 2)[0] = 0;
-              (pbVar6 + 2)[1] = 0;
-              *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xfff0 | iRound & 0xfU;
-              pbVar6[1] = pTVar10->brc;
-              *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xff | itok * 0x100;
-              lwt = CONCAT22((uint)pTVar10->wFlags >> 5,(undefined2)lwt) & 0x1fffff;
-              *(uint *)(pbVar6 + 4) = *(uint *)(pbVar6 + 4) & 0xff0f | (lwt._2_2_ & 0xf) << 4;
-              sVar7 = FAttack(itok,init,(BTLREC *)CONCAT22(uVar11,pbVar6),rggrfAttack[pTVar10->iplr]
+              (pbVar8 + 2)[0] = 0;
+              (pbVar8 + 2)[1] = 0;
+              *(uint *)(pbVar8 + 4) = *(uint *)(pbVar8 + 4) & 0xfff0 | iRound & 0xfU;
+              pbVar8[1] = pTVar12->brc;
+              *(uint *)(pbVar8 + 4) = *(uint *)(pbVar8 + 4) & 0xff | itok * 0x100;
+              *(uint *)(pbVar8 + 4) =
+                   *(uint *)(pbVar8 + 4) & 0xff0f | (pTVar12->wFlags >> 5 & 0xf) << 4;
+              sVar9 = FAttack(itok,init,(BTLREC *)CONCAT22(uVar13,pbVar8),rggrfAttack[pTVar12->iplr]
                              );
-              iVar2 = itok;
-              if (sVar7 == 0) {
+              if (sVar9 == 0) {
                 lpbBattleCur._0_2_ = (byte *)lpbBattleCur + -6;
               }
               else {
-                uVar11 = (undefined2)((ulong)ptok >> 0x10);
+                uVar13 = (undefined2)((ulong)ptok >> 0x10);
                 ((TOK *)ptok)->wFlags = ((TOK *)ptok)->wFlags & 0xffef;
               }
             }
@@ -5438,33 +5399,31 @@ LAB_10f0_91a1:
   ((BTLDATA *)lpbtldata)->cbData = (int)(byte *)lpbBattleCur - (int)(BTLDATA *)lpbtldata;
   SendBattleMessages(lpfl,cplr,lpbtldata->id,rgPlrLosses,grfPlayer,cShipsInvolved,cShdefsInvolved,
                      grfSpectator);
-  uVar11 = (undefined2)((ulong)lpbtldata >> 0x10);
-  pBVar9 = (BTLDATA *)lpbtldata;
-  pBVar9->grfPlr = grfPlayer;
-  lwt = CONCAT22(-(uint)((byte *)0xffc8 < (byte *)lpbSav),-(int)(byte *)lpbSav - 0x38U);
-  if ((-(uint)((byte *)0xffc8 < (byte *)lpbSav) == 0) &&
-     (-(int)(byte *)lpbSav - 0x38U < (uint)pBVar9->cbData)) {
+  uVar13 = (undefined2)((ulong)lpbtldata >> 0x10);
+  pBVar11 = (BTLDATA *)lpbtldata;
+  pBVar11->grfPlr = grfPlayer;
+  if (((byte *)lpbSav < (byte *)0xffc9) && (-(int)(byte *)lpbSav - 0x38U < pBVar11->cbData)) {
     lpbSav[0] = 0xff;
     lpbSav[1] = 0xff;
     lpbBattleT = (byte *)0x0;
   }
   else {
-    __fmemmove(lpbSav,lpbtldata,pBVar9->cbData);
+    __fmemmove(lpbSav,lpbtldata,pBVar11->cbData);
     lpbBattleCur._0_2_ = (byte *)lpbSav + ((BTLDATA *)lpbtldata)->cbData;
     lpbBattleCur._2_2_ = lpbSav._2_2_;
   }
-  sVar7 = 1;
-  pbVar3 = lpbBattleLog;
-  pbVar12 = lpbBattleT;
-  pbVar5 = (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur);
+  sVar9 = 1;
+  pbVar4 = lpbBattleLog;
+  pbVar14 = lpbBattleT;
+  pbVar6 = (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur);
 LAB_10f0_9911:
-  lpbBattleCur._2_2_ = (undefined2)((ulong)pbVar5 >> 0x10);
-  lpbBattleCur._0_2_ = (byte *)pbVar5;
-  lpbBattleT._2_2_ = (int)((ulong)pbVar12 >> 0x10);
-  lpbBattleT._0_2_ = (byte *)pbVar12;
-  lpbBattleLog._2_2_ = (undefined2)((ulong)pbVar3 >> 0x10);
-  lpbBattleLog._0_2_ = (byte *)pbVar3;
-  return sVar7;
+  lpbBattleCur._2_2_ = (undefined2)((ulong)pbVar6 >> 0x10);
+  lpbBattleCur._0_2_ = (byte *)pbVar6;
+  lpbBattleT._2_2_ = (int)((ulong)pbVar14 >> 0x10);
+  lpbBattleT._0_2_ = (byte *)pbVar14;
+  lpbBattleLog._2_2_ = (undefined2)((ulong)pbVar4 >> 0x10);
+  lpbBattleLog._0_2_ = (byte *)pbVar4;
+  return sVar9;
 }
 
 
@@ -5483,22 +5442,19 @@ short ITechLearnATech(short iplr,short x,short y,MessageId idm,ushort *piGoto)
   uint uVar2;
   short sVar3;
   short sVar4;
-  uint *puVar5;
-  undefined2 unaff_SI;
-  undefined2 unaff_DI;
-  long lVar6;
-  ulong uVar7;
-  undefined4 uVar8;
+  int iVar5;
+  ushort uVar6;
+  uint *puVar7;
+  long lVar8;
   long lVar9;
-  ushort in_stack_0000ffec;
-  uint l;
-  int local_e;
+  ulong uVar10;
+  undefined4 uVar11;
+  uint uVar12;
   short iTech;
   short i;
   short fBattle;
   ushort iGoto;
   
-  lVar9 = CONCAT22(unaff_SI,unaff_DI);
   if (((*(uint *)((int)&rgplr[0].wFlags + iplr * 0xc0) >> 3 & 1) == 0) &&
      (sVar3 = Random(100), 0x31 < sVar3)) {
     for (i = 0; i < 0xd; i = i + 1) {
@@ -5522,29 +5478,33 @@ short ITechLearnATech(short iplr,short x,short y,MessageId idm,ushort *piGoto)
     }
     for (i = 0; i < 6; i = i + 1) {
       sVar3 = Random(6);
-      if ((int)*(char *)(iplr * 0xc0 + 0x59bc + sVar3) <
-          (int)(uint)((byte *)rgTechBattle)[sVar3]) {
-        lVar6 = GetTechLevelCost(sVar3,*(char *)(iplr * 0xc0 + 0x59bc + sVar3) + 1,iplr);
-        if (((uint)game.wCrap >> 1 & 1) != 0) {
-          lVar6 = __aFlshr(lVar9,in_stack_0000ffec);
+      iVar5 = (int)*(char *)(iplr * 0xc0 + 0x59bc + sVar3);
+      if (iVar5 < (int)(uint)((byte *)rgTechBattle)[sVar3]) {
+        lVar8 = GetTechLevelCost(sVar3,*(char *)(iplr * 0xc0 + 0x59bc + sVar3) + 1,iplr);
+        uVar6 = (ushort)((ulong)lVar8 >> 0x10);
+        lVar8 = CONCAT22((int)lVar8,iVar5);
+        if ((game.wCrap >> 1 & 1) != 0) {
+          lVar8 = __aFlshr(lVar8,uVar6);
+          uVar6 = (ushort)((ulong)lVar8 >> 0x10);
+          lVar8 = lVar8 << 0x10;
         }
-        local_e = (int)((ulong)lVar6 >> 0x10);
-        l = (uint)lVar6;
-        puVar5 = (uint *)(iplr * 0xc0 + 0x59c2 + sVar3 * 4);
-        puVar1 = puVar5;
+        uVar12 = (uint)((ulong)lVar8 >> 0x10);
+        lVar8 = CONCAT22(uVar12,uVar6);
+        puVar7 = (uint *)(iplr * 0xc0 + 0x59c2 + sVar3 * 4);
+        puVar1 = puVar7;
         uVar2 = *puVar1;
-        *puVar1 = *puVar1 + l;
-        puVar1 = puVar5 + 1;
-        *puVar1 = *puVar1 + local_e + (uint)CARRY2(uVar2,l);
+        *puVar1 = *puVar1 + uVar12;
+        puVar1 = puVar7 + 1;
+        *puVar1 = *puVar1 + uVar6 + (uint)CARRY2(uVar2,uVar12);
         if (idm != ~idmColonistsDroppedMassacredGroundTroops) {
-          if (((uint)game.wCrap >> 1 & 1) != 0) {
-            lVar6 = __aFlshl(lVar9,l);
+          if ((game.wCrap >> 1 & 1) != 0) {
+            lVar9 = __aFlshl(lVar8,uVar6);
+            lVar8 = CONCAT22((int)lVar9,(int)lVar8);
           }
-          uVar8 = 0;
-          uVar7 = __aFulshr(0,(ushort)lVar9);
-          l = (uint)lVar6;
-          FSendPlrMsg(iplr,idm,-2,x,y,sVar3,l,(short)uVar7,(short)uVar8,
-                           (short)((ulong)uVar8 >> 0x10));
+          uVar11 = 0;
+          uVar10 = __aFulshr(0,(ushort)lVar8);
+          FSendPlrMsg(iplr,idm,-2,x,y,sVar3,(short)((ulong)lVar8 >> 0x10),(short)uVar10,
+                           (short)uVar11,(short)((ulong)uVar11 >> 0x10));
         }
         else if (piGoto != (ushort *)0x0) {
           *piGoto = 0xfffe;
@@ -5580,13 +5540,13 @@ void SendBattleMessages
   short sVar4;
   uint uVar5;
   FLEET *pFVar6;
-  ushort unaff_DI;
+  ushort unaff_SI;
   undefined2 uVar7;
   ulong uVar8;
   undefined4 uVar9;
   short x;
   short cThem;
-  uint *pwUs;
+  ushort *pwUs;
   short iThem;
   short cUsDead;
   short j;
@@ -5597,10 +5557,10 @@ void SendBattleMessages
   short y;
   short cUs;
   short fAlive;
-  uint *pwThem;
+  ushort *pwThem;
   PLANET *lppl;
   short isb;
-  uint *pw;
+  ushort *pw;
   uint lpopStarbase;
   int local_1a;
   undefined1 rgcfl [16];
@@ -5624,8 +5584,8 @@ void SendBattleMessages
     pPVar2 = (PLANET *)lppl;
     iThem = pPVar2->iPlayer;
     if (iThem != -1) {
-      if ((((uint)pPVar2->wFlags >> 9 & 1) != 0) || (fStarbaseDied != 0)) {
-        isb = *(uint *)&pPVar2->field11_0x2c & 0xf;
+      if (((pPVar2->wFlags_0x4 >> 9 & 1) != 0) || (fStarbaseDied != 0)) {
+        isb = *(uint *)&pPVar2->lStarbase & 0xf;
         iplrStarbase = iThem;
       }
       if ((fStarbaseDied != 0) &&
@@ -5642,7 +5602,7 @@ void SendBattleMessages
   do {
     uVar7 = (undefined2)((ulong)lpfl >> 0x10);
     pFVar6 = (FLEET *)lpfl;
-    if (((uint)pFVar6->wFlags >> 10 & 1) == 0) {
+    if ((pFVar6->wFlags_0x4 >> 10 & 1) == 0) {
       for (i = 0; i < 0x10; i = i + 1) {
         if (0 < pFVar6->rgcsh[i]) {
           rgPlrLosses[pFVar6->iPlayer * 0x10 + i] = rgPlrLosses[pFVar6->iPlayer * 0x10 + i] | 0x4000
@@ -5692,15 +5652,16 @@ LAB_10f0_ad23:
         while( true ) {
           uVar7 = (undefined2)((ulong)lpfl >> 0x10);
           pFVar6 = (FLEET *)lpfl;
-          if ((pFVar6->iPlayer == iplr) && (((uint)pFVar6->wFlags >> 7 & 1) != 0)) break;
+          if ((pFVar6->iPlayer == iplr) && ((*(uint *)((int)&pFVar6->dirLong + 2) >> 7 & 1) != 0))
+          break;
                     /* WARNING: Load size is inaccurate */
           iVar1 = *(int *)((int)&pFVar6->lpflNext + 2);
           lpfl = (FLEET *)CONCAT22(iVar1,pFVar6->lpflNext);
           if ((lpflBtl == lpfl) || ((pFVar6->lpflNext == (FLEET *)0x0 && (iVar1 == 0)))) break;
         }
         if ((((FLEET *)lpfl != (FLEET *)0x0) || (lpfl._2_2_ != 0)) &&
-           ((((FLEET *)lpfl)->iPlayer == iplr && (((uint)((FLEET *)lpfl)->wFlags >> 7 & 1) != 0))))
-        {
+           ((((FLEET *)lpfl)->iPlayer == iplr &&
+            ((*(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) >> 7 & 1) != 0)))) {
           FSendPlrMsg2(iplr,idmDueExcessiveFleetManeuveringBattleAreaFleets,lpfl->id | 0x8000,x
                             ,y);
         }
@@ -5713,8 +5674,8 @@ LAB_10f0_ad23:
          sVar4 != raMacintosh)) {
         if (cplr == 2) {
           if (cShipsInvolved == 2) {
-            pwThem = (uint *)0x0;
-            pwUs = (uint *)0x0;
+            pwThem = (ushort *)0x0;
+            pwUs = (ushort *)0x0;
             pw = rgPlrLosses;
             for (i = 0; i < 0x10; i = i + 1) {
               for (j = 0; j < 0x10; j = j + 1) {
@@ -5729,10 +5690,10 @@ LAB_10f0_ad23:
                 pw = pw + 1;
               }
             }
-            if (((pwUs == (uint *)0x0) && (fStarbaseDied != 0)) ||
-               ((pwUs != (uint *)0x0 && ((*pwUs & 0x3fff) != 0)))) {
-              if (((pwThem == (uint *)0x0) && (fStarbaseDamaged != 0)) ||
-                 ((pwThem != (uint *)0x0 && ((*pwThem & 0x8000) != 0)))) {
+            if (((pwUs == (ushort *)0x0) && (fStarbaseDied != 0)) ||
+               ((pwUs != (ushort *)0x0 && ((*pwUs & 0x3fff) != 0)))) {
+              if (((pwThem == (ushort *)0x0) && (fStarbaseDamaged != 0)) ||
+                 ((pwThem != (ushort *)0x0 && ((*pwThem & 0x8000) != 0)))) {
                 idm = 0x94;
               }
               else {
@@ -5740,10 +5701,10 @@ LAB_10f0_ad23:
               }
               bVar3 = false;
             }
-            else if (((pwThem == (uint *)0x0) && (fStarbaseDied != 0)) ||
-                    ((pwThem != (uint *)0x0 && ((*pwThem & 0x3fff) != 0)))) {
-              if (((pwUs == (uint *)0x0) && (fStarbaseDamaged != 0)) ||
-                 ((pwUs != (uint *)0x0 && ((*pwUs & 0x8000) != 0)))) {
+            else if (((pwThem == (ushort *)0x0) && (fStarbaseDied != 0)) ||
+                    ((pwThem != (ushort *)0x0 && ((*pwThem & 0x3fff) != 0)))) {
+              if (((pwUs == (ushort *)0x0) && (fStarbaseDamaged != 0)) ||
+                 ((pwUs != (ushort *)0x0 && ((*pwUs & 0x8000) != 0)))) {
                 idm = 0x93;
               }
               else {
@@ -5753,14 +5714,14 @@ LAB_10f0_ad23:
             else {
               idm = 0x95;
             }
-            if (pwUs == (uint *)0x0) {
+            if (pwUs == (ushort *)0x0) {
               i = iplrStarbase << 5 | isb + 0x10U;
             }
             else {
               uVar5 = (int)pwUs - (int)rgPlrLosses >> 1;
               i = (uVar5 & 0xf0) << 1 | uVar5 & 0xf;
             }
-            if (pwThem == (uint *)0x0) {
+            if (pwThem == (ushort *)0x0) {
               j = iplrStarbase << 5 | isb + 0x10U;
             }
             else {
@@ -5777,8 +5738,8 @@ LAB_10f0_ad23:
           }
           else {
             if (cShdefsInvolved != 2) goto BATTLE_CommonCountingCode;
-            pwThem = (uint *)0x0;
-            pwUs = (uint *)0x0;
+            pwThem = (ushort *)0x0;
+            pwUs = (ushort *)0x0;
             pw = rgPlrLosses;
             for (i = 0; i < 0x10; i = i + 1) {
               for (j = 0; j < 0x10; j = j + 1) {
@@ -5793,10 +5754,10 @@ LAB_10f0_ad23:
                 pw = pw + 1;
               }
             }
-            if (((pwUs == (uint *)0x0) && (fStarbaseDied != 0)) ||
-               ((pwUs != (uint *)0x0 && ((*pwUs & 0x4000) == 0)))) {
-              if (((pwThem == (uint *)0x0) && (fStarbaseDamaged != 0)) ||
-                 ((pwThem != (uint *)0x0 && ((*pwThem & 0x8000) != 0)))) {
+            if (((pwUs == (ushort *)0x0) && (fStarbaseDied != 0)) ||
+               ((pwUs != (ushort *)0x0 && ((*pwUs & 0x4000) == 0)))) {
+              if (((pwThem == (ushort *)0x0) && (fStarbaseDamaged != 0)) ||
+                 ((pwThem != (ushort *)0x0 && ((*pwThem & 0x8000) != 0)))) {
                 idm = 0x99;
               }
               else {
@@ -5804,10 +5765,10 @@ LAB_10f0_ad23:
               }
               bVar3 = false;
             }
-            else if (((pwThem == (uint *)0x0) && (fStarbaseDied != 0)) ||
-                    ((pwThem != (uint *)0x0 && ((*pwThem & 0x4000) == 0)))) {
-              if (((pwUs == (uint *)0x0) && (fStarbaseDamaged != 0)) ||
-                 ((pwUs != (uint *)0x0 && ((*pwUs & 0x8000) != 0)))) {
+            else if (((pwThem == (ushort *)0x0) && (fStarbaseDied != 0)) ||
+                    ((pwThem != (ushort *)0x0 && ((*pwThem & 0x4000) == 0)))) {
+              if (((pwUs == (ushort *)0x0) && (fStarbaseDamaged != 0)) ||
+                 ((pwUs != (ushort *)0x0 && ((*pwUs & 0x8000) != 0)))) {
                 idm = 0x98;
               }
               else {
@@ -5817,13 +5778,13 @@ LAB_10f0_ad23:
             else {
               idm = 0x9a;
             }
-            if (pwUs == (uint *)0x0) {
+            if (pwUs == (ushort *)0x0) {
               cUs = 1;
             }
             else {
               cUs = *pwUs & 0x1fff;
             }
-            if (pwThem == (uint *)0x0) {
+            if (pwThem == (ushort *)0x0) {
               cThem = 1;
             }
             else {
@@ -5833,13 +5794,13 @@ LAB_10f0_ad23:
             do {
               uVar7 = (undefined2)((ulong)lpfl >> 0x10);
               pFVar6 = (FLEET *)lpfl;
-              if (((uint)pFVar6->wFlags >> 10 & 1) == 0) {
-                if ((pFVar6->iPlayer == iplr) && (pwUs != (uint *)0x0)) {
+              if ((pFVar6->wFlags_0x4 >> 10 & 1) == 0) {
+                if ((pFVar6->iPlayer == iplr) && (pwUs != (ushort *)0x0)) {
                   cUs = cUs + *(int *)((int)pFVar6 +
                                       (((int)pwUs - (int)rgPlrLosses >> 1) + pFVar6->iPlayer * -0x10
                                       ) * 2 + 0xc);
                 }
-                else if (pwThem != (uint *)0x0) {
+                else if (pwThem != (ushort *)0x0) {
                   cThem = cThem + *(int *)((int)pFVar6 +
                                           (((int)pwThem - (int)rgPlrLosses >> 1) +
                                           pFVar6->iPlayer * -0x10) * 2 + 0xc);
@@ -5849,14 +5810,14 @@ LAB_10f0_ad23:
               iVar1 = *(int *)((int)&pFVar6->lpflNext + 2);
               lpfl = (FLEET *)CONCAT22(iVar1,pFVar6->lpflNext);
             } while ((lpflBtl != lpfl) && ((pFVar6->lpflNext != (FLEET *)0x0 || (iVar1 != 0))));
-            if (pwUs == (uint *)0x0) {
+            if (pwUs == (ushort *)0x0) {
               i = iplrStarbase << 5 | isb + 0x10U;
             }
             else {
               uVar5 = (int)pwUs - (int)rgPlrLosses >> 1;
               i = (uVar5 & 0xf0) << 1 | uVar5 & 0xf;
             }
-            if (pwThem == (uint *)0x0) {
+            if (pwThem == (ushort *)0x0) {
               j = iplrStarbase << 5 | isb + 0x10U;
             }
             else {
@@ -5908,7 +5869,7 @@ BATTLE_CommonCountingCode:
           do {
             uVar7 = (undefined2)((ulong)lpfl >> 0x10);
             pFVar6 = (FLEET *)lpfl;
-            if (((uint)pFVar6->wFlags >> 10 & 1) == 0) {
+            if ((pFVar6->wFlags_0x4 >> 10 & 1) == 0) {
               if (pFVar6->iPlayer == iplr) {
                 for (i = 0; i < 0x10; i = i + 1) {
                   cUs = cUs + pFVar6->rgcsh[i];
@@ -6070,7 +6031,7 @@ BATTLE_IndecisiveXWay:
         }
         j = iplrStarbase << 5 | isb + 0x10U;
         uVar9 = 0;
-        uVar8 = __aFulshr(0,unaff_DI);
+        uVar8 = __aFulshr(0,unaff_SI);
         FSendPlrMsg(iplr,idm,idBtl | 0x4000,x,y,j,lpopStarbase,(short)uVar8,(short)uVar9,
                          (short)((ulong)uVar9 >> 0x10));
       }
@@ -6099,7 +6060,7 @@ short FAttackPlayer(FLEET *lpfl,short iplr)
   
   uVar3 = (undefined2)((ulong)lpfl >> 0x10);
   iVar1 = ((FLEET *)lpfl)->iPlayer;
-  uVar2 = (uint)((BTLPLAN **)rglpbtlplan)[iVar1 * 2][((FLEET *)lpfl)->iplan].wFlags >> 8 &
+  uVar2 = ((BTLPLAN **)rglpbtlplan)[iVar1 * 2][((FLEET *)lpfl)->iplan].wFlags_0x2 >> 8 &
           0x1f;
   if (uVar2 == 0) {
     uVar2 = 0;
@@ -6159,36 +6120,34 @@ short FAttackPlayer(FLEET *lpfl,short iplr)
 void DoBombing(void)
 
 {
-  int *piVar1;
-  uint *puVar2;
-  undefined2 *puVar3;
-  FLEET *pFVar4;
-  int iVar5;
-  qword qVar6;
-  short sVar7;
+  uint *puVar1;
+  int *piVar2;
+  FLEET *pFVar3;
+  int iVar4;
+  qword qVar5;
+  short sVar6;
+  uint uVar7;
   uint uVar8;
-  uint uVar9;
-  uint uVar10;
-  MessageId MVar11;
-  int iVar12;
-  PLANET *pPVar13;
-  char *pcVar14;
-  char *pcVar15;
+  MessageId MVar9;
+  int iVar10;
+  PLANET *pPVar11;
+  char *pcVar12;
+  char *pcVar13;
   undefined2 unaff_SI;
   ushort unaff_DI;
-  undefined2 uVar16;
-  bool bVar17;
-  long lVar18;
-  ulong uVar19;
-  ulong uVar20;
-  long lVar21;
+  undefined2 uVar14;
+  bool bVar15;
+  long lVar16;
+  ulong uVar17;
+  ulong uVar18;
+  long lVar19;
+  undefined2 uVar20;
+  short sVar21;
   undefined2 uVar22;
   short sVar23;
-  undefined2 uVar24;
-  short sVar25;
   uint in_stack_0000ffa4;
   int in_stack_0000ffa6;
-  undefined8 pctSuccessHalf;
+  double pctSuccessHalf;
   long dmgPeopleSmart;
   float pctSuccess;
   float pctSmart;
@@ -6216,70 +6175,70 @@ void DoBombing(void)
       return;
     }
                     /* WARNING: Load size is inaccurate */
-    pFVar4 = ((FLEET **)rglpfl)[ifl];
-    iVar5 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
-    lpfl = (FLEET *)CONCAT22(iVar5,pFVar4);
-    if ((pFVar4 == (FLEET *)0x0) && (iVar5 == 0)) {
+    pFVar3 = ((FLEET **)rglpfl)[ifl];
+    iVar4 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
+    lpfl = (FLEET *)CONCAT22(iVar4,pFVar3);
+    if ((pFVar3 == (FLEET *)0x0) && (iVar4 == 0)) {
       return;
     }
-    if (((((uint)pFVar4->wFlags >> 10 & 1) == 0) && (pFVar4->idPlanet != -1)) &&
-       (((uint)pFVar4->wFlags >> 0xc & 1) == 0)) {
-      pPVar13 = (PLANET *)lpPlanets + pFVar4->idPlanet;
-      lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,pPVar13);
-      if ((pPVar13->iPlayer != pFVar4->iPlayer) && (pPVar13->iPlayer != -1)) {
-        sVar7 = FAttackPlayer((FLEET *)CONCAT22(iVar5,pFVar4),pPVar13->iPlayer);
-        if ((sVar7 != 0) && (((uint)((PLANET *)lppl)->wFlags >> 9 & 1) == 0)) {
-          sVar7 = FCalcFleetBombDamage
+    if ((((pFVar3->wFlags_0x4 >> 10 & 1) == 0) && (pFVar3->idPlanet != -1)) &&
+       ((pFVar3->wFlags_0x4 >> 0xc & 1) == 0)) {
+      pPVar11 = (PLANET *)lpPlanets + pFVar3->idPlanet;
+      lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,pPVar11);
+      if ((pPVar11->iPlayer != pFVar3->iPlayer) && (pPVar11->iPlayer != -1)) {
+        sVar6 = FAttackPlayer((FLEET *)CONCAT22(iVar4,pFVar3),pPVar11->iPlayer);
+        if ((sVar6 != 0) && ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) == 0)) {
+          sVar6 = FCalcFleetBombDamage
                             (lpfl,&dmgBombPeople,&dmgBombFloor,&dmgPeopleSmart,&dmgBombBldg,
                              &pctTerra,&fMulti);
-          if (sVar7 != 0) {
+          if (sVar6 != 0) {
             CalcPctSurvive(lppl,&pctSuccess,&pctSmart);
-            bVar17 = (undefined1 *)0xfff7 < &stack0xff98;
+            bVar15 = (undefined1 *)0xfff7 < &stack0xff98;
             __aFfcompp();
-            if (bVar17) {
-              lVar21 = dmgBombFloor;
+            if (bVar15) {
+              lVar19 = dmgBombFloor;
               if (0 < dmgBombPeople) {
-                lVar21 = __ftol((double)CONCAT26(in_stack_0000ffa6,
+                lVar19 = __ftol((double)CONCAT26(in_stack_0000ffa6,
                                                          CONCAT24(in_stack_0000ffa4,
                                                                   CONCAT22(unaff_SI,unaff_DI))));
-                dmgBombPeople = lVar21;
-                lVar21 = dmgBombFloor;
+                dmgBombPeople = lVar19;
+                lVar19 = dmgBombFloor;
               }
-              lVar18 = dmgPeopleSmart;
-              if (0 < lVar21) {
-                dmgBombFloor = lVar21;
-                lVar21 = __ftol((double)CONCAT26(in_stack_0000ffa6,
+              lVar16 = dmgPeopleSmart;
+              if (0 < lVar19) {
+                dmgBombFloor = lVar19;
+                lVar19 = __ftol((double)CONCAT26(in_stack_0000ffa6,
                                                          CONCAT24(in_stack_0000ffa4,
                                                                   CONCAT22(unaff_SI,unaff_DI))));
-                lVar18 = dmgPeopleSmart;
+                lVar16 = dmgPeopleSmart;
               }
-              if (0 < lVar18) {
-                dmgBombFloor = lVar21;
-                dmgPeopleSmart = lVar18;
-                lVar18 = __ftol((double)CONCAT26(in_stack_0000ffa6,
+              if (0 < lVar16) {
+                dmgBombFloor = lVar19;
+                dmgPeopleSmart = lVar16;
+                lVar16 = __ftol((double)CONCAT26(in_stack_0000ffa6,
                                                          CONCAT24(in_stack_0000ffa4,
                                                                   CONCAT22(unaff_SI,unaff_DI))));
-                lVar21 = dmgBombFloor;
+                lVar19 = dmgBombFloor;
               }
-              dmgPeopleSmart = lVar18;
-              dmgBombFloor = lVar21;
+              dmgPeopleSmart = lVar16;
+              dmgBombFloor = lVar19;
               if (0 < dmgBombBldg) {
-                lVar21 = __ftol((double)CONCAT26(in_stack_0000ffa6,
+                lVar19 = __ftol((double)CONCAT26(in_stack_0000ffa6,
                                                          CONCAT24(in_stack_0000ffa4,
                                                                   CONCAT22(unaff_SI,unaff_DI))));
-                dmgBombBldg = lVar21;
+                dmgBombBldg = lVar19;
               }
             }
-            uVar10 = *(uint *)&((PLANET *)lppl)->dwFlags & 0xfff;
-            uVar19 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-            in_stack_0000ffa4 = (uint)uVar19 & 0xfff;
+            pctSuccessHalf._0_2_ = *(uint *)(((PLANET *)lppl)->rgbImp + 4) & 0xfff;
+            uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+            in_stack_0000ffa4 = (uint)uVar17 & 0xfff;
             in_stack_0000ffa6 = 0;
-            uVar19 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-            uVar8 = (uint)uVar19 & 0xfff;
-            uVar9 = uVar8 + in_stack_0000ffa4;
-            cPPE._0_2_ = uVar9 + uVar10;
-            cPPE._2_2_ = in_stack_0000ffa6 + (uint)CARRY2(uVar8,in_stack_0000ffa4) +
-                         (uint)CARRY2(uVar9,uVar10);
+            uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+            uVar7 = (uint)uVar17 & 0xfff;
+            uVar8 = uVar7 + in_stack_0000ffa4;
+            cPPE._0_2_ = uVar8 + pctSuccessHalf._0_2_;
+            cPPE._2_2_ = in_stack_0000ffa6 + (uint)CARRY2(uVar7,in_stack_0000ffa4) +
+                         (uint)CARRY2(uVar8,pctSuccessHalf._0_2_);
             cKillDefenses._0_2_ = 0;
             cKillDefenses._2_2_ = 0;
             cKillDefenses = 0;
@@ -6287,269 +6246,266 @@ void DoBombing(void)
             cKillPeople._2_2_ = 0;
             cKillMine._0_2_ = 0;
             cKillMine._2_2_ = 0;
-            uVar19 = 0;
+            uVar17 = 0;
             cKillFact._0_2_ = 0;
             cKillFact._2_2_ = 0;
             cKillFact = 0;
             if (((0 < dmgBombBldg) &&
-                (cKillFact = 0, cKillDefenses = 0, uVar19 = 0, -1 < cPPE._2_2_)) &&
-               ((0 < cPPE._2_2_ || (cKillFact = 0, cKillDefenses = 0, uVar19 = 0, (int)cPPE != 0))))
+                (cKillFact = 0, cKillDefenses = 0, uVar17 = 0, -1 < cPPE._2_2_)) &&
+               ((0 < cPPE._2_2_ || (cKillFact = 0, cKillDefenses = 0, uVar17 = 0, (int)cPPE != 0))))
             {
-              uVar19 = dmgBombBldg;
-              uVar20 = __aFulshr(dmgBombBldg,unaff_DI);
-              cKillFact = __aFulmul((ulong)((uint)uVar20 & 0xfff),uVar19);
-              lVar21 = __aFlrem(cKillFact,CONCAT22(cPPE._2_2_,(int)cPPE));
-              modKill = lVar21;
-              uVar19 = __aFldiv(cKillFact,CONCAT22(cPPE._2_2_,(int)cPPE));
+              uVar17 = dmgBombBldg;
+              uVar18 = __aFulshr(dmgBombBldg,unaff_DI);
+              cKillFact = __aFulmul((ulong)((uint)uVar18 & 0xfff),uVar17);
+              lVar19 = __aFlrem(cKillFact,CONCAT22(cPPE._2_2_,(int)cPPE));
+              modKill = lVar19;
+              uVar17 = __aFldiv(cKillFact,CONCAT22(cPPE._2_2_,(int)cPPE));
               if (0 < modKill) {
-                cKillFact = uVar19;
-                sVar7 = Random((int)cPPE);
-                uVar19 = cKillFact + (sVar7 < modKill);
+                cKillFact = uVar17;
+                sVar6 = Random((int)cPPE);
+                uVar17 = cKillFact + (sVar6 < modKill);
               }
-              cKillFact = uVar19;
-              uVar19 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+              cKillFact = uVar17;
+              uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
               if ((-1 < (long)cKillFact) &&
-                 ((0xffff < (long)cKillFact || (((uint)uVar19 & 0xfff) < (uint)cKillFact)))) {
-                uVar19 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-                cKillFact = (ulong)((uint)uVar19 & 0xfff);
+                 ((0xffff < (long)cKillFact || (((uint)uVar17 & 0xfff) < (uint)cKillFact)))) {
+                uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+                cKillFact = (ulong)((uint)uVar17 & 0xfff);
               }
               cKillDefenses =
-                   __aFulmul((ulong)(*(uint *)&((PLANET *)lppl)->dwFlags & 0xfff),
+                   __aFulmul((ulong)(*(uint *)(((PLANET *)lppl)->rgbImp + 4) & 0xfff),
                                      dmgBombBldg);
-              lVar21 = __aFlrem(cKillDefenses,CONCAT22(cPPE._2_2_,(int)cPPE));
-              modKill = lVar21;
-              uVar19 = __aFldiv(cKillDefenses,CONCAT22(cPPE._2_2_,(int)cPPE));
+              lVar19 = __aFlrem(cKillDefenses,CONCAT22(cPPE._2_2_,(int)cPPE));
+              modKill = lVar19;
+              uVar17 = __aFldiv(cKillDefenses,CONCAT22(cPPE._2_2_,(int)cPPE));
               if (0 < modKill) {
-                cKillDefenses = uVar19;
-                sVar7 = Random((int)cPPE);
-                uVar19 = cKillDefenses + (sVar7 < modKill);
+                cKillDefenses = uVar17;
+                sVar6 = Random((int)cPPE);
+                uVar17 = cKillDefenses + (sVar6 < modKill);
               }
-              cKillDefenses._0_2_ = (uint)uVar19;
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              if ((-1 < (long)uVar19) &&
-                 ((0xffff < (long)uVar19 ||
-                  ((*(uint *)&((PLANET *)lppl)->dwFlags & 0xfff) < (uint)cKillDefenses)))) {
-                uVar19 = (ulong)(*(uint *)&((PLANET *)lppl)->dwFlags & 0xfff);
+              cKillDefenses._0_2_ = (uint)uVar17;
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              if ((-1 < (long)uVar17) &&
+                 ((0xffff < (long)uVar17 ||
+                  ((*(uint *)(((PLANET *)lppl)->rgbImp + 4) & 0xfff) < (uint)cKillDefenses)))) {
+                uVar17 = (ulong)(*(uint *)(((PLANET *)lppl)->rgbImp + 4) & 0xfff);
               }
-              cKillMine = dmgBombBldg - (cKillFact + uVar19);
-              cKillDefenses = uVar19;
-              uVar20 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-              uVar19 = cKillMine;
+              cKillMine = dmgBombBldg - (cKillFact + uVar17);
+              cKillDefenses = uVar17;
+              uVar18 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+              uVar17 = cKillMine;
               if ((-1 < (long)cKillMine) &&
-                 ((0xffff < (long)cKillMine || (((uint)uVar20 & 0xfff) < (uint)cKillMine)))) {
-                uVar19 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-                uVar19 = (ulong)((uint)uVar19 & 0xfff);
+                 ((0xffff < (long)cKillMine || (((uint)uVar18 & 0xfff) < (uint)cKillMine)))) {
+                uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+                uVar17 = (ulong)((uint)uVar17 & 0xfff);
               }
             }
             if (((0 < dmgBombPeople) || (0 < dmgBombFloor)) ||
-               (lVar21 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople), 0 < dmgPeopleSmart)) {
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              pPVar13 = (PLANET *)lppl;
-              iVar5 = *(int *)((int)pPVar13->rgwtMin + 0xe);
-              lVar21 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople);
-              if ((-1 < iVar5) &&
-                 ((0 < iVar5 ||
-                  (lVar21 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople),
-                  (int)pPVar13->rgwtMin[3] != 0)))) {
-                uVar24 = 0;
-                uVar22 = 1000;
-                cKillMine = uVar19;
-                uVar19 = __aFulmul(CONCAT22(*(undefined2 *)((int)pPVar13->rgwtMin + 0xe),
-                                                    (int)pPVar13->rgwtMin[3]),dmgPeopleSmart);
-                lVar21 = __aFldiv(uVar19,CONCAT22(uVar24,uVar22));
-                uVar16 = (undefined2)((ulong)lppl >> 0x10);
-                pPVar13 = (PLANET *)lppl;
-                if (CONCAT22(*(undefined2 *)((int)pPVar13->rgwtMin + 0xe),(int)pPVar13->rgwtMin[3])
-                    <= lVar21) {
-                  iVar5 = (int)pPVar13->rgwtMin[3];
-                  lVar21 = CONCAT22(*(int *)((int)pPVar13->rgwtMin + 0xe) + -1 + (uint)(iVar5 != 0),
-                                    iVar5 + -1);
+               (lVar19 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople), 0 < dmgPeopleSmart)) {
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              pPVar11 = (PLANET *)lppl;
+              iVar4 = *(int *)((int)pPVar11->rgwtMin + 0xe);
+              lVar19 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople);
+              if ((-1 < iVar4) &&
+                 ((0 < iVar4 ||
+                  (lVar19 = CONCAT22(cKillPeople._2_2_,(uint)cKillPeople),
+                  (int)pPVar11->rgwtMin[3] != 0)))) {
+                uVar22 = 0;
+                uVar20 = 1000;
+                cKillMine = uVar17;
+                uVar17 = __aFulmul(CONCAT22(*(undefined2 *)((int)pPVar11->rgwtMin + 0xe),
+                                                    (int)pPVar11->rgwtMin[3]),dmgPeopleSmart);
+                lVar19 = __aFldiv(uVar17,CONCAT22(uVar22,uVar20));
+                uVar14 = (undefined2)((ulong)lppl >> 0x10);
+                pPVar11 = (PLANET *)lppl;
+                if (CONCAT22(*(undefined2 *)((int)pPVar11->rgwtMin + 0xe),(int)pPVar11->rgwtMin[3])
+                    <= lVar19) {
+                  iVar4 = (int)pPVar11->rgwtMin[3];
+                  lVar19 = CONCAT22(*(int *)((int)pPVar11->rgwtMin + 0xe) + -1 + (uint)(iVar4 != 0),
+                                    iVar4 + -1);
                 }
-                cKillPeopleS._2_2_ = (int)((ulong)lVar21 >> 0x10);
-                cKillPeopleS._0_2_ = (uint)lVar21;
-                bVar17 = *(uint *)(pPVar13->rgwtMin + 3) < (uint)cKillPeopleS;
-                iVar12 = *(uint *)(pPVar13->rgwtMin + 3) - (uint)cKillPeopleS;
-                iVar5 = *(int *)((int)pPVar13->rgwtMin + 0xe) - cKillPeopleS._2_2_;
-                cKillPeopleS = lVar21;
-                cKillPeople = __aFulmul(CONCAT22(iVar5 - (uint)bVar17,iVar12),dmgBombPeople)
+                cKillPeopleS._2_2_ = (int)((ulong)lVar19 >> 0x10);
+                cKillPeopleS._0_2_ = (uint)lVar19;
+                bVar15 = *(uint *)(pPVar11->rgwtMin + 3) < (uint)cKillPeopleS;
+                iVar10 = *(uint *)(pPVar11->rgwtMin + 3) - (uint)cKillPeopleS;
+                iVar4 = *(int *)((int)pPVar11->rgwtMin + 0xe) - cKillPeopleS._2_2_;
+                cKillPeopleS = lVar19;
+                cKillPeople = __aFulmul(CONCAT22(iVar4 - (uint)bVar15,iVar10),dmgBombPeople)
                 ;
-                lVar21 = __aFlrem(cKillPeople,1000);
-                modKill = lVar21;
-                lVar21 = __aFldiv(cKillPeople,1000);
-                uVar19 = cKillMine;
+                lVar19 = __aFlrem(cKillPeople,1000);
+                modKill = lVar19;
+                lVar19 = __aFldiv(cKillPeople,1000);
+                uVar17 = cKillMine;
                 if (0 < modKill) {
-                  cKillPeople = lVar21;
-                  sVar7 = Random(1000);
-                  lVar21 = cKillPeople + (sVar7 <= modKill);
-                  uVar19 = cKillMine;
+                  cKillPeople = lVar19;
+                  sVar6 = Random(1000);
+                  lVar19 = cKillPeople + (sVar6 <= modKill);
+                  uVar17 = cKillMine;
                 }
-                lVar21 = lVar21 + cKillPeopleS;
-                if ((0 < dmgBombPeople) && (lVar21 < 1)) {
-                  lVar21 = 1;
+                lVar19 = lVar19 + cKillPeopleS;
+                if ((0 < dmgBombPeople) && (lVar19 < 1)) {
+                  lVar19 = 1;
                 }
-                if (lVar21 < dmgBombFloor) {
-                  lVar21 = dmgBombFloor;
+                if (lVar19 < dmgBombFloor) {
+                  lVar19 = dmgBombFloor;
                 }
-                uVar16 = (undefined2)((ulong)lppl >> 0x10);
-                pPVar13 = (PLANET *)lppl;
-                if (CONCAT22(*(undefined2 *)((int)pPVar13->rgwtMin + 0xe),
-                             *(uint *)(pPVar13->rgwtMin + 3)) < lVar21) {
-                  lVar21 = CONCAT22(*(undefined2 *)((int)pPVar13->rgwtMin + 0xe),
-                                    (int)pPVar13->rgwtMin[3]);
+                uVar14 = (undefined2)((ulong)lppl >> 0x10);
+                pPVar11 = (PLANET *)lppl;
+                if (CONCAT22(*(undefined2 *)((int)pPVar11->rgwtMin + 0xe),
+                             *(uint *)(pPVar11->rgwtMin + 3)) < lVar19) {
+                  lVar19 = CONCAT22(*(undefined2 *)((int)pPVar11->rgwtMin + 0xe),
+                                    (int)pPVar11->rgwtMin[3]);
                 }
               }
             }
-            cKillPeople._2_2_ = (int)((ulong)lVar21 >> 0x10);
-            cKillPeople._0_2_ = (uint)lVar21;
-            if (0 < lVar21) {
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              puVar2 = (uint *)(((PLANET *)lppl)->rgwtMin + 3);
-              uVar10 = *puVar2;
-              *puVar2 = *puVar2 - (uint)cKillPeople;
-              piVar1 = (int *)((int)((PLANET *)lppl)->rgwtMin + 0xe);
-              *piVar1 = (*piVar1 - cKillPeople._2_2_) - (uint)(uVar10 < (uint)cKillPeople);
+            cKillPeople._2_2_ = (int)((ulong)lVar19 >> 0x10);
+            cKillPeople._0_2_ = (uint)lVar19;
+            if (0 < lVar19) {
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              puVar1 = (uint *)(((PLANET *)lppl)->rgwtMin + 3);
+              uVar7 = *puVar1;
+              *puVar1 = *puVar1 - (uint)cKillPeople;
+              piVar2 = (int *)((int)((PLANET *)lppl)->rgwtMin + 0xe);
+              *piVar2 = (*piVar2 - cKillPeople._2_2_) - (uint)(uVar7 < (uint)cKillPeople);
             }
             if (0 < (long)cKillFact) {
-              cKillPeople = lVar21;
-              cKillMine = uVar19;
-              lVar21 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              pPVar13 = (PLANET *)lppl;
+              cKillPeople = lVar19;
+              cKillMine = uVar17;
+              lVar19 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              pPVar11 = (PLANET *)lppl;
               pctSuccessHalf._6_2_ =
-                   (*(int *)((int)&pPVar13->dwFlags + 2) - (int)((ulong)lVar21 >> 0x10)) -
-                   (uint)(*(uint *)&pPVar13->dwFlags < (uint)lVar21) & 0xfff0;
-              *(int *)&pPVar13->dwFlags = (int)pPVar13->dwFlags;
-              puVar2 = (uint *)((int)&pPVar13->dwFlags + 2);
-              *puVar2 = *puVar2 & 0xf;
-              *(int *)&pPVar13->dwFlags = (int)pPVar13->dwFlags;
-              puVar2 = (uint *)((int)&pPVar13->dwFlags + 2);
-              *puVar2 = *puVar2 | pctSuccessHalf._6_2_;
-              lVar21 = cKillPeople;
-              uVar19 = cKillMine;
+                   (*(int *)(pPVar11->rgbImp + 2) - (int)((ulong)lVar19 >> 0x10)) -
+                   (uint)(*(uint *)pPVar11->rgbImp < (uint)lVar19) & 0xfff0;
+              *(undefined2 *)pPVar11->rgbImp = *(undefined2 *)pPVar11->rgbImp;
+              *(uint *)(pPVar11->rgbImp + 2) = *(uint *)(pPVar11->rgbImp + 2) & 0xf;
+              *(undefined2 *)pPVar11->rgbImp = *(undefined2 *)pPVar11->rgbImp;
+              *(uint *)(pPVar11->rgbImp + 2) = *(uint *)(pPVar11->rgbImp + 2) | pctSuccessHalf._6_2_
+              ;
+              lVar19 = cKillPeople;
+              uVar17 = cKillMine;
             }
-            if (0 < (long)uVar19) {
-              cKillPeople = lVar21;
-              cKillMine = uVar19;
-              lVar21 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              pPVar13 = (PLANET *)lppl;
-              qVar6 = (qword)CONCAT22((*(int *)((int)&pPVar13->dwFlags + 2) -
-                                      (int)((ulong)lVar21 >> 0x10)) -
-                                      (uint)(*(uint *)&pPVar13->dwFlags < (uint)lVar21),
-                                      *(uint *)&pPVar13->dwFlags - (uint)lVar21) & 0xfff00;
-              *(uint *)&pPVar13->dwFlags = *(uint *)&pPVar13->dwFlags & 0xff;
-              puVar2 = (uint *)((int)&pPVar13->dwFlags + 2);
-              *puVar2 = *puVar2 & 0xfff0;
-              pctSuccessHalf._4_2_ = (uint)qVar6;
-              pctSuccessHalf._6_2_ = (uint)(qVar6 >> 0x10);
-              *(uint *)&pPVar13->dwFlags = *(uint *)&pPVar13->dwFlags | pctSuccessHalf._4_2_;
-              puVar2 = (uint *)((int)&pPVar13->dwFlags + 2);
-              *puVar2 = *puVar2 | pctSuccessHalf._6_2_;
-              lVar21 = cKillPeople;
-              uVar19 = cKillMine;
+            if (0 < (long)uVar17) {
+              cKillPeople = lVar19;
+              cKillMine = uVar17;
+              lVar19 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              pPVar11 = (PLANET *)lppl;
+              qVar5 = (qword)CONCAT22((*(int *)(pPVar11->rgbImp + 2) - (int)((ulong)lVar19 >> 0x10))
+                                      - (uint)(*(uint *)pPVar11->rgbImp < (uint)lVar19),
+                                      *(uint *)pPVar11->rgbImp - (uint)lVar19) & 0xfff00;
+              *(uint *)pPVar11->rgbImp = *(uint *)pPVar11->rgbImp & 0xff;
+              *(uint *)(pPVar11->rgbImp + 2) = *(uint *)(pPVar11->rgbImp + 2) & 0xfff0;
+              pctSuccessHalf._4_2_ = (uint)qVar5;
+              pctSuccessHalf._6_2_ = (uint)(qVar5 >> 0x10);
+              *(uint *)pPVar11->rgbImp = *(uint *)pPVar11->rgbImp | pctSuccessHalf._4_2_;
+              *(uint *)(pPVar11->rgbImp + 2) = *(uint *)(pPVar11->rgbImp + 2) | pctSuccessHalf._6_2_
+              ;
+              lVar19 = cKillPeople;
+              uVar17 = cKillMine;
             }
             if (0 < (long)cKillDefenses) {
-              cKillPeople = lVar21;
-              cKillMine = uVar19;
-              lVar21 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
-              uVar16 = (undefined2)((ulong)lppl >> 0x10);
-              pPVar13 = (PLANET *)lppl;
-              pctSuccessHalf._4_2_ = (int)pPVar13->dwFlags - (int)lVar21 & 0xfff;
-              *(uint *)&pPVar13->dwFlags = *(uint *)&pPVar13->dwFlags & 0xf000;
-              puVar3 = (undefined2 *)((int)&pPVar13->dwFlags + 2);
-              *puVar3 = *puVar3;
-              *(uint *)&pPVar13->dwFlags = *(uint *)&pPVar13->dwFlags | pctSuccessHalf._4_2_;
-              puVar3 = (undefined2 *)((int)&pPVar13->dwFlags + 2);
-              *puVar3 = *puVar3;
-              lVar21 = cKillPeople;
-              uVar19 = cKillMine;
+              cKillPeople = lVar19;
+              cKillMine = uVar17;
+              lVar19 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffa4);
+              uVar14 = (undefined2)((ulong)lppl >> 0x10);
+              pPVar11 = (PLANET *)lppl;
+              pctSuccessHalf._4_2_ = *(int *)(pPVar11->rgbImp + 4) - (int)lVar19 & 0xfff;
+              *(uint *)(pPVar11->rgbImp + 4) = *(uint *)(pPVar11->rgbImp + 4) & 0xf000;
+              *(undefined2 *)(pPVar11->rgbImp + 6) = *(undefined2 *)(pPVar11->rgbImp + 6);
+              *(uint *)(pPVar11->rgbImp + 4) = *(uint *)(pPVar11->rgbImp + 4) | pctSuccessHalf._4_2_
+              ;
+              *(undefined2 *)(pPVar11->rgbImp + 6) = *(undefined2 *)(pPVar11->rgbImp + 6);
+              lVar19 = cKillPeople;
+              uVar17 = cKillMine;
             }
             if ((-1 < pctTerra._2_2_) && ((0 < pctTerra._2_2_ || ((uint)pctTerra != 0)))) {
               in_stack_0000ffa6 = 2;
-              cKillPeople = lVar21;
-              cKillMine = uVar19;
-              lVar21 = __ftol((double)CONCAT26(2,CONCAT24(in_stack_0000ffa4,
+              cKillPeople = lVar19;
+              cKillMine = uVar17;
+              lVar19 = __ftol((double)CONCAT26(2,CONCAT24(in_stack_0000ffa4,
                                                                   CONCAT22(unaff_SI,unaff_DI))));
-              bVar17 = (uint)pctTerra < (uint)lVar21;
-              pctTerra._0_2_ = (uint)pctTerra - (uint)lVar21;
-              pctTerra._2_2_ = (pctTerra._2_2_ - (int)((ulong)lVar21 >> 0x10)) - (uint)bVar17;
+              bVar15 = (uint)pctTerra < (uint)lVar19;
+              pctTerra._0_2_ = (uint)pctTerra - (uint)lVar19;
+              pctTerra._2_2_ = (pctTerra._2_2_ - (int)((ulong)lVar19 >> 0x10)) - (uint)bVar15;
               if ((-1 < pctTerra._2_2_) && ((0 < pctTerra._2_2_ || (500 < (uint)pctTerra)))) {
                 pctTerra._0_2_ = 500;
                 pctTerra._2_2_ = 0;
               }
-              pctSuccessHalf = 0;
+              pctSuccessHalf = 0.0;
               while( true ) {
-                iVar5 = pctSuccessHalf._6_2_;
+                iVar4 = pctSuccessHalf._6_2_;
                 if (2 < pctSuccessHalf._2_2_) break;
-                pcVar14 = ((PLANET *)lppl)->rgEnvVarOrig + pctSuccessHalf._2_2_;
-                pcVar15 = ((PLANET *)lppl)->rgEnvVar + pctSuccessHalf._2_2_;
-                pctSuccessHalf = CONCAT62(pctSuccessHalf._2_6_,(int)*pcVar14);
-                uVar10 = (int)*pcVar15 - (int)*pcVar14;
-                pctSuccessHalf._0_6_ = CONCAT24(uVar10,(undefined4)pctSuccessHalf);
-                pctSuccessHalf = CONCAT26(iVar5,(undefined6)pctSuccessHalf);
-                if ((int)uVar10 < 1) {
-                  if ((int)uVar10 < 0) {
-                    iVar12 = (int)-uVar10 >> 0xf;
-                    if ((pctTerra._2_2_ <= iVar12) &&
-                       ((pctTerra._2_2_ < iVar12 || ((uint)pctTerra <= -uVar10)))) {
-                      pctSuccessHalf._0_6_ = CONCAT24(-(uint)pctTerra,(undefined4)pctSuccessHalf);
-                      pctSuccessHalf = CONCAT26(iVar5,(undefined6)pctSuccessHalf);
+                pcVar12 = ((PLANET *)lppl)->rgEnvVarOrig + pctSuccessHalf._2_2_;
+                pcVar13 = ((PLANET *)lppl)->rgEnvVar + pctSuccessHalf._2_2_;
+                pctSuccessHalf = (double)CONCAT62(pctSuccessHalf._2_6_,(int)*pcVar12);
+                uVar7 = (int)*pcVar13 - (int)*pcVar12;
+                pctSuccessHalf._0_6_ = CONCAT24(uVar7,pctSuccessHalf._0_4_);
+                pctSuccessHalf = (double)CONCAT26(iVar4,pctSuccessHalf._0_6_);
+                if ((int)uVar7 < 1) {
+                  if ((int)uVar7 < 0) {
+                    iVar10 = (int)-uVar7 >> 0xf;
+                    if ((pctTerra._2_2_ <= iVar10) &&
+                       ((pctTerra._2_2_ < iVar10 || ((uint)pctTerra <= -uVar7)))) {
+                      pctSuccessHalf._0_6_ = CONCAT24(-(uint)pctTerra,pctSuccessHalf._0_4_);
+                      pctSuccessHalf = (double)CONCAT26(iVar4,pctSuccessHalf._0_6_);
                     }
                     ((PLANET *)lppl)->rgEnvVar[pctSuccessHalf._2_2_] =
                          ((PLANET *)lppl)->rgEnvVar[pctSuccessHalf._2_2_] -
                          (char)((qword)pctSuccessHalf >> 0x20);
-                    iVar5 = pctSuccessHalf._6_2_ - pctSuccessHalf._4_2_;
-                    pctSuccessHalf = CONCAT26(iVar5,(undefined6)pctSuccessHalf);
+                    iVar4 = pctSuccessHalf._6_2_ - pctSuccessHalf._4_2_;
+                    pctSuccessHalf = (double)CONCAT26(iVar4,pctSuccessHalf._0_6_);
                   }
                 }
                 else {
-                  if ((pctTerra._2_2_ <= (int)uVar10 >> 0xf) &&
-                     ((pctTerra._2_2_ < (int)uVar10 >> 0xf || ((uint)pctTerra <= uVar10)))) {
-                    pctSuccessHalf._0_6_ = CONCAT24((uint)pctTerra,(undefined4)pctSuccessHalf);
-                    pctSuccessHalf = CONCAT26(iVar5,(undefined6)pctSuccessHalf);
+                  if ((pctTerra._2_2_ <= (int)uVar7 >> 0xf) &&
+                     ((pctTerra._2_2_ < (int)uVar7 >> 0xf || ((uint)pctTerra <= uVar7)))) {
+                    pctSuccessHalf._0_6_ = CONCAT24((uint)pctTerra,pctSuccessHalf._0_4_);
+                    pctSuccessHalf = (double)CONCAT26(iVar4,pctSuccessHalf._0_6_);
                   }
                   ((PLANET *)lppl)->rgEnvVar[pctSuccessHalf._2_2_] =
                        ((PLANET *)lppl)->rgEnvVar[pctSuccessHalf._2_2_] -
                        (char)((qword)pctSuccessHalf >> 0x20);
-                  iVar5 = pctSuccessHalf._6_2_ + pctSuccessHalf._4_2_;
-                  pctSuccessHalf = CONCAT26(iVar5,(undefined6)pctSuccessHalf);
+                  iVar4 = pctSuccessHalf._6_2_ + pctSuccessHalf._4_2_;
+                  pctSuccessHalf = (double)CONCAT26(iVar4,pctSuccessHalf._0_6_);
                 }
                 pctSuccessHalf =
-                     (qword)CONCAT42(pctSuccessHalf._4_4_,pctSuccessHalf._2_2_ + 1) << 0x10;
+                     (double)((qword)CONCAT42(pctSuccessHalf._4_4_,pctSuccessHalf._2_2_ + 1) << 0x10
+                             );
               }
-              lVar21 = cKillPeople;
-              uVar19 = cKillMine;
+              lVar19 = cKillPeople;
+              uVar17 = cKillMine;
               if (0 < (int)pctSuccessHalf._6_2_) {
                 if (fMulti == 0) {
-                  MVar11 = idmHasRetroBombedUndoingTerraforming;
+                  MVar9 = idmHasRetroBombedUndoingTerraforming;
                 }
                 else {
-                  MVar11 = idmFleetsHaveRetroBombedUndoingTerraforming;
+                  MVar9 = idmFleetsHaveRetroBombedUndoingTerraforming;
                 }
-                FSendPlrMsg(((FLEET *)lpfl)->iPlayer,MVar11,lpfl->id | 0x8000,lpfl->id,lppl->id
-                                 ,pctSuccessHalf._6_2_,0,0,0,0);
-                if (fMulti == 0) {
-                  MVar11 = idmHasRetroBombedUndoingTerraforming;
-                }
-                else {
-                  MVar11 = idmFleetsHaveRetroBombedUndoingTerraforming2;
-                }
-                FSendPlrMsg(((PLANET *)lppl)->iPlayer,MVar11,lppl->id,lpfl->id,lppl->id,
+                FSendPlrMsg(((FLEET *)lpfl)->iPlayer,MVar9,lpfl->id | 0x8000,lpfl->id,lppl->id,
                                  pctSuccessHalf._6_2_,0,0,0,0);
-                lVar21 = cKillPeople;
-                uVar19 = cKillMine;
+                if (fMulti == 0) {
+                  MVar9 = idmHasRetroBombedUndoingTerraforming;
+                }
+                else {
+                  MVar9 = idmFleetsHaveRetroBombedUndoingTerraforming2;
+                }
+                FSendPlrMsg(((PLANET *)lppl)->iPlayer,MVar9,lppl->id,lpfl->id,lppl->id,
+                                 pctSuccessHalf._6_2_,0,0,0,0);
+                lVar19 = cKillPeople;
+                uVar17 = cKillMine;
               }
             }
-            cKillPeople._2_2_ = (int)((ulong)lVar21 >> 0x10);
-            cKillPeople._0_2_ = (uint)lVar21;
-            cPPE = cKillDefenses + cKillFact + uVar19;
-            pPVar13 = (PLANET *)lppl;
-            uVar16 = (undefined2)((ulong)lppl >> 0x10);
-            cKillMine = uVar19;
+            cKillPeople._2_2_ = (int)((ulong)lVar19 >> 0x10);
+            cKillPeople._0_2_ = (uint)lVar19;
+            cPPE = cKillDefenses + cKillFact + uVar17;
+            pPVar11 = (PLANET *)lppl;
+            uVar14 = (undefined2)((ulong)lppl >> 0x10);
+            cKillMine = uVar17;
             if (cPPE < 1) {
-              if (0 < lVar21) {
-                iVar5 = *(int *)((int)pPVar13->rgwtMin + 0xe);
-                if ((iVar5 < 0) || ((iVar5 < 1 && ((int)pPVar13->rgwtMin[3] == 0)))) {
+              if (0 < lVar19) {
+                iVar4 = *(int *)((int)pPVar11->rgwtMin + 0xe);
+                if ((iVar4 < 0) || ((iVar4 < 1 && ((int)pPVar11->rgwtMin[3] == 0)))) {
                   if (fMulti == 0) {
                     idmSrc = 0x8f;
                     idmDst = 0x90;
@@ -6569,16 +6525,16 @@ void DoBombing(void)
                 }
                 FSendPlrMsg(((FLEET *)lpfl)->iPlayer,idmSrc,lpfl->id | 0x8000,lpfl->id,lppl->id
                                  ,(uint)cKillPeople,0,0,0,0);
-                cKillPeople = lVar21;
+                cKillPeople = lVar19;
                 FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmDst,lppl->id,lpfl->id,lppl->id,
                                  (uint)cKillPeople,0,0,0,0);
-                lVar21 = cKillPeople;
-                uVar19 = cKillMine;
+                lVar19 = cKillPeople;
+                uVar17 = cKillMine;
               }
             }
             else {
-              iVar5 = *(int *)((int)pPVar13->rgwtMin + 0xe);
-              if ((iVar5 < 0) || ((iVar5 < 1 && ((int)pPVar13->rgwtMin[3] == 0)))) {
+              iVar4 = *(int *)((int)pPVar11->rgwtMin + 0xe);
+              if ((iVar4 < 0) || ((iVar4 < 1 && ((int)pPVar11->rgwtMin[3] == 0)))) {
                 if (fMulti == 0) {
                   idmSrc = 0x8f;
                   idmDst = 0x90;
@@ -6588,14 +6544,14 @@ void DoBombing(void)
                   idmDst = 0x17d;
                 }
 BATTLE_GenericBombMsg:
-                cKillPeople = lVar21;
-                cKillMine = uVar19;
+                cKillPeople = lVar19;
+                cKillMine = uVar17;
                 FSendPlrMsg(((FLEET *)lpfl)->iPlayer,idmSrc,lpfl->id | 0x8000,lpfl->id,lppl->id
-                                 ,(short)lVar21,(int)cPPE,0,0,0);
+                                 ,(short)lVar19,(int)cPPE,0,0,0);
                 FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmDst,lppl->id,lpfl->id,lppl->id,
                                  (uint)cKillPeople,(int)cPPE,0,0,0);
-                lVar21 = cKillPeople;
-                uVar19 = cKillMine;
+                lVar19 = cKillPeople;
+                uVar17 = cKillMine;
               }
               else {
                 if (fMulti == 0) {
@@ -6610,66 +6566,66 @@ BATTLE_GenericBombMsg:
                   idmSrc = idmSrc + 1;
                   idmDst = idmDst + 1;
                 }
-                bVar17 = cKillPeople._2_2_ == 0;
-                cKillPeople = lVar21;
-                if ((lVar21 < 0) || ((lVar21 < 0x10000 && (bVar17 = false, (uint)cKillPeople == 0)))
+                bVar15 = cKillPeople._2_2_ == 0;
+                cKillPeople = lVar19;
+                if ((lVar19 < 0) || ((lVar19 < 0x10000 && (bVar15 = false, (uint)cKillPeople == 0)))
                    ) {
                   idmSrc = idmSrc + -2;
                   idmDst = idmDst + -2;
-                  bVar17 = idmDst == 0;
+                  bVar15 = idmDst == 0;
                   __aFfcompp();
-                  if (bVar17) {
+                  if (bVar15) {
                     FSendPlrMsg(((FLEET *)lpfl)->iPlayer,idmSrc,lpfl->id | 0x8000,lpfl->id,
                                      lppl->id,(int)cPPE,0,0,0,0);
                     FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmDst,lppl->id,lpfl->id,lppl->id,
                                      (int)cPPE,0,0,0,0);
-                    lVar21 = cKillPeople;
-                    uVar19 = cKillMine;
+                    lVar19 = cKillPeople;
+                    uVar17 = cKillMine;
                   }
                   else {
                     idmSrc = idmSrc + 5;
                     idmDst = idmDst + 5;
-                    sVar25 = 0;
                     sVar23 = 0;
-                    sVar7 = 0;
-                    lVar21 = __ftol((double)((qword)unaff_DI << 0x30));
+                    sVar21 = 0;
+                    sVar6 = 0;
+                    lVar19 = __ftol((double)((qword)unaff_DI << 0x30));
                     FSendPlrMsg(((FLEET *)lpfl)->iPlayer,idmSrc,lpfl->id | 0x8000,lpfl->id,
-                                     lppl->id,(int)cPPE,(short)lVar21,sVar7,sVar23,sVar25);
-                    sVar25 = 0;
+                                     lppl->id,(int)cPPE,(short)lVar19,sVar6,sVar21,sVar23);
                     sVar23 = 0;
-                    sVar7 = 0;
-                    lVar21 = __ftol((double)((qword)unaff_DI << 0x30));
+                    sVar21 = 0;
+                    sVar6 = 0;
+                    lVar19 = __ftol((double)((qword)unaff_DI << 0x30));
                     FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmDst,lppl->id,lpfl->id,lppl->id,
-                                     (int)cPPE,(short)lVar21,sVar7,sVar23,sVar25);
-                    lVar21 = cKillPeople;
-                    uVar19 = cKillMine;
+                                     (int)cPPE,(short)lVar19,sVar6,sVar21,sVar23);
+                    lVar19 = cKillPeople;
+                    uVar17 = cKillMine;
                   }
                 }
                 else {
                   __aFfcompp();
-                  lVar21 = cKillPeople;
-                  uVar19 = cKillMine;
-                  if (bVar17) goto BATTLE_GenericBombMsg;
+                  lVar19 = cKillPeople;
+                  uVar17 = cKillMine;
+                  if (bVar15) goto BATTLE_GenericBombMsg;
                   idmSrc = idmSrc + 5;
                   idmDst = idmDst + 5;
-                  sVar23 = 0;
-                  sVar7 = 0;
-                  lVar21 = __ftol((double)((qword)CONCAT22(unaff_SI,unaff_DI) << 0x20));
+                  sVar21 = 0;
+                  sVar6 = 0;
+                  lVar19 = __ftol((double)((qword)CONCAT22(unaff_SI,unaff_DI) << 0x20));
                   FSendPlrMsg(((FLEET *)lpfl)->iPlayer,idmSrc,lpfl->id | 0x8000,lpfl->id,
-                                   lppl->id,(uint)cKillPeople,(int)cPPE,(short)lVar21,sVar7,sVar23);
-                  sVar23 = 0;
-                  sVar7 = 0;
-                  lVar21 = __ftol((double)((qword)CONCAT22(unaff_SI,unaff_DI) << 0x20));
+                                   lppl->id,(uint)cKillPeople,(int)cPPE,(short)lVar19,sVar6,sVar21);
+                  sVar21 = 0;
+                  sVar6 = 0;
+                  lVar19 = __ftol((double)((qword)CONCAT22(unaff_SI,unaff_DI) << 0x20));
                   FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmDst,lppl->id,lpfl->id,lppl->id,
-                                   (uint)cKillPeople,(int)cPPE,(short)lVar21,sVar7,sVar23);
-                  lVar21 = cKillPeople;
-                  uVar19 = cKillMine;
+                                   (uint)cKillPeople,(int)cPPE,(short)lVar19,sVar6,sVar21);
+                  lVar19 = cKillPeople;
+                  uVar17 = cKillMine;
                 }
               }
             }
-            uVar16 = (undefined2)((ulong)lppl >> 0x10);
-            cKillPeople = lVar21;
-            cKillMine = uVar19;
+            uVar14 = (undefined2)((ulong)lppl >> 0x10);
+            cKillPeople = lVar19;
+            cKillMine = uVar17;
             if (((int)((PLANET *)lppl)->rgwtMin[3] == 0) &&
                (*(int *)((int)((PLANET *)lppl)->rgwtMin + 0xe) == 0)) {
               UninhabitPlanet(lppl);
