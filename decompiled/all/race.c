@@ -151,7 +151,7 @@ RACE_Finish:
             }
             iVar2 = -sVar1;
             pcVar3 = PszGetCompressedString(idsAdvantagePointsCurrentlyHoleDPointsCannot);
-            _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar2);
+            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar2);
             AlertSz((char *)szWork,0x10);
             if (iPanelActive == 2) goto RACE_Step2;
             if (iPanelActive == 3) goto RACE_Step3;
@@ -884,7 +884,7 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
       PatBlt(hdc,((vrgrcRCW + 0xf)->left + -4) - dx,vrgrcRCW[0xf].top + 3,dx,
              dyArial8,0xf00021);
     }
-    cch__74 = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),
+    cch__74 = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),
                         (int)vplr.pctIdealGrowth);
     RightTextOut
               (hdc,(vrgrcRCW + 0xf)->left + -4,vrgrcRCW[0xf].top + 3,
@@ -956,7 +956,7 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
       }
       else {
         CchGetString(idsCanExpect1DPlanetsWillHabitable,szT);
-        cch = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),l2,cch__74);
+        cch = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),l2,cch__74);
       }
       rc.left = vrgrcRCW->left;
       rc.top = vrgrcRCW[0xf].top + dyArial8 + 8;
@@ -1397,7 +1397,7 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
     dxItem = sVar1 * dxDig;
     sVar1 = GetRaceStat((PLAYER *)&vplr,
                         (int)*(char *)((int)(short *)(rgidPlan + 0x197) + i));
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),sVar1);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),sVar1);
     if ((*(char *)((int)(short *)(rgidPlan + 0x193) + i) < '\0') &&
        ((0 < i || (fMacintosh == 0)))) {
       dxItem = dxItem + dxkT;
@@ -1999,7 +1999,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
       sVar6 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
       iVar1 = (sVar6 == raNone) + 3;
       pcVar3 = PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech);
-      _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar1);
+      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar1);
       HVar5 = GetDlgItem(hwnd,0x123);
       SetWindowText(HVar5,szWork);
       HVar5 = GetDlgItem(hwnd,0x123);
@@ -2855,7 +2855,7 @@ void DrawRaceAdvantagePoints(HDC hdc,RECT *prc,PLAYER *pplr)
   crSav = SetTextColor(hdc,(ulong)uVar2);
   crBkSav = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace)
                       );
-  c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),iPts);
+  c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),iPts);
   RcCtrTextOut(hdc,&rc,(char *)szWork,-1);
   SetTextColor(hdc,0);
   SelectObject(hdc,rghfontArial8[1]);
@@ -2989,7 +2989,7 @@ void SetRCWTitle(HWND hwnd,short iStep)
   char szBuf [52];
   
   CchGetString(fRCWReadOnly + idsCustomRaceWizardStepD6,szBuf);
-  _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szBuf),iStep);
+  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szBuf),iStep);
   SetWindowText(hwnd,szWork);
   return;
 }

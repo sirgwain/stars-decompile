@@ -623,7 +623,7 @@ void DrawPlanetMinSum(HDC hdc,TILE *ptile,OBJ obj)
       uVar6 = *(undefined2 *)((int)(ppl->rgwtMin + i) + 2);
       uVar8 = (undefined2)ppl->rgwtMin[i];
       pcVar1 = PszGetCompressedString(idsLdkt);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar8,uVar6);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar8,uVar6);
       RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight);
       yTop = yTop + dyArial8;
     }
@@ -643,14 +643,14 @@ void DrawPlanetMinSum(HDC hdc,TILE *ptile,OBJ obj)
     if (sVar2 == raMacintosh) {
       sVar2 = CMinesOperating((PLANET *)CONCAT22(0x1120,ppl));
       pcVar1 = PszGetCompressedString(idsD);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
     }
     else {
       sVar2 = CMaxOperableMines((PLANET *)CONCAT22(0x1120,ppl),idPlayer,0);
       uVar5 = __aFulshr(CONCAT22(unaff_DI,sVar2),unaff_SI);
       uVar4 = (uint)uVar5 & 0xfff;
       pcVar1 = PszGetCompressedString(idsDD);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar4);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar4);
     }
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight << 1);
     yTop = yTop + dyArial8;
@@ -669,7 +669,7 @@ void DrawPlanetMinSum(HDC hdc,TILE *ptile,OBJ obj)
       uVar5 = __aFulshr(CONCAT22(unaff_DI,sVar2),unaff_SI);
       uVar4 = (uint)uVar5 & 0xfff;
       pcVar1 = PszGetCompressedString(idsDD);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar4);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar4);
     }
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight << 1);
   }
@@ -803,7 +803,7 @@ void DrawPlanetStats(HDC hdc,TILE *ptile,OBJ obj)
     sVar2 = cResAvail;
     sVar8 = cRes;
     pcVar1 = PszGetCompressedString(idsDD);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2,sVar8);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2,sVar8);
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight);
     yTop = yTop + dyArial8;
     hbrSav = SelectObject(hdc,hbrButtonHilite);
@@ -853,18 +853,18 @@ void DrawPlanetStats(HDC hdc,TILE *ptile,OBJ obj)
       if (dRange < 100) {
         sVar2 = dRange;
         pcVar1 = PszGetCompressedString(idsDLightYears);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
       }
       else {
         sVar2 = dRange;
         pcVar1 = PszGetCompressedString(idsDLY);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar2);
       }
     }
     else {
       sVar2 = dRange;
       pcVar1 = PszGetCompressedString(idsDDLY);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),dRangeP,sVar2);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),dRangeP,sVar2);
     }
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight);
     yTop = yTop + dyArial8;
@@ -888,7 +888,7 @@ void DrawPlanetStats(HDC hdc,TILE *ptile,OBJ obj)
       sVar2 = CMaxOperableDefenses(&sel.pl,idPlayer,0);
       uVar3 = sel.pl.rgbImp._4_2_ & 0xfff;
       pcVar1 = PszGetCompressedString(idsDD);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,sVar2);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,sVar2);
     }
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight);
     yTop = yTop + dyArial8;
@@ -949,7 +949,7 @@ void DrawPlanetStats(HDC hdc,TILE *ptile,OBJ obj)
                                                       )));
       lVar7 = __ftol((double)CONCAT26(100,CONCAT24(unaff_SI,CONCAT22(unaff_DI,(int)lVar7))))
       ;
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDXPCTDPCTPCT),(int)lVar7);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDXPCTDPCTPCT),(int)lVar7);
     }
     RightTextOut(hdc,xRight,yTop,(char *)szWork,c,dxRight);
   }
@@ -1104,7 +1104,7 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
         c = CchGetString(idsUnlimited,(char *)szWork);
       }
       else {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),uVar13);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),uVar13);
       }
       RightTextOut(hdc,x,in_stack_0000ffd4,(char *)szWork,c,iVar8);
       in_stack_0000ffd4 = in_stack_0000ffd4 + dyArial8;
@@ -1118,7 +1118,7 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
       else {
         uVar14 = 0;
         pcVar4 = PszGetCompressedString(idsLddp);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar13,uVar14);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar13,uVar14);
       }
       SelectObject(hdc,rghfontArial8[0]);
       RightTextOut(hdc,x,in_stack_0000ffd4,(char *)szWork,c,iVar8);
@@ -1132,7 +1132,7 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
       }
       else {
         pcVar4 = PszGetCompressedString(idsLddp);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4));
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4));
       }
       SelectObject(hdc,rghfontArial8[0]);
       RightTextOut(hdc,x,in_stack_0000ffd4,(char *)szWork,c,iVar8);
@@ -1150,7 +1150,7 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
         if (w < 5) {
           w = 5;
         }
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT));
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT));
         CVar12 = SetTextColor(hdc,0x7f);
       }
       RightTextOut(hdc,x,in_stack_0000ffd4,(char *)szWork,c,iVar8);
@@ -1170,11 +1170,11 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
       sVar2 = IWarpMAFromLppl(&sel.pl,&fTwo);
       if (sVar2 < 1) {
         pcVar4 = PszGetCompressedString(idsNone4);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4));
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4));
       }
       else {
         pcVar4 = PszGetCompressedString(idsWarpD);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4));
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4));
         if (fTwo != 0) {
           ((char *)szWork)[c] = '+';
           c = c + 1;
@@ -1282,7 +1282,7 @@ void DrawMassWarpGauge(HDC hdc,RECT *prc,short iBest,short iCur)
   iMode = SetBkMode(hdc,1);
   hbr = iVar4 + (uint)(0xfffb < uVar1);
   pcVar2 = PszGetCompressedString(idsWarpLd);
-  c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2));
+  c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2));
   hbr = hdc;
   GetTextExtent(hdc,szWork,c);
   hbr = c;
@@ -1493,7 +1493,7 @@ char * PszProductionETA(PLANET *lppl,PLPROD *lpplprod,short iItem,short *etaFirs
   else if (iTurnEnd == 100) {
     sVar1 = iTurnBegin;
     pcVar2 = PszGetCompressedString(idsDYears);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1);
   }
   else if (iTurnBegin == iTurnEnd) {
     if (iTurnBegin == 0) {
@@ -1505,7 +1505,7 @@ char * PszProductionETA(PLANET *lppl,PLPROD *lpplprod,short iItem,short *etaFirs
     else {
       sVar1 = iTurnBegin;
       pcVar2 = PszGetCompressedString(idsDYear);
-      sVar1 = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1);
+      sVar1 = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1);
       if (iTurnBegin != 1) {
         ((char *)szWork)[sVar1] = 's';
         ((char *)szWork + 1)[sVar1] = '\0';
@@ -1516,7 +1516,7 @@ char * PszProductionETA(PLANET *lppl,PLPROD *lpplprod,short iItem,short *etaFirs
     sVar1 = iTurnBegin;
     sVar5 = iTurnEnd;
     pcVar2 = PszGetCompressedString(idsDDYears);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1,sVar5);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),sVar1,sVar5);
   }
   if (etaFirst != (short *)0x0) {
     *etaFirst = iTurnBegin;
@@ -2994,11 +2994,11 @@ LAB_1048_5fdb:
   }
   else {
     if (iEnv == 1) {
-      _WSPRINTF(szWork,(char *)0x112008b0,iVar * 4 + -200,0xba);
+      _wsprintf(szWork,(char *)0x112008b0,iVar * 4 + -200,0xba);
     }
     else {
       if (iEnv != 2) goto LAB_1048_5fdb;
-      _WSPRINTF(szWork,(char *)0x112008b6,iVar);
+      _wsprintf(szWork,(char *)0x112008b6,iVar);
     }
     pcVar1 = (char *)szWork;
   }
@@ -3031,7 +3031,7 @@ char * PszCalcGravity(short iGravity)
   if (iGravity < 0x32) {
     iVal = (short)(10000 / (long)iVal);
   }
-  _WSPRINTF(szWork,(char *)0x112008bb,iVal / 100,iVal % 100);
+  _wsprintf(szWork,(char *)0x112008bb,iVal / 100,iVal % 100);
   return (char *)szWork;
 }
 
@@ -3423,7 +3423,7 @@ PLANET_NoMsg:
         }
 LAB_1048_693c:
         cItem = (uint)lpprod->dwFlags & 0x3ff;
-        _WSPRINTF((char *)CONCAT22(unaff_SS,&szTemp),(char *)0x112008c4,(int)ch,cItem,psz);
+        _wsprintf((char *)CONCAT22(unaff_SS,&szTemp),(char *)0x112008c4,(int)ch,cItem,psz);
         uVar2 = __aFulshr(uVar3,etaFirst);
         if (((uint)uVar2 & 7) == 1) {
           uVar2 = __aFulshr(uVar3,etaFirst);

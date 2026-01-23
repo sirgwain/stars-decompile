@@ -781,7 +781,7 @@ VCR_KillTime:
             iVar6 = iCur + 1;
             pcVar7 = PszGetCompressedString(idsPlaybackSpeedD);
             rcWindow = (undefined1  [2])
-                       _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),(char)iVar6);
+                       _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),(char)iVar6);
             TextOut(hdc,ptSpeedVCR.x,ptSpeedVCR.y,szWork,
                     (short)rcWindow);
           }
@@ -1118,12 +1118,12 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
     iVar2 = vcStepVCR + 2;
     iVar3 = viStepVCRCur + 2;
     pcVar4 = PszGetCompressedString(idsPhaseDDRoundDD);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar3,iVar2,iVar1,iVar11);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar3,iVar2,iVar1,iVar11);
     TextOut(hdc,x,y,szWork,c);
     y = y + dyArial8 + 4;
     iVar11 = viSpeedVCR + 1;
     pcVar4 = PszGetCompressedString(idsPlaybackSpeedD);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11);
     DVar13 = GetTextExtent(hdc,szWork,c);
     dx = (short)DVar13;
     TextOut(hdc,x,y,szWork,c);
@@ -1183,7 +1183,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         iVar11 = lpshdef + 8;
         uVar18 = local_126;
         pcVar4 = PszGetCompressedString(idsSD);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
       }
       TextOut(hdc,x,y,szWork,c);
       y = y + dyArial8;
@@ -1197,7 +1197,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         uVar18 = 0x1120;
         psz = pcVar4;
         pcVar7 = PszGetCompressedString(idsAttacksS);
-        c = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,pcVar7),pcVar4,uVar18);
+        c = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,pcVar7),pcVar4,uVar18);
         TextOut(hdc,x,y,(LPCSTR)CONCAT22(unaff_SS,szT),c);
         y = y + dyArial8;
         iVar11._0_1_ = ((BTLREC *)vlpbrVCR + 2)->itok;
@@ -1233,7 +1233,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           iVar11 = lpshdef + 8;
           uVar18 = local_126;
           pcVar4 = PszGetCompressedString(idsSD);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
         }
         TextOut(hdc,x,y,szWork,c);
         y = y + dyArial8;
@@ -1269,7 +1269,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         iVar11 = (int)(uint)brcT >> 4;
         uVar5 = brcT & 0xf;
         pcVar4 = PszGetCompressedString(idsDDDoing);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
         TextOut(hdc,x,y,szWork,c);
         y = y + dyArial8;
         if ((dpShields != 0) || (local_e != 0)) {
@@ -1291,7 +1291,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar5 = dpShields;
           iVar11 = local_e;
           pcVar7 = PszGetCompressedString(idsLdDamageShieldsS);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar5,iVar11,pcVar4,uVar18)
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar5,iVar11,pcVar4,uVar18)
           ;
           TextOut(hdc,x,y,szWork,c);
           y = y + dyArial8;
@@ -1306,7 +1306,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar5 = dpArmor;
           iVar11 = local_1a;
           pcVar4 = PszGetCompressedString(idsLdDamageArmorC);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11,uVar18);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11,uVar18);
           TextOut(hdc,x,y,szWork,c);
           y = y + dyArial8;
         }
@@ -1325,7 +1325,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         if (0 < j) {
           sVar16 = j;
           pcVar4 = PszGetCompressedString(idsDestroyingDShip);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar16);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar16);
           if (j == 1) {
             _strcpy((char *)szWork + c,(char *)0x1424);
             c = c + 1;
@@ -1357,7 +1357,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
       iVar11 = (int)(uint)vbrcVCRFocus >> 4;
       uVar5 = vbrcVCRFocus & 0xf;
       pcVar4 = PszGetCompressedString(idsSelectionDD);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
       TextOut(hdc,x,y,szWork,c);
       y = y + dyArial8;
       if (-1 < viVCRFocus) {
@@ -1394,10 +1394,10 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar18 = local_126;
           sVar9 = csh;
           pcVar4 = PszGetCompressedString(idsSD);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,sVar9);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,sVar9);
         }
         if (cshT != 0) {
-          sVar9 = _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + c),(char *)0x11201429
+          sVar9 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + c),(char *)0x11201429
                             ,cshT);
           c = c + sVar9;
         }
@@ -1425,18 +1425,18 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             uVar5 = (uint)((TOK *)vrgtok)[viVCRFocus].initMin;
           }
           pcVar4 = PszGetCompressedString(idsInitiativeD);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
           TextOut(hdc,x,y,szWork,c);
           iVar1 = i * 3 + 0xca0;
           uVar18 = 0x1120;
           pcVar4 = PszGetCompressedString(idsMovementS);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar1,uVar18);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar1,uVar18);
           TextOut(hdc,iVar11,y,szWork,c);
           y = y + dyArial8;
           uVar5 = dpT;
           uVar8 = dpShT;
           pcVar4 = PszGetCompressedString(idsArmorLd);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,uVar8);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,uVar8);
           TextOut(hdc,x,y,szWork,c);
           if (dv.dp == 0) {
             c = CchGetString(idsDamageNone,(char *)szWork);
@@ -1460,14 +1460,14 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
               uVar5 = dpT;
               pcVar4 = PszGetCompressedString(idsDamageD);
-              c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+              c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
             }
             else {
               iVar1 = csh >> 0xf;
               sVar9 = csh;
               uVar5 = dpT;
               pcVar4 = PszGetCompressedString(idsDamageLdD);
-              c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar9,iVar1,uVar5);
+              c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar9,iVar1,uVar5);
             }
           }
           TextOut(hdc,iVar11,y,szWork,c);
@@ -1485,7 +1485,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
                                               dpShield,(long)sVar16);
             lVar15 = uVar14 - CONCAT22(local_e,dpShields);
             pcVar4 = PszGetCompressedString(idsShieldsLd);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar15,
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar15,
                           (int)((ulong)lVar15 >> 0x10));
           }
           TextOut(hdc,x,y,szWork,c);
@@ -1493,7 +1493,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           if (((TOK *)vrgtok)[viVCRFocus].pctJam != 0) {
             uVar5 = (uint)((TOK *)vrgtok)[viVCRFocus].pctJam;
             pcVar4 = PszGetCompressedString(idsJammingD);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
           }
@@ -1508,12 +1508,12 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
               CchGetString(idsTacticSDMoves,szT);
               uVar5 = ((TOK *)vrgtok)[viVCRFocus].wFlags >> 5 & 0x1f;
               pcVar4 = PszGetCompressedString(i);
-              c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120,uVar5);
+              c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120,uVar5);
             }
             else {
               CchGetString(idsTacticS,szT);
               pcVar4 = PszGetCompressedString(i);
-              c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+              c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
             }
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
@@ -1523,14 +1523,14 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             i = (((TOK *)vrgtok)[viVCRFocus].wFlags_0x17 & 0xf) +
                 idsNoneDisengage;
             pcVar4 = PszGetCompressedString(i);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+            c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
             CchGetString(idsSecondaryTargetS,szT);
             i = (((TOK *)vrgtok)[viVCRFocus].wFlags_0x17 >> 4 & 0xf) +
                 idsNoneDisengage;
             pcVar4 = PszGetCompressedString(i);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+            c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
           }
@@ -2049,7 +2049,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
         lpshdef = *(int *)(iVar3 + 0xfe) +
                   (uint)*(byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) * 0x93;
       }
-      sVar2 = _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + uVar1),(char *)0x11201432
+      sVar2 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + uVar1),(char *)0x11201432
                         ,lpshdef + 8,local_65c,((TOK *)vrgtok)[i].csh);
       cch = uVar1 + sVar2;
       if (fAttack != 0) {
@@ -2063,7 +2063,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
             }
           }
           if (0 < cKilled) {
-            sVar2 = _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + cch),
+            sVar2 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + cch),
                               (char *)0x1120143b,cKilled);
             cch = cch + sVar2;
           }

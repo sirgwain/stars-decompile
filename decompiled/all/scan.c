@@ -2817,7 +2817,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           else {
             id = psbar->id;
           }
-          c = _WSPRINTF(szWork,(char *)0x112005b1,id);
+          c = _wsprintf(szWork,(char *)0x112005b1,id);
           TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
         }
       }
@@ -2829,7 +2829,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           id = psbar->id;
         }
         if (id != -1) {
-          c = _WSPRINTF(szWork,(char *)0x112005aa,id + 1);
+          c = _wsprintf(szWork,(char *)0x112005aa,id + 1);
           SetBkMode(hdc,2);
           TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
         }
@@ -2855,7 +2855,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
         local_12 = (psbar->pt).y;
       }
       if (0 < pt) {
-        c = _WSPRINTF(szWork,(char *)0x112005c0,pt);
+        c = _wsprintf(szWork,(char *)0x112005c0,pt);
         SetBkMode(hdc,2);
         TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
       }
@@ -2864,7 +2864,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
       rcT.right = dxHole + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
       if (0 < local_12) {
-        c = _WSPRINTF(szWork,(char *)0x112005c6,local_12);
+        c = _wsprintf(szWork,(char *)0x112005c6,local_12);
         SetBkMode(hdc,2);
         TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
       }
@@ -3524,7 +3524,7 @@ short FAddWayPoint(POINT ptIn,SCAN *pscan)
     MessageBeep(0x40);
     uVar12 = 0x56;
     pcVar5 = PszGetCompressedString(idsCantHaveDWaypoints);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar5),uVar12);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar5),uVar12);
     AlertSz((char *)szWork,0x10);
     sVar8 = 0;
   }

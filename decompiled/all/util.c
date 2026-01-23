@@ -832,7 +832,7 @@ char * PszPlayerName(short iPlayer,short fCapital,short fPlural,short fThe,short
   if (pplr->szName[0] == '\0') {
     iVar1 = iPlayer + 1;
     pcVar2 = PszGetCompressedString(idsPlayerD2);
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szName),(char *)CONCAT22(0x1120,pcVar2),iVar1);
+    _wsprintf((char *)CONCAT22(unaff_SS,szName),(char *)CONCAT22(0x1120,pcVar2),iVar1);
     if (fPlural == 0) {
       _strcat(szName,(char *)0x515);
     }
@@ -1677,13 +1677,13 @@ char * PszGetThingName(short id)
     }
     else {
       pcVar2 = PszPlayerName(lpth->idFull >> 9 & 0xf,0,0,0,0,(PLAYER *)0x0);
-      _WSPRINTF((char *)CONCAT22(unaff_SS,szPlr),(char *)0x11200518,pcVar2,0x1120);
+      _wsprintf((char *)CONCAT22(unaff_SS,szPlr),(char *)0x11200518,pcVar2,0x1120);
     }
     uVar5 = *(undefined2 *)((uint)*(byte *)((int)&((THING *)lpth)->u_THING_0x0006 + 6) * 2 + 0x4f2);
     uVar6 = 0x1120;
     pcVar4 = (char *)CONCAT22(unaff_SS,szPlr);
     pcVar2 = PszGetCompressedString(idsSSMineField);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar4,uVar5,uVar6);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar4,uVar5,uVar6);
   }
   else if (lpth->idFull >> 0xd == 1) {
     if ((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) == 0) {
@@ -1695,11 +1695,11 @@ char * PszGetThingName(short id)
       }
       else {
         pcVar2 = PszPlayerName(lpth->idFull >> 9 & 0xf,0,0,0,0,(PLAYER *)0x0);
-        _WSPRINTF((char *)CONCAT22(unaff_SS,szPlr),(char *)0x1120051c,pcVar2,0x1120);
+        _wsprintf((char *)CONCAT22(unaff_SS,szPlr),(char *)0x1120051c,pcVar2,0x1120);
       }
       pcVar2 = szPlr;
       pcVar1 = PszGetCompressedString(idsSmineralPacket);
-      _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),pcVar2);
+      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),pcVar2);
     }
   }
   else if (lpth->idFull >> 0xd == 2) {
@@ -1751,7 +1751,7 @@ char * PszGetFleetName(short id)
   }
   else {
     pcVar1 = PszPlayerName(iPlayer,0,0,0,0,(PLAYER *)0x0);
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szPlr),(char *)0x11200520,pcVar1,0x1120);
+    _wsprintf((char *)CONCAT22(unaff_SS,szPlr),(char *)0x11200520,pcVar1,0x1120);
   }
   if ((((FLEET *)lpfl == (FLEET *)0x0) && (lpfl._2_2_ == 0)) ||
      ((*(int *)&((FLEET *)lpfl)->lpszName == 0 &&
@@ -1780,10 +1780,10 @@ char * PszGetFleetName(short id)
         lpsz = szShdef;
       }
     }
-    _WSPRINTF(szWork,s__s_s___d_1120_0529,szPlr);
+    _wsprintf(szWork,s__s_s___d_1120_0529,szPlr);
   }
   else {
-    _WSPRINTF(szWork,(char *)0x11200524,szPlr);
+    _wsprintf(szWork,(char *)0x11200524,szPlr);
   }
   return (char *)szWork;
 }
@@ -1852,7 +1852,7 @@ char * PszFleetNameFromWord(ushort w)
     lpsz = PszGetCompressedString(idsFleet);
     unaff_SS = 0x1120;
   }
-  _WSPRINTF(szWork,(char *)0x11200532,lpsz,unaff_SS,(w & 0x1ff) + 1);
+  _wsprintf(szWork,(char *)0x11200532,lpsz,unaff_SS,(w & 0x1ff) + 1);
   return (char *)szWork;
 }
 
@@ -1881,7 +1881,7 @@ char * PszGetPlanetName(short id)
   else {
     uVar3 = 0x1120;
     pcVar2 = PszGetCompressedString(idsOrbitingS);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar1,uVar3);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar1,uVar3);
   }
   return (char *)szWork;
 }
@@ -2400,7 +2400,7 @@ char * PszGetLocName(GrobjClass grobj,short id,short x,short y)
   }
   else {
     pcVar1 = PszGetCompressedString(idsSpaceDD);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),x,y);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),x,y);
   }
   return (char *)szWork;
 }
@@ -2456,7 +2456,7 @@ short CchGetETA(HDC hdc,FLEET *lpfl,char *sz,short iwp,short fSmall)
       }
       sVar2 = cYears;
       pcVar3 = PszGetCompressedString(ids_00);
-      iVar4 = _WSPRINTF((char *)CONCAT22(0x1120,sz),(char *)CONCAT22(0x1120,pcVar3),sVar2);
+      iVar4 = _wsprintf((char *)CONCAT22(0x1120,sz),(char *)CONCAT22(0x1120,pcVar3),sVar2);
       if ((cYears != 1) && (fSmall == 0)) {
         sz[iVar4] = 's';
         iVar4 = iVar4 + 1;
@@ -2598,11 +2598,11 @@ char * PszGetDistance(short x1,short y1,short x2,short y2)
   lVar2 = lVar2 - uVar4;
   if (dyArial8 < 0xf) {
     pcVar1 = PszGetCompressedString(idsLdLdLightYears);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,lVar2);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,lVar2);
   }
   else {
     pcVar1 = PszGetCompressedString(idsLdLdLY);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,lVar2);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,lVar2);
   }
   return (char *)szWork;
 }
@@ -5017,17 +5017,17 @@ void OutputSz(short dt,char *sz)
   char szFile [256];
   char szTime [102];
   
-  _WSPRINTF((char *)CONCAT22(unaff_SS,szFile),(char *)0x11200564,(char *)szBase,0x1120,
+  _wsprintf((char *)CONCAT22(unaff_SS,szFile),(char *)0x11200564,(char *)szBase,0x1120,
             *(undefined2 *)(dt * 2 + 0x552),0x1120);
   sVar1 = __access(szFile,0);
   if (sVar1 == -1) {
     pcVar2 = SzVersion();
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szTemp),s_Stars___s_1120_056a,pcVar2,0x1120);
+    _wsprintf((char *)CONCAT22(unaff_SS,szTemp),s_Stars___s_1120_056a,pcVar2,0x1120);
     OutputFileString(szFile,szTemp);
   }
   __strdate(szDate);
   __strtime(szTime);
-  _WSPRINTF((char *)CONCAT22(unaff_SS,szTemp),s__s__s____s_1120_0578,szDate);
+  _wsprintf((char *)CONCAT22(unaff_SS,szTemp),s__s__s____s_1120_0578,szDate);
   OutputFileString(szFile,szTemp);
   return;
 }
@@ -5052,7 +5052,7 @@ void TurnLog(StringId ids)
   if ((int)ini.wFlags < 0) {
     iVar1 = game.turn + 0x961;
     pcVar2 = PszFormatIds(ids,(short *)0x0);
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szTemp),(char *)CONCAT22(0x1120,pcVar2),iVar1);
+    _wsprintf((char *)CONCAT22(unaff_SS,szTemp),(char *)CONCAT22(0x1120,pcVar2),iVar1);
     OutputSz(6,(char *)CONCAT22(unaff_SS,szTemp));
   }
   return;

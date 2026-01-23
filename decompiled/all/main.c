@@ -686,7 +686,7 @@ char * SzVersion(void)
   uVar3 = 0x3c;
   uVar2 = 2;
   pcVar1 = PszGetCompressedString(idsVersionD02dC);
-  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2,uVar3,uVar4);
+  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2,uVar3,uVar4);
   return (char *)szWork;
 }
 

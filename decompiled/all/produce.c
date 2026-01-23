@@ -1501,7 +1501,7 @@ void InitializeProductionDlg(HWND hwnd)
   pcVar1 = PszGetPlanetName(sel.pl.id);
   uVar10 = 0x1120;
   pcVar2 = PszGetCompressedString(idsProductionQueueS);
-  _WSPRINTF((char *)CONCAT22(unaff_SS,rgch),(char *)CONCAT22(0x1120,pcVar2),pcVar1,uVar10);
+  _wsprintf((char *)CONCAT22(unaff_SS,rgch),(char *)CONCAT22(0x1120,pcVar2),pcVar1,uVar10);
   pcVar1 = rgch;
   HVar4 = hwnd;
   SetWindowText(hwnd,(LPCSTR)CONCAT22(unaff_SS,pcVar1));
@@ -1690,7 +1690,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         TextOut(HVar16,iVar9,iVar7,(LPCSTR)CONCAT22(uVar15,pcVar4),sVar6);
         SelectObject(hdc,rghfontArial8[0]);
         SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),
                       *(undefined2 *)(&rgCost + k),*(undefined2 *)((int)&rgCost + k * 4 + 2));
         RightTextOut
                   (hdc,(rc._4_2_ - dxkT) + -2,rc._6_2_,(char *)szWork,c,
@@ -1710,7 +1710,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         uVar14 = __aFulshr(uVar17,in_stack_0000ff6a);
         uVar8 = (uint)uVar14 & 0x7f;
         pcVar4 = PszGetCompressedString(idsDDoneCompletion);
-        c = _WSPRINTF((char *)CONCAT22(unaff_SS,&stack0xff6a),(char *)CONCAT22(0x1120,pcVar4),uVar8)
+        c = _wsprintf((char *)CONCAT22(unaff_SS,&stack0xff6a),(char *)CONCAT22(0x1120,pcVar4),uVar8)
         ;
         PszProductionETA
                   (&sel.pl,
@@ -2665,7 +2665,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       iBase = i + -0x431;
       if (*(char *)((int)&vrgZipProd[0].fValid + iBase * 0x28) == '\0') {
         pcVar3 = PszGetCompressedString(idsUnusedD);
-        _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),(char)pcVar3,iBase + 1);
+        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),(char)pcVar3,iBase + 1);
       }
       else {
         pszT = (char *)szWork;
@@ -2717,7 +2717,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       *(undefined1 *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) = 0;
       iVar6 = iResTechNow + 1;
       pcVar3 = PszGetCompressedString(idsUnusedD);
-      _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar6);
+      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar6);
       HVar4 = GetDlgItem(hwnd,iResTechNow + 0x431);
       SetWindowText(HVar4,szWork);
       FillZipProdLB(hwnd,(ZIPPRODQ *)vrgZipProd + iResTechNow);
@@ -2733,7 +2733,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (*(char *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) == '\0') {
     sVar5 = iResTechNow;
     pcVar3 = PszGetCompressedString(idsCustomD);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
   }
   else {
     _strcpy((char *)szWork,
@@ -2751,7 +2751,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (szWork[0] == '\0') {
       sVar5 = iResTechNow;
       pcVar3 = PszGetCompressedString(idsCustomD);
-      _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
+      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
     }
     _strcpy(((ZIPPRODQ *)vrgZipProd)[iResTechNow].szName,
                     (char *)szWork);
@@ -2897,7 +2897,7 @@ void FillZipProdLB(HWND hwndDlg,ZIPPRODQ *pzpq)
         _strcpy((char *)szWork,szAuto);
       }
       else {
-        _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szFormat),szAuto);
+        _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szFormat),szAuto);
       }
       SendMessage(hwndLB,0x401,0,0x112057a4);
     }

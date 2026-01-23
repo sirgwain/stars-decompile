@@ -3666,11 +3666,11 @@ void CreateBackupDir(void)
     _strcpy(pchT,(char *)s_backup_1120_09e0);
   }
   else if (vcBackupDirs < 100) {
-    _WSPRINTF((char *)CONCAT22(0x1120,pchT),s_backup_d_1120_09e7,
+    _wsprintf((char *)CONCAT22(0x1120,pchT),s_backup_d_1120_09e7,
               game.turn % (uint)vcBackupDirs);
   }
   else {
-    _WSPRINTF((char *)CONCAT22(0x1120,pchT),s_backup__03d_1120_09f0,
+    _wsprintf((char *)CONCAT22(0x1120,pchT),s_backup__03d_1120_09f0,
               game.turn % (uint)vcBackupDirs);
   }
   __mkdir((char *)&szBackup);

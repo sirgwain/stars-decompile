@@ -424,7 +424,7 @@ void AdvanceTutor(void)
   if (fRedraw != 0) {
     iVar2 = tutor.idt / 8 + 1;
     pcVar3 = PszGetCompressedString(idsStarsTutorPageD80);
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szTitle),(char *)CONCAT22(0x1120,pcVar3),iVar2);
+    _wsprintf((char *)CONCAT22(unaff_SS,szTitle),(char *)CONCAT22(0x1120,pcVar3),iVar2);
     SetWindowText(tutor.hwnd,(LPCSTR)CONCAT22(unaff_SS,szTitle));
     ShowTutor(1);
     GetWindowRect(tutor.hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));

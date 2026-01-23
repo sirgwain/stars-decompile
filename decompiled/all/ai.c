@@ -36,7 +36,7 @@ void DoAiTurn(short iPlayer,ushort wMdPlr)
                         */
   sVar3 = idPlayer;
   fAi = 1;
-  _WSPRINTF((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),iPlayer + 1);
+  _wsprintf((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),iPlayer + 1);
   DestroyCurGame();
   sVar4 = FLoadGame((char *)szBase,szExt);
   pbVar1 = vlpbAiPlanet;

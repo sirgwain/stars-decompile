@@ -640,7 +640,7 @@ short AlertSz(char *sz,short mbType)
     sVar1 = MessageBox(HVar2,(LPCSTR)CONCAT22(0x1120,sz),(LPCSTR)0x11201385,mbType);
   }
   else {
-    _WSPRINTF((char *)CONCAT22(unaff_SS,szT),s_Error___s_1120_137b,sz,0x1120);
+    _wsprintf((char *)CONCAT22(unaff_SS,szT),s_Error___s_1120_137b,sz,0x1120);
     if ((ini.wFlags >> 0xe & 1) == 0) {
       sVar1 = 6;
     }
@@ -695,7 +695,7 @@ char * PszFromInt(short i,short *pcch)
   short sVar1;
   short cch;
   
-  sVar1 = _WSPRINTF(szFormatNumber,(char *)CONCAT22(0x1120,PCTD),i);
+  sVar1 = _wsprintf(szFormatNumber,(char *)CONCAT22(0x1120,PCTD),i);
   if (pcch != (short *)0x0) {
     *pcch = sVar1;
   }
@@ -717,7 +717,7 @@ char * PszFromLong(long l,short *pcch)
   short sVar1;
   short cch;
   
-  sVar1 = _WSPRINTF(szFormatNumber,(char *)CONCAT22(0x1120,PCTLD),(undefined2)l,
+  sVar1 = _wsprintf(szFormatNumber,(char *)CONCAT22(0x1120,PCTLD),(undefined2)l,
                     l._2_2_);
   if (*pcch != 0) {
     *pcch = sVar1;
@@ -796,7 +796,7 @@ short CommaFormatLong(char *psz,long l)
   short c;
   char rgch [18];
   
-  sVar1 = _WSPRINTF((char *)CONCAT22(unaff_SS,rgch),(char *)CONCAT22(0x1120,PCTLD),
+  sVar1 = _wsprintf((char *)CONCAT22(unaff_SS,rgch),(char *)CONCAT22(0x1120,PCTLD),
                     (undefined2)l,l._2_2_);
   pch = rgch;
   pchOut = psz;
@@ -3517,7 +3517,7 @@ short ProgressGaugeDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar1 = GetSystemMetrics(0);
     sVar2 = GetSystemMetrics(1);
     pcVar3 = PszGetCompressedString(idsGeneratingDataYearD);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),game.turn + 0x961);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),game.turn + 0x961);
     HVar4 = GetDlgItem(hwnd,0x42f);
     SetWindowText(HVar4,szWork);
     GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
@@ -3584,7 +3584,7 @@ void DrawProgressGauge(HDC hdcOrig,short fFull,short iNumOnly)
       if (iNumOnly < 1) {
         iNumOnly = vpctProgressGauge;
       }
-      c = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),iNumOnly);
+      c = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),iNumOnly);
       RightTextOut(hdc,rc.right + -2,1,szT,c,0x50);
     }
     if (fNumOnly == 0) {

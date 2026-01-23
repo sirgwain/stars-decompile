@@ -858,7 +858,7 @@ void DrawVCReport(HDC hdc)
             else {
               idsT = ids;
             }
-            cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),vcVal);
+            cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),vcVal);
             if (i == 3) {
               _strcat((char *)szWork,(char *)0x15ec);
               cch = cch + 1;
@@ -1231,7 +1231,7 @@ void DrawHistoryReport(HDC hdc)
   if (0 < cDrawn) {
     for (i = 0; i <= cDrawn; i = i + 1) {
       xCur = (dx * i) / cDrawn + rcChart.left;
-      cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),
+      cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),
                       iYearBase + 0x960 + i * j);
       CtrTextOut(hdc,xCur,rcChart.bottom + 6,szT,cch);
       if ((0 < i) && (i < cDrawn)) {
@@ -1303,7 +1303,7 @@ void DrawHistoryReport(HDC hdc)
       lVar6 = __aFldiv(uVar5,lVar6);
       yCur = rcChart.bottom - (int)lVar6;
       if (yCur < dyArial8 / 2 + rcChart.top) break;
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),(undefined2)cCur,
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),(undefined2)cCur,
                       cCur._2_2_);
       RightTextOut(hdc,xCur,yCur - dyArial8 / 2,(char *)szWork,cch,0);
       PatBlt(hdc,rcChart.left + -2,yCur,dx + 4,1,0xf00021);
@@ -1753,7 +1753,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
       return;
     case 3:
       sVar10 = PctPlanetCapacity(lppl);
-      cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTDPCTPCT),
+      cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTDPCTPCT),
                       sVar10);
       RightTextOut(hdc,prc->right,prc->top,szT,cch,0);
       return;
@@ -1762,7 +1762,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
       DVar19 = GetTextExtent(hdc,(LPCSTR)CONCAT22(unaff_SS,szT),cch);
       dx = (short)DVar19;
       i = PctPlanetDesirability(lppl,idPlayer);
-      cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTDPCTPCT),i);
+      cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTDPCTPCT),i);
       if (i < 0xb) {
         if (i < 0) {
           uVar9 = 0xff;
@@ -1786,7 +1786,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
         }
         SetTextColor(hdc,(ulong)uVar9);
       }
-      cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)0x112015f0,j);
+      cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)0x112015f0,j);
       RightTextOut(hdc,prc->right,prc->top,szT,cch,0);
       return;
     case 5:
@@ -1852,7 +1852,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
         lVar21 = __ftol((double)CONCAT26(in_stack_0000ff3e,
                                                  CONCAT24(unaff_SI,CONCAT22(unaff_DI,(int)lVar21))))
         ;
-        cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),
+        cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),
                         (char *)CONCAT22(0x1120,PCTDXPCTDPCTPCT),(int)lVar21);
       }
       goto REPORT_DrawPlusDef;
@@ -1906,9 +1906,9 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
         i = i - sVar10;
       }
       CchGetString(idsD4,szT);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),i);
+      cch = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),i);
       RightTextOut(hdc,prc->left + dx,prc->top,(char *)szWork,cch,0);
-      cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),j);
+      cch = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,PCTD),j);
       RightTextOut(hdc,prc->right,prc->top,szT,cch,0);
       return;
     case 0xd:
@@ -1990,7 +1990,7 @@ REPORT_DrawPlusDef:
       return;
     case 1:
       psz = szT;
-      cch = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)0x112015f7,(lpfl->id & 0x1ffU) + 1);
+      cch = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)0x112015f7,(lpfl->id & 0x1ffU) + 1);
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
       return;
     case 2:
@@ -1999,7 +1999,7 @@ REPORT_DrawPlusDef:
         sVar10 = (((FLEET *)lpfl)->pt).y;
         sVar11 = (&((FLEET *)lpfl)->pt)->x;
         pcVar8 = PszGetCompressedString(idsSpaceDD);
-        _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
+        _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
       }
       else {
         psz = PszGetPlanetName(((FLEET *)lpfl)->idPlanet);
@@ -2077,7 +2077,7 @@ REPORT_DrawPlusDef:
       ExtTextOut(HVar28,sVar10,sVar11,UVar26,(RECT *)CONCAT22(uVar25,pRVar24),
                  (LPCSTR)CONCAT22(uVar23,pcVar8),uVar7,(short *)0x0);
       psz = szT;
-      sVar11 = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTD),
+      sVar11 = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTD),
                          ((FLEET *)lpfl)->rgcsh[i]);
       chT = '+';
       sVar27 = 0;
@@ -2102,7 +2102,7 @@ REPORT_DrawPlusDef:
       }
       else {
         psz = szT;
-        cch = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTDPCTPCT),i);
+        cch = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTDPCTPCT),i);
       }
       RightTextOut(hdc,prc->right + -5,prc->top,psz,cch,0);
       return;
@@ -2159,7 +2159,7 @@ REPORT_DrawPlusDef:
       return;
     case 1:
       psz = szT;
-      cch = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)0x112015fa,(lpfl->id & 0x1ffU) + 1);
+      cch = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)0x112015fa,(lpfl->id & 0x1ffU) + 1);
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
       return;
     case 2:
@@ -2168,7 +2168,7 @@ REPORT_DrawPlusDef:
         sVar10 = (((FLEET *)lpfl)->pt).y;
         sVar11 = (&((FLEET *)lpfl)->pt)->x;
         pcVar8 = PszGetCompressedString(idsSpaceDD);
-        _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
+        _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
       }
       else {
         psz = PszGetPlanetName(((FLEET *)lpfl)->idPlanet);
@@ -2191,7 +2191,7 @@ REPORT_DrawPlusDef:
       }
       else {
         psz = szT;
-        cch = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)0x11201600,
+        cch = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)0x11201600,
                         *(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf);
       }
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
@@ -2219,7 +2219,7 @@ REPORT_DrawPlusDef:
       ExtTextOut(HVar28,sVar10,sVar11,UVar26,(RECT *)CONCAT22(uVar25,pRVar24),
                  (LPCSTR)CONCAT22(uVar23,pcVar8),uVar7,(short *)0x0);
       psz = szT;
-      sVar11 = _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTD),
+      sVar11 = _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,PCTD),
                          ((FLEET *)lpfl)->rgcsh[i]);
       chT = '+';
       sVar27 = 0;
@@ -2313,7 +2313,7 @@ REPORT_DrawPlusDef:
       sVar10 = (((BTLDATA *)lpbd)->pt).y;
       sVar11 = (&((BTLDATA *)lpbd)->pt)->x;
       pcVar8 = PszGetCompressedString(idsSpaceDD);
-      _WSPRINTF((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
+      _wsprintf((char *)CONCAT22(0x1120,psz),(char *)CONCAT22(0x1120,pcVar8),sVar11,sVar10);
     }
     else {
       psz = PszGetPlanetName(((BTLDATA *)lpbd)->idPlanet);
@@ -2866,7 +2866,7 @@ REPORT_LShowTask:
           uVar8 = _strlen(pcVar7);
           pcVar7[uVar8 - 3] = '\0';
           if (bVar4) {
-            _WSPRINTF(szWork,(char *)0x11201603,pcVar7,0x1120,local_18[icr] & 0xfff);
+            _wsprintf(szWork,(char *)0x11201603,pcVar7,0x1120,local_18[icr] & 0xfff);
           }
           else {
             if (icr == 4) {
@@ -2875,7 +2875,7 @@ REPORT_LShowTask:
             else {
               pcVar9 = (char *)0x1613;
             }
-            _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar9),pcVar7,0x1120,
+            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),pcVar7,0x1120,
                       local_18[icr] & 0xfff);
           }
           pcVar7 = (char *)szWork;
@@ -2894,7 +2894,7 @@ REPORT_LShowTask:
       if (local_18[0] < 5) {
         iVar10 = local_18[0] + 1;
         pcVar7 = PszGetCompressedString(ids);
-        _WSPRINTF(szWork,(char *)0x1120161b,pcVar7,0x1120,iVar10);
+        _wsprintf(szWork,(char *)0x1120161b,pcVar7,0x1120,iVar10);
       }
       else {
         CchGetString(ids,(char *)szWork);
@@ -2905,7 +2905,7 @@ REPORT_LShowTask:
       if (local_18[1] < 0xb) {
         iVar10 = (local_18[1] + 1) * 0x32;
         pcVar7 = PszGetCompressedString(ids);
-        _WSPRINTF(szWork,s__s__dly_1120_1623,pcVar7,0x1120,iVar10);
+        _wsprintf(szWork,s__s__dly_1120_1623,pcVar7,0x1120,iVar10);
       }
       else {
         CchGetString(ids,(char *)szWork);
@@ -3362,7 +3362,7 @@ short ICompReport(void *arg1,void *arg2)
         case 0:
           if (*(int *)(((PLANET *)lppl2)->rgpctMinLevel + 2) == -1) {
             pcVar8 = PszGetCompressedString(idsSpaceDD);
-            _WSPRINTF((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
+            _wsprintf((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
           }
           else {
             psz = PszGetPlanetName(*(short *)(((PLANET *)lppl2)->rgpctMinLevel + 2));
@@ -3371,7 +3371,7 @@ short ICompReport(void *arg1,void *arg2)
           uVar10 = (undefined2)((ulong)pct2 >> 0x10);
           if (*(int *)(SUB42(pct2,0) + 8) == -1) {
             pcVar8 = PszGetCompressedString(idsSpaceDD);
-            _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar8));
+            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar8));
             psz = (char *)szWork;
           }
           else {
@@ -3500,7 +3500,7 @@ REPORT_LUnitsLeft:
       case 2:
         if (pFVar1->idPlanet == -1) {
           pcVar8 = PszGetCompressedString(idsSpaceDD);
-          _WSPRINTF((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
+          _wsprintf((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
         }
         else {
           psz = PszGetPlanetName(pFVar1->idPlanet);
@@ -3509,7 +3509,7 @@ REPORT_LUnitsLeft:
         uVar10 = (undefined2)((ulong)lppl2 >> 0x10);
         if (*(int *)((PLANET *)lppl2)->rgpctMinLevel == -1) {
           pcVar8 = PszGetCompressedString(idsSpaceDD);
-          _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar8));
+          _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar8));
           psz = (char *)szWork;
         }
         else {
@@ -3709,7 +3709,7 @@ REPORT_LEFleetCount:
     case 2:
       if (pFVar1->idPlanet == -1) {
         pcVar8 = PszGetCompressedString(idsSpaceDD);
-        _WSPRINTF((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
+        _wsprintf((char *)CONCAT22(unaff_SS,&szT),(char *)CONCAT22(0x1120,pcVar8));
       }
       else {
         psz = PszGetPlanetName(pFVar1->idPlanet);
@@ -3718,7 +3718,7 @@ REPORT_LEFleetCount:
       uVar10 = (undefined2)((ulong)lppl2 >> 0x10);
       if (*(int *)((PLANET *)lppl2)->rgpctMinLevel == -1) {
         pcVar8 = PszGetCompressedString(idsSpaceDD);
-        _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar8));
+        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar8));
         psz = (char *)szWork;
       }
       else {
@@ -4463,12 +4463,12 @@ void DumpUniverse(void)
     sVar4 = __setjmp(env);
     if (sVar4 == 0) {
       fFileErrSilent = 1;
-      _WSPRINTF(szWork,(char *)0x11201633,(char *)szBase,0x1120);
+      _wsprintf(szWork,(char *)0x11201633,(char *)szBase,0x1120);
       StreamOpen((char *)szWork,0x1012);
       RgToStream((void *)0x1120163a,0xc);
       for (i = 0; i < game.cPlanMax; i = i + 1) {
         pcVar5 = PszGetCompressedPlanet(((short *)rgidPlan)[i]);
-        cb = _WSPRINTF(szWork,(char *)0x11201647,i + 1,
+        cb = _wsprintf(szWork,(char *)0x11201647,i + 1,
                        ((POINT *)rgptPlan + i)->x,
                        *(undefined2 *)((int)&rgptPlan[0].y + i * 4),pcVar5,0x1120);
         RgToStream(szWork,cb);
@@ -4490,7 +4490,7 @@ void DumpUniverse(void)
   uVar7 = 0x1120;
   pcVar6 = (char *)szBase;
   pcVar5 = PszGetCompressedString(ids);
-  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar5),pcVar6,uVar7);
+  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar5),pcVar6,uVar7);
   if (bVar1) {
     AlertSz((char *)szWork,0x40);
   }
@@ -4565,11 +4565,11 @@ void DumpPlanets(void)
     if (sVar1 == 0) {
       fFileErrSilent = 1;
       if ((gd.grBits2._2_2_ >> 5 & 1) == 0) {
-        _WSPRINTF((char *)CONCAT22(unaff_SS,szFile),s__s_pla_1120_165c,(char *)szBase,
+        _wsprintf((char *)CONCAT22(unaff_SS,szFile),s__s_pla_1120_165c,(char *)szBase,
                   0x1120);
       }
       else {
-        _WSPRINTF((char *)CONCAT22(unaff_SS,szFile),(char *)0x11201655,(char *)szBase,
+        _wsprintf((char *)CONCAT22(unaff_SS,szFile),(char *)0x11201655,(char *)szBase,
                   0x1120,idPlayer + 1);
       }
       StreamOpen(szFile,0x1012);
@@ -4647,7 +4647,7 @@ void DumpPlanets(void)
         }
         else {
           i = PctPlanetDesirability(lppl,idPlayer);
-          _WSPRINTF((char *)CONCAT22(unaff_SS,szForm + 1),(char *)CONCAT22(0x1120,PCTDPCTPCT)
+          _wsprintf((char *)CONCAT22(unaff_SS,szForm + 1),(char *)CONCAT22(0x1120,PCTDPCTPCT)
                     ,i);
         }
         uVar3 = _strlen(szForm);
@@ -4678,7 +4678,7 @@ void DumpPlanets(void)
           uVar3 = (ushort)lVar9;
           uVar10 = __aFulshr(CONCAT22(uVar8,uVar3),unaff_DI);
           uVar10 = __aFulshr((ulong)((uint)uVar10 & 0xfff),uVar3);
-          _WSPRINTF((char *)CONCAT22(unaff_SS,szForm + 1),(char *)0x11201663,(uint)uVar10 & 0xfff,0)
+          _wsprintf((char *)CONCAT22(unaff_SS,szForm + 1),(char *)0x11201663,(uint)uVar10 & 0xfff,0)
           ;
         }
         else {
@@ -4686,7 +4686,7 @@ void DumpPlanets(void)
           szForm[1] = 9;
           szForm[3] = 0;
           if (((gd.grBits2._2_2_ >> 5 & 1) != 0) && (pPVar5->uGuesses >> 0xc != 0)) {
-            cch = _WSPRINTF((char *)CONCAT22(unaff_SS,szForm + 3),(char *)0x11201673,
+            cch = _wsprintf((char *)CONCAT22(unaff_SS,szForm + 3),(char *)0x11201673,
                             (pPVar5->uGuesses >> 0xc) * 6 + 3);
             szForm[cch + 3] = '\0';
           }
@@ -4873,7 +4873,7 @@ void DumpPlanets(void)
   }
   pcVar2 = szFile;
   pcVar4 = PszGetCompressedString(ids);
-  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),pcVar2);
+  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),pcVar2);
   if (fSuccess == 0) {
     AlertSz((char *)szWork,0x10);
   }
@@ -4956,11 +4956,11 @@ void DumpFleets(void)
     if (sVar3 == 0) {
       fFileErrSilent = 1;
       if ((gd.grBits2._2_2_ >> 5 & 1) == 0) {
-        _WSPRINTF((char *)CONCAT22(unaff_SS,szFile),(char *)0x11201686,(char *)szBase,
+        _wsprintf((char *)CONCAT22(unaff_SS,szFile),(char *)0x11201686,(char *)szBase,
                   0x1120);
       }
       else {
-        _WSPRINTF((char *)CONCAT22(unaff_SS,szFile),(char *)0x1120167f,(char *)szBase,
+        _wsprintf((char *)CONCAT22(unaff_SS,szFile),(char *)0x1120167f,(char *)szBase,
                   0x1120,idPlayer + 1);
       }
       StreamOpen(szFile,0x1012);
@@ -5218,7 +5218,7 @@ void DumpFleets(void)
   }
   pcVar5 = szFile;
   pcVar7 = PszGetCompressedString(ids);
-  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),pcVar5);
+  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),pcVar5);
   if (fSuccess == 0) {
     AlertSz((char *)szWork,0x10);
   }

@@ -63,12 +63,12 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           if (iVar5 == vpctRadarView) {
             iSel = j;
           }
-          _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),iVar5);
+          _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),iVar5);
           SendMessage(hwndTBRadar,0x403,0,0x112057a4);
         }
         SendMessage(hwndTBRadar,0x415,4,0);
         SendMessage(hwndTBRadar,0x40e,iSel,0);
-        _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),vpctRadarView);
+        _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),vpctRadarView);
         SetWindowText(hwndTBRadar,szWork);
         pfVar6 = (fn_lpfnRealComboProc *)GetWindowLong(hwndTBRadar,-4);
         lpfnRealComboProc = pfVar6;
@@ -738,7 +738,7 @@ joined_r0x1068150e:
     for (i__32 = 0; sVar2 = c__30, i__32 < 9; i__32 = i__32 + 1) {
       rgid__68[c__30 * 2] = (uint)(iScanZoom + 4 == i__32);
       rgid__68[sVar2 * 2 + 1] = 0;
-      _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + i__32 * 8),
+      _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + i__32 * 8),
                 (char *)CONCAT22(0x1120,PCTDPCTPCT),*(undefined2 *)(i__32 * 2 + 0xda4));
       rgszScan__28[c__30] = (char *)szWork + i__32 * 8;
       c__30 = c__30 + 1;
@@ -811,7 +811,7 @@ void TerminateToolbarFocus(short fCancel)
     pct = 100;
   }
   SendMessage(hwndTBRadar,0x40e,(100 - pct) / 10,0);
-  _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct);
+  _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct);
   SetWindowText(hwndTBRadar,szWork);
   if (pct != vpctRadarView) {
     vpctRadarView = pct;

@@ -388,7 +388,7 @@ void DrawResearchDlg(HWND hwnd,HDC hdc,RECT *prc,short grbitDraw)
       in_stack_0000ff44 = CONCAT22(iVar2 + (dyArial8 >> 2) + dyArial8 + 2,iVar6)
       ;
       for (i = 0; i < 6; i = i + 1) {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                       (int)*(char *)(idPlayer * 0xc0 + 0x59bc + i));
         CtrTextOut(hdc,xCtr,(short)((ulong)in_stack_0000ff44 >> 0x10),
                             (char *)szWork,c);
@@ -535,7 +535,7 @@ RESEARCH_TooManyToFinish:
       sVar18 = (short)in_stack_0000ff44;
       CchGetString(iResTechNow + idsEnergy,szTemp);
       CchGetString(idsSTechLevelD,szTemp2);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szTemp2),szTemp);
+      c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szTemp2),szTemp);
       RightTextOut(hdc,xCtr,iVar2,(char *)szWork,c,0);
       iVar2 = iVar2 + (dyArial8 * 3) / 2;
       sVar15 = 0;
@@ -546,7 +546,7 @@ RESEARCH_TooManyToFinish:
         c = CchGetString(idsMaxed,(char *)szWork);
       }
       else {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),l,local_b0);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),l,local_b0);
       }
       TextOut(hdc,xCtr,iVar2,szWork,c);
       in_stack_0000ff44 = CONCAT22(iVar2 + (dyArial8 * 3) / 2,sVar18);
@@ -603,7 +603,7 @@ RESEARCH_TooManyToFinish:
         uVar12 = 0x73;
       }
       pcVar11 = PszGetCompressedString(idsLdYearC);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar11),(int)lVar9,
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar11),(int)lVar9,
                     (int)((ulong)lVar9 >> 0x10),uVar12);
       TextOut(hdc,xCtr,(short)((ulong)in_stack_0000ff44 >> 0x10),szWork,c);
     }
@@ -638,7 +638,7 @@ LAB_10d8_144a:
     sVar14 = 0;
     pcVar11 = PszGetCompressedString(idsAnnualResourcesPlanets);
     RightTextOut(hdc,xCtr,iVar2,pcVar11,sVar14,sVar15);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),
                   (undefined2)lResTotal,lResTotal._2_2_);
     RightTextOut(hdc,xNum,iVar2,(char *)szWork,c,0);
   }
@@ -648,7 +648,7 @@ LAB_10d8_144a:
     sVar14 = 0;
     pcVar11 = PszGetCompressedString(idsTotalResourcesSpentResearchLastYear);
     RightTextOut(hdc,xCtr,iVar2,pcVar11,sVar14,sVar15);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),
                   *(undefined2 *)((int)&rgplr[0].lResLastYear + idPlayer * 0xc0),
                   *(undefined2 *)
                    ((int)&rgplr[0].lResLastYear + 2 + idPlayer * 0xc0));
@@ -668,7 +668,7 @@ LAB_10d8_144a:
     pcVar11 = PszGetCompressedString(idsResourcesBudgetedResearch);
     RightTextOut(hdc,xCtr,iVar2,pcVar11,sVar14,sVar15);
   }
-  c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),pctResGlob);
+  c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),pctResGlob);
   RightTextOut(hdc,xNum,iVar2,(char *)szWork,c,dx);
   if (((grbitDraw & 0x4000U) == 0) || ((grbitDraw & 0xfU) != 0)) {
     DVar8 = GetTextExtent(hdc,(LPCSTR)0x11200d19,1);
@@ -693,7 +693,7 @@ LAB_10d8_144a:
     pcVar11 = PszGetCompressedString(idsYearsProjectedResearchBudget);
     RightTextOut(hdc,xCtr,iVar2,pcVar11,sVar14,sVar15);
   }
-  c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)lResBudget,
+  c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)lResBudget,
                 lResBudget._2_2_);
   RightTextOut(hdc,xNum,iVar2,(char *)szWork,c,xNum - xCtr);
   sVar14 = GetRaceGrbit((PLAYER *)rgplr + idPlayer,
@@ -1499,7 +1499,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
       c = CchGetString(i + idsEner,(char *)szWork);
       RightTextOut(hdc,dxStr,yCur,(char *)szWork,c,0);
       SetTextColor(hdc,0);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                     (int)*(char *)(*(int *)&(&ppart->u_PART_0x0004)->parmor + 2 + i));
       RightTextOut(hdc,xNum,yCur,(char *)szWork,c,0);
       fReq = 1;
@@ -1537,7 +1537,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
     else {
       lVar17 = lVar13;
       pcVar4 = PszGetCompressedString(idsCostLd);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar17,
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar17,
                     (int)((ulong)lVar17 >> 0x10));
       TextOut(hdc,5,yCur + dyArial8 + 4,szWork,c);
     }
@@ -1545,7 +1545,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
   else {
     lVar17 = __aFldiv(lVar13 + 500,1000);
     pcVar4 = PszGetCompressedString(idsCostLdk);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar17,
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar17,
                   (int)((ulong)lVar17 >> 0x10));
     TextOut(hdc,5,yCur + dyArial8 + 4,szWork,c);
   }
@@ -1585,7 +1585,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
       if (((ppart->hs).grhst == hstSBHull) || ((ppart->hs).grhst == hstSpecialSB)) {
         c = c - c / 2;
       }
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),c);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),c);
       RightTextOut
                 (hdc,dxStr + dxMaxMineralQuan,yCur,(char *)szWork,c,0);
       if (i < 5) {
@@ -1598,7 +1598,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
   if (((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->cMass != 0) {
     sVar3 = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->cMass;
     pcVar4 = PszGetCompressedString(idsMassDkt);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
     TextOut(hdc,dxStr + dxMaxMineralQuan + 0x20,yStart,szWork,c);
   }
   if (xNum + 4 < 0x49) {
@@ -1653,7 +1653,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
         SelectObject(hdc,hbrGray);
         PatBlt(hdc,x__74 + 4,y__58,((rcData.right - rcData.left) - dxStr) + -4,1,0xf00021);
       }
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct__62);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct__62);
       RightTextOut
                 (hdc,x__74,y__58 - (dyArial8 >> 1),(char *)szWork,c,0);
       PatBlt(hdc,x__74 + 4,y__58,5,1,0x42);
@@ -1786,7 +1786,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
     }
     else {
       c = CchGetString(idsEnemyFleetsOrbitingPlanetCanDetectedD,szT);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),i);
+      c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),i);
     }
     dyText = DRAWTEXT(hdc,szWork,c,(RECT *)CONCAT22(unaff_SS,&rcData),0x810);
     rcData.top = rcData.top + (dyArial8 >> 1) + dyText;
@@ -1819,7 +1819,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
       else {
         uVar19 = 200;
       }
-      c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),uVar19);
+      c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),uVar19);
       ids = 0x164;
     }
     dyText = DRAWTEXT(hdc,szWork,c,(RECT *)CONCAT22(unaff_SS,&rcData),0x810);
@@ -1834,7 +1834,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
     pcVar4 = PszGetCompressedString(idsShieldStrength);
     DxStreamTextOut(hdc,&dyPct,rcData.top,pcVar4,sVar3,sVar22);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
     DxStreamTextOut(hdc,&dyPct,rcData.top,(char *)szWork,c,1);
     if (((ppart->hs).wFlags_0x2 & 0xff) == 4) {
@@ -1872,7 +1872,7 @@ RESEARCH_LShieldDisp:
     pcVar4 = PszGetCompressedString(idsArmorStrength2);
     DxStreamTextOut(hdc,(short *)rgch,rcData.top,pcVar4,sVar3,sVar22);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
     DxStreamTextOut(hdc,(short *)rgch,rcData.top,(char *)szWork,c,1);
     if (((ppart->hs).wFlags_0x2 & 0xff) == 7) {
@@ -1907,7 +1907,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + dyArial8;
@@ -1915,7 +1915,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + dyArial8;
@@ -1923,7 +1923,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->init);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     rcData.top = yText + (dyArial8 * 3) / 2;
@@ -1953,7 +1953,7 @@ RESEARCH_LArmDisp:
         rcData.top = rcData.top + sVar3;
         iVar5 = ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp << 4;
         pcVar4 = PszGetCompressedString(idsWeaponAlsoMakesExcellentMineSweeperCapable);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
         DRAWTEXT(hdc,szWork,c,(RECT *)CONCAT22(unaff_SS,&rcData),0x810);
       }
       SelectObject(hdc,rghfontArial8[0]);
@@ -1975,7 +1975,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + dyArial8;
@@ -1983,7 +1983,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + dyArial8;
@@ -1991,7 +1991,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->init);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + dyArial8;
@@ -1999,7 +1999,7 @@ RESEARCH_LArmDisp:
     SelectObject(hdc,rghfontArial8[1]);
     RightTextOut(hdc,(short)rgch,yText,(char *)szWork,c,0);
     SelectObject(hdc,rghfontArial8[0]);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->grfAbilities);
     TextOut(hdc,(short)rgch,yText,szWork,c);
     yText = yText + (dyArial8 * 3) / 2;
@@ -2026,7 +2026,7 @@ RESEARCH_LArmDisp:
     }
     else {
       CchGetString(idsBombWillKillApproximatelyDDPlanets,(char *)szWork);
-      c = _WSPRINTF((char *)CONCAT22(unaff_SS,szT),szWork,
+      c = _wsprintf((char *)CONCAT22(unaff_SS,szT),szWork,
                     ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp / 10,
                     ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp % 10);
       if (((ppart->hs).wFlags_0x2 & 0xff) < 5) {
@@ -2046,7 +2046,7 @@ RESEARCH_LArmDisp:
           ids_00 = idsIfPlanetHasDefensesBombGuaranteedKill;
         }
         CchGetString(ids_00,(char *)szWork);
-        sVar3 = _WSPRINTF((char *)CONCAT22(unaff_SS,szT + c),szWork,dmgFloor * 100);
+        sVar3 = _wsprintf((char *)CONCAT22(unaff_SS,szT + c),szWork,dmgFloor * 100);
         c = c + sVar3;
       }
       _strcpy((char *)szWork,szT);
@@ -2065,7 +2065,7 @@ RESEARCH_LArmDisp:
       }
       else {
         CchGetString(idsBombWillDestroyApproximatelyDPlanetsMines,szT);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),
+        c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
                       ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->init);
       }
       WrapTextOut
@@ -2101,7 +2101,7 @@ RESEARCH_LArmDisp:
     case 1:
     case 6:
       c = CchGetString(idsModuleContainsRobotsCapableMining,(char *)szWork);
-      sVar3 = _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + c),
+      sVar3 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + c),
                         (char *)CONCAT22(0x1120,PCTD),
                         ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
       c = c + sVar3;
@@ -2191,31 +2191,31 @@ RESEARCH_LArmDisp:
         ids = 0x151;
       }
     }
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                   ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp * 10);
     TextOut(hdc,rcData.left + dxWarp + 4,rcData.top,szWork,c);
     rcData.top = rcData.top + dyArial8;
     sVar3 = dxDigit__54;
     pcVar4 = PszGetCompressedString(idsWarpD2);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
     TextOut(hdc,rcData.left + dxWarp + 4,rcData.top,szWork,c);
     rcData.top = rcData.top + dyArial8;
     iVar11 = y__58 % 10;
     iVar5 = y__58 / 10;
     pcVar4 = PszGetCompressedString(idsDD2);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5,iVar11);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5,iVar11);
     TextOut(hdc,rcData.left + dxWarp + 4,rcData.top,szWork,c);
     rcData.top = rcData.top + dyArial8;
     pcVar4 = rcT;
     sVar3 = dyPct;
     pcVar6 = PszGetCompressedString(idsDDEngine);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar6),pcVar4,sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar6),pcVar4,sVar3);
     TextOut(hdc,rcData.left + dxWarp + 4,rcData.top,szWork,c);
     rcData.top = rcData.top + dyArial8;
     acVar20 = rgch;
     sVar3 = pct__62;
     pcVar4 = PszGetCompressedString(idsDD3);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),acVar20,sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),acVar20,sVar3);
     TextOut(hdc,rcData.left + dxWarp + 4,rcData.top,szWork,c);
     rcData.top = rcData.top + dyArial8;
     SelectObject(hdc,rghfontArial7[0]);
@@ -2276,7 +2276,7 @@ RESEARCH_LArmDisp:
         c = CchGetString(idsUnlimited,(char *)szWork);
       }
       else {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),
                       ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
       }
       DxStreamTextOut(hdc,&xText__34,yText,(char *)szWork,c,1);
@@ -2294,7 +2294,7 @@ RESEARCH_LArmDisp:
       else {
         sVar3 = ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp;
         pcVar4 = PszGetCompressedString(idsDLightYears);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
       }
       DxStreamTextOut(hdc,&xText__34,yText,(char *)szWork,c,1);
       if (((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp == -1) {
@@ -2304,19 +2304,19 @@ RESEARCH_LArmDisp:
         else {
           iVar5 = ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp * 5;
           pcVar4 = PszGetCompressedString(idsWarningShipsCanSuccessfullyGatedDL);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
         }
       }
       else if (((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp == -1) {
         iVar5 = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp * 5;
         pcVar4 = PszGetCompressedString(idsWarningShipsDktCanSuccessfullyGatedExceeding);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar5);
       }
       else {
         iVar5 = ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp * 5;
         iVar11 = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp * 5;
         pcVar4 = PszGetCompressedString(idsWarningShipsDktMightSuccessfullyGatedD);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,iVar5);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,iVar5);
       }
     }
     else if (idsT == 0x2e1) {
@@ -2326,7 +2326,7 @@ RESEARCH_LArmDisp:
       pcVar4 = PszGetCompressedString(idsWarp);
       DxStreamTextOut(hdc,&xText__34,yText,pcVar4,sVar3,sVar22);
       SelectObject(hdc,rghfontArial8[0]);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                     ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
       DxStreamTextOut(hdc,&xText__34,yText,(char *)szWork,c,1);
       xText__34 = rcData.left;
@@ -2391,7 +2391,7 @@ RESEARCH_LArmDisp:
         c = CchGetString(idsUnlimited,(char *)szWork);
       }
       else {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),
                       ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
       }
       TextOut(hdc,dyPct,(short)rgch,szWork,c);
@@ -2404,12 +2404,12 @@ RESEARCH_LArmDisp:
       RightTextOut(hdc,dyPct,(short)rgch,(char *)szWork,c,0);
       SelectObject(hdc,rghfontArial8[0]);
       if (i == 0) {
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                       ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->init);
       }
       else if (i == 1) {
         pHVar15 = LphuldefFromId((&ppart->u_PART_0x0004)->phul->ihuldef);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                       ((HULDEF *)pHVar15)->wFlags_0x7b & 0x3f);
       }
       TextOut(hdc,dyPct,(short)rgch,szWork,c);
@@ -2430,12 +2430,12 @@ RESEARCH_LArmDisp:
         if (((ppart->hs).wFlags_0x2 & 0xff) < 8) {
           ids = 0x15c;
           c = CchGetString(idsAllowsModifyAnyPlanetsThreeEnvironmentVariables,szT);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),
+          c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
                         ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
         }
         else {
           c = CchGetString(idsAllowsModifyPlanetsSDOriginalValue,szT);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),
+          c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
                         *(undefined2 *)
                          (((int)(((ppart->hs).wFlags_0x2 & 0xff) - 8) / 4) * 2 + 0x47e),0x1120,
                         ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
@@ -2491,20 +2491,20 @@ RESEARCH_LArmDisp:
           RightTextOut(hdc,dyPct,rcData.top,(char *)szWork,c,0);
           SelectObject(hdc,rghfontArial8[0]);
           if (i == 0) {
-            c = _WSPRINTF(szWork,(char *)0x11200d2c,
+            c = _wsprintf(szWork,(char *)0x11200d2c,
                           ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp);
           }
           else if (i == 1) {
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),
                           ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp);
           }
           else if (i == 2) {
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                           ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->init);
           }
           else if (i == 3) {
             pHVar15 = LphuldefFromId((&ppart->u_PART_0x0004)->phul->ihuldef);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
                           ((HULDEF *)pHVar15)->wFlags_0x7b & 0x3f);
           }
           TextOut(hdc,dyPct,rcData.top,szWork,c);
@@ -2520,7 +2520,7 @@ RESEARCH_LArmDisp:
           else {
             dxDigit__54 = 10;
           }
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,rcT),dxDigit__54);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,rcT),dxDigit__54);
           SelectObject(hdc,rghfontArial8[0]);
           dyPct = rcData.left;
           yText = rcData.top;
@@ -2552,7 +2552,7 @@ RESEARCH_LArmDisp:
             i = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp;
             c = CchGetString(idsEnemyFleetsOrbitingPlanetCanDetectedD,szT);
             sVar3 = _abs(i);
-            c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),sVar3);
+            c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),sVar3);
             if (i < 0) {
               WrapTextOut
                         (hdc,&dmgFloor,&dyText,(char *)szWork,c,rcData.left,
@@ -2560,7 +2560,7 @@ RESEARCH_LArmDisp:
               dmgFloor = rcData.left;
               dyText = dyText + (dyArial8 * 3) / 2;
               c = CchGetString(idsScannerCanDeterminePlanetsBasicStatsDistance,szT);
-              c = _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),-i >> 1);
+              c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),-i >> 1);
               ids = 0x164;
             }
             else {
@@ -2605,7 +2605,7 @@ RESEARCH_LArmDisp:
           pct = 100;
           SetTextColor(hdc,0);
           for (; 0 < pct; pct = pct + -0x14) {
-            c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct);
+            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct);
             RightTextOut
                       (hdc,iVar11,y - (dyArial8 >> 1),(char *)szWork,c,0);
             PatBlt(hdc,iVar11 + 4,y,5,1,0x42);
@@ -2619,7 +2619,7 @@ RESEARCH_LArmDisp:
           DVar12 = GetTextExtent(hdc,(LPCSTR)0x11200d31,1);
           iVar11 = (int)DVar12;
           for (i = 0; i < 6; i = i + 1) {
-            sVar3 = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD),i * 0x14);
+            sVar3 = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i * 0x14);
             if (i == 0) {
               iVar8 = iVar11 >> 1;
             }
@@ -2709,7 +2709,7 @@ RESEARCH_LArmDisp:
         uVar19 = 100;
       }
       pcVar4 = PszGetCompressedString(idsPodIncreasesCargoCapacityShipDkt);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
       goto RESEARCH_PrintSpecial;
     case 4:
       idsT = 0xd6;
@@ -2724,7 +2724,7 @@ RESEARCH_LArmDisp:
         uVar19 = 500;
       }
       pcVar4 = PszGetCompressedString(idsPodIncreasesFuelCapacityShipDmg);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
       goto RESEARCH_PrintSpecial;
     case 7:
     case 8:
@@ -2735,7 +2735,7 @@ RESEARCH_LArmDisp:
         uVar19 = 2;
       }
       pcVar4 = PszGetCompressedString(idsIncreasesSpeedBattle1DSquareMovement);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
       goto RESEARCH_PrintSpecial;
     case 9:
       idsT = 0xd9;
@@ -2776,7 +2776,7 @@ RESEARCH_LArmDisp:
     }
     sVar3 = idsT;
     pcVar4 = PszGetCompressedString(idsCloaksAnyShipReducingRangeWhichScanners);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
     goto RESEARCH_PrintSpecial;
   case 4:
     idsT = 0xdd;
@@ -2789,7 +2789,7 @@ RESEARCH_LArmDisp:
     iVar5 = ((ppart->hs).wFlags_0x2 & 0xff) - 4;
     sVar3 = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp;
     pcVar4 = PszGetCompressedString(idsModuleIncreasesAccuracyTorpedoesDIncreasesInitia);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3,iVar5);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3,iVar5);
     goto RESEARCH_PrintSpecial;
   case 8:
   case 0xb:
@@ -2799,7 +2799,7 @@ RESEARCH_LArmDisp:
     idsT = 0x3a0;
     sVar3 = ((ARMOR *)(&ppart->u_PART_0x0004)->parmor)->dp;
     pcVar4 = PszGetCompressedString(idsHasDChanceDeflectingIncomingTorpedoesDeflected);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar3);
     goto RESEARCH_PrintSpecial;
   case 0xd:
     ids = 0x39a;
@@ -2811,7 +2811,7 @@ RESEARCH_LArmDisp:
       uVar19 = 0x14;
     }
     pcVar4 = PszGetCompressedString(idsIncreasesDamageDoneBeamWeaponsShipD);
-    c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
+    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar19);
     goto RESEARCH_PrintSpecial;
   case 0xe:
     ids = 0x398;

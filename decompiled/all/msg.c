@@ -541,7 +541,7 @@ LAB_1030_626c:
     uVar21 = 10;
     uVar20 = 0xd;
     pcVar6 = PszPlayerName(((MSGPLR *)lpmsgplr)->iPlrFrom,1,1,1,0,(PLAYER *)0x0);
-    cch = _WSPRINTF((char *)CONCAT13((char)((uint)lpb2k._2_2_ >> 8),
+    cch = _wsprintf((char *)CONCAT13((char)((uint)lpb2k._2_2_ >> 8),
                                      CONCAT12((char)lpb2k._2_2_,(byte *)lpb2k)),
                     (char *)CONCAT22(unaff_SS,szT),pcVar6,0x1120,uVar20,uVar21);
     CchGetString(idsSCC2,szT);
@@ -553,7 +553,7 @@ LAB_1030_626c:
     else {
       pcVar6 = PszPlayerName(((MSGPLR *)lpmsgplr)->iPlrTo + -1,1,1,1,0,(PLAYER *)0x0);
     }
-    sVar9 = _WSPRINTF((char *)CONCAT13((char)((uint)lpb2k._2_2_ >> 8),
+    sVar9 = _wsprintf((char *)CONCAT13((char)((uint)lpb2k._2_2_ >> 8),
                                        CONCAT12((char)lpb2k._2_2_,
                                                 (byte *)lpb2k + cch)),
                       (char *)CONCAT22(unaff_SS,szT),pcVar6,0x1120,uVar20,uVar21);
@@ -695,7 +695,7 @@ void SetMsgTitle(HWND hwnd)
     iVar2 = iMsgSendCur + 1;
     sVar3 = vcmsgplrOut;
     pcVar1 = PszGetCompressedString(idsSendMessagesDD);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),iVar2,sVar3);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),iVar2,sVar3);
     rc.left = rcMsgText.left;
     rc.top = rcMsgText.top;
     rc.right = rcMsgText.right;
@@ -745,11 +745,11 @@ void SetMsgTitle(HWND hwnd)
   }
   if (cMsgTot == 0) {
     CchGetString(idsYearDCMessagesNone,szT);
-    _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),game.turn + 0x960,(int)ch);
+    _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),game.turn + 0x960,(int)ch);
   }
   else {
     CchGetString(idsYearDCMessagesDD,szT);
-    _WSPRINTF(szWork,(char *)CONCAT22(unaff_SS,szT),game.turn + 0x960,(int)ch,
+    _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),game.turn + 0x960,(int)ch,
               iMsgCur + 1,cMsgTot);
   }
   uVar7 = rghwndMsgBtn[0];
@@ -1523,11 +1523,11 @@ switchD_1030_8edc_caseD_3:
       part.hs.wFlags_0x2 = (int)part.hs.grhst >> 0xf;
       __aFfcompp();
       if (bVar6) {
-        c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTDXPCTDPCTPCT),
+        c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTDXPCTDPCTPCT),
                       *pParams / 100,*pParams + (*pParams / 100) * -100);
       }
       else {
-        c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTDPCTPCT),
+        c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTDPCTPCT),
                       *pParams / 100);
       }
       pch = pch + c;
@@ -1553,7 +1553,7 @@ switchD_1030_8edc_caseD_3:
       part.u_PART_0x0004.parmor._0_2_ = (ARMOR *)((HullSlotType)lVar7 | part.hs.grhst);
       part.u_PART_0x0004._2_2_ = (uint)((ulong)lVar7 >> 0x10) | part.hs.wFlags_0x2;
       pParams = (short *)CONCAT22(pParams._2_2_,(short *)pParams + 2);
-      c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTLD),
+      c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTLD),
                     part.u_PART_0x0004.parmor._0_2_,part.u_PART_0x0004._2_2_);
       pch = pch + c;
       if (*pszFormat != 'v') {
@@ -1621,10 +1621,10 @@ switchD_1030_8edc_caseD_3:
         if (idPlayer == -1) {
 LAB_1030_86a2:
           if (idPlayer == -1) goto LAB_1030_86d0;
-          c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)0x11200b59,idPlayer + 1);
+          c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)0x11200b59,idPlayer + 1);
         }
         else {
-          c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)0x11200b54,idPlayer + 1);
+          c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)0x11200b54,idPlayer + 1);
         }
         goto MSG_DoInt;
       }
@@ -1635,7 +1635,7 @@ LAB_1030_86d0:
       }
       else {
         if (cVar1 == 'r') {
-          c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)0x11200b63,idPlayer + 1);
+          c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)0x11200b63,idPlayer + 1);
           goto MSG_DoInt;
         }
         if (cVar1 == 't') goto LAB_1030_86a2;
@@ -1650,7 +1650,7 @@ MSG_LThingName:
       pchT = PszGetThingName(*pParams);
       break;
     case 0x24:
-      c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTD),*pParams);
+      c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)CONCAT22(0x1120,PCTD),*pParams);
 MSG_DoInt:
       pch = pch + c;
       pParams = (short *)CONCAT22(pParams._2_2_,(short *)pParams + 1);
@@ -1700,7 +1700,7 @@ MSG_DoFleet:
       pchT = PszGetFleetName(w);
       break;
     case 0x30:
-      c = _WSPRINTF((char *)CONCAT22(0x1120,pch),(char *)0x11200b6c,*pParams);
+      c = _wsprintf((char *)CONCAT22(0x1120,pch),(char *)0x11200b6c,*pParams);
       pch = pch + c;
       pParams = (short *)CONCAT22(pParams._2_2_,(short *)pParams + 1);
       goto LAB_1030_8f4d;
@@ -1727,7 +1727,7 @@ MSG_DoFleet:
       }
       else {
         pchT = PszPlayerName(c,0,0,1,0,(PLAYER *)0x0);
-        _WSPRINTF((char *)CONCAT22(0x1120,pch),s__s__s_1120_0b6f,pchT,0x1120,
+        _wsprintf((char *)CONCAT22(0x1120,pch),s__s__s_1120_0b6f,pchT,0x1120,
                   (part.u_PART_0x0004.parmor._0_2_)->szName,part.u_PART_0x0004._2_2_);
       }
       uVar4 = _strlen(pch);

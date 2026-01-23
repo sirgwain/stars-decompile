@@ -1358,7 +1358,7 @@ LAB_1070_2a56:
      (((ini.wFlags >> 0xb & 1) == 0 && ((ini.wFlags >> 0xd & 1) == 0)))) {
     sVar14 = cturn;
     pcVar15 = PszGetCompressedString(idsNoteDYearsDataRead);
-    _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar15),sVar14);
+    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar15),sVar14);
     AlertSz((char *)szWork,0x40);
   }
   sVar14 = __strnicmp(pszExt,(char *)0x759,3);
@@ -1463,7 +1463,7 @@ LAB_1070_2cf9:
     }
     if ((gd.grBits._2_2_ >> 1 & 1) == 0) {
       lpPlanets = pPVar28;
-      _WSPRINTF(szWork,(char *)0x1120075d,pszFileName,0x1120,pszExt + 1,0x1120);
+      _wsprintf(szWork,(char *)0x1120075d,pszFileName,0x1120,pszExt + 1,0x1120);
       sVar14 = FLoadLogFile((char *)szWork);
       if (sVar14 != 0) {
         sVar14 = FRunLogFile();
@@ -3464,10 +3464,10 @@ LAB_1070_618a:
   MarkPlayersThatSentMsgs(iPlayer);
   MarkPlanetsPlayerLost(iPlayer);
   if (iPlayer == -1) {
-    _WSPRINTF(szWork,(char *)0x112009fe,pszFileBase,0x1120);
+    _wsprintf(szWork,(char *)0x112009fe,pszFileBase,0x1120);
   }
   else {
-    _WSPRINTF(szWork,(char *)0x11200a05,pszFileBase,0x1120,iPlayer + 1);
+    _wsprintf(szWork,(char *)0x11200a05,pszFileBase,0x1120,iPlayer + 1);
   }
   penvMemSav = penvMem;
   penvMem = &env;
@@ -4513,7 +4513,7 @@ void SetSzWorkFromDt(DtFileType dt,short iPlayer)
       (pcVar2 < pcVar1)))) {
     *pcVar1 = '\0';
   }
-  sVar3 = _WSPRINTF(szWork,(char *)0x11200a0c,(char *)szBase,0x1120);
+  sVar3 = _wsprintf(szWork,(char *)0x11200a0c,(char *)szBase,0x1120);
   if (dt == dtXY) {
 LAB_1070_8d76:
     _strcat((char *)szWork,(char *)0xa10);
@@ -4535,7 +4535,7 @@ LAB_1070_8d76:
     else {
       uVar4 = 0x6d;
     }
-    _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + sVar3),(char *)0x11200a17,uVar4,
+    _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + sVar3),(char *)0x11200a17,uVar4,
               iPlayer + 1);
   }
   return;

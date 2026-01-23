@@ -251,7 +251,7 @@ void PickANameAndBmp(SHDEF *pshdef,StringId ids,short cids,short ibmpStart)
       Random(100);
       sVar1 = Random(cids);
       pcVar2 = PszGetCompressedString(sVar1 + ids);
-      _WSPRINTF((char *)CONCAT22(0x1120,(pshdef->hul).szClass),s__s__d_1120_147d,pcVar2,0x1120);
+      _wsprintf((char *)CONCAT22(0x1120,(pshdef->hul).szClass),s__s__d_1120_147d,pcVar2,0x1120);
       return;
     }
     pcVar2 = (pshdef->hul).szClass;

@@ -252,10 +252,10 @@ void DrawThingGauge(HDC hdc,RECT *prc,THING *lpth,short md)
     uVar8 = 0;
   }
   if (cSections == 1) {
-    c = _WSPRINTF(szWork,(char *)0x112016a0,uVar5);
+    c = _wsprintf(szWork,(char *)0x112016a0,uVar5);
   }
   else {
-    c = _WSPRINTF(szWork,s__ld_of__ldkT_1120_16a6,uVar5,uVar8,uVar9);
+    c = _wsprintf(szWork,s__ld_of__ldkT_1120_16a6,uVar5,uVar8,uVar9);
   }
   DVar7 = GetTextExtent(hdc,szWork,c);
   if ((int)DVar7 < (prc->right - prc->left) + -3) {

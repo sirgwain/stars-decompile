@@ -92,7 +92,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                           (((((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->
                             wFlags >> 0xc) + idsAction,(char *)szWork);
         if (*(char *)((int)(HCURSOR *)&hcurScanAdd + sVar6 + 1) == '.') {
-          _WSPRINTF((char *)CONCAT22(0x1120,(char *)szBase + 0xff + sVar6),
+          _wsprintf((char *)CONCAT22(0x1120,(char *)szBase + 0xff + sVar6),
                     (char *)0x112016ba,
                     (((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->wFlags &
                     0xfff);
@@ -142,7 +142,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         for (i = 0x431; i < 0x435; i = i + 1) {
           if (*(char *)((int)&vrgZip[0].fValid + (i + -0x431) * 0x18) == '\0') {
             psz = PszGetCompressedString(idsUnusedD);
-            _WSPRINTF(szWork,(char *)CONCAT22(0x1120,psz),(char)psz,i + -0x430);
+            _wsprintf(szWork,(char *)CONCAT22(0x1120,psz),(char)psz,i + -0x430);
           }
           else {
             pszT = (char *)szWork;
@@ -193,7 +193,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             {
               sVar6 = iResTechNow;
               pcVar4 = PszGetCompressedString(idsCustomD);
-              _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
+              _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
             }
             else {
               _strcpy((char *)szWork,
@@ -208,7 +208,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
               if (szWork[0] == '\0') {
                 sVar6 = iResTechNow;
                 pcVar4 = PszGetCompressedString(idsCustomD);
-                _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
+                _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
               }
               _strcpy((char *)((int)vrgZip[0].szName +
                                       iResTechNow * 0x18),(char *)szWork);
@@ -256,7 +256,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             *(undefined1 *)((int)&vrgZip[0].fValid + iResTechNow * 0x18) = 0;
             iVar7 = iResTechNow + 1;
             pcVar4 = PszGetCompressedString(idsUnusedD);
-            _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar7);
+            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar7);
             HVar5 = GetDlgItem(hwnd,iResTechNow + 0x431);
             SetWindowText(HVar5,szWork);
             InvalidateRect(hwnd,(RECT *)0x0,1);

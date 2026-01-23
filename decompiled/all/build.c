@@ -163,7 +163,7 @@ short FCheckQueuedShip(HWND hwnd,SHDEF *lpshdef,short fEdit)
         uVar10 = uVar6;
         pcVar3 = PszGetCompressedString
                            (ids + idsHistoryFileAppearsCorruptHistoricalDataWill);
-        _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),uVar8,uVar10,uVar2,uVar12);
+        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),uVar8,uVar10,uVar2,uVar12);
       }
       else {
         if (fProgress == 0) {
@@ -183,7 +183,7 @@ short FCheckQueuedShip(HWND hwnd,SHDEF *lpshdef,short fEdit)
         uVar9 = CONCAT22(uVar2,uVar6);
         uVar8 = CONCAT22((pSVar5->hul).szClass,sVar1);
         pcVar11 = PszGetCompressedString(ids + idsPlayerLogFileAppearsCorruptUnableLoad);
-        _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar11),uVar8,uVar9,uVar10,pcVar3,
+        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar11),uVar8,uVar9,uVar10,pcVar3,
                   unaff_SS);
       }
     }
@@ -205,7 +205,7 @@ short FCheckQueuedShip(HWND hwnd,SHDEF *lpshdef,short fEdit)
       pcVar7 = (char *)CONCAT22(uVar6,(pSVar5->hul).szClass);
       uVar2 = (undefined2)pSVar5->cExist;
       pcVar11 = PszGetCompressedString(ids);
-      _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar11),uVar2,pcVar7,uVar8,sVar1,pcVar3,
+      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar11),uVar2,pcVar7,uVar8,sVar1,pcVar3,
                 unaff_SS);
     }
     HVar4 = GetFocus();
@@ -1379,7 +1379,7 @@ void DrawSlotDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         pcVar7 = PszGetCompressedString(idsCargo3);
         RcCtrTextOut(hdc,&rc,pcVar7,sVar18);
         sVar18 = WtMaxShdefStat(lpshdefBuild,2);
-        c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),sVar18);
+        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),sVar18);
         RcCtrTextOut(hdc,(RECT *)&rcCargo,(char *)szWork,0);
       }
       else {
@@ -1390,7 +1390,7 @@ void DrawSlotDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
           RcCtrTextOut(hdc,&rc,pcVar7,sVar18);
         }
         else {
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDKT),
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),
                         (((HULDEF *)lphuldef)->hul).wtCargoMax);
           RcCtrTextOut(hdc,&rc,(char *)szWork,0);
         }
@@ -1425,12 +1425,12 @@ void DrawSlotDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
               hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) {
           uVar1 = (((HULDEF *)lphuldef)->hul).rghs[i].wFlags_0x2 >> 8;
           pcVar7 = PszGetCompressedString(idsD3);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar1);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar1);
         }
         else {
           uVar1 = (((HULDEF *)lphuldef)->hul).rghs[i].wFlags_0x2 >> 8;
           pcVar7 = PszGetCompressedString(idsNeedsD);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar1);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar1);
         }
       }
       else {
@@ -1472,7 +1472,7 @@ void DrawSlotDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
           uVar1 = (((HULDEF *)lphuldef)->hul).rghs[i].wFlags_0x2 >> 8;
           sVar18 = cItem;
           pcVar7 = PszGetCompressedString(idsDD);
-          c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),sVar18,uVar1);
+          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),sVar18,uVar1);
         }
       }
       CtrTextOut(hdc,((RECT *)vrgrcSlot + i)->left + 0x20,
@@ -1505,7 +1505,7 @@ void DrawSlotDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
       uVar14 = *(undefined2 *)((int)&pSVar9->cExist + 2);
       uVar10 = (undefined2)pSVar9->cExist;
       pcVar7 = PszGetCompressedString(idsLdLd);
-      c = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar10,uVar14,uVar16,uVar15);
+      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar10,uVar14,uVar16,uVar15);
       SelectObject(hdc,rghfontArial8[1]);
       DVar12 = GetTextExtent(hdc,szWork,c);
       if (0x32 < (uint)DVar12) {
@@ -1982,7 +1982,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
         i = i + sVar2;
       }
       else {
-        sVar2 = _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + i),(char *)0x11200c92,
+        sVar2 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + i),(char *)0x11200c92,
                           local_76 >> 8);
         i = i + sVar2;
       }
@@ -2046,7 +2046,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
     CchGetString(idsOne,&szWord);
   }
   else {
-    _WSPRINTF((char *)CONCAT22(unaff_SS,&szWord),(char *)0x11200c99,local_8 >> 8);
+    _wsprintf((char *)CONCAT22(unaff_SS,&szWord),(char *)0x11200c99,local_8 >> 8);
   }
   __fstrcat((char *)CONCAT22(unaff_SS,&szWord),
                     (char *)CONCAT22(part.u_PART_0x0004._2_2_,
@@ -2056,7 +2056,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
   }
   pcVar3 = &szWord;
   pcVar4 = PszGetCompressedString(idsCostS);
-  cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar4),pcVar3);
+  cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),pcVar3);
   TextOut(hdc,rc.left,rc.top,szWork,cch);
   rc.left = rc.left + 8;
   rc.right = rc.right + -8;
@@ -2076,7 +2076,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
     SelectObject(hdc,rghfontArial8[0]);
     SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
     uVar11 = __aFulmul((long)c,(ulong)rgCosts[k]);
-    cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)uVar11,
+    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)uVar11,
                     (int)(uVar11 >> 0x10));
     RightTextOut
               (hdc,(rc.right - dxkT) + -0x40,rc.top,(char *)szWork,cch,
@@ -2100,7 +2100,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
   SelectObject(hdc,rghfontArial8[0]);
   SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
   uVar11 = __aFulmul((long)c,(ulong)local_c);
-  cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)uVar11,
+  cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),(int)uVar11,
                   (int)(uVar11 >> 0x10));
   RightTextOut
             (hdc,(rc.right - dxkT) + -0x40,rc.top,(char *)szWork,cch,
@@ -2111,7 +2111,7 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
     SelectObject(hdc,rghfontArial8[1]);
     uVar11 = __aFulmul((long)c,(long)((ARMOR *)part.u_PART_0x0004.parmor)->cMass);
     pcVar3 = PszGetCompressedString(idsMassLdkt);
-    cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),(int)uVar11,
+    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),(int)uVar11,
                     (int)(uVar11 >> 0x10));
     TextOut(hdc,rc.left,rc.top,szWork,cch);
   }
@@ -2344,7 +2344,7 @@ LAB_10c8_4737:
       uVar13 = lphul._2_2_;
       pctDetect = unaff_SS;
       pcVar3 = PszGetCompressedString(idsCostOneSS);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar3),pcVar15,uVar13,pcVar1);
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),pcVar15,uVar13,pcVar1);
     }
     else {
       rc.top = rc.top + dyArial8;
@@ -2399,7 +2399,7 @@ LAB_10c8_4875:
       if (k != 5) {
         pctDetect = rgCosts[k];
       }
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTD));
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD));
       pctDetect = dxMaxMineralQuan;
       RightTextOut
                 (hdc,(rc.left + dxMineral + dxMaxMineralQuan) - dxkT,rc.top,
@@ -2428,7 +2428,7 @@ LAB_10c8_4875:
       pctDetect = 0;
       uVar2 = lwt;
       pcVar1 = PszGetCompressedString(idsMassLdkt);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2);
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2);
       pctDetect = hdc;
       TextOut(hdc,rc.left,rc.top,szWork,cch);
     }
@@ -2440,7 +2440,7 @@ LAB_10c8_4875:
       pctDetect = 1;
       pctDetect = WtMaxShdefStat(lpshdefBuild,1);
       pcVar1 = PszGetCompressedString(idsDmg);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1));
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1));
       pctDetect = dxMaxMineralQuan;
       RightTextOut
                 (hdc,rc.right + -8,rc.top,(char *)szWork,cch,dxMaxMineralQuan);
@@ -2453,7 +2453,7 @@ LAB_10c8_4875:
     pctDetect = local_3e;
     uVar2 = dp;
     pcVar1 = PszGetCompressedString(idsLddp);
-    cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2);
+    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar2);
     pctDetect = dxMaxMineralQuan + 10;
     RightTextOut(hdc,rc.right + -8,rc.top,(char *)szWork,cch,pctDetect);
     pctDetect = (short)szWork;
@@ -2470,7 +2470,7 @@ LAB_10c8_4875:
       else {
         pcVar1 = (char *)0xcbf;
       }
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar13);
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar13);
       pctDetect = dxMaxMineralQuan + 10;
       RightTextOut(hdc,rc.right + -8,rc.top,(char *)szWork,cch,pctDetect);
       pctDetect = (short)szWork;
@@ -2493,7 +2493,7 @@ LAB_10c8_4875:
         i = *(short *)((int)&pSVar7->u_SHDEF_0x0087 + 2);
         dRange = *(short *)&pSVar7->u_SHDEF_0x0087;
         pctDetect = 0x1120;
-        dRange = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTLD));
+        dRange = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD));
         i = dxMaxMineralQuan;
         pctDetect = (short)szWork;
         cch = dRange;
@@ -2525,7 +2525,7 @@ LAB_10c8_4875:
       sVar6 = i__76;
       lwt = pctDetect;
       pcVar1 = PszGetCompressedString(idsDD4);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6);
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6);
       pctDetect = dxMaxMineralQuan;
       RightTextOut
                 (hdc,rc.right + -8,rc.top,(char *)szWork,cch,dxMaxMineralQuan);
@@ -2549,7 +2549,7 @@ LAB_10c8_4875:
       pctDetect = 0x1120;
       sVar6 = i__76;
       pcVar1 = PszGetCompressedString(idsDS);
-      cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,iVar5);
+      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,iVar5);
       pctDetect = dxMaxMineralQuan;
       RightTextOut
                 (hdc,rc.right + -8,rc.top,(char *)szWork,cch,dxMaxMineralQuan);
@@ -2573,12 +2573,12 @@ LAB_10c8_4875:
         if (0 < sVar6) {
           if (pctDetect < 100) {
             pcVar1 = PszGetCompressedString(idsDDD);
-            cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,dPlanRange);
+            cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,dPlanRange);
           }
           else {
             pctDetect = dPlanRange;
             pcVar1 = PszGetCompressedString(idsDD6);
-            cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6);
+            cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6);
           }
           pctDetect = dxMaxMineralQuan + 0x28;
           RightTextOut(hdc,rc.right + -8,rc.top,(char *)szWork,cch,pctDetect);
@@ -2670,11 +2670,11 @@ LAB_10c8_4875:
           iVar5 = csh >> 0xf;
           sVar6 = csh;
           pcVar1 = PszGetCompressedString(idsLdD);
-          cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,iVar5);
+          cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),sVar6,iVar5);
         }
         else {
           pctDetect = i__76;
-          cch = _WSPRINTF(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT));
+          cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT));
         }
         dp = 1;
       }
@@ -3189,7 +3189,7 @@ void FillBuildDD(HWND hwndDD,short md)
                 pcVar8 = (char *)0xcc5;
                 iVar2 = local_10;
                 uVar4 = _strlen((char *)szWork);
-                _WSPRINTF((char *)CONCAT22(0x1120,(char *)szWork + uVar4),
+                _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + uVar4),
                           (char *)CONCAT22(uVar9,pcVar8),iVar6,iVar2);
                 SendMessage(hwndDD,0x403,0,0x112057a4);
               }
