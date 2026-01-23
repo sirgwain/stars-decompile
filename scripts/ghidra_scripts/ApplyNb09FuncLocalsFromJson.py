@@ -178,6 +178,7 @@ def _maybe_retype_stack_var(
     desired_dt: DataType,
     want_len: int,
     stack_off: int,
+    is_far_ptr
 ):
     """
     Retype v to desired_dt ONLY if:
@@ -205,8 +206,12 @@ def _maybe_retype_stack_var(
             )
         )
         return False
-
-    dt_len = desired_dt.getLength()
+    
+    # ghidra automatically makes pointer DataType.getLength() return 4
+    if isinstance(desired_dt, PointerDataType):
+        dt_len = 4 if is_far_ptr else 2
+    else:
+        dt_len = desired_dt.getLength()
     if dt_len != v_len:
         log(
             "[BPVAR-RETYPE] skip %s:%s sp=%+d is %d vs desired %d"
@@ -364,7 +369,7 @@ def apply_bp_relative_vars(
 
         # Safe retype: only if same size and current is undefined-like
         if best.dt is not None:
-            if _maybe_retype_stack_var(func, nm, v, best.dt, best.want_len, stack_off):
+            if _maybe_retype_stack_var(func, nm, v, best.dt, best.want_len, stack_off, best.local.is_far_ptr):
                 changed += 1
                 log(
                     "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s <- %s"

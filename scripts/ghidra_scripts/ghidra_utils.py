@@ -30,6 +30,7 @@ from ghidra.program.model.data import (
     LongDoubleDataType,
     ParameterDefinitionImpl,
     Pointer32DataType,
+    Pointer16DataType,
     PointerDataType,
     ShortDataType,
     SignedByteDataType,
@@ -41,9 +42,9 @@ from ghidra.program.model.data import (
 from ghidra.program.model.address import Address
 
 # ----- category paths -----
-_DEFAULT_CAT_PATH = CategoryPath("/stars")
+DEFAULT_CAT_PATH = CategoryPath("/stars")
 _WINDOWS_CAT_PATH = CategoryPath("/windows")
-_CATEGORY_PATHS = [_DEFAULT_CAT_PATH, _WINDOWS_CAT_PATH, CategoryPath("/")]
+_CATEGORY_PATHS = [DEFAULT_CAT_PATH, _WINDOWS_CAT_PATH, CategoryPath("/")]
 
 _RE_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _RE_ARRAY = re.compile(r"\[(\d+)\]")
@@ -277,45 +278,7 @@ def _try_build_wrapped_builtin_dt(
     if base_dt is None:
         return None
 
-    stars = decl_info.stars
-    dims = decl_info.dims
-    ptr_to_array = decl_info.ptr_to_array
-
-    def _pointer_dt(dt: DataType) -> DataType:
-        return Pointer32DataType(dt) if is_far_ptr else PointerDataType(dt)
-
-    def _wrap_pointers(dt: DataType) -> DataType:
-        out = dt
-        for _ in range(stars):
-            out = _pointer_dt(out)
-        return out
-
-    def _wrap_arrays(dt: DataType) -> DataType:
-        out = dt
-        for n in reversed(dims):
-            n_int = int(n) if int(n) != 0 else 1
-            el_len = out.getLength()
-            if el_len <= 0:
-                el_len = 1
-            out = ArrayDataType(out, n_int, el_len)
-        return out
-
-    dt = base_dt
-
-    if ptr_to_array:
-        # pointer-to-array: build array then apply pointer(s)
-        if dims:
-            dt = _wrap_arrays(dt)
-        if stars:
-            dt = _wrap_pointers(dt)
-    else:
-        # normal: pointers bind before arrays
-        if stars:
-            dt = _wrap_pointers(dt)
-        if dims:
-            dt = _wrap_arrays(dt)
-
-    return dt
+    return wrapped_datatype(base_dt, decl_info, is_far_ptr)
 
 
 def _cv(d: dict[str, Any]) -> CvRef:
@@ -547,7 +510,7 @@ def pointer_dt(base_dt: DataType, is_far_ptr: bool) -> DataType:
         # FAR pointer => 4 bytes
         return Pointer32DataType(base_dt)
     # NEAR pointer => default pointer size (Win16 segments: 2 bytes in your setup)
-    return PointerDataType(base_dt)
+    return Pointer16DataType(base_dt)
 
 
 def wrap_pointers(base_dt: DataType, star_count: int, is_far_ptr: bool) -> DataType:
@@ -563,12 +526,10 @@ def wrap_arrays(base_dt: DataType, dims: list[int]) -> DataType:
     dt = base_dt
     # Build from inner to outer
     for n in reversed(dims):
-        # TODO: does this need to be removed for struct fields that are char rgb[0] or equivalent?
-        n_int = n or 1  # treat 0 length arrays as length 1
-        el_len = dt.getLength()
-        if el_len <= 0:
-            el_len = 1
-        dt = ArrayDataType(dt, n_int, el_len)
+        # TODO: if this is an array of near pointers, dt.getLength() will return 4 regardless of the pointer
+        num_elements = n or 0
+        element_length = dt.getLength()
+        dt = ArrayDataType(dt, num_elements, element_length)
     return dt
 
 
