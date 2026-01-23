@@ -28,7 +28,7 @@ from ghidra.util import Msg
 
 # ---- config ----
 ENUM_SIZE_BYTES = 2
-CATEGORY_PATH_STR = "/Stars/Enums"
+CATEGORY_PATH_STR = "/stars"
 OVERWRITE_EXISTING = True
 VERBOSE = True
 

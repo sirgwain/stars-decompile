@@ -7,6 +7,9 @@ from typing import Any, Dict, Optional
 # Canonical loader that returns an nb09_model.Nb09Db instance.
 from nb09_parser import load_nb09
 
+# Type helpers (match dump_nb09_ghidra.py behavior)
+from nb09_model import ArrayType, PointerType, is_far_ptrtype
+
 
 def typedef_alias(tag: str) -> str:
     """Create a prettier typedef name for common Win16 conventions.
@@ -26,6 +29,27 @@ def typedef_alias(tag: str) -> str:
 
 def _clean_name(s: str) -> str:
     return (s or "").strip()
+
+
+def _is_far_ptr_resolved(rt: Any) -> bool:
+    """Best-effort: does this resolved type represent a far/huge pointer?
+
+    Mirrors the logic in dump_nb09_ghidra.py:
+      - direct PointerType: check ptrtype
+      - array-of-pointers: check the flattened base type
+
+    Note: pointer-to-array is still a PointerType and is handled by the first case.
+    """
+    try:
+        if isinstance(rt, PointerType):
+            return is_far_ptrtype(int(getattr(rt, "ptrtype", 0) or 0))
+        if isinstance(rt, ArrayType):
+            base, _dims = rt._flatten()
+            if isinstance(base, PointerType):
+                return is_far_ptrtype(int(getattr(base, "ptrtype", 0) or 0))
+    except Exception:
+        pass
+    return False
 
 
 def _load_struct_overrides(path: Optional[Path]) -> Dict[str, Dict[str, Any]]:
@@ -156,10 +180,13 @@ def main() -> None:
             base_typind = None
             c_decl = None
             c_type = None
+            is_far_ptr = False
 
             try:
                 if isinstance(f_typind, int):
                     rt = db.resolve_typind(int(f_typind))
+                    is_far_ptr = _is_far_ptr_resolved(rt)
+
                     if getattr(rt, "kind", None) == "bitfield":
                         bitlen = int(getattr(rt, "length", 0) or 0)
                         bitpos = int(getattr(rt, "position", 0) or 0)
@@ -176,6 +203,7 @@ def main() -> None:
             except Exception:
                 c_decl = None
                 c_type = None
+                is_far_ptr = False
 
             # Apply member override (only makes sense for actual named members).
             ov_type = _override_member_type(members_overrides, f_name)
@@ -198,6 +226,7 @@ def main() -> None:
                     "c_type": c_type,
                     "c_decl": c_decl,
                     "override_c_type": ov_type,
+                    "is_far_ptr": bool(is_far_ptr),
                 }
             )
 

@@ -161,22 +161,11 @@ def _dedupe_name(symtab: SymbolTable, desired: str, addr: Address):
 
 
 def _ensure_code_at(addr, addr_str):
-    # Try GhidraScript helper first.
-    try:
-        disassemble(addr)
-        return True
-    except Exception:
-        pass
-
-    try:
-        cmd = DisassembleCommand(addr, None, True)
-        ok = cmd.applyTo(currentProgram)
-        if not ok:
-            print("[DISASM-FAIL] %s" % addr_str)
-        return ok
-    except Exception as e:
-        print("[DISASM-EXC]  %s: %s" % (addr_str, str(e)))
-        return False
+    cmd = DisassembleCommand(addr, None, True)
+    ok = cmd.applyTo(currentProgram, monitor)
+    if not ok:
+        print("[DISASM-FAIL] %s" % addr_str)
+    return ok
 
 
 def _ensure_function_at(
@@ -191,7 +180,7 @@ def _ensure_function_at(
 
     try:
         cmd = CreateFunctionCmd(addr, True)
-        ok = cmd.applyTo(currentProgram)
+        ok = cmd.applyTo(currentProgram, monitor)
         f = fm.getFunctionAt(addr)
         if ok and f is not None:
             print("[FUN-CREATE] %s @ %s" % (desired_name, addr_str))
@@ -343,17 +332,16 @@ def _rename_global(
 
 def _rename_proc(
     fm: FunctionManager,
-    symtab: SymbolTable,
     addr: Address,
     desired: str,
     addr_str: str,
-    default_label,
     ns,
 ) -> tuple[int, int, int]:
     f, created = _ensure_function_at(fm, addr, addr_str, desired)
 
     if f is None:
-        print("[FUNC-FAIL]    %s @ %s: no existing function" % (desired, addr_str))
+        print("[FUNC-FAIL]    %s @ %s: no existing function, will create label" % (desired, addr_str))
+        _rename_label(currentProgram.symbolTable, addr, desired, addr_str, ns)
         return (0, 0, 1)
 
     # Rename function
@@ -427,9 +415,7 @@ def _process(
                 symtab, addr, desired, addr_str, g.default_label, ns
             )
         elif kind == "PROC":
-            c, r, s = _rename_proc(
-                fm, symtab, addr, desired, addr_str, g.default_label, ns
-            )
+            c, r, s = _rename_proc(fm, addr, desired, addr_str, ns)
         elif kind == "LABEL":
             c, r, s = _rename_label(symtab, addr, desired, addr_str, ns, force=True)
         else:

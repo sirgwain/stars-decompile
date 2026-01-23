@@ -22,7 +22,7 @@ from ghidra.program.model.data import (
     IntegerDataType, UnsignedIntegerDataType,
     LongDataType, UnsignedLongDataType,
     FloatDataType, DoubleDataType,
-    PointerDataType, Pointer32DataType, StructureDataType, CategoryPath,
+    Pointer16DataType, Pointer32DataType, StructureDataType, CategoryPath,
 )
 from ghidra.program.model.listing import ParameterImpl
 from ghidra.program.model.symbol import SourceType
@@ -233,7 +233,7 @@ _lwrite @ 14f8:0078
 
 def _ptr_near(base_dt):
     """Near pointer (16-bit in this project)."""
-    return PointerDataType(base_dt)
+    return Pointer16DataType(base_dt)
 
 def _ptr_far(base_dt):
     """Far pointer (32-bit segment:offset in this project)."""

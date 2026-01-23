@@ -61,6 +61,7 @@ try:
         Undefined2DataType,
         Undefined4DataType,
     )
+
     _BUILTIN_DT = {
         "void": VoidDataType.dataType,
         "char": CharDataType.dataType,
@@ -80,6 +81,7 @@ except Exception:
 DataTypeConflictHandler = None
 try:
     from ghidra.program.model.data import DataTypeConflictHandler as _DTCH
+
     DataTypeConflictHandler = _DTCH
 except Exception:
     DataTypeConflictHandler = None
@@ -88,16 +90,20 @@ except Exception:
 FunctionUpdateType = None
 try:
     from ghidra.program.model.listing import FunctionUpdateType as _FUT
+
     FunctionUpdateType = _FUT
 except Exception:
     try:
         from ghidra.program.model.listing.Function import FunctionUpdateType as _FUT2
+
         FunctionUpdateType = _FUT2
     except Exception:
         FunctionUpdateType = None
 
 WINDOWS_H_PROMPT = "Select WINDOWS.H (Win16 SDK header)"
 PREFERRED_CALLING_CONVENTION = "__pascal16far"
+# _WINDOWS_CAT_PATH = CategoryPath("/windows")
+_WINDOWS_CAT_PATH = CategoryPath("/stars")
 
 # Far pointer size (your project uses 32-bit pointers for Win16 far pointers)
 FAR_PTR_SIZE = 4
@@ -112,42 +118,47 @@ _proto_re = re.compile(r"^(?P<left>.+?)\((?P<args>.*?)\)\s*;\s*$")
 
 # Tokens to strip from prototypes while resolving types.
 # (We still force calling convention separately via setCallingConvention.)
-STRIP_TOKENS = set([
-    "WINAPI", "APIENTRY", "CALLBACK",
-    "PASCAL", "_pascal", "__pascal",
-    "FAR", "NEAR", "far", "near", "__far", "__near",
-    "cdecl", "__cdecl",
-    "huge", "__huge",
-    "EXPORT", "__export",
-    "extern",
-])
+STRIP_TOKENS = set(
+    [
+        "WINAPI",
+        "APIENTRY",
+        "CALLBACK",
+        "PASCAL",
+        "_pascal",
+        "__pascal",
+        "FAR",
+        "NEAR",
+        "far",
+        "near",
+        "__far",
+        "__near",
+        "cdecl",
+        "__cdecl",
+        "huge",
+        "__huge",
+        "EXPORT",
+        "__export",
+        "extern",
+    ]
+)
 
-# should be short __stdcallfar wsprintf (char *32 dst, char *32 fmt, ...) 
+# should be short __stdcallfar wsprintf (char *32 dst, char *32 fmt, ...)
 API_OVERRIDES = [
     {
         "name": "wsprintf",
         "ret": "short",
         "cc": "__cdecl16far",
-        "args": [
-            "char *32 dst",
-            "char *32 fmt",
-            "..."
-        ],
+        "args": ["char *32 dst", "char *32 fmt", "..."],
         "varargs": True,
     },
     {
         "name": "_wsprintf",
         "ret": "short",
         "cc": "__cdecl16far",
-        "args": [
-            "char *32 dst",
-            "char *32 fmt",
-            "..."
-        ],
+        "args": ["char *32 dst", "char *32 fmt", "..."],
         "varargs": True,
     },
 ]
-
 
 
 def _strip_comments(text):
@@ -155,8 +166,10 @@ def _strip_comments(text):
     text = _re_comment_line.sub(" ", text)
     return text
 
+
 def _collapse_ws(s):
     return re.sub(r"\s+", " ", s).strip()
+
 
 def _extract_statements(text):
     """Split into ';' terminated statements after stripping comments and preprocessor lines."""
@@ -164,7 +177,7 @@ def _extract_statements(text):
     text = re.sub(r"\\\n", " ", text)  # backslash continuation
     lines = []
     for ln in text.splitlines():
-        if ln.lstrip().startswith('#'):
+        if ln.lstrip().startswith("#"):
             continue
         lines.append(ln)
     text = "\n".join(lines)
@@ -173,35 +186,37 @@ def _extract_statements(text):
     cur = []
     for ch in text:
         cur.append(ch)
-        if ch == ';':
-            s = _collapse_ws(''.join(cur))
+        if ch == ";":
+            s = _collapse_ws("".join(cur))
             cur = []
             if s:
                 stmts.append(s)
     return stmts
 
+
 def _split_args(arg_blob):
     arg_blob = _collapse_ws(arg_blob)
-    if not arg_blob or arg_blob == 'void':
+    if not arg_blob or arg_blob == "void":
         return []
 
     parts = []
     cur = []
     depth = 0
     for ch in arg_blob:
-        if ch == '(':
+        if ch == "(":
             depth += 1
-        elif ch == ')':
+        elif ch == ")":
             depth = max(0, depth - 1)
-        if ch == ',' and depth == 0:
-            parts.append(_collapse_ws(''.join(cur)))
+        if ch == "," and depth == 0:
+            parts.append(_collapse_ws("".join(cur)))
             cur = []
         else:
             cur.append(ch)
-    tail = _collapse_ws(''.join(cur))
+    tail = _collapse_ws("".join(cur))
     if tail:
         parts.append(tail)
     return parts
+
 
 def _drop_param_name(arg_type_str):
     """Convert 'HDC hdc' -> 'HDC', 'const char *psz' -> 'const char *'.
@@ -213,19 +228,20 @@ def _drop_param_name(arg_type_str):
         return s
 
     # Function pointer parameters: keep as-is (too hard to split safely here).
-    if '(' in s and ')' in s and '*' in s:
+    if "(" in s and ")" in s and "*" in s:
         return s
 
-    toks = s.split(' ')
+    toks = s.split(" ")
     if len(toks) == 1:
         return s
 
     last = toks[-1]
-    if re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', last):
+    if re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", last):
         prev = toks[-2]
-        if not prev.endswith('*') and not prev.endswith(']'):
-            return _collapse_ws(' '.join(toks[:-1]))
+        if not prev.endswith("*") and not prev.endswith("]"):
+            return _collapse_ws(" ".join(toks[:-1]))
     return s
+
 
 def _parse_prototype(stmt):
     """Return (ret_type_str, name, [param_type_strs], raw_stmt) or None."""
@@ -233,30 +249,32 @@ def _parse_prototype(stmt):
     if not m:
         return None
 
-    left = _collapse_ws(m.group('left'))
-    args = _collapse_ws(m.group('args'))
+    left = _collapse_ws(m.group("left"))
+    args = _collapse_ws(m.group("args"))
 
     # Ignore typedefs / function pointer typedefs
-    if left.startswith('typedef '):
+    if left.startswith("typedef "):
         return None
 
-    ltoks = left.split(' ')
+    ltoks = left.split(" ")
     if len(ltoks) < 2:
         return None
 
     name = ltoks[-1]
-    ret = _collapse_ws(' '.join(ltoks[:-1]))
+    ret = _collapse_ws(" ".join(ltoks[:-1]))
 
-    if not re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name):
+    if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", name):
         return None
 
     raw_args = _split_args(args)
     param_types = [_drop_param_name(a) for a in raw_args]
     return (ret, name, param_types, stmt, False)
 
+
 # ------------------------------------------------------------
 # Data type helpers
 # ------------------------------------------------------------
+
 
 def _dt_parse(dtm, decl_str):
     try:
@@ -265,11 +283,13 @@ def _dt_parse(dtm, decl_str):
     except Exception:
         return None
 
+
 def _dt_path(dtm, path_str):
     try:
         return dtm.getDataType(path_str)
     except Exception:
         return None
+
 
 def _pointer_of(dtm, dt, size):
     try:
@@ -279,6 +299,7 @@ def _pointer_of(dtm, dt, size):
             return PointerDataType(dt)
         except Exception:
             return dt
+
 
 def _ensure_typedef(dtm, cat, name, base_dt):
     """Create/replace a typedef under cat."""
@@ -335,18 +356,19 @@ def _ensure_struct(dtm, cat, name, total_size, fields=None, min_align=2):
         except Exception:
             return None
 
+
 def _build_win16_typedefs(program: Program):
     """Inject minimal Win16 typedefs so WINDOWS.H prototypes resolve in this program."""
     dtm = program.getDataTypeManager()
-    cat = CategoryPath("/win16/typedefs")
+    cat = _WINDOWS_CAT_PATH
 
     # primitives: prefer built-ins (stable across versions), else fall back to manager paths
-    t_void  = _BUILTIN_DT.get("void")  or _dt_path(dtm, "/void")
-    t_char  = _BUILTIN_DT.get("char")  or _dt_path(dtm, "/char")
-    t_i16   = _BUILTIN_DT.get("i16")   or _dt_path(dtm, "/short")
-    t_u16   = _BUILTIN_DT.get("u16")   or _dt_path(dtm, "/ushort")
-    t_i32   = _BUILTIN_DT.get("i32")   or _dt_path(dtm, "/long")
-    t_u32   = _BUILTIN_DT.get("u32")   or _dt_path(dtm, "/ulong")
+    t_void = _BUILTIN_DT.get("void") or _dt_path(dtm, "/void")
+    t_char = _BUILTIN_DT.get("char") or _dt_path(dtm, "/char")
+    t_i16 = _BUILTIN_DT.get("i16") or _dt_path(dtm, "/short")
+    t_u16 = _BUILTIN_DT.get("u16") or _dt_path(dtm, "/ushort")
+    t_i32 = _BUILTIN_DT.get("i32") or _dt_path(dtm, "/long")
+    t_u32 = _BUILTIN_DT.get("u32") or _dt_path(dtm, "/ulong")
 
     # fallbacks
     t_undef1 = _BUILTIN_DT.get("u1") or _dt_path(dtm, "/undefined1")
@@ -388,9 +410,26 @@ def _build_win16_typedefs(program: Program):
 
     # Win16 handles are 16-bit
     for hn in [
-        "HWND","HINSTANCE","HICON","HCURSOR","HMENU","HBRUSH","HFONT","HPEN","HDC","HBITMAP",
-        "HGLOBAL","HLOCAL","HANDLE","HFILE","HHOOK","HACCEL","HRSRC","HGDIOBJ",
+        "HACCEL",
+        "HANDLE",
+        "HBITMAP",
+        "HBRUSH",
+        "HCURSOR",
+        "HDC",
+        "HFILE",
+        "HFONT",
+        "HGDIOBJ",
+        "HGLOBAL",
+        "HHOOK",
+        "HICON",
+        "HINSTANCE",
+        "HLOCAL",
+        "HMENU",
+        "HPALETTE",
+        "HPEN",
         "HRGN",
+        "HRSRC",
+        "HWND",
     ]:
         scalars[hn] = t_u16
 
@@ -401,14 +440,14 @@ def _build_win16_typedefs(program: Program):
     # Common Win16 API structs used in signatures.
     #
     # This script often runs before your NB09 struct import, so we create
-    # minimal (but correctly-sized) definitions here under /win16/typedefs.
+    # minimal (but correctly-sized) definitions here under /windows.
     # Your later struct-packing/import script can REPLACE these with the
     # authoritative layouts.
     # --------------------------------------------------------
 
     # Helpers to fetch common scalar typedefs we just created
     t_BOOL = typedefs.get("BOOL", t_i16)
-    t_HDC  = typedefs.get("HDC",  t_u16)
+    t_HDC = typedefs.get("HDC", t_u16)
     t_BYTE = typedefs.get("BYTE", t_undef1)
 
     typedefs["POINT"] = dtm.getDataType(cat, "POINT")
@@ -433,15 +472,26 @@ def _build_win16_typedefs(program: Program):
     typedefs["OFSTRUCT"] = dtm.getDataType(cat, "OFSTRUCT")
 
     # pointer typedefs (far)
-    typedefs["LPSTR"]   = _ensure_typedef(dtm, cat, "LPSTR",   _pointer_of(dtm, t_char, FAR_PTR_SIZE))
-    typedefs["LPCSTR"]  = _ensure_typedef(dtm, cat, "LPCSTR",  _pointer_of(dtm, t_char, FAR_PTR_SIZE))
-    typedefs["LPVOID"]  = _ensure_typedef(dtm, cat, "LPVOID",  _pointer_of(dtm, t_void, FAR_PTR_SIZE))
-    typedefs["LPCVOID"] = _ensure_typedef(dtm, cat, "LPCVOID", _pointer_of(dtm, t_void, FAR_PTR_SIZE))
+    typedefs["LPSTR"] = _ensure_typedef(
+        dtm, cat, "LPSTR", _pointer_of(dtm, t_char, FAR_PTR_SIZE)
+    )
+    typedefs["LPCSTR"] = _ensure_typedef(
+        dtm, cat, "LPCSTR", _pointer_of(dtm, t_char, FAR_PTR_SIZE)
+    )
+    typedefs["LPVOID"] = _ensure_typedef(
+        dtm, cat, "LPVOID", _pointer_of(dtm, t_void, FAR_PTR_SIZE)
+    )
+    typedefs["LPCVOID"] = _ensure_typedef(
+        dtm, cat, "LPCVOID", _pointer_of(dtm, t_void, FAR_PTR_SIZE)
+    )
 
     # common far proc pointer approximation
-    typedefs["FARPROC"] = _ensure_typedef(dtm, cat, "FARPROC", _pointer_of(dtm, t_void, FAR_PTR_SIZE))
+    typedefs["FARPROC"] = _ensure_typedef(
+        dtm, cat, "FARPROC", _pointer_of(dtm, t_void, FAR_PTR_SIZE)
+    )
 
     return typedefs
+
 
 def _resolve_type(program, typedefs, type_str):
     dtm = program.getDataTypeManager()
@@ -456,10 +506,10 @@ def _resolve_type(program, typedefs, type_str):
     s = re.sub(r"\*\s*32\b", "*", s)
 
     # Count pointers, strip '*' from tokens
-    star_count = s.count('*')
-    s = s.replace('*', ' ')
+    star_count = s.count("*")
+    s = s.replace("*", " ")
 
-    toks = [t for t in s.split(' ') if t]
+    toks = [t for t in s.split(" ") if t]
     toks = [t for t in toks if t not in STRIP_TOKENS and t not in ("const", "volatile")]
 
     # Drop any bare numeric tokens that can show up after "*" stripping.
@@ -473,14 +523,18 @@ def _resolve_type(program, typedefs, type_str):
     def resolve_base(base):
         base_lower = base.lower()
 
-        if base_lower == 'void':
-            return _BUILTIN_DT.get('void') or _dt_path(dtm, "/undefined2")
-        if base_lower == 'char':
-            return _BUILTIN_DT.get('char') or _dt_path(dtm, "/undefined1")
-        if base_lower in ('int', 'short', 'short int'):
-            return _BUILTIN_DT.get('u16' if signed == 'unsigned' else 'i16') or _dt_path(dtm, "/undefined2")
-        if base_lower in ('long', 'long int'):
-            return _BUILTIN_DT.get('u32' if signed == 'unsigned' else 'i32') or (_BUILTIN_DT.get('u4') or _dt_path(dtm, "/undefined2"))
+        if base_lower == "void":
+            return _BUILTIN_DT.get("void") or _dt_path(dtm, "/undefined2")
+        if base_lower == "char":
+            return _BUILTIN_DT.get("char") or _dt_path(dtm, "/undefined1")
+        if base_lower in ("int", "short", "short int"):
+            return _BUILTIN_DT.get(
+                "u16" if signed == "unsigned" else "i16"
+            ) or _dt_path(dtm, "/undefined2")
+        if base_lower in ("long", "long int"):
+            return _BUILTIN_DT.get("u32" if signed == "unsigned" else "i32") or (
+                _BUILTIN_DT.get("u4") or _dt_path(dtm, "/undefined2")
+            )
         if base in typedefs:
             return typedefs[base]
 
@@ -491,24 +545,24 @@ def _resolve_type(program, typedefs, type_str):
         return None
 
     # First try with all tokens (some types are multiword)
-    base = _collapse_ws(' '.join(toks))
+    base = _collapse_ws(" ".join(toks))
     dt = resolve_base(base)
 
     # If that failed and we have >1 token, assume last token may be a parameter name
     # and retry without it (e.g. "char dst", "POINT *32 pt").
     if dt is None and len(toks) > 1:
-        base2 = _collapse_ws(' '.join(toks[:-1]))
+        base2 = _collapse_ws(" ".join(toks[:-1]))
         dt = resolve_base(base2)
         if dt is not None:
             base = base2  # for later heuristics
 
     if dt is None:
         # Heuristic: LPXxx => far pointer to Xxx
-        if base.startswith('LP') and len(base) > 2:
+        if base.startswith("LP") and len(base) > 2:
             inner = base[2:]
             inner_dt = typedefs.get(inner)
             if inner_dt is None:
-                if inner.lower() == 'str':
+                if inner.lower() == "str":
                     inner_dt = _dt_parse(dtm, "char") or _dt_path(dtm, "/undefined1")
                 else:
                     inner_dt = _dt_path(dtm, "/undefined1")
@@ -516,7 +570,10 @@ def _resolve_type(program, typedefs, type_str):
             star_count = 0
             ptr32_count = 0  # already applied
         elif re.match(r"^H[A-Z0-9_]+$", base):
-            dt = typedefs.get('HANDLE', _dt_parse(dtm, "unsigned short") or _dt_path(dtm, "/undefined2"))
+            dt = typedefs.get(
+                "HANDLE",
+                _dt_parse(dtm, "unsigned short") or _dt_path(dtm, "/undefined2"),
+            )
         else:
             dt = _dt_path(dtm, "/undefined2")
 
@@ -537,15 +594,21 @@ def _resolve_type(program, typedefs, type_str):
 
     return dt
 
+
 # ------------------------------------------------------------
 # Function lookup + application
 # ------------------------------------------------------------
+
 
 def _replace_params(func, params, source):
     """Replace parameters using whichever overload exists."""
     if FunctionUpdateType is not None:
         fut = None
-        for attr in ("DYNAMIC_STORAGE_ALL_PARAMS", "DYNAMIC_STORAGE_FORMAL_PARAMS", "CUSTOM_STORAGE"):
+        for attr in (
+            "DYNAMIC_STORAGE_ALL_PARAMS",
+            "DYNAMIC_STORAGE_FORMAL_PARAMS",
+            "CUSTOM_STORAGE",
+        ):
             if hasattr(FunctionUpdateType, attr):
                 fut = getattr(FunctionUpdateType, attr)
                 break
@@ -570,12 +633,14 @@ def _replace_params(func, params, source):
     except Exception as e:
         return False, str(e)
 
+
 def _available_calling_conventions(program):
     try:
         cc = program.getCompilerSpec().getCallingConventions()
         return [c.getName() for c in cc]
     except Exception:
         return []
+
 
 def _name_variants(name):
     """Generate plausible name variants seen in Win16 import/thunk symbols."""
@@ -591,6 +656,7 @@ def _name_variants(name):
             out.append(v)
             seen.add(v)
     return out
+
 
 def _find_target_functions(program, name):
     """Return list of Function objects in current program matching `name` (incl externals)."""
@@ -670,6 +736,7 @@ def _find_target_functions(program, name):
 
     return found
 
+
 def _set_varargs(fn, is_varargs):
     """Best-effort toggle of a Function's varargs flag across Ghidra versions."""
     try:
@@ -688,7 +755,10 @@ def _set_varargs(fn, is_varargs):
         pass
     return False
 
-def _apply_signature_to_function(program, fn, name, ret_dt, param_dts, raw_stmt, is_varargs=False, cc_override=None):
+
+def _apply_signature_to_function(
+    program, fn, name, ret_dt, param_dts, raw_stmt, is_varargs=False, cc_override=None
+):
     ep = fn.getEntryPoint()
     print("[APPLY] %s  %-24s <- %s" % (ep, fn.getName(), raw_stmt))
 
@@ -721,6 +791,7 @@ def _apply_signature_to_function(program, fn, name, ret_dt, param_dts, raw_stmt,
 
     return ok
 
+
 def run():
     print("UpdateWin16WindowsApiSignatures.py> Running...")
 
@@ -744,11 +815,11 @@ def run():
 
     print("UpdateWin16WindowsApiSignatures.py> reading %s" % header_path)
     try:
-        raw = open(header_path, 'rb').read()
+        raw = open(header_path, "rb").read()
         try:
-            text = raw.decode('utf-8', 'ignore')
+            text = raw.decode("utf-8", "ignore")
         except Exception:
-            text = raw.decode('latin-1', 'ignore')
+            text = raw.decode("latin-1", "ignore")
     except Exception as e:
         print("[FATAL] Could not read header at '%s': %s" % (header_path, e))
         return
@@ -759,8 +830,10 @@ def run():
     # Check calling convention exists (helps debugging your custom win16fix build).
     avail_cc = _available_calling_conventions(prog)
     if avail_cc and PREFERRED_CALLING_CONVENTION not in avail_cc:
-        print("[WARN] preferred calling convention '%s' not in compiler spec. Available: %s" % (
-            PREFERRED_CALLING_CONVENTION, ", ".join(avail_cc)))
+        print(
+            "[WARN] preferred calling convention '%s' not in compiler spec. Available: %s"
+            % (PREFERRED_CALLING_CONVENTION, ", ".join(avail_cc))
+        )
 
     stmts = _extract_statements(text)
     protos = []
@@ -779,8 +852,14 @@ def run():
         is_va = bool(o.get("varargs", False))
         protos.append((ret_s, nm, args_s, "override %s" % nm, is_va))
 
-    print("UpdateWin16WindowsApiSignatures.py> preferred calling convention: %s" % PREFERRED_CALLING_CONVENTION)
-    print("UpdateWin16WindowsApiSignatures.py> extracted %d candidate prototypes" % len(protos))
+    print(
+        "UpdateWin16WindowsApiSignatures.py> preferred calling convention: %s"
+        % PREFERRED_CALLING_CONVENTION
+    )
+    print(
+        "UpdateWin16WindowsApiSignatures.py> extracted %d candidate prototypes"
+        % len(protos)
+    )
 
     updated = 0
     missing = 0
@@ -795,7 +874,7 @@ def run():
         if nm and o.get("cc"):
             cc_overrides[nm] = o.get("cc")
 
-    for (ret_str, name, arg_strs, raw_stmt, is_varargs) in protos:
+    for ret_str, name, arg_strs, raw_stmt, is_varargs in protos:
         targets = _find_target_functions(prog, name)
         if not targets:
             missing += 1
@@ -839,10 +918,16 @@ def run():
     print("")
     print("UpdateWin16WindowsApiSignatures.py> done")
     print("  updated prototypes: %d" % updated)
-    print("  missing:           %d (prototype name not found as function/external)" % missing)
+    print(
+        "  missing:           %d (prototype name not found as function/external)"
+        % missing
+    )
     print("  parseFail:         %d" % parseFail)
     print("  applyFail:         %d (found target(s) but could not apply)" % applyFail)
-    print("  multi-hit:         %d (prototypes that matched >1 function/external)" % multi)
+    print(
+        "  multi-hit:         %d (prototypes that matched >1 function/external)" % multi
+    )
+
 
 # Ghidra runs scripts by executing the file; call run() directly.
 run()

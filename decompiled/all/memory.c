@@ -186,16 +186,16 @@ void FreeHb(HB *lphb)
 void ResetHb(HeapType ht)
 
 {
-  int iVar1;
+  ushort uVar1;
   HB *lphb;
   
   lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + 0xd34));
   while( true ) {
     if (((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) break;
     ((HB *)lphb)->ibTop = 0x10;
-    iVar1 = ((HB *)lphb)->cbBlock + -0x10;
-    ((HB *)lphb)->cbSlop = iVar1;
-    lphb->cbFree = iVar1;
+    uVar1 = ((HB *)lphb)->cbBlock - 0x10;
+    ((HB *)lphb)->cbSlop = uVar1;
+    lphb->cbFree = uVar1;
                     /* WARNING: Load size is inaccurate */
     lphb = (HB *)CONCAT22(*(undefined2 *)((int)&((HB *)lphb)->lphbNext + 2),((HB *)lphb)->lphbNext);
   }
@@ -231,7 +231,7 @@ void * LpAlloc(ushort cb,HeapType ht)
   lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + 0xd34));
   cb_00 = cb + 3 & 0xfffe;
   do {
-    if ((((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) || (cb_00 <= (uint)lphb->cbFree)) {
+    if ((((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) || (cb_00 <= lphb->cbFree)) {
       if (((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) {
         lphb = LphbAlloc(cb_00,ht);
       }
@@ -239,7 +239,7 @@ void * LpAlloc(ushort cb,HeapType ht)
       pHVar5 = (HB *)lphb;
       pbVar3 = (byte *)((int)&pHVar5->cbFree + pHVar5->ibTop);
       lpbTop = (byte *)CONCAT22(uVar6,pbVar3);
-      if (cb_00 <= (uint)pHVar5->cbSlop) {
+      if (cb_00 <= pHVar5->cbSlop) {
         *(uint *)lpbTop = cb_00 - 2;
         pHVar5->ibTop = pHVar5->ibTop + cb_00;
         lphb->cbFree = lphb->cbFree - cb_00;
@@ -322,46 +322,49 @@ HB * LphbFromLpHt(void *lp,HeapType ht)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: cbGrow */
+/* WARNING: Variable defined which should be unmapped: lphb */
+
 void * LpReAlloc(void *lp,ushort cb,HeapType ht)
 
 {
   uint uVar1;
   uint cb_00;
-  uint uVar2;
-  HB *pHVar3;
-  int iVar4;
+  HB *pHVar2;
+  ushort uVar3;
   HB *lphb_00;
-  void *pvVar5;
+  void *pvVar4;
   ushort cbGrow;
   ushort cbCur;
   HB *lphb;
   
   uVar1 = *(uint *)((int)(void *)lp + -2);
   cb_00 = cb + 1 & 0xfffe;
-  uVar2 = cb_00 - uVar1;
-  pvVar5 = lp;
+  pvVar4 = lp;
   if (uVar1 < cb_00) {
     lphb_00 = LphbFromLpHt(lp,ht);
+    cbGrow = cb_00 - uVar1;
     while( true ) {
-      iVar4 = (int)((ulong)lphb_00 >> 0x10);
-      pHVar3 = (HB *)lphb_00;
-      if ((((int)&pHVar3->cbFree + pHVar3->ibTop == (int)(void *)lp + uVar1) && (iVar4 == lp._2_2_))
-         && (uVar2 <= (uint)pHVar3->cbSlop)) {
-        pHVar3->cbSlop = pHVar3->cbSlop - uVar2;
-        lphb_00->cbFree = lphb_00->cbFree - uVar2;
-        pHVar3->ibTop = pHVar3->ibTop + uVar2;
+      uVar3 = (ushort)((ulong)lphb_00 >> 0x10);
+      pHVar2 = (HB *)lphb_00;
+      if ((((int)&pHVar2->cbFree + pHVar2->ibTop == (int)(void *)lp + uVar1) && (uVar3 == lp._2_2_))
+         && (cbGrow <= pHVar2->cbSlop)) {
+        pHVar2->cbSlop = pHVar2->cbSlop - cbGrow;
+        lphb_00->cbFree = lphb_00->cbFree - cbGrow;
+        pHVar2->ibTop = pHVar2->ibTop + cbGrow;
         *(uint *)((int)(void *)lp + -2) = cb_00;
         return lp;
       }
       if ((ht != htPlanets) && (ht != htThings)) break;
       lphb_00 = LphbReAlloc(lphb_00);
       lp = (void *)CONCAT22((int)((ulong)lphb_00 >> 0x10),&((HB *)lphb_00)[1].cbBlock);
+      cbGrow = uVar3;
     }
-    pvVar5 = LpAlloc(cb_00,ht);
-    __fmemcpy(pvVar5,lp,uVar1);
+    pvVar4 = LpAlloc(cb_00,ht);
+    __fmemcpy(pvVar4,lp,uVar1);
     FreeLp(lp,ht);
   }
-  return pvVar5;
+  return pvVar4;
 }
 
 
@@ -412,7 +415,7 @@ PL * LpplReAlloc(PL *lppl,ushort cAlloc)
 {
   PL *pPVar1;
   
-  pPVar1 = LpReAlloc(lppl,(lppl->wFlags & 0xffU) * cAlloc + 4,(uint)lppl->wFlags >> 9 & htShips);
+  pPVar1 = LpReAlloc(lppl,(lppl->wFlags & 0xff) * cAlloc + 4,lppl->wFlags >> 9 & htShips);
   ((PL *)pPVar1)->iMax = (byte)cAlloc;
   return pPVar1;
 }
@@ -438,8 +441,8 @@ PL * LpplAlloc(ushort cbItem,ushort cAlloc,HeapType ht)
   ((PL *)pPVar2)->iMax = (byte)cAlloc;
   ((PL *)pPVar2)->iMac = 0;
   pPVar2->wFlags = pPVar2->wFlags & 0xfeff;
-  pPVar2->wFlags = pPVar2->wFlags & 0xff00U | cbItem & 0xff;
-  pPVar2->wFlags = pPVar2->wFlags & 0xf1ffU | (ht & htShips) << 9;
+  pPVar2->wFlags = pPVar2->wFlags & 0xff00 | cbItem & 0xff;
+  pPVar2->wFlags = pPVar2->wFlags & 0xf1ff | (ht & htShips) << 9;
   return pPVar2;
 }
 
@@ -456,7 +459,7 @@ void FreePl(PL *lppl)
 
 {
   if (lppl != (PL *)0x0) {
-    FreeLp(lppl,(uint)lppl->wFlags >> 9 & htShips);
+    FreeLp(lppl,lppl->wFlags >> 9 & htShips);
   }
   return;
 }

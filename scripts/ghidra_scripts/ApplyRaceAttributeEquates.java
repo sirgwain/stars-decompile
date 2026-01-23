@@ -322,9 +322,9 @@ public class ApplyRaceAttributeEquates extends GhidraScript {
     private static ghidra.program.model.data.Enum getRaceAttributeEnum(Program program) {
         DataTypeManager dtm = program.getDataTypeManager();
 
-        DataType dt = dtm.getDataType(new DataTypePath(new CategoryPath("/Stars/Enums"), "RaceAttribute"));
+        DataType dt = dtm.getDataType(new DataTypePath(new CategoryPath("/stars"), "RaceAttribute"));
         if (dt == null) {
-            System.err.println("RaceAttribute not found at /Stars/Enums");
+            System.err.println("RaceAttribute not found at /stars");
             return null;
         }
 

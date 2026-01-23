@@ -38,8 +38,8 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar2 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)&rc);
-    FillRect(wParam,(RECT *)&rc,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
     sVar2 = 1;
   }
   else if (message == WM_CHAR) {
@@ -56,8 +56,8 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (message == WM_COMMAND) {
       if (wParam == 0x9c7) {
         pvVar3 = MakeProcInstance(PanicDlg,hInst);
-        WVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x9c8,hwnd),(HWND)((ulong)pvVar3 >> 0x10),
-                          (void *)pvVar3);
+        WVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x9c8,hwnd),(HWND)((ulong)pvVar3 >> 0x10),(char)pvVar3)
+        ;
         FreeProcInstance(pvVar3);
         if (WVar1 != 0) {
           tutor.wFlags = tutor.wFlags & 0xfdffU | (uint)(WVar1 == 0x9ca) << 9;
@@ -76,7 +76,7 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)_szHelpFile,1,(long)tutor.idh);
+          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(long)tutor.idh);
           return 1;
         }
       }
@@ -107,8 +107,8 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)(RECT *)&stack0xfff4);
-    FillRect(wParam,(RECT *)(RECT *)&stack0xfff4,hbrButtonFace);
+    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4));
+    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4),hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -124,7 +124,7 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       return 1;
     }
     if (wParam == 0x76) {
-      WinHelp(hwnd,(LPCSTR)_szHelpFile,1,(long)tutor.idh);
+      WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(long)tutor.idh);
       return 1;
     }
     if ((wParam == 0x9c9) || (wParam == 0x9ca)) {
@@ -188,15 +188,15 @@ void DrawTutorText(HWND hwnd)
   short yTop;
   HDC hdc;
   
-  hdc = BeginPaint(hwnd,(PAINTSTRUCT *)&ps);
+  hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[0]);
-  GetWindowRect(hwnd,(RECT *)(RECT *)&rc);
+  GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
   HVar1 = GetDlgItem(hwnd,2);
-  GetWindowRect(HVar1,(RECT *)&rcBtn);
+  GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcBtn));
   rc._6_2_ = rcBtn.top;
-  ScreenToClient(hwnd,(POINT *)(POINT *)&rc);
-  ScreenToClient(hwnd,(POINT *)(POINT *)((int)&rc + 4));
+  ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&rc));
+  ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
   rc._2_2_ = rc._2_2_ + dyArial8 * 2;
   rc._6_2_ = rc._6_2_ - (dyArial8 << 1) / 3;
   rc._0_2_ = (int)rc + (dyArial8 << 1) / 3;
@@ -209,12 +209,12 @@ void DrawTutorText(HWND hwnd)
   PatBlt(hdc,rc._4_2_ + -1,rc._2_2_,1,rc._6_2_ - rc._2_2_,0xf00021);
   ExpandRc((RECT *)&rc,-(dyArial8 / 2),-(dyArial8 / 2));
   yTop = rc._2_2_;
-  FillRect(hdc,(RECT *)(RECT *)&rc,hbrButtonFace);
+  FillRect(hdc,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
   SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
   didt = 0;
   while ((didt < 8 && (cch = CchTutorString(rgch,tutor.idt + didt), cch != 1))) {
-    fPara = (byte)((undefined *)&DAT_1120_175f)[rgch[0]] & 1;
-    if (((((undefined *)&DAT_1120_175f)[rgch[0]] & 1) != 0) && (xLeft = (int)rc, didt != 0)) {
+    fPara = *(byte *)(rgch[0] + 0x175f) & 1;
+    if (((*(byte *)(rgch[0] + 0x175f) & 1) != 0) && (xLeft = (int)rc, didt != 0)) {
       yTop = yTop + dyArial8 / 2;
     }
     if (tutor.idt + didt == tutor.idtBold) {
@@ -235,7 +235,7 @@ void DrawTutorText(HWND hwnd)
     }
     didt = didt + 1;
   }
-  EndPaint(hwnd,(PAINTSTRUCT *)&ps);
+  EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
   return;
 }
 
@@ -259,7 +259,7 @@ void StartTutor(short fRestart)
   short cch;
   short cx;
   
-  if (((uint)gd._0_2_ >> 0xb & 1) == 0) {
+  if (((uint)gd.grBits >> 0xb & 1) == 0) {
     _memset((TUTOR *)&tutor,0,0x2c);
     if (lpfnTutorDlgProc == (fn_lpfnTutorDlgProc *)0x0) {
       pfVar4 = MakeProcInstance(TutorDlg,hInst);
@@ -272,7 +272,7 @@ void StartTutor(short fRestart)
         goto LAB_10f8_0a29;
       }
     }
-    gd._0_2_ = gd._0_2_ & 0xf7ff | 0x800;
+    gd.grBits._0_2_ = (uint)gd.grBits & 0xf7ff | 0x800;
     SaveGameState();
     if (fFreeingTitle == 0) {
       fFreeingTitle = 1;
@@ -301,7 +301,7 @@ void StartTutor(short fRestart)
     if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
       sVar1 = CchGetString(idsTutorial,(char *)szBase);
       if (fRestart == 0) {
-        _strcat((char *)szBase,(char *)&DAT_1120_148a);
+        _strcat((char *)szBase,(char *)0x148a);
         sVar2 = __access((char *)szBase,0);
         if (sVar2 != -1) {
           mbType = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
@@ -309,8 +309,8 @@ void StartTutor(short fRestart)
           sVar2 = AlertSz(pcVar3,(short)mbType);
           if (sVar2 != 6) {
             ((char *)szBase)[sVar1] = '\0';
-            _strcat((char *)szBase,(char *)&DAT_1120_148e);
-            ini.wFlags = ini.wFlags & 0xfffeU | 1;
+            _strcat((char *)szBase,(char *)0x148e);
+            ini.wFlags = ini.wFlags & 0xfffe | 1;
             sVar2 = FOpenGame(hwndFrame,0);
             if (0 < sVar2) {
               CreateChildWindows();
@@ -322,9 +322,9 @@ void StartTutor(short fRestart)
       }
       if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
         CreateTutorWorld();
-        _memset((void *)&vrgZipProd[0].field2_0xe,0,0x1a);
+        _memset((ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1,0,0x1a);
         vrgZipProd[0].fValid = 1;
-        gd._4_2_ = gd._4_2_ & 0xffdf | 0x20;
+        gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
       }
       InitializeMenu(0);
       PostMessage(hwndFrame,0x111,0xfa1,0);
@@ -351,7 +351,7 @@ void StartTutor(short fRestart)
     }
     if (tutor.hwnd == 0) {
       CreateDialog(0,(LPCSTR)CONCAT22(0x9c6,hwndFrame),lpfnTutorDlgProc._2_2_,
-                   (fn_lpfnTutorDlgProc *)lpfnTutorDlgProc);
+                   (char)lpfnTutorDlgProc);
     }
     if (tutor.idt != 0) {
       if (((uint)tutor.wFlags >> 3 & 1) == 0) {
@@ -383,35 +383,31 @@ void AdvanceTutor(void)
 
 {
   short sVar1;
-  short sVar2;
-  int iVar3;
-  char *pcVar4;
-  undefined2 unaff_SI;
-  undefined2 unaff_DI;
+  int iVar2;
+  char *pcVar3;
   undefined2 unaff_SS;
-  bool bVar5;
-  undefined4 uVar6;
+  undefined8 rc;
   short fTaskDone;
   short idtT;
   short fRedraw;
   char szTitle [52];
   
-  sVar2 = tutor.idtBold;
-  uVar6 = CONCAT22(unaff_SI,unaff_DI);
+  fRedraw = 0;
   tutor.wFlags = tutor.wFlags & 0xfffb;
-  sVar1 = FTutorTaskDone();
-  bVar5 = sVar2 != tutor.idtBold;
-  if (sVar1 != 0) {
+  idtT = tutor.idtBold;
+  fTaskDone = FTutorTaskDone();
+  fRedraw = (short)(idtT != tutor.idtBold);
+  if (fTaskDone != 0) {
     if (((uint)tutor.wFlags >> 3 & 1) == 0) {
       do {
         tutor.idt = tutor.idt + 8;
         tutor.idsError = -1;
         tutor.wFlags = tutor.wFlags & 0xfbdfU | 0x20;
         tutor.idtBold = tutor.idt;
-        sVar2 = FTutorTaskDone();
-        if (sVar2 == 0) break;
+        sVar1 = FTutorTaskDone();
+        if (sVar1 == 0) break;
       } while (((uint)tutor.wFlags >> 3 & 1) == 0);
-      bVar5 = true;
+      fRedraw = 1;
       tutor.wFlags = tutor.wFlags & 0xffdf;
     }
     else {
@@ -425,17 +421,17 @@ void AdvanceTutor(void)
       return;
     }
   }
-  if (bVar5) {
-    iVar3 = tutor.idt / 8 + 1;
-    pcVar4 = PszGetCompressedString(idsStarsTutorPageD80);
-    wsprintf((char *)szTitle,(char *)pcVar4,iVar3,uVar6);
-    SetWindowText(tutor.hwnd,(LPCSTR)szTitle);
+  if (fRedraw != 0) {
+    iVar2 = tutor.idt / 8 + 1;
+    pcVar3 = PszGetCompressedString(idsStarsTutorPageD80);
+    _WSPRINTF((char *)CONCAT22(unaff_SS,szTitle),(char *)CONCAT22(0x1120,pcVar3),iVar2);
+    SetWindowText(tutor.hwnd,(LPCSTR)CONCAT22(unaff_SS,szTitle));
     ShowTutor(1);
-    GetWindowRect(tutor.hwnd,(RECT *)(RECT *)&stack0xffbc);
-    ScreenToClient(tutor.hwnd,(POINT *)(POINT *)&stack0xffbc);
-    ScreenToClient(tutor.hwnd,(POINT *)(POINT *)&stack0xffc0);
-    ExpandRc((RECT *)&stack0xffbc,-dyArial8,dyArial8 * -2);
-    InvalidateRect(tutor.hwnd,(RECT *)(RECT *)&stack0xffbc,1);
+    GetWindowRect(tutor.hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+    ScreenToClient(tutor.hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&rc));
+    ScreenToClient(tutor.hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    ExpandRc((RECT *)&rc,-dyArial8,dyArial8 * -2);
+    InvalidateRect(tutor.hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),1);
   }
   return;
 }
@@ -454,8 +450,8 @@ void EndTutor(short fClose)
 {
   DWORD dw;
   
-  if (((uint)gd._0_2_ >> 0xb & 1) != 0) {
-    gd._0_2_ = gd._0_2_ & 0xf7ff;
+  if (((uint)gd.grBits >> 0xb & 1) != 0) {
+    gd.grBits._0_2_ = (uint)gd.grBits & 0xf7ff;
     if (tutor.hwnd != 0) {
       DestroyWindow(tutor.hwnd);
     }
@@ -485,52 +481,57 @@ void EndTutor(short fClose)
 void SaveGameState(void)
 
 {
-  undefined2 *puVar1;
+  ZIPPRODQ1 *pZVar1;
   undefined2 *puVar2;
-  ushort uVar3;
-  UINT UVar4;
-  int iVar5;
-  undefined2 *puVar6;
-  undefined2 *puVar7;
-  bool bVar8;
+  ZIPPRODQ1 *pZVar3;
+  byte bVar4;
+  ushort uVar5;
+  UINT UVar6;
+  int iVar7;
+  ZIPPRODQ1 *pZVar8;
+  undefined2 *puVar9;
+  ZIPPRODQ1 *pZVar10;
+  bool bVar11;
   HMENU hmenu;
   
   tutor.grbitScan = grbitScan;
   tutor.iScanZoom = iScanZoom;
-  tutor.wFlags = tutor.wFlags & 0xf7fdU | ((uint)gd.wFlags >> 0xf) << 0xb
+  tutor.wFlags = tutor.wFlags & 0xf7fdU | (gd.grBits._2_2_ >> 0xf) << 0xb
   ;
-  puVar6 = (undefined2 *)&vrgZipProd[0].field2_0xe;
-  puVar7 = (undefined2 *)&tutor.zpq;
-  for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
-    puVar2 = puVar7;
-    puVar7 = puVar7 + 1;
-    puVar1 = puVar6;
-    puVar6 = puVar6 + 1;
-    *puVar2 = *puVar1;
+  pZVar8 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
+  puVar9 = (undefined2 *)&tutor.zpq;
+  for (iVar7 = 0xd; iVar7 != 0; iVar7 = iVar7 + -1) {
+    puVar2 = puVar9;
+    puVar9 = puVar9 + 1;
+    pZVar1 = pZVar8;
+    pZVar8 = (ZIPPRODQ1 *)pZVar8->rgpq;
+    *puVar2 = *(undefined2 *)pZVar1;
   }
   tutor.wFlags =
        tutor.wFlags & 0xefffU | (vrgZipProd[0].fValid & 1) << 0xc;
-  puVar6 = (undefined2 *)&vrgZipProd[4].field2_0xe;
-  puVar7 = (undefined2 *)&vrgZipProd[0].field2_0xe;
-  for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
-    puVar2 = puVar7;
-    puVar7 = puVar7 + 1;
-    puVar1 = puVar6;
-    puVar6 = puVar6 + 1;
-    *puVar2 = *puVar1;
+  pZVar8 = (ZIPPRODQ1 *)&vrgZipProd[4].u_ZIPPRODQ_0x000e.zpq1;
+  pZVar10 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
+  for (iVar7 = 0xd; iVar7 != 0; iVar7 = iVar7 + -1) {
+    pZVar3 = pZVar10;
+    pZVar10 = (ZIPPRODQ1 *)pZVar10->rgpq;
+    pZVar1 = pZVar8;
+    pZVar8 = (ZIPPRODQ1 *)pZVar8->rgpq;
+    bVar4 = pZVar1->cpq;
+    pZVar3->fNoResearch = pZVar1->fNoResearch;
+    pZVar3->cpq = bVar4;
   }
   vrgZipProd[0].fValid = vrgZipProd[4].fValid;
-  if (-1 < gd.wFlags) {
-    uVar3 = GetASubMenu(hwndFrame,1);
-    bVar8 = -1 < gd.wFlags;
-    gd.wFlags = gd.wFlags & 0x7fffU | (uint)bVar8 << 0xf;
-    if (bVar8) {
-      UVar4 = 8;
+  if (-1 < (int)gd.grBits._2_2_) {
+    uVar5 = GetASubMenu(hwndFrame,1);
+    bVar11 = -1 < (int)gd.grBits._2_2_;
+    gd.grBits._2_2_ = gd.grBits._2_2_ & 0x7fff | (uint)bVar11 << 0xf;
+    if (bVar11) {
+      UVar6 = 8;
     }
     else {
-      UVar4 = 0;
+      UVar6 = 0;
     }
-    CheckMenuItem(uVar3,0xb3,UVar4);
+    CheckMenuItem(uVar5,0xb3,UVar6);
     RefitFrameChildren();
   }
   tutor.icolFSort = vrptFleet.icolSort;
@@ -540,7 +541,7 @@ void SaveGameState(void)
     InvalidateReport(1,0);
   }
   if ((((int)game.lid != 0) || (game.lid._2_2_ != 0)) &&
-     (((uint)game.wCrap >> 3 & 1) == 0)) {
+     ((game.wCrap >> 3 & 1) == 0)) {
     DestroyCurGame();
   }
   return;
@@ -558,49 +559,57 @@ void SaveGameState(void)
 void RestoreGameState(void)
 
 {
-  undefined2 *puVar1;
+  ZIPPRODQ1 *pZVar1;
   undefined2 *puVar2;
-  ushort uVar3;
-  UINT UVar4;
-  int iVar5;
-  undefined2 *puVar6;
-  undefined2 *puVar7;
-  bool bVar8;
+  undefined2 uVar3;
+  ZIPPRODQ1 *pZVar4;
+  byte bVar5;
+  ushort uVar6;
+  UINT UVar7;
+  int iVar8;
+  ZIPPRODQ1 *pZVar9;
+  undefined2 *puVar10;
+  ZIPPRODQ1 *pZVar11;
+  bool bVar12;
   HMENU hmenu;
   
   grbitScan = tutor.grbitScan;
   iScanZoom = tutor.iScanZoom;
-  puVar6 = (undefined2 *)&vrgZipProd[0].field2_0xe;
-  puVar7 = (undefined2 *)&vrgZipProd[4].field2_0xe;
-  for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
-    puVar2 = puVar7;
-    puVar7 = puVar7 + 1;
-    puVar1 = puVar6;
-    puVar6 = puVar6 + 1;
-    *puVar2 = *puVar1;
+  pZVar9 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
+  pZVar11 = (ZIPPRODQ1 *)&vrgZipProd[4].u_ZIPPRODQ_0x000e.zpq1;
+  for (iVar8 = 0xd; iVar8 != 0; iVar8 = iVar8 + -1) {
+    pZVar4 = pZVar11;
+    pZVar11 = (ZIPPRODQ1 *)pZVar11->rgpq;
+    pZVar1 = pZVar9;
+    pZVar9 = (ZIPPRODQ1 *)pZVar9->rgpq;
+    bVar5 = pZVar1->cpq;
+    pZVar4->fNoResearch = pZVar1->fNoResearch;
+    pZVar4->cpq = bVar5;
   }
   vrgZipProd[4].fValid = vrgZipProd[0].fValid;
-  puVar6 = (undefined2 *)&tutor.zpq;
-  puVar7 = (undefined2 *)&vrgZipProd[0].field2_0xe;
-  for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
-    puVar2 = puVar7;
-    puVar7 = puVar7 + 1;
-    puVar1 = puVar6;
-    puVar6 = puVar6 + 1;
-    *puVar2 = *puVar1;
+  puVar10 = (undefined2 *)&tutor.zpq;
+  pZVar9 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
+  for (iVar8 = 0xd; iVar8 != 0; iVar8 = iVar8 + -1) {
+    pZVar1 = pZVar9;
+    pZVar9 = (ZIPPRODQ1 *)pZVar9->rgpq;
+    puVar2 = puVar10;
+    puVar10 = puVar10 + 1;
+    uVar3 = *puVar2;
+    pZVar1->fNoResearch = (char)uVar3;
+    pZVar1->cpq = (char)((uint)uVar3 >> 8);
   }
   vrgZipProd[0].fValid = (byte)((uint)tutor.wFlags >> 0xc) & 1;
-  if ((uint)gd.wFlags >> 0xf != ((uint)tutor.wFlags >> 0xb & 1)) {
-    uVar3 = GetASubMenu(hwndFrame,1);
-    bVar8 = -1 < gd.wFlags;
-    gd.wFlags = gd.wFlags & 0x7fffU | (uint)bVar8 << 0xf;
-    if (bVar8) {
-      UVar4 = 8;
+  if (gd.grBits._2_2_ >> 0xf != ((uint)tutor.wFlags >> 0xb & 1)) {
+    uVar6 = GetASubMenu(hwndFrame,1);
+    bVar12 = -1 < (int)gd.grBits._2_2_;
+    gd.grBits._2_2_ = gd.grBits._2_2_ & 0x7fff | (uint)bVar12 << 0xf;
+    if (bVar12) {
+      UVar7 = 8;
     }
     else {
-      UVar4 = 0;
+      UVar7 = 0;
     }
-    CheckMenuItem(uVar3,0xb3,UVar4);
+    CheckMenuItem(uVar6,0xb3,UVar7);
     RefitFrameChildren();
   }
   if (vrptFleet.icolSort != tutor.icolFSort) {
@@ -626,7 +635,7 @@ short FAskKillTutor(void)
   short sVar1;
   char *mbType;
   
-  if ((uint)game.turn < 0x1e) {
+  if (game.turn < 0x1e) {
     mbType = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
     sz = PszFormatIds(idsCurrentlyRunningStarsTutorialDoWantExit,(short *)0x0);
     sVar1 = AlertSz(sz,(short)mbType);
@@ -655,14 +664,14 @@ short FTutorTaskDone(void)
   short sVar3;
   uint uVar4;
   SHDEF *pSVar5;
+  short unaff_DI;
   undefined2 uVar6;
   LRESULT LVar7;
   FLEET *pFVar8;
   PLANET *pPVar9;
   short sVar10;
   short sVar11;
-  short sVar12;
-  HS hs;
+  HullSlotType in_stack_0000fff4;
   HS hs1;
   
   switch(game.turn) {
@@ -686,7 +695,7 @@ short FTutorTaskDone(void)
       tutor.idtBold = 0x12;
       sVar3 = FCheckSelection(grobjFleet,1);
       if (sVar3 == 0) {
-        tutor.idh = (short)&DAT_1120_1771;
+        tutor.idh = 0x1771;
         uVar4 = 0;
       }
       else {
@@ -979,12 +988,11 @@ short FTutorTaskDone(void)
       }
     }
     else if (tutor.idt == 0x58) {
-      sVar12 = 0x19;
-      sVar11 = 0;
+      sVar11 = 0x19;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(2);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         sVar3 = FCheckSelection(grobjFleet,2);
         if (sVar3 == 0) {
@@ -1073,12 +1081,11 @@ short FTutorTaskDone(void)
         uVar4 = 0;
       }
       else {
-        sVar12 = 0xd2;
-        sVar11 = 0;
+        sVar11 = 0xd2;
         sVar10 = 0;
         sVar3 = 0;
         pFVar8 = LpflFromId(3);
-        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
         if (sVar3 == 0) {
           sVar3 = FCheckSelection(grobjFleet,3);
           if (sVar3 == 0) {
@@ -1234,12 +1241,11 @@ short FTutorTaskDone(void)
     break;
   case 5:
     if (tutor.idt == 0x90) {
-      sVar12 = 0x19;
-      sVar11 = 0;
+      sVar11 = 0x19;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(2);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         sVar3 = FCheckSelection(grobjFleet,2);
         if (sVar3 == 0) {
@@ -1367,7 +1373,7 @@ short FTutorTaskDone(void)
         tutor.idh = 0x5ee;
         tutor.idtBold = 0xab;
         pFVar8 = LpflFromId(3);
-        if (((uint)((FLEET *)pFVar8)->wFlags >> 9 & 1) == 0) {
+        if ((((FLEET *)pFVar8)->wFlags_0x4 >> 9 & 1) == 0) {
           uVar4 = 0;
         }
         else {
@@ -1399,12 +1405,11 @@ short FTutorTaskDone(void)
     break;
   case 7:
     if (tutor.idt == 0xb0) {
-      sVar12 = 0x19;
-      sVar11 = 0;
+      sVar11 = 0x19;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(6);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         tutor.idtBold = 0xb0;
         uVar4 = 0;
@@ -1514,12 +1519,12 @@ short FTutorTaskDone(void)
     break;
   case 8:
     if (tutor.idt == 200) {
-      if (((rgplr[0].wFlags & 0xfffU) == 0xb) &&
+      if (((rgplr[0].wFlags_0x4 & 0xfff) == 0xb) &&
          (sVar3 = FCheckColonizeWP(10,8,0xffff), sVar3 != 0)) {
         uVar4 = 1;
       }
       else {
-        if (((rgplr[0].wFlags & 0xfffU) == 9) || (mdXferDlg == 1)) {
+        if (((rgplr[0].wFlags_0x4 & 0xfff) == 9) || (mdXferDlg == 1)) {
           sVar3 = FCheckSelection(grobjFleet,7);
           if (sVar3 == 0) {
             tutor.idtBold = 200;
@@ -1532,12 +1537,11 @@ short FTutorTaskDone(void)
           }
         }
         else {
-          sVar12 = 0x32;
-          sVar11 = 0;
+          sVar11 = 0x32;
           sVar10 = 0;
           sVar3 = 0;
           pFVar8 = LpflFromId(7);
-          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
           if ((sVar3 == 0) || (sVar3 = FCheckFleetWP(7,1,grobjPlanet,8,2,0xffff), sVar3 == 0)) {
             tutor.idtBold = 0xcd;
           }
@@ -1683,12 +1687,11 @@ short FTutorTaskDone(void)
           }
         }
         else {
-          sVar12 = 0x19;
-          sVar11 = 0;
+          sVar11 = 0x19;
           sVar10 = 0;
           sVar3 = 0;
           pFVar8 = LpflFromId(9);
-          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
           if (sVar3 == 0) {
             tutor.idtBold = 0xf2;
           }
@@ -1876,12 +1879,11 @@ short FTutorTaskDone(void)
         uVar4 = 0;
       }
       else {
-        sVar12 = 0xd2;
-        sVar11 = 0;
+        sVar11 = 0xd2;
         sVar10 = 0;
         sVar3 = 0;
         pFVar8 = LpflFromId(0xb);
-        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
         if (sVar3 == 0) {
           sVar3 = FCheckSelection(grobjFleet,0xb);
           if (sVar3 == 0) {
@@ -2085,12 +2087,11 @@ short FTutorTaskDone(void)
       else {
         sVar3 = FCheckXferWP(0,1,8,0xffff,rgiaUnloadAllCol);
         if (sVar3 == 0) {
-          sVar12 = 0xd2;
-          sVar11 = 0;
+          sVar11 = 0xd2;
           sVar10 = 0;
           sVar3 = 0;
           pFVar8 = LpflFromId(0);
-          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+          sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
           if (sVar3 == 0) {
             tutor.idtBold = 0x140;
           }
@@ -2132,10 +2133,8 @@ short FTutorTaskDone(void)
       }
     }
     else if (tutor.idt == 0x148) {
-      hs.grhst = hstEngine;
-      hs.wFlags = 0x103;
       hs1.grhst = hstScanner;
-      hs1.wFlags = 0x101;
+      hs1.wFlags_0x2 = 0x101;
       if ((hwndSlotDlg == 0) && (rgplr[0].cShDef == '\a')) {
         uVar4 = 1;
       }
@@ -2159,20 +2158,20 @@ short FTutorTaskDone(void)
         }
         else {
           tutor.idh = 0xbdf;
-          if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
-             (sVar3 = FCheckBuilderPart(0,&hs,1), sVar3 == 0)) {
+          if (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) ||
+             (sVar3 = FCheckBuilderPart(0,(HS *)&stack0xfff4,1), sVar3 == 0)) {
             tutor.idtBold = 0x14c;
             uVar4 = 0;
           }
-          else if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[1].wFlags >> 8 == 0) ||
+          else if (((((SHDEF *)lpshdefBuild)->hul).rghs[1].wFlags_0x2 >> 8 == 0) ||
                   (sVar3 = FCheckBuilderPart(1,&hs1,1), sVar3 == 0)) {
             tutor.idtBold = 0x14d;
             uVar4 = 0;
           }
           else {
             uVar6 = (undefined2)((ulong)lpshdefBuild >> 0x10);
-            if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags >> 8 == 0) ||
-               ((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[3].wFlags >> 8 == 0)) {
+            if (((((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags_0x2 >> 8 == 0) ||
+               ((((SHDEF *)lpshdefBuild)->hul).rghs[3].wFlags_0x2 >> 8 == 0)) {
               sVar3 = FCheckShipBuilder(4,8);
               if (sVar3 == 0) {
                 tutor.idtBold = 0x14e;
@@ -2302,12 +2301,11 @@ short FTutorTaskDone(void)
         uVar4 = 0;
       }
       else {
-        sVar12 = 0xd2;
-        sVar11 = 0;
+        sVar11 = 0xd2;
         sVar10 = 0;
         sVar3 = 0;
         pFVar8 = LpflFromId(6);
-        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+        sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
         if (sVar3 == 0) {
           tutor.idtBold = 0x169;
           tutor.wFlags = tutor.wFlags & 0xfbff;
@@ -2510,12 +2508,11 @@ short FTutorTaskDone(void)
     break;
   case 0x13:
     if (tutor.idt == 400) {
-      sVar12 = 0xd2;
-      sVar11 = 0;
+      sVar11 = 0xd2;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(0xb);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         tutor.idtBold = 400;
         uVar4 = 0;
@@ -2539,16 +2536,15 @@ short FTutorTaskDone(void)
             tutor.idh = 0x5ee;
             tutor.idtBold = 0x193;
             pFVar8 = LpflFromId(0xb);
-            if (((uint)((FLEET *)pFVar8)->wFlags >> 9 & 1) == 0) {
+            if ((((FLEET *)pFVar8)->wFlags_0x4 >> 9 & 1) == 0) {
               uVar4 = 0;
             }
             else {
-              sVar12 = 0xd2;
-              sVar11 = 0;
+              sVar11 = 0xd2;
               sVar10 = 0;
               sVar3 = 0;
               pFVar8 = LpflFromId(1);
-              sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+              sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,in_stack_0000fff4);
               if (sVar3 == 0) {
                 sVar3 = FCheckSelection(grobjFleet,1);
                 if (sVar3 == 0) {
@@ -2586,7 +2582,7 @@ short FTutorTaskDone(void)
           tutor.idh = 0x5ee;
           tutor.idtBold = 0x19a;
           pFVar8 = LpflFromId(1);
-          if (((uint)((FLEET *)pFVar8)->wFlags >> 9 & 1) == 0) {
+          if ((((FLEET *)pFVar8)->wFlags_0x4 >> 9 & 1) == 0) {
             uVar4 = 0;
           }
           else {
@@ -2630,17 +2626,17 @@ short FTutorTaskDone(void)
           tutor.idtBold = 0x1a1;
           uVar4 = 0;
         }
-        else if (((uint)rgplr[0].wFlags >> 0xc == 1) || (hwndSlotDlg != 0)) {
-          if ((hwndSlotDlg == 0) && ((uint)rgplr[0].wFlags >> 0xc == 1)) {
+        else if ((rgplr[0].wFlags_0x4 >> 0xc == 1) || (hwndSlotDlg != 0)) {
+          if ((hwndSlotDlg == 0) && (rgplr[0].wFlags_0x4 >> 0xc == 1)) {
             tutor.idtBold = 0x1a2;
           }
           else {
             sVar3 = FCheckShipBuilder(4,-1);
             if (((sVar3 == 0) || (fStarbaseMode == 0)) &&
-               ((uint)rgplr[0].wFlags >> 0xc == 1)) {
+               (rgplr[0].wFlags_0x4 >> 0xc == 1)) {
               tutor.idtBold = 0x1a3;
             }
-            else if ((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) {
+            else if ((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) {
               tutor.idtBold = 0x1a4;
             }
             else {
@@ -2671,12 +2667,11 @@ short FTutorTaskDone(void)
     break;
   case 0x15:
     if (tutor.idt == 0x1a8) {
-      sVar12 = 0xd2;
-      sVar11 = 0;
+      sVar11 = 0xd2;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(0);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         tutor.idtBold = 0x1a8;
         uVar4 = 0;
@@ -2711,7 +2706,7 @@ short FTutorTaskDone(void)
               tutor.idh = 0x5ee;
               tutor.idtBold = 0x1af;
               pFVar8 = LpflFromId(0);
-              if (((uint)((FLEET *)pFVar8)->wFlags >> 9 & 1) == 0) {
+              if ((((FLEET *)pFVar8)->wFlags_0x4 >> 9 & 1) == 0) {
                 uVar4 = 0;
               }
               else {
@@ -2794,10 +2789,8 @@ short FTutorTaskDone(void)
             uVar4 = 0;
           }
           else if ((rgplr[0].cShDef < '\b') || (hwndSlotDlg != 0)) {
-            hs.grhst = hstEngine;
-            hs.wFlags = 0x104;
             hs1.grhst = hstMines;
-            hs1.wFlags = 0x301;
+            hs1.wFlags_0x2 = 0x301;
             if (hwndSlotDlg == 0) {
               tutor.idtBold = 0x1c2;
               tutor.idh = 0x3e9;
@@ -2810,11 +2803,11 @@ short FTutorTaskDone(void)
             }
             else {
               tutor.idh = 0xbdf;
-              if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
-                 (sVar3 = FCheckBuilderPart(0,&hs,1), sVar3 == 0)) {
+              if (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) ||
+                 (sVar3 = FCheckBuilderPart(0,(HS *)&stack0xfff4,1), sVar3 == 0)) {
                 tutor.idtBold = 0x1c4;
               }
-              else if (((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags >> 8 == 0) ||
+              else if (((((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags_0x2 >> 8 == 0) ||
                       (sVar3 = FCheckBuilderPart(2,&hs1,1), sVar3 == 0)) {
                 tutor.idtBold = 0x1c5;
               }
@@ -2870,12 +2863,11 @@ short FTutorTaskDone(void)
     break;
   case 0x17:
     if (tutor.idt == 0x1d0) {
-      sVar12 = 0xd2;
-      sVar11 = 0;
+      sVar11 = 0xd2;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(6);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         sVar3 = FCheckMessages(idmColonistsDroppedDestroyedPlanetaryDefensesRestMa,-1,0);
         if ((sVar3 == 0) && (sVar3 = FCheckSelection(grobjFleet,4), sVar3 == 0)) {
@@ -2913,12 +2905,11 @@ short FTutorTaskDone(void)
       }
     }
     else if (tutor.idt == 0x1d8) {
-      sVar12 = 0xd2;
-      sVar11 = 0;
+      sVar11 = 0xd2;
       sVar10 = 0;
       sVar3 = 0;
       pFVar8 = LpflFromId(6);
-      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+      sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,unaff_DI);
       if (sVar3 == 0) {
         tutor.idtBold = 0x1d8;
         uVar4 = 0;
@@ -3102,15 +3093,13 @@ short FTutorTaskDone(void)
         tutor.idtBold = 0x1f0;
         uVar4 = 0;
       }
-      else if (((rgshdef[2].hul.rghs[0].wFlags & 0xffU) == 4) && (hwndSlotDlg == 0)
-              ) {
+      else if (((rgshdef[2].hul.rghs[0].wFlags_0x2 & 0xff) == 4) &&
+              (hwndSlotDlg == 0)) {
         uVar4 = 1;
       }
       else {
-        hs.grhst = hstEngine;
-        hs.wFlags = 0x104;
         hs1.grhst = hstSpecialM;
-        hs1.wFlags = 0x100;
+        hs1.wFlags_0x2 = 0x100;
         sVar3 = FCheckScanner(3,-1);
         if (sVar3 == 0) {
           tutor.idtBold = 0x1f1;
@@ -3121,7 +3110,7 @@ short FTutorTaskDone(void)
           tutor.idh = 0x3e9;
           uVar4 = 0;
         }
-        else if ((rgshdef[2].hul.rghs[0].wFlags & 0xffU) == 4) {
+        else if ((rgshdef[2].hul.rghs[0].wFlags_0x2 & 0xff) == 4) {
           tutor.idtBold = 0x1f7;
           uVar4 = 0;
         }
@@ -3138,8 +3127,8 @@ short FTutorTaskDone(void)
           }
           else {
             uVar6 = (undefined2)((ulong)lpshdefBuild >> 0x10);
-            if ((((uint)(((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags >> 8 == 0) ||
-                (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags & 0xffU) != 4)) ||
+            if ((((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) ||
+                (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 & 0xff) != 4)) ||
                (sVar3 = FCheckBuilderPart(1,&hs1,1), sVar3 == 0)) {
               tutor.idtBold = 0x1f6;
             }
@@ -3212,7 +3201,7 @@ short FTutorTaskDone(void)
         tutor.idtBold = 0x200;
         uVar4 = 0;
       }
-      else if (((rgplr[0].wFlags & 0xfffU) == 10) &&
+      else if (((rgplr[0].wFlags_0x4 & 0xfff) == 10) &&
               (sVar3 = FCheckColonizeWP(9,0,0xffff), sVar3 == 0)) {
         sVar3 = FCheckSelection(grobjFleet,9);
         if (sVar3 == 0) {
@@ -3223,7 +3212,7 @@ short FTutorTaskDone(void)
         }
         uVar4 = 0;
       }
-      else if ((rgplr[0].wFlags & 0xfffU) == 10) {
+      else if ((rgplr[0].wFlags_0x4 & 0xfff) == 10) {
         tutor.idtBold = 0x203;
         uVar4 = 0;
       }
@@ -3319,16 +3308,15 @@ short FTutorTaskDone(void)
         else {
           pFVar8 = LpflFromId(0xc);
           if ((pFVar8 == (FLEET *)0x0) ||
-             (pFVar8 = LpflFromId(0xc), ((uint)((FLEET *)pFVar8)->wFlags >> 10 & 1) != 0)) {
+             (pFVar8 = LpflFromId(0xc), (((FLEET *)pFVar8)->wFlags_0x4 >> 10 & 1) != 0)) {
             uVar4 = 1;
           }
           else {
-            sVar12 = 0x276;
-            sVar11 = 0;
+            sVar11 = 0x276;
             sVar10 = 0;
             sVar3 = 0;
             pFVar8 = LpflFromId(0xc);
-            sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,sVar12);
+            sVar3 = FCheckCargo(pFVar8,sVar3,sVar10,sVar11,in_stack_0000fff4);
             if (sVar3 == 0) {
               sVar3 = FCheckSelection(grobjFleet,0xc);
               if (sVar3 == 0) {
@@ -3368,7 +3356,7 @@ short FTutorTaskDone(void)
           }
           else {
             tutor.idtBold = 0x21e;
-            tutor.idh = (short)&DAT_1120_1771;
+            tutor.idh = 0x1771;
             if ((hwndSlotDlg == 0) && (rgplr[0].cShDef != '\t')) {
               uVar4 = 0;
             }
@@ -3415,13 +3403,13 @@ short FTutorTaskDone(void)
         else {
           uVar6 = (undefined2)((ulong)lpshdefBuild >> 0x10);
           pSVar5 = (SHDEF *)lpshdefBuild;
-          if ((((uint)(pSVar5->hul).rghs[0].wFlags >> 8 == 1) &&
-              ((uint)(pSVar5->hul).rghs[1].wFlags >> 8 == 1)) &&
-             (((uint)(pSVar5->hul).rghs[2].wFlags >> 8 == 1 &&
-              (((uint)(pSVar5->hul).rghs[3].wFlags >> 8 == 1 &&
-               ((uint)(pSVar5->hul).rghs[4].wFlags >> 8 == 2)))))) {
-            if (((uint)(pSVar5->hul).rghs[5].wFlags >> 8 == 1) &&
-               ((uint)(pSVar5->hul).rghs[6].wFlags >> 8 == 1)) {
+          if ((((pSVar5->hul).rghs[0].wFlags_0x2 >> 8 == 1) &&
+              ((pSVar5->hul).rghs[1].wFlags_0x2 >> 8 == 1)) &&
+             (((pSVar5->hul).rghs[2].wFlags_0x2 >> 8 == 1 &&
+              (((pSVar5->hul).rghs[3].wFlags_0x2 >> 8 == 1 &&
+               ((pSVar5->hul).rghs[4].wFlags_0x2 >> 8 == 2)))))) {
+            if (((pSVar5->hul).rghs[5].wFlags_0x2 >> 8 == 1) &&
+               ((pSVar5->hul).rghs[6].wFlags_0x2 >> 8 == 1)) {
               tutor.idtBold = 0x225;
             }
             else {
@@ -3574,7 +3562,7 @@ short FTutorTaskDone(void)
       if (hwndSlotDlg == 0) {
         if (rgplr[0].cShDef < '\n') {
           tutor.idtBold = 0x241;
-          tutor.idh = (short)&DAT_1120_1771;
+          tutor.idh = 0x1771;
           uVar4 = 0;
         }
         else {
@@ -3593,7 +3581,7 @@ short FTutorTaskDone(void)
         }
       }
       else {
-        if ((((uint)rgshdef[9].wFlags >> 9 & 1) == 0) &&
+        if (((rgshdef[9].wFlags >> 9 & 1) == 0) &&
            (sVar3 = FCheckShipBuilder(4,-1), sVar3 == 0)) {
           tutor.idtBold = 0x245;
         }
@@ -3605,10 +3593,10 @@ short FTutorTaskDone(void)
           else {
             uVar6 = (undefined2)((ulong)lpshdefBuild >> 0x10);
             pSVar5 = (SHDEF *)lpshdefBuild;
-            if ((uint)(pSVar5->hul).rghs[0].wFlags >> 8 == 2) {
-              if ((((uint)(pSVar5->hul).rghs[1].wFlags >> 8 == 4) &&
-                  ((uint)(pSVar5->hul).rghs[2].wFlags >> 8 == 4)) &&
-                 ((uint)(pSVar5->hul).rghs[3].wFlags >> 8 == 1)) {
+            if ((pSVar5->hul).rghs[0].wFlags_0x2 >> 8 == 2) {
+              if ((((pSVar5->hul).rghs[1].wFlags_0x2 >> 8 == 4) &&
+                  ((pSVar5->hul).rghs[2].wFlags_0x2 >> 8 == 4)) &&
+                 ((pSVar5->hul).rghs[3].wFlags_0x2 >> 8 == 1)) {
                 tutor.idtBold = 0x245;
               }
               else {
@@ -3851,7 +3839,7 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
   short idhSav;
   char szT [34];
   short i;
-  ZIPORDER *piaCur;
+  ITEMACTION *piaCur;
   
   sVar1 = tutor.idh;
   tutor.idh = 0x44a;
@@ -3863,15 +3851,14 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
       sVar2 = 0;
     }
     else {
-      piaCur = (ZIPORDER *)vrgZip + iZip;
+      piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
       tutor.idh = 0x5ef;
       for (i = 0; i < 5; i = i + 1) {
-        if (((uint)(piaCur->txp).rgia[0].wFlags >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) &&
-           ((uint)(piaCur->txp).rgia[0].wFlags >> 0xc != 0)) {
+        if ((piaCur->wFlags >> 0xc != lpiaGoal->wFlags >> 0xc) && (piaCur->wFlags >> 0xc != 0)) {
           tutor.idh = 0x5ef;
           return 0;
         }
-        piaCur = (ZIPORDER *)((piaCur->txp).rgia + 1);
+        piaCur = piaCur + 1;
         lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
       }
       CchGetString(ids,szT);
@@ -3888,11 +3875,10 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
   }
   else {
     *(undefined1 *)((int)&vrgZip[0].fValid + iZip * 0x18) = 1;
-    piaCur = (ZIPORDER *)vrgZip + iZip;
+    piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
     for (i = 0; i < 5; i = i + 1) {
-      (piaCur->txp).rgia[0].wFlags =
-           (piaCur->txp).rgia[0].wFlags & 0xfffU | lpiaGoal->wFlags & 0xf000U;
-      piaCur = (ZIPORDER *)((piaCur->txp).rgia + 1);
+      piaCur->wFlags = piaCur->wFlags & 0xfff | lpiaGoal->wFlags & 0xf000;
+      piaCur = piaCur + 1;
       lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
     }
     CchGetString(ids,szT);
@@ -3916,55 +3902,59 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
 short FCheckTemplate(short iTemplate)
 
 {
-  ZIPPRODQ1 *pZVar1;
-  undefined2 *puVar2;
-  short sVar3;
-  int iVar4;
-  ZIPPRODQ1 *pZVar5;
+  undefined2 *puVar1;
+  undefined2 uVar2;
+  ZIPPRODQ1 *pZVar3;
+  short sVar4;
+  int iVar5;
   undefined2 *puVar6;
+  ZIPPRODQ1 *pZVar7;
   short i;
   
   tutor.idh = 0xc2d;
   if (((uint)tutor.wFlags >> 9 & 1) == 0) {
     if (vrgZipProd[0].fValid == 0) {
-      sVar3 = 0;
+      sVar4 = 0;
     }
-    else if (vrgZipProd[0].field2_0xe == ((ZIPPRODQ1 *)rgzpqTut + iTemplate)->fNoResearch)
-    {
-      if (vrgZipProd[0].cpq == *(byte *)(iTemplate * 0x1a + 0x663b)) {
+    else if (vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1.fNoResearch ==
+             *(byte *)(iTemplate * 0x1a + 0x663a)) {
+      if (vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1.cpq == *(byte *)(iTemplate * 0x1a + 0x663b)
+         ) {
         for (i = 0; i < (int)(uint)*(byte *)(iTemplate * 0x1a + 0x663b); i = i + 1) {
-          if (*(int *)((int)vrgZipProd[0].rgpq + i * 2) !=
-              *(int *)(iTemplate * 0x1a + 0x663c + i * 2)) {
+          if ((((ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1)->rgpq + i)->w !=
+              *(ushort *)(iTemplate * 0x1a + 0x663c + i * 2)) {
             tutor.idh = 0xc2d;
             return 0;
           }
         }
-        gd._4_2_ = gd._4_2_ & 0xffdf | 0x20;
-        sVar3 = 1;
+        gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
+        sVar4 = 1;
       }
       else {
-        sVar3 = 0;
+        sVar4 = 0;
       }
     }
     else {
-      sVar3 = 0;
+      sVar4 = 0;
     }
   }
   else {
     vrgZipProd[0].fValid = 1;
-    pZVar5 = (ZIPPRODQ1 *)rgzpqTut + iTemplate;
-    puVar6 = (undefined2 *)&vrgZipProd[0].field2_0xe;
-    for (iVar4 = 0xd; iVar4 != 0; iVar4 = iVar4 + -1) {
-      puVar2 = puVar6;
+    puVar6 = (undefined2 *)(iTemplate * 0x1a + 0x663a);
+    pZVar7 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
+    for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
+      pZVar3 = pZVar7;
+      pZVar7 = (ZIPPRODQ1 *)pZVar7->rgpq;
+      puVar1 = puVar6;
       puVar6 = puVar6 + 1;
-      pZVar1 = pZVar5;
-      pZVar5 = (ZIPPRODQ1 *)pZVar5->rgpq;
-      *puVar2 = *(undefined2 *)pZVar1;
+      uVar2 = *puVar1;
+      pZVar3->fNoResearch = (char)uVar2;
+      pZVar3->cpq = (char)((uint)uVar2 >> 8);
     }
-    gd._4_2_ = gd._4_2_ & 0xffdf | 0x20;
-    sVar3 = 1;
+    gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
+    sVar4 = 1;
   }
-  return sVar3;
+  return sVar4;
 }
 
 
@@ -4086,7 +4076,7 @@ short FCheckFleetName(short id,short ids)
     CchGetString(ids,szT);
     uVar6 = (undefined2)((ulong)lpfl >> 0x10);
                     /* WARNING: Load size is inaccurate */
-    sVar3 = __fstricmp((char *)szT,
+    sVar3 = __fstricmp((char *)CONCAT22(unaff_SS,szT),
                                (char *)CONCAT22(*(undefined2 *)((int)&((FLEET *)lpfl)->lpszName + 2)
                                                 ,((FLEET *)lpfl)->lpszName));
     if (sVar3 == 0) {
@@ -4115,7 +4105,7 @@ short FCheckSummary(GrobjClass grobj,short id)
 {
   short fRet;
   
-  if (((uint)gd._0_2_ >> 1 & 1) == 0) {
+  if (((uint)gd.grBits >> 1 & 1) == 0) {
     fRet = 0;
     if (grobj == grobjPlanet) {
       if ((sel.scan.grobj == grobjPlanet) && (sel.scan.idpl == id)) {
@@ -4172,7 +4162,7 @@ short FCheckSelection(GrobjClass grobj,short id)
   short fRet;
   
   sVar1 = tutor.idh;
-  if ((((uint)tutor.wFlags >> 9 & 1) == 0) && (((uint)gd._0_2_ >> 1 & 1) == 0)) {
+  if ((((uint)tutor.wFlags >> 9 & 1) == 0) && (((uint)gd.grBits >> 1 & 1) == 0)) {
     if (grobj == grobjFleet) {
       iVar2 = 2;
     }
@@ -4238,7 +4228,7 @@ short FCheckMessages(MessageId imsg,short idm,short fFilter)
   short idhSav;
   
   sVar1 = tutor.idh;
-  if (((uint)gd._0_2_ >> 1 & 1) == 0) {
+  if (((uint)gd.grBits >> 1 & 1) == 0) {
     tutor.idh = 0x36b1;
     if ((imsg == 9999) && (sVar2 = IMsgNext(0), sVar2 != -1)) {
       sVar2 = 0;
@@ -4420,7 +4410,7 @@ short FCheckPlanetRoute(short idpl,short idplRoute)
   }
   else {
     tutor.idh = 0x5fb;
-    if ((((PLANET *)pPVar4)->wRouting & 0x3ffU) == idplRoute + 1U) {
+    if ((((PLANET *)pPVar4)->wRouting & 0x3ff) == idplRoute + 1U) {
       sVar2 = 1;
       tutor.idh = sVar1;
     }
@@ -4607,21 +4597,22 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
   FLEET *pFVar4;
   short sVar5;
   short sVar6;
-  short sVar7;
-  int iVar8;
-  undefined2 *puVar9;
+  uint uVar7;
+  short sVar8;
+  int iVar9;
   undefined2 *puVar10;
+  undefined2 *puVar11;
   undefined2 unaff_SS;
-  FLEET *pFVar11;
+  FLEET *pFVar12;
   short idhSav;
   short grobj;
   short idh;
   FLEET *lpfl;
   short i;
-  uint *piaCur;
+  ITEMACTION *piaCur;
   short fRet;
   undefined2 ord [4];
-  uint local_e [6];
+  ITEMACTION local_e [6];
   
   sVar5 = tutor.idh;
   fRet = 0;
@@ -4632,10 +4623,10 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
     id = id & 0x7fff;
     grobj = 2;
   }
-  pFVar11 = LpflFromId(ifl);
-  iVar8 = (int)((ulong)pFVar11 >> 0x10);
-  pFVar4 = (FLEET *)pFVar11;
-  if ((pFVar4 == (FLEET *)0x0) && (iVar8 == 0)) {
+  pFVar12 = LpflFromId(ifl);
+  iVar9 = (int)((ulong)pFVar12 >> 0x10);
+  pFVar4 = (FLEET *)pFVar12;
+  if ((pFVar4 == (FLEET *)0x0) && (iVar9 == 0)) {
     fRet = 0;
     sVar5 = tutor.idh;
   }
@@ -4647,33 +4638,34 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
     }
     else {
       uVar3 = *(undefined2 *)((int)&pFVar4->lpplord + 2);
-      puVar9 = (undefined2 *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
-      puVar10 = ord;
-      for (iVar8 = 9; iVar8 != 0; iVar8 = iVar8 + -1) {
-        puVar2 = puVar10;
+      puVar10 = (undefined2 *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
+      puVar11 = ord;
+      for (iVar9 = 9; iVar9 != 0; iVar9 = iVar9 + -1) {
+        puVar2 = puVar11;
+        puVar11 = puVar11 + 1;
+        puVar1 = puVar10;
         puVar10 = puVar10 + 1;
-        puVar1 = puVar9;
-        puVar9 = puVar9 + 1;
         *puVar2 = *puVar1;
       }
       piaCur = local_e;
       tutor.idh = 0x5ef;
       for (i = 0; i < 5; i = i + 1) {
-        if (*piaCur >> 0xc != (uint)lpiaGoal->wFlags >> 0xc) {
-          if (*piaCur >> 0xc != 0) {
+        if (piaCur->wFlags >> 0xc != lpiaGoal->wFlags >> 0xc) {
+          if (piaCur->wFlags >> 0xc != 0) {
             TutorError(0x268);
           }
           goto TUTOR_LReturn_2;
         }
-        if (((*piaCur >> 0xc == 4) || (*piaCur >> 0xc == 8)) &&
-           ((*piaCur & 0xfff) != (lpiaGoal->wFlags & 0xfffU))) goto TUTOR_LReturn_2;
+        uVar7 = piaCur->wFlags >> 0xc;
+        if (((uVar7 == 4) || (uVar7 == 8)) &&
+           ((piaCur->wFlags & 0xfff) != (lpiaGoal->wFlags & 0xfff))) goto TUTOR_LReturn_2;
         piaCur = piaCur + 1;
         lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
       }
       fRet = 1;
 TUTOR_LReturn_2:
       sVar6 = tutor.idh;
-      if ((fRet == 0) && (sVar7 = FCheckSelection(grobjFleet,ifl), sVar7 == 0)) {
+      if ((fRet == 0) && (sVar8 = FCheckSelection(grobjFleet,ifl), sVar8 == 0)) {
         sVar6 = tutor.idh;
       }
       tutor.idh = sVar6;
@@ -4697,6 +4689,7 @@ TUTOR_LReturn_2:
 
 /* WARNING: Removing unreachable block (ram,0x10f8750f) */
 /* WARNING: Variable defined which should be unmapped: idhSav */
+/* WARNING: Variable defined which should be unmapped: idh */
 
 short FCheckQueue(short ipl,short iprod,GrobjClass grobj,ushort iItem,ushort cItem,
                   ushort fNoResearch)
@@ -4709,19 +4702,18 @@ short FCheckQueue(short ipl,short iprod,GrobjClass grobj,ushort iItem,ushort cIt
   short sVar5;
   int iVar6;
   undefined2 unaff_SI;
-  undefined2 unaff_DI;
   PLANET *pPVar7;
   ulong uVar8;
-  ulong uVar9;
+  ulong uStack_14;
   short idhSav;
   short idh;
   PLANET *lppl;
   short fRet;
   
   sVar3 = tutor.idh;
-  uVar9 = CONCAT22(unaff_SI,unaff_DI);
+  uStack_14 = CONCAT22(tutor.idh,unaff_SI);
   fRet = 0;
-  if ((uint)game.turn < 2) {
+  if (game.turn < 2) {
     tutor.idh = 0x5e3;
   }
   else {
@@ -4734,12 +4726,12 @@ short FCheckQueue(short ipl,short iprod,GrobjClass grobj,ushort iItem,ushort cIt
       ((*(int *)&pPVar2->lpplprod != 0 || (*(int *)((int)&pPVar2->lpplprod + 2) != 0)))) &&
      (iprod < (int)(uint)((PLPROD *)pPVar2->lpplprod)->iprodMac)) {
     uVar1 = *(uint *)(*(int *)&pPVar2->lpplprod + 4 + iprod * 4);
-    uVar8 = __aFulshr(uVar9,sVar3);
+    uVar8 = __aFulshr(uStack_14,idh);
     if ((((GrobjClass)uVar8 & (grobjOther|grobjFleet|grobjPlanet)) == grobj) &&
-       (uVar8 = __aFulshr(uVar9,sVar3), ((uint)uVar8 & 0x7f) == iItem)) {
+       (uVar8 = __aFulshr(uStack_14,idh), ((uint)uVar8 & 0x7f) == iItem)) {
       if ((uVar1 & 0x3ff) == cItem) {
         if ((fNoResearch == 0xffff) ||
-           (uVar9 = __aFulshr(uVar9,sVar3), ((uint)uVar9 & 1) == fNoResearch)) {
+           (uVar8 = __aFulshr(uStack_14,idh), ((uint)uVar8 & 1) == fNoResearch)) {
           fRet = 1;
         }
         else {
@@ -4888,24 +4880,24 @@ short FCheckBuilderPart(short iSlot,HS *phs,ushort cInit)
     tutor.idh = 0xbe0;
     return 0;
   }
-  uVar2 = (uint)(((SHDEF *)lpshdefBuild)->hul).rghs[iSlot].wFlags >> 8;
-  if (((uint)phs->wFlags >> 8 == 0) && (uVar2 == 0)) {
+  uVar2 = (((SHDEF *)lpshdefBuild)->hul).rghs[iSlot].wFlags_0x2 >> 8;
+  if ((phs->wFlags_0x2 >> 8 == 0) && (uVar2 == 0)) {
     tutor.idh = 0xbe0;
     return 1;
   }
-  if (cInit < (uint)phs->wFlags >> 8) {
+  if (cInit < phs->wFlags_0x2 >> 8) {
     if (uVar2 < cInit) goto TUTOR_BadCnt;
-    cInit = (uint)phs->wFlags >> 8;
+    cInit = phs->wFlags_0x2 >> 8;
   }
-  else if (uVar2 < (uint)phs->wFlags >> 8) goto TUTOR_BadCnt;
+  else if (uVar2 < phs->wFlags_0x2 >> 8) goto TUTOR_BadCnt;
   if (uVar2 <= cInit) {
-    if (uVar2 != (uint)phs->wFlags >> 8) {
+    if (uVar2 != phs->wFlags_0x2 >> 8) {
       tutor.idh = 0xbdf;
       return 0;
     }
     if ((phs->grhst == ((((SHDEF *)lpshdefBuild)->hul).rghs + iSlot)->grhst) &&
-       ((phs->wFlags & 0xffU) ==
-        ((((SHDEF *)lpshdefBuild)->hul).rghs[iSlot].wFlags & 0xffU))) {
+       ((phs->wFlags_0x2 & 0xff) ==
+        ((((SHDEF *)lpshdefBuild)->hul).rghs[iSlot].wFlags_0x2 & 0xff))) {
       tutor.idh = sVar1;
       return 1;
     }
@@ -5002,7 +4994,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
     }
     else if (game.turn == 0x14) {
       if (tutor.idt == 0x1a0) {
-        if ((uint)rgplr[0].wFlags >> 0xc == 2) {
+        if (rgplr[0].wFlags_0x4 >> 0xc == 2) {
           TutorError(499);
           return 0;
         }
@@ -5067,11 +5059,11 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
       switch(game.turn) {
       case 0xd:
         hs__16.grhst = hstScanner;
-        hs__16.wFlags = 0x101;
+        hs__16.wFlags_0x2 = 0x101;
         hs2.grhst = hstEngine;
-        hs2.wFlags = 0x103;
+        hs2.wFlags_0x2 = 0x103;
         hs3__12.grhst = hstMining;
-        hs3__12.wFlags = 0x102;
+        hs3__12.wFlags_0x2 = 0x102;
         if (tutor.idt != 0x150) {
           TutorError(0x1f8);
           return 0;
@@ -5092,7 +5084,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           return 0;
         }
         hs2.grhst = hstSpecialSB;
-        hs2.wFlags = 0x100;
+        hs2.wFlags_0x2 = 0x100;
         sVar1 = FCheckBuilderPart(0,&hs2,1);
         if (sVar1 == 0) {
           TutorError(0x203);
@@ -5101,7 +5093,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsGater);
-        sVar1 = __fstricmp((char *)pcVar2,pcVar3);
+        sVar1 = __fstricmp((char *)CONCAT22(0x1120,pcVar2),pcVar3);
         if (sVar1 != 0) {
           TutorError(0x200);
           return 0;
@@ -5117,9 +5109,9 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           return 0;
         }
         hs3__12.grhst = hstEngine;
-        hs3__12.wFlags = 0x104;
+        hs3__12.wFlags_0x2 = 0x104;
         hs2.grhst = hstMines;
-        hs2.wFlags = 0x301;
+        hs2.wFlags_0x2 = 0x301;
         sVar1 = FCheckBuilderPart(0,&hs3__12,1);
         if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(2,&hs2,3), sVar1 == 0)) {
           TutorError(0x1fc);
@@ -5128,7 +5120,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsMineLayer);
-        sVar1 = __fstricmp((char *)pcVar2,pcVar3);
+        sVar1 = __fstricmp((char *)CONCAT22(0x1120,pcVar2),pcVar3);
         if (sVar1 != 0) {
           TutorError(0x201);
           return 0;
@@ -5136,9 +5128,9 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         break;
       case 0x19:
         hs3__12.grhst = hstEngine;
-        hs3__12.wFlags = 0x104;
+        hs3__12.wFlags_0x2 = 0x104;
         hs2.grhst = hstSpecialM;
-        hs2.wFlags = 0x100;
+        hs2.wFlags_0x2 = 0x100;
         sVar1 = FCheckBuilderPart(0,&hs3__12,1);
         if ((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2,1), sVar1 == 0)) {
           TutorError(0x1fb);
@@ -5151,15 +5143,15 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           return 0;
         }
         hs.grhst = hstEngine;
-        hs.wFlags = 0x10a;
+        hs.wFlags_0x2 = 0x10a;
         hs__16.grhst = hstSpecialM;
-        hs__16.wFlags = 0x105;
+        hs__16.wFlags_0x2 = 0x105;
         hs2.grhst = hstSpecialE;
-        hs2.wFlags = 0x105;
+        hs2.wFlags_0x2 = 0x105;
         hs3.grhst = hstBeam;
-        hs3.wFlags = 0x103;
+        hs3.wFlags_0x2 = 0x103;
         hs3__12.grhst = hstArmor;
-        hs3__12.wFlags = 0x202;
+        hs3__12.wFlags_0x2 = 0x202;
         sVar1 = FCheckBuilderPart(0,&hs,1);
         if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs3,1), sVar1 == 0)) ||
             ((sVar1 = FCheckBuilderPart(2,&hs3,1), sVar1 == 0 ||
@@ -5181,11 +5173,11 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
           return 0;
         }
         hs__16.grhst = hstEngine;
-        hs__16.wFlags = 0x20a;
+        hs__16.wFlags_0x2 = 0x20a;
         hs3__12.grhst = hstSpecialM;
-        hs3__12.wFlags = 0x105;
+        hs3__12.wFlags_0x2 = 0x105;
         hs2.grhst = hstBomb;
-        hs2.wFlags = 0x401;
+        hs2.wFlags_0x2 = 0x401;
         sVar1 = FCheckBuilderPart(0,&hs__16,2);
         if ((((sVar1 == 0) || (sVar1 = FCheckBuilderPart(1,&hs2,4), sVar1 == 0)) ||
             (sVar1 = FCheckBuilderPart(2,&hs2,4), sVar1 == 0)) ||
