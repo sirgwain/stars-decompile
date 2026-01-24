@@ -15,7 +15,7 @@
 /* WARNING: Removing unreachable block (ram,0x1058014f) */
 /* WARNING: Type propagation algorithm not settling */
 
-long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long ScannerWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   ushort uVar1;
@@ -66,17 +66,17 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   HDC hdc;
   
   uVar12 = CONCAT22(unaff_SI,unaff_DI);
-  if (msg == 1) {
+  if (msg == WM_CREATE) {
     yScanTop = 1000;
     xScanTop = 1000;
     return 0;
   }
-  if (msg == 5) {
+  if (msg == WM_SIZE) {
     SetScanScrollBars(hwnd);
     PostMessage(hwndFrame,0x111,iScanZoom + 0xf41,0);
   }
   else {
-    if (msg == 0xf) {
+    if (msg == WM_PAINT) {
       hdc = BeginPaint(hwnd,&ps);
       if ((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) &&
          (((uint)gd.grBits2 & 1) == 0)) {
@@ -88,8 +88,8 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       EndPaint(hwnd,&ps);
       return 0;
     }
-    if (msg != 0x20) {
-      if (msg == 0x102) {
+    if (msg != WM_SETCURSOR) {
+      if (msg == WM_CHAR) {
         if ((wParam == 0x76) || (wParam == 0x56)) {
           hdc = GetDC(hwndScanner);
           pt.x = sel.scan.pt.x;
@@ -134,7 +134,7 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           }
         }
       }
-      else if ((msg == 0x114) || (msg == 0x115)) {
+      else if ((msg == WM_HSCROLL) || (msg == WM_VSCROLL)) {
         switch(wParam) {
         case 0:
           iScanNew = -dScanInc;
@@ -151,7 +151,7 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
         case 4:
         case 5:
           sVar7 = yScanTop;
-          if (msg != 0x115) {
+          if (msg != WM_VSCROLL) {
             sVar7 = xScanTop;
           }
           iScanNew = (int)lParam - sVar7 & 0xfffc;
@@ -160,7 +160,7 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           iScanNew = 0;
         }
         if (iScanNew != 0) {
-          if (msg == 0x115) {
+          if (msg == WM_VSCROLL) {
             hpenSav = yScanTop;
             SetScrollPos(hwnd,1,yScanTop + iScanNew,1);
             yScanTop = GetScrollPos(hwnd,1);
@@ -177,7 +177,8 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           }
         }
       }
-      else if ((((msg == 0x201) || (msg == 0x203)) || (msg == 0x204)) || (msg == 0x207)) {
+      else if ((((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) || (msg == WM_RBUTTONDOWN))
+              || (msg == WM_MBUTTONDOWN)) {
         SetFocus(hwndFrame);
         pt.x = (int)lParam;
         uVar12 = __aFulshr(uVar12,in_stack_0000fdda);
@@ -198,16 +199,17 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           if ((((gd.grBits._2_2_ >> 8 & 1) == 0) &&
               (((sel.grobj != grobjPlanet || ((wParam & 4) == 0)) ||
                (sVar7 = IWarpMAFromLppl(&sel.pl,(short *)0x0), sVar7 < 1)))) ||
-             (msg != 0x201)) {
+             (msg != WM_LBUTTONDOWN)) {
             if ((((gd.grBits._2_2_ >> 0xd & 1) == 0) &&
-                ((sel.grobj != grobjPlanet || ((wParam & 8) == 0)))) || (msg != 0x201)) {
-              if ((msg == 0x207) || ((msg == 0x204 && ((wParam & 4) != 0)))) {
+                ((sel.grobj != grobjPlanet || ((wParam & 8) == 0)))) ||
+               (msg != WM_LBUTTONDOWN)) {
+              if ((msg == WM_MBUTTONDOWN) || ((msg == WM_RBUTTONDOWN && ((wParam & 4) != 0)))) {
                 pt_03.y = pt.y;
                 pt_03.x = pt.x;
                 FHandleMeasuringTape(&scan,pt_03);
               }
               else {
-                if (msg == 0x204) {
+                if (msg == WM_RBUTTONDOWN) {
                   iChecked = -1;
                   pt.x = scan.pt.x;
                   pt.y = scan.pt.y;
@@ -411,7 +413,7 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
             DrawPlanShip(0,0x4100);
           }
         }
-        else if (((msg == 0x201) && (pt.y < rc.bottom - (dySBar >> 1))) &&
+        else if (((msg == WM_LBUTTONDOWN) && (pt.y < rc.bottom - (dySBar >> 1))) &&
                 ((sel.scan.grobjFull & (grobjFleet|grobjPlanet)) != grobjNone)) {
           if (sel.scan.grobj == grobjFleet) {
             GlobalPD.grPopup = 3;
@@ -427,7 +429,7 @@ long ScannerWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
         }
       }
       else {
-        if (msg != 0x222) goto SCAN_Default_2;
+        if (msg != WM_MDIACTIVATE) goto SCAN_Default_2;
         hwndActive = hwnd;
         if (wParam == 0) {
           hwndActive = 0;
@@ -4543,7 +4545,7 @@ short FGetNextObjHere(SCAN *pscan,short fOnlyOurs)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-short FindDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
+short FindDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   short sVar1;
@@ -4556,12 +4558,12 @@ short FindDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
   ushort in_stack_0000ffcc;
   char szName [42];
   
-  if (msg == 0x14) {
+  if (msg == WM_ERASEBKGND) {
     GetClientRect(hwnd,&stack0xffcc);
     FillRect(wParam,&stack0xffcc,hbrButtonFace);
     return 1;
   }
-  if (msg == 0x19) {
+  if (msg == WM_CTLCOLOR) {
     uVar3 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffcc);
     if ((int)uVar3 == 6) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
@@ -4569,12 +4571,12 @@ short FindDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
   }
   else {
-    if (msg == 0x110) {
+    if (msg == WM_INITDIALOG) {
       StickyDlgPos(hwnd,(POINT *)&ptStickyFindDlg,1);
       SendDlgItemMessage(hwnd,0x10c,0x415,0x27,0);
       return 1;
     }
-    if (msg == 0x111) {
+    if (msg == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
           GetDlgItemText(hwnd,0x10c,szName,0x28);

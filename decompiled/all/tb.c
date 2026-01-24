@@ -12,7 +12,7 @@
 
 /* WARNING: Variable defined which should be unmapped: pct */
 
-long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   POINT PVar1;
@@ -46,7 +46,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   short fInside;
   HDC hdc;
   
-  if (msg == 1) {
+  if (msg == WM_CREATE) {
     x = 4;
     for (i = 0; i < 0x1d; i = i + 1) {
       itb = (short)*(char *)i;
@@ -86,7 +86,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       x = x + dx;
     }
   }
-  else if (msg == 0xf) {
+  else if (msg == WM_PAINT) {
     hdc = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
     PatBlt(hdc,0,0,rc.right,1,0x42);
@@ -98,7 +98,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     EndPaint(hwnd,&ps);
   }
   else {
-    if (msg == 0x14) {
+    if (msg == WM_ERASEBKGND) {
       GetClientRect(hwnd,&rc);
       FillRect(wParam,&rc,hbrButtonFace);
       uVar8 = 1;
@@ -106,14 +106,14 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       pfVar7 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
-    if (msg == 0x19) {
+    if (msg == WM_CTLCOLOR) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       uVar8 = (ulong)hbrButtonFace;
       pfVar6 = lpfnRealComboProc;
       pfVar7 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
-    if (msg == 0x20) {
+    if (msg == WM_SETCURSOR) {
       HVar4 = LoadCursor(0,(LPCSTR)0x7f00);
       setcursor(HVar4);
       uVar8 = 1;
@@ -121,7 +121,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       pfVar7 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
-    if (msg == 0x111) {
+    if (msg == WM_COMMAND) {
       if ((HWND)lParam == hwndTBRadar) {
         uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
         if ((int)uVar8 == 8) {
@@ -129,7 +129,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
         }
       }
     }
-    else if (msg == 0x200) {
+    else if (msg == WM_MOUSEMOVE) {
       pt.x = (HWND)lParam;
       uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
       pt.y = (short)uVar8;
@@ -156,7 +156,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
         ShowTooltip(ids,&rc);
       }
     }
-    else if ((msg == 0x201) || (msg == 0x203)) {
+    else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
       ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt,(RECT *)0x0);
       pt.x = (HWND)lParam;
       uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
@@ -921,7 +921,7 @@ LAB_1068_19dd:
 
 /* WARNING: Removing unreachable block (ram,0x10681bfc) */
 
-long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long TooltipWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   POINT PVar1;
@@ -941,10 +941,10 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   POINT pt;
   HDC hdc;
   
-  if (msg == 1) {
+  if (msg == WM_CREATE) {
     hwndTooltip = hwnd;
   }
-  else if (msg == 2) {
+  else if (msg == WM_DESTROY) {
     hwndTooltip = 0;
     if (vidTimerTooltip != -1) {
       KillTimer(hwnd,vidTimerTooltip);
@@ -953,7 +953,7 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     vidsTooltip = -1;
   }
   else {
-    if (msg == 0xf) {
+    if (msg == WM_PAINT) {
       hdc = BeginPaint(hwnd,&ps);
       GetClientRect(hwnd,&rc);
       FrameRect(hdc,&rc,hbrWindowFrame);
@@ -969,7 +969,7 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
       goto LAB_1068_1d6a;
     }
-    if (msg == 0x14) {
+    if (msg == WM_ERASEBKGND) {
       GetClientRect(hwnd,&rc);
       FillRect(wParam,&rc,hbrTooltip);
       LVar8 = 1;
@@ -977,8 +977,8 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
       goto LAB_1068_1d6a;
     }
-    if (msg != 0x113) {
-      if (((msg == 0x200) || (msg == 0x201)) || (msg == 0x203)) {
+    if (msg != WM_TIMER) {
+      if (((msg == WM_MOUSEMOVE) || (msg == WM_LBUTTONDOWN)) || (msg == WM_LBUTTONDBLCLK)) {
         DestroyWindow(hwnd);
         uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
         uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
@@ -1005,7 +1005,7 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       wParam = 0x39e;
     }
     if (wParam == 0x39e) {
-      if ((msg == 0x113) && (BVar5 = IsWindowVisible(hwnd), BVar5 != 0)) {
+      if ((msg == WM_TIMER) && (BVar5 = IsWindowVisible(hwnd), BVar5 != 0)) {
         vtickTooltipLast = GetTickCount();
         GetCursorPos(&pt);
         PVar2.y = pt.y;
@@ -1082,15 +1082,15 @@ LAB_1068_1d6a:
 // ======================================================================
 
 
-long FakeComboProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long FakeComboProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   LRESULT LVar1;
   
-  if (msg == 0x200) {
-    TbWndProc(hwnd,0x200,wParam,lParam);
+  if (msg == WM_MOUSEMOVE) {
+    TbWndProc(hwnd,WM_MOUSEMOVE,wParam,lParam);
   }
-  else if ((msg == 0x201) || (msg == 0x203)) {
+  else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
     ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt,(RECT *)0x0);
   }
   LVar1 = CallWindowProc((fn_lpfnRealComboProc *)
@@ -1109,15 +1109,15 @@ long FakeComboProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
 // ======================================================================
 
 
-long FakeCEProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long FakeCEProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   LRESULT LVar1;
   
-  if (msg == 0x200) {
-    TbWndProc(hwnd,0x200,wParam,lParam);
+  if (msg == WM_MOUSEMOVE) {
+    TbWndProc(hwnd,WM_MOUSEMOVE,wParam,lParam);
   }
-  else if ((msg == 0x201) || (msg == 0x203)) {
+  else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
     ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt,(RECT *)0x0);
   }
   LVar1 = CallWindowProc((fn_lpfnRealCEProc *)

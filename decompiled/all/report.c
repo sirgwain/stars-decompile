@@ -10,7 +10,7 @@
 // ======================================================================
 
 
-long ReportDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long ReportDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   int iVar1;
@@ -39,7 +39,7 @@ long ReportDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
   HMENU hmenu;
   HDC hdc;
   
-  if (msg == 1) {
+  if (msg == WM_CREATE) {
     hwndReportDlg = hwnd;
     hdc = GetDC(hwnd);
     SelectObject(hdc,rghfontArial8[1]);
@@ -89,9 +89,9 @@ LAB_1108_019b:
     SetWindowPos(vprptCur->hwndVScroll,0,rc.right - dx,dyArial8 + 6,dx,
                  (dyArial8 + 4) * vprptCur->cRowsVis + 1,i);
     SetHScrollBar();
-    return (ulong)(msg == 1);
+    return (ulong)(msg == WM_CREATE);
   }
-  if (msg == 2) {
+  if (msg == WM_DESTROY) {
     StickyDlgPos(hwnd,&vprptCur->ptDlg,0);
     GetWindowRect(hwnd,&rc);
     (&vprptCur->ptSize)->x = rc.right - rc.left;
@@ -119,32 +119,32 @@ LAB_1108_019b:
     }
   }
   else {
-    if (msg == 5) goto LAB_1108_019b;
-    if (msg == 0xf) {
+    if (msg == WM_SIZE) goto LAB_1108_019b;
+    if (msg == WM_PAINT) {
       hdc = BeginPaint(hwnd,&stack0xffd0);
       DrawReport(hwnd,hdc,&local_2c);
       EndPaint(hwnd,&stack0xffd0);
       gd.grBits._2_2_ = gd.grBits._2_2_ & 0xfdff;
       return 1;
     }
-    if (msg == 0x14) {
+    if (msg == WM_ERASEBKGND) {
       GetClientRect(hwnd,&rc);
       FillRect(wParam,&rc,hbrButtonFace);
       return 1;
     }
-    if (msg == 0x24) {
+    if (msg == WM_GETMINMAXINFO) {
       *(undefined2 *)((int)lParam + 0xc) = 300;
       *(undefined2 *)((int)lParam + 0xe) = 0xdc;
       return 0;
     }
-    if (msg == 0x111) {
+    if (msg == WM_COMMAND) {
       if (wParam == 2) {
         DestroyWindow(hwnd);
         return 1;
       }
     }
     else {
-      if (msg == 0x114) {
+      if (msg == WM_HSCROLL) {
         uVar5 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffd0);
         i = GetScrollPos((HWND)uVar5,2);
         pt = i;
@@ -199,7 +199,7 @@ LAB_1108_019b:
         }
         return 0;
       }
-      if (msg == 0x115) {
+      if (msg == WM_VSCROLL) {
         uVar5 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffd0);
         i = GetScrollPos((HWND)uVar5,2);
         pt = i;
@@ -248,7 +248,7 @@ LAB_1108_019b:
         }
         return 0;
       }
-      if (((msg == 0x201) || (msg == 0x203)) || (msg == 0x204)) {
+      if (((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) || (msg == WM_RBUTTONDOWN)) {
         xCur = 2;
         pt = (int)lParam;
         uVar5 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffd0);
@@ -279,7 +279,7 @@ LAB_1108_019b:
             if (iRow == -1) {
               pt_01.y = i;
               pt_01.x = pt;
-              ReportColumnPopup(pt_01,iCol,(uint)(msg == 0x204));
+              ReportColumnPopup(pt_01,iCol,(uint)(msg == WM_RBUTTONDOWN));
             }
             else {
               pt_00.y = i;
@@ -5221,7 +5221,7 @@ void DumpFleets(void)
 /* WARNING: Variable defined which should be unmapped: hwndEdit */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-short PrintMapDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
+short PrintMapDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   HWND HVar1;
@@ -5235,12 +5235,12 @@ short PrintMapDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
   RECT rc;
   short i;
   
-  if (msg == 0x14) {
+  if (msg == WM_ERASEBKGND) {
     GetClientRect(hwnd,&rc);
     FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
-  if (msg == 0x19) {
+  if (msg == WM_CTLCOLOR) {
     uVar2 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),hwndEdit);
     if ((int)uVar2 == 6) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
@@ -5248,7 +5248,7 @@ short PrintMapDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
   }
   else {
-    if (msg == 0x110) {
+    if (msg == WM_INITDIALOG) {
       for (i = 0; i < 2; i = i + 1) {
         HVar1 = GetDlgItem(hwnd,i + 0x10c);
         SendMessage(HVar1,0x415,1,0);
@@ -5260,7 +5260,7 @@ short PrintMapDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
       StickyDlgPos(hwnd,(POINT *)&ptStickyPrintMapDlg,1);
       return 1;
     }
-    if (msg == 0x111) {
+    if (msg == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
           for (i = 0; i < 2; i = i + 1) {

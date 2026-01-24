@@ -2719,7 +2719,7 @@ MDI_LWaitForTurn:
          SetTimer(0xe,10000,lpfnHostTimerProc._2_2_,
                   (char)(fn_lpfnHostTimerProc *)lpfnHostTimerProc);
     uTimerType = 0xe;
-    HostTimerProc(0,0,uTimerId,0);
+    HostTimerProc(0,WM_NULL,uTimerId,0);
     return;
   }
 MDI_LNewTurnAvail:
@@ -3306,7 +3306,7 @@ void BringUpHostDlg(void)
        SetTimer(0xd,10000,lpfnHostTimerProc._2_2_,
                 (char)(fn_lpfnHostTimerProc *)lpfnHostTimerProc);
   uTimerType = 0xd;
-  HostTimerProc(0,0,uTimerId,0);
+  HostTimerProc(0,WM_NULL,uTimerId,0);
   return;
 }
 
@@ -4107,7 +4107,7 @@ void DrawHostOptions(HWND hwnd,HDC hdc,short iDraw)
 // ======================================================================
 
 
-void HostTimerProc(HWND hwnd,ushort msg,ushort idTimer,ulong dwTime)
+void HostTimerProc(HWND hwnd,WMType msg,ushort idTimer,ulong dwTime)
 
 {
   short sVar1;
@@ -4749,7 +4749,7 @@ void RefitFrameChildren(void)
 // ======================================================================
 
 
-long TitleWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long TitleWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   HWND HVar1;
@@ -4785,7 +4785,7 @@ long TitleWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   short i;
   HDC hdc;
   
-  if (msg == 1) {
+  if (msg == WM_CREATE) {
     if (((7 < vcScreenColors) &&
         (vhdibTitle = HdibLoadBigResource(0x1c1), vhpalSplash == 0)) &&
        (vhdibTitle != 0)) {
@@ -4826,7 +4826,7 @@ long TitleWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
   }
   else {
-    if (msg == 2) {
+    if (msg == WM_DESTROY) {
       if (vhdibTitle != 0) {
         GlobalUnlock(vhdibTitle);
         FreeResource(vhdibTitle);
@@ -4845,7 +4845,7 @@ MDI_Default_3:
       LVar6 = DefWindowProc(hwnd,msg,wParam,lParam);
       return LVar6;
     }
-    if (msg == 0xf) {
+    if (msg == WM_PAINT) {
       BVar3 = IsIconic(hwnd);
       if (BVar3 == 0) {
         plf = (LOGFONT *)LocalAlloc(0x40,0x32);
@@ -4906,7 +4906,7 @@ MDI_Default_3:
         EndPaint(hwnd,ps);
       }
     }
-    else if (msg == 0x111) {
+    else if (msg == WM_COMMAND) {
       if (wParam == 0) {
         NewGameWizard(hwnd,0);
         if ((((PLANET *)lpPlanets == (PLANET *)0x0) && (lpPlanets._2_2_ == 0)) &&
@@ -4961,8 +4961,8 @@ MDI_Default_3:
       }
     }
     else {
-      if (msg != 0x30f) {
-        if (msg != 0x311) goto MDI_Default_3;
+      if (msg != WM_QUERYNEWPALETTE) {
+        if (msg != WM_PALETTECHANGED) goto MDI_Default_3;
         if (wParam == hwnd) {
           return 0;
         }

@@ -3400,7 +3400,7 @@ short IEmptyBmpFromGrhst(HullSlotType grhst)
 // ======================================================================
 
 
-long FakeListProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long FakeListProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   uint uVar1;
@@ -3415,7 +3415,7 @@ long FakeListProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   short iSel;
   
   uVar2 = CONCAT22(unaff_SI,unaff_DI);
-  if (msg == 0x20) {
+  if (msg == WM_SETCURSOR) {
     GetCursorPos(&stack0xfff8);
     ScreenToClient(hwnd,&stack0xfff8);
     if (in_stack_0000fff8 < 0x40) {
@@ -3423,8 +3423,8 @@ long FakeListProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       return 1;
     }
   }
-  else if ((((msg == 0x201) || (msg == 0x204)) && ((uint)lParam < 0x40)) &&
-          ((mdBuild == 4 || (msg == 0x204)))) {
+  else if ((((msg == WM_LBUTTONDOWN) || (msg == WM_RBUTTONDOWN)) && ((uint)lParam < 0x40)) &&
+          ((mdBuild == 4 || (msg == WM_RBUTTONDOWN)))) {
     CallWindowProc((fn_lpfnRealListProc *)
                    CONCAT22(lpfnRealListProc._2_2_,
                             (fn_lpfnRealListProc *)lpfnRealListProc),hwnd,0x201,wParam,
@@ -3433,7 +3433,7 @@ long FakeListProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
                    CONCAT22(lpfnRealListProc._2_2_,
                             (fn_lpfnRealListProc *)lpfnRealListProc),hwnd,0x202,wParam,
                    lParam);
-    if ((msg != 0x204) && (mdBuild == 4)) {
+    if ((msg != WM_RBUTTONDOWN) && (mdBuild == 4)) {
       fRightBtn = 0;
       fListBox = 1;
       uVar2 = __aFulshr(CONCAT22(1,wParam),0);

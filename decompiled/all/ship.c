@@ -4165,12 +4165,12 @@ LAB_1050_a07d:
 // ======================================================================
 
 
-long FakeEditProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
+long FakeEditProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   LRESULT LVar1;
   
-  if ((msg == 0x102) && (((wParam < 0x30 || (0x39 < wParam)) && (wParam != 8)))) {
+  if ((msg == WM_CHAR) && (((wParam < 0x30 || (0x39 < wParam)) && (wParam != 8)))) {
     LVar1 = 0;
   }
   else {

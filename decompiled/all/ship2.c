@@ -1909,7 +1909,7 @@ short CPtsCloakFromLphs(HS *lphs)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
+short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   char *pcVar1;
@@ -1924,12 +1924,12 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
   RECT rc;
   short i;
   
-  if (msg == 0x14) {
+  if (msg == WM_ERASEBKGND) {
     GetClientRect(hwnd,&rc);
     FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
-  if (msg == 0x19) {
+  if (msg == WM_CTLCOLOR) {
     local_10 = (HWND)lParam;
     HVar3 = GetDlgItem(hwnd,0x51);
     if (local_10 != HVar3) {
@@ -1938,7 +1938,7 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
   }
   else {
-    if (msg == 0x110) {
+    if (msg == WM_INITDIALOG) {
       StickyDlgPos(hwnd,(POINT *)&ptStickyMergeFleetsDlg,1);
       for (i = 0; i < vcflMerge; i = i + 1) {
         pcVar1 = PszGetFleetName(((FLEET **)rglpfl)[vrgiflMerge[i]]->id);
@@ -1963,7 +1963,7 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
       }
       return 1;
     }
-    if (msg == 0x111) {
+    if (msg == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         for (i = 0; i < vcflMerge; i = i + 1) {
           HVar3 = GetDlgItem(hwnd,0x51);
