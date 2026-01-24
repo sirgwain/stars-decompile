@@ -491,7 +491,7 @@ void DestroyAllIshdef(int16_t ishdef, int16_t iplr)
     /* TODO: implement */
 }
 
-int16_t WtMaxShdefStat(SHDEF *lpshdef, GrStat grStat)
+int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat)
 {
     int16_t wt;
     int16_t j;

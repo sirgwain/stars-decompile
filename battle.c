@@ -3,6 +3,10 @@
 #include "globals.h"
 
 #include "battle.h"
+#include "parts.h"
+#include "race.h"
+#include "ship.h"
+#include "utilgen.h"
 
 #define BrcFromXY(x, y) ((uint8_t)((((y) & 0x0F) << 4) | ((x) & 0x0F)))
 
@@ -442,21 +446,167 @@ int16_t FIsTargetOfMdTarget(TOK *ptok, int16_t mdTarget)
 
 int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef)
 {
-    int32_t wtCargoFleetMax;
-    int16_t spd;
-    int16_t iWarp;
-    uint16_t wt;
+    int16_t iEngine;
     int16_t cHalfThruster;
     int16_t cThruster;
-    int32_t wtFleetCargo;
+    int16_t cEngineT = 0;
     int16_t j;
-    int16_t cEngineT;
-    uint16_t wtCargoShdefMax;
-    int16_t iEngine;
-    ENGINE *lpengine;
+    int16_t iWarp;
+    int16_t spd;
+    uint16_t wt;
 
-    /* TODO: implement */
-    return 0;
+    /* If SHDEF not provided, fetch from per-player ship-def table. */
+    if (lpshdef == NULL)
+    {
+        lpshdef = &rglpshdef[lpfl->iPlayer][ishdef];
+    }
+
+    iEngine = -1;
+    cHalfThruster = 0;
+    cThruster = 0;
+
+    /* Scan hull slots for engine/thruster components. */
+    for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
+    {
+        if (lpshdef->hul.rghs[j].cItem != 0)
+        {
+            if (lpshdef->hul.rghs[j].grhst == hstEngine)
+            {
+                iEngine = (int16_t)lpshdef->hul.rghs[j].iItem;
+                cEngineT = (int16_t)lpshdef->hul.rghs[j].cItem;
+
+                if (lpshdef->hul.rghs[j].iItem == iengineEnigmaPulsar)
+                {
+                    cHalfThruster = (int16_t)(cHalfThruster + lpshdef->hul.rghs[j].cItem);
+                }
+            }
+            else if (lpshdef->hul.rghs[j].grhst == hstMining)
+            {
+                if (lpshdef->hul.rghs[j].iItem == iminingAlienMiner)
+                {
+                    cHalfThruster = (int16_t)(cHalfThruster + lpshdef->hul.rghs[j].cItem);
+                }
+            }
+            else if (lpshdef->hul.rghs[j].grhst == hstSpecialE)
+            {
+                if (lpshdef->hul.rghs[j].iItem == ispecialEMultiFunctionPod)
+                {
+                    cThruster = (int16_t)(cThruster + lpshdef->hul.rghs[j].cItem);
+                }
+            }
+            else if (lpshdef->hul.rghs[j].grhst == hstSpecialM)
+            {
+                if (lpshdef->hul.rghs[j].iItem == ispecialMManeuveringJet)
+                {
+                    cThruster = (int16_t)(cThruster + lpshdef->hul.rghs[j].cItem);
+                }
+                else if (lpshdef->hul.rghs[j].iItem == ispecialMOverthruster)
+                {
+                    cThruster = (int16_t)(cThruster + (int16_t)(lpshdef->hul.rghs[j].cItem * 2));
+                }
+            }
+        }
+    }
+
+    if ((iEngine == -1) || (cEngineT == 0))
+    {
+        return 0;
+    }
+
+    ENGINE *pengine = LpengineFromId(iEngine);
+
+    /* Determine warp (special engines cap at warp 10; others limited by fuel usage). */
+    if ((iEngine == iengineInterspace10) ||
+        (iEngine == iengineEnigmaPulsar) ||
+        (iEngine == iengineTransStar10) ||
+        (iEngine == iengineTransGalacticMizerScoop) ||
+        (iEngine == iengineGalaxyScoop))
+    {
+        iWarp = 10;
+    }
+    else
+    {
+        for (iWarp = 9; (0 < iWarp) && (120 < pengine->rgcFuelUsed[iWarp]); iWarp--)
+        {
+            /* empty */
+        }
+    }
+
+    spd = (int16_t)(iWarp - 4 + cThruster + (int16_t)((cHalfThruster + 1) / 2));
+
+    if (lpfl != NULL)
+    {
+        int16_t ra = GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv);
+        if (ra == raAttack)
+        {
+            spd = (int16_t)(spd + 2);
+        }
+    }
+
+    wt = lpshdef->hul.wtEmpty;
+
+    if (lpfl != NULL)
+    {
+        uint16_t wtCargoShdefMax = (uint16_t)WtMaxShdefStat(lpshdef, grStatCargo);
+
+        if (wtCargoShdefMax == 0)
+        {
+            fDumpCargo = 0;
+        }
+        else
+        {
+            uint32_t lCargo = (uint32_t)LGetFleetStat(lpfl, grStatCargo);
+
+            if (lCargo != 0)
+            {
+                uint32_t sum =
+                    (uint32_t)lpfl->rgwtMin[0] +
+                    (uint32_t)lpfl->rgwtMin[1] +
+                    (uint32_t)lpfl->rgwtMin[2] +
+                    (uint32_t)lpfl->rgwtMin[3];
+
+                /* Unsigned 32-bit multiply/divide like __aFulmul / __aFldiv. */
+                uint32_t add = (sum * (uint32_t)wtCargoShdefMax) / lCargo;
+                wt = (uint16_t)(wt + (uint16_t)add);
+            }
+        }
+
+        if (fDumpCargo != 0)
+        {
+            spd = (int16_t)(spd - 1);
+        }
+
+        if (ptok != NULL)
+        {
+            /* Store Random(15) into TOK bitfield */
+            ptok->dwt = (uint16_t)((uint16_t)Random(15) & 15u);
+        }
+    }
+
+    if (ptok != NULL)
+    {
+        ptok->wt = wt;
+    }
+
+    /* Weight penalty: (wt / 70) / engine_count_in_slot0 */
+    {
+        uint16_t c0 = (uint16_t)lpshdef->hul.rghs[0].cItem;
+        uint32_t penalty = 0;
+
+        if (c0 != 0)
+        {
+            penalty = ((uint32_t)wt / 70u) / (uint32_t)c0;
+        }
+
+        {
+            int32_t tmp = (int32_t)spd - (int32_t)penalty;
+            if (tmp > 8)
+                tmp = 8;
+            if (tmp < 0)
+                tmp = 0;
+            return (int16_t)tmp;
+        }
+    }
 }
 
 void DoBombing(void)

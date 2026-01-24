@@ -22,7 +22,7 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
 int16_t FCanSplit(int32_t cBoat);                                                                  /* MEMORY_SHIP:0x245c */
 int16_t FCanMerge(FLEET *pfl);                                                                     /* MEMORY_SHIP:0x2522 */
 void DestroyAllIshdef(int16_t ishdef, int16_t iplr);                                               /* MEMORY_SHIP:0xc336 */
-int16_t WtMaxShdefStat(SHDEF *lpshdef, GrStat grStat);                                            /* MEMORY_SHIP:0x41b2 */
+int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat);                                            /* MEMORY_SHIP:0x41b2 */
 int16_t FEnumCalcJettison(void *lprt, int16_t rt, int16_t cb, PLANET *lppl, int16_t iFleet);       /* MEMORY_SHIP:0x4df4 */
 void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr);                                           /* MEMORY_SHIP:0xc280 */
 void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCost);                              /* MEMORY_SHIP:0xcd00 */
