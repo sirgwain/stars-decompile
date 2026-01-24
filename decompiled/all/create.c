@@ -381,10 +381,11 @@ CREATE_LCantGetRace:
           if (((0 < cNum) && (-1 < (int)rgl[1])) &&
              (((int)rgl[1] < 0 || (((int)rgl[1] < 1 && (rgl[0] < 2)))))) {
             if ((rgl[0] == 1) && (rgl[1] == 0)) {
-              if ((((cNum < 2) || (local_26 < 0)) || ((local_26 < 1 && (local_28 < (char *)0x14))))
-                 || ((-1 < local_26 &&
-                     ((0 < local_26 ||
-                      ((char *)((int)(ulong *)rgcrPlrHistory + 0x36) < local_28))))))
+              if ((((cNum < 2) || (local_26 < 0)) ||
+                  ((local_26 < 1 && (local_28 < hbrButtonHilite)))) ||
+                 ((-1 < local_26 &&
+                  ((0 < local_26 ||
+                   ((char *)((int)(ulong *)rgcrPlrHistory + 0x36) < local_28))))))
               goto CREATE_LBadDefVc;
               SetVCCheck((GAME *)&game,0,1);
               SetVCVal((GAME *)&game,0,(int)(local_28 + -0x14) / 5);
@@ -398,7 +399,7 @@ CREATE_LCantGetRace:
               if ((rgl[0] == 1) && (rgl[1] == 0)) {
                 if (((cNum < 3) || (local_26 < 0)) ||
                    ((((local_26 < 1 && (local_28 < (char *)0x8)) || (0 < local_26)) ||
-                    ((((-1 < local_26 && ((char *)0x1a < local_28)) || (local_22 < 0)) ||
+                    ((((-1 < local_26 && (hbrWindowText < local_28)) || (local_22 < 0)) ||
                      (((local_22 < 1 && (local_24 < 2)) ||
                       ((-1 < local_22 && ((0 < local_22 || (6 < local_24))))))))))))
                 goto CREATE_LBadDefVc;
@@ -430,7 +431,7 @@ CREATE_LCantGetRace:
                    (((int)rgl[1] < 0 || (((int)rgl[1] < 1 && (rgl[0] < 2)))))) {
                   if ((rgl[0] == 1) && (rgl[1] == 0)) {
                     if ((((cNum < 2) || (local_26 < 0)) ||
-                        ((local_26 < 1 && (local_28 < (char *)0x14)))) ||
+                        ((local_26 < 1 && (local_28 < hbrButtonHilite)))) ||
                        ((-1 < local_26 && ((0 < local_26 || ((char *)0x12c < local_28))))))
                     goto CREATE_LBadDefVc;
                     SetVCCheck((GAME *)&game,4,1);
@@ -473,7 +474,7 @@ CREATE_LCantGetRace:
                          (((int)rgl[1] < 0 || (((int)rgl[1] < 1 && (rgl[0] < 2)))))) {
                         if ((rgl[0] == 1) && (rgl[1] == 0)) {
                           if ((((cNum < 2) || (local_26 < 0)) ||
-                              ((local_26 < 1 && (local_28 < (char *)0x1e)))) ||
+                              ((local_26 < 1 && (local_28 < hbrDesktop)))) ||
                              ((-1 < local_26 &&
                               ((0 < local_26 ||
                                ((char *)s_Stars______s_____s_____s_1120_0373 + 0x11 < local_28))))))
@@ -489,7 +490,7 @@ CREATE_LCantGetRace:
                            (((int)rgl[1] < 0 || (((int)rgl[1] < 1 && (rgl[0] < 8)))))) {
                           if ((-1 < (int)rgl[1]) && ((0 < (int)rgl[1] || (rgl[0] != 0)))) {
                             if ((((cNum < 2) || (local_26 < 0)) ||
-                                ((local_26 < 1 && (local_28 < (char *)0x1e)))) ||
+                                ((local_26 < 1 && (local_28 < hbrDesktop)))) ||
                                ((-1 < local_26 &&
                                 ((0 < local_26 || ((char *)szMine + 8 < local_28))))))
                             goto CREATE_LBadDefVc;
@@ -2748,7 +2749,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
     DVar5 = GetTextExtent(hdc,szWork,cch);
     xLeft = xLeft + (int)DVar5;
     for (j = 0; j < 2; j = j + 1) {
-      sVar2 = _abs((int)*(char *)(i * 2 + -0x62b4 + j));
+      sVar2 = _abs((int)((char (*) [2])rgNG3Width)[i][j]);
       dxItem = sVar2 * dxDig;
       if (dxItem == 0) {
         ids = ids + 1;
@@ -2756,7 +2757,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
       }
       sVar2 = GetVCVal((GAME *)&game,vcCur,0);
       _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),sVar2);
-      if (*(char *)(i * 2 + -0x62b4 + j) < '\0') {
+      if (((char (*) [2])rgNG3Width)[i][j] < '\0') {
         dxItem = dxItem + (dxDig * 3) / 2;
         _strcat((char *)szWork,(char *)0xaf4);
       }
@@ -2882,7 +2883,7 @@ void SetNGWTitle(HWND hwnd,short iStep)
 PLAYER * LpplrComp(short idAi,short lvlAi)
 
 {
-  return (PLAYER *)CONCAT22(0x1078,(PLAYER *)(idAi * 0x300 + -0x5c90 + lvlAi * 0xc0));
+  return (PLAYER *)CONCAT22(0x1078,((PLAYER (*) [4])vrgplrComp)[idAi] + lvlAi);
 }
 
 
@@ -2942,8 +2943,8 @@ short SetVCVal(GAME *pgame,short vc,short val)
   if (val < 0) {
     val = 0;
   }
-  else if (*(int *)(vc * 2 + -0x4a58) < val) {
-    val = *(short *)(vc * 2 + -0x4a58);
+  else if (((short *)vrgvcMax)[vc] < val) {
+    val = ((short *)vrgvcMax)[vc];
   }
   pgame->rgvc[vc] = pgame->rgvc[vc] & 0x80 | (byte)val;
   if ((vc == 8) && (sVar1 = GetVCVal(pgame,8,0), sVar1 != val)) {

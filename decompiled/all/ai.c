@@ -1000,16 +1000,16 @@ void EnsureRobotoidShdefs(void)
         else {
           iVar3 = 0xf;
         }
-        FCreateAiShdef(ish,0xb,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  iVar3 * 2) + 0x1f80)));
+        FCreateAiShdef(ish,0xb,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)[iVar3]
+                                                                    + 0x1f80)));
       }
       else {
         for (i = 0; i < 5; i = i + 1) {
           sVar4 = Random(6);
-          sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  (sVar4 + 8) * 2) + 0x1f80)));
+          sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)
+                                                                                vrgRobIshAip)
+                                                                                [sVar4 + 8] + 0x1f80
+                                                                               )));
           if (sVar4 != 0) break;
         }
       }
@@ -1026,9 +1026,9 @@ void EnsureRobotoidShdefs(void)
                                                                            0x1f80)));
       if (sVar4 == 0) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(0xe,6,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  (sVar4 + 0x10) * 2) + 0x1f80)));
+        sVar4 = FCreateAiShdef(0xe,6,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
+                                                                           [sVar4 + 0x10] + 0x1f80))
+                                   );
         if (sVar4 != 0) break;
       }
     }
@@ -1043,9 +1043,8 @@ void EnsureRobotoidShdefs(void)
      ) {
     for (i = 0; i < 5; i = i + 1) {
       sVar4 = Random(4);
-      sVar4 = FCreateAiShdef(0xf,6,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  (sVar4 + 0x14) * 2) + 0x1f80)));
+      sVar4 = FCreateAiShdef(0xf,6,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
+                                                                         [sVar4 + 0x14] + 0x1f80)));
       if (sVar4 != 0) break;
     }
   }
@@ -1067,9 +1066,10 @@ void EnsureRobotoidShdefs(void)
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  (sVar4 + shBase) * 2) + 0x1f80)));
+        sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)
+                                                                              vrgRobIshAip)
+                                                                              [sVar4 + shBase] +
+                                                                             0x1f80)));
         if (sVar4 != 0) break;
       }
     }
@@ -1093,9 +1093,8 @@ void EnsureRobotoidShdefs(void)
           else {
             iVar3 = 0x19;
           }
-          FCreateAiShdef(ish,0x13,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  iVar3 * 2) + 0x1f80)));
+          FCreateAiShdef(ish,0x13,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
+                                                                        [iVar3] + 0x1f80)));
         }
       }
       if ((((((rgshdef[0].hul.ihuldef != ihuldefFrigate) &&
@@ -1142,9 +1141,9 @@ void EnsureRobotoidShdefs(void)
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1088,(byte *)(*(int *)((char *)
-                                                  s_R6008___not_enough_space_for_arg_1120_1f2d + 7 +
-                                                  (sVar4 + shBase) * 2) + 0x1f80)));
+        sVar4 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
+                                                                           [sVar4 + shBase] + 0x1f80
+                                                                          )));
         if (sVar4 != 0) break;
       }
     }
@@ -2516,14 +2515,12 @@ void EnsureTurinDroneShdefs(short iroCur)
   if ((((rgshdef[8].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
      ('\a' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(8,0xc,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                              (uint)vrgTDIshAip[0xc])));
+    FCreateAiShdef(8,0xc,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xc]));
   }
   if ((((rgshdef[9].wFlags >> 9 & 1) != 0) &&
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
      ('\n' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(9,0xd,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                              (uint)vrgTDIshAip[0xf])));
+    FCreateAiShdef(9,0xd,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xf]));
   }
   if ((((rgshdef[10].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -2532,11 +2529,8 @@ void EnsureTurinDroneShdefs(short iroCur)
        ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     for (i = 0; i < 4; i = i + 1) {
       sVar3 = Random(1);
-      sVar3 = FCreateAiShdef(10,6,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan
-                                                                              [0x1a0].y +
-                                                                       (uint)*(byte *)((int)&((POINT
-                                                                                               *)(
-                                                  rgptPlan + 0x19c))->x + sVar3))));
+      sVar3 = FCreateAiShdef(10,6,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
+                                                               ((byte *)vrgTDIshAip + 2)[sVar3]));
       if (sVar3 != 0) break;
     }
   }
@@ -2557,8 +2551,7 @@ void EnsureTurinDroneShdefs(short iroCur)
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,1);
     }
-    FCreateAiShdef(1,0xf,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                              (uint)vrgTDIshAip[0])));
+    FCreateAiShdef(1,0xf,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0]));
   }
   if (((rgshdef[0].wFlags >> 9 & 1) != 0) ||
      (((int)rgshdef[0].cExist == 0 && (rgshdef[0].cExist._2_2_ == 0)))) {
@@ -2576,8 +2569,7 @@ void EnsureTurinDroneShdefs(short iroCur)
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,0);
     }
-    FCreateAiShdef(0,5,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                            (uint)vrgTDIshAip[1])));
+    FCreateAiShdef(0,5,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[1]));
   }
   if (((((rgshdef[2].wFlags >> 9 & 1) != 0) ||
        (((int)rgshdef[2].cExist == 0 && (rgshdef[2].cExist._2_2_ == 0)))) &&
@@ -2597,30 +2589,26 @@ void EnsureTurinDroneShdefs(short iroCur)
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,2);
     }
-    FCreateAiShdef(2,0x16,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                               (uint)vrgTDIshAip[0x11])));
+    FCreateAiShdef(2,0x16,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0x11]));
   }
   if ((((rgshdef[0xc].wFlags >> 9 & 1) != 0) ||
       (((int)rgshdef[0xc].cExist == 0 && (rgshdef[0xc].cExist._2_2_ == 0)))) &&
      (('\x03' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
       ('\x03' < *(char *)((int)rgplr[0].rgTech + 5 + idPlayer * 0xc0))))) {
-    FCreateAiShdef(0xc,0xb,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y +
-                                                                (uint)vrgTDIshAip[0xe])));
+    FCreateAiShdef(0xc,0xb,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xe]));
   }
   if (((((rgshdef[0xd].wFlags >> 9 & 1) != 0) &&
        ('\a' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0))) &&
      ('\x05' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(0xd,0x12,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y
-                                                                 + (uint)vrgTDIshAip[0xd])));
+    FCreateAiShdef(0xd,0x12,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xd]));
   }
   if ((((rgshdef[0xe].wFlags >> 9 & 1) != 0) &&
       ('\n' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
      (('\v' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0) &&
       (('\x0e' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        ('\b' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
-    FCreateAiShdef(0xe,0x12,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan[0x1a0].y
-                                                                 + (uint)vrgTDIshAip[0xd])));
+    FCreateAiShdef(0xe,0x12,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xd]));
   }
   if (((((rgshdef[4].wFlags >> 9 & 1) != 0) &&
        ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -2629,10 +2617,9 @@ void EnsureTurinDroneShdefs(short iroCur)
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(4,9,(byte *)CONCAT22(0x1088,(byte *)((int)&rgptPlan
-                                                                             [0x1a0].y +
-                                                                      (uint)*(byte *)((int)&c_common
-                                                  ::rgptPlan[0x19d].y + sVar3))));
+      sVar3 = FCreateAiShdef(4,9,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
+                                                              *(byte *)((int)&rgptPlan
+                                                                              [0x19d].y + sVar3)));
       if (sVar3 != 0) break;
     }
   }
@@ -2642,9 +2629,9 @@ void EnsureTurinDroneShdefs(short iroCur)
       (('\f' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     i = 0;
-    while ((i < 5 && (sVar3 = FCreateAiShdef(0xf,0xc,(byte *)CONCAT22(0x1088,(byte *)((int)&
-                                                  rgptPlan[0x1a0].y +
-                                                  (uint)vrgTDIshAip[0xc]))), sVar3 == 0))) {
+    while ((i < 5 && (sVar3 = FCreateAiShdef(0xf,0xc,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
+                                                                                  vrgTDIshAip[0xc]))
+                     , sVar3 == 0))) {
       i = i + 1;
     }
   }

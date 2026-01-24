@@ -1266,75 +1266,54 @@ void EnsureMacintiShdefs(void)
           (ish != 0xf)) ||
          ('\x0e' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) &&
         ((sVar3 = FCreateAiShdef(ish,0x18 - (uint)(fAdvanced == 0),
-                                      (byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                      rgidPlan +
-                                                                                     0x16b) +
-                                                                      ((short *)
-                                                                      (rgidPlan + 0x14c))
-                                                                      [fAdvanced + 0x15]))),
-         sVar3 == 0 && (ish == 0xe)))))) {
+                                      (byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                              ((ushort *)vrgMacIshAip)
+                                                              [fAdvanced + 0x15])), sVar3 == 0 &&
+         (ish == 0xe)))))) {
       if (fAdvanced == 0) {
-        FCreateAiShdef(0xe,0x15,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                     rgidPlan +
-                                                                                    0x16b) +
-                                                                     vrgMacIshAip[0x17])));
+        FCreateAiShdef(0xe,0x15,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x17])
+                           );
       }
       else {
-        FCreateAiShdef(0xe,0x16,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                     rgidPlan +
-                                                                                    0x16b) +
-                                                                     vrgMacIshAip[0x16])));
+        FCreateAiShdef(0xe,0x16,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x16])
+                           );
       }
     }
   }
   if ((((rgshdef[0xc].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
      (('\x05' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0) &&
-      (sVar3 = FCreateAiShdef(0xc,0x1d,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(c_common
-                                                  ::rgidPlan + 0x16b) + vrgMacIshAip[0x1e]))),
-      sVar3 == 0)))) {
+      (sVar3 = FCreateAiShdef(0xc,0x1d,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                    vrgMacIshAip[0x1e])), sVar3 == 0
+      )))) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(0xc,6,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                        rgidPlan +
-                                                                                       0x16b) +
-                                                                        ((short *)
-                                                                        (rgidPlan + 0x14c)
-                                                                        )[sVar3])));
+      sVar3 = FCreateAiShdef(0xc,6,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                ((ushort *)vrgMacIshAip)[sVar3]));
       if (sVar3 != 0) break;
     }
   }
   if (((((rgshdef[0xd].wFlags >> 9 & 1) != 0) &&
        ('\t' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
       ('\b' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
-     (sVar3 = FCreateAiShdef(0xd,0x1d,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(c_common
-                                                  ::rgidPlan + 0x16b) + vrgMacIshAip[0x1e]))),
-     sVar3 == 0)) {
+     (sVar3 = FCreateAiShdef(0xd,0x1d,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                   vrgMacIshAip[0x1e])), sVar3 == 0)
+     ) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(0xd,6,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                        rgidPlan +
-                                                                                       0x16b) +
-                                                                        ((short *)
-                                                                        (rgidPlan + 0x14c)
-                                                                        )[sVar3 + 4])));
+      sVar3 = FCreateAiShdef(0xd,6,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                ((ushort *)vrgMacIshAip)[sVar3 + 4])
+                                 );
       if (sVar3 != 0) break;
     }
   }
   if (((rgshdef[10].wFlags >> 9 & 1) != 0) &&
-     (sVar3 = FCreateAiShdef(10,2,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                       rgidPlan +
-                                                                                      0x16b) +
-                                                                       vrgMacIshAip[0x18]))),
-     sVar3 == 0)) {
-    FCreateAiShdef(10,1,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(rgidPlan +
-                                                                            0x16b) +
-                                                             vrgMacIshAip[0x18])));
+     (sVar3 = FCreateAiShdef(10,2,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                               vrgMacIshAip[0x18])), sVar3 == 0)) {
+    FCreateAiShdef(10,1,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x18]));
   }
   if ((rgshdef[0xb].wFlags >> 9 & 1) != 0) {
-    FCreateAiShdef(0xb,2,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(rgidPlan +
-                                                                             0x16b) +
-                                                              vrgMacIshAip[0x18])));
+    FCreateAiShdef(0xb,2,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x18]));
   }
   if (((game.turn < 0x14) && ((rgshdef[2].wFlags >> 9 & 1) == 0)) &&
      (((int)rgshdef[2].cExist == 0 && (rgshdef[2].cExist._2_2_ == 0)))) {
@@ -1358,20 +1337,15 @@ void EnsureMacintiShdefs(void)
     {
       for (i = 0; i < 5; i = i + 1) {
         sVar3 = Random(4);
-        sVar3 = FCreateAiShdef(ish,7,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                          rgidPlan +
-                                                                                         0x16b) +
-                                                                          ((short *)
-                                                                          (rgidPlan +
-                                                                          0x14c))[sVar3 + 0x19])));
+        sVar3 = FCreateAiShdef(ish,7,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                  ((ushort *)vrgMacIshAip)
+                                                                  [sVar3 + 0x19]));
         if (sVar3 != 0) break;
       }
     }
   }
   if ((game.turn < 0x28) && ((rgshdef[7].wFlags >> 9 & 1) != 0)) {
-    FCreateAiShdef(7,0xf,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(rgidPlan +
-                                                                             0x16b) +
-                                                              vrgMacIshAip[0x14])));
+    FCreateAiShdef(7,0xf,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x14]));
   }
   sVar3 = FLookupPartX(&part,1,0xf);
   if ((((sVar3 == 1) && ((rgshdef[1].wFlags >> 9 & 1) == 0)) &&
@@ -1390,9 +1364,7 @@ void EnsureMacintiShdefs(void)
     *(char *)pHVar6 = (char)(pSVar5->hul).ihuldef;
     shdef._123_2_ = shdef._123_2_ & 0xfdff | 0x200;
     FChangeAiShdef((SHDEF *)shdef,1);
-    FCreateAiShdef(1,0xf,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(rgidPlan +
-                                                                             0x16b) +
-                                                              vrgMacIshAip[0x14])));
+    FCreateAiShdef(1,0xf,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[0x14]));
   }
   ish = 5;
   do {
@@ -1404,21 +1376,17 @@ void EnsureMacintiShdefs(void)
              (((*(uint *)((int)&rgshdef[0].wFlags + (ish + -1) * 0x93) >> 9 & 1) == 0 &&
               (0xf < game.turn -
                      *(int *)((int)&rgshdef[0].turn + (ish + -1) * 0x93))))))) &&
-           (sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                  rgidPlan + 0x16b) + vrgMacIshAip[0x13]))
-                                       ), sVar3 == 0)) {
+           (sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                      vrgMacIshAip[0x13])),
+           sVar3 == 0)) {
           if (ish == 8) {
             iVar4 = 8;
           }
           else {
             iVar4 = 9;
           }
-          FCreateAiShdef(ish,0x13,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                                                       rgidPlan +
-                                                                                      0x16b) +
-                                                                       ((short *)
-                                                                       (rgidPlan + 0x14c))
-                                                                       [iVar4])));
+          FCreateAiShdef(ish,0x13,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                               ((ushort *)vrgMacIshAip)[iVar4]));
         }
       }
       if (((((rgshdef[0].hul.ihuldef != ihuldefFrigate) &&
@@ -1442,9 +1410,7 @@ void EnsureMacintiShdefs(void)
         *(char *)pHVar6 = (char)(pSVar5->hul).ihuldef;
         shdef._123_2_ = shdef._123_2_ & 0xfdff | 0x200;
         FChangeAiShdef((SHDEF *)shdef,0);
-        FCreateAiShdef(0,5,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(rgidPlan +
-                                                                               0x16b) +
-                                                                vrgMacIshAip[10])));
+        FCreateAiShdef(0,5,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip + vrgMacIshAip[10]));
       }
       return;
     }
@@ -1470,15 +1436,14 @@ void EnsureMacintiShdefs(void)
       }
       sVar3 = Random(3);
       if ((sVar3 == 0) ||
-         (sVar3 = FCreateAiShdef(ish,0x1d,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(
-                                                  rgidPlan + 0x16b) + vrgMacIshAip[0x1d]))
-                                     ), sVar3 == 0)) {
+         (sVar3 = FCreateAiShdef(ish,0x1d,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                       vrgMacIshAip[0x1d])),
+         sVar3 == 0)) {
         for (i = 0; i < 5; i = i + 1) {
           sVar3 = Random(4);
-          sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x10a0,(byte *)((int)(short *)(c_common
-                                                  ::rgidPlan + 0x16b) +
-                                                  ((short *)(rgidPlan + 0x14c))
-                                                  [sVar3 + fAdvanced])));
+          sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x10a0,(byte *)vrgMacAip +
+                                                                    ((ushort *)vrgMacIshAip)
+                                                                    [sVar3 + fAdvanced]));
           if (sVar3 != 0) break;
         }
       }

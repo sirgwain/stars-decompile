@@ -4296,7 +4296,7 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
           for (j = 0; j < 3; j = j + 1) {
             k = 5;
             while ((2 < k && (sVar4 = FCreateAiStarbase(i * 3 + 4 + j,j + 1,
-                                                        (uint)*(byte *)(k + 0x76de),k + -1),
+                                                        (uint)((byte *)vrgSBMacAisb)[k],k + -1),
                              sVar4 == 0))) {
               k = k + -1;
             }
@@ -4387,7 +4387,7 @@ short FCreateAiStarbase(short ishdef,short iLevel,short aisb,short isb)
       isb = 2;
     }
   }
-  sVar6 = FCreateAiShdef(-1,isb,(byte *)CONCAT22(0x1090,(byte *)(aisb + 0x7688)));
+  sVar6 = FCreateAiShdef(-1,isb,(byte *)CONCAT22(0x1090,(byte *)vrgSBAip + aisb));
   if (sVar6 == 0) {
     sVar6 = 0;
   }
@@ -4513,8 +4513,8 @@ short FAIFling(PLANET *lppl,long *rgResAvail)
             uVar3 = *(uint *)((int)plVar7 + 2);
             if ((-1 < (int)uVar3) && ((0 < (int)uVar3 || (0x30d4 < *(uint *)plVar7)))) break;
           }
-          dBigAssPacket._0_2_ = *(undefined2 *)(fTwoMAs * 4 + 0x7dce);
-          dBigAssPacket._2_2_ = *(undefined2 *)(fTwoMAs * 4 + 0x7dd0);
+          dBigAssPacket._0_2_ = (undefined2)((long *)vrgAiPacketDist)[fTwoMAs];
+          dBigAssPacket._2_2_ = *(undefined2 *)((int)(long *)vrgAiPacketDist + fTwoMAs * 4 + 2);
           if (iT < 3) {
             dBigAssPacket =
                  __aFulmul(CONCAT22(dBigAssPacket._2_2_,(undefined2)dBigAssPacket),3);

@@ -1209,7 +1209,7 @@ short PackageUpMsg(byte *pb,short iPlr,MessageId iMsg,short iObj,short p1,short 
       lpb = (byte *)CONCAT22(0x1120,pb + 5);
       grbit = 1;
       pi = &p1;
-      for (i = 0; i < *(char *)((int)rgplr[1].szNames + 0xc + iMsg); i = i + 1) {
+      for (i = 0; i < ((char *)rgcMsgArgs)[iMsg]; i = i + 1) {
         if ((*pi & 0xff00U) == 0) {
           *lpb = (byte)*pi;
           pbVar1 = (byte *)lpb + 1;
@@ -1273,7 +1273,7 @@ short FSendPlrMsg2XGen(short fPrepend,MessageId iMsg,short iObj,short p1,short p
     pb = local_40;
     grbit = 1;
     pi = &p1;
-    for (i = 0; i < *(char *)((int)rgplr[1].szNames + 0xc + iMsg); i = i + 1) {
+    for (i = 0; i < ((char *)rgcMsgArgs)[iMsg]; i = i + 1) {
       if ((*pi & 0xff00U) == 0) {
         *pb = (byte)*pi;
         pb = pb + 1;
@@ -1379,7 +1379,7 @@ short FGetNMsgbig(short iMsg,MSGBIG *pmb)
         pmb->iMsg = *(uint *)pbVar4 & 0x1ff;
         pmb->wGoto = *(short *)(pbVar3 + 2);
       }
-      cVar1 = *(char *)((int)rgplr[1].szNames + 0xc + (*(uint *)pbVar4 & 0x1ff));
+      cVar1 = ((char *)rgcMsgArgs)[*(uint *)pbVar4 & 0x1ff];
       for (i = 0; i < cVar1; i = i + 1) {
         if (iMsg == 0) {
           if ((u & 1) == 0) {
@@ -2175,7 +2175,7 @@ void ReadPlayerMessages(void)
     cMsg = cMsg + 1;
     u = lpmh->wFlags >> 9;
     lpb = lpb + 1;
-    iMax = (short)*(char *)((int)rgplr[1].szNames + 0xc + (lpmh->wFlags & 0x1ff));
+    iMax = (short)((char *)rgcMsgArgs)[lpmh->wFlags & 0x1ff];
     for (i = 0; i < iMax; i = i + 1) {
       lpb = (MSGHDR *)((int)&lpb->wFlags + ((u & 1) == 1) + 1);
       u = u >> 1;
@@ -2377,14 +2377,13 @@ char * PszGetCompressedMessage(MessageId idm)
   
   iNibble = 0;
   if (idm != (int)iLastMsgGet) {
-    pchLen = (byte *)CONCAT22(0x1030,(byte *)((int)&rgrcBuildSpin[1].bottom +
-                                             ((int)idm >> 6) * 0x40));
+    pchLen = (byte *)CONCAT22(0x1030,(byte *)acMSG + ((int)idm >> 6) * 0x40);
     for (i = 0; i < (int)(idm & idmProductionQueueEmpty); i = i + 1) {
       iNibble = iNibble + (uint)*pchLen;
       pchLen = (byte *)CONCAT22(pchLen._2_2_,(byte *)pchLen + 1);
     }
-    pch = (byte *)CONCAT22(0x1030,(byte *)(*(int *)((int)&rgplr[1].zpq1 +
-                                                   ((int)idm >> 6) * 2) + (iNibble >> 1)));
+    pch = (byte *)CONCAT22(0x1030,(byte *)(((short *)aiMSGChunkOffset)[(int)idm >> 6] +
+                                          (iNibble >> 1)));
     bVar3 = (iNibble & 1U) == 0;
     pszOut = (char *)szLastMsgGet;
     iBuild = 0;
@@ -2401,7 +2400,7 @@ char * PszGetCompressedMessage(MessageId idm)
       iBuild = iBuild + i;
       iLen = iVar1;
       if (i != 0xf) {
-        *pszOut = *(char *)((int)&rgplr[1].zpq1 + 0xe + iBuild);
+        *pszOut = ((char *)rgMSGLookupTable)[iBuild];
         pszOut = pszOut + 1;
         iBuild = 0;
       }

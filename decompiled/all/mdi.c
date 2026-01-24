@@ -1342,7 +1342,7 @@ void FormatSerialAndEnv(long lSerial,byte *pbEnv,char *pszOut)
   local_16[sVar1 + -4] = local_16[sVar1 + -4] | bXor << 4;
   PopRandom();
   for (i = 0; i < 0x15; i = i + 1) {
-    rgbRaw2[i] = local_16[*(byte *)((int)(short *)(rgidPlan + 0x81) + i) - 4];
+    rgbRaw2[i] = local_16[((byte *)vrgbShuffleSerial)[i] - 4];
   }
   iRaw = 0;
   cBits = 0;
@@ -1475,8 +1475,7 @@ short FSerialAndEnvFromSz(long *plSerial,byte *pbEnv,char *pszIn)
     lTank = lVar5;
   }
   for (i = 0; i < 0x15; i = i + 1) {
-    *(undefined1 *)((int)&rgbRaw + (uint)*(byte *)((int)(short *)(rgidPlan + 0x81) + i)) =
-         rgbRaw2[i];
+    *(undefined1 *)((int)&rgbRaw + (uint)((byte *)vrgbShuffleSerial)[i]) = rgbRaw2[i];
   }
   lSerial = rgbRaw;
   local_2a = local_18;

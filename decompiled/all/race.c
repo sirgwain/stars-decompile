@@ -84,7 +84,7 @@ RACE_Step3:
       if (mdRet == 3) goto RACE_Finish;
 RACE_Step4:
       iPanelActive = 4;
-      pvVar4 = MakeProcInstance(RaceWizardDlg2,hInst);
+      pvVar4 = MakeProcInstance((FARPROC)0x10e01060,hInst);
       lpProc = pvVar4;
       mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x93,hwndRaceParent),
                         (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
@@ -1393,13 +1393,11 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
     }
     DVar5 = GetTextExtent(hdc,szWork,cch);
     dx = (int)DVar5 + 6;
-    sVar1 = _abs((int)*(char *)((int)(short *)(rgidPlan + 0x193) + i));
+    sVar1 = _abs((int)((char *)rgRW3Width)[i]);
     dxItem = sVar1 * dxDig;
-    sVar1 = GetRaceStat((PLAYER *)&vplr,
-                        (int)*(char *)((int)(short *)(rgidPlan + 0x197) + i));
+    sVar1 = GetRaceStat((PLAYER *)&vplr,(int)((char *)rgRW3IStat)[i]);
     _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),sVar1);
-    if ((*(char *)((int)(short *)(rgidPlan + 0x193) + i) < '\0') &&
-       ((0 < i || (fMacintosh == 0)))) {
+    if ((((char *)rgRW3Width)[i] < '\0') && ((0 < i || (fMacintosh == 0)))) {
       dxItem = dxItem + dxkT;
       if (i == 0) {
         _strcat((char *)szWork,(char *)0x1358);
@@ -1438,8 +1436,7 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
     }
     ids = ids + 1;
     irc = irc + 2;
-    yTop = yTop + (*(char *)((int)(short *)(rgidPlan + 399) + i) * dyArial8) / 2
-    ;
+    yTop = yTop + (((char *)rgRW3Spacing)[i] * dyArial8) / 2;
   }
   if (fMacintosh == 0) {
     crcRCW = irc;
@@ -1498,11 +1495,9 @@ short FTrackRaceDlg3(HWND hwnd,POINT pt,short kbd)
       dShift = dShift * 3;
     }
     while (sVar2 = FTrackBtn(&btnt), sVar2 != 0) {
-      sVar2 = GetRaceStat((PLAYER *)&vplr,
-                          (int)*(char *)((int)(short *)(rgidPlan + 0x197) + iDraw));
-      sVar3 = SetRaceStat((PLAYER *)&vplr,
-                          (int)*(char *)((int)(short *)(rgidPlan + 0x197) + iDraw),
-                          sVar2 + dShift);
+      sVar2 = GetRaceStat((PLAYER *)&vplr,(int)((char *)rgRW3IStat)[iDraw]);
+      sVar3 = SetRaceStat((PLAYER *)&vplr,(int)((char *)rgRW3IStat)[iDraw],sVar2 + dShift)
+      ;
       if (sVar3 != sVar2) {
         DrawRace3(hwnd,btnt.hdc,iDraw);
       }
@@ -1539,11 +1534,11 @@ short GetRaceStat(PLAYER *pplr,RaceStat iStat)
 short SetRaceStat(PLAYER *pplr,RaceStat iStat,short iVal)
 
 {
-  if (iVal < *(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + iStat)) {
-    iVal = (short)*(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + iStat);
+  if (iVal < ((char *)rgRaceStatMin)[iStat]) {
+    iVal = (short)((char *)rgRaceStatMin)[iStat];
   }
-  if (*(char *)((int)&((POINT *)(rgptPlan + 0x71))->x + iStat) < iVal) {
-    iVal = (short)*(char *)((int)&((POINT *)(rgptPlan + 0x71))->x + iStat);
+  if (((char *)rgRaceStatMax)[iStat] < iVal) {
+    iVal = (short)((char *)rgRaceStatMax)[iStat];
   }
   pplr->rgAttr[iStat] = (char)iVal;
   return iVal;
@@ -2100,12 +2095,12 @@ void BoundsCheckPlayer(PLAYER *pplr)
     pplr->wFlags = pplr->wFlags & 0xffef | 0x10;
   }
   for (i = 0; i < 0x10; i = i + 1) {
-    if (pplr->rgAttr[i] < *(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + i)) {
-      pplr->rgAttr[i] = *(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + i);
+    if (pplr->rgAttr[i] < ((char *)rgRaceStatMin)[i]) {
+      pplr->rgAttr[i] = ((char *)rgRaceStatMin)[i];
       pplr->wFlags = pplr->wFlags & 0xffef | 0x10;
     }
-    if (*(char *)((int)&((POINT *)(rgptPlan + 0x71))->x + i) < pplr->rgAttr[i]) {
-      pplr->rgAttr[i] = *(char *)((int)&((POINT *)(rgptPlan + 0x71))->x + i);
+    if (((char *)rgRaceStatMax)[i] < pplr->rgAttr[i]) {
+      pplr->rgAttr[i] = ((char *)rgRaceStatMax)[i];
       pplr->wFlags = pplr->wFlags & 0xffef | 0x10;
     }
   }
@@ -2366,19 +2361,19 @@ short CAdvantagePoints(PLAYER *pplr)
     cCur = cCur + iVar6;
     lVar12 = lVar12 + cCur;
   }
-  lVar12 = lVar12 - *(int *)((int)&rgshdef[8].hul + 0x78 + sVar3 * 2);
+  lVar12 = lVar12 - ((short *)rgRacePrimaryTrait)[sVar3];
   cBad = 0;
   cGood = 0;
   for (i = 0; i < 0xe; i = i + 1) {
     sVar9 = GetRaceGrbit(pplr,i);
     if (sVar9 != 0) {
-      if (*(int *)((int)&rgshdef[8].grbitPlr + 1 + i * 2) < 0) {
+      if (((short *)rgRaceAdvDisPts)[i] < 0) {
         cBad = cBad + 1;
       }
       else {
         cGood = cGood + 1;
       }
-      lVar12 = lVar12 + *(int *)((int)&rgshdef[8].grbitPlr + 1 + i * 2);
+      lVar12 = lVar12 + ((short *)rgRaceAdvDisPts)[i];
     }
   }
   if (4 < cBad + cGood) {
@@ -2423,7 +2418,7 @@ short CAdvantagePoints(PLAYER *pplr)
   }
   if (cCur < 1) {
     if (cCur < 0) {
-      iVar6 = *(int *)((int)&rgshdef[9].hul + 0x15 + (-1 - cCur) * 2);
+      iVar6 = ((short *)rgRaceDisEnvPts)[-1 - cCur];
       lVar1 = lVar12 + iVar6;
       uVar10 = (uint)lVar1;
       lVar15 = lVar12 + iVar6;
@@ -3137,11 +3132,9 @@ void CreateRandomRace(PLAYER *pplr)
   }
   else {
     for (i = 0; i < 8; i = i + 1) {
-      local_16 = (int)*(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + i);
-      local_18 = Random((*(char *)((int)&((POINT *)(rgptPlan + 0x71))->x + i) + 1
-                                 ) - local_16);
-      pplr->rgAttr[i] =
-           *(char *)((int)&((POINT *)(rgptPlan + 0x6d))->x + i) + (char)local_18;
+      local_16 = (int)((char *)rgRaceStatMin)[i];
+      local_18 = Random((((char *)rgRaceStatMax)[i] + 1) - local_16);
+      pplr->rgAttr[i] = ((char *)rgRaceStatMin)[i] + (char)local_18;
     }
   }
   pcVar6 = PszGetCompressedString(idsRandom2);

@@ -2922,10 +2922,10 @@ short FTravelThroughMineFields(FLEET *lpfl,short *pdTravel,THING *lpthHit)
       }
       dEnd = rgFieldE[iType * 8 + rgi[iType]] -
              *(int *)((int)rgFieldS + rgi[iType] * 2 + iType * 0x10);
-      if (*(int *)((char *)rgbCur + 0x3c2 + iType * 2) + fMineExpert < iWarp) {
+      if (((short *)rgiWarpSafe)[iType] + fMineExpert < iWarp) {
         uVar18 = 0x10b0;
-        pct = ((iWarp - *(int *)((char *)rgbCur + 0x3c2 + iType * 2)) - fMineExpert) *
-              *(int *)((char *)rgbCur + 0x3bc + iType * 2);
+        pct = ((iWarp - ((short *)rgiWarpSafe)[iType]) - fMineExpert) *
+              ((short *)rgpctMineHit)[iType];
         for (i = 0; i < dEnd; i = i + 1) {
           uVar18 = 0x1040;
           sVar7 = Random(1000);
@@ -2948,10 +2948,9 @@ TURN_LHitSkip2:
     dmgTot._0_2_ = 0;
     dmgTot._2_2_ = 0;
     dmgTot = 0;
-    if (*(int *)((char *)rgbCur + 0x3a4 + fHasRamScoop * 2 + iType * 4) != 0) {
-      dmgPer = *(short *)((char *)rgbCur + 0x3a4 + fHasRamScoop * 2 + iType * 4);
-      dmgExtra = *(int *)((char *)rgbCur + 0x3b0 + fHasRamScoop * 2 + iType * 4) -
-                 dmgPer * rgi[3];
+    if (((short (*) [2])rgrgdmgMine)[iType][fHasRamScoop] != 0) {
+      dmgPer = ((short (*) [2])rgrgdmgMine)[iType][fHasRamScoop];
+      dmgExtra = ((short (*) [2])rgrgdmgMinMine)[iType][fHasRamScoop] - dmgPer * rgi[3];
       if ((0 < rgi[4]) || (((-1 < rgi[4] && (4 < (uint)rgi[3])) || (dmgExtra < 1)))) {
         dmgExtra = 0;
       }

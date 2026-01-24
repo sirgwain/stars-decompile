@@ -2392,15 +2392,13 @@ void EnsureCyberAiShdefs(short iroCur)
     FChangeAiShdef(&shdef,0);
   }
   if ((rgshdef[0].wFlags >> 9 & 1) != 0) {
-    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                            vrgCyberIshAip[0xc]));
+    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[0xc]);
     uVar7 = 0x1090;
     FCreateAiShdef(0,5,pbVar8);
   }
   if (((rgshdef[4].wFlags >> 9 & 1) != 0) && (0x1e < game.turn)) {
     if (game.turn < 0x4c) {
-      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                              vrgCyberIshAip[0]));
+      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[0]);
       uVar7 = 0x1090;
       sVar3 = FCreateAiShdef(4,6,pbVar8);
       if (sVar3 != 0) goto LAB_10a8_497e;
@@ -2408,12 +2406,8 @@ void EnsureCyberAiShdefs(short iroCur)
     for (i = 5; 0 < i; i = i + -1) {
       sVar3 = Random(i);
       uVar7 = 0x1090;
-      sVar3 = FCreateAiShdef(4,6,(byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef[0xd].
-                                                                             cBuilt + 2 +
-                                                                      *(int *)((int)&
-                                                                                     rgshdef[0xd].
-                                                                                     hul + 0x39 +
-                                                                              sVar3 * 2))));
+      sVar3 = FCreateAiShdef(4,6,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                              ((ushort *)vrgCyberIshAip)[sVar3]));
       if (sVar3 != 0) break;
     }
   }
@@ -2422,8 +2416,7 @@ LAB_10a8_497e:
       ((rgshdef[4].wFlags >> 9 & 1) == 0)) &&
      (rgshdef[4].turn + 0x14 < game.turn)) {
     if (game.turn < 0x4c) {
-      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                              vrgCyberIshAip[5]));
+      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[5]);
       uVar7 = 0x1090;
       sVar3 = FCreateAiShdef(5,6,pbVar8);
       if (sVar3 != 0) goto LAB_10a8_4a2f;
@@ -2431,27 +2424,22 @@ LAB_10a8_497e:
     for (i = 5; 0 < i; i = i + -1) {
       sVar3 = Random(i);
       uVar7 = 0x1090;
-      sVar3 = FCreateAiShdef(5,6,(byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef[0xd].
-                                                                             cBuilt + 2 +
-                                                                      *(int *)((int)&
-                                                                                     rgshdef[0xd].
-                                                                                     hul + 0x39 +
-                                                                              (sVar3 + 5) * 2))));
+      sVar3 = FCreateAiShdef(5,6,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                              ((ushort *)vrgCyberIshAip)[sVar3 + 5])
+                                 );
       if (sVar3 != 0) break;
     }
   }
 LAB_10a8_4a2f:
   if (((rgshdef[2].wFlags >> 9 & 1) != 0) && (0x14 < game.turn)) {
-    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                            vrgCyberIshAip[10]));
+    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[10]);
     uVar7 = 0x1090;
     FCreateAiShdef(2,0xb,pbVar8);
   }
   if ((((rgshdef[3].wFlags >> 9 & 1) != 0) &&
       ((rgshdef[2].wFlags >> 9 & 1) == 0)) &&
      (rgshdef[2].turn + 0x14 < game.turn)) {
-    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                            vrgCyberIshAip[0xb]));
+    pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[0xb]);
     uVar7 = 0x1090;
     FCreateAiShdef(3,0xb,pbVar8);
   }
@@ -2465,12 +2453,9 @@ LAB_10a8_4a2f:
         sVar3 = Random(i);
         uVar7 = 0x1090;
         sVar3 = FCreateAiShdef(ishCur,0x1d,
-                                    (byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef[0xd].
-                                                                           cBuilt + 2 +
-                                                                    *(int *)((int)&rgshdef
-                                                                                   [0xd].hul + 0x39
-                                                                            + (sVar3 + 0x21) * 2))))
-        ;
+                                    (byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                            ((ushort *)vrgCyberIshAip)[sVar3 + 0x21]
+                                                    ));
         if (sVar3 != 0) {
           ishCur = ishCur + -1;
           break;
@@ -2479,12 +2464,9 @@ LAB_10a8_4a2f:
       for (i = 4; 0 < i; i = i + -1) {
         sVar3 = Random(i);
         uVar7 = 0x1090;
-        sVar3 = FCreateAiShdef(ishCur,9,(byte *)CONCAT22(0x1040,(byte *)((int)&
-                                                                                    rgshdef[0xd].
-                                                                                    cBuilt + 2 +
-                                                                             *(int *)((int)&c_common
-                                                  ::rgshdef[0xd].hul + 0x39 + (sVar3 + 0x1d) * 2))))
-        ;
+        sVar3 = FCreateAiShdef(ishCur,9,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                     ((ushort *)vrgCyberIshAip)
+                                                                     [sVar3 + 0x1d]));
         if (sVar3 != 0) {
           ishCur = ishCur + -1;
           break;
@@ -2493,12 +2475,9 @@ LAB_10a8_4a2f:
       for (i = 3; 0 < i; i = i + -1) {
         sVar3 = Random(i);
         uVar7 = 0x1090;
-        sVar3 = FCreateAiShdef(ishCur,9,(byte *)CONCAT22(0x1040,(byte *)((int)&
-                                                                                    rgshdef[0xd].
-                                                                                    cBuilt + 2 +
-                                                                             *(int *)((int)&c_common
-                                                  ::rgshdef[0xd].hul + 0x39 + (sVar3 + 0x1a) * 2))))
-        ;
+        sVar3 = FCreateAiShdef(ishCur,9,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                     ((ushort *)vrgCyberIshAip)
+                                                                     [sVar3 + 0x1a]));
         if (sVar3 != 0) {
           ishCur = ishCur + -1;
           break;
@@ -2511,12 +2490,9 @@ AI4_LCruiser:
         for (i = high; 0 < i; i = i + -1) {
           sVar3 = Random(i);
           uVar7 = 0x1090;
-          sVar3 = FCreateAiShdef(ishCur,7,(byte *)CONCAT22(0x1040,(byte *)((int)&
-                                                                                      rgshdef[0xd].
-                                                                                      cBuilt + 2 +
-                                                                               *(int *)((int)&
-                                                  rgshdef[0xd].hul + 0x39 +
-                                                  (sVar3 + low) * 2))));
+          sVar3 = FCreateAiShdef(ishCur,7,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                       ((ushort *)vrgCyberIshAip)
+                                                                       [sVar3 + low]));
           if (sVar3 != 0) break;
         }
         ishCur = ishCur + -1;
@@ -2531,27 +2507,23 @@ AI4_LCruiser:
           goto AI4_LCruiser;
         }
       }
-      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)((int)&rgshdef[0xd].cBuilt + 2 +
-                                              vrgCyberIshAip[0x10]));
+      pbVar8 = (byte *)CONCAT22(uVar7,(byte *)vrgCyberAip + vrgCyberIshAip[0x10]);
       uVar7 = 0x1090;
       sVar3 = FCreateAiShdef(ish + 3,0x1d,pbVar8);
       if (sVar3 == 0) {
         uVar7 = 0x1090;
         sVar3 = FCreateAiShdef(ish + 3,9,
-                                    (byte *)CONCAT22(0x1090,(byte *)((int)&rgshdef[0xd].
-                                                                           cBuilt + 2 +
-                                                                    vrgCyberIshAip[0xf])));
+                                    (byte *)CONCAT22(0x1090,(byte *)vrgCyberAip +
+                                                            vrgCyberIshAip[0xf]));
         if (sVar3 == 0) {
           uVar7 = 0x1090;
           sVar3 = FCreateAiShdef(ish + 3,0x13,
-                                      (byte *)CONCAT22(0x1090,(byte *)((int)&rgshdef[0xd].
-                                                                             cBuilt + 2 +
-                                                                      vrgCyberIshAip[0xe])));
+                                      (byte *)CONCAT22(0x1090,(byte *)vrgCyberAip +
+                                                              vrgCyberIshAip[0xe]));
           if (sVar3 == 0) {
             uVar7 = 0x1090;
             FCreateAiShdef(ish + 3,0x13,
-                                (byte *)CONCAT22(0x1090,(byte *)((int)&rgshdef[0xd].cBuilt
-                                                                 + 2 + vrgCyberIshAip[0xd])));
+                                (byte *)CONCAT22(0x1090,(byte *)vrgCyberAip + vrgCyberIshAip[0xd]));
           }
         }
       }
@@ -2568,31 +2540,26 @@ AI4_LCruiser:
          (rgshdef[0xe].turn + 0x14 < game.turn)))))) {
       for (i = 7; 0 < i; i = i + -1) {
         sVar3 = Random(i);
-        sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef
-                                                                                 [0xd].cBuilt + 2 +
-                                                                          *(int *)((int)&
-                                                                                         rgshdef[0xd
-                                                  ].hul + 0x39 + (sVar3 + 0x1a) * 2))));
+        sVar3 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                  ((ushort *)vrgCyberIshAip)
+                                                                  [sVar3 + 0x1a]));
         if (sVar3 != 0) break;
       }
       if (i == 0) {
         for (i = 9; 0 < i; i = i + -1) {
           sVar3 = Random(i);
-          sVar3 = FCreateAiShdef(ish,7,(byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef
-                                                                                   [0xd].cBuilt + 2
-                                                                            + *(int *)((int)&
-                                                  rgshdef[0xd].hul + 0x39 +
-                                                  (sVar3 + 0x11) * 2))));
+          sVar3 = FCreateAiShdef(ish,7,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                    ((ushort *)vrgCyberIshAip)
+                                                                    [sVar3 + 0x11]));
           if (sVar3 != 0) break;
         }
       }
       if (i == 0) {
         for (i = 10; 0 < i; i = i + -1) {
           sVar3 = Random(i);
-          sVar3 = FCreateAiShdef(ish,6,(byte *)CONCAT22(0x1040,(byte *)((int)&rgshdef
-                                                                                   [0xd].cBuilt + 2
-                                                                            + *(int *)((int)&
-                                                  rgshdef[0xd].hul + 0x39 + sVar3 * 2))));
+          sVar3 = FCreateAiShdef(ish,6,(byte *)CONCAT22(0x1040,(byte *)vrgCyberAip +
+                                                                    ((ushort *)vrgCyberIshAip)
+                                                                    [sVar3]));
           if (sVar3 != 0) break;
         }
       }

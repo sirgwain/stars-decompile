@@ -3433,7 +3433,7 @@ LAB_1038_5272:
         if (0x11 < cDetectors) {
           cDetectors = 0x11;
         }
-        *ppctDetect = (uint)(byte)((char *)szLastMsgGet + 0x62)[cDetectors];
+        *ppctDetect = (uint)((byte *)vrgbTachyon)[cDetectors];
       }
       return dRange;
     }
@@ -3917,9 +3917,8 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
   lPixTot = __aFulmul((long)dx,(long)dy);
   for (iClr = 0; iClr < 5; iClr = iClr + 1) {
     lVar2 = __aFldiv(lPixTot,CONCAT22(*(undefined2 *)
-                                               ((int)rgplr[7].szName + 0x1e + iClr * 4),
-                                              *(undefined2 *)
-                                               ((int)rgplr[7].szName + 0x1c + iClr * 4)));
+                                               ((int)(long *)rgDSDivCnt + iClr * 4 + 2),
+                                              (int)((long *)rgDSDivCnt)[iClr]));
     iMax = (short)lVar2;
     for (i = 0; i < iMax; i = i + 1) {
       sVar1 = Random(dx);
@@ -3928,16 +3927,15 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
       rcOut.top = sVar1 + rc.top;
       rcOut.right = rcOut.left + 1;
       rcOut.bottom = rcOut.top + 1;
-      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)rgplr[7].szNames + 0x12 + iClr * 4),
-                              *(undefined2 *)((int)rgplr[7].szNames + 0x10 + iClr * 4)));
+      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)(ulong *)rgcrDrawStars + iClr * 4 + 2),
+                              (int)((ulong *)rgcrDrawStars)[iClr]));
       ExtTextOut(hdc,0,0,2,(RECT *)CONCAT22(unaff_SS,&rcOut),(LPCSTR)0x0,0,(short *)0x0);
     }
   }
   for (iClr = 0; iClr < 4; iClr = iClr + 1) {
     lVar2 = __aFldiv(lPixTot,CONCAT22(*(undefined2 *)
-                                               ((int)&rgplr[8].wMdPlr + iClr * 4),
-                                              *(undefined2 *)
-                                               ((int)&rgplr[8].wFlags_0x4 + iClr * 4)));
+                                               ((int)(long *)rgDSDivCnt2 + iClr * 4 + 2),
+                                              (int)((long *)rgDSDivCnt2)[iClr]));
     iMax = (int)lVar2 + 1;
     for (i = 0; i < iMax; i = i + 1) {
       sVar1 = Random(dx);
@@ -3946,12 +3944,11 @@ void DrawABunchOfStars(HDC hdc,RECT *prc)
       rcOut.top = sVar1 + rc.top;
       rcOut.right = rcOut.left + 3;
       rcOut.bottom = rcOut.top + 3;
-      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)rgplr[8].rgResSpent + 0xe + iClr * 4),
-                              *(undefined2 *)((int)rgplr[8].rgResSpent + 0xc + iClr * 4)))
-      ;
+      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)(ulong *)rgcrDrawStars2b + iClr * 4 + 2),
+                              (int)((ulong *)rgcrDrawStars2b)[iClr]));
       ExtTextOut(hdc,0,0,2,(RECT *)CONCAT22(unaff_SS,&rcOut),(LPCSTR)0x0,0,(short *)0x0);
-      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)rgplr[8].rgTech + iClr * 4),
-                              *(undefined2 *)((int)rgplr[8].rgEnvVarMax + 2 + iClr * 4)));
+      SetBkColor(hdc,CONCAT22(*(undefined2 *)((int)(ulong *)rgcrDrawStars2a + iClr * 4 + 2),
+                              (int)((ulong *)rgcrDrawStars2a)[iClr]));
       InflateRect((RECT *)CONCAT22(unaff_SS,&rcOut),-1,0);
       ExtTextOut(hdc,0,0,2,(RECT *)CONCAT22(unaff_SS,&rcOut),(LPCSTR)0x0,0,(short *)0x0);
       InflateRect((RECT *)CONCAT22(unaff_SS,&rcOut),1,-1);

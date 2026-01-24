@@ -882,45 +882,43 @@ LAB_10d8_1d48:
 long GetTechLevelCost(short iTech,short iLevel,short iplr)
 
 {
-  uint *puVar1;
+  uint uVar1;
   uint uVar2;
-  uint uVar3;
-  short sVar4;
-  int iVar5;
+  short sVar3;
+  int iVar4;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
+  long lVar5;
   long lVar6;
-  long lVar7;
   short cTech;
   short i;
   
-  lVar7 = CONCAT22(unaff_SI,unaff_DI);
+  lVar6 = CONCAT22(unaff_SI,unaff_DI);
   cTech = 0;
   for (i = 0; i < 6; i = i + 1) {
     cTech = cTech + *(char *)(iplr * 0xc0 + 0x59bc + i);
   }
-  uVar2 = cTech * 10;
-  puVar1 = (uint *)((int)(double *)&DOUBLE_2000_0__1120_1d4e + iLevel * 4);
-  uVar3 = uVar2 + *puVar1;
-  iVar5 = ((int)uVar2 >> 0xf) + *(int *)((int)(double *)&DOUBLE_2000_0__1120_1d4e + iLevel * 4 + 2)
-          + (uint)CARRY2(uVar2,*puVar1);
-  lVar6 = CONCAT22(iVar5,uVar3);
-  sVar4 = GetRaceStat((PLAYER *)rgplr + iplr,iTech + rsTechBonus1);
-  if (sVar4 != 1) {
-    if (sVar4 + -1 < 0) {
-      lVar6 = __aFlshr(lVar7,cTech);
-      uVar2 = uVar3 - (uint)lVar6;
-      lVar6 = CONCAT22(((iVar5 * 2 - (int)((ulong)lVar6 >> 0x10)) - (uint)(uVar3 < (uint)lVar6)) +
-                       (uint)CARRY2(uVar3,uVar2),uVar3 + uVar2);
+  uVar1 = cTech * 10;
+  uVar2 = uVar1 + *(uint *)((long *)rglTechCost + iLevel);
+  iVar4 = ((int)uVar1 >> 0xf) + *(int *)((int)(long *)rglTechCost + iLevel * 4 + 2) +
+          (uint)CARRY2(uVar1,*(uint *)((long *)rglTechCost + iLevel));
+  lVar5 = CONCAT22(iVar4,uVar2);
+  sVar3 = GetRaceStat((PLAYER *)rgplr + iplr,iTech + rsTechBonus1);
+  if (sVar3 != 1) {
+    if (sVar3 + -1 < 0) {
+      lVar5 = __aFlshr(lVar6,cTech);
+      uVar1 = uVar2 - (uint)lVar5;
+      lVar5 = CONCAT22(((iVar4 * 2 - (int)((ulong)lVar5 >> 0x10)) - (uint)(uVar2 < (uint)lVar5)) +
+                       (uint)CARRY2(uVar2,uVar1),uVar2 + uVar1);
     }
     else {
-      lVar6 = __aFldiv(CONCAT22(iVar5,uVar3),2);
+      lVar5 = __aFldiv(CONCAT22(iVar4,uVar2),2);
     }
   }
   if ((game.wCrap >> 1 & 1) != 0) {
-    lVar6 = __aFlshl(lVar7,cTech);
+    lVar5 = __aFlshl(lVar6,cTech);
   }
-  return lVar6;
+  return lVar5;
 }
 
 
@@ -1122,8 +1120,7 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             if ((0xffff < LVar14) || (-1 < LVar14)) {
               lVar13 = __aFlshl(uVar11,in_stack_0000ffb4);
               vpartBrowser.hs.grhst =
-                   *(HullSlotType *)
-                    ((char *)s_R6009___not_enough_space_for_env_1120_1eb5 + 1 + (int)lVar13);
+                   *(HullSlotType *)((int)(ushort *)rggrbitBrParts + (int)lVar13);
               vpartBrowser.hs.wFlags_0x2 = vpartBrowser.hs.wFlags_0x2 & 0xff00;
               while (sVar3 = FLookupPart((PART *)&vpartBrowser), sVar3 != 0) {
                 if ((sVar3 == 1) || (UVar19 == 0)) goto LAB_10d8_2557;
@@ -1144,12 +1141,9 @@ LAB_10d8_2557:
           HVar7 = GetDlgItem(hwnd,0x10b);
           LVar14 = SendMessage(HVar7,0x407,0,0);
           bVar2 = LVar14 == 0;
-          i = 0;
-          while ((sVar3 = i, i < 0x11 &&
-                 (vpartBrowser.hs.grhst !=
-                  *(HullSlotType *)
-                   ((char *)s_R6009___not_enough_space_for_env_1120_1eb5 + 1 + i * 2)))) {
-            i = i + 1;
+          for (i = 0; (sVar3 = i, i < 0x11 &&
+                      (vpartBrowser.hs.grhst != ((ushort *)rggrbitBrParts)[i])); i = i + 1
+              ) {
           }
           UVar19 = IsDlgButtonChecked(hwnd,0x10a);
           if (wParam == 0x42f) {
@@ -1173,9 +1167,7 @@ LAB_10d8_2557:
                 if (0x10 < i) {
                   i = 1;
                 }
-                vpartBrowser.hs.grhst =
-                     *(HullSlotType *)
-                      ((char *)s_R6009___not_enough_space_for_env_1120_1eb5 + 1 + i * 2);
+                vpartBrowser.hs.grhst = ((ushort *)rggrbitBrParts)[i];
                 vpartBrowser.hs.wFlags_0x2 = vpartBrowser.hs.wFlags_0x2 & 0xff00
                 ;
               }
@@ -1191,9 +1183,7 @@ LAB_10d8_2557:
                   if (i < 1) {
                     i = 0x10;
                   }
-                  vpartBrowser.hs.grhst =
-                       *(HullSlotType *)
-                        ((char *)s_R6009___not_enough_space_for_env_1120_1eb5 + 1 + i * 2);
+                  vpartBrowser.hs.grhst = ((ushort *)rggrbitBrParts)[i];
                   vpartBrowser.hs.wFlags_0x2 =
                        vpartBrowser.hs.wFlags_0x2 & 0xff00 | 100;
                 }

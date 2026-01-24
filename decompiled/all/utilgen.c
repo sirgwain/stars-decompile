@@ -76,10 +76,10 @@ void Randomize(ulong dw)
   if (((uint)dw & 0x3f) == b) {
     b = b + 1U & 0x3f;
   }
-  lRandSeed1._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + ((uint)dw & 0x3f) * 2);
-  lRandSeed1._2_2_ = (int)lRandSeed1 >> 0xf;
-  lRandSeed2._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + b * 2);
-  lRandSeed2._2_2_ = (int)lRandSeed2 >> 0xf;
+  lRandSeed1._0_2_ = ((short *)rgPrimes)[(uint)dw & 0x3f];
+  lRandSeed1._2_2_ = ((short *)rgPrimes)[(uint)dw & 0x3f] >> 0xf;
+  lRandSeed2._0_2_ = ((short *)rgPrimes)[b];
+  lRandSeed2._2_2_ = ((short *)rgPrimes)[b] >> 0xf;
   return;
 }
 
@@ -110,10 +110,10 @@ void Randomize2(ulong dw)
   if (uVar1 == b) {
     b = b + 1U & 0x7f;
   }
-  lRandSeed1._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + uVar1 * 2);
-  lRandSeed1._2_2_ = (int)lRandSeed1 >> 0xf;
-  lRandSeed2._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + b * 2);
-  lRandSeed2._2_2_ = (int)lRandSeed2 >> 0xf;
+  lRandSeed1._0_2_ = ((short *)rgPrimes)[uVar1];
+  lRandSeed1._2_2_ = ((short *)rgPrimes)[uVar1] >> 0xf;
+  lRandSeed2._0_2_ = ((short *)rgPrimes)[b];
+  lRandSeed2._2_2_ = ((short *)rgPrimes)[b] >> 0xf;
   return;
 }
 
@@ -317,9 +317,9 @@ void SetFileXorStream(long lid,short lSalt,short turn,short iPlayer,short fCripp
   else {
     a = a + 0x20;
   }
-  lFileSeed1._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + a * 2);
+  lFileSeed1._0_2_ = ((short *)rgPrimes)[a];
   lFileSeed1._2_2_ = (int)lFileSeed1 >> 0xf;
-  lFileSeed2._0_2_ = *(int *)((int)vrptFleet.rgbdx + 6 + b * 2);
+  lFileSeed2._0_2_ = ((short *)rgPrimes)[b];
   lFileSeed2._2_2_ = (int)lFileSeed2 >> 0xf;
   a = (((uint)lid & 3) + 1) * ((turn & 3U) + 1) * ((iPlayer & 3U) + 1) + fCrippled;
   while (0 < a) {
@@ -468,13 +468,12 @@ char * PszGetCompressedPlanet(short id)
     id = id % 999;
   }
   if (id != iLastGet) {
-    pchLen = (byte *)CONCAT22(0x1040,(byte *)((id >> 6) * 0x40 + 0x1004));
+    pchLen = (byte *)CONCAT22(0x1040,(byte *)acPN + (id >> 6) * 0x40);
     for (i = 0; i < (int)(id & 0x3fU); i = i + 1) {
       iNibble = iNibble + (uint)*pchLen;
       pchLen = (byte *)CONCAT22(pchLen._2_2_,(byte *)pchLen + 1);
     }
-    pch = (byte *)CONCAT22(0x1040,(byte *)(*(int *)((char *)s_aehilnorstbcdfgjkmpquvwxyz_1120_13e2 +
-                                                    10 + (id >> 6) * 2) + (iNibble >> 1)));
+    pch = (byte *)CONCAT22(0x1040,(byte *)(((short *)aiPNChunkOffset)[id >> 6] + (iNibble >> 1)));
     bVar4 = (iNibble & 1U) == 0;
     pszOut = (char *)szLastGet;
     iBuild = 0;
@@ -492,7 +491,7 @@ char * PszGetCompressedPlanet(short id)
       iBuild = iBuild + i;
       iLen = iVar1;
       if (i != 0xf) {
-        *pszOut = ((char *)rgchcomp + 0xc)[iBuild];
+        *pszOut = ((char *)rgPNLookupTable)[iBuild];
         if (((bVar2) && ('`' < *pszOut)) && (*pszOut < '{')) {
           *pszOut = *pszOut + -0x20;
         }

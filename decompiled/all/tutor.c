@@ -3902,12 +3902,12 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
 short FCheckTemplate(short iTemplate)
 
 {
-  undefined2 *puVar1;
-  undefined2 uVar2;
-  ZIPPRODQ1 *pZVar3;
+  ZIPPRODQ1 *pZVar1;
+  ZIPPRODQ1 *pZVar2;
+  byte bVar3;
   short sVar4;
   int iVar5;
-  undefined2 *puVar6;
+  ZIPPRODQ1 *pZVar6;
   ZIPPRODQ1 *pZVar7;
   short i;
   
@@ -3917,7 +3917,7 @@ short FCheckTemplate(short iTemplate)
       sVar4 = 0;
     }
     else if (vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1.fNoResearch ==
-             *(byte *)(iTemplate * 0x1a + 0x663a)) {
+             ((ZIPPRODQ1 *)rgzpqTut + iTemplate)->fNoResearch) {
       if (vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1.cpq == *(byte *)(iTemplate * 0x1a + 0x663b)
          ) {
         for (i = 0; i < (int)(uint)*(byte *)(iTemplate * 0x1a + 0x663b); i = i + 1) {
@@ -3940,16 +3940,16 @@ short FCheckTemplate(short iTemplate)
   }
   else {
     vrgZipProd[0].fValid = 1;
-    puVar6 = (undefined2 *)(iTemplate * 0x1a + 0x663a);
+    pZVar6 = (ZIPPRODQ1 *)rgzpqTut + iTemplate;
     pZVar7 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
     for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
-      pZVar3 = pZVar7;
+      pZVar2 = pZVar7;
       pZVar7 = (ZIPPRODQ1 *)pZVar7->rgpq;
-      puVar1 = puVar6;
-      puVar6 = puVar6 + 1;
-      uVar2 = *puVar1;
-      pZVar3->fNoResearch = (char)uVar2;
-      pZVar3->cpq = (char)((uint)uVar2 >> 8);
+      pZVar1 = pZVar6;
+      pZVar6 = (ZIPPRODQ1 *)pZVar6->rgpq;
+      bVar3 = pZVar1->cpq;
+      pZVar2->fNoResearch = pZVar1->fNoResearch;
+      pZVar2->cpq = bVar3;
     }
     gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
     sVar4 = 1;
