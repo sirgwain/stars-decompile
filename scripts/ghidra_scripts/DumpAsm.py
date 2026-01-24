@@ -1,51 +1,99 @@
+# DumpAsm.py
 # Ghidra script to dump assembly listing for a function
-# Usage: mise run dump-asm -- FunctionName
+# Usage:
+#   DumpAsm.py <function_name> [--raw]
+#     --raw  : print just the instruction text (no address / bytes header)
+#
+# Example:
+#   mise run dump-asm -- FRAMEWNDPROC
+#   mise run dump-asm -- FRAMEWNDPROC --raw
+#
 # @category Stars
 
-from ghidra.program.model.listing import CodeUnit
+# make IDE register built ins
+try:
+    from ghidra.ghidra_builtins import *
+    from ghidra.program.model.listing import *
+    from ghidra.util.task import *
+
+    currentProgram = currentProgram  # type: Program
+    monitor = monitor  # type: TaskMonitor
+except:
+    pass
+
+from ghidra.program.model.listing import CodeUnit, Function, Instruction
 import sys
+
+def _find_function_by_name(func_name: str):
+    f = getFunction(func_name)
+    if f:
+        return f
+
+    fm = currentProgram.getFunctionManager()
+    for it in fm.getFunctions(True):
+        it = it  # type: Function
+        if func_name in it.getName():
+            return it
+    return None
+
+def _format_instr(instr: Instruction) -> str:
+    """
+    Try to mimic Listing view operand rendering (symbols, stack vars, etc.).
+    Instruction.toString() is usually close, but getDefaultOperandRepresentation()
+    tends to respect operand markup/references better in scripts.
+    """
+    mnem = instr.getMnemonicString()
+
+    nops = instr.getNumOperands()
+    if nops <= 0:
+        return mnem
+
+    # Join with ", " (good enough for x86; Listing sometimes varies, but close).
+    ops = []
+    for i in range(nops):
+        ops.append(instr.getDefaultOperandRepresentation(i))
+    return mnem + " " + ", ".join(ops)
 
 args = getScriptArgs()
 if len(args) < 1:
-    print("Usage: DumpAsm.py <function_name>")
+    print("Usage: DumpAsm.py <function_name> [--raw]")
     sys.exit(1)
 
 func_name = args[0]
+raw_only = any(a == "--raw" for a in args[1:])
 
-# Try to find function by name (may need to search)
-func = getFunction(func_name)
-if not func:
-    # Search all functions for matching name
-    fm = currentProgram.getFunctionManager()
-    for f in fm.getFunctions(True):
-        if func_name in f.getName():
-            func = f
-            break
-
+func = _find_function_by_name(func_name)
 if not func:
     print("Function not found: " + func_name)
     sys.exit(1)
 
 listing = currentProgram.getListing()
-addr = func.getEntryPoint()
+start = func.getEntryPoint()
 end = func.getBody().getMaxAddress()
 
-print("=== {} @ {} ===".format(func_name, addr))
-print("")
+if not raw_only:
+    print("=== {} @ {} ===".format(func.getName(), start))
+    print("")
 
-cu = listing.getCodeUnitAt(addr)
-while cu and cu.getAddress().compareTo(end) <= 0:
-    addr_str = str(cu.getAddress())
+# Walk instructions in the function body (skips embedded data more reliably than CodeUnit iteration).
+it = listing.getInstructions(func.getBody(), True)
+for instr in it:
+    instr = instr  # type: Instruction
+    if instr.getMinAddress().compareTo(end) > 0:
+        break
 
-    # Get bytes as hex
-    bytes_arr = cu.getBytes()
+    if raw_only:
+        print(_format_instr(instr))
+        continue
+
+    addr_str = str(instr.getAddress())
+
+    bytes_arr = instr.getBytes()
     bytes_hex = " ".join("{:02x}".format(b & 0xff) for b in bytes_arr)
 
-    # Format: address: bytes  instruction
-    instr_str = str(cu) if cu else ""
+    instr_str = _format_instr(instr)
     print("{}: {:24s} {}".format(addr_str, bytes_hex, instr_str))
 
-    cu = listing.getCodeUnitAfter(cu.getAddress())
-
-print("")
-print("=== END ===")
+if not raw_only:
+    print("")
+    print("=== END ===")

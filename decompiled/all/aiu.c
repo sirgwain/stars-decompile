@@ -224,18 +224,20 @@ void PickANameAndBmp(SHDEF *pshdef,StringId ids,short cids,short ibmpStart)
   if ((pshdef->wFlags >> 10 & 0x1f) < 0x10) {
     for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
       if (((*(uint *)((int)&rgshdef[0].wFlags + ishdef * 0x93) >> 9 & 1) == 0) &&
-         (*(HullDef *)(ishdef * 0x93 + 0x3f00) == (pshdef->hul).ihuldef)) {
+         (*(HullDef *)(ishdef * 0x93 + rgshdef) == (pshdef->hul).ihuldef)) {
         rgfBmpUsed[*(int *)((int)&rgshdef[0].hul + 0x32 + ishdef * 0x93) - ibmpStart] = 1;
       }
     }
   }
   else {
     for (ishdef = 0; ishdef < 10; ishdef = ishdef + 1) {
-      if (((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + ishdef * 0x93 + 0x7b) >> 9 & 1) == 0)
-         && (*(HullDef *)(*(int *)(idPlayer * 4 + 0x14c) + ishdef * 0x93) ==
-             (pshdef->hul).ihuldef)) {
+      if (((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdef * 0x93 + 0x7b) >> 9 & 1)
+           == 0) &&
+         (*(HullDef *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdef * 0x93) ==
+          (pshdef->hul).ihuldef)) {
         rgfBmpUsed
-        [*(int *)(*(int *)(idPlayer * 4 + 0x14c) + ishdef * 0x93 + 0x32) - ibmpStart] = 1;
+        [*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdef * 0x93 + 0x32) - ibmpStart] =
+             1;
       }
     }
   }
@@ -273,15 +275,17 @@ void PickANameAndBmp(SHDEF *pshdef,StringId ids,short cids,short ibmpStart)
     else {
       ishdef = 0;
       while ((ishdef < 10 &&
-             ((((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + ishdef * 0x93 + 0x7b) >> 9 & 1)
-                != 0 || (*(HullDef *)(*(int *)(idPlayer * 4 + 0x14c) + ishdef * 0x93) !=
-                         (pshdef->hul).ihuldef)) ||
+             ((((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdef * 0x93 + 0x7b) >> 9
+                & 1) != 0 ||
+               (*(HullDef *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdef * 0x93) !=
+                (pshdef->hul).ihuldef)) ||
               (sVar1 = __fstrcmp((pshdef->hul).szClass,
                                          (char *)CONCAT22(*(undefined2 *)
                                                            (idPlayer * 4 + 0x14e),
                                                           (char *)(*(int *)(idPlayer * 4 +
-                                                                           0x14c) + ishdef * 0x93 +
-                                                                  8))), sVar1 != 0))))) {
+                                                                           rglpshdefSB) +
+                                                                   ishdef * 0x93 + 8))), sVar1 != 0)
+              )))) {
         ishdef = ishdef + 1;
       }
       if (ishdef == 10) {
@@ -335,12 +339,12 @@ short FChangeAiShdef(SHDEF *pshdef,short ishdef)
   shdef.cBuilt._0_2_ = 0;
   shdef.cBuilt._2_2_ = 0;
   if (ishdef < 0x10) {
-    lpshdefBase = *(int *)(idPlayer * 4 + 0xfe);
+    lpshdefBase = *(int *)(idPlayer * 4 + rglpshdef);
     local_6 = *(undefined2 *)(idPlayer * 4 + 0x100);
     ishdefWork = ishdef;
   }
   else {
-    lpshdefBase = *(int *)(idPlayer * 4 + 0x14c);
+    lpshdefBase = *(int *)(idPlayer * 4 + rglpshdefSB);
     local_6 = *(undefined2 *)(idPlayer * 4 + 0x14e);
     ishdefWork = ishdef + -0x10;
   }
@@ -807,7 +811,7 @@ ulong UlFleetPower(FLEET *lpfl)
     if (pFVar4->rgcsh[ishdef] != 0) {
       iVar5 = iVar1 * 4;
       uVar2 = *(undefined2 *)(iVar5 + 0x100);
-      iVar5 = *(int *)(iVar5 + 0xfe) + ishdef * 0x93;
+      iVar5 = *(int *)(iVar5 + rglpshdef) + ishdef * 0x93;
       uVar7 = __aFulmul(CONCAT22(*(undefined2 *)(iVar5 + 0x89),*(undefined2 *)(iVar5 + 0x87)
                                         ),(long)pFVar4->rgcsh[ishdef]);
       uVar3 = uVar7 + uVar3;
@@ -2440,7 +2444,7 @@ short FShouldWeBuildColonizers(short *pcCol)
   else {
     for (i = 0; i < 0x10; i = i + 1) {
       if (((*(uint *)((int)&rgshdef[0].wFlags + i * 0x93) >> 9 & 1) == 0) &&
-         ((*(int *)(i * 0x93 + 0x3f00) == 0xe || (*(int *)(i * 0x93 + 0x3f00) == 0xf)))) {
+         ((*(int *)(i * 0x93 + rgshdef) == 0xe || (*(int *)(i * 0x93 + rgshdef) == 0xf)))) {
         rgish[i] = 1;
         if (iMax < i) {
           iMax = i;
@@ -2540,13 +2544,13 @@ short FIsAiAttack(FLEET *lpfl)
       return 0;
     }
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
-      iVar1 = *(int *)(i * 0x93 + 0x3f00);
+      iVar1 = *(int *)(i * 0x93 + rgshdef);
       if ((5 < iVar1) && (iVar1 < 0xb)) {
         return 1;
       }
       if (iVar1 == 5) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x100);
-        iVar4 = *(int *)(idPlayer * 4 + 0xfe) + i * 0x93;
+        iVar4 = *(int *)(idPlayer * 4 + rglpshdef) + i * 0x93;
         iVar1 = *(int *)(iVar4 + 0x89);
         if ((-1 < iVar1) && ((0 < iVar1 || (*(int *)(iVar4 + 0x87) != 0)))) {
           return 1;
@@ -2554,9 +2558,9 @@ short FIsAiAttack(FLEET *lpfl)
         return 0;
       }
       if (((iVar1 == 0x1f) || (iVar1 == 0x1d)) &&
-         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),grStatCargo), sVar3 < 500)) {
+         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + rgshdef),grStatCargo), sVar3 < 500)) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x100);
-        iVar4 = *(int *)(idPlayer * 4 + 0xfe) + i * 0x93;
+        iVar4 = *(int *)(idPlayer * 4 + rglpshdef) + i * 0x93;
         iVar1 = *(int *)(iVar4 + 0x89);
         if ((-1 < iVar1) && ((0 < iVar1 || (*(int *)(iVar4 + 0x87) != 0)))) {
           return 1;
@@ -2588,7 +2592,7 @@ short FIsTurinDroneAiAttack(FLEET *lpfl)
     if (0xf < i) {
       return 0;
     }
-    if (((0 < ((FLEET *)lpfl)->rgcsh[i]) && (iVar1 = *(int *)(i * 0x93 + 0x3f00), 3 < iVar1)) &&
+    if (((0 < ((FLEET *)lpfl)->rgcsh[i]) && (iVar1 = *(int *)(i * 0x93 + rgshdef), 3 < iVar1)) &&
        (iVar1 < 0xb)) break;
     i = i + 1;
   }
@@ -2620,14 +2624,14 @@ short FIsAiTransport(FLEET *lpfl)
       return 0;
     }
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
-      iVar1 = *(int *)(i * 0x93 + 0x3f00);
+      iVar1 = *(int *)(i * 0x93 + rgshdef);
       if (((-1 < iVar1) && (iVar1 < 4)) || ((10 < iVar1 && (iVar1 < 0xe)))) {
         return 1;
       }
       if ((iVar1 == 0x1f) &&
-         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),grStatCargo), 499 < sVar3)) {
+         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + rgshdef),grStatCargo), 499 < sVar3)) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x100);
-        iVar4 = *(int *)(idPlayer * 4 + 0xfe) + i * 0x93;
+        iVar4 = *(int *)(idPlayer * 4 + rglpshdef) + i * 0x93;
         iVar1 = *(int *)(iVar4 + 0x89);
         if ((-1 < iVar1) && ((0 < iVar1 || (*(int *)(iVar4 + 0x87) != 0)))) {
           return 1;
@@ -3457,7 +3461,7 @@ short FFleetMightHaveTeeth(FLEET *lpfl)
        (iVar2 = ((uint)lpfl->id >> 9 & 0xf) * 4,
        sVar1 = FHullHasTeeth
                          ((HUL *)CONCAT22(*(undefined2 *)(iVar2 + 0x100),
-                                          (HUL *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93))),
+                                          (HUL *)(*(int *)(iVar2 + rglpshdef) + ishdef * 0x93))),
        sVar1 != 0)) break;
     ishdef = ishdef + 1;
   }
@@ -3709,9 +3713,10 @@ void MarkPlanetsUnderAttack(void)
       i = 0;
       while ((i < 0x10 &&
              (((*(int *)(iVar1 + 0xc + i * 2) < 1 ||
-               (iVar3 = *(int *)(iVar1 + 2) * 4, *(int *)(*(int *)(iVar3 + 0xfe) + i * 0x93) < 0x10)
-               ) || (iVar3 = *(int *)(iVar1 + 2) * 4,
-                    0x13 < *(int *)(*(int *)(iVar3 + 0xfe) + i * 0x93)))))) {
+               (iVar3 = *(int *)(iVar1 + 2) * 4,
+               *(int *)(*(int *)(iVar3 + rglpshdef) + i * 0x93) < 0x10)) ||
+              (iVar3 = *(int *)(iVar1 + 2) * 4,
+              0x13 < *(int *)(*(int *)(iVar3 + rglpshdef) + i * 0x93)))))) {
         i = i + 1;
       }
       if ((i != 0x10) &&
@@ -4107,16 +4112,16 @@ void EnsureAiStarbaseDesigns(void)
   short iSetNew;
   ushort wTurnLast;
   
-  uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+  uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
   if ((*(uint *)((int)uVar2 + 0x1a1) >> 9 & 1) != 0) {
     FCreateAiStarbase(2,2,-1,-1);
     FCreateAiStarbase(4,3,-1,-1);
   }
-  uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+  uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
   if ((*(uint *)((int)uVar2 + 0x10e) >> 9 & 1) != 0) {
     FCreateAiStarbase(1,1,-1,-1);
   }
-  uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+  uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
   if ((*(uint *)((int)uVar2 + 0x234) >> 9 & 1) != 0) {
     FCreateAiStarbase(3,2,-1,-1);
   }
@@ -4127,9 +4132,10 @@ void EnsureAiStarbaseDesigns(void)
       if (i == 6) {
         i = 5;
       }
-      if (((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) &&
-         (wTurnLast <= *(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d))) {
-        wTurnLast = *(ushort *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d);
+      if (((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0)
+         && (wTurnLast <= *(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d)))
+      {
+        wTurnLast = *(ushort *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d);
         iSetLast = i;
       }
     }
@@ -4143,9 +4149,10 @@ void EnsureAiStarbaseDesigns(void)
         iVar3 = i;
       }
       for (; i < iVar3 + 5; i = i + 2) {
-        if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
+        if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0
+           ) {
           uVar1 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-          iVar4 = *(int *)(idPlayer * 4 + 0x14c) + i * 0x93;
+          iVar4 = *(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93;
           if ((*(int *)(iVar4 + 0x85) != 0) || (*(int *)(iVar4 + 0x83) != 0)) goto AIU_LOrbital;
         }
       }
@@ -4160,9 +4167,10 @@ AIU_LOrbital:
       if (i == 5) {
         i = 6;
       }
-      if (((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) &&
-         (wTurnLast <= *(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d))) {
-        wTurnLast = *(ushort *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d);
+      if (((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0)
+         && (wTurnLast <= *(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d)))
+      {
+        wTurnLast = *(ushort *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d);
         iSetLast = i;
       }
     }
@@ -4173,9 +4181,10 @@ AIU_LOrbital:
       else {
         iVar3 = 1;
       }
-      if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + iVar3 * 0x93 + 0x7b) >> 9 & 1) == 0) {
+      if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + iVar3 * 0x93 + 0x7b) >> 9 & 1) ==
+          0) {
         uVar1 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-        iVar4 = *(int *)(idPlayer * 4 + 0x14c) + iVar3 * 0x93;
+        iVar4 = *(int *)(idPlayer * 4 + rglpshdefSB) + iVar3 * 0x93;
         if (*(int *)(iVar4 + 0x85) != 0) {
           return;
         }
@@ -4183,10 +4192,10 @@ AIU_LOrbital:
           return;
         }
       }
-      if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + (iVar3 + 2) * 0x93 + 0x7b) >> 9 & 1) ==
-          0) {
+      if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (iVar3 + 2) * 0x93 + 0x7b) >> 9 &
+          1) == 0) {
         uVar1 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-        iVar4 = *(int *)(idPlayer * 4 + 0x14c) + (iVar3 + 2) * 0x93;
+        iVar4 = *(int *)(idPlayer * 4 + rglpshdefSB) + (iVar3 + 2) * 0x93;
         if (*(int *)(iVar4 + 0x85) != 0) {
           return;
         }
@@ -4236,8 +4245,8 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
         if ((1 < rgSB[i]) &&
            (((iOld == -1 || (rgSB[iOld] < rgSB[i])) ||
             ((rgSB[i] == rgSB[iOld] &&
-             (*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d) <
-              *(uint *)(*(int *)(idPlayer * 4 + 0x14c) + iOld * 0x93 + 0x7d))))))) {
+             (*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d) <
+              *(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + iOld * 0x93 + 0x7d))))))) {
           iOld = i;
         }
       }
@@ -4250,11 +4259,11 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
       do {
         if (1 < i) {
           for (i = 4; i < 10; i = i + 1) {
-            rgSB[i] = (*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1)
-                      != 0;
+            rgSB[i] = (*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9
+                      & 1) != 0;
           }
-          uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c);
-          uVar3 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+          uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
+          uVar3 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
           if (*(uint *)((int)uVar3 + 0x2c9) < *(uint *)((int)uVar2 + 0x482)) {
             iNew = 7;
             iOld = 4;
@@ -4264,7 +4273,7 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
             iOld = 7;
           }
           if (game.turn -
-              *(int *)(*(int *)(idPlayer * 4 + 0x14c) + iOld * 0x93 + 0x7d) < 0x1e) {
+              *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + iOld * 0x93 + 0x7d) < 0x1e) {
             j._0_1_ = 2;
           }
           else {
@@ -4273,17 +4282,17 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
           for (i = iOld; i < iOld + 3; i = i + 1) {
             rgSB[i] = (byte)j;
           }
-          iVar5 = *(int *)(*(int *)(idPlayer * 4 + 0x14c) + iNew * 0x93) + -0x20;
+          iVar5 = *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + iNew * 0x93) + -0x20;
           if ((iVar5 < 4) && (rgSB[3] = 2, iVar5 < 3)) {
             rgSB[2] = 2;
           }
           return;
         }
         for (j = 0; j < 3; j = j + 1) {
-          if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + (i * 3 + 4 + j) * 0x93 + 0x7b) >> 9
-              & 1) == 0) {
+          if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (i * 3 + 4 + j) * 0x93 + 0x7b
+                        ) >> 9 & 1) == 0) {
             uVar1 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-            iVar5 = *(int *)(idPlayer * 4 + 0x14c) + (i * 3 + 4 + j) * 0x93;
+            iVar5 = *(int *)(idPlayer * 4 + rglpshdefSB) + (i * 3 + 4 + j) * 0x93;
             if ((*(int *)(iVar5 + 0x85) != 0) || (*(int *)(iVar5 + 0x83) != 0)) break;
           }
         }
@@ -4300,14 +4309,15 @@ void EnsureMacintiStarbaseDesigns(byte *rgSB)
         i = i + 1;
       } while( true );
     }
-    if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
+    if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
       uVar1 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-      iVar5 = *(int *)(idPlayer * 4 + 0x14c) + i * 0x93;
+      iVar5 = *(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93;
       if ((*(int *)(iVar5 + 0x83) == 0) && (*(int *)(iVar5 + 0x85) == 0)) goto LAB_1090_7759;
-      iVar5 = game.turn - *(int *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7d);
+      iVar5 = game.turn -
+              *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7d);
       if (iVar5 < 0x23) {
         if (((game.turn < 0x1a) || (i != 1)) ||
-           (*(char *)(*(int *)(idPlayer * 4 + 0x14c) + 0x10d) == '\b')) {
+           (*(char *)(*(int *)(idPlayer * 4 + rglpshdefSB) + 0x10d) == '\b')) {
           rgSB[i] = 0;
         }
         else {
@@ -4638,10 +4648,10 @@ short IshdefAiSBLatestOF(void)
   undefined4 uVar2;
   short sVar3;
   
-  uVar1 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+  uVar1 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
   if (((*(uint *)((int)uVar1 + 0x3ed) >> 9 & 1) == 0) &&
-     (uVar1 = *(undefined4 *)(idPlayer * 4 + 0x14c),
-     uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c),
+     (uVar1 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB),
+     uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB),
      *(uint *)((int)uVar1 + 0x110) < *(uint *)((int)uVar2 + 0x3ef))) {
     sVar3 = 6;
   }
@@ -4667,10 +4677,10 @@ short IshdefAiSBLatest(void)
   undefined4 uVar2;
   short sVar3;
   
-  uVar1 = *(undefined4 *)(idPlayer * 4 + 0x14c);
+  uVar1 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB);
   if (((*(uint *)((int)uVar1 + 0x35a) >> 9 & 1) == 0) &&
-     (uVar1 = *(undefined4 *)(idPlayer * 4 + 0x14c),
-     uVar2 = *(undefined4 *)(idPlayer * 4 + 0x14c),
+     (uVar1 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB),
+     uVar2 = *(undefined4 *)(idPlayer * 4 + rglpshdefSB),
      *(uint *)((int)uVar1 + 0x7d) < *(uint *)((int)uVar2 + 0x35c))) {
     sVar3 = 5;
   }
@@ -4833,8 +4843,8 @@ short FUpgradeAiStarbase(PLANET *lppl,short ishdefSBLatest)
       if (((*(uint *)&pPVar5->lStarbase & 0xf) < (uint)ishdefSBLatest) ||
          ((uint)(ishdefSBLatest + (iDesigns + -1) * 2) < (*(uint *)&pPVar5->lStarbase & 0xf))) {
         pctUpg = (game.turn -
-                 *(int *)(*(int *)(idPlayer * 4 + 0x14c) + ishdefSBLatest * 0x93 + 0x7d)) +
-                 -10;
+                 *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + ishdefSBLatest * 0x93 + 0x7d
+                         )) + -10;
         if (pctUpg < 0) {
           pctUpg = 0;
         }
@@ -4857,7 +4867,7 @@ short FUpgradeAiStarbase(PLANET *lppl,short ishdefSBLatest)
         }
       }
       else if ((((int)(((ulong)*(uint *)&pPVar5->lStarbase & 0xffff000f) % 5) < (iDesigns + -1) * 2)
-               && ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) +
+               && ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                               ((*(uint *)&pPVar5->lStarbase & 0xf) + 2) * 0x93 + 0x7b) >> 9 & 1) ==
                    0)) && (sVar3 = Random(100), sVar3 < 6)) {
         i = 0;
@@ -5418,7 +5428,7 @@ short CheckAiShdefStatus
       {
         if ((*(int *)((int)&rgshdef[0].cExist + i * 0x93) == 0) &&
            (*(int *)((int)&rgshdef[0].cExist + 2 + i * 0x93) == 0)) {
-          puVar5 = (undefined2 *)(i * 0x93 + 0x3f00);
+          puVar5 = (undefined2 *)(i * 0x93 + rgshdef);
           puVar6 = shdef;
           for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
             puVar2 = puVar6;

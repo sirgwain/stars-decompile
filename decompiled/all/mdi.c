@@ -301,7 +301,7 @@ void CreateChildWindows(void)
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
-long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
+long FrameWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
   POINT pt_00;
@@ -344,7 +344,7 @@ long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
   short i;
   HDC hdc;
   
-  if (message == WM_CREATE) {
+  if (msg == WM_CREATE) {
     hdc = GetDC(hwnd);
     FCreateFonts(hdc);
     GetTextMetrics(hdc,ps);
@@ -355,7 +355,7 @@ long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     EnsureTileSize((uint)(iWindowLayout == 2));
     return 0;
   }
-  if (message == WM_DESTROY) {
+  if (msg == WM_DESTROY) {
     if (uTimerId != 0) {
       KillTimer(0,uTimerId);
     }
@@ -372,7 +372,7 @@ long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     ExitWindows((long)vretExitValue,0);
     return 0;
   }
-  if (message == WM_SIZE) {
+  if (msg == WM_SIZE) {
     if ((wParam == 2) || (wParam == 0)) {
       vfs.dx = (int)lParam;
       uVar10 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ff9e);
@@ -381,13 +381,13 @@ long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
       return 0;
     }
 MDI_Default_5:
-    LVar12 = DefWindowProc(hwnd,message,wParam,lParam);
+    LVar12 = DefWindowProc(hwnd,msg,wParam,lParam);
     return LVar12;
   }
-  if (message == WM_ACTIVATE) {
+  if (msg == WM_ACTIVATE) {
     return 0;
   }
-  if (message == WM_PAINT) {
+  if (msg == WM_PAINT) {
     BVar6 = IsIconic(hwnd);
     if (BVar6 == 0) {
       hdc = BeginPaint(hwnd,ps);
@@ -441,11 +441,11 @@ MDI_Default_5:
     EndPaint(hwnd,ps);
     return 0;
   }
-  if (message == WM_CLOSE) {
+  if (msg == WM_CLOSE) {
     DestroyWindow(hwnd);
     return 0;
   }
-  if (message == WM_ERASEBKGND) {
+  if (msg == WM_ERASEBKGND) {
     BVar6 = IsIconic(hwnd);
     if (BVar6 != 0) {
       GetClientRect(hwnd,&stack0xffee);
@@ -461,11 +461,11 @@ MDI_Default_5:
     FillRect(wParam,&stack0xffee,hbrButtonFace);
     return 1;
   }
-  if ((message == WM_SYSCOLORCHANGE) || (message == WM_WININICHANGE)) {
+  if ((msg == WM_SYSCOLORCHANGE) || (msg == WM_WININICHANGE)) {
     FGetSystemColors();
     return 0;
   }
-  if (message == WM_SETCURSOR) {
+  if (msg == WM_SETCURSOR) {
     ich = 0;
     BVar6 = IsIconic(hwnd);
     if (BVar6 == 0) {
@@ -489,19 +489,19 @@ MDI_Default_5:
     }
     goto MDI_Default_5;
   }
-  if (message == WM_GETMINMAXINFO) {
+  if (msg == WM_GETMINMAXINFO) {
     *(undefined2 *)((int)lParam + 0xc) = 0x208;
     *(undefined2 *)((int)lParam + 0xe) = 0x17c;
     return 0;
   }
-  if (message == WM_QUERYDRAGICON) {
+  if (msg == WM_QUERYDRAGICON) {
     HVar5 = hiconHost;
     if ((idPlayer != -1) && (HVar5 = hiconStars, uTimerId != 0)) {
       HVar5 = hiconWait;
     }
     return (ulong)HVar5;
   }
-  if (message == WM_CHAR) {
+  if (msg == WM_CHAR) {
     if ((hwndScanner != 0) && ((wParam == 0x2d || (wParam == 0x2b)))) {
       SendMessage(hwndScanner,0x102,wParam,lParam);
       return 0;
@@ -554,11 +554,11 @@ MDI_Default_5:
     SelectAdjFleet(ich,ptOld);
     return 0;
   }
-  if (message == WM_COMMAND) {
+  if (msg == WM_COMMAND) {
     CommandHandler(hwnd,wParam);
     return 0;
   }
-  if (message == WM_SYSCOMMAND) {
+  if (msg == WM_SYSCOMMAND) {
     if (((wParam & 0xfff0) == 0xf030) || ((wParam & 0xfff0) == 0xf120)) {
       ich = idPlayer;
       pt = uTimerId;
@@ -646,18 +646,18 @@ MDI_Default_5:
     }
     goto MDI_Default_5;
   }
-  if (message == WM_INITMENU) {
+  if (msg == WM_INITMENU) {
     InitializeMenu(wParam);
     return 0;
   }
-  if (message == WM_ENTERIDLE) {
+  if (msg == WM_ENTERIDLE) {
     if ((((uint)gd.grBits >> 0xb & 1) != 0) && (((uint)tutor.wFlags >> 2 & 1) != 0)
        ) {
       AdvanceTutor();
     }
     return 0;
   }
-  if (message == WM_LBUTTONDOWN) {
+  if (msg == WM_LBUTTONDOWN) {
     lpProc._2_2_ = (int)lParam;
     uVar10 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ff9e);
     rc__18 = (char *)uVar10;
@@ -733,10 +733,10 @@ MDI_Default_5:
     RefitFrameChildren();
     return 0;
   }
-  if (message == WM_QUERYNEWPALETTE) {
+  if (msg == WM_QUERYNEWPALETTE) {
 MDI_MapIt_2:
     if (hwndTitle != 0) {
-      LVar12 = SendMessage(hwndTitle,message,wParam,lParam);
+      LVar12 = SendMessage(hwndTitle,msg,wParam,lParam);
       return LVar12;
     }
     hdc = GetDC(hwnd);
@@ -750,18 +750,18 @@ MDI_MapIt_2:
     }
     return 0;
   }
-  if (message == WM_PALETTECHANGED) {
+  if (msg == WM_PALETTECHANGED) {
     if (wParam == hwnd) {
       return 0;
     }
     goto MDI_MapIt_2;
   }
-  if (message != 0x464) {
-    if (message == 0x465) {
+  if (msg != 0x464) {
+    if (msg == 0x465) {
       BringUpHostDlg();
       return 1;
     }
-    if (message == 0x466) {
+    if (msg == 0x466) {
       ShowTutor(0);
       game.fDirty = 0;
       DestroyCurGame();
@@ -2263,7 +2263,7 @@ LAB_1020_47b3:
                   if (pPStack_2e->iPlayer == idPlayer) {
                     if ((pPStack_2e->wFlags_0x4 >> 9 & 1) != 0) {
                       iVar11 = pPStack_2e->iPlayer * 4;
-                      if (*(int *)(*(int *)(iVar11 + 0x14c) +
+                      if (*(int *)(*(int *)(iVar11 + rglpshdefSB) +
                                   (*(uint *)&pPStack_2e->lStarbase & 0xf) * 0x93) == 0x20) {
                         pcVar9 = (char *)0x3da;
                       }
@@ -3049,7 +3049,7 @@ short FOpenGame(HWND hwnd,short fRaceOnly)
           if (pch != (char *)0x0) {
             i = (int)pch - (int)szFile;
             _strncpy((char *)szDirName,szFile,i);
-            *(undefined1 *)(i + 0x252) = 0;
+            *(undefined1 *)(i + szDirName) = 0;
           }
           if ((idPlayer == -1) && ((ini.wFlags >> 3 & 1) == 0)) {
             gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfffb | 4;
@@ -4579,12 +4579,13 @@ void WriteIniSettings(void)
             iPass < (int)(uint)*(byte *)((int)(ZIPPRODQ1 *)
                                               &vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1 +
                                         i * 0x28 + 1); iPass = iPass + 1) {
-          *psz = ((byte)*(undefined2 *)(i * 0x28 + 0x2306 + iPass * 2) & 0xf) + 0x61;
-          psz[1] = ((byte)(*(uint *)(i * 0x28 + 0x2306 + iPass * 2) >> 4) & 0xf) + 0x61;
+          *psz = ((byte)*(undefined2 *)(i * hbrBlue + 0x2306 + iPass * 2) & 0xf) + 0x61;
+          psz[1] = ((byte)(*(uint *)(i * hbrBlue + 0x2306 + iPass * 2) >> 4) & 0xf) + 0x61;
           pcVar4 = psz + 3;
-          psz[2] = ((byte)((uint)*(undefined2 *)(i * 0x28 + 0x2306 + iPass * 2) >> 8) & 0xf) + 0x61;
+          psz[2] = ((byte)((uint)*(undefined2 *)(i * hbrBlue + 0x2306 + iPass * 2) >> 8) & 0xf) +
+                   0x61;
           psz = psz + 4;
-          *pcVar4 = (byte)((uint)*(undefined2 *)(i * 0x28 + 0x2306 + iPass * 2) >> 0xc) + 0x61;
+          *pcVar4 = (byte)((uint)*(undefined2 *)(i * hbrBlue + 0x2306 + iPass * 2) >> 0xc) + 0x61;
         }
         _strcpy(psz,((ZIPPRODQ *)vrgZipProd)[i].szName);
       }
@@ -4813,14 +4814,14 @@ long TitleWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
       HVar1 = CreateWindow(s_BUTTON_1120_043a,psz,0x50000000,xCur,
                            (rc.bottom - dy) - (dyArial8 * 5) / 2,dx__24,dy,hwnd,i,
                            hInst,(void *)0x0);
-      *(HWND *)(i * 2 + 0x432) = HVar1;
+      *(HWND *)(i * 2 + rghwndBtnSplash) = HVar1;
       if ((i == 2) &&
          ((szBase[0] == '\0' ||
           (sVar2 = __access((char *)szBase,0), sVar2 == -1)))) {
         EnableWindow(rghwndBtnSplash[2],0);
       }
       if (rc.bottom < 500) {
-        SendMessage(*(HWND *)(i * 2 + 0x432),0x30,rghfontArial8[1],0);
+        SendMessage(*(HWND *)(i * 2 + rghwndBtnSplash),0x30,rghfontArial8[1],0);
       }
       xCur = xCur + dx__24 + dxGap;
     }

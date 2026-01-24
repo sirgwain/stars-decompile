@@ -321,7 +321,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       for (i = 0; i < 7; i = i + 1) {
         local_16 = *(uint *)(i * 0xc0 + 0xda8) >> 3 & 0x1f;
         vplr.wMdPlr = vplr.wMdPlr & 0xff07 | local_16 << 3;
-        sVar7 = __fmemcmp(&vplr,(void *)(i * 0xc0 + 0xda2),0x80);
+        sVar7 = __fmemcmp(&vplr,(void *)(i * 0xc0 + vrgplrDef),0x80);
         if (sVar7 == 0) break;
       }
       vplr.wMdPlr = vplr.wMdPlr & 0xff07 | (iPlrBmp & 0x1fU) << 3;
@@ -380,7 +380,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if ((int)pt__18 < 0x116) {
           hdc = pt__18 - 0x10f;
-          puVar15 = (undefined2 *)(hdc * 0xc0 + 0xda2);
+          puVar15 = (undefined2 *)(hdc * 0xc0 + vrgplrDef);
           pPVar16 = (PLAYER *)&vplr;
           for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
             pPVar3 = pPVar16;
@@ -808,8 +808,8 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
         cch__74 = dyArial8 / 4;
         RightTextOut
                   (hdc,(vrgrcRCW + i * 5)->left + -4,
-                   cch__74 + vrgrcRCW[i * 5].top,(char *)*(undefined2 *)(i * 2 + 0x47e),0,
-                   0);
+                   cch__74 + vrgrcRCW[i * 5].top,
+                   (char *)*(undefined2 *)(i * 2 + rgszPlanetAttr),0,0);
       }
     }
   }

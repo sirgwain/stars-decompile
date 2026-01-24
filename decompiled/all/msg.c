@@ -1507,7 +1507,7 @@ switchD_1030_8edc_caseD_3:
                                  (int)(*pParams & 0xc0U) >> 6,(PLAYER *)0x0);
       break;
     case 8:
-      pchT = (char *)*(undefined2 *)(*pParams * 2 + 0x4f2);
+      pchT = (char *)*(undefined2 *)(*pParams * 2 + rgszMineField);
       break;
     case 10:
       w = (uint)*pParams >> 9 & 0xf;
@@ -1552,7 +1552,7 @@ switchD_1030_8edc_caseD_3:
         if (*pszFormat == 'V') {
           iMineral = *pParams;
         }
-        pchT = (char *)*(undefined2 *)(iMineral * 2 + 0xb48);
+        pchT = (char *)*(undefined2 *)(iMineral * 2 + vrgszUnits);
         _strcpy(pch,pchT);
         uVar4 = _strlen(pchT);
         pch = pch + uVar4;
@@ -1598,7 +1598,7 @@ switchD_1030_8edc_caseD_3:
       }
       goto LAB_1030_8f4d;
     case 0x20:
-      pchT = (char *)*(undefined2 *)(*pParams * 2 + 0x47e);
+      pchT = (char *)*(undefined2 *)(*pParams * 2 + rgszPlanetAttr);
       break;
     case 0x21:
     case 0x23:
@@ -1665,7 +1665,7 @@ MSG_DoInt:
       goto LAB_1030_8f4d;
     case 0x28:
       iMineral = *pParams;
-      pchT = (char *)*(undefined2 *)(iMineral * 2 + 0x4cc);
+      pchT = (char *)*(undefined2 *)(iMineral * 2 + rgszMinerals);
       break;
     case 0x29:
       if (*pParams == -2) {
@@ -1705,11 +1705,12 @@ MSG_DoFleet:
       w = *pParams & 0x1f;
       if (w < 0x10) {
         part.u_PART_0x0004._2_2_ = *(uint *)(c * 4 + 0x100);
-        part.u_PART_0x0004.parmor._0_2_ = (ARMOR *)(*(int *)(c * 4 + 0xfe) + w * 0x93);
+        part.u_PART_0x0004.parmor._0_2_ = (ARMOR *)(*(int *)(c * 4 + rglpshdef) + w * 0x93);
       }
       else {
         part.u_PART_0x0004._2_2_ = *(uint *)(c * 4 + 0x14e);
-        part.u_PART_0x0004.parmor._0_2_ = (ARMOR *)(*(int *)(c * 4 + 0x14c) + (w - 0x10) * 0x93);
+        part.u_PART_0x0004.parmor._0_2_ =
+             (ARMOR *)(*(int *)(c * 4 + rglpshdefSB) + (w - 0x10) * 0x93);
       }
       if (c == idPlayer) {
         __fstrcpy(pch,(char *)CONCAT22(part.u_PART_0x0004._2_2_,

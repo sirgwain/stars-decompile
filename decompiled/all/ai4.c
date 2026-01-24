@@ -172,7 +172,7 @@ void DoCyberAiTurn(PROD *rgprod)
           if (((*(int *)((int)&rgshdef[0].cExist + j * 0x93) == 0) &&
               (*(int *)((int)&rgshdef[0].cExist + 2 + j * 0x93) == 0)) &&
              ((fScrap != 0 || (j != i * 4 + 6)))) {
-            puVar10 = (undefined2 *)(j * 0x93 + 0x3f00);
+            puVar10 = (undefined2 *)(j * 0x93 + rgshdef);
             puVar11 = &stack0xfedc;
             for (iVar7 = 0x49; iVar7 != 0; iVar7 = iVar7 + -1) {
               puVar3 = puVar11;
@@ -2196,8 +2196,8 @@ short FEnumPktAttack(PLANET *lpplSrc,PLANET *lpplTest)
   else {
     if ((pPVar4->wFlags_0x4 >> 9 & 1) != 0) {
       iVar5 = pPVar4->iPlayer * 4;
-      if ((*(uint *)(*(int *)(iVar5 + 0x14c) + (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93 + 0x7b) &
-          0xff) != 7) {
+      if ((*(uint *)(*(int *)(iVar5 + rglpshdefSB) + (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93 +
+                    0x7b) & 0xff) != 7) {
         return 0;
       }
       iWarpDst = IWarpMAFromLppl(lpplTest,&fTwoMA);

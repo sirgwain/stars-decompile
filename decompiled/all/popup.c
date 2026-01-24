@@ -77,7 +77,7 @@ short FIsPopupHullType(short ishdef)
   }
   else {
     iVar2 = ((FLEET *)GlobalPD.u_POPUPDATA_0x0002.lpfl)->iPlayer * 4;
-    pHVar3 = LphuldefFromId(*(HullDef *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93));
+    pHVar3 = LphuldefFromId(*(HullDef *)(*(int *)(iVar2 + rglpshdef) + ishdef * 0x93));
     uVar1 = *(uint *)((((HULDEF *)pHVar3)->wFlags_0x7b >> 10 & 0xf) * 2 + 0x138) &
             GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory;
   }
@@ -884,8 +884,8 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
   SelectObject(hdc,rghfontArial8[1]);
   DxStreamTextOut
             (hdc,&x,y,(char *)*(undefined2 *)
-                               (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 + 0x47e),0
-             ,fPrint);
+                               (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 +
+                               rgszPlanetAttr),0,fPrint);
   SelectObject(hdc,rghfontArial8[0]);
   lVar7 = (ulong)(uint)fPrint << 0x10;
   pcVar1 = PszGetCompressedString(idsCurrently);
@@ -924,8 +924,8 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
     DxStreamTextOut(hdc,&x,y,pcVar1,(short)lVar7,(short)((ulong)lVar7 >> 0x10));
     DxStreamTextOut
               (hdc,&x,y,(char *)*(undefined2 *)
-                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 + 0x47e)
-               ,0,fPrint);
+                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 +
+                                 rgszPlanetAttr),0,fPrint);
     DxStreamTextOut(hdc,&x,y,(char *)0xc16,1,fPrint);
   }
   else {
@@ -939,8 +939,8 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
     y = y + dyArial8;
     DxStreamTextOut
               (hdc,&x,y,(char *)*(undefined2 *)
-                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 + 0x47e)
-               ,0,fPrint);
+                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 +
+                                 rgszPlanetAttr),0,fPrint);
     lVar7 = (ulong)(uint)fPrint << 0x10;
     pcVar1 = PszGetCompressedString(idsBetween);
     DxStreamTextOut(hdc,&x,y,pcVar1,(short)lVar7,(short)((ulong)lVar7 >> 0x10));
@@ -982,8 +982,8 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
     DxStreamTextOut(hdc,&x,y,pcVar1,(short)lVar7,(short)((ulong)lVar7 >> 0x10));
     DxStreamTextOut
               (hdc,&x,y,(char *)*(undefined2 *)
-                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 + 0x47e)
-               ,0,fPrint);
+                                 (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 +
+                                 rgszPlanetAttr),0,fPrint);
     lVar7 = (ulong)(uint)fPrint << 0x10;
     pcVar1 = PszGetCompressedString(idsOn2);
     DxStreamTextOut(hdc,&x,y,pcVar1,(short)lVar7,(short)((ulong)lVar7 >> 0x10));
@@ -1063,8 +1063,8 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
         WrapTextOut
                   (hdc,&x,&y,
                    (char *)*(undefined2 *)
-                            (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 + 0x47e),0,4,
-                   xMax + -4,(short *)0x0,0,fPrint);
+                            (GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 * 2 +
+                            rgszPlanetAttr),0,4,xMax + -4,(short *)0x0,0,fPrint);
         SelectObject(hdc,rghfontArial8[0]);
         psVar8 = (short *)0x0;
         iVar2 = xMax + -4;

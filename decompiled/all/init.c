@@ -241,8 +241,8 @@ short FCreateFonts(HDC hdc)
   
   plf = (LOGFONT *)LocalAlloc(0x40,0x32);
   for (i = 0; i < 4; i = i + 1) {
-    if (*(char *)(i * 0x20 + 0x6a6) == '\0') {
-      CchGetString(i + idsArial2,(char *)(i * 0x20 + 0x6a6));
+    if (*(char *)(i * hbrLightGray + rgszArial) == '\0') {
+      CchGetString(i + idsArial2,(char *)(i * hbrLightGray + rgszArial));
     }
   }
   sVar4 = 10;
@@ -250,7 +250,7 @@ short FCreateFonts(HDC hdc)
   sVar1 = MulDiv(sVar4,sVar1,0x48);
   plf->lfHeight = -sVar1;
   for (i = 0; i < 2; i = i + 1) {
-    _strcpy(plf->lfFaceName,(char *)(i * 0x20 + 0x6a6));
+    _strcpy(plf->lfFaceName,(char *)(i * hbrLightGray + rgszArial));
     HVar2 = CreateFontIndirect(plf);
     ((ushort *)rghfontArial10)[i] = HVar2;
   }
@@ -270,7 +270,7 @@ short FCreateFonts(HDC hdc)
   sVar1 = MulDiv(sVar4,sVar1,0x48);
   plf->lfHeight = -sVar1;
   for (i = 0; i < 4; i = i + 1) {
-    _strcpy(plf->lfFaceName,(char *)(i * 0x20 + 0x6a6));
+    _strcpy(plf->lfFaceName,(char *)(i * hbrLightGray + rgszArial));
     HVar2 = CreateFontIndirect(plf);
     ((ushort *)rghfontArial8)[i] = HVar2;
   }
@@ -905,7 +905,7 @@ LAB_1000_1995:
     GetPrivateProfileString(szSection,szEntry,(LPCSTR)0x11200749,szWork,0x50,szIniFile);
     uVar8 = _strlen((char *)szWork);
     if ((4 < (int)uVar8) && ((int)uVar8 < 0x20)) {
-      _strcpy((char *)(i * 0x20 + 0x6a6),(char *)szWork);
+      _strcpy((char *)(i * hbrLightGray + rgszArial),(char *)szWork);
     }
   }
   CchGetString(idsZiporders,szSection);
@@ -981,21 +981,21 @@ LAB_1000_1995:
                  (char)iVar11;
             psz = (char *)szWork + 2;
             for (iPass = 0; iPass < iVar11; iPass = iPass + 1) {
-              *(int *)(i * 0x28 + 0x2306 + iPass * 2) = *psz + -0x61;
-              puVar2 = (uint *)(i * 0x28 + 0x2306 + iPass * 2);
+              *(int *)(i * hbrBlue + 0x2306 + iPass * 2) = *psz + -0x61;
+              puVar2 = (uint *)(i * hbrBlue + 0x2306 + iPass * 2);
               *puVar2 = *puVar2 | (psz[1] + -0x61) * 0x10;
-              puVar2 = (uint *)(i * 0x28 + 0x2306 + iPass * 2);
+              puVar2 = (uint *)(i * hbrBlue + 0x2306 + iPass * 2);
               *puVar2 = *puVar2 | (psz[2] + -0x61) * 0x100;
-              puVar2 = (uint *)(i * 0x28 + 0x2306 + iPass * 2);
+              puVar2 = (uint *)(i * hbrBlue + 0x2306 + iPass * 2);
               *puVar2 = *puVar2 | (psz[3] + -0x61) * 0x1000;
               psz = psz + 4;
-              if (0x3fc < *(uint *)(i * 0x28 + 0x2306 + iPass * 2) >> 6) {
-                *(uint *)(i * 0x28 + 0x2306 + iPass * 2) =
-                     *(uint *)(i * 0x28 + 0x2306 + iPass * 2) & 0x3f | 0x40;
+              if (0x3fc < *(uint *)(i * hbrBlue + 0x2306 + iPass * 2) >> 6) {
+                *(uint *)(i * hbrBlue + 0x2306 + iPass * 2) =
+                     *(uint *)(i * hbrBlue + 0x2306 + iPass * 2) & 0x3f | 0x40;
               }
-              if (6 < (*(uint *)(i * 0x28 + 0x2306 + iPass * 2) & 0x3f)) {
-                *(uint *)(i * 0x28 + 0x2306 + iPass * 2) =
-                     *(uint *)(i * 0x28 + 0x2306 + iPass * 2) & 0xffc0;
+              if (6 < (*(uint *)(i * hbrBlue + 0x2306 + iPass * 2) & 0x3f)) {
+                *(uint *)(i * hbrBlue + 0x2306 + iPass * 2) =
+                     *(uint *)(i * hbrBlue + 0x2306 + iPass * 2) & 0xffc0;
               }
             }
           }

@@ -355,7 +355,7 @@ void DoAutomitronAiTurn(PROD *rgprod)
                 }
                 for (i = 0; i < 5; i = i + 1) {
                   GetTrueHullCost
-                            (idPlayer,(HUL *)(iLatestCruiser * 0x93 + 0x3f00),rgCosts);
+                            (idPlayer,(HUL *)(iLatestCruiser * 0x93 + rgshdef),rgCosts);
                   for (j = 0; j < 4; j = j + 1) {
                     uVar8 = rgCosts[j];
                     puVar1 = rgResAvail + j * 2;
@@ -388,7 +388,7 @@ void DoAutomitronAiTurn(PROD *rgprod)
                 }
                 for (i = 0; i < 5; i = i + 1) {
                   GetTrueHullCost
-                            (idPlayer,(HUL *)(iLatestBattle * 0x93 + 0x3f00),rgCosts);
+                            (idPlayer,(HUL *)(iLatestBattle * 0x93 + rgshdef),rgCosts);
                   for (j = 0; j < 4; j = j + 1) {
                     uVar8 = rgCosts[j];
                     puVar1 = rgResAvail + j * 2;
@@ -836,7 +836,7 @@ void EnsureISShdefs(short iroCur)
        ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(9,9,(byte *)(*(byte *)(sVar3 + 0x6e) + 0x78));
+      sVar3 = FCreateAiShdef(9,9,(byte *)(*(byte *)(sVar3 + penvMem) + 0x78));
       if (sVar3 != 0) {
         return;
       }

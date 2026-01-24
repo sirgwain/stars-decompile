@@ -151,7 +151,7 @@ void InitProduction(PROD *rgprod)
   if (((sel.pl.wFlags_0x4 >> 9 & 1) != 0) &&
      (pHVar11 = LphuldefFromId
                           (*(HullDef *)
-                            (*(int *)(idPlayer * 4 + 0x14c) +
+                            (*(int *)(idPlayer * 4 + rglpshdefSB) +
                             ((uint)sel.pl.lStarbase & 0xf) * 0x93)),
      (((HULDEF *)pHVar11)->hul).wtCargoMax != 0)) {
     for (i = 0; i < 0x10; i = i + 1) {
@@ -160,7 +160,7 @@ void InitProduction(PROD *rgprod)
         uVar6 = *(uint *)((int)&rgshdef[0].hul + 0x28 + i * 0x93);
         pHVar11 = LphuldefFromId
                             (*(HullDef *)
-                              (*(int *)(idPlayer * 4 + 0x14c) +
+                              (*(int *)(idPlayer * 4 + rglpshdefSB) +
                               ((uint)sel.pl.lStarbase & 0xf) * 0x93));
         if (uVar6 <= (((HULDEF *)pHVar11)->hul).wtCargoMax) {
           uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
@@ -183,8 +183,8 @@ void InitProduction(PROD *rgprod)
     }
   }
   for (i = 0; i < 10; i = i + 1) {
-    if ((((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) &&
-        (-1 < *(int *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b))) &&
+    if ((((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0)
+        && (-1 < *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b))) &&
        ((((uint)sel.pl.lStarbase & 0xf) != i ||
         ((sel.pl.wFlags_0x4 >> 9 & 1) == 0)))) {
       uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
@@ -1667,13 +1667,14 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         }
         rc._6_2_ = rc._6_2_ + dyArial8;
         SelectObject(hdc,rghfontArial8[1]);
-        SetTextColor(hdc,CONCAT22(*(undefined2 *)(c * 4 + 0x44a),*(undefined2 *)(c * 4 + 0x448)));
-        pcVar4 = (char *)*(undefined2 *)(c * 2 + 0x4cc);
+        SetTextColor(hdc,CONCAT22(*(undefined2 *)(c * 4 + rgcrMinerals_0x2),
+                                  *(undefined2 *)(c * 4 + rgcrMinerals)));
+        pcVar4 = (char *)*(undefined2 *)(c * 2 + rgszMinerals);
         uVar15 = 0x1120;
         iVar7 = rc._6_2_;
         iVar9 = (int)rc;
         HVar16 = hdc;
-        sVar6 = lstrlen((char *)*(undefined2 *)(c * 2 + 0x4cc));
+        sVar6 = lstrlen((char *)*(undefined2 *)(c * 2 + rgszMinerals));
         TextOut(HVar16,iVar9,iVar7,(LPCSTR)CONCAT22(uVar15,pcVar4),sVar6);
         SelectObject(hdc,rghfontArial8[0]);
         SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
@@ -1834,17 +1835,18 @@ char * PszNameProdItem(PROD *lpprod)
       iVar1 = uVar3 - 0x10;
       iVar2 = -(uint)(uVar3 < 0x10);
       uVar5 = __aFulmul(CONCAT22(iVar2,iVar1),0x93);
-      if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + (int)uVar5 + 0x7b) >> 9 & 1) == 0) {
+      if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (int)uVar5 + 0x7b) >> 9 & 1) == 0
+         ) {
         uVar5 = __aFulmul(CONCAT22(iVar2,iVar1),0x93);
         __fstrcpy(szWork,
                           (char *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x14e),
-                                           (char *)(*(int *)(idPlayer * 4 + 0x14c) +
+                                           (char *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                                                     (int)uVar5 + 8)));
         if ((sel.pl.wFlags_0x4 >> 9 & 1) != 0) {
-          iVar4 = *(int *)(*(int *)(idPlayer * 4 + 0x14c) +
+          iVar4 = *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                           ((uint)sel.pl.lStarbase & 0xf) * 0x93);
           uVar5 = __aFulmul(CONCAT22(iVar2,iVar1),0x93);
-          iVar4 = iVar4 - *(int *)(*(int *)(idPlayer * 4 + 0x14c) + (int)uVar5);
+          iVar4 = iVar4 - *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (int)uVar5);
           if (iVar4 < 1) {
             if (iVar4 < 0) {
               _strcat((char *)szWork,(char *)s__upgrade__1120_0cf5);
@@ -1938,11 +1940,11 @@ void GetProductionCosts(PLANET *lppl,PROD *lpprod,ulong *rgCost,short iplr,short
   uVar6 = __aFulshr(uVar8,in_stack_0000ffac);
   if (((uint)uVar6 & 7) == 2) {
     if ((local_e == 0) && (iItem < 0x10)) {
-      lpshdef = *(int *)(iplr * 4 + 0xfe);
+      lpshdef = *(int *)(iplr * 4 + rglpshdef);
       local_1e = *(undefined2 *)(iplr * 4 + 0x100);
     }
     else {
-      lpshdef = *(int *)(iplr * 4 + 0x14c);
+      lpshdef = *(int *)(iplr * 4 + rglpshdefSB);
       local_1e = *(undefined2 *)(iplr * 4 + 0x14e);
       bVar5 = iItem < 0x10;
       iItem = iItem - 0x10;
@@ -1962,7 +1964,7 @@ void GetProductionCosts(PLANET *lppl,PROD *lpprod,ulong *rgCost,short iplr,short
     GetTrueHullCost(iplr,(HUL *)CONCAT22(local_1e,(HUL *)(lpshdef + (int)uVar6)),rgCost_00);
     if ((fStarbase != 0) && ((pPVar3->wFlags_0x4 >> 9 & 1) != 0)) {
       lphulCur = (HUL *)CONCAT22(*(undefined2 *)(iplr * 4 + 0x14e),
-                                 (HUL *)(*(int *)(iplr * 4 + 0x14c) +
+                                 (HUL *)(*(int *)(iplr * 4 + rglpshdefSB) +
                                         (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93));
       uVar6 = __aFulmul(CONCAT22(local_e,iItem),0x93);
       lphulNew = (HUL *)CONCAT22(local_1e,(HUL *)(lpshdef + (int)uVar6));
@@ -2773,11 +2775,11 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
          (uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4), ((uint)uVar7 & 0x7f) < 7)) {
         uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4);
         pvVar8 = (void *)CONCAT22(dy,lpProc);
-        *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) =
-             *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) & 0xffc0 |
+        *(uint *)(iResTechNow * hbrBlue + 0x2306 + rc2._0_2_ * 2) =
+             *(uint *)(iResTechNow * hbrBlue + 0x2306 + rc2._0_2_ * 2) & 0xffc0 |
              (uint)uVar7 & 0x3f;
-        *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) =
-             *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) & 0x3f |
+        *(uint *)(iResTechNow * hbrBlue + 0x2306 + rc2._0_2_ * 2) =
+             *(uint *)(iResTechNow * hbrBlue + 0x2306 + rc2._0_2_ * 2) & 0x3f |
              ((PLPROD *)lpplProdGlob + i + 1)->wFlags << 6;
         rc2._0_2_ = rc2._0_2_ + 1;
         if (0xb < (int)rc2._0_2_) break;

@@ -1573,6 +1573,10 @@ def parse_nb09_blob(b: bytes) -> dict:
                         "rectyp": rectyp,
                         "typind": typind,
                         "reg": d.get("reg"),
+                        # Some parameters are described as register variables (S_REGISTER) rather than stack
+                        # variables (S_BPREL16). Preserve whether this symbol appeared before S_ENDARG so
+                        # downstream can optionally treat it as an argument.
+                        "is_arg_region": (not saw_endarg),
                     }
                     if block_stack:
                         rec["block"] = block_stack[-1][1]

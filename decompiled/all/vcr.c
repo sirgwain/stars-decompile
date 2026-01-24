@@ -270,7 +270,7 @@ long CBattleUnits(BTLDATA *lpbd,ushort grbitBU)
         iVar5 = (uint)*(byte *)((int)pBVar4 + iVar2 + 0x10) * 4;
         pHVar8 = LphuldefFromId
                            (*(HullDef *)
-                             (*(int *)(iVar5 + 0xfe) +
+                             (*(int *)(iVar5 + rglpshdef) +
                              (uint)*(byte *)((int)pBVar4 + iVar2 + 0x12) * 0x93));
         uVar3 = ((HULDEF *)pHVar8)->wFlags_0x7b >> 10 & 0xf;
         if ((uVar3 < 2) || (5 < uVar3)) {
@@ -807,15 +807,15 @@ VCR_KillTime:
           iVar6 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
           GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = *(ushort *)(iVar6 + 0x14e);
           GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
-               (FLEET *)(*(int *)(iVar6 + 0x14c) + bkMode);
+               (FLEET *)(*(int *)(iVar6 + rglpshdefSB) + bkMode);
         }
         else {
           bkMode = (uint)*(byte *)((int)&((TOK *)vrgtok)[viVCRFocus].
                                          u_TOK_0x0003 + 1) * 0x93;
           iVar6 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
           GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = *(ushort *)(iVar6 + 0x100);
-          GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ = (FLEET *)(*(int *)(iVar6 + 0xfe) + bkMode)
-          ;
+          GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
+               (FLEET *)(*(int *)(iVar6 + rglpshdef) + bkMode);
         }
         GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;
         GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory = 1;
@@ -1163,14 +1163,14 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
                          ) - 0x10) * 0x93;
         iVar11 = (uint)((TOK *)vrgtok)[vlpbrVCR->itok].iplr * 4;
         local_126 = *(undefined2 *)(iVar11 + 0x14e);
-        lpshdef = *(int *)(iVar11 + 0x14c) + cshT;
+        lpshdef = *(int *)(iVar11 + rglpshdefSB) + cshT;
       }
       else {
         cshT = (uint)*(byte *)((int)&((TOK *)vrgtok)[vlpbrVCR->itok].
                                      u_TOK_0x0003 + 1) * 0x93;
         iVar11 = (uint)((TOK *)vrgtok)[vlpbrVCR->itok].iplr * 4;
         local_126 = *(undefined2 *)(iVar11 + 0x100);
-        lpshdef = *(int *)(iVar11 + 0xfe) + cshT;
+        lpshdef = *(int *)(iVar11 + rglpshdef) + cshT;
       }
       uVar6 = ((TOK *)vrgtok)[vlpbrVCR->itok].csh;
       csh = uVar6;
@@ -1212,7 +1212,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           cshT = pBVar10->wFlags_0x4;
           iVar11 = (uint)((TOK *)vrgtok)[(uint)cshT >> 8].iplr * 4;
           local_126 = *(undefined2 *)(iVar11 + 0x14e);
-          lpshdef = *(int *)(iVar11 + 0x14c) + dv.dp;
+          lpshdef = *(int *)(iVar11 + rglpshdefSB) + dv.dp;
         }
         else {
           dv.dp = (uint)*(byte *)((int)&((TOK *)vrgtok)[pBVar10->wFlags_0x4 >> 8].
@@ -1220,7 +1220,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           cshT = pBVar10->wFlags_0x4;
           iVar11 = (uint)((TOK *)vrgtok)[(uint)cshT >> 8].iplr * 4;
           local_126 = *(undefined2 *)(iVar11 + 0x100);
-          lpshdef = *(int *)(iVar11 + 0xfe) + dv.dp;
+          lpshdef = *(int *)(iVar11 + rglpshdef) + dv.dp;
         }
         uVar6 = ((TOK *)vrgtok)[pBVar10->wFlags_0x4 >> 8].csh;
         csh = uVar6;
@@ -1368,14 +1368,14 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
           iVar11 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
           local_126 = *(undefined2 *)(iVar11 + 0x14e);
-          lpshdef = *(int *)(iVar11 + 0x14c) +
+          lpshdef = *(int *)(iVar11 + rglpshdefSB) +
                     (*(byte *)((int)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 +
                               1) - 0x10) * 0x93;
         }
         else {
           iVar11 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
           local_126 = *(undefined2 *)(iVar11 + 0x100);
-          lpshdef = *(int *)(iVar11 + 0xfe) +
+          lpshdef = *(int *)(iVar11 + rglpshdef) +
                     (uint)*(byte *)((int)&((TOK *)vrgtok)[viVCRFocus].
                                           u_TOK_0x0003 + 1) * 0x93;
         }
@@ -1565,12 +1565,12 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           if (*&((TOK *)vrgtok)[j].u_TOK_0x0003 == '\x01') {
             cshT = (*(byte *)((int)&((TOK *)vrgtok)[j].u_TOK_0x0003 + 1) - 0x10) * 0x93;
             iVar11 = (uint)((TOK *)vrgtok)[j].iplr * 4;
-            ibmp = *(short *)(*(int *)(iVar11 + 0x14c) + cshT + 0x32);
+            ibmp = *(short *)(*(int *)(iVar11 + rglpshdefSB) + cshT + 0x32);
           }
           else {
             cshT = (uint)*(byte *)((int)&((TOK *)vrgtok)[j].u_TOK_0x0003 + 1) * 0x93;
             iVar11 = (uint)((TOK *)vrgtok)[j].iplr * 4;
-            ibmp = *(short *)(*(int *)(iVar11 + 0xfe) + cshT + 0x32);
+            ibmp = *(short *)(*(int *)(iVar11 + rglpshdef) + cshT + 0x32);
           }
           ibmpRace = *(uint *)((int)&rgplr[0].wMdPlr +
                               (uint)((TOK *)vrgtok)[j].iplr * 0xc0) >> 3 & 0x1f;
@@ -2035,13 +2035,13 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
       if (*&((TOK *)vrgtok)[i].u_TOK_0x0003 == '\x01') {
         iVar3 = (uint)((TOK *)vrgtok)[i].iplr * 4;
         local_65c = *(undefined2 *)(iVar3 + 0x14e);
-        lpshdef = *(int *)(iVar3 + 0x14c) +
+        lpshdef = *(int *)(iVar3 + rglpshdefSB) +
                   (*(byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) - 0x10) * 0x93;
       }
       else {
         iVar3 = (uint)((TOK *)vrgtok)[i].iplr * 4;
         local_65c = *(undefined2 *)(iVar3 + 0x100);
-        lpshdef = *(int *)(iVar3 + 0xfe) +
+        lpshdef = *(int *)(iVar3 + rglpshdef) +
                   (uint)*(byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) * 0x93;
       }
       sVar2 = _wsprintf((char *)szWork + uVar1,(char *)0x11201432,lpshdef + 8,local_65c,

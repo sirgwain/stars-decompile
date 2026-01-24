@@ -469,14 +469,14 @@ IO_CorruptHist:
                      (i < game.cPlayer)); i = i + 1) {
               }
               if (i == game.cPlayer) break;
-              if ((*(int *)(i * 4 + 0xfe) == 0) && (*(int *)(i * 4 + 0x100) == 0)) {
+              if ((*(int *)(i * 4 + rglpshdef) == 0) && (*(int *)(i * 4 + 0x100) == 0)) {
                 pvVar30 = LpAlloc(0x930,htShips);
-                *(undefined2 *)(i * 4 + 0xfe) = (void *)pvVar30;
+                *(undefined2 *)(i * 4 + rglpshdef) = (void *)pvVar30;
                 *(undefined2 *)(i * 4 + 0x100) = (int)((ulong)pvVar30 >> 0x10);
                 for (j = 0; j < 0x10; j = j + 1) {
-                  iplr = *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
-                  *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) = iplr;
-                  *(undefined2 *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x8b) = 0;
+                  iplr = *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
+                  *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) = iplr;
+                  *(undefined2 *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x8b) = 0;
                 }
               }
               sVar14 = idPlayer;
@@ -489,7 +489,8 @@ IO_CorruptHist:
               }
               sVar14 = FReadShDef(rgbCur,
                                   (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + 0x100),
-                                                    (SHDEF *)*(undefined2 *)(i * 4 + 0xfe)),sVar14);
+                                                    (SHDEF *)*(undefined2 *)(i * 4 + rglpshdef)),
+                                  sVar14);
               vlpbAiData =
                    (byte *)CONCAT22(vlpbAiData._2_2_,(byte *)vlpbAiData);
               lpThings = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
@@ -505,14 +506,15 @@ IO_CorruptHist:
                      (i < game.cPlayer)); i = i + 1) {
               }
               if (i == game.cPlayer) break;
-              if ((*(int *)(i * 4 + 0x14c) == 0) && (*(int *)(i * 4 + 0x14e) == 0)) {
+              if ((*(int *)(i * 4 + rglpshdefSB) == 0) && (*(int *)(i * 4 + 0x14e) == 0)) {
                 pvVar30 = LpAlloc(0x5be,htShips);
-                *(undefined2 *)(i * 4 + 0x14c) = (void *)pvVar30;
+                *(undefined2 *)(i * 4 + rglpshdefSB) = (void *)pvVar30;
                 *(undefined2 *)(i * 4 + 0x14e) = (int)((ulong)pvVar30 >> 0x10);
                 for (j = 0; j < 10; j = j + 1) {
-                  iplr = *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
-                  *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) = iplr;
-                  *(undefined2 *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x8b) = 0;
+                  iplr = *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfdff | 0x200
+                  ;
+                  *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) = iplr;
+                  *(undefined2 *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x8b) = 0;
                 }
               }
               sVar14 = idPlayer;
@@ -525,8 +527,8 @@ IO_CorruptHist:
               }
               sVar14 = FReadShDef(rgbCur,
                                   (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + 0x14e),
-                                                    (SHDEF *)*(undefined2 *)(i * 4 + 0x14c)),sVar14)
-              ;
+                                                    (SHDEF *)*(undefined2 *)(i * 4 + rglpshdefSB)),
+                                  sVar14);
               vlpbAiData =
                    (byte *)CONCAT22(vlpbAiData._2_2_,(byte *)vlpbAiData);
               lpThings = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
@@ -865,13 +867,14 @@ IO_CorruptHist:
               }
               for (i = 0; i < game.cPlayer; i = i + 1) {
                 if (i == iPlayer) {
-                  *(undefined2 *)(i * 4 + 0xfe) = 0x3f00;
+                  *(undefined2 *)(i * 4 + rglpshdef) = 0x3f00;
                   *(undefined2 *)(i * 4 + 0x100) = 0x1120;
 IO_FreeShdef:
                   for (j = 0; j < 0x10; j = j + 1) {
-                    iplr = *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
-                    *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) = iplr;
-                    *(undefined2 *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x8b) = 0;
+                    iplr = *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfdff | 0x200
+                    ;
+                    *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) = iplr;
+                    *(undefined2 *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x8b) = 0;
                   }
 LAB_1070_1c2c:
                   iplrSav = idPlayer;
@@ -889,17 +892,17 @@ LAB_1070_1c2c:
                     }
                     sVar14 = FReadShDef(rgbCur,
                                         (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + 0x100),
-                                                          (SHDEF *)*(undefined2 *)(i * 4 + 0xfe)),
-                                        iplrSav);
+                                                          (SHDEF *)*(undefined2 *)
+                                                                    (i * 4 + rglpshdef)),iplrSav);
                     if (sVar14 == 0) goto IO_Corrupt_2;
                     ReadRt();
                   }
                   idPlayer = iplrSav;
                 }
                 else if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) {
-                  if ((*(int *)(i * 4 + 0xfe) == 0) && (*(int *)(i * 4 + 0x100) == 0)) {
+                  if ((*(int *)(i * 4 + rglpshdef) == 0) && (*(int *)(i * 4 + 0x100) == 0)) {
                     pvVar30 = LpAlloc(0x930,htShips);
-                    *(undefined2 *)(i * 4 + 0xfe) = (void *)pvVar30;
+                    *(undefined2 *)(i * 4 + rglpshdef) = (void *)pvVar30;
                     *(undefined2 *)(i * 4 + 0x100) = (int)((ulong)pvVar30 >> 0x10);
                     goto IO_FreeShdef;
                   }
@@ -908,17 +911,18 @@ LAB_1070_1c2c:
               }
               for (i = 0; i < game.cPlayer; i = i + 1) {
                 *(undefined1 *)((int)&rgplr[0].cShDef + i * 0xc0) = 0;
-                if ((*(int *)(i * 4 + 0xfe) != 0) || (*(int *)(i * 4 + 0x100) != 0)) {
+                if ((*(int *)(i * 4 + rglpshdef) != 0) || (*(int *)(i * 4 + 0x100) != 0)) {
                   for (j = 0; j < 0x10; j = j + 1) {
-                    if ((*(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
+                    if ((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
                       if (((i == idPlayer) || (((uint)gd.grBits >> 1 & 1) != 0)) ||
                          ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 1) == 0)) {
                         pcVar3 = (char *)((int)&rgplr[0].cShDef + i * 0xc0);
                         *pcVar3 = *pcVar3 + '\x01';
                       }
                       else {
-                        iplr = *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
-                        *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) = iplr;
+                        iplr = *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfdff |
+                               0x200;
+                        *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) = iplr;
                       }
                     }
                   }
@@ -951,15 +955,16 @@ LAB_1070_1c2c:
               }
               for (i = 0; i < game.cPlayer; i = i + 1) {
                 if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) {
-                  if ((*(int *)(i * 4 + 0x14c) == 0) && (*(int *)(i * 4 + 0x14e) == 0)) {
+                  if ((*(int *)(i * 4 + rglpshdefSB) == 0) && (*(int *)(i * 4 + 0x14e) == 0)) {
                     pcVar20 = (char *)0x1060;
                     pvVar30 = LpAlloc(0x5be,htShips);
-                    *(undefined2 *)(i * 4 + 0x14c) = (void *)pvVar30;
+                    *(undefined2 *)(i * 4 + rglpshdefSB) = (void *)pvVar30;
                     *(undefined2 *)(i * 4 + 0x14e) = (int)((ulong)pvVar30 >> 0x10);
                     for (j = 0; j < 10; j = j + 1) {
-                      iplr = *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfdff | 0x200;
-                      *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) = iplr;
-                      *(undefined2 *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x8b) = 0;
+                      iplr = *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfdff |
+                             0x200;
+                      *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) = iplr;
+                      *(undefined2 *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x8b) = 0;
                     }
                   }
                   iplrSav = idPlayer;
@@ -977,8 +982,8 @@ LAB_1070_1c2c:
                     }
                     sVar14 = FReadShDef(rgbCur,
                                         (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + 0x14e),
-                                                          (SHDEF *)*(undefined2 *)(i * 4 + 0x14c)),
-                                        iplrSav);
+                                                          (SHDEF *)*(undefined2 *)
+                                                                    (i * 4 + rglpshdefSB)),iplrSav);
                     if (sVar14 == 0) goto IO_Corrupt_2;
                     pcVar20 = (char *)0x1070;
                     ReadRt();
@@ -990,10 +995,11 @@ LAB_1070_1c2c:
               for (i = 0; vlprgScoreX = pSVar31, i < game.cPlayer; i = i + 1) {
                 iplr = *(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) & 0xfff;
                 *(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) = iplr;
-                if ((*(int *)(i * 4 + 0x14c) != 0) ||
+                if ((*(int *)(i * 4 + rglpshdefSB) != 0) ||
                    (pSVar31 = vlprgScoreX, *(int *)(i * 4 + 0x14e) != 0)) {
                   for (j = 0; pSVar31 = vlprgScoreX, j < 10; j = j + 1) {
-                    if ((*(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
+                    if ((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 9 & 1) == 0)
+                    {
                       if (((i == idPlayer) || (((uint)gd.grBits >> 1 & 1) != 0)) ||
                          ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 1) == 0)) {
                         iplr = *(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) + 0x1000U &
@@ -1004,9 +1010,9 @@ LAB_1070_1c2c:
                         *puVar2 = *puVar2 | iplr;
                       }
                       else {
-                        iplr = *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfdff | 0x200
-                        ;
-                        *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) = iplr;
+                        iplr = *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfdff |
+                               0x200;
+                        *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) = iplr;
                       }
                     }
                   }
@@ -1403,7 +1409,7 @@ LAB_1070_2a56:
               ((*(int *)&((PLANET *)lppl)->lpplprod != 0 ||
                (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)))) &&
              (iVar17 = ((PLANET *)lppl)->iPlayer * 4,
-             *(int *)(*(int *)(iVar17 + 0x14c) +
+             *(int *)(*(int *)(iVar17 + rglpshdefSB) +
                      (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93) != 0x20)) {
             iplr = 0;
             pt = (PLANET *)0x0;
@@ -2272,9 +2278,9 @@ void DestroyCurGame(void)
   ResetHb(htOrd);
   ResetHb(htPlrMsg);
   for (i = 0; i < 0x10; i = i + 1) {
-    *(undefined2 *)(i * 4 + 0xfe) = 0;
+    *(undefined2 *)(i * 4 + rglpshdef) = 0;
     *(undefined2 *)(i * 4 + 0x100) = 0;
-    *(undefined2 *)(i * 4 + 0x14c) = 0;
+    *(undefined2 *)(i * 4 + rglpshdefSB) = 0;
     *(undefined2 *)(i * 4 + 0x14e) = 0;
     ((BTLPLAN **)rglpbtlplan)[i * 2] = (BTLPLAN *)0x0;
     *(undefined2 *)(i * 4 + 0x593a) = 0;
@@ -2343,7 +2349,7 @@ void DestroyCurGame(void)
   dxShipLB = 0;
   dxShipDD = 0;
   for (i = 0; i < 3; i = i + 1) {
-    *(undefined2 *)(i * 2 + 0x85c) = 0;
+    *(undefined2 *)(i * 2 + rgdxOrderDD) = 0;
   }
   return;
 }
@@ -2365,12 +2371,13 @@ short FBogusLong(ulong lSerial)
   int local_6;
   
   local_6 = 0;
-  while (CONCAT22(*(undefined2 *)(local_6 * 4 + 0x768),*(undefined2 *)(local_6 * 4 + 0x766)) <
+  while (CONCAT22(*(undefined2 *)(local_6 * 4 + bogi_0x2),*(undefined2 *)(local_6 * 4 + bogi)) <
          (lSerial ^ 0xa5a5a5a5)) {
     local_6 = local_6 + 1;
   }
   return (uint)((lSerial ^ 0xa5a5a5a5) ==
-               CONCAT22(*(undefined2 *)(local_6 * 4 + 0x768),*(undefined2 *)(local_6 * 4 + 0x766)));
+               CONCAT22(*(undefined2 *)(local_6 * 4 + bogi_0x2),*(undefined2 *)(local_6 * 4 + bogi))
+               );
 }
 
 
@@ -3518,7 +3525,7 @@ LAB_1070_677e:
     }
     for (i = 0; i < game.cPlayer; i = i + 1) {
       if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) {
-        lpshdef = *(int *)(i * 4 + 0xfe);
+        lpshdef = *(int *)(i * 4 + rglpshdef);
         local_38 = *(undefined2 *)(i * 4 + 0x100);
         for (j = 0; j < 0x10; j = j + 1) {
           if (((*(uint *)(lpshdef + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
@@ -3540,7 +3547,7 @@ LAB_1070_677e:
     }
     for (i = 0; i < game.cPlayer; i = i + 1) {
       if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) {
-        lpshdef = *(int *)(i * 4 + 0x14c);
+        lpshdef = *(int *)(i * 4 + rglpshdefSB);
         local_38 = *(undefined2 *)(i * 4 + 0x14e);
         for (j = 0; j < 10; j = j + 1) {
           if (((*(uint *)(lpshdef + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
@@ -3759,12 +3766,12 @@ void WriteBattles(short iPlayer)
             if (*(char *)((int)pBVar10 + i * 0x1d + 0x11) == '\x01') {
               uVar6 = (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x10);
               LpplFromId(*(short *)((int)pBVar10 + i * 0x1d + 0xe));
-              if ((*(uint *)(*(int *)(uVar6 * 4 + 0x14c) +
+              if ((*(uint *)(*(int *)(uVar6 * 4 + rglpshdefSB) +
                              (*(byte *)((int)pBVar10 + i * 0x1d + 0x12) - 0x10) * 0x93 + 0x7b) >> 8
                   & 1) == 0) {
-                *(uint *)(*(int *)(uVar6 * 4 + 0x14c) +
+                *(uint *)(*(int *)(uVar6 * 4 + rglpshdefSB) +
                           (*(byte *)((int)pBVar10 + i * 0x1d + 0x12) - 0x10) * 0x93 + 0x7b) =
-                     *(uint *)(*(int *)(uVar6 * 4 + 0x14c) +
+                     *(uint *)(*(int *)(uVar6 * 4 + rglpshdefSB) +
                                (*(byte *)((int)pBVar10 + i * 0x1d + 0x12) - 0x10) * 0x93 + 0x7b) &
                      0xfeff | 0x100;
                 iVar11 = *(int *)((int)&rgplr[0].wFlags_0x4 + uVar6 * 0xc0);
@@ -3773,9 +3780,9 @@ void WriteBattles(short iPlayer)
                 puVar2 = (uint *)((int)&rgplr[0].wFlags_0x4 + uVar6 * 0xc0);
                 *puVar2 = *puVar2 | iVar11 + 0x1000U & 0xf000;
               }
-              *(uint *)(*(int *)(uVar6 * 4 + 0x14c) +
+              *(uint *)(*(int *)(uVar6 * 4 + rglpshdefSB) +
                         (*(byte *)((int)pBVar10 + i * 0x1d + 0x12) - 0x10) * 0x93 + 0x7b) =
-                   *(uint *)(*(int *)(uVar6 * 4 + 0x14c) +
+                   *(uint *)(*(int *)(uVar6 * 4 + rglpshdefSB) +
                              (*(byte *)((int)pBVar10 + i * 0x1d + 0x12) - 0x10) * 0x93 + 0x7b) &
                    0xff00 | 7;
             }
@@ -3794,14 +3801,14 @@ void WriteBattles(short iPlayer)
                      3;
               }
               iVar11 = pFVar4->iPlayer * 4;
-              if ((*(uint *)(*(int *)(iVar11 + 0xfe) +
+              if ((*(uint *)(*(int *)(iVar11 + rglpshdef) +
                              (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x12) * 0x93 + 0x7b) >> 8 & 1
                   ) == 0) {
                 iVar11 = pFVar4->iPlayer * 4;
                 iVar12 = pFVar4->iPlayer * 4;
-                *(uint *)(*(int *)(iVar12 + 0xfe) +
+                *(uint *)(*(int *)(iVar12 + rglpshdef) +
                           (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x12) * 0x93 + 0x7b) =
-                     *(uint *)(*(int *)(iVar11 + 0xfe) +
+                     *(uint *)(*(int *)(iVar11 + rglpshdef) +
                                (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x12) * 0x93 + 0x7b) &
                      0xfeff | 0x100;
                 pcVar1 = (char *)((int)&rgplr[0].cShDef + pFVar4->iPlayer * 0xc0);
@@ -3809,9 +3816,9 @@ void WriteBattles(short iPlayer)
               }
               iVar11 = pFVar4->iPlayer * 4;
               iVar12 = pFVar4->iPlayer * 4;
-              *(uint *)(*(int *)(iVar12 + 0xfe) +
+              *(uint *)(*(int *)(iVar12 + rglpshdef) +
                         (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x12) * 0x93 + 0x7b) =
-                   *(uint *)(*(int *)(iVar11 + 0xfe) +
+                   *(uint *)(*(int *)(iVar11 + rglpshdef) +
                              (uint)*(byte *)((int)pBVar10 + i * 0x1d + 0x12) * 0x93 + 0x7b) & 0xff00
                    | 7;
               if ((pFVar4->wFlags_0x4 >> 10 & 1) == 0) {
@@ -4209,7 +4216,7 @@ void WriteFleet(FLEET *lpfl)
       if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
         iVar5 = ((FLEET *)lpfl)->iPlayer * 4;
         uVar6 = __aFulmul((long)((FLEET *)lpfl)->rgcsh[i],
-                                  (ulong)*(uint *)(*(int *)(iVar5 + 0xfe) + i * 0x93 + 0x28));
+                                  (ulong)*(uint *)(*(int *)(iVar5 + rglpshdef) + i * 0x93 + 0x28));
         lVar2 = uVar6 + lVar2;
       }
     }
@@ -4317,7 +4324,7 @@ void MarkFleet(FLEET *lpfl,short det)
   pFVar4 = (FLEET *)lpfl;
   if ((pFVar4->wFlags_0x4 >> 8 & 1) == 0) {
     iVar5 = pFVar4->iPlayer * 4;
-    iVar2 = *(int *)(iVar5 + 0xfe);
+    iVar2 = *(int *)(iVar5 + rglpshdef);
     uVar3 = *(undefined2 *)(iVar5 + 0x100);
     pFVar4->wFlags_0x4 = pFVar4->wFlags_0x4 & 0xfeff | 0x100;
     pFVar4->wFlags_0x4 = pFVar4->wFlags_0x4 & 0xff00;
@@ -4432,7 +4439,7 @@ void MarkPlanet(PLANET *lppl,short iPlr,ushort det)
   if (((det != 2) && (pPVar5->iPlayer != -1)) && ((pPVar5->wFlags_0x4 >> 9 & 1) != 0)) {
     iVar6 = pPVar5->iPlayer * 4;
     uVar3 = *(undefined2 *)(iVar6 + 0x14e);
-    iVar6 = *(int *)(iVar6 + 0x14c) + (*(uint *)&pPVar5->lStarbase & 0xf) * 0x93;
+    iVar6 = *(int *)(iVar6 + rglpshdefSB) + (*(uint *)&pPVar5->lStarbase & 0xf) * 0x93;
     if ((*(uint *)(iVar6 + 0x7b) >> 8 & 1) == 0) {
       *(uint *)(iVar6 + 0x7b) = *(uint *)(iVar6 + 0x7b) & 0xfeff | 0x100;
       *(uint *)(iVar6 + 0x7b) = *(uint *)(iVar6 + 0x7b) & 0xff00;
@@ -4900,32 +4907,32 @@ void SetVisPFInit(short iPlr)
          *(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) & 0xfff;
     for (j = 0; j < 0x10; j = j + 1) {
       if (((iPlr == -1) || (iPlr == i)) &&
-         ((*(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) >> 9 & 1) == 0)) {
-        *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
-        *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xff00 | 7;
+         ((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 9 & 1) == 0)) {
+        *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
+        *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xff00 | 7;
         uVar12 = *(undefined2 *)(i * 4 + 0x100);
-        iVar10 = *(int *)(i * 4 + 0xfe) + j * 0x93;
+        iVar10 = *(int *)(i * 4 + rglpshdef) + j * 0x93;
         *(undefined2 *)(iVar10 + 0x83) = 0;
         *(undefined2 *)(iVar10 + 0x85) = 0;
         pcVar1 = (char *)((int)&rgplr[0].cShDef + i * 0xc0);
         *pcVar1 = *pcVar1 + '\x01';
       }
       else {
-        *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfeff;
+        *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfeff;
       }
     }
     for (j = 0; j < 10; j = j + 1) {
       if (((iPlr == -1) || (iPlr == i)) &&
-         ((*(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) >> 9 & 1) == 0)) {
-        *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
-        *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xff00 | 7;
+         ((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 9 & 1) == 0)) {
+        *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
+        *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xff00 | 7;
         uVar12 = *(undefined2 *)(i * 4 + 0x14e);
-        iVar10 = *(int *)(i * 4 + 0x14c) + j * 0x93;
+        iVar10 = *(int *)(i * 4 + rglpshdefSB) + j * 0x93;
         *(undefined2 *)(iVar10 + 0x83) = 0;
         *(undefined2 *)(iVar10 + 0x85) = 0;
         iVar10 = *(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
@@ -4935,8 +4942,8 @@ void SetVisPFInit(short iPlr)
         *puVar2 = *puVar2 | iVar10 + 0x1000U & 0xf000;
       }
       else {
-        *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-             *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfeff;
+        *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+             *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfeff;
       }
     }
   }
@@ -4954,7 +4961,8 @@ void SetVisPFInit(short iPlr)
       if ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0) {
         iVar10 = ((PLANET *)lppl)->iPlayer * 4;
         uVar12 = *(undefined2 *)(iVar10 + 0x14e);
-        iVar10 = *(int *)(iVar10 + 0x14c) + (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93;
+        iVar10 = *(int *)(iVar10 + rglpshdefSB) +
+                 (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93;
         puVar2 = (uint *)(iVar10 + 0x83);
         uVar4 = *puVar2;
         *puVar2 = *puVar2 + 1;
@@ -4989,7 +4997,7 @@ void SetVisPFInit(short iPlr)
           iSteal = (int)uVar6 >> 0xf;
           iVar11 = pFVar5->iPlayer * 4;
           uVar12 = *(undefined2 *)(iVar11 + 0x100);
-          iVar11 = *(int *)(iVar11 + 0xfe) + j * 0x93;
+          iVar11 = *(int *)(iVar11 + rglpshdef) + j * 0x93;
           puVar2 = (uint *)(iVar11 + 0x83);
           uVar4 = *puVar2;
           *puVar2 = *puVar2 + uVar6;
@@ -5383,7 +5391,8 @@ LAB_1070_a96d:
                     if (((pPVar7->wFlags_0x4 >> 9 & 1) != 0) && (pPVar7->iPlayer != -1)) {
                       iVar8 = pPVar7->iPlayer * 4;
                       uVar16 = *(undefined2 *)(iVar8 + 0x14e);
-                      iVar8 = *(int *)(iVar8 + 0x14c) + (*(uint *)&pPVar7->lStarbase & 0xf) * 0x93;
+                      iVar8 = *(int *)(iVar8 + rglpshdefSB) +
+                              (*(uint *)&pPVar7->lStarbase & 0xf) * 0x93;
                       uVar3 = *(uint *)(iVar8 + 0x87);
                       iVar8 = *(int *)(iVar8 + 0x89);
                       if ((iVar8 < 1) && ((iVar8 < 0 || (uVar3 < 10000)))) {
@@ -5502,7 +5511,7 @@ void SetVisPFPlanets(short iPlr)
   if (sVar4 == raStargate) {
     for (i = 0; i < 10; i = i + 1) {
       rgStargateRange[i] = 0;
-      if ((*(uint *)(*(int *)(iPlr * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
+      if ((*(uint *)(*(int *)(iPlr * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
         sVar4 = StargateRangeFromLppl((PLANET *)0x0,iPlr,i);
         rgStargateRange[i] = sVar4;
         if (0 < sVar4) {
@@ -5589,7 +5598,7 @@ void SetVisPFPlanets(short iPlr)
                               if (((pPVar9->wFlags_0x4 >> 9 & 1) != 0) && (pPVar9->iPlayer != -1)) {
                                 iVar5 = pPVar9->iPlayer * 4;
                                 uVar15 = *(undefined2 *)(iVar5 + 0x14e);
-                                iVar5 = *(int *)(iVar5 + 0x14c) +
+                                iVar5 = *(int *)(iVar5 + rglpshdefSB) +
                                         (*(uint *)&pPVar9->lStarbase & 0xf) * 0x93;
                                 uVar3 = *(uint *)(iVar5 + 0x87);
                                 iVar5 = *(int *)(iVar5 + 0x89);
@@ -5665,7 +5674,7 @@ LAB_1070_b9c4:
                               uVar15 = (undefined2)((ulong)lppl2 >> 0x10);
                               iVar5 = ((PLANET *)lppl2)->iPlayer * 4;
                               uVar14 = *(undefined2 *)(iVar5 + 0x14e);
-                              iVar5 = *(int *)(iVar5 + 0x14c) +
+                              iVar5 = *(int *)(iVar5 + rglpshdefSB) +
                                       (*(uint *)&((PLANET *)lppl2)->lStarbase & 0xf) * 0x93;
                               uVar3 = *(uint *)(iVar5 + 0x87);
                               iVar5 = *(int *)(iVar5 + 0x89);
@@ -6046,7 +6055,7 @@ IO_LThIncPlr3:
                  (((PLANET *)l__44)->iPlayer != -1)) {
                 iVar16 = ((PLANET *)l__44)->iPlayer * 4;
                 uVar24 = *(undefined2 *)(iVar16 + 0x14e);
-                iVar16 = *(int *)(iVar16 + 0x14c) +
+                iVar16 = *(int *)(iVar16 + rglpshdefSB) +
                          (*(uint *)&((PLANET *)l__44)->lStarbase & 0xf) * 0x93;
                 uVar9 = *(uint *)(iVar16 + 0x87);
                 iVar16 = *(int *)(iVar16 + 0x89);
@@ -6151,18 +6160,19 @@ void SetVisPFFinish(short iPlr)
     if (i != iPlr) {
       *(undefined1 *)((int)&rgplr[0].cShDef + i * 0xc0) = 0;
       for (j = 0; j < 0x10; j = j + 1) {
-        if ((1 << ((byte)iPlr & 0x1f) & *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x8b)) == 0) {
-          if ((*(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) >> 8 & 1) != 0) {
-            *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-                 *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xff00 | uVar5;
+        if ((1 << ((byte)iPlr & 0x1f) & *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x8b)) ==
+            0) {
+          if ((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 8 & 1) != 0) {
+            *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+                 *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xff00 | uVar5;
             goto IO_LFinShdef;
           }
         }
         else {
-          *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-               *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
-          *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) =
-               *(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) & 0xff00 | 7;
+          *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+               *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
+          *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) =
+               *(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) & 0xff00 | 7;
 IO_LFinShdef:
           *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) =
                *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xfff8 | 3;
@@ -6175,19 +6185,19 @@ IO_LFinShdef:
       *(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) =
            *(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) & 0xfff;
       for (j = 0; j < 10; j = j + 1) {
-        if ((1 << ((byte)iPlr & 0x1f) & *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x8b)) == 0)
-        {
-          if ((*(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) >> 8 & 1) != 0) {
-            *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-                 *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xff00 | uVar5;
+        if ((1 << ((byte)iPlr & 0x1f) & *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x8b))
+            == 0) {
+          if ((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 8 & 1) != 0) {
+            *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+                 *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xff00 | uVar5;
             goto IO_LFinShdefSB;
           }
         }
         else {
-          *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-               *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
-          *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) =
-               *(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) & 0xff00 | 7;
+          *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+               *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xfeff | 0x100;
+          *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) =
+               *(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) & 0xff00 | 7;
 IO_LFinShdefSB:
           *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) =
                *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xfeff | 0x100;

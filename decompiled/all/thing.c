@@ -769,8 +769,8 @@ THING_LGivePart:
                         do {
                           ish = ish + 1;
                           if (0xf < ish) break;
-                        } while ((*(uint *)(*(int *)(iplr * 4 + 0xfe) + ish * 0x93 + 0x7b) >> 9 & 1)
-                                 == 0);
+                        } while ((*(uint *)(*(int *)(iplr * 4 + rglpshdef) + ish * 0x93 + 0x7b) >> 9
+                                 & 1) == 0);
                       }
                       if ((ish < 0x10) &&
                          ((*(uint *)((int)&rgplr[0].wFlags_0x4 +
@@ -817,7 +817,7 @@ THING_LGivePart:
                           *(short *)&pPVar14[1].iordMax = sVar9;
                           pFVar8->wFlags_0x4 = pFVar8->wFlags_0x4 & 0xdfff | 0x2000;
                           uVar18 = *(undefined2 *)(iplr * 4 + 0x100);
-                          pSVar11 = (SHDEF *)(*(int *)(iplr * 4 + 0xfe) + ish * 0x93);
+                          pSVar11 = (SHDEF *)(*(int *)(iplr * 4 + rglpshdef) + ish * 0x93);
                           if ((pSVar11->wFlags >> 9 & 1) != 0) {
                             pHVar15 = &shdef;
                             pSVar16 = pSVar11;

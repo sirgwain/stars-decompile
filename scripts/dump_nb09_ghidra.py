@@ -538,6 +538,8 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
                 entry["reg"] = int(getattr(ls, "reg"))
             if getattr(ls, "reg_off", None) is not None:
                 entry["reg_off"] = int(getattr(ls, "reg_off"))
+            if getattr(ls, "is_arg_region", None) is not None:
+                entry["is_arg_region"] = bool(getattr(ls, "is_arg_region"))
 
             if lkind == "param":
                 params.append(entry)
@@ -553,6 +555,67 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
                     entry["kind"] = "local"
                     locals_.append(entry)
 
+
+        # If ProcLocals provided some params but not all (e.g. some arguments are described as
+        # S_REGISTER and therefore show up as locals), promote register vars that appeared before
+        # S_ENDARG to params using expected stack offsets derived from the procedure type.
+        if arg_types and len(params) < len(arg_types):
+            # Expected BP offsets in *stack order* (increasing BP offset). For Pascal, the last
+            # prototype parameter is closest at BP+6; for non-Pascal, the first parameter is.
+            exp_bp_offs: List[int] = []
+            bp = 6
+            stack_order = list(reversed(arg_types)) if out.get("is_pascal") else list(arg_types)
+            for aty in stack_order:
+                sz = getattr(aty, "size", None)
+                try:
+                    sz_i = int(sz) if sz is not None else 2
+                except Exception:
+                    sz_i = 2
+                exp_bp_offs.append(bp)
+                bp += sz_i
+
+            have_bp = {x.get("bp_off") for x in params if isinstance(x.get("bp_off"), int)}
+            missing_bp = [o for o in exp_bp_offs if o not in have_bp]
+
+            if missing_bp:
+                # Candidate register vars in the arg region (before S_ENDARG)
+                cand_regs = [e for e in locals_ if e.get("is_arg_region") and ("reg" in e)]
+
+                # Heuristic for common Win16 window procs: hwnd, msg/message, wParam, lParam
+                # (do not reorder params here; we keep existing stack-order behavior for minimal diffs)
+                wndproc_map: Dict[str, int] = {}
+                if name.endswith("WndProc") and len(exp_bp_offs) == 4:
+                    closest, second, third, farthest = exp_bp_offs[0], exp_bp_offs[1], exp_bp_offs[2], exp_bp_offs[3]
+                    wndproc_map = {
+                        "lparam": closest,
+                        "wparam": second,
+                        "msg": third,
+                        "message": third,
+                        "hwnd": farthest,
+                    }
+
+                def _promote(e: Dict[str, Any], bp_off: int) -> None:
+                    e["kind"] = "param"
+                    e["bp_off"] = int(bp_off)
+                    params.append(e)
+                    try:
+                        locals_.remove(e)
+                    except ValueError:
+                        pass
+
+                # First pass: name-based mapping (WndProc)
+                if wndproc_map:
+                    for e in list(cand_regs):
+                        nm = (e.get("name") or "").lower()
+                        if nm in wndproc_map:
+                            bo = wndproc_map[nm]
+                            if bo in missing_bp:
+                                _promote(e, bo)
+                                missing_bp.remove(bo)
+
+                # Second pass: fill remaining missing BP slots with remaining register candidates
+                for bo, e in zip(list(missing_bp), [x for x in cand_regs if x.get("kind") == "local"]):
+                    _promote(e, bo)
         # Sort params by stack order if we have BP offsets
         if params and any("bp_off" in x for x in params):
             params.sort(key=lambda x: (x.get("bp_off", 1 << 30), x.get("name", "")))

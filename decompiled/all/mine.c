@@ -774,10 +774,10 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
                                     (short *)xLeft);
           iCur = (short)pl.rgEnvVar[i];
           if (iplrbmp == 0) {
-            pcVar9 = (char *)*(undefined2 *)(i * 2 + 0x47e);
+            pcVar9 = (char *)*(undefined2 *)(i * 2 + rgszPlanetAttr);
           }
           else {
-            pcVar9 = (char *)*(undefined2 *)(i * 2 + 0x492);
+            pcVar9 = (char *)*(undefined2 *)(i * 2 + rgszPlanetAttrAbbr);
           }
           RightTextOut(hdc,pctDecay - 2,yCur + (int)(THING *)dy,pcVar9,0,0);
           if (2 < (pl.wFlags_0x4 & 0xff)) {
@@ -941,17 +941,18 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         SelectObject(hdc,rghfontArial8[1]);
         dy = (THING *)CONCAT22(dy._2_2_,(THING *)(((int)(cShip - dyArial8) >> 1) + 2));
         for (i = 0; i < 3; i = i + 1) {
-          SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + 0x44a),*(undefined2 *)(i * 4 + 0x448)));
+          SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + rgcrMinerals_0x2),
+                                    *(undefined2 *)(i * 4 + rgcrMinerals)));
           sVar8 = 0;
           if (iplrbmp == 0) {
-            uVar10 = _strlen((char *)*(undefined2 *)(i * 2 + 0x4cc));
+            uVar10 = _strlen((char *)*(undefined2 *)(i * 2 + rgszMinerals));
           }
           else {
             uVar10 = 4;
           }
           RightTextOut
                     (hdc,pctDecay - 2,(int)&((THING *)dy)->idFull + yCur,
-                     (char *)*(undefined2 *)(i * 2 + 0x4cc),uVar10,sVar8);
+                     (char *)*(undefined2 *)(i * 2 + rgszMinerals),uVar10,sVar8);
           iVar14 = cMinGrafMax >> 0xf;
           iVar15 = rgl[i * 2 + 1] + *(int *)((int)pl.rgwtMin + i * 4 + 2) +
                    (uint)CARRY2(rgl[i * 2],*(uint *)(pl.rgwtMin + i));
@@ -1149,7 +1150,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
       crTextSav = CONCAT22(crTextSav._2_2_,(undefined2)crTextSav);
       crBkSav = CONCAT22(crBkSav._2_2_,(undefined2)crBkSav);
       if (2 < i) break;
-      uVar25 = *(undefined2 *)(i * 2 + 0x4cc);
+      uVar25 = *(undefined2 *)(i * 2 + rgszMinerals);
       uVar29 = 0x1120;
       pcVar9 = PszGetCompressedString(idsS2);
       c__86 = _wsprintf(szWork,pcVar9,uVar25,uVar29);
@@ -1517,7 +1518,7 @@ void MineClick(short x,short y,short msg,short sks)
     GlobalPD.grPopup = 1;
     GlobalPD.u_POPUPDATA_0x0002.rgi[0] = (long)(ht + -1);
     for (i = 1; i < 5; i = i + 1) {
-      *(undefined2 *)(i * 4 + 0xb82) = 0xffff;
+      *(undefined2 *)(i * 4 + GlobalPD_0x2) = 0xffff;
       *(undefined2 *)(i * 4 + 0xb84) = 0xffff;
     }
     if (2 < (pl._4_2_ & 0xff)) {
@@ -1783,7 +1784,8 @@ MINE_ChangeIt:
           iVar6 = ((FLEET *)lpfl)->iPlayer * 4;
           __fstrcpy(rgsz + c * 0x20,
                             (char *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
-                                             (char *)(*(int *)(iVar6 + 0xfe) + ishdef * 0x93 + 8)));
+                                             (char *)(*(int *)(iVar6 + rglpshdef) + ishdef * 0x93 +
+                                                     8)));
           rgpsz[c] = rgsz + c * 0x20;
           c = c + 1;
         }
@@ -1802,7 +1804,7 @@ MINE_ChangeIt:
       iVar6 = ((FLEET *)lpfl)->iPlayer * 4;
       GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = *(undefined2 *)(iVar6 + 0x100);
       GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
-           (FLEET *)(*(int *)(iVar6 + 0xfe) + rgid[c] * 0x93);
+           (FLEET *)(*(int *)(iVar6 + rglpshdef) + rgid[c] * 0x93);
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate =
            (short)(idPlayer != ((FLEET *)lpfl)->iPlayer);
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 0;
@@ -1834,7 +1836,7 @@ MINE_ChangeIt:
     iVar6 = pPVar3->iPlayer * 4;
     GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = *(undefined2 *)(iVar6 + 0x14e);
     GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
-         (FLEET *)(*(int *)(iVar6 + 0x14c) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93);
+         (FLEET *)(*(int *)(iVar6 + rglpshdefSB) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93);
     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate =
          (short)(idPlayer != pPVar3->iPlayer);
     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;

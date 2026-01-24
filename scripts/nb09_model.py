@@ -553,6 +553,7 @@ class LocalSymbol:
     typ: Optional[str] = None
     c_type: Optional[str] = None
     block: Optional[int] = None  # index into ProcLocals.blocks
+    is_arg_region: Optional[bool] = None
 
     def to_dict(self) -> Dict[str, Any]:
         d: Dict[str, Any] = {
@@ -573,6 +574,8 @@ class LocalSymbol:
             d["c_type"] = self.c_type
         if self.block is not None:
             d["block"] = self.block
+        if self.is_arg_region is not None:
+            d["is_arg_region"] = self.is_arg_region
         return d
 
 

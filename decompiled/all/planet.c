@@ -939,7 +939,7 @@ void DrawPlanetStarbase(HDC hdc,TILE *ptile,OBJ obj)
   }
   else {
     uVar14 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-    pSVar7 = (SHDEF *)(*(int *)(idPlayer * 4 + 0x14c) +
+    pSVar7 = (SHDEF *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                       ((uint)sel.pl.lStarbase & 0xf) * 0x93);
     lpshdef = (SHDEF *)CONCAT22(uVar14,pSVar7);
     __fstrcpy(szWork,(char *)CONCAT22(uVar14,(pSVar7->hul).szClass));
@@ -1729,7 +1729,7 @@ short IdFindAdjStarbase(short idPlanet,short fNext)
         ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)) &&
        (pHVar3 = LphuldefFromId
                            (*(HullDef *)
-                             (*(int *)(idPlayer * 4 + 0x14c) +
+                             (*(int *)(idPlayer * 4 + rglpshdefSB) +
                              (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93)),
        (((HULDEF *)pHVar3)->hul).wtCargoMax != 0)) {
       if (idPlanet < lppl->id) {
@@ -2097,7 +2097,7 @@ ushort ClickInPlanetOrders(POINT pt,short sks,short fCursor,short fRightBtn)
                     GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 =
                          *(ushort *)(idPlayer * 4 + 0x14e);
                     GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
-                         (FLEET *)(*(int *)(idPlayer * 4 + 0x14c) +
+                         (FLEET *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                                   ((uint)sel.pl.lStarbase & 0xf) * 0x93);
                     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = 0;
                     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;
@@ -3235,8 +3235,9 @@ long CalcPlanetMaxPop(short idpl,short iplr)
     if ((pl.iPlayer != iplr) || ((pl.wFlags_0x4 >> 9 & 1) == 0)) {
       return 0;
     }
-    iVar3 = (*(int *)(*(int *)(iplr * 4 + 0x14c) + ((uint)pl.lStarbase & 0xf) * 0x93) + -0x20) * 4;
-    uVar4 = CONCAT22(*(undefined2 *)(iVar3 + 0x8ce),*(undefined2 *)(iVar3 + 0x8cc));
+    iVar3 = (*(int *)(*(int *)(iplr * 4 + rglpshdefSB) + ((uint)pl.lStarbase & 0xf) * 0x93) + -0x20)
+            * 4;
+    uVar4 = CONCAT22(*(undefined2 *)(iVar3 + rglPopMac_0x2),*(undefined2 *)(iVar3 + rglPopMac));
   }
   else {
     uVar2 = PctPlanetDesirability(&pl,iplr);
@@ -3704,11 +3705,11 @@ short IWarpMAFromLppl(PLANET *lppl,short *pfTwo)
   else if ((pPVar3->iPlayer == idPlayer) ||
           ((idPlayer == -1 ||
            (iVar4 = pPVar3->iPlayer * 4,
-           (*(uint *)(*(int *)(iVar4 + 0x14c) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93 + 0x7b) &
-           0xff) == 7)))) {
+           (*(uint *)(*(int *)(iVar4 + rglpshdefSB) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93 +
+                     0x7b) & 0xff) == 7)))) {
     iVar4 = pPVar3->iPlayer * 4;
     uVar1 = *(undefined2 *)(iVar4 + 0x14e);
-    iVar4 = *(int *)(iVar4 + 0x14c) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93;
+    iVar4 = *(int *)(iVar4 + rglpshdefSB) + (*(uint *)&pPVar3->lStarbase & 0xf) * 0x93;
     for (i = 0; i < (int)(uint)*(byte *)(iVar4 + 0x7a); i = i + 1) {
       if ((((*(int *)(iVar4 + 0x3a + i * 4) == 0x200) && (*(uint *)(iVar4 + i * 4 + 0x3c) >> 8 != 0)
            ) && (6 < (*(uint *)(iVar4 + i * 4 + 0x3c) & 0xff))) &&
@@ -3756,7 +3757,7 @@ short StargateRangeFromLppl(PLANET *lppl,short iplr,short ish)
   
   if (lppl == (PLANET *)0x0) {
     lphul = (HUL *)CONCAT22(*(undefined2 *)(iplr * 4 + 0x14e),
-                            (HUL *)(*(int *)(iplr * 4 + 0x14c) + ish * 0x93));
+                            (HUL *)(*(int *)(iplr * 4 + rglpshdefSB) + ish * 0x93));
   }
   else {
     if ((((PLANET *)lppl)->iPlayer == -1) || ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) == 0)) {
@@ -3764,7 +3765,7 @@ short StargateRangeFromLppl(PLANET *lppl,short iplr,short ish)
     }
     iVar1 = ((PLANET *)lppl)->iPlayer * 4;
     lphul = (HUL *)CONCAT22(*(undefined2 *)(iVar1 + 0x14e),
-                            (HUL *)(*(int *)(iVar1 + 0x14c) +
+                            (HUL *)(*(int *)(iVar1 + rglpshdefSB) +
                                    (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93));
   }
   i = 0;
@@ -5793,14 +5794,15 @@ PLANET_StealCargo:
     }
     if ((uint)i < 0x10) {
       lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(uVar11 * 4 + 0x100),
-                                  (SHDEF *)(*(int *)(uVar11 * 4 + 0xfe) + i * 0x93));
+                                  (SHDEF *)(*(int *)(uVar11 * 4 + rglpshdef) + i * 0x93));
     }
     else {
       if (0x19 < (uint)i) {
         return 0;
       }
       lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(uVar11 * 4 + 0x14e),
-                                  (SHDEF *)(*(int *)(uVar11 * 4 + 0x14c) + (i - 0x10U) * 0x93));
+                                  (SHDEF *)(*(int *)(uVar11 * 4 + rglpshdefSB) + (i - 0x10U) * 0x93)
+                                 );
     }
     uVar23 = (undefined2)((ulong)lpshdef >> 0x10);
     pSVar19 = (SHDEF *)lpshdef;
@@ -5843,7 +5845,7 @@ PLANET_StealCargo:
       if ((uint)i < 0x10) {
         sVar9 = FReadShDef((RTSHDEF *)CONCAT22(lpb._2_2_,(byte *)lpb + 2),
                                (SHDEF *)CONCAT22(*(undefined2 *)(uVar11 * 4 + 0x100),
-                                                 (SHDEF *)*(undefined2 *)(uVar11 * 4 + 0xfe)),
+                                                 (SHDEF *)*(undefined2 *)(uVar11 * 4 + rglpshdef)),
                                idPlayer);
         if (sVar9 == 0) {
           pcVar2 = (char *)((int)&rgplr[0].cShDef + uVar11 * 0xc0);
@@ -5854,8 +5856,8 @@ PLANET_StealCargo:
       else {
         sVar9 = FReadShDef((RTSHDEF *)CONCAT22(lpb._2_2_,(byte *)lpb + 2),
                                (SHDEF *)CONCAT22(*(undefined2 *)(uVar11 * 4 + 0x14e),
-                                                 (SHDEF *)*(undefined2 *)(uVar11 * 4 + 0x14c)),
-                               idPlayer);
+                                                 (SHDEF *)*(undefined2 *)(uVar11 * 4 + rglpshdefSB))
+                               ,idPlayer);
         if (sVar9 == 0) {
           iVar13 = *(int *)((int)&rgplr[0].wFlags_0x4 + uVar11 * 0xc0);
           puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + uVar11 * 0xc0);
@@ -6646,7 +6648,7 @@ short FWriteHistFile(short iPlayer)
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) &&
            (i != iPlayer)) {
-          lpshdef = *(int *)(i * 4 + 0xfe);
+          lpshdef = *(int *)(i * 4 + rglpshdef);
           local_22 = *(undefined2 *)(i * 4 + 0x100);
           for (j = 0; j < 0x10; j = j + 1) {
             if ((*(uint *)(lpshdef + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
@@ -6659,7 +6661,7 @@ short FWriteHistFile(short iPlayer)
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) != 0) &&
            (i != iPlayer)) {
-          lpshdef = *(int *)(i * 4 + 0x14c);
+          lpshdef = *(int *)(i * 4 + rglpshdefSB);
           local_22 = *(undefined2 *)(i * 4 + 0x14e);
           for (j = 0; j < 10; j = j + 1) {
             if ((*(uint *)(lpshdef + j * 0x93 + 0x7b) >> 9 & 1) == 0) {

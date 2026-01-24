@@ -266,7 +266,7 @@ void DoRobotoidAiTurn(PROD *rgprod)
   for (i = 0xe; i < 0x10; i = i + 1) {
     if (((rgRecycleShdef[i] != 0) &&
         ((*(uint *)((int)&rgshdef[0].wFlags + i * 0x93) >> 9 & 1) == 0)) &&
-       (*(int *)(i * 0x93 + 0x3f00) == 0x1d)) {
+       (*(int *)(i * 0x93 + rgshdef) == 0x1d)) {
       rgRecycleShdef[i] = 0;
     }
   }
@@ -496,7 +496,7 @@ LAB_1088_0dd9:
             if (((int)rgResAvail[i * 2 + 1] < 1) && ((int)rgResAvail[i * 2 + 1] < 0))
             goto AI_FinishProd_4;
           }
-          GetTrueHullCost(idPlayer,(HUL *)(uStack_90 * 0x93 + 0x3f00),rgCosts);
+          GetTrueHullCost(idPlayer,(HUL *)(uStack_90 * 0x93 + rgshdef),rgCosts);
           for (j = 0; j < 4; j = j + 1) {
             uVar9 = (uint)(((long)(int)rgCosts[j] * 3 & 0xffffU) / 5);
             puVar1 = rgResAvail + j * 2;
@@ -536,7 +536,7 @@ AI_TryShip3_2:
             }
             for (i = 0; i < 5; i = i + 1) {
               GetTrueHullCost
-                        (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00),rgCosts);
+                        (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + rgshdef),rgCosts);
               for (j = 0; j < 4; j = j + 1) {
                 uVar9 = rgCosts[j];
                 puVar1 = rgResAvail + j * 2;
@@ -1951,7 +1951,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,(HUL *)(iLatestBattle * 0x93 + 0x3f00),rgCosts);
+                              (idPlayer,(HUL *)(iLatestBattle * 0x93 + rgshdef),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -1984,7 +1984,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,(HUL *)(iLatestCruiser * 0x93 + 0x3f00),rgCosts);
+                              (idPlayer,(HUL *)(iLatestCruiser * 0x93 + rgshdef),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -2017,7 +2017,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00),rgCosts);
+                              (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + rgshdef),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -2050,7 +2050,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,(HUL *)(iLatestTroop * 0x93 + 0x3f00),rgCosts);
+                              (idPlayer,(HUL *)(iLatestTroop * 0x93 + rgshdef),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;

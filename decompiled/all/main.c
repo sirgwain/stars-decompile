@@ -658,7 +658,7 @@ void FreeStuff(void)
   DeleteObject(rghfontArial7[0]);
   for (i = 0; i < 0xc; i = i + 1) {
     FreeHb((HB *)CONCAT22(*(undefined2 *)(i * 4 + 0xd36),
-                                  (HB *)*(undefined2 *)(i * 4 + 0xd34)));
+                                  (HB *)*(undefined2 *)(i * 4 + rglphb)));
   }
   return;
 }

@@ -1025,7 +1025,7 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
       uVar20 = iItem - 0x10;
       iVar12 = ((PLANET *)lppl)->iPlayer * 4;
       uVar14 = *(undefined2 *)(iVar12 + 0x14e);
-      pSVar11 = (SHDEF *)(*(int *)(iVar12 + 0x14c) + uVar20 * 0x93);
+      pSVar11 = (SHDEF *)(*(int *)(iVar12 + rglpshdefSB) + uVar20 * 0x93);
       lpshdef = (SHDEF *)CONCAT22(uVar14,pSVar11);
       if (((pSVar11->wFlags >> 9 & 1) == 0) &&
          (sVar9 = FCanBuildShdef((SHDEF *)CONCAT22(uVar14,pSVar11),((PLANET *)lppl)->iPlayer),
@@ -1045,9 +1045,9 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
                          (((HULDEF *)pHVar15)->hul).wtCargoMax,sVar9,p5,p6,unaff_DI);
         if (((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0) &&
            (iVar12 = ((PLANET *)lppl)->iPlayer * 4,
-           iEnv = *(int *)(*(int *)(iVar12 + 0x14c) + uVar20 * 0x93),
+           iEnv = *(int *)(*(int *)(iVar12 + rglpshdefSB) + uVar20 * 0x93),
            iVar12 = ((PLANET *)lppl)->iPlayer * 4,
-           iEnv < *(int *)(*(int *)(iVar12 + 0x14c) +
+           iEnv < *(int *)(*(int *)(iVar12 + rglpshdefSB) +
                           (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93))) {
           KillQueuedShips(lppl);
         }
@@ -1058,7 +1058,8 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
         else {
           iVar12 = ((PLANET *)lppl)->iPlayer * 4;
           uVar14 = *(undefined2 *)(iVar12 + 0x14e);
-          iVar13 = *(int *)(iVar12 + 0x14c) + (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93;
+          iVar13 = *(int *)(iVar12 + rglpshdefSB) +
+                   (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93;
           piVar2 = (int *)(iVar13 + 0x83);
           iVar12 = *piVar2;
           *piVar2 = *piVar2 + -1;
@@ -1103,7 +1104,7 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
     }
     iVar12 = ((PLANET *)lppl)->iPlayer * 4;
     uVar14 = *(undefined2 *)(iVar12 + 0x100);
-    pSVar11 = (SHDEF *)(*(int *)(iVar12 + 0xfe) + iItem * 0x93);
+    pSVar11 = (SHDEF *)(*(int *)(iVar12 + rglpshdef) + iItem * 0x93);
     lpshdef = (SHDEF *)CONCAT22(uVar14,pSVar11);
     if (((pSVar11->wFlags >> 9 & 1) != 0) ||
        (sVar9 = FCanBuildShdef((SHDEF *)CONCAT22(uVar14,pSVar11),((PLANET *)lppl)->iPlayer),
@@ -1175,7 +1176,7 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
         }
         else {
           iVar13 = pFVar4->iPlayer * 4;
-          uVar20 = *(uint *)(*(int *)(iVar13 + 0xfe) + iItem * 0x93 + 0x38);
+          uVar20 = *(uint *)(*(int *)(iVar13 + rglpshdef) + iItem * 0x93 + 0x38);
           part = pFVar4->rgcsh[iItem];
           uVar21 = 0;
           uVar14 = 100;
@@ -1572,14 +1573,14 @@ void CreateShip(short iPlr,FLEET *lpfl,short ishdef,short cShip)
   
   ((FLEET *)lpfl)->rgcsh[ishdef] = ((FLEET *)lpfl)->rgcsh[ishdef] + cShip;
   uVar4 = *(undefined2 *)(iPlr * 4 + 0x100);
-  iVar5 = *(int *)(iPlr * 4 + 0xfe) + ishdef * 0x93;
+  iVar5 = *(int *)(iPlr * 4 + rglpshdef) + ishdef * 0x93;
   puVar1 = (uint *)(iVar5 + 0x83);
   uVar3 = *puVar1;
   *puVar1 = *puVar1 + cShip;
   piVar2 = (int *)(iVar5 + 0x85);
   *piVar2 = *piVar2 + (cShip >> 0xf) + (uint)CARRY2(uVar3,cShip);
   uVar4 = *(undefined2 *)(iPlr * 4 + 0x100);
-  iVar5 = *(int *)(iPlr * 4 + 0xfe) + ishdef * 0x93;
+  iVar5 = *(int *)(iPlr * 4 + rglpshdef) + ishdef * 0x93;
   puVar1 = (uint *)(iVar5 + 0x7f);
   uVar3 = *puVar1;
   *puVar1 = *puVar1 + cShip;
@@ -2098,7 +2099,7 @@ LAB_10b8_3b02:
             if (sVar5 == raMacintosh) {
               pl.wFlags_0x4 = pl.wFlags_0x4 & 0xfdff | 0x200;
               pl.lStarbase._0_2_ = (uint)pl.lStarbase & 0xfff0;
-              uVar4 = *(undefined4 *)(iMax * 4 + 0x14c);
+              uVar4 = *(undefined4 *)(iMax * 4 + rglpshdefSB);
               uVar11 = (undefined2)((ulong)uVar4 >> 0x10);
               iVar9 = (int)uVar4;
               puVar1 = (uint *)(iVar9 + 0x83);
@@ -2106,7 +2107,7 @@ LAB_10b8_3b02:
               *puVar1 = *puVar1 + 1;
               piVar2 = (int *)(iVar9 + 0x85);
               *piVar2 = *piVar2 + (uint)(0xfffe < uVar6);
-              uVar4 = *(undefined4 *)(iMax * 4 + 0x14c);
+              uVar4 = *(undefined4 *)(iMax * 4 + rglpshdefSB);
               uVar11 = (undefined2)((ulong)uVar4 >> 0x10);
               iVar9 = (int)uVar4;
               puVar1 = (uint *)(iVar9 + 0x7f);
@@ -2306,17 +2307,17 @@ void HealShips(void)
       bVar4 = false;
       pctShipHeal = 0;
       for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
-        if (*(int *)(iVar2 + 0x2c + ishdef * 2) != 0) {
+        if (*(int *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2) != 0) {
           bVar4 = true;
         }
         if (*(int *)(iVar2 + 0xc + ishdef * 2) != 0) {
           iVar8 = *(int *)(iVar2 + 2) * 4;
-          if (*(int *)(*(int *)(iVar8 + 0xfe) + ishdef * 0x93) == 0x1a) {
+          if (*(int *)(*(int *)(iVar8 + rglpshdef) + ishdef * 0x93) == 0x1a) {
             pctShipHeal = 0x32;
           }
           else if (((uint)pctShipHeal < 5) &&
                   (iVar8 = *(int *)(iVar2 + 2) * 4,
-                  *(int *)(*(int *)(iVar8 + 0xfe) + ishdef * 0x93) == 0x19)) {
+                  *(int *)(*(int *)(iVar8 + rglpshdef) + ishdef * 0x93) == 0x19)) {
             pctShipHeal = 0x19;
           }
         }
@@ -2340,7 +2341,7 @@ void HealShips(void)
             else {
               iVar8 = pPVar7->iPlayer * 4;
               lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(iVar8 + 0x14e),
-                                          (SHDEF *)(*(int *)(iVar8 + 0x14c) +
+                                          (SHDEF *)(*(int *)(iVar8 + rglpshdefSB) +
                                                    (*(uint *)&pPVar7->lStarbase & 0xf) * 0x93));
               pHVar11 = LphuldefFromId((lpshdef->hul).ihuldef);
               if ((((HULDEF *)pHVar11)->hul).wtCargoMax == 0) {
@@ -2363,16 +2364,17 @@ void HealShips(void)
           pct = pct << 1;
         }
         for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
-          if (*(int *)(iVar2 + 0x2c + ishdef * 2) != 0) {
-            if ((uint)(pct + pctShipHeal) < *(uint *)(iVar2 + 0x2c + ishdef * 2) >> 7) {
-              iVar8 = *(int *)(iVar2 + 0x2c + ishdef * 2);
-              puVar1 = (uint *)(iVar2 + 0x2c + ishdef * 2);
+          if (*(int *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2) != 0) {
+            if ((uint)(pct + pctShipHeal) <
+                *(uint *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2) >> 7) {
+              iVar8 = *(int *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2);
+              puVar1 = (uint *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2);
               *puVar1 = *puVar1 & 0x7f;
-              puVar1 = (uint *)(iVar2 + 0x2c + ishdef * 2);
+              puVar1 = (uint *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2);
               *puVar1 = *puVar1 | iVar8 + (pct + pctShipHeal) * -0x80 & 0xff80U;
             }
             else {
-              *(undefined2 *)(iVar2 + 0x2c + ishdef * 2) = 0;
+              *(undefined2 *)(iVar2 + lpfnTutorDlgProc_0x2 + ishdef * 2) = 0;
             }
           }
         }
@@ -4124,7 +4126,7 @@ void SweepForMines(void)
        (iVar17 = ((PLANET *)lppl)->iPlayer * 4,
        lVar20 = CMineSweepFromLphul
                           ((HUL *)CONCAT22(*(undefined2 *)(iVar17 + 0x14e),
-                                           (HUL *)(*(int *)(iVar17 + 0x14c) +
+                                           (HUL *)(*(int *)(iVar17 + rglpshdefSB) +
                                                   (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) *
                                                   0x93))), 0 < lVar20)) {
       uVar6 = ((PLANET *)lppl)->iPlayer;

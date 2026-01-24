@@ -194,7 +194,7 @@ def _maybe_retype_stack_var(
 
     if want_len is not None and want_len > 0 and v_len != want_len:
         log(
-            "[BPVAR-RETYPE] skip %s:%s sp=%+d %s v_dt=%s v_len=%d want_len=%d"
+            "[BPVAR-RETYPE] skip %s:%s sp=%+d want_dt=%s v_dt=%s v_len=%d want_len=%d"
             % (
                 func.getName(),
                 name,

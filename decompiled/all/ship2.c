@@ -84,9 +84,11 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     else {
       DVar11 = GetTextExtent(hdc,pcRam112004d0,9);
       for (i = 0; i < 5; i = i + 1) {
-        SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + 0x44a),*(undefined2 *)(i * 4 + 0x448)));
+        SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + rgcrMinerals_0x2),
+                                  *(undefined2 *)(i * 4 + rgcrMinerals)));
         RightTextOut
-                  (hdc,(int)DVar11 + 8,(short)pszT,(char *)*(undefined2 *)(i * 2 + 0x4cc),0,0);
+                  (hdc,(int)DVar11 + 8,(short)pszT,(char *)*(undefined2 *)(i * 2 + rgszMinerals),0,0
+                  );
         SetTextColor(hdc,0);
         sVar6 = CchGetString
                           (((((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->
@@ -580,7 +582,7 @@ short FStargateJump(FLEET *lpfl,short isbsSrc,short isbsDst,short dDist)
                 pctKill = (byte)(rgpct[ishdef] / 3);
               }
               iVar5 = ((FLEET *)lpfl)->iPlayer * 4;
-              dpShdef = *(short *)(*(int *)(iVar5 + 0xfe) + ishdef * 0x93 + 0x38);
+              dpShdef = *(short *)(*(int *)(iVar5 + rglpshdef) + ishdef * 0x93 + 0x38);
               if (flSrc.rgcsh[ishdef + 0x10] == 0) {
                 cshDamagedOld = 0;
               }
@@ -718,7 +720,7 @@ short FStargateJump(FLEET *lpfl,short isbsSrc,short isbsDst,short dDist)
       local_92 = local_92 + ((int)uVar4 >> 0xf) + (uint)bVar10;
       sVar3 = MdCalcStargateDamage
                         (isbsSrc,isbsDst,dDist,
-                         *(short *)(*(int *)(flSrc.iPlayer * 4 + 0xfe) + ishdef * 0x93 + 0x28),
+                         *(short *)(*(int *)(flSrc.iPlayer * 4 + rglpshdef) + ishdef * 0x93 + 0x28),
                          rgpct + ishdef);
       if (sVar3 == -2) {
         FSendPlrMsg(flSrc.iPlayer,idmAttemptedUseStargateReachCouldBecauseShips,
@@ -1148,7 +1150,8 @@ void AutoRouteFleet(FLEET *lpfl,PLANET *lppl)
         iVar10 = wtBig;
         if ((pFVar8->rgcsh[ishdef] != 0) &&
            (iVar10 = pFVar8->iPlayer * 4,
-           iVar10 = *(int *)(*(int *)(iVar10 + 0xfe) + ishdef * 0x93 + 0x28), iVar10 <= wtBig)) {
+           iVar10 = *(int *)(*(int *)(iVar10 + rglpshdef) + ishdef * 0x93 + 0x28), iVar10 <= wtBig))
+        {
           iVar10 = wtBig;
         }
         wtBig = iVar10;
@@ -1162,8 +1165,8 @@ void AutoRouteFleet(FLEET *lpfl,PLANET *lppl)
       iVar10 = pFVar8->iPlayer * 4;
       pHVar13 = LphuldefFromId
                           (*(HullDef *)
-                            (*(int *)(iVar10 + 0x14c) + (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93))
-      ;
+                            (*(int *)(iVar10 + rglpshdefSB) +
+                            (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93));
       if ((((HULDEF *)pHVar13)->hul).wtCargoMax != 0) {
         for (iWarp = 9; 0 < iWarp; iWarp = iWarp + -1) {
           lVar14 = EstFuelUse(lpfl,0,iWarp,-1,1);
@@ -1373,7 +1376,7 @@ long CMineFromLpfl(FLEET *lpfl)
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
       iVar4 = ((FLEET *)lpfl)->iPlayer * 4;
       uVar6 = *(undefined2 *)(iVar4 + 0x100);
-      pHVar3 = (HUL *)(*(int *)(iVar4 + 0xfe) + i * 0x93);
+      pHVar3 = (HUL *)(*(int *)(iVar4 + rglpshdef) + i * 0x93);
       lphuldef = (HUL *)CONCAT22(uVar6,pHVar3);
       bVar1 = pHVar3->chs;
       cMine = 0;
@@ -1432,7 +1435,7 @@ long PctTerraFromLpfl(FLEET *lpfl)
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
       iVar4 = ((FLEET *)lpfl)->iPlayer * 4;
       uVar1 = *(undefined2 *)(iVar4 + 0x100);
-      iVar4 = *(int *)(iVar4 + 0xfe) + i * 0x93;
+      iVar4 = *(int *)(iVar4 + rglpshdef) + i * 0x93;
       pct = 0;
       local_e = 0;
       lphs = (HS *)CONCAT22(uVar1,(HS *)(iVar4 + 0x3a));
@@ -1513,7 +1516,7 @@ LAB_1080_28f9:
     if ((0 < ((FLEET *)lpfl)->rgcsh[i]) && ((ishdef == -1 || (i == ishdef)))) {
       iVar3 = ((FLEET *)lpfl)->iPlayer * 4;
       uVar4 = *(undefined2 *)(iVar3 + 0x100);
-      pHVar2 = (HUL *)(*(int *)(iVar3 + 0xfe) + i * 0x93);
+      pHVar2 = (HUL *)(*(int *)(iVar3 + rglpshdef) + i * 0x93);
       lphul = (HUL *)CONCAT22(uVar4,pHVar2);
       bVar1 = pHVar2->chs;
       uVar6 = 0;
@@ -1577,7 +1580,7 @@ long CMineSweepFromLpfl(FLEET *lpfl)
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
       iVar2 = ((FLEET *)lpfl)->iPlayer * 4;
       uVar3 = CMineSweepFromLphul((HUL *)CONCAT22(*(undefined2 *)(iVar2 + 0x100),
-                                                  (HUL *)(*(int *)(iVar2 + 0xfe) + i * 0x93)));
+                                                  (HUL *)(*(int *)(iVar2 + rglpshdef) + i * 0x93)));
       uVar3 = __aFulmul(uVar3,(long)((FLEET *)lpfl)->rgcsh[i]);
       lVar1 = uVar3 + lVar1;
     }
@@ -1712,9 +1715,9 @@ short PctCloakFromLpfl(FLEET *lpfl)
     if (0 < pFVar6->rgcsh[i]) {
       iVar5 = pFVar6->iPlayer * 4;
       in_stack_0000ffcc = *(undefined2 *)(iVar5 + 0x100);
-      iVar5 = *(int *)(iVar5 + 0xfe) + i * 0x93;
+      iVar5 = *(int *)(iVar5 + rglpshdef) + i * 0x93;
       bVar1 = *(byte *)(iVar5 + 0x7a);
-      uVar8 = __aFulmul((long)pFVar6->rgcsh[i],(ulong)*(uint *)(iVar5 + 0x28));
+      uVar8 = __aFulmul((long)pFVar6->rgcsh[i],(ulong)*(uint *)(iVar5 + hbrBlue));
       cPtsCur = 0;
       sVar3 = GetRaceStat((PLAYER *)rgplr + pFVar6->iPlayer,rsMajorAdv);
       if (sVar3 == raStealth) {

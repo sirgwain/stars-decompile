@@ -1540,10 +1540,10 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
   yCur = yStart;
   dxStr = 0;
   for (i = 0; i < 6; i = i + 1) {
-    pcVar4 = (char *)*(undefined2 *)(i * 2 + 0x4cc);
+    pcVar4 = (char *)*(undefined2 *)(i * 2 + rgszMinerals);
     uVar19 = 0x1120;
     HVar21 = hdc;
-    sVar3 = lstrlen((char *)*(undefined2 *)(i * 2 + 0x4cc));
+    sVar3 = lstrlen((char *)*(undefined2 *)(i * 2 + rgszMinerals));
     DVar12 = GetTextExtent(HVar21,(LPCSTR)CONCAT22(uVar19,pcVar4),sVar3);
     sVar3 = (int)DVar12;
     if ((int)DVar12 <= dxStr) {
@@ -1556,8 +1556,9 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
   for (i = 0; i < 6; i = i + 1) {
     if ((i != 4) && (i != 3)) {
       SelectObject(hdc,rghfontArial8[1]);
-      SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + 0x44a),*(undefined2 *)(i * 4 + 0x448)));
-      RightTextOut(hdc,dxStr,yCur,(char *)*(undefined2 *)(i * 2 + 0x4cc),0,0);
+      SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + rgcrMinerals_0x2),
+                                *(undefined2 *)(i * 4 + rgcrMinerals)));
+      RightTextOut(hdc,dxStr,yCur,(char *)*(undefined2 *)(i * 2 + rgszMinerals),0,0);
       SelectObject(hdc,rghfontArial8[0]);
       SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
       if (i == 5) {

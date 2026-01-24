@@ -812,8 +812,8 @@ LAB_10c8_16ff:
             else {
               pt = (POINT)((ulong)pt & 0xffff);
               while ((pt.y < 10 &&
-                     ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + pt.y * 0x93 + 0x7b) >> 9 &
-                      1) == 0))) {
+                     ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + pt.y * 0x93 + 0x7b)
+                       >> 9 & 1) == 0))) {
                 pt.y = pt.y + 1;
               }
             }
@@ -840,11 +840,11 @@ LAB_10c8_16ff:
                 pt.x = pt.x + 1;
               }
               if (fStarbaseMode == 0) {
-                lpshdef = (SHDEF *)(pt.y * 0x93 + 0x3f00);
+                lpshdef = (SHDEF *)(pt.y * 0x93 + rgshdef);
               }
               else {
                 lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x14e),
-                                            (SHDEF *)(*(int *)(idPlayer * 4 + 0x14c) +
+                                            (SHDEF *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                                                      pt.y * 0x93));
                 pt.x = pt.x + 0x20;
               }
@@ -924,7 +924,7 @@ BUILD_LStripDown:
             if (-1 < lSel) {
               if (((SHDEF *)lpshdef != (SHDEF *)0x0) || (lpshdef._2_2_ != 0)) {
                 if (fStarbaseMode == 0) {
-                  pHVar18 = (HullDef *)(pt.y * 0x93 + 0x3f00);
+                  pHVar18 = (HullDef *)(pt.y * 0x93 + rgshdef);
                   for (iVar11 = 0x49; iVar11 != 0; iVar11 = iVar11 + -1) {
                     pHVar5 = pHVar18;
                     pHVar18 = pHVar18 + 1;
@@ -933,11 +933,11 @@ BUILD_LStripDown:
                     *pHVar5 = (pSVar3->hul).ihuldef;
                   }
                   *(char *)pHVar18 = (char)(((SHDEF *)lpshdef)->hul).ihuldef;
-                  lpshdef = (SHDEF *)(pt.y * 0x93 + 0x3f00);
+                  lpshdef = (SHDEF *)(pt.y * 0x93 + rgshdef);
                 }
                 else {
                   uVar19 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-                  pHVar18 = (HullDef *)(*(int *)(idPlayer * 4 + 0x14c) + pt.y * 0x93);
+                  pHVar18 = (HullDef *)(*(int *)(idPlayer * 4 + rglpshdefSB) + pt.y * 0x93);
                   for (iVar11 = 0x49; iVar11 != 0; iVar11 = iVar11 + -1) {
                     pHVar5 = pHVar18;
                     pHVar18 = pHVar18 + 1;
@@ -948,8 +948,8 @@ BUILD_LStripDown:
                   *(char *)pHVar18 = (char)(((SHDEF *)lpshdef)->hul).ihuldef;
                   pt.x = pt.y * 0x93;
                   lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x14e),
-                                              (SHDEF *)(*(int *)(idPlayer * 4 + 0x14c) +
-                                                       pt.y * 0x93));
+                                              (SHDEF *)(*(int *)(idPlayer * 4 + rglpshdefSB)
+                                                       + pt.y * 0x93));
                 }
                 uVar19 = (undefined2)((ulong)lpshdef >> 0x10);
                 pSVar16 = (SHDEF *)lpshdef;
@@ -1092,7 +1092,7 @@ BUILD_EditDesign:
           shdefBuild.wFlags = shdefBuild.wFlags & 0xfdff;
           UpdateShdefCost(&shdefBuild);
           if (fStarbaseMode == 0) {
-            pHVar18 = (HullDef *)(ishdefBuild * 0x93 + 0x3f00);
+            pHVar18 = (HullDef *)(ishdefBuild * 0x93 + rgshdef);
             pSVar16 = (SHDEF *)&shdefBuild;
             for (iVar11 = 0x49; iVar11 != 0; iVar11 = iVar11 + -1) {
               pHVar5 = pHVar18;
@@ -1102,7 +1102,7 @@ BUILD_EditDesign:
               *pHVar5 = (pSVar3->hul).ihuldef;
             }
             *(char *)pHVar18 = (char)(pSVar16->hul).ihuldef;
-            LogChangeShDef((SHDEF *)(ishdefBuild * 0x93 + 0x3f00));
+            LogChangeShDef((SHDEF *)(ishdefBuild * 0x93 + rgshdef));
             pt = (POINT)((ulong)pt & 0xffff);
             while (pt.y < ishdefBuild) {
               if ((*(uint *)((int)&rgshdef[0].wFlags + pt.y * 0x93) >> 9 & 1) == 0) {
@@ -1117,7 +1117,7 @@ BUILD_EditDesign:
             ishdefBuild = ishdefBuild + -0x10;
             uVar19 = *(undefined2 *)(idPlayer * 4 + 0x14e);
             pHVar18 = (HullDef *)
-                      (*(int *)(idPlayer * 4 + 0x14c) + ishdefBuild * 0x93);
+                      (*(int *)(idPlayer * 4 + rglpshdefSB) + ishdefBuild * 0x93);
             pSVar16 = (SHDEF *)&shdefBuild;
             for (iVar11 = 0x49; iVar11 != 0; iVar11 = iVar11 + -1) {
               pHVar5 = pHVar18;
@@ -1131,8 +1131,8 @@ BUILD_EditDesign:
             LogChangeShDef(&shdefBuild);
             pt = (POINT)((ulong)pt & 0xffff);
             while (pt.y < ishdefBuild) {
-              if ((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + pt.y * 0x93 + 0x7b) >> 9 & 1)
-                  == 0) {
+              if ((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + pt.y * 0x93 + 0x7b) >> 9
+                  & 1) == 0) {
                 bVar21 = 0xfffe < (HullSlotType)lSel;
                 lSel._0_2_ = (HullSlotType)lSel + 1;
                 lSel._2_2_ = lSel._2_2_ + (uint)bVar21;
@@ -1173,13 +1173,13 @@ LAB_10c8_234f:
               *(short *)((int)&rgshdef[0].wFlags + ishdefBuild * 0x93) = pt.x;
               pcVar2 = (char *)((int)&rgplr[0].cShDef + idPlayer * 0xc0);
               *pcVar2 = *pcVar2 + -1;
-              LogChangeShDef((SHDEF *)(ishdefBuild * 0x93 + 0x3f00));
+              LogChangeShDef((SHDEF *)(ishdefBuild * 0x93 + rgshdef));
             }
             else {
               shdefBuild.wFlags = shdefBuild.wFlags & 0xfdff | 0x200;
               uVar19 = *(undefined2 *)(idPlayer * 4 + 0x14e);
               pHVar18 = (HullDef *)
-                        (*(int *)(idPlayer * 4 + 0x14c) +
+                        (*(int *)(idPlayer * 4 + rglpshdefSB) +
                         (ishdefBuild + -0x10) * 0x93);
               pSVar16 = (SHDEF *)&shdefBuild;
               for (iVar11 = 0x49; iVar11 != 0; iVar11 = iVar11 + -1) {
@@ -2053,13 +2053,14 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
   for (k = 0; k < 3; k = k + 1) {
     rc.top = rc.top + dyArial8;
     SelectObject(hdc,rghfontArial8[1]);
-    SetTextColor(hdc,CONCAT22(*(undefined2 *)(k * 4 + 0x44a),*(undefined2 *)(k * 4 + 0x448)));
-    pcVar3 = (char *)*(undefined2 *)(k * 2 + 0x4cc);
+    SetTextColor(hdc,CONCAT22(*(undefined2 *)(k * 4 + rgcrMinerals_0x2),
+                              *(undefined2 *)(k * 4 + rgcrMinerals)));
+    pcVar3 = (char *)*(undefined2 *)(k * 2 + rgszMinerals);
     uVar12 = 0x1120;
     sVar2 = rc.top;
     sVar13 = rc.left;
     HVar14 = hdc;
-    sVar5 = lstrlen((char *)*(undefined2 *)(k * 2 + 0x4cc));
+    sVar5 = lstrlen((char *)*(undefined2 *)(k * 2 + rgszMinerals));
     TextOut(HVar14,sVar13,sVar2,(LPCSTR)CONCAT22(uVar12,pcVar3),sVar5);
     SelectObject(hdc,rghfontArial8[0]);
     SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
@@ -2368,13 +2369,14 @@ LAB_10c8_4875:
       pctDetect = hdc;
       SelectObject(hdc,rghfontArial8[1]);
       pctDetect = hdc;
-      SetTextColor(hdc,CONCAT22(*(undefined2 *)(k * 4 + 0x44a),*(undefined2 *)(k * 4 + 0x448)));
+      SetTextColor(hdc,CONCAT22(*(undefined2 *)(k * 4 + rgcrMinerals_0x2),
+                                *(undefined2 *)(k * 4 + rgcrMinerals)));
       pctDetect = hdc;
-      pcVar1 = (char *)*(undefined2 *)(k * 2 + 0x4cc);
+      pcVar1 = (char *)*(undefined2 *)(k * 2 + rgszMinerals);
       uVar13 = 0x1120;
       sVar6 = rc.top;
       sVar16 = rc.left;
-      sVar4 = lstrlen((char *)*(undefined2 *)(k * 2 + 0x4cc));
+      sVar4 = lstrlen((char *)*(undefined2 *)(k * 2 + rgszMinerals));
       TextOut(pctDetect,sVar16,sVar6,(LPCSTR)CONCAT22(uVar13,pcVar1),sVar4);
       pctDetect = hdc;
       SelectObject(hdc,rghfontArial8[0]);
@@ -2580,8 +2582,8 @@ LAB_10c8_4875:
         if (sVar6 == raMacintosh) {
           pctDetect = 0;
           iVar5 = ((lpshdefBuild->hul).ihuldef - ihuldefCount) * 4;
-          uVar11 = __aFulmul(CONCAT22(*(undefined2 *)(iVar5 + 0x8ce),
-                                              *(undefined2 *)(iVar5 + 0x8cc)),100);
+          uVar11 = __aFulmul(CONCAT22(*(undefined2 *)(iVar5 + rglPopMac_0x2),
+                                              *(undefined2 *)(iVar5 + rglPopMac)),100);
           pctDetect = (short)(uVar11 >> 0x10);
           cch = CommaFormatLong((char *)szWork,uVar11);
           pctDetect = dxMaxMineralQuan + 0x10;
@@ -2990,7 +2992,7 @@ SHDEF * NthValidShdef(short n)
     for (i = 0; i < 0x10; i = i + 1) {
       if (((*(uint *)((int)&rgshdef[0].wFlags + i * 0x93) >> 9 & 1) == 0) &&
          (bVar3 = n == 0, n = n + -1, bVar3)) {
-        pSVar1 = (SHDEF *)(i * 0x93 + 0x3f00);
+        pSVar1 = (SHDEF *)(i * 0x93 + rgshdef);
         uVar2 = 0x1120;
         goto LAB_10c8_5cee;
       }
@@ -2998,10 +3000,10 @@ SHDEF * NthValidShdef(short n)
   }
   else {
     for (i = 0; i < 10; i = i + 1) {
-      if (((*(uint *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93 + 0x7b) >> 9 & 1) == 0) &&
-         (bVar3 = n == 0, n = n + -1, bVar3)) {
+      if (((*(uint *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0)
+         && (bVar3 = n == 0, n = n + -1, bVar3)) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-        pSVar1 = (SHDEF *)(*(int *)(idPlayer * 4 + 0x14c) + i * 0x93);
+        pSVar1 = (SHDEF *)(*(int *)(idPlayer * 4 + rglpshdefSB) + i * 0x93);
         goto LAB_10c8_5cee;
       }
     }
@@ -3032,13 +3034,13 @@ SHDEF * NthValidEnemyShdef(short n)
   
   if (fStarbaseMode == 0) {
     for (i = 0; i < game.cPlayer; i = i + 1) {
-      if (((*(int *)(i * 4 + 0xfe) != 0) || (*(int *)(i * 4 + 0x100) != 0)) &&
+      if (((*(int *)(i * 4 + rglpshdef) != 0) || (*(int *)(i * 4 + 0x100) != 0)) &&
          (i != idPlayer)) {
         for (j = 0; j < 0x10; j = j + 1) {
-          if (((*(uint *)(*(int *)(i * 4 + 0xfe) + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
+          if (((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
              (bVar3 = n == 0, n = n + -1, bVar3)) {
             uVar2 = *(undefined2 *)(i * 4 + 0x100);
-            pSVar1 = (SHDEF *)(*(int *)(i * 4 + 0xfe) + j * 0x93);
+            pSVar1 = (SHDEF *)(*(int *)(i * 4 + rglpshdef) + j * 0x93);
             goto LAB_10c8_5e79;
           }
         }
@@ -3047,13 +3049,13 @@ SHDEF * NthValidEnemyShdef(short n)
   }
   else {
     for (i = 0; i < game.cPlayer; i = i + 1) {
-      if (((*(int *)(i * 4 + 0x14c) != 0) || (*(int *)(i * 4 + 0x14e) != 0)) &&
+      if (((*(int *)(i * 4 + rglpshdefSB) != 0) || (*(int *)(i * 4 + 0x14e) != 0)) &&
          (i != idPlayer)) {
         for (j = 0; j < 10; j = j + 1) {
-          if (((*(uint *)(*(int *)(i * 4 + 0x14c) + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
+          if (((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 9 & 1) == 0) &&
              (bVar3 = n == 0, n = n + -1, bVar3)) {
             uVar2 = *(undefined2 *)(i * 4 + 0x14e);
-            pSVar1 = (SHDEF *)(*(int *)(i * 4 + 0x14c) + j * 0x93);
+            pSVar1 = (SHDEF *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93);
             goto LAB_10c8_5e79;
           }
         }
@@ -3114,7 +3116,7 @@ void FillBuildDD(HWND hwndDD,short md)
   }
   else {
     ishdefMac = 10;
-    lpshdef = *(int *)(idPlayer * 4 + 0x14c);
+    lpshdef = *(int *)(idPlayer * 4 + rglpshdefSB);
     local_10 = *(int *)(idPlayer * 4 + 0x14e);
   }
   i = 0;
@@ -3154,11 +3156,11 @@ void FillBuildDD(HWND hwndDD,short md)
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (i != idPlayer) {
           if (fStarbaseMode == 0) {
-            lpshdef = *(int *)(i * 4 + 0xfe);
+            lpshdef = *(int *)(i * 4 + rglpshdef);
             local_10 = *(int *)(i * 4 + 0x100);
           }
           else {
-            lpshdef = *(int *)(i * 4 + 0x14c);
+            lpshdef = *(int *)(i * 4 + rglpshdefSB);
             local_10 = *(int *)(i * 4 + 0x14e);
           }
           if ((lpshdef != 0) || (local_10 != 0)) {
@@ -3385,7 +3387,7 @@ short IEmptyBmpFromGrhst(HullSlotType grhst)
     if (0x14 < i) {
       return 0;
     }
-    if (*(HullSlotType *)(i * 2 + 0xc52) == grhst) break;
+    if (*(HullSlotType *)(i * 2 + rgmapBuildBmps) == grhst) break;
     i = i + 1;
   }
   return i;

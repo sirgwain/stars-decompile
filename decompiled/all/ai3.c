@@ -204,7 +204,7 @@ void DoMacintiAiTurn(PROD *rgprod)
   for (i = 0xc; i < 0xe; i = i + 1) {
     if (((rgRecycleShdef[i] != 0) &&
         ((*(uint *)((int)&rgshdef[0].wFlags + i * 0x93) >> 9 & 1) == 0)) &&
-       (*(int *)(i * 0x93 + 0x3f00) == 0x1d)) {
+       (*(int *)(i * 0x93 + rgshdef) == 0x1d)) {
       rgRecycleShdef[i] = 0;
     }
   }
@@ -228,7 +228,7 @@ void DoMacintiAiTurn(PROD *rgprod)
     }
     if ((*(int *)((int)&rgshdef[0].cExist + i * 0x93) == 0) &&
        (*(int *)((int)&rgshdef[0].cExist + 2 + i * 0x93) == 0)) {
-      puVar20 = (undefined2 *)(i * 0x93 + 0x3f00);
+      puVar20 = (undefined2 *)(i * 0x93 + rgshdef);
       puVar22 = &stack0xfeba;
       for (iVar18 = 0x49; iVar18 != 0; iVar18 = iVar18 + -1) {
         puVar6 = puVar22;
@@ -744,7 +744,7 @@ AI3_TryShip3:
                      (uVar11 = _uStack_b6, (int)rgResAvail[i * 2 + 1] < 0)) goto AI3_FinishProd_3;
                 }
                 GetTrueHullCost
-                          (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00),rgCosts);
+                          (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + rgshdef),rgCosts);
                 for (i = 0; i < 0x14; i = i + 1) {
                   for (j = 0; sVar12 = j, j < 4; j = j + 1) {
                     uVar8 = rgCosts[j];
@@ -2101,7 +2101,7 @@ short FPotentMacWarFleet(FLEET *lpfl,short *pcEquiv)
     for (ish = 8; ish < 10; ish = ish + 1) {
       if (((((FLEET *)lpfl)->rgcsh[ish] != 0) &&
           ((*(uint *)((int)&rgshdef[0].wFlags + ish * 0x93) >> 9 & 1) == 0)) &&
-         (*(int *)(ish * 0x93 + 0x3f00) == 9)) {
+         (*(int *)(ish * 0x93 + rgshdef) == 9)) {
         cEquiv = cEquiv + ((FLEET *)lpfl)->rgcsh[ish] * 2;
       }
     }

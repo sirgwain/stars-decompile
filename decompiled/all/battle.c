@@ -955,7 +955,7 @@ short FFleetHasBombs(FLEET *lpfl)
     if (((FLEET *)lpfl)->rgcsh[ishdef] != 0) {
       iVar4 = ((uint)lpfl->id >> 9 & 0xf) * 4;
       uVar1 = *(undefined2 *)(iVar4 + 0x100);
-      pHVar3 = (HUL *)(*(int *)(iVar4 + 0xfe) + ishdef * 0x93);
+      pHVar3 = (HUL *)(*(int *)(iVar4 + rglpshdef) + ishdef * 0x93);
       lphul = (HUL *)CONCAT22(uVar1,pHVar3);
       LphuldefFromId(lphul->ihuldef);
       sVar2 = FHullHasBombs((HUL *)CONCAT22(uVar1,pHVar3));
@@ -1027,10 +1027,10 @@ short FFleetHasTeeth(FLEET *lpfl)
     if (((((FLEET *)lpfl)->rgcsh[ishdef] != 0) &&
         (iVar2 = ((uint)lpfl->id >> 9 & 0xf) * 4,
         sVar1 = FHullHasTeeth((HUL *)CONCAT22(*(undefined2 *)(iVar2 + 0x100),
-                                              (HUL *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93))),
-        sVar1 != 0)) &&
+                                              (HUL *)(*(int *)(iVar2 + rglpshdef) + ishdef * 0x93)))
+        , sVar1 != 0)) &&
        (iVar2 = ((uint)lpfl->id >> 9 & 0xf) * 4,
-       (*(uint *)(*(int *)(iVar2 + 0xfe) + ishdef * 0x93 + 0x7b) & 0xff) == 7)) break;
+       (*(uint *)(*(int *)(iVar2 + rglpshdef) + ishdef * 0x93 + 0x7b) & 0xff) == 7)) break;
     ishdef = ishdef + 1;
   }
   return 1;
@@ -1116,7 +1116,7 @@ void CheckTarget(TOK *ptok,FLEET *lpfl,short ishdef)
   
   uVar2 = (uint)lpfl->id >> 9 & 0xf;
   uVar1 = *(undefined2 *)(uVar2 * 4 + 0x100);
-  pSVar4 = (SHDEF *)(*(int *)(uVar2 * 4 + 0xfe) + ishdef * 0x93);
+  pSVar4 = (SHDEF *)(*(int *)(uVar2 * 4 + rglpshdef) + ishdef * 0x93);
   sVar3 = FHullHasTeeth((HUL *)CONCAT22(uVar1,pSVar4));
   pTVar6 = (TOK *)ptok;
   uVar7 = (undefined2)((ulong)ptok >> 0x10);
@@ -1459,7 +1459,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
       uVar9 = *(uint *)((int)*(undefined4 *)((BTLPLAN **)rglpbtlplan + iplrStarbase * 2) +
                        2) >> 8 & 0x1f;
       sVar6 = FHullHasTeeth((HUL *)CONCAT22(*(undefined2 *)(iplrStarbase * 4 + 0x14e),
-                                            (HUL *)(*(int *)(iplrStarbase * 4 + 0x14c) +
+                                            (HUL *)(*(int *)(iplrStarbase * 4 + rglpshdefSB) +
                                                    (*(uint *)&pPVar4->lStarbase & 0xf) * 0x93)));
       if ((sVar6 != 0) && (uVar9 != 0)) {
         if ((uVar9 == 1) || (uVar9 == 2)) {
@@ -1602,7 +1602,7 @@ short CplrBattle(FLEET *lpfl,ushort *rggrfAttack,ushort *pgrfPlayer,ushort *pgrf
           for (ishdef = 0; ishdef < 0x10; ishdef = ishdef + 1) {
             if (((FLEET *)lpflCur)->rgcsh[ishdef] != 0) {
               pHVar11 = LphuldefFromId
-                                  (*(HullDef *)(*(int *)(iplrCur * 4 + 0xfe) + ishdef * 0x93));
+                                  (*(HullDef *)(*(int *)(iplrCur * 4 + rglpshdef) + ishdef * 0x93));
               if ((((HULDEF *)pHVar11)->wFlags_0x7b >> 6 & 0xf) != 0) {
                 uVar3 = ((FLEET *)lpflCur)->rgcsh[ishdef];
                 puVar1 = rgcsh + iplrCur * 2;
@@ -1739,7 +1739,7 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
   if (((SHDEF *)lpshdef == (SHDEF *)0x0) && (lpshdef._2_2_ == 0)) {
     iVar7 = pFVar6->iPlayer * 4;
     lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(iVar7 + 0x100),
-                                (SHDEF *)(*(int *)(iVar7 + 0xfe) + ishdef * 0x93));
+                                (SHDEF *)(*(int *)(iVar7 + rglpshdef) + ishdef * 0x93));
   }
   iEngine = -1;
   cHalfThruster = 0;
@@ -1872,13 +1872,13 @@ SHDEF * LpshdefFromTok(TOK *ptok)
   if (*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) < 0x10) {
     iVar4 = (uint)pTVar3->iplr * 4;
     uVar2 = *(undefined2 *)(iVar4 + 0x100);
-    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0xfe) +
+    pSVar1 = (SHDEF *)(*(int *)(iVar4 + rglpshdef) +
                       (uint)*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) * 0x93);
   }
   else {
     iVar4 = (uint)pTVar3->iplr * 4;
     uVar2 = *(undefined2 *)(iVar4 + 0x14e);
-    pSVar1 = (SHDEF *)(*(int *)(iVar4 + 0x14c) +
+    pSVar1 = (SHDEF *)(*(int *)(iVar4 + rglpshdefSB) +
                       (*(byte *)((int)&pTVar3->u_TOK_0x0003 + 1) - 0x10) * 0x93);
   }
   return (SHDEF *)CONCAT22(uVar2,pSVar1);
@@ -4627,13 +4627,13 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
       if (0 < pfl->rgcsh[j]) {
         if (sVar7 == 0) {
           iVar9 = pfl->iPlayer * 4;
-          lpshdefT = (undefined1 *)(*(int *)(iVar9 + 0xfe) + j * 0x93);
+          lpshdefT = (undefined1 *)(*(int *)(iVar9 + rglpshdef) + j * 0x93);
           uVar16 = *(undefined2 *)(iVar9 + 0x100);
         }
         else {
           iVar9 = pfl->iPlayer * 4;
           uVar16 = *(undefined2 *)(iVar9 + 0x100);
-          puVar10 = (undefined2 *)(*(int *)(iVar9 + 0xfe) + j * 0x93);
+          puVar10 = (undefined2 *)(*(int *)(iVar9 + rglpshdef) + j * 0x93);
           puVar11 = &stack0xff4a;
           for (iVar9 = 0x49; iVar9 != 0; iVar9 = iVar9 + -1) {
             puVar3 = puVar11;

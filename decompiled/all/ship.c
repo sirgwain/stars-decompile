@@ -300,7 +300,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
         ishdef = ishdef + 1;
       }
       GlobalPD.grPopup = 0xb;
-      GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ = (FLEET *)(ishdef * 0x93 + 0x3f00);
+      GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ = (FLEET *)(ishdef * 0x93 + rgshdef);
       GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = 0x1120;
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = 0;
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;
@@ -856,7 +856,7 @@ long LGetFleetStat(FLEET *lpfl,GrStat grStat)
       if (pFVar3->rgcsh[i] != 0) {
         iVar4 = pFVar3->iPlayer * 4;
         sVar2 = WtMaxShdefStat((SHDEF *)CONCAT22(*(undefined2 *)(iVar4 + 0x100),
-                                                 (SHDEF *)(*(int *)(iVar4 + 0xfe) + i * 0x93)),
+                                                 (SHDEF *)(*(int *)(iVar4 + rglpshdef) + i * 0x93)),
                                grStat);
         uVar6 = __aFulmul((long)pFVar3->rgcsh[i],(long)sVar2);
         lVar1 = uVar6 + lVar1;
@@ -1111,7 +1111,7 @@ void DrawFleetBitmap
   if (ibmp < 0) {
     sVar4 = IshdefPrimaryFromLpfl(lpfl,&cDiff);
     iVar2 = ((FLEET *)lpfl)->iPlayer * 4;
-    ibmp = *(short *)(*(int *)(iVar2 + 0xfe) + sVar4 * 0x93 + 0x32);
+    ibmp = *(short *)(*(int *)(iVar2 + rglpshdef) + sVar4 * 0x93 + 0x32);
   }
   uVar5 = ibmp % 0x94;
   SelectPalette(hdc,vhpal,0);
@@ -3134,7 +3134,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
     else {
       lSel = 0xff;
       for (i = 0; i < 4; i = i + 1) {
-        rgszZip[i] = (char *)*(undefined2 *)(i * 2 + 0x906);
+        rgszZip[i] = (char *)*(undefined2 *)(i * 2 + rgszZipOrder);
       }
       local_104 = &lSel;
       lSel = CONCAT22(5,(THING *)lSel);
@@ -3580,7 +3580,8 @@ void UpdateOrdersDDs(short iLevel)
       else {
         iMin = i + -1;
       }
-      _strcpy((char *)szWork + 1,(char *)*(undefined2 *)(iMin * 2 + 0x4cc));
+      _strcpy((char *)szWork + 1,(char *)*(undefined2 *)(iMin * 2 + rgszMinerals))
+      ;
       if (*(uint *)((int)(PLORD *)sel.fl.lpplord +
                    iMin * 2 + sel.iwpAct * 0x12 + 0xc) >> 0xc == 0) {
         szWork[0] = ' ';
@@ -3983,8 +3984,8 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
   fEfficient = GetRaceGrbit((PLAYER *)rgplr + pFVar5->iPlayer,ibitRaceIFE);
   i = 0;
   iVar6 = pFVar5->iPlayer * 4;
-  lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),(SHDEF *)*(undefined2 *)(iVar6 + 0xfe))
-  ;
+  lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
+                              (SHDEF *)*(undefined2 *)(iVar6 + rglpshdef));
   do {
     if (0xf < i) {
       wtCargo = 0;
@@ -4025,8 +4026,8 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
             if ((rgieff[i * 2] == iEffCur) && (rgieff[i * 2 + 1] == local_18)) {
               iVar6 = pFVar5->iPlayer * 4;
               sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
-                                                       (SHDEF *)(*(int *)(iVar6 + 0xfe) + i * 0x93))
-                                     ,grStatCargo);
+                                                       (SHDEF *)(*(int *)(iVar6 + rglpshdef) +
+                                                                i * 0x93)),grStatCargo);
               uVar13 = __aFulmul((long)pFVar5->rgcsh[i],(long)sVar3);
               if (CONCAT22(local_2e,wtCargo) < (long)uVar13) {
                 uVar13 = CONCAT22(local_2e,wtCargo);
@@ -4034,8 +4035,8 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
               else {
                 iVar6 = pFVar5->iPlayer * 4;
                 sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
-                                                         (SHDEF *)(*(int *)(iVar6 + 0xfe) + i * 0x93
-                                                                  )),grStatCargo);
+                                                         (SHDEF *)(*(int *)(iVar6 + rglpshdef) +
+                                                                  i * 0x93)),grStatCargo);
                 uVar13 = __aFulmul((long)pFVar5->rgcsh[i],(long)sVar3);
               }
               wtCargoT = uVar13;
@@ -4046,8 +4047,8 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
                  ((0 < (int)rgieff[i * 2 + 1] || (rgieff[i * 2] != 0)))) {
                 iVar6 = pFVar5->iPlayer * 4;
                 uVar13 = __aFulmul((long)pFVar5->rgcsh[i],
-                                           (ulong)*(uint *)(*(int *)(iVar6 + 0xfe) + i * 0x93 + 0x28
-                                                           ));
+                                           (ulong)*(uint *)(*(int *)(iVar6 + rglpshdef) + i * 0x93 +
+                                                           0x28));
                 wtMass = uVar13 + wtCargoT;
                 uVar13 = __aFulmul(CONCAT22(local_18,iEffCur),dTravel);
                 lT = uVar13;
@@ -4215,17 +4216,17 @@ short IFindIdealWarp(FLEET *lpfl,short fIgnoreScoops)
     if (0 < ((FLEET *)lpfl)->rgcsh[i]) {
       j = 0;
       while ((iVar3 = ((FLEET *)lpfl)->iPlayer * 4,
-             j < (int)(uint)*(byte *)(*(int *)(iVar3 + 0xfe) + i * 0x93 + 0x7a) &&
+             j < (int)(uint)*(byte *)(*(int *)(iVar3 + rglpshdef) + i * 0x93 + 0x7a) &&
              (iVar3 = ((FLEET *)lpfl)->iPlayer * 4,
-             *(int *)(*(int *)(iVar3 + 0xfe) + i * 0x93 + 0x3a + j * 4) != 1))) {
+             *(int *)(*(int *)(iVar3 + rglpshdef) + i * 0x93 + 0x3a + j * 4) != 1))) {
         j = j + 1;
       }
       iVar3 = ((FLEET *)lpfl)->iPlayer * 4;
-      if (j == (uint)*(byte *)(*(int *)(iVar3 + 0xfe) + i * 0x93 + 0x7a)) {
+      if (j == (uint)*(byte *)(*(int *)(iVar3 + rglpshdef) + i * 0x93 + 0x7a)) {
         return 0;
       }
       iVar3 = ((FLEET *)lpfl)->iPlayer * 4;
-      id = *(uint *)(*(int *)(iVar3 + 0xfe) + i * 0x93 + j * 4 + 0x3c) & 0xff;
+      id = *(uint *)(*(int *)(iVar3 + rglpshdef) + i * 0x93 + j * 4 + 0x3c) & 0xff;
       pEVar4 = LpengineFromId(id);
       uVar2 = (undefined2)((ulong)pEVar4 >> 0x10);
       pEVar1 = (ENGINE *)pEVar4;
@@ -4367,8 +4368,9 @@ long LFuelUseToWaypoint(FLEET *lpfl,short iwp,short fMaxCargo)
         if (0xf < j) break;
         if ((pFVar7->rgcsh[j] != 0) &&
            ((lpshdef = (SHDEF *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x100),
-                                         (SHDEF *)(*(int *)(idPlayer * 4 + 0xfe) + j * 0x93))
-            , (lpshdef->hul).ihuldef == ihuldefFuelTransport ||
+                                         (SHDEF *)(*(int *)(idPlayer * 4 + rglpshdef) +
+                                                  j * 0x93)),
+            (lpshdef->hul).ihuldef == ihuldefFuelTransport ||
             ((lpshdef->hul).ihuldef == ihuldefSuperFuelXport)))) {
           psVar8 = pFVar7->rgcsh + j;
           j = *psVar8 >> 0xf;
@@ -4416,7 +4418,7 @@ long LFuelUseToWaypoint(FLEET *lpfl,short iwp,short fMaxCargo)
       if (((pPVar13 != (PLANET *)0x0) && (pPVar5->iPlayer == idPlayer)) &&
          ((pPVar5->wFlags_0x4 >> 9 & 1) != 0)) {
         pFVar4 = (FLEET *)*(HullDef *)
-                           (*(int *)(idPlayer * 4 + 0x14c) +
+                           (*(int *)(idPlayer * 4 + rglpshdefSB) +
                            (*(uint *)&pPVar5->lStarbase & 0xf) * 0x93);
         pHVar14 = LphuldefFromId((HullDef)pFVar4);
         pFVar15 = (FLEET *)CONCAT22(uVar16,pFVar4);
@@ -4532,7 +4534,7 @@ void FleetTransferCargoBalance(FLEET *pflNew1,FLEET *pflNew2)
     if (0xf < ishdef) break;
     if ((rgflCur.rgcsh[ishdef] != 0) || (local_10e[ishdef] != 0)) {
       local_19a = *(undefined2 *)(iplr * 4 + 0x100);
-      lpshdef = (SHDEF *)(*(int *)(iplr * 4 + 0xfe) + ishdef * 0x93);
+      lpshdef = (SHDEF *)(*(int *)(iplr * 4 + rglpshdef) + ishdef * 0x93);
       wtFuelMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),grStatFuel);
       wtCargoMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),grStatCargo);
       for (i = 0; i < 2; i = i + 1) {
@@ -5007,7 +5009,7 @@ void RemoveIshdefFromAllQueues(short ishdef,short fSpaceDocks)
         ((((PLANET *)lppl)->iPlayer == idPlayer &&
          ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) &&
        ((fSpaceDocks == 0 ||
-        (*(int *)(*(int *)(idPlayer * 4 + 0x14c) +
+        (*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                  (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93) == 0x21)))) {
       iDst = 0;
       iprod = 0;
@@ -5096,7 +5098,7 @@ short CshQueued(short ishdef,short *pfProgress,short fSpaceDocks)
         ((((PLANET *)lppl)->iPlayer == idPlayer &&
          ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) &&
        ((fSpaceDocks == 0 ||
-        (*(int *)(*(int *)(idPlayer * 4 + 0x14c) +
+        (*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                  (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93) == 0x21)))) {
       iprod = 0;
       lpprod = (PROD *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2),
@@ -5286,9 +5288,9 @@ void GetTruePartCost(short iPlayer,PART *ppart,ushort *rgCost)
   iVar1 = *&(&ppart->u_PART_0x0004)->parmor;
   uVar2 = *(undefined2 *)((int)&ppart->u_PART_0x0004 + 2);
   for (i = 0; i < 3; i = i + 1) {
-    rgCost[i] = *(ushort *)(iVar1 + 0x2c + i * 2);
+    rgCost[i] = *(ushort *)(iVar1 + lpfnTutorDlgProc_0x2 + i * 2);
   }
-  rgCost[3] = *(ushort *)(iVar1 + 0x2a);
+  rgCost[3] = *(ushort *)(iVar1 + lpfnTutorDlgProc);
   if (iPlayer != -1) {
     if (((((ppart->hs).grhst & hstTerra) ==
           ~(hstPlanetary|hstHull|hstTerra|hstSpecialM|hstSpecialE|hstSBHull|hstSpecialSB|hstMines|

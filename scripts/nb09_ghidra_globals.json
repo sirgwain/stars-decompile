@@ -3,7 +3,7 @@
     "nb09": "stars26jrc3.codeview.nb09.bin",
     "segments_csv": "segments.csv",
     "sig_overrides": "sig_overrides.json",
-    "sig_overrides_params_applied": 104,
+    "sig_overrides_params_applied": 105,
     "globals_total": 612,
     "procs_total": 1047,
     "labels_total": 431,
@@ -64141,14 +64141,16 @@
             "c_decl": "uint16_t wParam",
             "size": 2,
             "is_far_ptr": false,
+            "reg": 16,
+            "is_arg_region": true,
             "bp_off": 10
           },
           {
-            "name": "message",
+            "name": "msg",
             "kind": "param",
             "typind": 115,
             "c_type": "WMType",
-            "c_decl": "WMType message",
+            "c_decl": "WMType msg",
             "size": 2,
             "is_far_ptr": false,
             "bp_off": 12
@@ -64161,6 +64163,8 @@
             "c_decl": "HWND hwnd",
             "size": 2,
             "is_far_ptr": false,
+            "reg": 15,
+            "is_arg_region": true,
             "bp_off": 14,
             "note": "windows_retype"
           }

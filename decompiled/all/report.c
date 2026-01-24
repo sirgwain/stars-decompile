@@ -1312,8 +1312,8 @@ void DrawHistoryReport(HDC hdc)
           uVar12 = 0xff;
         }
         else {
-          uVar9 = *(undefined2 *)(i * 4 + 0x2e);
-          uVar12 = *(undefined2 *)(i * 4 + 0x30);
+          uVar9 = *(undefined2 *)(i * 4 + rgcrPlrHistory);
+          uVar12 = *(undefined2 *)(i * 4 + rgcrPlrHistory_0x2);
         }
         SetTextColor(hdc,CONCAT22(uVar12,uVar9));
         uVar9 = 0x1120;
@@ -1335,8 +1335,8 @@ void DrawHistoryReport(HDC hdc)
           uVar12 = 0xff;
         }
         else {
-          uVar9 = *(undefined2 *)(i * 4 + 0x2e);
-          uVar12 = *(undefined2 *)(i * 4 + 0x30);
+          uVar9 = *(undefined2 *)(i * 4 + rgcrPlrHistory);
+          uVar12 = *(undefined2 *)(i * 4 + rgcrPlrHistory_0x2);
         }
         HVar2 = CreatePen(0,1,CONCAT22(uVar12,uVar9));
         HVar3 = SelectObject(hdc,HVar2);
@@ -1373,8 +1373,8 @@ void DrawHistoryReport(HDC hdc)
             uVar12 = 0xff;
           }
           else {
-            uVar9 = *(undefined2 *)(i * 4 + 0x2e);
-            uVar12 = *(undefined2 *)(i * 4 + 0x30);
+            uVar9 = *(undefined2 *)(i * 4 + rgcrPlrHistory);
+            uVar12 = *(undefined2 *)(i * 4 + rgcrPlrHistory_0x2);
           }
           SetPixel(hdc,pt,local_74,CONCAT22(uVar12,uVar9));
         }
@@ -1686,7 +1686,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
       auStack_94._0_2_ = auStack_94._4_2_ - dx;
       pHVar20 = LphuldefFromId
                           (*(HullDef *)
-                            (*(int *)(idPlayer * 4 + 0x14c) +
+                            (*(int *)(idPlayer * 4 + rglpshdefSB) +
                             (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93));
       HVar5 = hbrYellow;
       if ((((HULDEF *)pHVar20)->hul).wtCargoMax == 0) {
@@ -1716,7 +1716,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
       }
       else {
         local_70 = *(undefined2 *)(idPlayer * 4 + 0x14e);
-        lpsz = (char *)(*(int *)(idPlayer * 4 + 0x14c) +
+        lpsz = (char *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                         (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93 + 8);
       }
       sVar10 = prc->left;
@@ -2026,7 +2026,8 @@ REPORT_DrawPlusDef:
     case 5:
       psz = PszGetTaskName(lpfl,&i);
       if (i != -1) {
-        SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + 0x44a),*(undefined2 *)(i * 4 + 0x448)));
+        SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + rgcrMinerals_0x2),
+                                  *(undefined2 *)(i * 4 + rgcrMinerals)));
       }
       sVar10 = prc->left;
       sVar11 = prc->top;
@@ -2194,7 +2195,7 @@ REPORT_DrawPlusDef:
       prc->right = prc->right + dx * -6;
       iVar12 = ((FLEET *)lpfl)->iPlayer * 4;
       uVar23 = *(undefined2 *)(iVar12 + 0x100);
-      pcVar8 = (char *)(*(int *)(iVar12 + 0xfe) + i * 0x93 + 8);
+      pcVar8 = (char *)(*(int *)(iVar12 + rglpshdef) + i * 0x93 + 8);
       sVar10 = prc->left;
       sVar11 = prc->top;
       UVar26 = 4;
@@ -2240,7 +2241,7 @@ REPORT_DrawPlusDef:
       for (i = 0; i < 0x10; i = i + 1) {
         if (((FLEET *)lpfl)->rgcsh[i] != 0) {
           iVar12 = ((FLEET *)lpfl)->iPlayer * 4;
-          pHVar20 = LphuldefFromId(*(HullDef *)(*(int *)(iVar12 + 0xfe) + i * 0x93));
+          pHVar20 = LphuldefFromId(*(HullDef *)(*(int *)(iVar12 + rglpshdef) + i * 0x93));
           j = ((HULDEF *)pHVar20)->wFlags_0x7b >> 10 & 0xf;
           if (((uint)j < 2) || (5 < (uint)j)) {
             uVar9 = ((FLEET *)lpfl)->rgcsh[i];
@@ -2272,7 +2273,7 @@ REPORT_DrawPlusDef:
     for (i = 0; i < 0x10; i = i + 1) {
       if ((((FLEET *)lpfl)->rgcsh[i] != 0) &&
          (iVar12 = ((FLEET *)lpfl)->iPlayer * 4,
-         pHVar20 = LphuldefFromId(*(HullDef *)(*(int *)(iVar12 + 0xfe) + i * 0x93)),
+         pHVar20 = LphuldefFromId(*(HullDef *)(*(int *)(iVar12 + rglpshdef) + i * 0x93)),
          (((HULDEF *)pHVar20)->wFlags_0x7b >> 10 & 0xf) == j)) {
         uVar9 = ((FLEET *)lpfl)->rgcsh[i];
         bVar18 = CARRY2((uint)l,uVar9);
@@ -2430,8 +2431,8 @@ void DrawMineralItem(HDC hdc,short x,short y,short iMineral,long l)
     SetTextColor(hdc,0);
   }
   else {
-    SetTextColor(hdc,CONCAT22(*(undefined2 *)(iMineral * 4 + 0x44a),
-                              *(undefined2 *)(iMineral * 4 + 0x448)));
+    SetTextColor(hdc,CONCAT22(*(undefined2 *)(iMineral * 4 + rgcrMinerals_0x2),
+                              *(undefined2 *)(iMineral * 4 + rgcrMinerals)));
   }
   if (l < 0) {
     cch = _strlen(_szDblDash);
@@ -2821,7 +2822,7 @@ REPORT_LShowTask:
             else if (opOrd == 6) {
               iZip = 2;
             }
-            return (char *)*(undefined2 *)(iZip * 2 + 0x906);
+            return (char *)*(undefined2 *)(iZip * 2 + rgszZipOrder);
           }
         }
       }
@@ -3099,11 +3100,13 @@ short ICompReport(void *arg1,void *arg2)
         }
         else {
           iRet = __fstrcmp((char *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x14e),
-                                                    (char *)(*(int *)(idPlayer * 4 + 0x14c) +
+                                                    (char *)(*(int *)(idPlayer * 4 +
+                                                                     rglpshdefSB) +
                                                              (*(uint *)&pPVar6->lStarbase & 0xf) *
                                                              0x93 + 8)),
                                    (char *)CONCAT22(*(undefined2 *)(idPlayer * 4 + 0x14e),
-                                                    (char *)(*(int *)(idPlayer * 4 + 0x14c) +
+                                                    (char *)(*(int *)(idPlayer * 4 +
+                                                                     rglpshdefSB) +
                                                              (*(uint *)&pPVar7->lStarbase & 0xf) *
                                                              0x93 + 8)));
           pBVar2 = (BTLDATA *)pct2;
@@ -3548,12 +3551,13 @@ REPORT_LUnitsLeft:
           uVar13 = __aFulmul((long)sVar4,0x93);
           iVar3 = ((PLANET *)lppl2)->iPlayer * 4;
           uVar10 = *(undefined2 *)(iVar3 + 0x100);
-          pcVar8 = (char *)(*(int *)(iVar3 + 0xfe) + (int)uVar13 + 8);
+          pcVar8 = (char *)(*(int *)(iVar3 + rglpshdef) + (int)uVar13 + 8);
           uVar13 = __aFulmul(CONCAT22(l1._2_2_,(uint)l1),0x93);
           iVar3 = ((FLEET *)ibtl1)->iPlayer * 4;
           iRet = __fstrcmp((char *)CONCAT22(*(undefined2 *)(iVar3 + 0x100),
-                                                    (char *)(*(int *)(iVar3 + 0xfe) + (int)uVar13 +
-                                                            8)),(char *)CONCAT22(uVar10,pcVar8));
+                                                    (char *)(*(int *)(iVar3 + rglpshdef) +
+                                                             (int)uVar13 + 8)),
+                                   (char *)CONCAT22(uVar10,pcVar8));
           if (iRet == 0) {
             pct2 = (float)CONCAT22(ibtl1._2_2_,((FLEET *)ibtl1)->rgcsh);
             lVar14 = __aFlshl((long)CONCAT22(unaff_SI,unaff_DI),iLast);
@@ -3603,7 +3607,7 @@ REPORT_LUnitsLeft:
           if (0xf < i) break;
           if (((FLEET *)ibtl1)->rgcsh[i] != 0) {
             iVar3 = ((FLEET *)ibtl1)->iPlayer * 4;
-            pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + 0xfe) + i * 0x93));
+            pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + rglpshdef) + i * 0x93));
             j = ((HULDEF *)pHVar15)->wFlags_0x7b >> 10 & 0xf;
             if (((uint)j < 2) || (5 < (uint)j)) {
               uVar5 = ((FLEET *)ibtl1)->rgcsh[i];
@@ -3614,7 +3618,7 @@ REPORT_LUnitsLeft:
           }
           if (*(int *)(((PLANET *)lppl2)->rgEnvVar + i * 2) != 0) {
             iVar3 = ((PLANET *)lppl2)->iPlayer * 4;
-            pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + 0xfe) + i * 0x93));
+            pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + rglpshdef) + i * 0x93));
             j = ((HULDEF *)pHVar15)->wFlags_0x7b >> 10 & 0xf;
             if (((uint)j < 2) || (5 < (uint)j)) {
               uVar5 = *(uint *)(((PLANET *)lppl2)->rgEnvVar + i * 2);
@@ -3648,7 +3652,7 @@ REPORT_LEFleetCount:
           if (0xf < i) break;
           if ((((FLEET *)ibtl1)->rgcsh[i] != 0) &&
              (iVar3 = ((FLEET *)ibtl1)->iPlayer * 4,
-             pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + 0xfe) + i * 0x93)),
+             pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + rglpshdef) + i * 0x93)),
              (((HULDEF *)pHVar15)->wFlags_0x7b >> 10 & 0xf) == j)) {
             uVar5 = ((FLEET *)ibtl1)->rgcsh[i];
             bVar11 = CARRY2((uint)l1,uVar5);
@@ -3657,7 +3661,7 @@ REPORT_LEFleetCount:
           }
           if ((*(int *)(((PLANET *)lppl2)->rgEnvVar + i * 2) != 0) &&
              (iVar3 = ((PLANET *)lppl2)->iPlayer * 4,
-             pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + 0xfe) + i * 0x93)),
+             pHVar15 = LphuldefFromId(*(HullDef *)(*(int *)(iVar3 + rglpshdef) + i * 0x93)),
              (((HULDEF *)pHVar15)->wFlags_0x7b >> 10 & 0xf) == j)) {
             uVar5 = *(uint *)(((PLANET *)lppl2)->rgEnvVar + i * 2);
             bVar11 = CARRY2((uint)l2,uVar5);
@@ -3939,7 +3943,7 @@ void ReportColumnPopup(POINT pt,short icol,short fRightBtn)
       rgsz[(cItems + -1) * 0x32] = '\0';
       iVar2 = cItems;
       for (j = 0; cItems = iVar2 + 1, j < (int)((vprptCur->irpt == 1) + 3); j = j + 1) {
-        _strcpy(rgsz + cItems * 0x32,(char *)*(undefined2 *)(j * 2 + 0x4cc));
+        _strcpy(rgsz + cItems * 0x32,(char *)*(undefined2 *)(j * 2 + rgszMinerals));
         iVar2 = cItems;
       }
       rgsz[cItems * 0x32] = -1;
@@ -4290,7 +4294,7 @@ REPORT_LShowStarbase:
       GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 =
            *(ushort *)(idPlayer * 4 + 0x14e);
       GlobalPD.u_POPUPDATA_0x0002.lpfl._0_2_ =
-           (FLEET *)(*(int *)(idPlayer * 4 + 0x14c) +
+           (FLEET *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                     ((uint)sel.pl.lStarbase & 0xf) * 0x93);
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = 0;
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;
@@ -4600,7 +4604,7 @@ void DumpPlanets(void)
           iVar6 = pPVar5->iPlayer * 4;
           __fstrcpy(szForm + 1,
                             (char *)CONCAT22(*(undefined2 *)(iVar6 + 0x14e),
-                                             (char *)(*(int *)(iVar6 + 0x14c) +
+                                             (char *)(*(int *)(iVar6 + rglpshdefSB) +
                                                       (*(uint *)&pPVar5->lStarbase & 0xf) * 0x93 + 8
                                                      )));
           cch = _strlen(szForm);
@@ -5141,7 +5145,8 @@ void DumpFleets(void)
           for (i = 0; i < 0x10; i = i + 1) {
             if (((FLEET *)lpfl)->rgcsh[i] != 0) {
               iVar10 = ((FLEET *)lpfl)->iPlayer * 4;
-              pHVar14 = LphuldefFromId(*(HullDef *)(*(int *)(iVar10 + 0xfe) + i * 0x93));
+              pHVar14 = LphuldefFromId(*(HullDef *)(*(int *)(iVar10 + rglpshdef) + i * 0x93))
+              ;
               j = ((HULDEF *)pHVar14)->wFlags_0x7b >> 10 & 0xf;
               if (((uint)j < 2) || (5 < (uint)j)) {
                 uVar1 = ((FLEET *)lpfl)->rgcsh[i];
@@ -5163,7 +5168,8 @@ void DumpFleets(void)
             for (i = 0; i < 0x10; i = i + 1) {
               if ((((FLEET *)lpfl)->rgcsh[i] != 0) &&
                  (iVar10 = ((FLEET *)lpfl)->iPlayer * 4,
-                 pHVar14 = LphuldefFromId(*(HullDef *)(*(int *)(iVar10 + 0xfe) + i * 0x93)),
+                 pHVar14 = LphuldefFromId
+                                     (*(HullDef *)(*(int *)(iVar10 + rglpshdef) + i * 0x93)),
                  (((HULDEF *)pHVar14)->wFlags_0x7b >> 10 & 0xf) == j)) {
                 uVar1 = ((FLEET *)lpfl)->rgcsh[i];
                 bVar12 = CARRY2(uVar9,uVar1);

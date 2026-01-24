@@ -35,8 +35,8 @@ HB * LphbAlloc(ushort cb,HeapType ht)
                            Impure (Non-shareable)
                         */
   cb = cb + 0x10;
-  if (cb < *(uint *)(ht * 2 + 0xd64)) {
-    cb = *(ushort *)(ht * 2 + 0xd64);
+  if (cb < *(uint *)(ht * 2 + mphtcbAlloc)) {
+    cb = *(ushort *)(ht * 2 + mphtcbAlloc);
   }
   HVar3 = GlobalAlloc(0x22,(ulong)cb);
   if (HVar3 == 0) {
@@ -55,9 +55,9 @@ HB * LphbAlloc(ushort cb,HeapType ht)
   pHVar2->ibTop = 0x10;
   pHVar2->ht = (byte)ht;
   uVar1 = *(undefined2 *)(ht * 4 + 0xd36);
-  *(undefined2 *)&pHVar2->lphbNext = *(undefined2 *)(ht * 4 + 0xd34);
+  *(undefined2 *)&pHVar2->lphbNext = *(undefined2 *)(ht * 4 + rglphb);
   *(undefined2 *)((int)&pHVar2->lphbNext + 2) = uVar1;
-  *(int *)(ht * 4 + 0xd34) = (int)pHVar2;
+  *(int *)(ht * 4 + rglphb) = (int)pHVar2;
   *(undefined2 *)(ht * 4 + 0xd36) = uVar4;
   return pHVar5;
 }
@@ -115,14 +115,14 @@ MEMORY_LReAllocOOM:
   pHVar2 = (HB *)pHVar5;
   pHVar2->hmem = hmem;
   iVar4 = (uint)pHVar2->ht * 4;
-  if (((HB *)*(int *)(iVar4 + 0xd34) == (HB *)lphb) && (*(int *)(iVar4 + 0xd36) == lphb._2_2_)) {
+  if (((HB *)*(int *)(iVar4 + rglphb) == (HB *)lphb) && (*(int *)(iVar4 + 0xd36) == lphb._2_2_)) {
     iVar4 = (uint)pHVar2->ht * 4;
-    *(int *)(iVar4 + 0xd34) = (int)pHVar2;
+    *(int *)(iVar4 + rglphb) = (int)pHVar2;
     *(undefined2 *)(iVar4 + 0xd36) = uVar3;
   }
   else {
     iVar4 = (uint)pHVar2->ht * 4;
-    lphbT = (HB *)CONCAT22(*(undefined2 *)(iVar4 + 0xd36),(HB *)*(undefined2 *)(iVar4 + 0xd34));
+    lphbT = (HB *)CONCAT22(*(undefined2 *)(iVar4 + 0xd36),(HB *)*(undefined2 *)(iVar4 + rglphb));
     while( true ) {
                     /* WARNING: Load size is inaccurate */
       if ((((HB *)lphbT == (HB *)0x0) && (lphbT._2_2_ == 0)) ||
@@ -189,7 +189,7 @@ void ResetHb(HeapType ht)
   ushort uVar1;
   HB *lphb;
   
-  lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + 0xd34));
+  lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + rglphb));
   while( true ) {
     if (((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) break;
     ((HB *)lphb)->ibTop = 0x10;
@@ -228,7 +228,7 @@ void * LpAlloc(ushort cb,HeapType ht)
   ushort cbItem;
   short fFree;
   
-  lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + 0xd34));
+  lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + rglphb));
   cb_00 = cb + 3 & 0xfffe;
   do {
     if ((((HB *)lphb == (HB *)0x0) && (lphb._2_2_ == 0)) || (cb_00 <= lphb->cbFree)) {
@@ -295,7 +295,7 @@ HB * LphbFromLpHt(void *lp,HeapType ht)
     lphb = (HB *)0x0;
   }
   else {
-    lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + 0xd34));
+    lphb = (HB *)CONCAT22(*(undefined2 *)(ht * 4 + 0xd36),(HB *)*(undefined2 *)(ht * 4 + rglphb));
     while( true ) {
       if ((lphb == (HB *)0x0) ||
          ((lphb < lp &&

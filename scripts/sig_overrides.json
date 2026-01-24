@@ -71,6 +71,7 @@
   "FakeEditProc": { "msg": "WMType" },
   "FakeListProc": { "msg": "WMType" },
   "FindDlg": { "msg": "WMType" },
+  "FrameWndProc": { "msg": "WMType" },
   "HostModeDialog": { "message": "WMType" },
   "HostOptionsDialog": { "message": "WMType" },
   "HostTimerProc": { "msg": "WMType" },

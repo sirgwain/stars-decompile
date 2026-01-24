@@ -1031,7 +1031,7 @@ short DrawScanner(HDC hdc,RECT *prc)
               SelectObject(hdc,((ushort *)rghbrPat)[i]);
               if (dPlanRange == 0) {
                 uVar17 = *(undefined2 *)(j * 4 + rgcrScanMine);
-                uVar7 = *(undefined2 *)(j * 4 + 0x28);
+                uVar7 = *(undefined2 *)(j * 4 + hbrBlue);
               }
               else {
                 uVar17 = 0xff;
@@ -1109,7 +1109,7 @@ short DrawScanner(HDC hdc,RECT *prc)
                       dPlanRange = (short)&rc;
                       SetRect((RECT *)dPlanRange,pt.x - dRange,pt.y - dRange,
                               (int)(short *)pt.x + dRange + 1,pt.y + dRange + 1);
-                      dPlanRange = *(short *)(j * 4 + 0x28);
+                      dPlanRange = *(short *)(j * 4 + hbrBlue);
                       SetBkColor(hdc,CONCAT22(dPlanRange,*(undefined2 *)(j * 4 + rgcrScanMine)));
                       dPlanRange = rc.left;
                       unaff_DI = &rc;
@@ -1386,8 +1386,8 @@ SCAN_LBailIn:
               }
               else {
                 iVar12 = pPVar9->iPlayer * 4;
-                uVar17 = *(undefined2 *)(iVar12 + 0x2e);
-                uVar7 = *(undefined2 *)(iVar12 + 0x30);
+                uVar17 = *(undefined2 *)(iVar12 + rgcrPlrHistory);
+                uVar7 = *(undefined2 *)(iVar12 + rgcrPlrHistory_0x2);
               }
               unaff_DI = (RECT *)hdc;
               SetTextColor(hdc,CONCAT22(uVar7,uVar17));
@@ -1448,8 +1448,8 @@ SCAN_LBailIn:
         }
         else {
           iVar12 = pPVar9->iPlayer * 4;
-          if (*(int *)(*(int *)(iVar12 + 0x14c) + (*(uint *)&pPVar9->lStarbase & 0xf) * 0x93) ==
-              0x20) {
+          if (*(int *)(*(int *)(iVar12 + rglpshdefSB) + (*(uint *)&pPVar9->lStarbase & 0xf) * 0x93)
+              == 0x20) {
             fStarbase = 2;
           }
           sVar3 = IWarpMAFromLppl(lppl,(short *)0x0);
@@ -1572,8 +1572,9 @@ LAB_1058_343d:
               fTerra = (short)(iScanZoom < 0);
               if ((3 < (pPVar9->wFlags_0x4 & 0xff)) ||
                  ((pTVar10 != (THING *)0x0 && (2 < (pPVar9->wFlags_0x4 & 0xff))))) {
-                hbr = (THING *)CONCAT22(pt.x - *(int *)(fTerra * 10 + 0x58c),pTVar10);
-                lpth = (THING *)CONCAT22(pt.y - *(int *)(fTerra * 10 + 0x58e),(THING *)lpth);
+                hbr = (THING *)CONCAT22(pt.x - *(int *)(fTerra * 10 + vrgScanPO),pTVar10);
+                lpth = (THING *)CONCAT22(pt.y - *(int *)(fTerra * 10 + vrgScanPO_0x2),(THING *)lpth)
+                ;
                 hbrSav = SelectObject(hdc,hbrButtonFace);
                 PatBlt(hdc,hbr._2_2_ + -2,lpth._2_2_,*(short *)(fTerra * 10 + 0x590),1,0xf00021);
                 PatBlt(hdc,hbr._2_2_ + -2,(lpth._2_2_ - *(int *)(fTerra * 10 + 0x590)) + 1,1,
@@ -1995,8 +1996,8 @@ void DrawScanFleetCount(FLEET *lpfl,short x,short y,HDC hdc,HDC hdcMem)
     local_c = 0xff;
   }
   else {
-    cr = *(int *)(iPlr * 4 + 0x2e);
-    local_c = *(int *)(iPlr * 4 + 0x30);
+    cr = *(int *)(iPlr * 4 + rgcrPlrHistory);
+    local_c = *(int *)(iPlr * 4 + rgcrPlrHistory_0x2);
   }
   iVar1 = y + -7;
   iVar3 = x + -1;
@@ -2098,7 +2099,7 @@ long CShipsScanVis(FLEET *lpfl)
           for (k = 0; k < 0x10; k = k + 1) {
             if ((0 < ((FLEET *)lpfl)->rgcsh[k]) &&
                (iVar2 = ((FLEET *)lpfl)->iPlayer * 4,
-               pHVar4 = LphuldefFromId(*(HullDef *)(*(int *)(iVar2 + 0xfe) + k * 0x93)),
+               pHVar4 = LphuldefFromId(*(HullDef *)(*(int *)(iVar2 + rglpshdef) + k * 0x93)),
                (((HULDEF *)pHVar4)->wFlags_0x7b >> 10 & 0xf) == j)) {
               uVar1 = ((FLEET *)lpfl)->rgcsh[k];
               bVar3 = CARRY2(csh,uVar1);
@@ -3732,17 +3733,17 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
         i._0_2_ = (PLANET *)((int)(PLANET *)i + 1)) {
       if (0 < pFVar11->rgcsh[(int)(PLANET *)i]) {
         for (; iVar12 = pFVar11->iPlayer * 4,
-            i._2_2_ < (int)(uint)*(byte *)(*(int *)(iVar12 + 0xfe) + (int)(PLANET *)i * 0x93 + 0x7a)
-            ; i._2_2_ = i._2_2_ + 1) {
+            i._2_2_ < (int)(uint)*(byte *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 +
+                                          0x7a); i._2_2_ = i._2_2_ + 1) {
           iVar12 = pFVar11->iPlayer * 4;
-          if ((*(int *)(*(int *)(iVar12 + 0xfe) + (int)(PLANET *)i * 0x93 + 0x3a + i._2_2_ * 4) ==
-               0x1000) &&
+          if ((*(int *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + 0x3a + i._2_2_ * 4)
+               == 0x1000) &&
              ((iVar12 = pFVar11->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar12 + 0xfe) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c) &
-              0xff) == 0 ||
+              (*(uint *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c
+                        ) & 0xff) == 0 ||
               (iVar12 = pFVar11->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar12 + 0xfe) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c) &
-              0xff) == 1)))) {
+              (*(uint *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c
+                        ) & 0xff) == 1)))) {
             bVar5 = true;
             break;
           }
@@ -3775,7 +3776,7 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
       if ((bVar6) &&
          (((((PLANET *)i != (PLANET *)0x0 || (i._2_2_ != 0)) &&
            (((PLANET *)i)->iPlayer == idPlayer)) &&
-          (*(int *)(*(int *)(idPlayer * 4 + 0x14c) +
+          (*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
                    (*(uint *)&((PLANET *)i)->lStarbase & 0xf) * 0x93) != 0x20)))) {
         bVar6 = false;
       }
@@ -3824,7 +3825,7 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
            (((PLANET *)i)->iPlayer == idPlayer)) {
           in_stack_0000ffd0 =
                *(HullDef *)
-                (*(int *)(idPlayer * 4 + 0x14c) +
+                (*(int *)(idPlayer * 4 + rglpshdefSB) +
                 (*(uint *)&((PLANET *)i)->lStarbase & 0xf) * 0x93);
           in_stack_0000ffce = 0x1050;
           uVar22 = 0x7eec;

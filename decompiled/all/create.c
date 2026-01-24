@@ -21,7 +21,7 @@ void InitBattlePlan(BTLPLAN *lpbtlplan,short iplan,short iplr)
   BTLPLAN *pBVar6;
   undefined2 uVar7;
   
-  puVar4 = (ushort *)(iplan * 0x24 + 0xc);
+  puVar4 = (ushort *)(iplan * hbrRed + 0xc);
   uVar7 = (undefined2)((ulong)lpbtlplan >> 0x10);
   pBVar5 = (BTLPLAN *)lpbtlplan;
   pBVar6 = pBVar5;
@@ -87,7 +87,7 @@ short CreateStartupShip(short iplr,short idPlanet,short ishdef,short fAddShdef)
     uVar8 = (undefined2)((ulong)pSVar13 >> 0x10);
     pSVar11 = (SHDEF *)pSVar13 + ishdef;
     uVar9 = *(undefined2 *)(iplr * 4 + 0x100);
-    pHVar12 = (HullDef *)(*(int *)(iplr * 4 + 0xfe) + uVar7 * 0x93);
+    pHVar12 = (HullDef *)(*(int *)(iplr * 4 + rglpshdef) + uVar7 * 0x93);
     for (iVar10 = 0x49; iVar10 != 0; iVar10 = iVar10 + -1) {
       pHVar4 = pHVar12;
       pHVar12 = pHVar12 + 1;
@@ -96,19 +96,20 @@ short CreateStartupShip(short iplr,short idPlanet,short ishdef,short fAddShdef)
       *pHVar4 = (pSVar13->hul).ihuldef;
     }
     *(char *)pHVar12 = (char)(pSVar11->hul).ihuldef;
-    *(uint *)(*(int *)(iplr * 4 + 0xfe) + uVar7 * 0x93 + 0x7b) =
-         *(uint *)(*(int *)(iplr * 4 + 0xfe) + uVar7 * 0x93 + 0x7b) & 0x83ff | (uVar7 & 0x1f) << 10;
+    *(uint *)(*(int *)(iplr * 4 + rglpshdef) + uVar7 * 0x93 + 0x7b) =
+         *(uint *)(*(int *)(iplr * 4 + rglpshdef) + uVar7 * 0x93 + 0x7b) & 0x83ff |
+         (uVar7 & 0x1f) << 10;
     ishdef = uVar7;
   }
   uVar9 = *(undefined2 *)(iplr * 4 + 0x100);
-  iVar10 = *(int *)(iplr * 4 + 0xfe) + ishdef * 0x93;
+  iVar10 = *(int *)(iplr * 4 + rglpshdef) + ishdef * 0x93;
   puVar2 = (uint *)(iVar10 + 0x83);
   uVar7 = *puVar2;
   *puVar2 = *puVar2 + 1;
   piVar3 = (int *)(iVar10 + 0x85);
   *piVar3 = *piVar3 + (uint)(0xfffe < uVar7);
   uVar9 = *(undefined2 *)(iplr * 4 + 0x100);
-  iVar10 = *(int *)(iplr * 4 + 0xfe) + ishdef * 0x93;
+  iVar10 = *(int *)(iplr * 4 + rglpshdef) + ishdef * 0x93;
   puVar2 = (uint *)(iVar10 + 0x7f);
   uVar7 = *puVar2;
   *puVar2 = *puVar2 + 1;
@@ -891,7 +892,7 @@ CREATE_Finish_2:
           if (bVar7 == 1) {
             if ((uint)((int)(uint)((byte *)vrgplrTypeNew)[i] >> 2) < 7) {
               c = (int)(uint)((byte *)vrgplrTypeNew)[i] >> 2;
-              puVar16 = (undefined2 *)(c * 0xc0 + 0xda2);
+              puVar16 = (undefined2 *)(c * 0xc0 + vrgplrDef);
               pPVar10 = (PLAYER *)rgplr + i;
               for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
                 pPVar19 = pPVar10;
@@ -905,7 +906,7 @@ CREATE_Finish_2:
             }
             else {
               c = Random(7);
-              puVar16 = (undefined2 *)(c * 0xc0 + 0xda2);
+              puVar16 = (undefined2 *)(c * 0xc0 + vrgplrDef);
               pPVar10 = (PLAYER *)rgplr + i;
               for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
                 pPVar19 = pPVar10;
@@ -1618,7 +1619,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           LVar14 = SendMessage(hwndDD,0x407,0,0);
           game.turn = (ushort)LVar14;
           if (game.turn < 7) {
-            puVar10 = (undefined2 *)(game.turn * 0xc0 + 0xda2);
+            puVar10 = (undefined2 *)(game.turn * 0xc0 + vrgplrDef);
             pPVar11 = (PLAYER *)&vplr;
             for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
               pPVar2 = pPVar11;
@@ -2134,7 +2135,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         hwndBtn = 0;
       }
       AppendMenu(rghmenuSubPopup[rcT + 5],hwndBtn,rcT + 0x3ac8 + dyBut * 8,
-                 (char *)*(undefined2 *)(dyBut * 2 + 0xaae));
+                 (char *)*(undefined2 *)(dyBut * 2 + vrgszComputerLevel));
     }
     if ((uVar9 & 0x1f) == rcT * 4 + 5U) {
       hwndBtn = 8;
@@ -2143,7 +2144,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       hwndBtn = 0;
     }
     AppendMenu(rghmenuSubPopup[2],hwndBtn | 0x10,rghmenuSubPopup[rcT + 5],
-               (char *)*(undefined2 *)(rcT * 2 + 0xa7e));
+               (char *)*(undefined2 *)(rcT * 2 + vrgszComputerPlayers));
   }
   HVar11 = CreatePopupMenu();
   iPopMenuSel = -1;
@@ -2275,7 +2276,7 @@ LAB_1078_9035:
       else if (iPopMenuSel == 2) {
         iVar15 = (int)uVar9 >> 2;
         if ((uVar9 & 3) == 1) {
-          puVar18 = (undefined2 *)(iVar15 * 0xc0 + 0xda2);
+          puVar18 = (undefined2 *)(iVar15 * 0xc0 + vrgplrDef);
           pPVar17 = (PLAYER *)&vplr;
           for (iVar16 = 0x60; iVar16 != 0; iVar16 = iVar16 + -1) {
             pPVar2 = pPVar17;
@@ -2496,7 +2497,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
         uVar10 = *(undefined2 *)(((int)(uint)((byte *)vrgplrTypeNew)[i] >> 5) * 2 + 0xaae)
         ;
         uVar14 = 0x1120;
-        uVar13 = *(undefined2 *)((uVar5 & 7) * 2 + 0xa7e);
+        uVar13 = *(undefined2 *)((uVar5 & 7) * 2 + vrgszComputerPlayers);
         uVar11 = 0x1120;
         pcVar2 = PszGetCompressedString(idsSSComputerPlayer);
         _wsprintf(szWork,pcVar2,uVar13,uVar11,uVar10,uVar14);
