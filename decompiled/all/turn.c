@@ -1594,11 +1594,11 @@ void FuelFleets(void)
           }
         }
         if ((lVar9 != 0) || (uVar10 != 0)) {
-          lVar8 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),1);
+          lVar8 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),grStatFuel);
           uVar7 = __aFulmul(uVar10,0x32);
           if (lVar8 < (long)(uVar7 + lVar9 + CONCAT22(*(undefined2 *)((int)pFVar1->rgwtMin + 0x12),
                                                       (int)pFVar1->rgwtMin[4]))) {
-            lVar9 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),1);
+            lVar9 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),grStatFuel);
           }
           else {
             uVar10 = __aFulmul(uVar10,0x32);
@@ -1610,7 +1610,7 @@ void FuelFleets(void)
         }
       }
       else {
-        lVar9 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),1);
+        lVar9 = LGetFleetStat((FLEET *)CONCAT22(iVar2,pFVar1),grStatFuel);
         *(int *)(pFVar1->rgwtMin + 4) = (int)lVar9;
         *(undefined2 *)((int)pFVar1->rgwtMin + 0x12) = (int)((ulong)lVar9 >> 0x10);
       }
@@ -2652,7 +2652,7 @@ code_r0x10b04a5c:
       in_stack_0000fec2 = 0x1050;
       in_stack_0000fec0 = (char *)rgbCur + 0x331;
       wtFuel2Dest = lVar30;
-      lVar25 = LGetFleetStat(lpfl,1);
+      lVar25 = LGetFleetStat(lpfl,grStatFuel);
       if (wtFuel2Dest < lVar25) {
         *(undefined2 *)(((FLEET *)lpfl)->rgwtMin + 4) = (undefined2)wtFuel2Dest;
         *(undefined2 *)((int)((FLEET *)lpfl)->rgwtMin + 0x12) = wtFuel2Dest._2_2_;
@@ -2660,7 +2660,7 @@ code_r0x10b04a5c:
         lVar30 = wtFuel2Dest;
       }
       else {
-        lVar25 = LGetFleetStat(lpfl,1);
+        lVar25 = LGetFleetStat(lpfl,grStatFuel);
         uVar18 = (undefined2)((ulong)lpfl >> 0x10);
         *(int *)(((FLEET *)lpfl)->rgwtMin + 4) = (int)lVar25;
         *(undefined2 *)((int)((FLEET *)lpfl)->rgwtMin + 0x12) = (int)((ulong)lVar25 >> 0x10);
@@ -3562,7 +3562,7 @@ LAB_10b0_68f7:
         if ((lVar43 < 1) || ((pl.iPlayer != -1 && (pl.iPlayer != ((FLEET *)lpfl)->iPlayer)))) {
           unaff_DI = (FLEET *)lpflWP;
           unaff_SI = lpflWP._2_2_;
-          lVar43 = LGetFleetStat(lpflWP,2);
+          lVar43 = LGetFleetStat(lpflWP,grStatCargo);
           if ((lVar43 == 0) && (pl.iPlayer == ((FLEET *)lpfl)->iPlayer)) {
             fFueling = 1;
             xWP = 0xffff;
@@ -3657,10 +3657,10 @@ LAB_10b0_6d92:
           case 6:
             if (iLoad == 0) goto switchD_10b0_7b5d_default;
             if (j == 4) {
-              pPVar44 = (PLAYER *)LGetFleetStat(lpfl,1);
+              pPVar44 = (PLAYER *)LGetFleetStat(lpfl,grStatFuel);
             }
             else {
-              pPVar44 = (PLAYER *)LGetFleetStat(lpfl,2);
+              pPVar44 = (PLAYER *)LGetFleetStat(lpfl,grStatCargo);
             }
             if (2000000 < (long)pPVar44) {
               pPVar44 = (PLAYER *)0x1e8480;
@@ -4256,7 +4256,7 @@ TURN_SetOptAmount:
                 pPVar44 = l;
                 pPVar13 = amountEdit;
                 if (iPass == 2) {
-                  lMaxFuel = LGetFleetStat(lpfl,1);
+                  lMaxFuel = LGetFleetStat(lpfl,grStatFuel);
                   if (lMaxFuel < (long)amount) {
                     uVar49 = 0;
                     uVar42 = __aFulshr(0,fColonize);

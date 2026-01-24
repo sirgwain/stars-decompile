@@ -47,13 +47,32 @@ int16_t CshQueued(int16_t ishdef, int16_t *pfProgress, int16_t fSpaceDocks)
     return 0;
 }
 
-int32_t LGetFleetStat(FLEET *lpfl, int16_t grStat)
+int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat)
 {
+    uint32_t acc = 0;
     int16_t i;
-    int32_t l;
 
-    /* TODO: implement */
-    return 0;
+    /* det==7 means a “normal” fleet we can score from its ship counts.
+       Otherwise the original returns the sentinel 32000. */
+    if (lpfl->det == detAll)
+    {
+        SHDEF *lpshdefBase = rglpshdef[lpfl->iPlayer]; /* far pointer in Win16, normal 32-bit pointer here */
+
+        for (i = 0; i < cShdefMax; i++)
+        {
+            int16_t csh = lpfl->rgcsh[i];
+            if (csh != 0)
+            {
+                int16_t wt = WtMaxShdefStat(&lpshdefBase[i], grStat);
+
+                /* One cast to force unsigned 32-bit multiply */
+                acc += (uint32_t)csh * (uint32_t)wt;
+            }
+        }
+        return (int32_t)acc;
+    }
+
+    return 32000;
 }
 
 int16_t FCanSplitAll(int32_t cBoat)
@@ -472,7 +491,7 @@ void DestroyAllIshdef(int16_t ishdef, int16_t iplr)
     /* TODO: implement */
 }
 
-int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
+int16_t WtMaxShdefStat(SHDEF *lpshdef, GrStat grStat)
 {
     int16_t wt;
     int16_t j;
@@ -493,7 +512,7 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
         lphul = &lphuldef->hul;
     }
 
-    if (grStat == 1)
+    if (grStat == grStatFuel)
     {
         /* Fuel capacity. */
         wt = lphul->wtFuelMax;
@@ -502,20 +521,20 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
         for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
         {
             HS *hs = &lpshdef->hul.rghs[j];
-            if (hs->grhst == 0x1000)
+            if (hs->grhst == hstSpecialM)
             {
-                if (hs->iItem == 5)
+                if (hs->iItem == ispecialMFuelTank)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 250);
                 }
-                else if (hs->iItem == 6)
+                else if (hs->iItem == ispecialMSuperFuelTank)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 500);
                 }
             }
-            else if (hs->grhst == 0x0800)
+            else if (hs->grhst == hstSpecialE)
             {
-                if (hs->iItem == 0x10)
+                if (hs->iItem == ispecialEAntiMatterGenerator)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 200);
                 }
@@ -524,7 +543,7 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
         return wt;
     }
 
-    if (grStat == 2)
+    if (grStat == grStatCargo)
     {
         /* Cargo capacity. */
         wt = lphul->wtCargoMax;
@@ -532,17 +551,17 @@ int16_t WtMaxShdefStat(SHDEF *lpshdef, int16_t grStat)
         for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
         {
             HS *hs = &lpshdef->hul.rghs[j];
-            if (hs->grhst == 0x1000)
+            if (hs->grhst == hstSpecialM)
             {
-                if (hs->iItem == 2)
+                if (hs->iItem == ispecialMCargoPod)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 50);
                 }
-                else if (hs->iItem == 3)
+                else if (hs->iItem == ispecialMSuperCargoPod)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 100);
                 }
-                else if (hs->iItem == 4)
+                else if (hs->iItem == ispecialMMultiCargoPod)
                 {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 250);
                 }

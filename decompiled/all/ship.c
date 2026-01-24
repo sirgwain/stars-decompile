@@ -837,7 +837,7 @@ void SetFleetDropDownSel(short id)
 // ======================================================================
 
 
-long LGetFleetStat(FLEET *lpfl,short grStat)
+long LGetFleetStat(FLEET *lpfl,GrStat grStat)
 
 {
   long lVar1;
@@ -878,7 +878,7 @@ long LGetFleetStat(FLEET *lpfl,short grStat)
 // ======================================================================
 
 
-short WtMaxShdefStat(SHDEF *lpshdef,short grStat)
+short WtMaxShdefStat(SHDEF *lpshdef,GrStat grStat)
 
 {
   SHDEF *pSVar1;
@@ -888,7 +888,7 @@ short WtMaxShdefStat(SHDEF *lpshdef,short grStat)
   short wt;
   
   pSVar1 = (SHDEF *)lpshdef;
-  if (grStat == 1) {
+  if (grStat == grStatFuel) {
     pHVar2 = LphuldefFromId((lpshdef->hul).ihuldef);
     wt = (((HULDEF *)pHVar2)->hul).wtFuelMax;
     for (j = 0; j < (int)(uint)(pSVar1->hul).chs; j = j + 1) {
@@ -906,7 +906,7 @@ short WtMaxShdefStat(SHDEF *lpshdef,short grStat)
       }
     }
   }
-  else if (grStat == 2) {
+  else if (grStat == grStatCargo) {
     pHVar2 = LphuldefFromId((lpshdef->hul).ihuldef);
     wt = (((HULDEF *)pHVar2)->hul).wtCargoMax;
     for (j = 0; j < (int)(uint)(pSVar1->hul).chs; j = j + 1) {
@@ -968,7 +968,7 @@ void DrawFleetGauge(HDC hdc,RECT *prc,FLEET *lpfl,short grbit)
   }
   SelectObject(hdc,rghfontArial8[1]);
   cSections = 1;
-  lVar5 = LGetFleetStat(lpfl,2);
+  lVar5 = LGetFleetStat(lpfl,grStatCargo);
   if ((grbit < 0) || (4 < grbit)) {
     if (grbit == 5) {
       for (i = 0; i < 4; i = i + 1) {
@@ -1007,7 +1007,7 @@ void DrawFleetGauge(HDC hdc,RECT *prc,FLEET *lpfl,short grbit)
   else {
     rghbr[0] = ((ushort *)rghbrMineral)[grbit];
     if (grbit == 4) {
-      lVar5 = LGetFleetStat(lpfl,1);
+      lVar5 = LGetFleetStat(lpfl,grStatFuel);
     }
   }
   lVar5 = LDrawGauge(hdc,prc,cSections,&stack0xffd6,rghbr,lVar5);
@@ -1674,10 +1674,12 @@ short FTrackXfer(HWND hwnd,short x,short y,short fkb)
                                                         0xe) & 0x3fff),10);
           }
           else if (iVal == 4) {
-            uVar11 = LGetFleetStat(&(&pxfer[local_34 >> 2 & 3].u_XFER_0x0004)->fl,1);
+            uVar11 = LGetFleetStat(&(&pxfer[local_34 >> 2 & 3].u_XFER_0x0004)->fl,
+                                   grStatFuel);
           }
           else {
-            uVar11 = LGetFleetStat(&(&pxfer[local_34 >> 2 & 3].u_XFER_0x0004)->fl,2);
+            uVar11 = LGetFleetStat(&(&pxfer[local_34 >> 2 & 3].u_XFER_0x0004)->fl,
+                                   grStatCargo);
           }
           iVar7 = (btn.right - btn.left) + -2;
           iVar8 = iVar7 >> 0xf;
@@ -1792,7 +1794,7 @@ long GetCargoFree(FLEET *lpfl)
     cHave = cHave + uVar1;
     local_6 = local_6 + *(uint *)((int)(((FLEET *)lpfl)->rgwtMin + i) + 2) + (uint)bVar2;
   }
-  lVar3 = LGetFleetStat(lpfl,2);
+  lVar3 = LGetFleetStat(lpfl,grStatCargo);
   return lVar3 - CONCAT22(local_6,cHave);
 }
 
@@ -1810,7 +1812,7 @@ long GetFuelFree(FLEET *lpfl)
 {
   long lVar1;
   
-  lVar1 = LGetFleetStat(lpfl,1);
+  lVar1 = LGetFleetStat(lpfl,grStatFuel);
   return CONCAT22(((int)((ulong)lVar1 >> 0x10) - *(int *)((int)((FLEET *)lpfl)->rgwtMin + 0x12)) -
                   (uint)((uint)lVar1 < *(uint *)(((FLEET *)lpfl)->rgwtMin + 4)),
                   (uint)lVar1 - *(uint *)(((FLEET *)lpfl)->rgwtMin + 4));
@@ -2954,7 +2956,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
               goto LAB_1050_915f;
             }
             irc = 1;
-            lMax = LGetFleetStat(&(&xf.u_XFER_0x0004)->fl,1);
+            lMax = LGetFleetStat(&(&xf.u_XFER_0x0004)->fl,grStatFuel);
             lCur._0_2_ = xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_;
             lCur._2_2_ = xf.u_XFER_0x0004.fl.rgwtMin[4]._2_2_;
             grbit = 4;
@@ -2964,7 +2966,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
                                   xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_);
               in_stack_0000fd54 = (THING *)0x1;
               lVar22 = 0x11204972;
-              lVar18 = LGetFleetStat(&sel.fl,1);
+              lVar18 = LGetFleetStat(&sel.fl,grStatFuel);
               uVar7 = (uint)(lVar18 - sel.fl.rgwtMin[4]);
               lTempMin = (uint)lCur - uVar7;
               local_e6 = (lCur._2_2_ - (int)((ulong)(lVar18 - sel.fl.rgwtMin[4]) >> 0x10))
@@ -3564,7 +3566,7 @@ void UpdateOrdersDDs(short iLevel)
   }
   SendMessage(rghwndOrderDD[1],0x40b,0,0);
   if (lVar4 == 1) {
-    lVar5 = LGetFleetStat(&sel.fl,2);
+    lVar5 = LGetFleetStat(&sel.fl,grStatCargo);
     if (lVar5 == 0) {
       iVar2 = 1;
     }
@@ -4024,7 +4026,7 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
               iVar6 = pFVar5->iPlayer * 4;
               sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
                                                        (SHDEF *)(*(int *)(iVar6 + 0xfe) + i * 0x93))
-                                     ,2);
+                                     ,grStatCargo);
               uVar13 = __aFulmul((long)pFVar5->rgcsh[i],(long)sVar3);
               if (CONCAT22(local_2e,wtCargo) < (long)uVar13) {
                 uVar13 = CONCAT22(local_2e,wtCargo);
@@ -4033,7 +4035,7 @@ long EstFuelUse(FLEET *lpfl,short iOrd,short iWarp,long dTravel,short fRangeOnly
                 iVar6 = pFVar5->iPlayer * 4;
                 sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
                                                          (SHDEF *)(*(int *)(iVar6 + 0xfe) + i * 0x93
-                                                                  )),2);
+                                                                  )),grStatCargo);
                 uVar13 = __aFulmul((long)pFVar5->rgcsh[i],(long)sVar3);
               }
               wtCargoT = uVar13;
@@ -4531,8 +4533,8 @@ void FleetTransferCargoBalance(FLEET *pflNew1,FLEET *pflNew2)
     if ((rgflCur.rgcsh[ishdef] != 0) || (local_10e[ishdef] != 0)) {
       local_19a = *(undefined2 *)(iplr * 4 + 0x100);
       lpshdef = (SHDEF *)(*(int *)(iplr * 4 + 0xfe) + ishdef * 0x93);
-      wtFuelMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),1);
-      wtCargoMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),2);
+      wtFuelMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),grStatFuel);
+      wtCargoMax = WtMaxShdefStat((SHDEF *)CONCAT22(local_19a,lpshdef),grStatCargo);
       for (i = 0; i < 2; i = i + 1) {
         rgrgcshLoss[i * 0x10 + ishdef] = (&rgflCur)[i].rgcsh[ishdef] - rgpflNew[i]->rgcsh[ishdef];
         if ((&rgflCur)[i].rgcsh[ishdef] != 0) {

@@ -852,7 +852,7 @@ THING_LGivePart:
                           piVar2 = (int *)((int)&pSVar11->cExist + 2);
                           *piVar2 = *piVar2 + (cGive >> 0xf) + (uint)CARRY2((uint)uVar24,cGive);
                           pFVar8->rgcsh[ish] = cGive;
-                          lVar21 = LGetFleetStat(lpfl_00,1);
+                          lVar21 = LGetFleetStat(lpfl_00,grStatFuel);
                           *(int *)(pFVar8->rgwtMin + 4) = (int)lVar21;
                           *(undefined2 *)((int)pFVar8->rgwtMin + 0x12) =
                                (int)((ulong)lVar21 >> 0x10);

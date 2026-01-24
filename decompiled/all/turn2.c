@@ -1116,7 +1116,7 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
         != 0x200) {
       lpfl = LpflNew(((PLANET *)lppl)->iPlayer,lppl->id);
       CreateShip(((PLANET *)lppl)->iPlayer,lpfl,iItem,cBuilt);
-      lVar18 = LGetFleetStat(lpfl,1);
+      lVar18 = LGetFleetStat(lpfl,grStatFuel);
       uVar14 = (undefined2)((ulong)lpfl >> 0x10);
       *(int *)(((FLEET *)lpfl)->rgwtMin + 4) = (int)lVar18;
       *(undefined2 *)((int)((FLEET *)lpfl)->rgwtMin + 0x12) = (int)((ulong)lVar18 >> 0x10);

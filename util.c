@@ -501,13 +501,41 @@ int32_t LongFromSerialCh(char ch)
     return 0;
 }
 
+/*
+ * WPackLong
+ *
+ * Compress a 32-bit value into a 16-bit packed representation.
+ *
+ * The return value is formatted as:
+ *   bits 15..13 : exponent (right-shift count)
+ *   bits 12..0  : mantissa (13-bit unsigned value)
+ *
+ * The input value is repeatedly shifted right (logical shift)
+ * until it fits in 13 bits. Each shift increments the exponent.
+ *
+ * This matches the original Win16 behavior:
+ *   - shifting is unsigned (logical), not arithmetic
+ *   - truncation occurs naturally during shifts
+ *   - no saturation or rounding is performed
+ *
+ * Used to store large counters in a compact form while preserving
+ * relative magnitude.
+ */
 uint16_t WPackLong(int32_t l)
 {
-    uint16_t exp;
+    /* Original uses logical (unsigned) right shifts and packs:
+       top 3 bits = exponent, low 13 bits = mantissa (< 0x2000). */
+    uint32_t u = (uint32_t)l;
+    uint16_t exp = 0;
 
-    /* TODO: implement */
-    return 0;
+    while (((u & 0xE000u) != 0) || ((u >> 16) != 0)) {
+        u >>= 1;
+        exp++;
+    }
+
+    return (uint16_t)((exp << 13) | u);
 }
+
 
 double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {

@@ -118,7 +118,7 @@ short CreateStartupShip(short iplr,short idPlanet,short ishdef,short fAddShdef)
   uVar9 = (undefined2)((ulong)lpfl_00 >> 0x10);
   pFVar6 = (FLEET *)lpfl_00;
   pFVar6->rgcsh[ishdef] = 1;
-  lVar14 = LGetFleetStat(lpfl_00,1);
+  lVar14 = LGetFleetStat(lpfl_00,grStatFuel);
   *(int *)(pFVar6->rgwtMin + 4) = (int)lVar14;
   *(undefined2 *)((int)pFVar6->rgwtMin + 0x12) = (int)((ulong)lVar14 >> 0x10);
   pFVar6->iplan = 0;

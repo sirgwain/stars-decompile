@@ -36,6 +36,9 @@
   "LpthNew": { "ith": "ThingType" },
 
   "LphuldefFromId": { "id": "HullDef" },
+  
+  "LGetFleetStat": { "grStat": "GrStat" },
+  "WtMaxShdefStat": { "grStat": "GrStat" },
 
   "FCheckMessages": { "imsg": "MessageId" },
   "FFindPlayerMessage": { "iMsg": "MessageId" },

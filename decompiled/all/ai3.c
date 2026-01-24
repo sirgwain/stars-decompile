@@ -1589,7 +1589,7 @@ short IdTargetMacFreighter(FLEET *lpfl)
       if ((0x19 < sVar8) &&
          ((iVar6 = *(int *)((int)pPVar7->rgwtMin + 0xe), 0 < iVar6 ||
           ((-1 < iVar6 && (999 < *(uint *)(pPVar7->rgwtMin + 3))))))) {
-        cColHaul = LGetFleetStat(lpfl,2);
+        cColHaul = LGetFleetStat(lpfl,grStatCargo);
         for (i = 0; i < 3; i = i + 1) {
           cColHaul = cColHaul -
                      CONCAT22(*(undefined2 *)((int)(pFVar11->rgwtMin + i) + 2),
@@ -1751,7 +1751,7 @@ short IdTargetMacFreighter(FLEET *lpfl)
           (cMax = CONCAT22(cMax._2_2_,(uint)cMax), lpplBest._2_2_ != 0)) &&
          ((cMax = CONCAT22(cMax._2_2_,(uint)cMax), cMax._2_2_ < 1 &&
           ((cMax._2_2_ < 0 || (cMax = CONCAT22(cMax._2_2_,(uint)cMax), (uint)cMax < 200)))))) {
-        uVar13 = LGetFleetStat(lpfl,2);
+        uVar13 = LGetFleetStat(lpfl,grStatCargo);
         for (i = 0; i < 3; i = i + 1) {
           uVar13 = uVar13 - CONCAT22(*(undefined2 *)((int)(pFVar11->rgwtMin + i) + 2),
                                      (int)pFVar11->rgwtMin[i]);

@@ -1125,7 +1125,7 @@ void CheckTarget(TOK *ptok,FLEET *lpfl,short ishdef)
     if (sVar3 == 0) {
       sVar3 = FFuelTanker((SHDEF *)CONCAT22(uVar1,pSVar4));
       if (sVar3 == 0) {
-        sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(uVar1,pSVar4),2);
+        sVar3 = WtMaxShdefStat((SHDEF *)CONCAT22(uVar1,pSVar4),grStatCargo);
         if (sVar3 == 0) {
           pTVar6->wFlags_0x17 = pTVar6->wFlags_0x17 & 0xfff | 0x5000;
         }
@@ -1803,12 +1803,12 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
     pTVar9 = (TOK *)ptok;
     uVar12 = (undefined2)((ulong)ptok >> 0x10);
     if (lpfl != (FLEET *)0x0) {
-      uVar2 = WtMaxShdefStat(lpshdef,2);
+      uVar2 = WtMaxShdefStat(lpshdef,grStatCargo);
       if (uVar2 == 0) {
         fDumpCargo = 0;
       }
       else {
-        lVar14 = LGetFleetStat(lpfl,2);
+        lVar14 = LGetFleetStat(lpfl,grStatCargo);
         uVar4 = *(uint *)pFVar6->rgwtMin + *(uint *)(pFVar6->rgwtMin + 1);
         uVar5 = uVar4 + *(uint *)(pFVar6->rgwtMin + 2);
         uVar15 = __aFulmul(CONCAT22(*(int *)((int)pFVar6->rgwtMin + 2) +
@@ -1826,7 +1826,7 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
       if (fDumpCargo != 0) {
         spd = spd + -1;
       }
-      uVar2 = Random(15);
+      uVar2 = Random(0xf);
       pTVar9->wFlags = pTVar9->wFlags & 0xc3ff | (uVar2 & 0xf) << 10;
     }
     if (ptok != (TOK *)0x0) {
@@ -1837,7 +1837,7 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
     if (8 < (int)uVar2) {
       uVar4 = 8;
     }
-    if (uVar4 < 32768) {
+    if (uVar4 < 0x8000) {
       if (8 < (int)uVar2) {
         uVar2 = 8;
       }

@@ -3674,7 +3674,7 @@ static inline int attach_part_ptr(PART *part, uint16_t grhst, uint16_t iItem)
     }
 }
 
-int16_t FLookupPart(PART *part)
+LookupResult FLookupPart(PART *part)
 {
     int16_t raMajor;
     HS hs;

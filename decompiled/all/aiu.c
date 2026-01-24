@@ -1334,7 +1334,7 @@ AIU_NextTarg:
       }
     }
     else {
-      lVar7 = LGetFleetStat(lpfl,1);
+      lVar7 = LGetFleetStat(lpfl,grStatFuel);
       lVar7 = __aFldiv(lVar7,CONCAT22(in_stack_0000ffb2,unaff_SI));
       iVar2 = (int)((ulong)lVar7 >> 0x10);
       iVar3 = *(int *)((int)((FLEET *)lpfl)->rgwtMin + 0x12);
@@ -1598,7 +1598,7 @@ short IdTargetFreighter(FLEET *lpflFr,PLANET *lpplHome)
       ;
     }
   }
-  wtCargoMax = LGetFleetStat(lpflFr,2);
+  wtCargoMax = LGetFleetStat(lpflFr,grStatCargo);
   wtCargoFree = GetCargoFree(lpflFr);
   uVar6 = wtCargoMax._2_2_;
   if (wtCargoMax < 1) {
@@ -2554,7 +2554,7 @@ short FIsAiAttack(FLEET *lpfl)
         return 0;
       }
       if (((iVar1 == 0x1f) || (iVar1 == 0x1d)) &&
-         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),2), sVar3 < 500)) {
+         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),grStatCargo), sVar3 < 500)) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x100);
         iVar4 = *(int *)(idPlayer * 4 + 0xfe) + i * 0x93;
         iVar1 = *(int *)(iVar4 + 0x89);
@@ -2625,7 +2625,7 @@ short FIsAiTransport(FLEET *lpfl)
         return 1;
       }
       if ((iVar1 == 0x1f) &&
-         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),2), 499 < sVar3)) {
+         (sVar3 = WtMaxShdefStat((SHDEF *)(i * 0x93 + 0x3f00),grStatCargo), 499 < sVar3)) {
         uVar2 = *(undefined2 *)(idPlayer * 4 + 0x100);
         iVar4 = *(int *)(idPlayer * 4 + 0xfe) + i * 0x93;
         iVar1 = *(int *)(iVar4 + 0x89);
@@ -3567,7 +3567,7 @@ short IdTargetScout(FLEET *lpfl,FLEET *lpflAtk,FLEET *lpflEnemy,short fOnlyHuman
       }
     }
     else {
-      lVar14 = LGetFleetStat(lpfl,1);
+      lVar14 = LGetFleetStat(lpfl,grStatFuel);
       lVar14 = __aFldiv(lVar14,CONCAT22((int)uVar12,unaff_SI));
       iVar7 = (int)((ulong)lVar14 >> 0x10);
       iVar9 = *(int *)((int)pFVar8->rgwtMin + 0x12);

@@ -100,7 +100,11 @@ Set `GHIDRA_HOME` environment variable to override the default Ghidra path:
 export GHIDRA_HOME=/path/to/your/ghidra
 ```
 
-Default: `~/.local/ghidra/ghidra_10.3_DEV`
+Default: `~/.local/ghidra/ghidra_12.0.1_DEV`
+
+This project requires a custom version of ghidra with win16 support and decompile cleanup features hacked in for Stars!
+
+https://github.com/sirgwain/ghidra/tree/win16-stars
 
 ### Available Tasks
 

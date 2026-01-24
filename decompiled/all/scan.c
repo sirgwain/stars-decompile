@@ -3786,7 +3786,7 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
       }
       LFuelUseToWaypoint(lpfl,iwp,1);
       pFVar20 = lpfl;
-      PVar15 = (POINT)LGetFleetStat(lpfl,1);
+      PVar15 = (POINT)LGetFleetStat(lpfl,grStatFuel);
       pFVar21 = (FLEET *)((ulong)pFVar20 >> 0x10);
       in_stack_0000ffce = 0x1050;
       uVar22 = 0x7d5a;
@@ -3795,7 +3795,7 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
       if (lVar19 <= CONCAT22(in_stack_0000ffce,uVar22)) goto SCAN_LOptimizeSpeed;
       GVar23 = grobjNone;
       pFVar20 = lpfl;
-      uVar16 = LGetFleetStat(lpfl,1);
+      uVar16 = LGetFleetStat(lpfl,grStatFuel);
       in_stack_0000ffd0 = 0x1050;
       in_stack_0000ffce = 0x7d9c;
       uVar16 = __aFulmul(uVar16,CONCAT22(in_stack_0000ffd8,GVar23));
