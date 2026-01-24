@@ -38,8 +38,8 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar2 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar2 = 1;
   }
   else if (message == WM_CHAR) {
@@ -76,7 +76,7 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(long)tutor.idh);
+          WinHelp(hwnd,_szHelpFile,1,(long)tutor.idh);
           return 1;
         }
       }
@@ -107,8 +107,8 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4),hbrButtonFace);
+    GetClientRect(hwnd,&stack0xfff4);
+    FillRect(wParam,&stack0xfff4,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -124,7 +124,7 @@ short PanicDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       return 1;
     }
     if (wParam == 0x76) {
-      WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(long)tutor.idh);
+      WinHelp(hwnd,_szHelpFile,1,(long)tutor.idh);
       return 1;
     }
     if ((wParam == 0x9c9) || (wParam == 0x9ca)) {
@@ -188,15 +188,15 @@ void DrawTutorText(HWND hwnd)
   short yTop;
   HDC hdc;
   
-  hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+  hdc = BeginPaint(hwnd,&ps);
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[0]);
-  GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+  GetWindowRect(hwnd,&rc);
   HVar1 = GetDlgItem(hwnd,2);
-  GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcBtn));
+  GetWindowRect(HVar1,&rcBtn);
   rc._6_2_ = rcBtn.top;
-  ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&rc));
-  ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+  ScreenToClient(hwnd,&rc);
+  ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
   rc._2_2_ = rc._2_2_ + dyArial8 * 2;
   rc._6_2_ = rc._6_2_ - (dyArial8 << 1) / 3;
   rc._0_2_ = (int)rc + (dyArial8 << 1) / 3;
@@ -207,9 +207,9 @@ void DrawTutorText(HWND hwnd)
   SelectObject(hdc,hbrButtonHilite);
   PatBlt(hdc,(int)rc,rc._6_2_ + -1,rc._4_2_ - (int)rc,1,0xf00021);
   PatBlt(hdc,rc._4_2_ + -1,rc._2_2_,1,rc._6_2_ - rc._2_2_,0xf00021);
-  ExpandRc((RECT *)&rc,-(dyArial8 / 2),-(dyArial8 / 2));
+  ExpandRc(&rc,-(dyArial8 / 2),-(dyArial8 / 2));
   yTop = rc._2_2_;
-  FillRect(hdc,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+  FillRect(hdc,&rc,hbrButtonFace);
   SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
   didt = 0;
   while ((didt < 8 && (cch = CchTutorString(rgch,tutor.idt + didt), cch != 1))) {
@@ -235,7 +235,7 @@ void DrawTutorText(HWND hwnd)
     }
     didt = didt + 1;
   }
-  EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+  EndPaint(hwnd,&ps);
   return;
 }
 
@@ -424,14 +424,14 @@ void AdvanceTutor(void)
   if (fRedraw != 0) {
     iVar2 = tutor.idt / 8 + 1;
     pcVar3 = PszGetCompressedString(idsStarsTutorPageD80);
-    _wsprintf((char *)CONCAT22(unaff_SS,szTitle),(char *)CONCAT22(0x1120,pcVar3),iVar2);
-    SetWindowText(tutor.hwnd,(LPCSTR)CONCAT22(unaff_SS,szTitle));
+    _wsprintf(szTitle,pcVar3,iVar2);
+    SetWindowText(tutor.hwnd,szTitle);
     ShowTutor(1);
-    GetWindowRect(tutor.hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(tutor.hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&rc));
-    ScreenToClient(tutor.hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
-    ExpandRc((RECT *)&rc,-dyArial8,dyArial8 * -2);
-    InvalidateRect(tutor.hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),1);
+    GetWindowRect(tutor.hwnd,&rc);
+    ScreenToClient(tutor.hwnd,&rc);
+    ScreenToClient(tutor.hwnd,(POINT *)((int)&rc + 4));
+    ExpandRc(&rc,-dyArial8,dyArial8 * -2);
+    InvalidateRect(tutor.hwnd,&rc,1);
   }
   return;
 }
@@ -504,8 +504,8 @@ void SaveGameState(void)
     puVar2 = puVar9;
     puVar9 = puVar9 + 1;
     pZVar1 = pZVar8;
-    pZVar8 = (ZIPPRODQ1 *)pZVar8->rgpq;
-    *puVar2 = *(undefined2 *)pZVar1;
+    pZVar8 = pZVar8->rgpq;
+    *puVar2 = *pZVar1;
   }
   tutor.wFlags =
        tutor.wFlags & 0xefffU | (vrgZipProd[0].fValid & 1) << 0xc;
@@ -513,9 +513,9 @@ void SaveGameState(void)
   pZVar10 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
   for (iVar7 = 0xd; iVar7 != 0; iVar7 = iVar7 + -1) {
     pZVar3 = pZVar10;
-    pZVar10 = (ZIPPRODQ1 *)pZVar10->rgpq;
+    pZVar10 = pZVar10->rgpq;
     pZVar1 = pZVar8;
-    pZVar8 = (ZIPPRODQ1 *)pZVar8->rgpq;
+    pZVar8 = pZVar8->rgpq;
     bVar4 = pZVar1->cpq;
     pZVar3->fNoResearch = pZVar1->fNoResearch;
     pZVar3->cpq = bVar4;
@@ -579,9 +579,9 @@ void RestoreGameState(void)
   pZVar11 = (ZIPPRODQ1 *)&vrgZipProd[4].u_ZIPPRODQ_0x000e.zpq1;
   for (iVar8 = 0xd; iVar8 != 0; iVar8 = iVar8 + -1) {
     pZVar4 = pZVar11;
-    pZVar11 = (ZIPPRODQ1 *)pZVar11->rgpq;
+    pZVar11 = pZVar11->rgpq;
     pZVar1 = pZVar9;
-    pZVar9 = (ZIPPRODQ1 *)pZVar9->rgpq;
+    pZVar9 = pZVar9->rgpq;
     bVar5 = pZVar1->cpq;
     pZVar4->fNoResearch = pZVar1->fNoResearch;
     pZVar4->cpq = bVar5;
@@ -591,7 +591,7 @@ void RestoreGameState(void)
   pZVar9 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
   for (iVar8 = 0xd; iVar8 != 0; iVar8 = iVar8 + -1) {
     pZVar1 = pZVar9;
-    pZVar9 = (ZIPPRODQ1 *)pZVar9->rgpq;
+    pZVar9 = pZVar9->rgpq;
     puVar2 = puVar10;
     puVar10 = puVar10 + 1;
     uVar3 = *puVar2;
@@ -2159,7 +2159,7 @@ short FTutorTaskDone(void)
         else {
           tutor.idh = 0xbdf;
           if (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) ||
-             (sVar3 = FCheckBuilderPart(0,(HS *)&stack0xfff4,1), sVar3 == 0)) {
+             (sVar3 = FCheckBuilderPart(0,&stack0xfff4,1), sVar3 == 0)) {
             tutor.idtBold = 0x14c;
             uVar4 = 0;
           }
@@ -2804,7 +2804,7 @@ short FTutorTaskDone(void)
             else {
               tutor.idh = 0xbdf;
               if (((((SHDEF *)lpshdefBuild)->hul).rghs[0].wFlags_0x2 >> 8 == 0) ||
-                 (sVar3 = FCheckBuilderPart(0,(HS *)&stack0xfff4,1), sVar3 == 0)) {
+                 (sVar3 = FCheckBuilderPart(0,&stack0xfff4,1), sVar3 == 0)) {
                 tutor.idtBold = 0x1c4;
               }
               else if (((((SHDEF *)lpshdefBuild)->hul).rghs[2].wFlags_0x2 >> 8 == 0) ||
@@ -3851,7 +3851,7 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
       sVar2 = 0;
     }
     else {
-      piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
+      piaCur = (ZIPORDER *)vrgZip + iZip;
       tutor.idh = 0x5ef;
       for (i = 0; i < 5; i = i + 1) {
         if ((piaCur->wFlags >> 0xc != lpiaGoal->wFlags >> 0xc) && (piaCur->wFlags >> 0xc != 0)) {
@@ -3859,7 +3859,7 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
           return 0;
         }
         piaCur = piaCur + 1;
-        lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
+        lpiaGoal = (ITEMACTION *)lpiaGoal + 1;
       }
       CchGetString(ids,szT);
       sVar2 = __strcmpi(szT,(char *)((int)vrgZip[0].szName + iZip * 0x18));
@@ -3875,11 +3875,11 @@ short FCheckZip(short iZip,ITEMACTION *lpiaGoal,short ids)
   }
   else {
     *(undefined1 *)((int)&vrgZip[0].fValid + iZip * 0x18) = 1;
-    piaCur = (ITEMACTION *)((ZIPORDER *)vrgZip + iZip);
+    piaCur = (ZIPORDER *)vrgZip + iZip;
     for (i = 0; i < 5; i = i + 1) {
       piaCur->wFlags = piaCur->wFlags & 0xfff | lpiaGoal->wFlags & 0xf000;
       piaCur = piaCur + 1;
-      lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
+      lpiaGoal = (ITEMACTION *)lpiaGoal + 1;
     }
     CchGetString(ids,szT);
     _strcpy((char *)((int)vrgZip[0].szName + iZip * 0x18),szT);
@@ -3944,9 +3944,9 @@ short FCheckTemplate(short iTemplate)
     pZVar7 = (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1;
     for (iVar5 = 0xd; iVar5 != 0; iVar5 = iVar5 + -1) {
       pZVar2 = pZVar7;
-      pZVar7 = (ZIPPRODQ1 *)pZVar7->rgpq;
+      pZVar7 = pZVar7->rgpq;
       pZVar1 = pZVar6;
-      pZVar6 = (ZIPPRODQ1 *)pZVar6->rgpq;
+      pZVar6 = pZVar6->rgpq;
       bVar3 = pZVar1->cpq;
       pZVar2->fNoResearch = pZVar1->fNoResearch;
       pZVar2->cpq = bVar3;
@@ -4076,9 +4076,9 @@ short FCheckFleetName(short id,short ids)
     CchGetString(ids,szT);
     uVar6 = (undefined2)((ulong)lpfl >> 0x10);
                     /* WARNING: Load size is inaccurate */
-    sVar3 = __fstricmp((char *)CONCAT22(unaff_SS,szT),
-                               (char *)CONCAT22(*(undefined2 *)((int)&((FLEET *)lpfl)->lpszName + 2)
-                                                ,((FLEET *)lpfl)->lpszName));
+    sVar3 = __fstricmp(szT,(char *)CONCAT22(*(undefined2 *)
+                                                     ((int)&((FLEET *)lpfl)->lpszName + 2),
+                                                    ((FLEET *)lpfl)->lpszName));
     if (sVar3 == 0) {
       uVar4 = 1;
       tutor.idh = sVar2;
@@ -4660,7 +4660,7 @@ short FCheckXferWP(ushort ifl,short iord,short id,ushort iWarp,ITEMACTION *lpiaG
         if (((uVar7 == 4) || (uVar7 == 8)) &&
            ((piaCur->wFlags & 0xfff) != (lpiaGoal->wFlags & 0xfff))) goto TUTOR_LReturn_2;
         piaCur = piaCur + 1;
-        lpiaGoal = (ITEMACTION *)CONCAT22(lpiaGoal._2_2_,(ITEMACTION *)lpiaGoal + 1);
+        lpiaGoal = (ITEMACTION *)lpiaGoal + 1;
       }
       fRet = 1;
 TUTOR_LReturn_2:
@@ -5093,7 +5093,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsGater);
-        sVar1 = __fstricmp((char *)CONCAT22(0x1120,pcVar2),pcVar3);
+        sVar1 = __fstricmp(pcVar2,pcVar3);
         if (sVar1 != 0) {
           TutorError(0x200);
           return 0;
@@ -5120,7 +5120,7 @@ short FTutorialEnabledShipBuilder(short itutsbAction)
         pcVar3 = (char *)CONCAT22((int)((ulong)lpshdefBuild >> 0x10),
                                   (((SHDEF *)lpshdefBuild)->hul).szClass);
         pcVar2 = PszGetCompressedString(idsMineLayer);
-        sVar1 = __fstricmp((char *)CONCAT22(0x1120,pcVar2),pcVar3);
+        sVar1 = __fstricmp(pcVar2,pcVar3);
         if (sVar1 != 0) {
           TutorError(0x201);
           return 0;

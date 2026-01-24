@@ -231,7 +231,7 @@ void DoAutomitronAiTurn(PROD *rgprod)
        (sVar10 = PctPlanetOptValue(lppl,idPlayer), 0 < sVar10)) {
       cplanCol = cplanCol + 1;
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   lpplMac = (PLANET *)lpPlanets + cPlanet;
   local_68 = lpPlanets._2_2_;
@@ -341,8 +341,8 @@ void DoAutomitronAiTurn(PROD *rgprod)
               if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestCruiser * 0x93) == 0) &&
                  (*(uint *)((int)&rgshdef[0].cExist + iLatestCruiser * 0x93) <
                   game.cPlanMax / 0xc + 8U)) {
-                GetResourcesAvailable(lppl,(long *)rgResAvail);
-                GetProdQCost(lppl,(long *)rgResCost);
+                GetResourcesAvailable(lppl,rgResAvail);
+                GetProdQCost(lppl,rgResCost);
                 for (i = 0; i < 4; i = i + 1) {
                   uVar8 = rgResCost[i * 2];
                   uVar9 = rgResCost[i * 2 + 1];
@@ -355,9 +355,7 @@ void DoAutomitronAiTurn(PROD *rgprod)
                 }
                 for (i = 0; i < 5; i = i + 1) {
                   GetTrueHullCost
-                            (idPlayer,
-                             (HUL *)CONCAT22(0x1120,(HUL *)(iLatestCruiser * 0x93 + 0x3f00)),rgCosts
-                            );
+                            (idPlayer,(HUL *)(iLatestCruiser * 0x93 + 0x3f00),rgCosts);
                   for (j = 0; j < 4; j = j + 1) {
                     uVar8 = rgCosts[j];
                     puVar1 = rgResAvail + j * 2;
@@ -376,8 +374,8 @@ void DoAutomitronAiTurn(PROD *rgprod)
               if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestBattle * 0x93) == 0) &&
                  (*(uint *)((int)&rgshdef[0].cExist + iLatestBattle * 0x93) <
                   game.cPlanMax / 0x18 + 4U)) {
-                GetResourcesAvailable(lppl,(long *)rgResAvail);
-                GetProdQCost(lppl,(long *)rgResCost);
+                GetResourcesAvailable(lppl,rgResAvail);
+                GetProdQCost(lppl,rgResCost);
                 for (i = 0; i < 4; i = i + 1) {
                   uVar8 = rgResCost[i * 2];
                   uVar9 = rgResCost[i * 2 + 1];
@@ -390,9 +388,7 @@ void DoAutomitronAiTurn(PROD *rgprod)
                 }
                 for (i = 0; i < 5; i = i + 1) {
                   GetTrueHullCost
-                            (idPlayer,
-                             (HUL *)CONCAT22(0x1120,(HUL *)(iLatestBattle * 0x93 + 0x3f00)),rgCosts)
-                  ;
+                            (idPlayer,(HUL *)(iLatestBattle * 0x93 + 0x3f00),rgCosts);
                   for (j = 0; j < 4; j = j + 1) {
                     uVar8 = rgCosts[j];
                     puVar1 = rgResAvail + j * 2;
@@ -422,7 +418,7 @@ AI2_FinishProd:
       }
       cplBadGuy = cplBadGuy + 1;
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   lpflAttack = (FLEET *)0x0;
   local_84 = 0;
@@ -495,10 +491,10 @@ AI2_LCheckForColDrop_2:
                 pPVar13 = (PLORD *)sel.fl.lpplord;
                 if ((pPVar13 + 2)->wFlags == idPlanDst) {
                   pPVar13 = pPVar13 + 1;
-                  puVar16 = (ushort *)&stack0xff4c;
+                  puVar16 = &stack0xff4c;
                   for (iVar11 = 9; iVar11 != 0; iVar11 = iVar11 + -1) {
                     pPVar6 = pPVar13;
-                    pPVar13 = (PLORD *)&pPVar13->iordMax;
+                    pPVar13 = &pPVar13->iordMax;
                     puVar4 = puVar16;
                     puVar16 = puVar16 + 1;
                     pPVar6->wFlags = *puVar4;
@@ -506,13 +502,13 @@ AI2_LCheckForColDrop_2:
                 }
                 else {
                   pbVar15 = &pPVar13[5].iordMax;
-                  puVar17 = (undefined2 *)&stack0xff4c;
+                  puVar17 = &stack0xff4c;
                   for (iVar11 = 9; iVar11 != 0; iVar11 = iVar11 + -1) {
                     pbVar2 = pbVar15;
                     pbVar15 = pbVar15 + 2;
                     puVar5 = puVar17;
                     puVar17 = puVar17 + 1;
-                    *(undefined2 *)pbVar2 = *puVar5;
+                    *pbVar2 = *puVar5;
                   }
                 }
                 FLookupFleet(-1,(FLEET *)&sel.fl);
@@ -636,7 +632,7 @@ LAB_1098_0d5d:
                 if ((lpplMac <= (PLANET *)lppl) ||
                    ((((PLANET *)lppl)->iPlayer == idPlayer &&
                     ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) break;
-                lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+                lppl = (PLANET *)lppl + 1;
               }
               lpplHome = (PLANET *)lppl;
               local_70 = lppl._2_2_;
@@ -731,7 +727,7 @@ AI2_LScrapFleet_2:
     }
 LAB_1098_1162:
   }
-  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,(long *)rgResAvail,(long *)rgResCost);
+  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,rgResAvail,rgResCost);
   FillProductionQueue();
   return;
 }
@@ -760,11 +756,11 @@ void EnsureISShdefs(short iroCur)
   
   if (((rgshdef[4].wFlags >> 9 & 1) != 0) &&
      ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) {
-    FCreateAiShdef(4,1,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0xe] + 0x78)));
+    FCreateAiShdef(4,1,(byte *)(vrgISIshAip[0xe] + vrgISAip));
   }
   if (((rgshdef[5].wFlags >> 9 & 1) != 0) &&
      ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) {
-    FCreateAiShdef(5,3,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0x12] + 0x78)));
+    FCreateAiShdef(5,3,(byte *)(vrgISIshAip[0x12] + vrgISAip));
   }
   if (((((rgshdef[0xe].wFlags >> 9 & 1) != 0) &&
        ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -773,8 +769,7 @@ void EnsureISShdefs(short iroCur)
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))) {
     for (i = 0; i < 4; i = i + 1) {
       sVar3 = Random(1);
-      sVar3 = FCreateAiShdef(0xe,6,(byte *)CONCAT22(0x1098,(byte *)(*(byte *)(sVar3 + 0x68) +
-                                                                        0x78)));
+      sVar3 = FCreateAiShdef(0xe,6,(byte *)(*(byte *)(sVar3 + 0x68) + 0x78));
       if (sVar3 != 0) break;
     }
   }
@@ -785,16 +780,16 @@ void EnsureISShdefs(short iroCur)
       pSVar6 = &shdef;
       for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
         pSVar2 = pSVar6;
-        pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+        pSVar6 = (pSVar6->hul).rgTech;
         pSVar1 = pSVar5;
-        pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+        pSVar5 = (pSVar5->hul).rgTech;
         (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
       }
-      *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
+      *&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,1);
     }
-    FCreateAiShdef(1,1,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0] + 0x78)));
+    FCreateAiShdef(1,1,(byte *)(vrgISIshAip[0] + vrgISAip));
   }
   if (((rgshdef[0].wFlags >> 9 & 1) != 0) ||
      (((int)rgshdef[0].cExist == 0 && (rgshdef[0].cExist._2_2_ == 0)))) {
@@ -803,36 +798,36 @@ void EnsureISShdefs(short iroCur)
       pSVar6 = &shdef;
       for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
         pSVar2 = pSVar6;
-        pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+        pSVar6 = (pSVar6->hul).rgTech;
         pSVar1 = pSVar5;
-        pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+        pSVar5 = (pSVar5->hul).rgTech;
         (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
       }
-      *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
+      *&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,0);
     }
-    FCreateAiShdef(0,4,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[1] + 0x78)));
+    FCreateAiShdef(0,4,(byte *)(vrgISIshAip[1] + vrgISAip));
   }
   if (((((rgshdef[6].wFlags >> 9 & 1) != 0) &&
        ('\x03' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
      ('\x05' < *(char *)((int)rgplr[0].rgTech + 5 + idPlayer * 0xc0))) {
-    FCreateAiShdef(6,0xb,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0x11] + 0x78)));
+    FCreateAiShdef(6,0xb,(byte *)(vrgISIshAip[0x11] + vrgISAip));
   }
   if ((((rgshdef[2].wFlags >> 9 & 1) != 0) &&
       ('\a' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
      (('\x06' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0) &&
       (('\x05' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
-    FCreateAiShdef(2,0x11,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0xf] + 0x78)));
+    FCreateAiShdef(2,0x11,(byte *)(vrgISIshAip[0xf] + vrgISAip));
   }
   if (((((rgshdef[3].wFlags >> 9 & 1) != 0) &&
        ('\n' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
       ('\v' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0))) &&
      (('\x0e' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
       ('\b' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))) {
-    FCreateAiShdef(3,0x13,(byte *)CONCAT22(0x1098,(byte *)(vrgISIshAip[0x10] + 0x78)));
+    FCreateAiShdef(3,0x13,(byte *)(vrgISIshAip[0x10] + vrgISAip));
   }
   if ((((rgshdef[9].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -841,8 +836,7 @@ void EnsureISShdefs(short iroCur)
        ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(9,9,(byte *)CONCAT22(0x1098,(byte *)(*(byte *)(sVar3 + 0x6e) +
-                                                                      0x78)));
+      sVar3 = FCreateAiShdef(9,9,(byte *)(*(byte *)(sVar3 + 0x6e) + 0x78));
       if (sVar3 != 0) {
         return;
       }
@@ -944,7 +938,7 @@ void DoRototillAiTurn(PROD *rgprod)
        (sVar7 = PctPlanetOptValue(lppl,idPlayer), 0 < sVar7)) {
       cplanCol = cplanCol + 1;
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   lpplMac = (PLANET *)lpPlanets + cPlanet;
   local_4c = lpPlanets._2_2_;
@@ -1024,7 +1018,7 @@ void DoRototillAiTurn(PROD *rgprod)
       }
       cplBadGuy = cplBadGuy + 1;
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   lpflAttack = (FLEET *)0x0;
   local_66 = 0;
@@ -1097,10 +1091,10 @@ AI2_LCheckForColDrop:
                   pPVar10 = (PLORD *)sel.fl.lpplord;
                   if ((pPVar10 + 2)->wFlags == idPlanDst) {
                     pPVar10 = pPVar10 + 1;
-                    puVar13 = (ushort *)&stack0xff74;
+                    puVar13 = &stack0xff74;
                     for (iVar8 = 9; iVar8 != 0; iVar8 = iVar8 + -1) {
                       pPVar3 = pPVar10;
-                      pPVar10 = (PLORD *)&pPVar10->iordMax;
+                      pPVar10 = &pPVar10->iordMax;
                       puVar1 = puVar13;
                       puVar13 = puVar13 + 1;
                       pPVar3->wFlags = *puVar1;
@@ -1108,13 +1102,13 @@ AI2_LCheckForColDrop:
                   }
                   else {
                     pbVar12 = &pPVar10[5].iordMax;
-                    puVar14 = (undefined2 *)&stack0xff74;
+                    puVar14 = &stack0xff74;
                     for (iVar8 = 9; iVar8 != 0; iVar8 = iVar8 + -1) {
                       pbVar4 = pbVar12;
                       pbVar12 = pbVar12 + 2;
                       puVar2 = puVar14;
                       puVar14 = puVar14 + 1;
-                      *(undefined2 *)pbVar4 = *puVar2;
+                      *pbVar4 = *puVar2;
                     }
                   }
                   FLookupFleet(-1,(FLEET *)&sel.fl);
@@ -1253,7 +1247,7 @@ LAB_1098_22f9:
                 if ((lpplMac <= (PLANET *)lppl) ||
                    ((((PLANET *)lppl)->iPlayer == idPlayer &&
                     ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) break;
-                lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+                lppl = (PLANET *)lppl + 1;
               }
               lpplHome = (PLANET *)lppl;
               local_54 = lppl._2_2_;

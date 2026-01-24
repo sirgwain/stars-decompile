@@ -38,7 +38,7 @@ THING * LpthNew(short iplr,ThingType ith)
     lpth = lpThings;
     while ((i < cThing && (lpth->idFull < thNew[0]))) {
       i = i + 1;
-      lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+      lpth = (THING *)lpth + 1;
     }
     if ((i < cThing) && (thNew[0] == lpth->idFull)) {
       iItem = lpth->idFull & 0x1ff;
@@ -51,7 +51,7 @@ THING * LpthNew(short iplr,ThingType ith)
         }
         if (lpth->idFull != thNew[0]) break;
         thNew[0] = thNew[0] & 0xfe00 | thNew[0] + 1 & 0x1ff;
-        lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+        lpth = (THING *)lpth + 1;
         iItem = iItem + 1;
       }
     }
@@ -69,11 +69,10 @@ THING * LpthNew(short iplr,ThingType ith)
       lpThings = pTVar1;
     }
     if (i < cThing) {
-      __fmemmove((THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1),lpth,
-                         (cThing - i) * 0x12);
+      __fmemmove((THING *)lpth + 1,lpth,(cThing - i) * 0x12);
     }
     cThing = cThing + 1;
-    __fmemcpy(lpth,(uint *)CONCAT22(unaff_SS,thNew),0x12);
+    __fmemcpy(lpth,thNew,0x12);
     pTVar1 = lpThings;
   }
   else {
@@ -100,7 +99,7 @@ void FreeLpth(THING *lpth)
 
 {
   if ((THING *)lpth < (THING *)lpThings + cThing + -1) {
-    __fmemmove(lpth,(THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1),
+    __fmemmove(lpth,(THING *)lpth + 1,
                        ((cThing - ((int)(THING *)lpth - (int)(THING *)lpThings) / 0x12
                         ) + -1) * 0x12);
   }
@@ -242,7 +241,7 @@ void DrawThingGauge(HDC hdc,RECT *prc,THING *lpth,short md)
     uVar2 = (ulong)*(int *)((pTVar4->u_THING_0x0006).rgb + md * 2 + 2);
   }
   local_2a[0] = (uint)(uVar2 >> 0x10);
-  lVar6 = LDrawGauge(hdc,prc,cSections,(long *)&stack0xffd4,rghbr,cTot);
+  lVar6 = LDrawGauge(hdc,prc,cSections,&stack0xffd4,rghbr,cTot);
   uVar5 = (undefined2)lVar6;
   uVar9 = 0x1040;
   uVar8 = 0x58c;
@@ -535,7 +534,7 @@ void DoThingInteractions(short fPostMove)
   
   lpfl_00 = (FLEET *)CONCAT22(lpflNew._2_2_,(FLEET *)lpflNew);
   if (fPostMove != 0) {
-    cTech = (PLANET *)(THING *)lpThings;
+    cTech = (THING *)lpThings;
     iGoto = lpThings._2_2_;
     lpthMac = (THING *)lpThings + cThing;
     local_26 = lpThings._2_2_;
@@ -700,7 +699,7 @@ LAB_1110_1010:
                       rgTech[iLowest] = rgTech[iLowest] + '\x01';
                       iplrSav = idPlayer;
                       idPlayer = iplr;
-                      lVar21 = CostOfDevelopingItem((char *)CONCAT22(unaff_SS,rgTech));
+                      lVar21 = CostOfDevelopingItem(rgTech);
                       idPlayer = iplrSav;
                       puVar12 = (undefined2 *)(iplr * 0xc0 + 0x59c2 + iLowest * 4);
                       lSpent = *puVar12;
@@ -759,13 +758,13 @@ THING_LGivePart:
                       pHVar15 = &shdef;
                       for (iVar10 = 0x49; iVar10 != 0; iVar10 = iVar10 + -1) {
                         pHVar5 = pHVar15;
-                        pHVar15 = (HUL *)pHVar15->rgTech;
+                        pHVar15 = pHVar15->rgTech;
                         pSVar22 = pSVar11;
-                        pSVar11 = (SHDEF *)(pSVar11->hul).rgTech;
+                        pSVar11 = (pSVar11->hul).rgTech;
                         pHVar5->ihuldef = (pSVar22->hul).ihuldef;
                       }
-                      *(char *)&pHVar15->ihuldef = (char)(pSVar11->hul).ihuldef;
-                      ish = IshFindSimilarDesign((HUL *)CONCAT22(unaff_SS,&shdef),iplr);
+                      *&pHVar15->ihuldef = (char)(pSVar11->hul).ihuldef;
+                      ish = IshFindSimilarDesign(&shdef,iplr);
                       if (ish < 0) {
                         do {
                           ish = ish + 1;
@@ -824,12 +823,12 @@ THING_LGivePart:
                             pSVar16 = pSVar11;
                             for (iVar10 = 0x49; iVar10 != 0; iVar10 = iVar10 + -1) {
                               pSVar22 = pSVar16;
-                              pSVar16 = (SHDEF *)(pSVar16->hul).rgTech;
+                              pSVar16 = (pSVar16->hul).rgTech;
                               pHVar5 = pHVar15;
-                              pHVar15 = (HUL *)pHVar15->rgTech;
+                              pHVar15 = pHVar15->rgTech;
                               (pSVar22->hul).ihuldef = pHVar5->ihuldef;
                             }
-                            *(char *)&(pSVar16->hul).ihuldef = (char)pHVar15->ihuldef;
+                            *&(pSVar16->hul).ihuldef = (char)pHVar15->ihuldef;
                             pSVar11->wFlags = pSVar11->wFlags & 0x83ff | (ish & 0x1fU) << 10;
                             pSVar11->wFlags = pSVar11->wFlags & 0x7fff | 0x8000;
                             *(undefined2 *)&pSVar11->cBuilt = 0;
@@ -844,12 +843,12 @@ THING_LGivePart:
                           }
                           puVar1 = &pSVar11->cBuilt;
                           uVar24 = *puVar1;
-                          *(uint *)puVar1 = (uint)*puVar1 + cGive;
+                          *puVar1 = (uint)*puVar1 + cGive;
                           piVar2 = (int *)((int)&pSVar11->cBuilt + 2);
                           *piVar2 = *piVar2 + (cGive >> 0xf) + (uint)CARRY2((uint)uVar24,cGive);
                           puVar1 = &pSVar11->cExist;
                           uVar24 = *puVar1;
-                          *(uint *)puVar1 = (uint)*puVar1 + cGive;
+                          *puVar1 = (uint)*puVar1 + cGive;
                           piVar2 = (int *)((int)&pSVar11->cExist + 2);
                           *piVar2 = *piVar2 + (cGive >> 0xf) + (uint)CARRY2((uint)uVar24,cGive);
                           pFVar8->rgcsh[ish] = cGive;
@@ -868,7 +867,7 @@ THING_LGivePart:
                     }
                   }
                   else {
-                    idm = IdmGiveTraderPart((ushort)cTech,iplr,(ushort *)&iGoto);
+                    idm = IdmGiveTraderPart((ushort)cTech,iplr,&iGoto);
                     sVar9 = 0;
                     uVar7 = WFromLpfl(lpfl);
                     FSendPlrMsg2((uint)lpfl->id >> 9 & 0xf,idm,iGoto,uVar7,sVar9);
@@ -963,7 +962,7 @@ THING_LAutoTech:
                   wtNext._2_2_ = local_6;
                 }
                 else {
-                  cTech = (PLANET *)(PLANET *)(rgcrPlrHistory + 1);
+                  cTech = (PLANET *)(rgcrPlrHistory + 1);
                   iGoto = *(short *)((int)&((THING *)lpth)->u_THING_0x0006 + 8);
                   while (((iGoto & *(uint *)((int)&rgplr[0].grbitTrader + iplr * 0xc0)) !=
                           0 && (pPVar25 = (PLANET *)((int)&cTech[-1].lpplprod + 3),
@@ -1000,10 +999,10 @@ THING_LAutoTech:
             }
           }
 LAB_1110_1a6b:
-          lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+          lppl = (PLANET *)lppl + 1;
         }
       }
-      lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+      lpth = (THING *)lpth + 1;
     }
   }
   return;

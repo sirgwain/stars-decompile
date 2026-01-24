@@ -36,7 +36,7 @@ void DoAiTurn(short iPlayer,ushort wMdPlr)
                         */
   sVar3 = idPlayer;
   fAi = 1;
-  _wsprintf((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),iPlayer + 1);
+  _wsprintf(szExt,MPCTD,iPlayer + 1);
   DestroyCurGame();
   sVar4 = FLoadGame((char *)szBase,szExt);
   pbVar1 = vlpbAiPlanet;
@@ -67,27 +67,27 @@ void DoAiTurn(short iPlayer,ushort wMdPlr)
         }
         switch(*(uint *)((int)&rgplr[0].wMdPlr + iPlayer * 0xc0) >> 0xd) {
         case 0:
-          DoRobotoidAiTurn((PROD *)&stack0xfef8);
+          DoRobotoidAiTurn(&stack0xfef8);
           break;
         case 1:
-          DoTurinDroneAiTurn((PROD *)&stack0xfef8);
+          DoTurinDroneAiTurn(&stack0xfef8);
           break;
         case 2:
-          DoAutomitronAiTurn((PROD *)&stack0xfef8);
+          DoAutomitronAiTurn(&stack0xfef8);
           break;
         case 3:
-          DoRototillAiTurn((PROD *)&stack0xfef8);
+          DoRototillAiTurn(&stack0xfef8);
           break;
         case 4:
-          DoCyberAiTurn((PROD *)&stack0xfef8);
+          DoCyberAiTurn(&stack0xfef8);
           break;
         case 5:
-          DoMacintiAiTurn((PROD *)&stack0xfef8);
+          DoMacintiAiTurn(&stack0xfef8);
           break;
         default:
           break;
         case 7:
-          DoMaidAiTurn((PROD *)&stack0xfef8);
+          DoMaidAiTurn(&stack0xfef8);
         }
       }
     }
@@ -280,15 +280,15 @@ void DoRobotoidAiTurn(PROD *rgprod)
     SplitOutShdefs(rgRecycleShdef);
     _memset(&rgRecycleSBShdef,0,0x10);
     rgRecycleSBShdef = CONCAT11(rgRecycleSBShdef._1_1_,2);
-    SplitOutShdefs((byte *)&rgRecycleSBShdef);
+    SplitOutShdefs(&rgRecycleSBShdef);
     _memset(&rgRecycleSBShdef,0,0x10);
     rgRecycleSBShdef = CONCAT11(2,(byte)rgRecycleSBShdef);
-    SplitOutShdefs((byte *)&rgRecycleSBShdef);
+    SplitOutShdefs(&rgRecycleSBShdef);
     _memset(&rgRecycleSBShdef,0,0x10);
     uStack_91 = 2;
     uStack_92 = 2;
     uStack_93 = 2;
-    SplitOutShdefs((byte *)&rgRecycleSBShdef);
+    SplitOutShdefs(&rgRecycleSBShdef);
   }
   EnsureRobotoidShdefs();
   cFlDestroyers = 0;
@@ -338,8 +338,8 @@ void DoRobotoidAiTurn(PROD *rgprod)
       InitProduction(rgprod);
       fWrite = 0;
       lpprod._2_2_ = lpplProdGlob._2_2_;
-      lpprod._0_2_ = (PROD *)(PLPROD *)lpplProdGlob;
-      for (i = 0; lpprod._0_2_ = (PROD *)((PLPROD *)(PROD *)lpprod + 1),
+      lpprod._0_2_ = (PLPROD *)lpplProdGlob;
+      for (i = 0; lpprod._0_2_ = (PROD *)lpprod + 1,
           i < (int)(uint)((PLPROD *)lpplProdGlob)->iprodMac; i = i + 1) {
         uVar20 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ff5c);
         if (((uint)uVar20 & 7) == 2) {
@@ -484,8 +484,8 @@ LAB_1088_0dd9:
             if (sVar8 != 0) goto LAB_1088_0dd9;
             uStack_90 = iLatestBattle;
           }
-          GetResourcesAvailable(lppl,(long *)rgResAvail);
-          GetProdQCost(lppl,(long *)rgResCost);
+          GetResourcesAvailable(lppl,rgResAvail);
+          GetProdQCost(lppl,rgResCost);
           for (i = 0; i < 4; i = i + 1) {
             uVar9 = rgResCost[i * 2];
             uVar6 = rgResCost[i * 2 + 1];
@@ -496,9 +496,7 @@ LAB_1088_0dd9:
             if (((int)rgResAvail[i * 2 + 1] < 1) && ((int)rgResAvail[i * 2 + 1] < 0))
             goto AI_FinishProd_4;
           }
-          GetTrueHullCost
-                    (idPlayer,(HUL *)CONCAT22(0x1120,(HUL *)(uStack_90 * 0x93 + 0x3f00)),
-                     rgCosts);
+          GetTrueHullCost(idPlayer,(HUL *)(uStack_90 * 0x93 + 0x3f00),rgCosts);
           for (j = 0; j < 4; j = j + 1) {
             uVar9 = (uint)(((long)(int)rgCosts[j] * 3 & 0xffffU) / 5);
             puVar1 = rgResAvail + j * 2;
@@ -524,8 +522,8 @@ AI_TryShip3_2:
           if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestDestroyer * 0x93) == 0) &&
              ((PLANET *)*(uint *)((int)&rgshdef[0].cExist + iLatestDestroyer * 0x93) <
               (uint)_uStack_92)) {
-            GetResourcesAvailable(lppl,(long *)rgResAvail);
-            GetProdQCost(lppl,(long *)rgResCost);
+            GetResourcesAvailable(lppl,rgResAvail);
+            GetProdQCost(lppl,rgResCost);
             for (i = 0; i < 4; i = i + 1) {
               uVar9 = rgResCost[i * 2];
               uVar6 = rgResCost[i * 2 + 1];
@@ -538,8 +536,7 @@ AI_TryShip3_2:
             }
             for (i = 0; i < 5; i = i + 1) {
               GetTrueHullCost
-                        (idPlayer,
-                         (HUL *)CONCAT22(0x1120,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00)),rgCosts);
+                        (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00),rgCosts);
               for (j = 0; j < 4; j = j + 1) {
                 uVar9 = rgCosts[j];
                 puVar1 = rgResAvail + j * 2;
@@ -690,7 +687,7 @@ AI_FinishProd_4:
               local_9c._0_2_ = idPlanDst;
               rgRecycleSBShdef = *(uint *)((int)&rgptPlan[0].y + idPlanDst * 4);
               local_9c._2_2_ = local_9c._2_2_ & 0xe000 | 0x1140;
-              FMoveAiFleet(lpfl,(ORDER *)&stack0xff60,0);
+              FMoveAiFleet(lpfl,&stack0xff60,0);
               uVar18 = _uStack_92;
               goto LAB_1088_15d1;
             }
@@ -747,10 +744,10 @@ LAB_1088_15d1:
                 ChangeMainObjSel(2,lpfl->id);
                 uVar18 = sel.fl.lpplord._2_2_;
                 pPVar17 = (PLORD *)sel.fl.lpplord + 1;
-                puVar16 = (ushort *)&stack0xff5c;
+                puVar16 = &stack0xff5c;
                 for (iVar13 = 9; iVar13 != 0; iVar13 = iVar13 + -1) {
                   pPVar7 = pPVar17;
-                  pPVar17 = (PLORD *)&pPVar17->iordMax;
+                  pPVar17 = &pPVar17->iordMax;
                   puVar3 = puVar16;
                   puVar16 = puVar16 + 1;
                   pPVar7->wFlags = *puVar3;
@@ -766,7 +763,7 @@ LAB_1088_15d1:
                 if (pPVar21 != (PLANET *)0x0) {
                   _memset(&stack0xff5c,0,0x12);
                   rgRecycleSBShdef = rgRecycleSBShdef & 0xe000 | 0x1140;
-                  FMoveAiFleet(lpfl,(ORDER *)&stack0xff5c,0);
+                  FMoveAiFleet(lpfl,&stack0xff5c,0);
                 }
                 _uStack_92 = (PLANET *)CONCAT11(uStack_91,uStack_92);
                 goto LAB_1088_10bf;
@@ -956,7 +953,7 @@ LAB_1088_1ee3:
     }
 LAB_1088_1c04:
   }
-  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,(long *)rgResAvail,(long *)rgResCost);
+  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,rgResAvail,rgResCost);
   FillProductionQueue();
   return;
 }
@@ -1000,16 +997,13 @@ void EnsureRobotoidShdefs(void)
         else {
           iVar3 = 0xf;
         }
-        FCreateAiShdef(ish,0xb,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)[iVar3]
-                                                                    + 0x1f80)));
+        FCreateAiShdef(ish,0xb,(byte *)(((ushort *)vrgRobIshAip)[iVar3] + 0x1f80));
       }
       else {
         for (i = 0; i < 5; i = i + 1) {
           sVar4 = Random(6);
-          sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)
-                                                                                vrgRobIshAip)
-                                                                                [sVar4 + 8] + 0x1f80
-                                                                               )));
+          sVar4 = FCreateAiShdef(ish,0x1f,(byte *)(((ushort *)vrgRobIshAip)[sVar4 + 8] + 0x1f80
+                                                       ));
           if (sVar4 != 0) break;
         }
       }
@@ -1022,13 +1016,11 @@ void EnsureRobotoidShdefs(void)
         ('\x05' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
        ('\x01' < *(char *)((int)rgplr[0].rgTech + idPlayer * 0xc0))))))) {
     for (i = 0; i < 5; i = i + 1) {
-      sVar4 = FCreateAiShdef(0xe,0x1d,(byte *)CONCAT22(0x1088,(byte *)(vrgRobIshAip[0x25] +
-                                                                           0x1f80)));
+      sVar4 = FCreateAiShdef(0xe,0x1d,(byte *)(vrgRobIshAip[0x25] + vrgRobAip));
       if (sVar4 == 0) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(0xe,6,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
-                                                                           [sVar4 + 0x10] + 0x1f80))
-                                   );
+        sVar4 = FCreateAiShdef(0xe,6,(byte *)(((ushort *)vrgRobIshAip)[sVar4 + 0x10] + 0x1f80))
+        ;
         if (sVar4 != 0) break;
       }
     }
@@ -1038,13 +1030,11 @@ void EnsureRobotoidShdefs(void)
      ((('\a' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        (('\b' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0) &&
         ('\r' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))))) &&
-      (sVar4 = FCreateAiShdef(0xf,0x1d,(byte *)CONCAT22(0x1088,(byte *)(vrgRobIshAip[0x25] +
-                                                                            0x1f80))), sVar4 == 0)))
+      (sVar4 = FCreateAiShdef(0xf,0x1d,(byte *)(vrgRobIshAip[0x25] + vrgRobAip)), sVar4 == 0)))
      ) {
     for (i = 0; i < 5; i = i + 1) {
       sVar4 = Random(4);
-      sVar4 = FCreateAiShdef(0xf,6,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
-                                                                         [sVar4 + 0x14] + 0x1f80)));
+      sVar4 = FCreateAiShdef(0xf,6,(byte *)(((ushort *)vrgRobIshAip)[sVar4 + 0x14] + 0x1f80));
       if (sVar4 != 0) break;
     }
   }
@@ -1066,10 +1056,8 @@ void EnsureRobotoidShdefs(void)
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(ish,0x1f,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)
-                                                                              vrgRobIshAip)
-                                                                              [sVar4 + shBase] +
-                                                                             0x1f80)));
+        sVar4 = FCreateAiShdef(ish,0x1f,(byte *)(((ushort *)vrgRobIshAip)[sVar4 + shBase] +
+                                                     0x1f80));
         if (sVar4 != 0) break;
       }
     }
@@ -1084,8 +1072,7 @@ void EnsureRobotoidShdefs(void)
              (((*(uint *)((int)&rgshdef[0].wFlags + (ish + -1) * 0x93) >> 9 & 1) == 0 &&
               (0xf < game.turn -
                      *(int *)((int)&rgshdef[0].turn + (ish + -1) * 0x93))))))) &&
-           (sVar4 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1088,(byte *)(vrgRobIshAip[0x24] +
-                                                                              0x1f80))), sVar4 == 0)
+           (sVar4 = FCreateAiShdef(ish,9,(byte *)(vrgRobIshAip[0x24] + vrgRobAip)), sVar4 == 0)
            ) {
           if (ish == 9) {
             iVar3 = 0x18;
@@ -1093,8 +1080,7 @@ void EnsureRobotoidShdefs(void)
           else {
             iVar3 = 0x19;
           }
-          FCreateAiShdef(ish,0x13,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
-                                                                        [iVar3] + 0x1f80)));
+          FCreateAiShdef(ish,0x13,(byte *)(((ushort *)vrgRobIshAip)[iVar3] + 0x1f80));
         }
       }
       if ((((((rgshdef[0].hul.ihuldef != ihuldefFrigate) &&
@@ -1107,18 +1093,18 @@ void EnsureRobotoidShdefs(void)
             ('\x05' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0)))))))
          && ('\x05' < *(char *)((int)rgplr[0].rgTech + idPlayer * 0xc0))) {
         pSVar5 = (SHDEF *)rgshdef;
-        pHVar6 = (HullDef *)shdef;
+        pHVar6 = shdef;
         for (iVar3 = 0x49; iVar3 != 0; iVar3 = iVar3 + -1) {
           pHVar2 = pHVar6;
           pHVar6 = pHVar6 + 1;
           pSVar1 = pSVar5;
-          pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+          pSVar5 = (pSVar5->hul).rgTech;
           *pHVar2 = (pSVar1->hul).ihuldef;
         }
         *(char *)pHVar6 = (char)(pSVar5->hul).ihuldef;
         shdef._123_2_ = shdef._123_2_ & 0xfdff | 0x200;
-        FChangeAiShdef((SHDEF *)shdef,0);
-        FCreateAiShdef(0,5,(byte *)CONCAT22(0x1088,(byte *)(vrgRobIshAip[0x1a] + 0x1f80)));
+        FChangeAiShdef(shdef,0);
+        FCreateAiShdef(0,5,(byte *)(vrgRobIshAip[0x1a] + vrgRobAip));
       }
       return;
     }
@@ -1141,9 +1127,8 @@ void EnsureRobotoidShdefs(void)
       }
       for (i = 0; i < 5; i = i + 1) {
         sVar4 = Random(4);
-        sVar4 = FCreateAiShdef(ish,9,(byte *)CONCAT22(0x1088,(byte *)(((ushort *)vrgRobIshAip)
-                                                                           [sVar4 + shBase] + 0x1f80
-                                                                          )));
+        sVar4 = FCreateAiShdef(ish,9,(byte *)(((ushort *)vrgRobIshAip)[sVar4 + shBase] + 0x1f80
+                                                  ));
         if (sVar4 != 0) break;
       }
     }
@@ -1208,7 +1193,7 @@ short IdTargetArmada(FLEET *lpfl)
     pOVar9 = &ord;
     for (iVar4 = 9; iVar4 != 0; iVar4 = iVar4 + -1) {
       pOVar2 = pOVar9;
-      pOVar9 = (ORDER *)&(pOVar9->pt).y;
+      pOVar9 = &(pOVar9->pt).y;
       psVar1 = psVar8;
       psVar8 = psVar8 + 1;
       (pOVar2->pt).x = *psVar1;
@@ -1776,7 +1761,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
        (sVar8 = PctPlanetOptValue(lppl,idPlayer), 0 < sVar8)) {
       cplanCol = cplanCol + 1;
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   lpplMac = (PLANET *)lpPlanets + cPlanet;
   local_8e = lpPlanets._2_2_;
@@ -1952,8 +1937,8 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                 if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestBattle * 0x93) == 0) &&
                    (*(uint *)((int)&rgshdef[0].cExist + iLatestBattle * 0x93) <
                     game.cPlanMax / 0x18 + 4U)) {
-                  GetResourcesAvailable(lppl,(long *)rgResAvail);
-                  GetProdQCost(lppl,(long *)rgResCost);
+                  GetResourcesAvailable(lppl,rgResAvail);
+                  GetProdQCost(lppl,rgResCost);
                   for (i = 0; i < 4; i = i + 1) {
                     uVar6 = rgResCost[i * 2];
                     uVar7 = rgResCost[i * 2 + 1];
@@ -1966,9 +1951,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,
-                               (HUL *)CONCAT22(0x1120,(HUL *)(iLatestBattle * 0x93 + 0x3f00)),
-                               rgCosts);
+                              (idPlayer,(HUL *)(iLatestBattle * 0x93 + 0x3f00),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -1987,8 +1970,8 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                 if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestCruiser * 0x93) == 0)
                    && (*(uint *)((int)&rgshdef[0].cExist + iLatestCruiser * 0x93) <
                        game.cPlanMax / 0xc + 8U)) {
-                  GetResourcesAvailable(lppl,(long *)rgResAvail);
-                  GetProdQCost(lppl,(long *)rgResCost);
+                  GetResourcesAvailable(lppl,rgResAvail);
+                  GetProdQCost(lppl,rgResCost);
                   for (i = 0; i < 4; i = i + 1) {
                     uVar6 = rgResCost[i * 2];
                     uVar7 = rgResCost[i * 2 + 1];
@@ -2001,9 +1984,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,
-                               (HUL *)CONCAT22(0x1120,(HUL *)(iLatestCruiser * 0x93 + 0x3f00)),
-                               rgCosts);
+                              (idPlayer,(HUL *)(iLatestCruiser * 0x93 + 0x3f00),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -2022,8 +2003,8 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                 if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestDestroyer * 0x93) == 0)
                    && (*(uint *)((int)&rgshdef[0].cExist + iLatestDestroyer * 0x93) <
                        game.cPlanMax / 4 + 0xcU)) {
-                  GetResourcesAvailable(lppl,(long *)rgResAvail);
-                  GetProdQCost(lppl,(long *)rgResCost);
+                  GetResourcesAvailable(lppl,rgResAvail);
+                  GetProdQCost(lppl,rgResCost);
                   for (i = 0; i < 4; i = i + 1) {
                     uVar6 = rgResCost[i * 2];
                     uVar7 = rgResCost[i * 2 + 1];
@@ -2036,9 +2017,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,
-                               (HUL *)CONCAT22(0x1120,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00)),
-                               rgCosts);
+                              (idPlayer,(HUL *)(iLatestDestroyer * 0x93 + 0x3f00),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -2057,8 +2036,8 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                 if ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestTroop * 0x93) == 0) &&
                    (*(uint *)((int)&rgshdef[0].cExist + iLatestTroop * 0x93) <
                     game.cPlanMax / 0xc + 8U)) {
-                  GetResourcesAvailable(lppl,(long *)rgResAvail);
-                  GetProdQCost(lppl,(long *)rgResCost);
+                  GetResourcesAvailable(lppl,rgResAvail);
+                  GetProdQCost(lppl,rgResCost);
                   for (i = 0; i < 4; i = i + 1) {
                     uVar6 = rgResCost[i * 2];
                     uVar7 = rgResCost[i * 2 + 1];
@@ -2071,9 +2050,7 @@ void DoTurinDroneAiTurn(PROD *rgprod)
                   }
                   for (i = 0; i < 5; i = i + 1) {
                     GetTrueHullCost
-                              (idPlayer,
-                               (HUL *)CONCAT22(0x1120,(HUL *)(iLatestTroop * 0x93 + 0x3f00)),rgCosts
-                              );
+                              (idPlayer,(HUL *)(iLatestTroop * 0x93 + 0x3f00),rgCosts);
                     for (j = 0; j < 4; j = j + 1) {
                       uVar6 = rgCosts[j];
                       puVar1 = rgResAvail + j * 2;
@@ -2104,7 +2081,7 @@ AI_FinishProd_2:
         cplBadGuy = cplBadGuy + 1;
       }
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   for (ipl = 0; ipl < vclpplAi; ipl = ipl + 1) {
                     /* WARNING: Load size is inaccurate */
@@ -2207,9 +2184,9 @@ AI_LCheckForColDrop_3:
                     pOVar14 = &ord;
                     for (iVar19 = 9; iVar19 != 0; iVar19 = iVar19 + -1) {
                       pPVar4 = pPVar11;
-                      pPVar11 = (PLORD *)&pPVar11->iordMax;
+                      pPVar11 = &pPVar11->iordMax;
                       pOVar3 = pOVar14;
-                      pOVar14 = (ORDER *)&(pOVar14->pt).y;
+                      pOVar14 = &(pOVar14->pt).y;
                       pPVar4->wFlags = (pOVar3->pt).x;
                     }
                   }
@@ -2220,8 +2197,8 @@ AI_LCheckForColDrop_3:
                       pbVar2 = pbVar13;
                       pbVar13 = pbVar13 + 2;
                       pOVar3 = pOVar14;
-                      pOVar14 = (ORDER *)&(pOVar14->pt).y;
-                      *(short *)pbVar2 = (pOVar3->pt).x;
+                      pOVar14 = &(pOVar14->pt).y;
+                      *pbVar2 = (pOVar3->pt).x;
                     }
                   }
                   FLookupFleet(-1,(FLEET *)&sel.fl);
@@ -2485,7 +2462,7 @@ AI_LScrapFleet_3:
     }
 LAB_1088_4eb0:
   }
-  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,(long *)rgResAvail,(long *)rgResCost);
+  HandleBasicAiTasks(iroCur,rgprod,ishdefSBLatest,rgResAvail,rgResCost);
   FillProductionQueue();
   return;
 }
@@ -2515,12 +2492,12 @@ void EnsureTurinDroneShdefs(short iroCur)
   if ((((rgshdef[8].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
      ('\a' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(8,0xc,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xc]));
+    FCreateAiShdef(8,0xc,(byte *)vrgTDAip + vrgTDIshAip[0xc]);
   }
   if ((((rgshdef[9].wFlags >> 9 & 1) != 0) &&
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))) &&
      ('\n' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(9,0xd,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xf]));
+    FCreateAiShdef(9,0xd,(byte *)vrgTDAip + vrgTDIshAip[0xf]);
   }
   if ((((rgshdef[10].wFlags >> 9 & 1) != 0) &&
       ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -2529,8 +2506,7 @@ void EnsureTurinDroneShdefs(short iroCur)
        ('\x04' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     for (i = 0; i < 4; i = i + 1) {
       sVar3 = Random(1);
-      sVar3 = FCreateAiShdef(10,6,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
-                                                               ((byte *)vrgTDIshAip + 2)[sVar3]));
+      sVar3 = FCreateAiShdef(10,6,(byte *)vrgTDAip + ((byte *)vrgTDIshAip + 2)[sVar3]);
       if (sVar3 != 0) break;
     }
   }
@@ -2542,16 +2518,16 @@ void EnsureTurinDroneShdefs(short iroCur)
       pSVar6 = &shdef;
       for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
         pSVar2 = pSVar6;
-        pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+        pSVar6 = (pSVar6->hul).rgTech;
         pSVar1 = pSVar5;
-        pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+        pSVar5 = (pSVar5->hul).rgTech;
         (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
       }
-      *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
+      *&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,1);
     }
-    FCreateAiShdef(1,0xf,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0]));
+    FCreateAiShdef(1,0xf,(byte *)vrgTDAip + vrgTDIshAip[0]);
   }
   if (((rgshdef[0].wFlags >> 9 & 1) != 0) ||
      (((int)rgshdef[0].cExist == 0 && (rgshdef[0].cExist._2_2_ == 0)))) {
@@ -2560,16 +2536,16 @@ void EnsureTurinDroneShdefs(short iroCur)
       pSVar6 = &shdef;
       for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
         pSVar2 = pSVar6;
-        pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+        pSVar6 = (pSVar6->hul).rgTech;
         pSVar1 = pSVar5;
-        pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+        pSVar5 = (pSVar5->hul).rgTech;
         (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
       }
-      *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
+      *&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,0);
     }
-    FCreateAiShdef(0,5,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[1]));
+    FCreateAiShdef(0,5,(byte *)vrgTDAip + vrgTDIshAip[1]);
   }
   if (((((rgshdef[2].wFlags >> 9 & 1) != 0) ||
        (((int)rgshdef[2].cExist == 0 && (rgshdef[2].cExist._2_2_ == 0)))) &&
@@ -2580,35 +2556,35 @@ void EnsureTurinDroneShdefs(short iroCur)
       pSVar6 = &shdef;
       for (iVar4 = 0x49; iVar4 != 0; iVar4 = iVar4 + -1) {
         pSVar2 = pSVar6;
-        pSVar6 = (SHDEF *)(pSVar6->hul).rgTech;
+        pSVar6 = (pSVar6->hul).rgTech;
         pSVar1 = pSVar5;
-        pSVar5 = (SHDEF *)(pSVar5->hul).rgTech;
+        pSVar5 = (pSVar5->hul).rgTech;
         (pSVar2->hul).ihuldef = (pSVar1->hul).ihuldef;
       }
-      *(char *)&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
+      *&(pSVar6->hul).ihuldef = (char)(pSVar5->hul).ihuldef;
       shdef.wFlags = shdef.wFlags & 0xfdff | 0x200;
       FChangeAiShdef(&shdef,2);
     }
-    FCreateAiShdef(2,0x16,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0x11]));
+    FCreateAiShdef(2,0x16,(byte *)vrgTDAip + vrgTDIshAip[0x11]);
   }
   if ((((rgshdef[0xc].wFlags >> 9 & 1) != 0) ||
       (((int)rgshdef[0xc].cExist == 0 && (rgshdef[0xc].cExist._2_2_ == 0)))) &&
      (('\x03' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
       ('\x03' < *(char *)((int)rgplr[0].rgTech + 5 + idPlayer * 0xc0))))) {
-    FCreateAiShdef(0xc,0xb,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xe]));
+    FCreateAiShdef(0xc,0xb,(byte *)vrgTDAip + vrgTDIshAip[0xe]);
   }
   if (((((rgshdef[0xd].wFlags >> 9 & 1) != 0) &&
        ('\a' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0))) &&
      ('\x05' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0))) {
-    FCreateAiShdef(0xd,0x12,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xd]));
+    FCreateAiShdef(0xd,0x12,(byte *)vrgTDAip + vrgTDIshAip[0xd]);
   }
   if ((((rgshdef[0xe].wFlags >> 9 & 1) != 0) &&
       ('\n' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
      (('\v' < *(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0) &&
       (('\x0e' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        ('\b' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
-    FCreateAiShdef(0xe,0x12,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip + vrgTDIshAip[0xd]));
+    FCreateAiShdef(0xe,0x12,(byte *)vrgTDAip + vrgTDIshAip[0xd]);
   }
   if (((((rgshdef[4].wFlags >> 9 & 1) != 0) &&
        ('\x04' < *(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0))) &&
@@ -2617,9 +2593,8 @@ void EnsureTurinDroneShdefs(short iroCur)
       ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))) {
     for (i = 0; i < 5; i = i + 1) {
       sVar3 = Random(4);
-      sVar3 = FCreateAiShdef(4,9,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
-                                                              *(byte *)((int)&rgptPlan
-                                                                              [0x19d].y + sVar3)));
+      sVar3 = FCreateAiShdef(4,9,(byte *)vrgTDAip +
+                                      *(byte *)((int)&rgptPlan[0x19d].y + sVar3));
       if (sVar3 != 0) break;
     }
   }
@@ -2629,9 +2604,8 @@ void EnsureTurinDroneShdefs(short iroCur)
       (('\f' < *(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) &&
        ('\x06' < *(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0))))))) {
     i = 0;
-    while ((i < 5 && (sVar3 = FCreateAiShdef(0xf,0xc,(byte *)CONCAT22(0x1088,(byte *)vrgTDAip +
-                                                                                  vrgTDIshAip[0xc]))
-                     , sVar3 == 0))) {
+    while ((i < 5 && (sVar3 = FCreateAiShdef(0xf,0xc,(byte *)vrgTDAip + vrgTDIshAip[0xc]),
+                     sVar3 == 0))) {
       i = i + 1;
     }
   }

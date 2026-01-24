@@ -355,7 +355,7 @@ TURN2_LCantBuildP:
                   if (cMax < 1) goto TURN2_RemoveFromQueue;
                   lVar17 = __aFlshl(uVar21,(ushort)pPVar22);
                   uVar7 = *(uint *)((int)&pPVar9->dwFlags + 2);
-                  *(uint *)&lpprod->dwFlags = (uint)lpprod->dwFlags & 0xfc00 | (uint)lVar17;
+                  *&lpprod->dwFlags = (uint)lpprod->dwFlags & 0xfc00 | (uint)lVar17;
                   *(uint *)((int)&pPVar9->dwFlags + 2) = uVar7 | (uint)((ulong)lVar17 >> 0x10);
                 }
                 goto LAB_10b8_07fc;
@@ -404,7 +404,7 @@ LAB_10b8_0871:
                   if (((uint)uVar18 & 0x7f) < 7) goto LAB_10b8_09a0;
                 }
                 uVar15 = *(undefined2 *)((int)&pPVar9->dwFlags + 2);
-                *(uint *)&lpprod->dwFlags = (uint)lpprod->dwFlags & 0xfc00;
+                *&lpprod->dwFlags = (uint)lpprod->dwFlags & 0xfc00;
                 *(undefined2 *)((int)&pPVar9->dwFlags + 2) = uVar15;
                 uVar16 = local_e;
                 uVar5 = lResCur;
@@ -469,7 +469,7 @@ LAB_10b8_09a0:
         } while( true );
       }
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   } while( true );
 }
 
@@ -823,13 +823,13 @@ LAB_10b8_108f:
     cCanBuild = uVar13;
     _memset(pprodPartial,0,4);
     uVar6 = *(uint *)((int)&pprodPartial->dwFlags + 2);
-    *(int *)&pprodPartial->dwFlags = (int)pprodPartial->dwFlags;
+    *&pprodPartial->dwFlags = (int)pprodPartial->dwFlags;
     *(uint *)((int)&pprodPartial->dwFlags + 2) = uVar6 & 0xfff1 | 2;
     uVar6 = *(uint *)((int)&pprodPartial->dwFlags + 2);
-    *(uint *)&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0x3ff | 0x2c00;
+    *&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0x3ff | 0x2c00;
     *(uint *)((int)&pprodPartial->dwFlags + 2) = uVar6 & 0xfffe;
     uVar16 = *(undefined2 *)((int)&pprodPartial->dwFlags + 2);
-    *(uint *)&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0xfc00 | 1;
+    *&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0xfc00 | 1;
     *(undefined2 *)((int)&pprodPartial->dwFlags + 2) = uVar16;
     uVar6 = lAlchCost;
     uVar16 = local_18;
@@ -848,7 +848,7 @@ LAB_10b8_108f:
     pctTooBig = lVar15;
     lVar15 = __aFlshl((long)pPVar18,in_stack_0000ffa6);
     uVar6 = *(uint *)((int)&pprodPartial->dwFlags + 2);
-    *(uint *)&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags | (uint)lVar15;
+    *&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags | (uint)lVar15;
     *(uint *)((int)&pprodPartial->dwFlags + 2) = uVar6 & 0xf80f | (uint)((ulong)lVar15 >> 0x10);
     uVar17 = 0;
     uVar16 = 100;
@@ -939,7 +939,7 @@ LAB_10b8_17b7:
     }
   }
   if ((fCalcOnly == 0) && (fAutoBuild == 0)) {
-    *(uint *)&lpprod->dwFlags = prod;
+    *&lpprod->dwFlags = prod;
     *(uint *)((int)&((PROD *)lpprod)->dwFlags + 2) = local_1c;
   }
   if (((fAutoBuild != 0) && (pprodPartial != (PROD *)0x0)) && ((pprodPartial->dwFlags & 0x3ff) == 0)
@@ -948,14 +948,14 @@ LAB_10b8_17b7:
     cCanBuild = uVar13;
     uVar13 = __aFulshr((ulong)pPVar18,in_stack_0000ffa6);
     if ((uVar13 & 0x7f) != 0) {
-      *(uint *)&pprodPartial->dwFlags = prod;
+      *&pprodPartial->dwFlags = prod;
       *(uint *)((int)&pprodPartial->dwFlags + 2) = local_1c;
       uVar11 = *(undefined2 *)((int)&pprodPartial->dwFlags + 2);
-      *(uint *)&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0xfc00 | 1;
+      *&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0xfc00 | 1;
       *(undefined2 *)((int)&pprodPartial->dwFlags + 2) = uVar11;
       lVar15 = __aFlshl((long)pPVar18,in_stack_0000ffa6);
       uVar6 = *(uint *)((int)&pprodPartial->dwFlags + 2);
-      *(uint *)&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0x3ff | (uint)lVar15;
+      *&pprodPartial->dwFlags = (uint)pprodPartial->dwFlags & 0x3ff | (uint)lVar15;
       *(uint *)((int)&pprodPartial->dwFlags + 2) = uVar6 & 0xfffe | (uint)((ulong)lVar15 >> 0x10);
     }
   }
@@ -1086,12 +1086,12 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
         pSVar11 = (SHDEF *)lpshdef;
         puVar1 = &pSVar11->cBuilt;
         uVar16 = *puVar1;
-        *(uint *)puVar1 = (uint)*puVar1 + 1;
+        *puVar1 = (uint)*puVar1 + 1;
         piVar2 = (int *)((int)&pSVar11->cBuilt + 2);
         *piVar2 = *piVar2 + (uint)(0xfffe < (uint)uVar16);
         puVar1 = &pSVar11->cExist;
         uVar16 = *puVar1;
-        *(uint *)puVar1 = (uint)*puVar1 + 1;
+        *puVar1 = (uint)*puVar1 + 1;
         piVar2 = (int *)((int)&pSVar11->cExist + 2);
         *piVar2 = *piVar2 + (uint)(0xfffe < (uint)uVar16);
         return 1;
@@ -1221,7 +1221,7 @@ short FBuildObject(PLANET *lppl,GrobjClass grobj,short iItem,short cBuilt,long *
           uVar21 = 0;
           uVar14 = 100;
           lVar18 = (long)cshDamaged;
-          uVar16 = __aFulmul((ulong)CONCAT22(iEnv,dpOrig),5);
+          uVar16 = __aFulmul(CONCAT22(iEnv,dpOrig),5);
           uVar16 = __aFldiv(uVar16,lVar18);
           uVar16 = __aFulmul(uVar16,CONCAT22(uVar21,uVar14));
           lVar18 = __aFldiv(uVar16,CONCAT22(uVar22,uVar20));
@@ -1348,7 +1348,7 @@ TURN2_SendMsgFactMine:
         }
         ((PLANET *)lppl)->rgMinConc[sVar9 + 2] = (byte)cAllowed;
         FSendPlrMsg(((PLANET *)lppl)->iPlayer,idmTerraformingEffortsHave,lppl->id,lppl->id,
-                         (uint)(0 < i),iEnv,(short)(cAllowed + iEnv * 0x100),0,0,0);
+                         (uint)(0 < i),iEnv,cAllowed + iEnv * 0x100,0,0,0);
       }
     }
     break;
@@ -1428,7 +1428,7 @@ TURN2_SendMsgFactMine:
               ((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 8) >> 0xe == part &&
                ((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 8) & 0x3fff) < 0x65e))))))))
       break;
-      lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+      lpth = (THING *)lpth + 1;
     }
     if (((THING *)lpth == (THING *)dpOrig) && (lpth._2_2_ == lpThings._2_2_)) {
       pTVar19 = LpthNew(((PLANET *)lppl)->iPlayer,ithMineralPacket);
@@ -1524,7 +1524,7 @@ TURN2_SendMsgFactMine:
     break;
   case 0x1b:
     idPlayer = ((PLANET *)lppl)->iPlayer;
-    LookupBestPlanetaryScanner((PART *)&stack0xffe2);
+    LookupBestPlanetaryScanner(&stack0xffe2);
     idPlayer = -1;
     iItem = (cshDamaged & 0xffU) + 0x12;
   case 0x12:
@@ -1764,7 +1764,7 @@ void TransferToOthers(void)
           }
         }
       }
-      lpxfCur = (XFERFULL *)CONCAT22(lpxfCur._2_2_,(XFERFULL *)lpxfCur + 1);
+      lpxfCur = (XFERFULL *)lpxfCur + 1;
     }
   }
   return;
@@ -1862,7 +1862,7 @@ void DropColonists(void)
         idPlanet = ((COLDROP *)lpcdCur)->idPlanetDst;
         FLookupPlanet(idPlanet,&pl);
         iplrOldOwner = pl.iPlayer;
-        CalcPctSurvive((PLANET *)CONCAT22(unaff_SS,&pl),&pctSurvive,(float *)0x0);
+        CalcPctSurvive(&pl,&pctSurvive,(float *)0x0);
         pctSurvive = (fRam11201d8e - pctSurvive) / fRam11201d92 + pctSurvive;
         lpcdLook = lpcdCur;
         while ((COLDROP *)lpcdLook < pCVar7) {
@@ -1945,7 +1945,7 @@ void DropColonists(void)
             }
             ((COLDROP *)lpcdLook)->idPlanetDst = -1;
           }
-          lpcdLook = (COLDROP *)CONCAT22(lpcdLook._2_2_,(COLDROP *)lpcdLook + 1);
+          lpcdLook = (COLDROP *)lpcdLook + 1;
         }
         if (pl.iPlayer == 0xffff) {
           lDefensePower._0_2_ = 0;
@@ -2043,8 +2043,7 @@ LAB_10b8_3b02:
               pl.rgbImp._4_2_ = pl.rgbImp._4_2_ | (uint)lVar14;
               pl.rgbImp._6_2_ = pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar14 >> 0x10);
               if (uVar6 != 0) {
-                pl.lpplprod = (PLPROD *)
-                              LpplAlloc(4,(uint)*(byte *)((int)&rgplr[0].zpq1 + 1
+                pl.lpplprod = LpplAlloc(4,(uint)*(byte *)((int)&rgplr[0].zpq1 + 1
                                                                  + iMax * 0xc0),htOrd);
                 unaff_SI = (PL *)0x1118;
                 _memset(&prod,0,4);
@@ -2069,17 +2068,16 @@ LAB_10b8_3b02:
                       lVar14 = __aFlshl((ulong)(uint)ipq << 0x10,(uint)prod.dwFlags);
                       prod.dwFlags._0_2_ = (uint)prod.dwFlags & 0xfc00 | (uint)lVar14;
                       prod.dwFlags._2_2_ = prod.dwFlags._2_2_ | (uint)((ulong)lVar14 >> 0x10);
-                      ((PL *)((PLPROD *)pl.lpplprod + iDst + 1))->wFlags = (uint)prod.dwFlags;
-                      *(uint *)&((PL *)((PLPROD *)pl.lpplprod + iDst + 1))->iMax =
-                           prod.dwFlags._2_2_;
+                      ((PLPROD *)pl.lpplprod + iDst + 1)->wFlags = (uint)prod.dwFlags;
+                      *(uint *)&((PLPROD *)pl.lpplprod + iDst + 1)->iMax = prod.dwFlags._2_2_;
                       iDst = iDst + 1;
                     }
                   }
                 }
                 if (iDst < 1) {
-                  pPVar23 = (PL *)(PLPROD *)pl.lpplprod;
+                  pPVar23 = (PLPROD *)pl.lpplprod;
                   in_stack_0000fefe = pl.lpplprod._2_2_;
-                  FreePl((PL *)pl.lpplprod);
+                  FreePl(pl.lpplprod);
                   pl.lpplprod = (PLPROD *)0x0;
                   unaff_DI = unaff_SI;
                   unaff_SI = pPVar23;
@@ -2173,7 +2171,7 @@ LAB_10b8_3b02:
           lDefensePower = lVar14;
           if (lVar14 <= (long)cPowerTot) {
             lOldPop = pl.rgwtMin[3];
-            UninhabitPlanet((PLANET *)CONCAT22(unaff_SS,&pl));
+            UninhabitPlanet(&pl);
             goto LAB_10b8_3b02;
           }
           for (i = 0; lDefensePower = lVar14, i < 0x10; i = i + 1) {
@@ -2232,7 +2230,7 @@ code_r0x10b838ea:
         }
         if (pl.iPlayer != 0xffff) {
           pl.rgwtMin[3] = uVar13;
-          uVar16 = __aFulshr((ulong)CONCAT22(unaff_SI,unaff_DI),in_stack_0000fefe);
+          uVar16 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000fefe);
           uVar13 = pl.rgwtMin[3];
           if (((uVar16 & 1) != 0) &&
              (pl.rgbImp._6_2_ = pl.rgbImp._6_2_ & 0xffbf, (game.wCrap >> 7 & 1) == 0)) {
@@ -2261,7 +2259,7 @@ code_r0x10b838ea:
         FLookupPlanet(-1,&pl);
       }
 TURN2_IncCur:
-      lpcdCur = (COLDROP *)CONCAT22(lpcdCur._2_2_,(COLDROP *)lpcdCur + 1);
+      lpcdCur = (COLDROP *)lpcdCur + 1;
     }
     cColDrop = 0;
   }
@@ -2496,7 +2494,7 @@ void AutoTerraform(void)
                            );
         }
       }
-      lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+      lppl = (PLANET *)lppl + 1;
     }
   }
   return;
@@ -2650,7 +2648,7 @@ short FQueueColonistDrop(FLEET *lpfl,PLANET *lppl,long cColonists)
     while( true ) {
       if ((cColDrop <= iColDrop) ||
          ((lpcdT->idFleetSrc == lpfl->id && (((COLDROP *)lpcdT)->idPlanetDst == lppl->id)))) break;
-      lpcdT = (COLDROP *)CONCAT22(lpcdT._2_2_,(COLDROP *)lpcdT + 1);
+      lpcdT = (COLDROP *)lpcdT + 1;
       iColDrop = iColDrop + 1;
     }
     if (iColDrop == cColDrop) {
@@ -2848,7 +2846,7 @@ void UpdateGuesses(void)
         ((PLANET *)lppl)->uGuesses = ((PLANET *)lppl)->uGuesses & 0xfff | l << 0xc;
       }
     }
-    lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+    lppl = (PLANET *)lppl + 1;
   }
   return;
 }
@@ -3290,7 +3288,7 @@ void MysteryTrader(void)
         pTVar2 = (THING *)lpth;
         (&pTVar2->pt)->x = rgC[iSrc];
         (pTVar2->pt).y = rgC[iSrc == 0];
-        *(int *)&pTVar2->u_THING_0x0006 = rgC[iSrc + 2];
+        *&pTVar2->u_THING_0x0006 = rgC[iSrc + 2];
         *(int *)((int)&pTVar2->u_THING_0x0006 + 2) = rgC[(iSrc == 0) + 2];
         if (game.turn < 100) {
           cRand = 5;
@@ -3414,7 +3412,7 @@ void UpdatePlayerScores(void)
       pSVar11 = (SCORE *)((int)&pSVar11->lScore + 2);
       pSVar2 = pSVar10;
       pSVar10 = (SCORE *)((int)&pSVar10->lScore + 2);
-      *(int *)&pSVar3->lScore = (int)pSVar2->lScore;
+      *&pSVar3->lScore = (int)pSVar2->lScore;
     }
     ((SCOREX *)vlprgScoreX + i)->wWord =
          ((SCOREX *)vlprgScoreX + i)->wWord & 0xffe0 | i & 0x1fU;
@@ -3666,12 +3664,10 @@ void CreateBackupDir(void)
     _strcpy(pchT,(char *)s_backup_1120_09e0);
   }
   else if (vcBackupDirs < 100) {
-    _wsprintf((char *)CONCAT22(0x1120,pchT),s_backup_d_1120_09e7,
-              game.turn % (uint)vcBackupDirs);
+    _wsprintf(pchT,s_backup_d_1120_09e7,game.turn % (uint)vcBackupDirs);
   }
   else {
-    _wsprintf((char *)CONCAT22(0x1120,pchT),s_backup__03d_1120_09f0,
-              game.turn % (uint)vcBackupDirs);
+    _wsprintf(pchT,s_backup__03d_1120_09f0,game.turn % (uint)vcBackupDirs);
   }
   __mkdir((char *)&szBackup);
   _strcat((char *)&szBackup,(char *)0x9fc);
@@ -3944,7 +3940,7 @@ TURN2_LFixUpLpth:
         lpthMac = lpthMac + -1;
       }
     }
-    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+    lpth = (THING *)lpth + 1;
   } while( true );
 }
 
@@ -3969,7 +3965,7 @@ void UnmarkMineFields(void)
     if (lpth->idFull >> 0xd == 0) {
       *(undefined2 *)((int)&((THING *)lpth)->u_THING_0x0006 + 8) = 0;
     }
-    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+    lpth = (THING *)lpth + 1;
   }
   return;
 }
@@ -4116,7 +4112,7 @@ void SweepForMines(void)
             }
           }
         }
-        lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+        lpth = (THING *)lpth + 1;
       }
     }
   }
@@ -4209,7 +4205,7 @@ void SweepForMines(void)
             }
           }
         }
-        lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+        lpth = (THING *)lpth + 1;
       }
     }
     lppl = (PLANET *)CONCAT22(uVar18,(PLANET *)lppl + 1);
@@ -4771,16 +4767,16 @@ short IBestRemoteTerra(PLANET *lppl,short iplr,short fHelp)
     puVar2 = puVar8;
     puVar8 = puVar8 + 1;
     pPVar1 = pPVar7;
-    pPVar7 = (PLAYER *)&pPVar7->cPlanet;
-    *puVar2 = *(undefined2 *)pPVar1;
+    pPVar7 = &pPVar7->cPlanet;
+    *puVar2 = *pPVar1;
   }
   pPVar7 = (PLAYER *)rgplr + iplr;
   pPVar9 = (PLAYER *)rgplr + pPVar6->iPlayer;
   for (iVar5 = 0x60; iVar5 != 0; iVar5 = iVar5 + -1) {
     pPVar3 = pPVar9;
-    pPVar9 = (PLAYER *)&pPVar9->cPlanet;
+    pPVar9 = &pPVar9->cPlanet;
     pPVar1 = pPVar7;
-    pPVar7 = (PLAYER *)&pPVar7->cPlanet;
+    pPVar7 = &pPVar7->cPlanet;
     cVar4 = pPVar1->cShDef;
     pPVar3->iPlayer = pPVar1->iPlayer;
     pPVar3->cShDef = cVar4;
@@ -4795,7 +4791,7 @@ short IBestRemoteTerra(PLANET *lppl,short iplr,short fHelp)
   puVar8 = plrSav;
   for (iVar5 = 0x60; iVar5 != 0; iVar5 = iVar5 + -1) {
     pPVar1 = pPVar7;
-    pPVar7 = (PLAYER *)&pPVar7->cPlanet;
+    pPVar7 = &pPVar7->cPlanet;
     puVar2 = puVar8;
     puVar8 = puVar8 + 1;
     uVar10 = *puVar2;

@@ -63,12 +63,12 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
           if (iVar5 == vpctRadarView) {
             iSel = j;
           }
-          _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),iVar5);
+          _wsprintf(szWork,PCTDPCTPCT,iVar5);
           SendMessage(hwndTBRadar,0x403,0,0x112057a4);
         }
         SendMessage(hwndTBRadar,0x415,4,0);
         SendMessage(hwndTBRadar,0x40e,iSel,0);
-        _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),vpctRadarView);
+        _wsprintf(szWork,PCTDPCTPCT,vpctRadarView);
         SetWindowText(hwndTBRadar,szWork);
         pfVar6 = (fn_lpfnRealComboProc *)GetWindowLong(hwndTBRadar,-4);
         lpfnRealComboProc = pfVar6;
@@ -87,20 +87,20 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
   }
   else if (msg == 0xf) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    hdc = BeginPaint(hwnd,&ps);
+    GetClientRect(hwnd,&rc);
     PatBlt(hdc,0,0,rc.right,1,0x42);
     PatBlt(hdc,0,rc.bottom + -1,rc.right,1,0x42);
     if (iWindowLayout == 0) {
       PatBlt(hdc,0,0,1,rc.bottom,0x42);
     }
     DrawToolbar(hdc,&rc);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+    EndPaint(hwnd,&ps);
   }
   else {
     if (msg == 0x14) {
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+      GetClientRect(hwnd,&rc);
+      FillRect(wParam,&rc,hbrButtonFace);
       uVar8 = 1;
       pfVar6 = lpfnRealComboProc;
       pfVar7 = lpfnRealCEProc;
@@ -134,7 +134,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
       pt.y = (short)uVar8;
       if (hwnd != hwndTb) {
-        MapWindowPoints(hwnd,hwndTb,(POINT *)CONCAT22(unaff_SS,&pt),1);
+        MapWindowPoints(hwnd,hwndTb,&pt,1);
       }
       if ((pt.x != vptTbLast.x) || (pt.y != vptTbLast.y)) {
         vptTbLast.x = pt.x;
@@ -152,7 +152,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
         rc.right = sVar3 + rc.left;
         rc.top = pt.y;
         rc.bottom = 0x1c;
-        MapWindowPoints(hwndTb,0,(POINT *)CONCAT22(unaff_SS,&rc),2);
+        MapWindowPoints(hwndTb,0,(POINT *)&rc,2);
         ShowTooltip(ids,&rc);
       }
     }
@@ -186,7 +186,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
               if (sVar3 == 0) break;
               PVar1.y = pt.y;
               PVar1.x = pt.x;
-              fInside = PtInRect((RECT *)CONCAT22(unaff_SS,&rc),PVar1);
+              fInside = PtInRect(&rc,PVar1);
               if (fCur != fInside) {
                 pt_00.y = ptBtn.y;
                 pt_00.x = ptBtn.x;
@@ -200,7 +200,7 @@ long TbWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
               fDown = FIsButtonDown(itb);
             }
             if (itb < 6) {
-              GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+              GetClientRect(hwnd,&rc);
               DrawToolbar(hdc,&rc);
             }
             else {
@@ -568,10 +568,9 @@ void ExecuteButton(short itb,short fDown)
       CchGetString(i__38 + idsMineFields3,(char *)szWork + i__38 * 0x1e);
       (&rgszScan__34)[c__36] = (char *)szWork + i__38 * 0x1e;
     }
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    ScreenToClient(hwndTb,(POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,(long *)rgid__88,&rgszScan__34,
-                                -2,0);
+    GetCursorPos(pt + 2);
+    ScreenToClient(hwndTb,pt + 2);
+    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,rgid__88,&rgszScan__34,-2,0);
     if (iSel__90 == -1) {
       return;
     }
@@ -632,9 +631,9 @@ void ExecuteButton(short itb,short fDown)
       }
       grbitSh = grbitSh << 1;
     }
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)pt));
-    ScreenToClient(hwndTb,(POINT *)CONCAT22(unaff_SS,(POINT *)pt));
-    sVar2 = PopupMenu(hwndTb,pt._0_2_,pt._2_2_,c,(long *)rgid,rgszScan,-2,0);
+    GetCursorPos(pt);
+    ScreenToClient(hwndTb,pt);
+    sVar2 = PopupMenu(hwndTb,pt._0_2_,pt._2_2_,c,rgid,rgszScan,-2,0);
     if (sVar2 == -1) {
       return;
     }
@@ -695,10 +694,9 @@ joined_r0x10681246:
       CchGetString(i__38 + idsColony,(char *)szWork + i__38 * 0x19);
       (&rgszScan__34)[c__36] = (char *)szWork + i__38 * 0x19;
     }
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    ScreenToClient(hwndTb,(POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,(long *)rgid__88,&rgszScan__34,
-                                -2,0);
+    GetCursorPos(pt + 2);
+    ScreenToClient(hwndTb,pt + 2);
+    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,rgid__88,&rgszScan__34,-2,0);
     if (iSel__90 == -1) {
       return;
     }
@@ -738,15 +736,14 @@ joined_r0x1068150e:
     for (i__32 = 0; sVar2 = c__30, i__32 < 9; i__32 = i__32 + 1) {
       rgid__68[c__30 * 2] = (uint)(iScanZoom + 4 == i__32);
       rgid__68[sVar2 * 2 + 1] = 0;
-      _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + i__32 * 8),
-                (char *)CONCAT22(0x1120,PCTDPCTPCT),*(undefined2 *)(i__32 * 2 + 0xda4));
+      _wsprintf((char *)szWork + i__32 * 8,PCTDPCTPCT,
+                *(undefined2 *)(i__32 * 2 + vrgpctZoom));
       rgszScan__28[c__30] = (char *)szWork + i__32 * 8;
       c__30 = c__30 + 1;
     }
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    ScreenToClient(hwndTb,(POINT *)CONCAT22(unaff_SS,(POINT *)(pt + 2)));
-    iSel__70 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__30,(long *)rgid__68,rgszScan__28,
-                                -2,0);
+    GetCursorPos(pt + 2);
+    ScreenToClient(hwndTb,pt + 2);
+    iSel__70 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__30,rgid__68,rgszScan__28,-2,0);
     if (iSel__70 == -1) {
       return;
     }
@@ -811,7 +808,7 @@ void TerminateToolbarFocus(short fCancel)
     pct = 100;
   }
   SendMessage(hwndTBRadar,0x40e,(100 - pct) / 10,0);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),pct);
+  _wsprintf(szWork,PCTDPCTPCT,pct);
   SetWindowText(hwndTBRadar,szWork);
   if (pct != vpctRadarView) {
     vpctRadarView = pct;
@@ -871,7 +868,7 @@ void ShowTooltip(StringId ids,RECT *prc)
   }
   else {
     if (ids == vidsTooltip) {
-      BVar2 = EqualRect((RECT *)CONCAT22(0x1120,prc),&vrcTooltip);
+      BVar2 = EqualRect(prc,&vrcTooltip);
       DVar8 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
       if (BVar2 != 0) goto LAB_1068_19dd;
     }
@@ -957,24 +954,24 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
   }
   else {
     if (msg == 0xf) {
-      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-      FrameRect(hdc,(RECT *)CONCAT22(unaff_SS,&rc),hbrWindowFrame);
+      hdc = BeginPaint(hwnd,&ps);
+      GetClientRect(hwnd,&rc);
+      FrameRect(hdc,&rc,hbrWindowFrame);
       SelectObject(hdc,rghfontArial8[0]);
       UVar6 = CchGetString(vidsTooltip,(char *)szWork);
       sVar7 = SetBkMode(hdc,1);
       SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
       ExtTextOut(hdc,3,3,0,(RECT *)0x0,szWork,UVar6,(short *)0x0);
       SetBkMode(hdc,sVar7);
-      EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+      EndPaint(hwnd,&ps);
       LVar8 = 0;
       uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
       uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
       goto LAB_1068_1d6a;
     }
     if (msg == 0x14) {
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrTooltip);
+      GetClientRect(hwnd,&rc);
+      FillRect(wParam,&rc,hbrTooltip);
       LVar8 = 1;
       uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
       uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
@@ -1010,7 +1007,7 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     if (wParam == 0x39e) {
       if ((msg == 0x113) && (BVar5 = IsWindowVisible(hwnd), BVar5 != 0)) {
         vtickTooltipLast = GetTickCount();
-        GetCursorPos((POINT *)CONCAT22(unaff_SS,&pt));
+        GetCursorPos(&pt);
         PVar2.y = pt.y;
         PVar2.x = pt.x;
         BVar5 = PtInRect(&vrcTooltip,PVar2);
@@ -1027,7 +1024,7 @@ long TooltipWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
       }
       else {
         vtickTooltip1stVis = GetTickCount();
-        GetCursorPos((POINT *)CONCAT22(unaff_SS,&pt));
+        GetCursorPos(&pt);
         PVar1.y = pt.y;
         PVar1.x = pt.x;
         BVar5 = PtInRect(&vrcTooltip,PVar1);

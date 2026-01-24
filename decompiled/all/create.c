@@ -27,7 +27,7 @@ void InitBattlePlan(BTLPLAN *lpbtlplan,short iplan,short iplr)
   pBVar6 = pBVar5;
   for (iVar3 = 0x12; iVar3 != 0; iVar3 = iVar3 + -1) {
     pBVar2 = pBVar6;
-    pBVar6 = (BTLPLAN *)&pBVar6->wFlags_0x2;
+    pBVar6 = &pBVar6->wFlags_0x2;
     puVar1 = puVar4;
     puVar4 = puVar4 + 1;
     pBVar2->wFlags = *puVar1;
@@ -92,7 +92,7 @@ short CreateStartupShip(short iplr,short idPlanet,short ishdef,short fAddShdef)
       pHVar4 = pHVar12;
       pHVar12 = pHVar12 + 1;
       pSVar13 = pSVar11;
-      pSVar11 = (SHDEF *)(pSVar11->hul).rgTech;
+      pSVar11 = (pSVar11->hul).rgTech;
       *pHVar4 = (pSVar13->hul).ihuldef;
     }
     *(char *)pHVar12 = (char)(pSVar11->hul).ihuldef;
@@ -230,7 +230,7 @@ short GenNewGameFromFile(char *pszFile)
   __fstrcpy(game.szName,lpbStart);
   if ((char *)lpb < (char *)lpbDefMac) {
     lpbStart = PszGetLine(&lpb);
-    cNum = CParseNumbers(lpbStart,(long *)rgl,4);
+    cNum = CParseNumbers(lpbStart,rgl,4);
     if (cNum == -1) {
 CREATE_LUniDefError:
       sVar5 = 0x10;
@@ -259,7 +259,7 @@ CREATE_LUniDefError:
     }
     if ((char *)lpb < (char *)lpbDefMac) {
       lpbStart = PszGetLine(&lpb);
-      cNum = CParseNumbers(lpbStart,(long *)rgl,7);
+      cNum = CParseNumbers(lpbStart,rgl,7);
       if (cNum == -1) {
 CREATE_LUniDefError3:
         pcVar7 = PszFormatIds(idsLine3HasBadUniverseDefinitionParameter,(short *)0x0);
@@ -293,7 +293,7 @@ CREATE_LUniDefError3:
         game.wCrap = game.wCrap & 0xfeff | (local_14 & 1) << 8;
       }
       lpbStart = PszGetLine(&lpb);
-      cNum = CParseNumbers(lpbStart,(long *)rgl,1);
+      cNum = CParseNumbers(lpbStart,rgl,1);
       if ((((cNum < 1) || ((int)rgl[1] < 0)) || (((int)rgl[1] < 1 && (rgl[0] == 0)))) ||
          ((-1 < (int)rgl[1] && ((0 < (int)rgl[1] || (0x10 < rgl[0])))))) {
         pcVar7 = PszFormatIds(idsLine4HasImproperNumberPlayerFiles,(short *)0x0);
@@ -317,9 +317,9 @@ CREATE_LUniDefError3:
             pPVar13 = (PLAYER *)&vplr;
             for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
               pPVar3 = pPVar15;
-              pPVar15 = (PLAYER *)&pPVar15->cPlanet;
+              pPVar15 = &pPVar15->cPlanet;
               pPVar18 = pPVar13;
-              pPVar13 = (PLAYER *)&pPVar13->cPlanet;
+              pPVar13 = &pPVar13->cPlanet;
               cVar4 = pPVar18->cShDef;
               pPVar3->iPlayer = pPVar18->iPlayer;
               pPVar3->cShDef = cVar4;
@@ -327,7 +327,7 @@ CREATE_LUniDefError3:
           }
           else {
             pcVar17 = (char *)CONCAT22(lpbStart._2_2_,(char *)lpbStart + 1);
-            cNum = CParseNumbers(pcVar17,(long *)rgl,2);
+            cNum = CParseNumbers(pcVar17,rgl,2);
             uVar10 = rgl[0];
             if ((((cNum < 2) || ((int)rgl[0] < 0)) || (6 < (int)rgl[0])) ||
                (((int)local_28 < 0 || (4 < (int)local_28)))) {
@@ -337,7 +337,7 @@ CREATE_LCantGetRace:
               pcVar7 = (char *)lpbStart;
               uVar12 = lpbStart._2_2_;
               pcVar8 = PszGetCompressedString(idsLineDUnableLoadRaceFileS);
-              _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar8),iVar11,pcVar7,uVar12);
+              _wsprintf(szWork,pcVar8,iVar11,pcVar7,uVar12);
               AlertSz((char *)szWork,0x10);
               goto CREATE_LError_3;
             }
@@ -358,9 +358,9 @@ CREATE_LCantGetRace:
             pPVar15 = (PLAYER *)rgplr + i;
             for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
               pPVar2 = pPVar15;
-              pPVar15 = (PLAYER *)&pPVar15->cPlanet;
+              pPVar15 = &pPVar15->cPlanet;
               pPVar3 = pPVar13;
-              pPVar13 = (PLAYER *)&pPVar13->cPlanet;
+              pPVar13 = &pPVar13->cPlanet;
               cVar4 = pPVar3->cShDef;
               pPVar2->iPlayer = pPVar3->iPlayer;
               pPVar2->cShDef = cVar4;
@@ -375,7 +375,7 @@ CREATE_LCantGetRace:
           }
         }
         lpbStart = PszGetLine(&lpb);
-        cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+        cNum = CParseNumbers(lpbStart,rgl,2);
         if ((char *)lpb < (char *)lpbDefMac) {
           i = 0;
           if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -391,7 +391,7 @@ CREATE_LCantGetRace:
               SetVCVal((GAME *)&game,0,(int)(local_28 + -0x14) / 5);
             }
             lpbStart = PszGetLine(&lpb);
-            cNum = CParseNumbers(lpbStart,(long *)rgl,3);
+            cNum = CParseNumbers(lpbStart,rgl,3);
             if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
             i = 1;
             if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -409,7 +409,7 @@ CREATE_LCantGetRace:
                 SetVCVal((GAME *)&game,2,local_24 - 2);
               }
               lpbStart = PszGetLine(&lpb);
-              cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+              cNum = CParseNumbers(lpbStart,rgl,2);
               if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
               i = 2;
               if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -424,7 +424,7 @@ CREATE_LCantGetRace:
                   SetVCVal((GAME *)&game,3,(int)(local_28 + -1000) / 1000);
                 }
                 lpbStart = PszGetLine(&lpb);
-                cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+                cNum = CParseNumbers(lpbStart,rgl,2);
                 if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
                 i = 3;
                 if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -438,7 +438,7 @@ CREATE_LCantGetRace:
                     SetVCVal((GAME *)&game,4,(int)(local_28 + -0x14) / 10);
                   }
                   lpbStart = PszGetLine(&lpb);
-                  cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+                  cNum = CParseNumbers(lpbStart,rgl,2);
                   if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
                   i = 4;
                   if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -453,7 +453,7 @@ CREATE_LCantGetRace:
                       SetVCVal((GAME *)&game,5,(int)(local_28 + -10) / 10);
                     }
                     lpbStart = PszGetLine(&lpb);
-                    cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+                    cNum = CParseNumbers(lpbStart,rgl,2);
                     if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
                     i = 5;
                     if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -467,7 +467,7 @@ CREATE_LCantGetRace:
                         SetVCVal((GAME *)&game,6,(int)(local_28 + -10) / 10);
                       }
                       lpbStart = PszGetLine(&lpb);
-                      cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+                      cNum = CParseNumbers(lpbStart,rgl,2);
                       if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
                       i = 6;
                       if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -483,7 +483,7 @@ CREATE_LCantGetRace:
                           SetVCVal((GAME *)&game,7,(int)(local_28 + -0x1e) / 10);
                         }
                         lpbStart = PszGetLine(&lpb);
-                        cNum = CParseNumbers(lpbStart,(long *)rgl,2);
+                        cNum = CParseNumbers(lpbStart,rgl,2);
                         if ((char *)lpbDefMac <= (char *)lpb) goto CREATE_LUniDefShort;
                         i = 7;
                         if (((0 < cNum) && (-1 < (int)rgl[1])) &&
@@ -519,7 +519,7 @@ CREATE_LCantGetRace:
                               puVar14 = (undefined2 *)&vrgplrDef;
                               for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
                                 pPVar18 = pPVar13;
-                                pPVar13 = (PLAYER *)&pPVar13->cPlanet;
+                                pPVar13 = &pPVar13->cPlanet;
                                 puVar1 = puVar14;
                                 puVar14 = puVar14 + 1;
                                 uVar12 = *puVar1;
@@ -536,8 +536,7 @@ CREATE_LCantGetRace:
                               CchGetString
                                         (sVar5 + idsBerserker,
                                          (char *)((int)rgplr[0].szName + iVar11));
-                              _wsprintf((char *)CONCAT22(0x1120,(char *)((int)rgplr[0].
-                                                                              szNames + i * 0xc0)),
+                              _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),
                                         (char *)0x11200a2e,i * 0xc0 + 0x5a22,0x1120);
                             }
                           }
@@ -635,7 +634,7 @@ CREATE_LBadDefVc:
           iVar11 = i + cPlr + 5;
           i = iVar11;
           pcVar7 = PszGetCompressedString(idsLineDHasImproperVictoryConditionDefinition);
-          _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),iVar11);
+          _wsprintf(szWork,pcVar7,iVar11);
           AlertSz((char *)szWork,0x10);
           goto CREATE_LError_3;
         }
@@ -699,7 +698,7 @@ void CreateTutorWorld(void)
   pPVar9 = (PLAYER *)rgplr;
   for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
     pPVar11 = pPVar9;
-    pPVar9 = (PLAYER *)&pPVar9->cPlanet;
+    pPVar9 = &pPVar9->cPlanet;
     puVar1 = puVar8;
     puVar8 = puVar8 + 1;
     uVar3 = *puVar1;
@@ -713,9 +712,9 @@ void CreateTutorWorld(void)
   pPVar10 = (PLAYER *)(rgplr + 1);
   for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
     pPVar4 = pPVar10;
-    pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+    pPVar10 = &pPVar10->cPlanet;
     pPVar2 = pPVar9;
-    pPVar9 = (PLAYER *)&pPVar9->cPlanet;
+    pPVar9 = &pPVar9->cPlanet;
     cVar5 = pPVar2->cShDef;
     pPVar4->iPlayer = pPVar2->iPlayer;
     pPVar4->cShDef = cVar5;
@@ -727,12 +726,12 @@ void CreateTutorWorld(void)
     uVar13 = CONCAT22(i,0x1120);
     pcVar12 = (char *)szBase;
     pcVar6 = PszGetCompressedString(idsSHD);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar6),pcVar12,uVar13);
+    _wsprintf(szWork,pcVar6,pcVar12,uVar13);
     _remove((char *)szWork);
     uVar13 = CONCAT22(i,0x1120);
     pcVar12 = (char *)szBase;
     pcVar6 = PszGetCompressedString(idsSXD);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar6),pcVar12,uVar13);
+    _wsprintf(szWork,pcVar6,pcVar12,uVar13);
     _remove((char *)szWork);
   }
   GenerateWorld(0);
@@ -815,9 +814,9 @@ void NewGameWizard(HWND hwnd,short fReadOnly)
         pPVar17 = vrgplrNew + i;
         for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
           pPVar4 = pPVar17;
-          pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+          pPVar17 = &pPVar17->cPlanet;
           pPVar19 = pPVar10;
-          pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+          pPVar10 = &pPVar10->cPlanet;
           cVar6 = pPVar19->cShDef;
           pPVar4->iPlayer = pPVar19->iPlayer;
           pPVar4->cShDef = cVar6;
@@ -882,7 +881,7 @@ CREATE_Finish_2:
           pGVar15 = (GAME *)((int)&pGVar15->lid + 2);
           puVar3 = puVar16;
           puVar16 = puVar16 + 1;
-          *(undefined2 *)&pGVar1->lid = *puVar3;
+          *&pGVar1->lid = *puVar3;
         }
         _strcpy((char *)szBase,szFile);
         uVar9 = _strlen((char *)szBase);
@@ -896,7 +895,7 @@ CREATE_Finish_2:
               pPVar10 = (PLAYER *)rgplr + i;
               for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
                 pPVar19 = pPVar10;
-                pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+                pPVar10 = &pPVar10->cPlanet;
                 puVar3 = puVar16;
                 puVar16 = puVar16 + 1;
                 uVar2 = *puVar3;
@@ -910,7 +909,7 @@ CREATE_Finish_2:
               pPVar10 = (PLAYER *)rgplr + i;
               for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
                 pPVar19 = pPVar10;
-                pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+                pPVar10 = &pPVar10->cPlanet;
                 puVar3 = puVar16;
                 puVar16 = puVar16 + 1;
                 uVar2 = *puVar3;
@@ -928,17 +927,17 @@ CREATE_Finish_2:
             }
             CchGetString
                       (c + idsHumanoid,(char *)((int)rgplr[0].szName + i * 0xc0));
-            _wsprintf((char *)CONCAT22(0x1120,(char *)((int)rgplr[0].szNames + i * 0xc0)),
-                      (char *)0x11200ab8,i * 0xc0 + 0x5a22);
+            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),(char *)0x11200ab8,
+                      i * 0xc0 + 0x5a22);
           }
           else if (bVar7 == 2) {
             pPVar10 = rgplrLocal + ((int)(uint)((byte *)vrgplrTypeNew)[i] >> 2);
             pPVar17 = (PLAYER *)rgplr + i;
             for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
               pPVar4 = pPVar17;
-              pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+              pPVar17 = &pPVar17->cPlanet;
               pPVar19 = pPVar10;
-              pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+              pPVar10 = &pPVar10->cPlanet;
               cVar6 = pPVar19->cShDef;
               pPVar4->iPlayer = pPVar19->iPlayer;
               pPVar4->cShDef = cVar6;
@@ -958,9 +957,9 @@ CREATE_Finish_2:
             pPVar17 = (PLAYER *)rgplr + i;
             for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
               pPVar5 = pPVar17;
-              pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+              pPVar17 = &pPVar17->cPlanet;
               pPVar4 = pPVar10;
-              pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+              pPVar10 = &pPVar10->cPlanet;
               cVar6 = pPVar4->cShDef;
               pPVar5->iPlayer = pPVar4->iPlayer;
               pPVar5->cShDef = cVar6;
@@ -983,7 +982,7 @@ CREATE_Finish_2:
               puVar16 = (undefined2 *)&vrgplrDef;
               for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
                 pPVar19 = pPVar10;
-                pPVar10 = (PLAYER *)&pPVar10->cPlanet;
+                pPVar10 = &pPVar10->cPlanet;
                 puVar3 = puVar16;
                 puVar16 = puVar16 + 1;
                 uVar2 = *puVar3;
@@ -1000,8 +999,8 @@ CREATE_Finish_2:
             CchGetString(sVar8 + idsBerserker,pcVar11);
           }
           if (*(char *)((int)rgplr[0].szNames + i * 0xc0) == '\0') {
-            _wsprintf((char *)CONCAT22(0x1120,(char *)((int)rgplr[0].szNames + i * 0xc0)),
-                      (char *)0x11200abc,i * 0xc0 + 0x5a22);
+            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),(char *)0x11200abc,
+                      i * 0xc0 + 0x5a22);
           }
         }
         i = 1;
@@ -1132,7 +1131,7 @@ CREATE_Cancel:
         pGVar15 = (GAME *)((int)&pGVar15->lid + 2);
         puVar3 = puVar16;
         puVar16 = puVar16 + 1;
-        *(undefined2 *)&pGVar1->lid = *puVar3;
+        *&pGVar1->lid = *puVar3;
       }
     }
     gd.grBits._0_2_ = (uint)gd.grBits & 0xff7f | (fIdleSav & 1U) << 7;
@@ -1174,7 +1173,7 @@ CREATE_Cancel:
       pGVar15 = (GAME *)((int)&pGVar15->lid + 2);
       puVar3 = puVar16;
       puVar16 = puVar16 + 1;
-      *(undefined2 *)&pGVar1->lid = *puVar3;
+      *&pGVar1->lid = *puVar3;
     }
     StartTutor(0);
     gd.grBits._0_2_ = (uint)gd.grBits & 0xff7f | (fIdleSav & 1U) << 7;
@@ -1488,64 +1487,63 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar13 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hwndDD = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffc4));
+    hwndDD = BeginPaint(hwnd,&stack0xffc4);
     HVar7 = GetDlgItem(hwnd,200);
-    GetWindowRect(HVar7,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffe8));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffe8));
+    GetWindowRect(HVar7,&stack0xffe8);
+    ScreenToClient(hwnd,&stack0xffe8);
     HVar7 = GetDlgItem(hwnd,0xcb);
-    GetWindowRect(HVar7,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar7,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     local_14 = rc._4_2_;
     prcSav = rc._6_2_;
-    ExpandRc((RECT *)&stack0xffe8,dyArial8,dyArial8 >> 1);
+    ExpandRc(&stack0xffe8,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
     SelectObject(hwndDD,rghfontArial8[1]);
     SetBkColor(hwndDD,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     sVar8 = CchGetString(idsDifficultyLevel,(char *)szWork);
     TextOut(hwndDD,rcGBox + 8,(int)local_16 - (dyArial8 >> 1),szWork,sVar8);
     HVar7 = GetDlgItem(hwnd,1000);
-    GetWindowRect(HVar7,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffe8));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffe8));
+    GetWindowRect(HVar7,&stack0xffe8);
+    ScreenToClient(hwnd,&stack0xffe8);
     HVar7 = GetDlgItem(hwnd,0x3ec);
-    GetWindowRect(HVar7,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar7,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     local_14 = rc._4_2_;
     prcSav = rc._6_2_;
-    ExpandRc((RECT *)&stack0xffe8,dyArial8,dyArial8 >> 1);
+    ExpandRc(&stack0xffe8,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
     SelectObject(hwndDD,rghfontArial8[1]);
     sVar8 = CchGetString(idsUniverseSize,(char *)szWork);
     TextOut(hwndDD,rcGBox + 8,(int)local_16 - (dyArial8 >> 1),szWork,sVar8);
     local_16 = prcSav + 1;
     HVar7 = GetDlgItem(hwnd,0x81a);
-    GetWindowRect(HVar7,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffe8));
-    MapWindowPoints(0,hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffe8),2);
-    ExpandRc((RECT *)&stack0xffe8,dyArial8,dyArial8 >> 1);
-    prcSav = (RECT *)(&prcSav->left + dyArial8);
+    GetWindowRect(HVar7,&stack0xffe8);
+    MapWindowPoints(0,hwnd,&stack0xffe8,2);
+    ExpandRc(&stack0xffe8,dyArial8,dyArial8 >> 1);
+    prcSav = &prcSav->left + dyArial8;
     _Draw3dFrame();
     SelectObject(hwndDD,rghfontArial8[1]);
     sVar8 = CchGetString(idsPlayerRace,(char *)szWork);
     TextOut(hwndDD,rcGBox + 8,(int)local_16 - (dyArial8 >> 1),szWork,sVar8);
     local_16 = (RECT *)((int)&prcSav->left + dyArial8 * 3);
     prcSav = (RECT *)0x3e8;
-    ExpandRc((RECT *)&stack0xffe8,-dyArial8,0);
+    ExpandRc(&stack0xffe8,-dyArial8,0);
     sVar8 = CchGetString
                       (idsButtonAllowsConfigureMultiPlayerGamesCustom,(char *)szWork);
-    sVar8 = DRAWTEXT(hwndDD,szWork,sVar8,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffe8),
-                     0x810);
+    sVar8 = DRAWTEXT(hwndDD,szWork,sVar8,&stack0xffe8,0x810);
     HVar7 = GetDlgItem(hwnd,0xd3);
     SetWindowPos(HVar7,0,rcGBox,(int)local_16 + sVar8 + dyArial8 / 2,0,0,5);
     prcSav = (RECT *)((int)local_16 + sVar8 + dyArial8 * 2);
-    ExpandRc((RECT *)&stack0xffe8,dyArial8,dyArial8 >> 1);
+    ExpandRc(&stack0xffe8,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
     sVar8 = CchGetString(idsAdvancedGame,(char *)szWork);
     TextOut(hwndDD,rcGBox + 8,(int)local_16 - (dyArial8 >> 1),szWork,sVar8);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffc4));
+    EndPaint(hwnd,&stack0xffc4);
     sVar8 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar8 = 1;
   }
   else {
@@ -1585,7 +1583,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           WVar15 = 0;
           HVar7 = hwndDD;
           pcVar6 = PszGetCompressedString(i + idsHumanoid);
-          SendMessage(HVar7,UVar16,WVar15,(LPARAM)CONCAT22(0x1120,pcVar6));
+          SendMessage(HVar7,UVar16,WVar15,(LPARAM)pcVar6);
         }
         SendMessage(hwndDD,0x40e,0,0);
         StickyDlgPos(hwnd,(POINT *)&ptStickyNewDlg,1);
@@ -1624,7 +1622,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             pPVar11 = (PLAYER *)&vplr;
             for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
               pPVar2 = pPVar11;
-              pPVar11 = (PLAYER *)&pPVar11->cPlanet;
+              pPVar11 = &pPVar11->cPlanet;
               puVar1 = puVar10;
               puVar10 = puVar10 + 1;
               uVar3 = *puVar1;
@@ -1639,9 +1637,9 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             pPVar11 = vrgplrNew;
             for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
               pPVar4 = pPVar12;
-              pPVar12 = (PLAYER *)&pPVar12->cPlanet;
+              pPVar12 = &pPVar12->cPlanet;
               pPVar2 = pPVar11;
-              pPVar11 = (PLAYER *)&pPVar11->cPlanet;
+              pPVar11 = &pPVar11->cPlanet;
               cVar5 = pPVar2->cShDef;
               pPVar4->iPlayer = pPVar2->iPlayer;
               pPVar4->cShDef = cVar5;
@@ -1660,9 +1658,9 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             pPVar12 = vrgplrNew;
             for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
               pPVar4 = pPVar12;
-              pPVar12 = (PLAYER *)&pPVar12->cPlanet;
+              pPVar12 = &pPVar12->cPlanet;
               pPVar2 = pPVar11;
-              pPVar11 = (PLAYER *)&pPVar11->cPlanet;
+              pPVar11 = &pPVar11->cPlanet;
               cVar5 = pPVar2->cShDef;
               pPVar4->iPlayer = pPVar2->iPlayer;
               pPVar4->cShDef = cVar5;
@@ -1672,7 +1670,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           SetFocus(hwnd);
         }
         else if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x3ea);
+          WinHelp(hwnd,_szHelpFile,1,0x3ea);
           return 1;
         }
       }
@@ -1713,13 +1711,13 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar5 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffc6));
+    hdc = BeginPaint(hwnd,&stack0xffc6);
     HVar1 = GetDlgItem(hwnd,1000);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcGBox));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&rcGBox));
+    GetWindowRect(HVar1,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
     HVar1 = GetDlgItem(hwnd,0x3ec);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar1,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     rcGBox.right = rc._4_2_;
     rcGBox.bottom = rc._6_2_;
     ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
@@ -1729,11 +1727,11 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar2 = CchGetString(idsUniverseSize,(char *)szWork);
     TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar2);
     HVar1 = GetDlgItem(hwnd,0x3ed);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcGBox));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&rcGBox));
+    GetWindowRect(HVar1,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
     HVar1 = GetDlgItem(hwnd,0x3f0);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar1,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     rcGBox.right = rc._4_2_;
     rcGBox.bottom = rc._6_2_;
     ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
@@ -1743,11 +1741,11 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar2 = CchGetString(idsDensity,(char *)szWork);
     TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar2);
     HVar1 = GetDlgItem(hwnd,0x3f1);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcGBox));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&rcGBox));
+    GetWindowRect(HVar1,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
     HVar1 = GetDlgItem(hwnd,0x3f4);
-    GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar1,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     rcGBox.right = rc._4_2_;
     rcGBox.bottom = rc._6_2_;
     ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
@@ -1756,12 +1754,12 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     sVar2 = CchGetString(idsPlayerPositions,(char *)szWork);
     TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar2);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffc6));
+    EndPaint(hwnd,&stack0xffc6);
     return 1;
   }
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -1843,7 +1841,7 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     if (message == WM_COMMAND) {
       if (wParam == 0x76) {
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x3f4);
+        WinHelp(hwnd,_szHelpFile,1,0x3f4);
         return 1;
       }
       hdc = 0;
@@ -1960,14 +1958,14 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar20 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    iNewVal = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+    iNewVal = BeginPaint(hwnd,ps);
     DrawNewGame2(hwnd,iNewVal,-1);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+    EndPaint(hwnd,ps);
     return 1;
   }
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -1986,8 +1984,8 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (fRCWReadOnly != 0) {
       return 0;
     }
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffee));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffee));
+    GetCursorPos(&stack0xffee);
+    ScreenToClient(hwnd,&stack0xffee);
     if (pt__18 < xNewGameDiamond) {
       return 0;
     }
@@ -2011,20 +2009,20 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
     SetNGWTitle(hwnd,2);
     dy = (dyArial8 + 4) * 0x10 + 8;
     HVar8 = GetDlgItem(hwnd,_rgidRaceBtn);
-    GetWindowRect(HVar8,(RECT *)CONCAT22(unaff_SS,&rc));
+    GetWindowRect(HVar8,&rc);
     dyBut = rc.bottom - rc.top;
-    GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffea));
+    GetWindowRect(hwnd,&stack0xffea);
     dyCur = iNewVal - pt;
     if (dyCur < dy + dyBut + 6) {
       for (i = 0; i < 5; i = i + 1) {
         hwndBtn = GetDlgItem(hwnd,*(short *)((ushort_0_ *)&rgidRaceBtn + i * 2));
-        GetWindowRect(hwndBtn,(RECT *)CONCAT22(unaff_SS,&rc));
-        MapWindowPoints(0,hwnd,(POINT *)CONCAT22(unaff_SS,&rc),2);
-        OffsetRect((RECT *)CONCAT22(unaff_SS,&rc),0,dy - rc.top);
+        GetWindowRect(hwndBtn,&rc);
+        MapWindowPoints(0,hwnd,(POINT *)&rc,2);
+        OffsetRect(&rc,0,dy - rc.top);
         SetWindowPos(hwndBtn,0,rc.left,rc.top,0,0,5);
       }
       dy = rc.bottom + 6;
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+      GetClientRect(hwnd,&rc);
       if (dyCur < dy) {
         SetWindowPos(hwnd,0,0,0,pt__18 - rcT,((dy + iNewVal) - pt) - rc.bottom,6);
       }
@@ -2034,7 +2032,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   if (message == WM_COMMAND) {
     if (wParam == 0x76) {
-      WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x3fc);
+      WinHelp(hwnd,_szHelpFile,1,0x3fc);
       return 1;
     }
     i = 0;
@@ -2081,7 +2079,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   bVar5 = ((byte *)vrgplrTypeNew)[iDiamond];
   uVar9 = (uint)bVar5;
-  ClientToScreen(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffec));
+  ClientToScreen(hwnd,&stack0xffec);
   rghmenuSubPopup[0] = CreatePopupMenu();
   for (rcT = 0; rcT < 6; rcT = rcT + 1) {
     if (uVar9 == rcT * 4 + 1U) {
@@ -2091,29 +2089,29 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       hwndBtn = 0;
     }
     dy = (short)PszGetCompressedString(rcT + idsHumanoid);
-    AppendMenu(rghmenuSubPopup[0],hwndBtn,rcT + 0x3aa8,(LPCSTR)CONCAT22(0x1120,dy));
+    AppendMenu(rghmenuSubPopup[0],hwndBtn,rcT + 0x3aa8,(LPCSTR)dy);
   }
   UVar10 = rcT + 0x3aa8;
   HVar8 = hwndBtn;
   HVar11 = rghmenuSubPopup[0];
   pcVar14 = PszGetCompressedString(idsRandom);
-  AppendMenu(HVar11,HVar8,UVar10,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,HVar8,UVar10,pcVar14);
   UVar10 = rcT + 0x3aa9;
   HVar8 = hwndBtn;
   HVar11 = rghmenuSubPopup[0];
   pcVar14 = PszGetCompressedString(idsExpansionPlayer);
-  AppendMenu(HVar11,HVar8,UVar10,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,HVar8,UVar10,pcVar14);
   HVar11 = CreatePopupMenu();
   UVar22 = 0;
   UVar10 = 15000;
   rghmenuSubPopup[1] = HVar11;
   pcVar14 = PszGetCompressedString(idsNew);
-  AppendMenu(HVar11,UVar22,UVar10,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,UVar22,UVar10,pcVar14);
   UVar22 = 0;
   UVar10 = 0x3a99;
   HVar11 = rghmenuSubPopup[1];
   pcVar14 = PszGetCompressedString(idsOpen);
-  AppendMenu(HVar11,UVar22,UVar10,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,UVar22,UVar10,pcVar14);
   for (rcT = 0; rcT < vcplrNew; rcT = rcT + 1) {
     if (uVar9 == rcT * 4 + 2U) {
       hwndBtn = 8;
@@ -2122,7 +2120,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       hwndBtn = 0;
     }
     dy = (short)PszPlayerName(0,1,1,1,0,vrgplrNew + rcT);
-    AppendMenu(rghmenuSubPopup[1],hwndBtn,rcT + 0x3ab8,(LPCSTR)CONCAT22(0x1120,dy));
+    AppendMenu(rghmenuSubPopup[1],hwndBtn,rcT + 0x3ab8,(LPCSTR)dy);
   }
   rghmenuSubPopup[2] = CreatePopupMenu();
   for (rcT = 0; rcT < 7; rcT = rcT + 1) {
@@ -2136,7 +2134,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         hwndBtn = 0;
       }
       AppendMenu(rghmenuSubPopup[rcT + 5],hwndBtn,rcT + 0x3ac8 + dyBut * 8,
-                 (LPCSTR)CONCAT22(0x1120,(char *)*(undefined2 *)(dyBut * 2 + 0xaae)));
+                 (char *)*(undefined2 *)(dyBut * 2 + 0xaae));
     }
     if ((uVar9 & 0x1f) == rcT * 4 + 5U) {
       hwndBtn = 8;
@@ -2145,7 +2143,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       hwndBtn = 0;
     }
     AppendMenu(rghmenuSubPopup[2],hwndBtn | 0x10,rghmenuSubPopup[rcT + 5],
-               (LPCSTR)CONCAT22(0x1120,(char *)*(undefined2 *)(rcT * 2 + 0xa7e)));
+               (char *)*(undefined2 *)(rcT * 2 + 0xa7e));
   }
   HVar11 = CreatePopupMenu();
   iPopMenuSel = -1;
@@ -2159,7 +2157,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   HVar21 = rghmenuSubPopup[0];
   hmenuPopup = HVar11;
   pcVar14 = PszGetCompressedString(idsPredefinedRace);
-  AppendMenu(HVar11,uVar12,HVar21,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,uVar12,HVar21,pcVar14);
   if ((uVar9 & 3) == 2) {
     hwndBtn = 8;
   }
@@ -2170,13 +2168,13 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   HVar11 = rghmenuSubPopup[1];
   HVar21 = hmenuPopup;
   pcVar14 = PszGetCompressedString(idsCustomRace);
-  AppendMenu(HVar21,uVar12,HVar11,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar21,uVar12,HVar11,pcVar14);
   if (((uVar9 & 3) == 1) || ((uVar9 & 3) == 2)) {
     UVar22 = 0;
     UVar10 = 0x3a9a;
     HVar11 = hmenuPopup;
     pcVar14 = PszGetCompressedString(idsEditRace);
-    AppendMenu(HVar11,UVar22,UVar10,(LPCSTR)CONCAT22(0x1120,pcVar14));
+    AppendMenu(HVar11,UVar22,UVar10,pcVar14);
   }
   AppendMenu(hmenuPopup,0x800,0,(LPCSTR)0x0);
   if ((uVar9 & 3) == 3) {
@@ -2189,7 +2187,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   HVar11 = rghmenuSubPopup[2];
   HVar21 = hmenuPopup;
   pcVar14 = PszGetCompressedString(idsComputerPlayer);
-  AppendMenu(HVar21,uVar12,HVar11,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar21,uVar12,HVar11,pcVar14);
   AppendMenu(hmenuPopup,0x800,0,(LPCSTR)0x0);
   if ((bVar5 & 3) == 0) {
     UVar10 = 8;
@@ -2201,7 +2199,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   HVar11 = hmenuPopup;
   hwndBtn = UVar10;
   pcVar14 = PszGetCompressedString(idsPlayer);
-  AppendMenu(HVar11,UVar10,UVar22,(LPCSTR)CONCAT22(0x1120,pcVar14));
+  AppendMenu(HVar11,UVar10,UVar22,pcVar14);
   if (message == WM_LBUTTONDOWN) {
     dyCur = 0;
   }
@@ -2213,7 +2211,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   for (rcT = 0; rcT < 6; rcT = rcT + 1) {
     DestroyMenu(rghmenuSubPopup[rcT]);
   }
-  BVar13 = PeekMessage((MSG *)CONCAT22(unaff_SS,&msg),hwnd,0x111,0x111,2);
+  BVar13 = PeekMessage(&msg,hwnd,0x111,0x111,2);
   if (((BVar13 != 0) && (14999 < msg.wParam)) && (msg.wParam < 0x3afc)) {
     iPopMenuSel = msg.wParam + 0xc568;
   }
@@ -2225,7 +2223,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       pPVar17 = (PLAYER *)&vplr;
       for (iVar15 = 0x60; iVar15 != 0; iVar15 = iVar15 + -1) {
         pPVar2 = pPVar17;
-        pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+        pPVar17 = &pPVar17->cPlanet;
         puVar1 = puVar18;
         puVar18 = puVar18 + 1;
         uVar3 = *puVar1;
@@ -2258,9 +2256,9 @@ CREATE_PlaceNew:
       pPVar17 = (PLAYER *)&vplr;
       for (iVar15 = 0x60; iVar15 != 0; iVar15 = iVar15 + -1) {
         pPVar4 = pPVar19;
-        pPVar19 = (PLAYER *)&pPVar19->cPlanet;
+        pPVar19 = &pPVar19->cPlanet;
         pPVar2 = pPVar17;
-        pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+        pPVar17 = &pPVar17->cPlanet;
         cVar6 = pPVar2->cShDef;
         pPVar4->iPlayer = pPVar2->iPlayer;
         pPVar4->cShDef = cVar6;
@@ -2281,7 +2279,7 @@ LAB_1078_9035:
           pPVar17 = (PLAYER *)&vplr;
           for (iVar16 = 0x60; iVar16 != 0; iVar16 = iVar16 + -1) {
             pPVar2 = pPVar17;
-            pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+            pPVar17 = &pPVar17->cPlanet;
             puVar1 = puVar18;
             puVar18 = puVar18 + 1;
             uVar3 = *puVar1;
@@ -2296,9 +2294,9 @@ LAB_1078_9035:
           pPVar19 = (PLAYER *)&vplr;
           for (iVar16 = 0x60; iVar16 != 0; iVar16 = iVar16 + -1) {
             pPVar4 = pPVar19;
-            pPVar19 = (PLAYER *)&pPVar19->cPlanet;
+            pPVar19 = &pPVar19->cPlanet;
             pPVar2 = pPVar17;
-            pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+            pPVar17 = &pPVar17->cPlanet;
             cVar6 = pPVar2->cShDef;
             pPVar4->iPlayer = pPVar2->iPlayer;
             pPVar4->cShDef = cVar6;
@@ -2329,9 +2327,9 @@ LAB_1078_9035:
           pPVar17 = (PLAYER *)&vplr;
           for (iVar16 = 0x60; iVar16 != 0; iVar16 = iVar16 + -1) {
             pPVar4 = pPVar19;
-            pPVar19 = (PLAYER *)&pPVar19->cPlanet;
+            pPVar19 = &pPVar19->cPlanet;
             pPVar2 = pPVar17;
-            pPVar17 = (PLAYER *)&pPVar17->cPlanet;
+            pPVar17 = &pPVar17->cPlanet;
             cVar6 = pPVar2->cShDef;
             pPVar4->iPlayer = pPVar2->iPlayer;
             pPVar4->cShDef = cVar6;
@@ -2429,21 +2427,21 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
     fCreatedDC = 1;
     hdc = GetDC(hwnd);
   }
-  GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwnd,&rc);
   bkMode = SetBkMode(hdc,1);
   SelectObject(hdc,rghfontArial8[1]);
   HVar12 = hdc;
   pcVar2 = PszGetCompressedString(idsPlayer16);
-  DVar8 = GetTextExtent(HVar12,(LPCSTR)CONCAT22(0x1120,pcVar2),0xb);
+  DVar8 = GetTextExtent(HVar12,pcVar2,0xb);
   xNewGameDiamond = (int)DVar8 + 0xc;
   yCur = 6;
-  SetRect((RECT *)CONCAT22(unaff_SS,&rcDiamond),xNewGameDiamond,6,
-          xNewGameDiamond + dyArial8 + 1,dyArial8 + 7);
+  SetRect(&rcDiamond,xNewGameDiamond,6,xNewGameDiamond + dyArial8 + 1,
+          dyArial8 + 7);
   for (i = 0; (i < 0x10 && ((fRCWReadOnly == 0 || (i < game.cPlayer)))); i = i + 1)
   {
     iVar3 = i + 1;
     pcVar2 = PszGetCompressedString(idsPlayerD);
-    sVar4 = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),iVar3);
+    sVar4 = _wsprintf(szWork,pcVar2,iVar3);
     cch = sVar4 + 1;
     ((char *)szWork)[sVar4] = ':';
     ((char *)szWork + 1)[sVar4] = '\0';
@@ -2460,7 +2458,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
         if ((uint)iPlr < 6) {
           CchGetString(idsS,szT);
           pcVar2 = PszGetCompressedString(iPlr + idsHumanoid);
-          _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar2,0x1120);
+          _wsprintf(szWork,szT,pcVar2,0x1120);
         }
         else {
           if (iPlr == 6) {
@@ -2479,7 +2477,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
             pcVar7 = vrgplrNew[iPlr].szNames;
             uVar10 = 0x1120;
             pcVar2 = PszGetCompressedString(idsS);
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar7,uVar10);
+            _wsprintf(szWork,pcVar2,pcVar7,uVar10);
           }
           else {
             pcVar7 = vrgszFileNew + iPlr * 0xd;
@@ -2487,7 +2485,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
             pcVar9 = vrgplrNew[iPlr].szNames;
             uVar10 = 0x1120;
             pcVar2 = PszGetCompressedString(idsSS2);
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),pcVar9,uVar10,pcVar7,uVar13);
+            _wsprintf(szWork,pcVar2,pcVar9,uVar10,pcVar7,uVar13);
           }
         }
         else {
@@ -2501,7 +2499,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
         uVar13 = *(undefined2 *)((uVar5 & 7) * 2 + 0xa7e);
         uVar11 = 0x1120;
         pcVar2 = PszGetCompressedString(idsSSComputerPlayer);
-        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar2),uVar13,uVar11,uVar10,uVar14);
+        _wsprintf(szWork,pcVar2,uVar13,uVar11,uVar10,uVar14);
       }
     }
     else if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 8 & 1) == 0) {
@@ -2514,8 +2512,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
         uVar10 = 0x1120;
         pcVar7 = (char *)0xae8;
         uVar6 = _strlen((char *)szWork);
-        _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + uVar6),
-                  (char *)CONCAT22(uVar10,pcVar7),pcVar2);
+        _wsprintf((char *)szWork + uVar6,(char *)CONCAT22(uVar10,pcVar7),pcVar2);
         SetTextColor(hdc,0x7f);
       }
     }
@@ -2527,7 +2524,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
     uVar6 = _strlen((char *)szWork);
     TextOut(HVar12,iVar3,sVar4,(LPCSTR)CONCAT22(uVar10,pcVar2),uVar6);
     SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
-    OffsetRect((RECT *)CONCAT22(unaff_SS,&rcDiamond),0,dyArial8 + 4);
+    OffsetRect(&rcDiamond,0,dyArial8 + 4);
     yCur = yCur + dyArial8 + 4;
   }
   SetBkMode(hdc,bkMode);
@@ -2570,14 +2567,14 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar4 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffd0));
+    hdc = BeginPaint(hwnd,&stack0xffd0);
     DrawNewGame3(hwnd,hdc,-1);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)&stack0xffd0));
+    EndPaint(hwnd,&stack0xffd0);
     sVar3 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar3 = 1;
   }
   else {
@@ -2594,8 +2591,8 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
     }
     else if (message == WM_SETCURSOR) {
-      GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffee));
-      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffee));
+      GetCursorPos(&stack0xffee);
+      ScreenToClient(hwnd,&stack0xffee);
       pt_00.y = hdc;
       pt_00.x = pt;
       sVar3 = IrcRaceDlgHitTest(pt_00);
@@ -2622,7 +2619,7 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
       if (message == WM_COMMAND) {
         if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x3fd);
+          WinHelp(hwnd,_szHelpFile,1,0x3fd);
           return 1;
         }
         i = 0;
@@ -2703,7 +2700,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
     fCreatedDC = 1;
     hdc = GetDC(hwnd);
   }
-  GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwnd,&rc);
   bkMode = SetBkMode(hdc,2);
   crBkSav = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace)
                       );
@@ -2727,8 +2724,8 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
     }
     if (i < 7) {
       HVar1 = GetDlgItem(hwnd,i + 0x123);
-      GetWindowRect(HVar1,(RECT *)CONCAT22(unaff_SS,&rcCBox));
-      MapWindowPoints(0,hwnd,(POINT *)CONCAT22(unaff_SS,&rcCBox),2);
+      GetWindowRect(HVar1,&rcCBox);
+      MapWindowPoints(0,hwnd,(POINT *)&rcCBox,2);
       xLeft = rcCBox.right + 2;
       yTop = ((rcCBox.bottom - rcCBox.top) / 2 + rcCBox.top) - (dyArial8 >> 1);
     }
@@ -2756,7 +2753,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
         break;
       }
       sVar2 = GetVCVal((GAME *)&game,vcCur,0);
-      _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),sVar2);
+      _wsprintf(szWork,PCTD,sVar2);
       if (((char (*) [2])rgNG3Width)[i][j] < '\0') {
         dxItem = dxItem + (dxDig * 3) / 2;
         _strcat((char *)szWork,(char *)0xaf4);
@@ -2776,7 +2773,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
       pRVar4->top = pRVar3->top;
       pRVar4->right = pRVar3->right;
       pRVar4->bottom = pRVar3->bottom;
-      OffsetRect((RECT *)CONCAT22(0x1120,vrgrcRCW + irc + 1),0,
+      OffsetRect(vrgrcRCW + irc + 1,0,
                  (vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) + -1);
       if (iDraw == -1) {
         DrawBtn(hdc,vrgrcRCW + irc,bt | 0xa0,0,(char *)0x0);
@@ -2866,7 +2863,7 @@ void SetNGWTitle(HWND hwnd,short iStep)
   short cch;
   
   cch = CchGetString(fRCWReadOnly + idsAdvancedNewGameWizardStepD3,szBuf);
-  cch = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szBuf),iStep);
+  cch = _wsprintf(szWork,szBuf,iStep);
   SetWindowText(hwnd,szWork);
   return;
 }
@@ -2883,7 +2880,7 @@ void SetNGWTitle(HWND hwnd,short iStep)
 PLAYER * LpplrComp(short idAi,short lvlAi)
 
 {
-  return (PLAYER *)CONCAT22(0x1078,((PLAYER (*) [4])vrgplrComp)[idAi] + lvlAi);
+  return ((PLAYER (*) [4])vrgplrComp)[idAi] + lvlAi;
 }
 
 

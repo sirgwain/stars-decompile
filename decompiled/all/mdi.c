@@ -42,7 +42,7 @@ short InitMDIApp(void)
   wc.lpszMenuName._2_2_ = 0x1120;
   wc.lpszClassName._0_2_ = (char *)szFrame;
   wc.lpszClassName._2_2_ = 0x1120;
-  AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+  AVar1 = RegisterClass(&wc);
   if (AVar1 == 0) {
     sVar2 = 0;
   }
@@ -56,7 +56,7 @@ short InitMDIApp(void)
     wc.hbrBackground = GetStockObject(1);
     wc.lpszClassName._0_2_ = (char *)szMessage;
     wc.lpszClassName._2_2_ = 0x1120;
-    AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+    AVar1 = RegisterClass(&wc);
     if (AVar1 == 0) {
       sVar2 = 0;
     }
@@ -67,7 +67,7 @@ short InitMDIApp(void)
       wc.hbrBackground = GetStockObject(4);
       wc.lpszClassName._0_2_ = (char *)szScan;
       wc.lpszClassName._2_2_ = 0x1120;
-      AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+      AVar1 = RegisterClass(&wc);
       if (AVar1 == 0) {
         sVar2 = 0;
       }
@@ -78,7 +78,7 @@ short InitMDIApp(void)
         wc.hbrBackground = GetStockObject(1);
         wc.lpszClassName._0_2_ = (char *)szMine;
         wc.lpszClassName._2_2_ = 0x1120;
-        AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+        AVar1 = RegisterClass(&wc);
         if (AVar1 == 0) {
           sVar2 = 0;
         }
@@ -89,7 +89,7 @@ short InitMDIApp(void)
           wc.hbrBackground = GetStockObject(1);
           wc.lpszClassName._0_2_ = (char *)szTb;
           wc.lpszClassName._2_2_ = 0x1120;
-          AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+          AVar1 = RegisterClass(&wc);
           if (AVar1 == 0) {
             sVar2 = 0;
           }
@@ -101,7 +101,7 @@ short InitMDIApp(void)
             wc.hIcon = 0;
             wc.lpszClassName._0_2_ = (char *)szPlanet;
             wc.lpszClassName._2_2_ = 0x1120;
-            AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+            AVar1 = RegisterClass(&wc);
             if (AVar1 == 0) {
               sVar2 = 0;
             }
@@ -113,7 +113,7 @@ short InitMDIApp(void)
               wc.hIcon = 0;
               wc.lpszClassName._0_2_ = (char *)szPopup;
               wc.lpszClassName._2_2_ = 0x1120;
-              AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+              AVar1 = RegisterClass(&wc);
               if (AVar1 == 0) {
                 sVar2 = 0;
               }
@@ -125,7 +125,7 @@ short InitMDIApp(void)
                 wc.hIcon = 0;
                 wc.lpszClassName._0_2_ = (char *)szTooltip;
                 wc.lpszClassName._2_2_ = 0x1120;
-                AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+                AVar1 = RegisterClass(&wc);
                 if (AVar1 == 0) {
                   sVar2 = 0;
                 }
@@ -137,7 +137,7 @@ short InitMDIApp(void)
                   wc.hIcon = 0;
                   wc.lpszClassName._0_2_ = (char *)szBrowser;
                   wc.lpszClassName._2_2_ = 0x1120;
-                  AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+                  AVar1 = RegisterClass(&wc);
                   if (AVar1 == 0) {
                     sVar2 = 0;
                   }
@@ -155,7 +155,7 @@ short InitMDIApp(void)
                     wc.lpszMenuName._2_2_ = 0;
                     wc.lpszClassName._0_2_ = (char *)szTitle;
                     wc.lpszClassName._2_2_ = 0x1120;
-                    AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+                    AVar1 = RegisterClass(&wc);
                     if (AVar1 == 0) {
                       sVar2 = 0;
                     }
@@ -173,7 +173,7 @@ short InitMDIApp(void)
                       wc.lpszMenuName._2_2_ = 0;
                       wc.lpszClassName._0_2_ = (char *)szReport;
                       wc.lpszClassName._2_2_ = 0x1120;
-                      AVar1 = RegisterClass((WNDCLASS *)CONCAT22(unaff_SS,&wc));
+                      AVar1 = RegisterClass(&wc);
                       if (AVar1 == 0) {
                         sVar2 = 0;
                       }
@@ -220,7 +220,7 @@ void CreateChildWindows(void)
   
   if (idPlayer == -1) {
     CchGetString(idsStarsSHostMode,(char *)szWork);
-    _wsprintf((char *)CONCAT22(unaff_SS,szData),szWork,0x90,0x1120);
+    _wsprintf(szData,szWork,0x90,0x1120);
   }
   else {
     uVar1 = _strlen((char *)szBase);
@@ -235,13 +235,12 @@ void CreateChildWindows(void)
     uVar5 = 0x1120;
     pcVar4 = (char *)0x36e;
     uVar1 = _strlen(szGame);
-    _wsprintf((char *)CONCAT22(unaff_SS,szGame + uVar1),(char *)CONCAT22(uVar5,pcVar4),iVar2);
+    _wsprintf(szGame + uVar1,(char *)CONCAT22(uVar5,pcVar4),iVar2);
     pcVar4 = szGame;
     pcVar3 = PszPlayerName(idPlayer,0,1,0,0,(PLAYER *)0x0);
-    _wsprintf((char *)CONCAT22(unaff_SS,szData),s_Stars______s_____s_____s_1120_0373,0x90,0x1120,
-              pcVar3,0x1120,pcVar4);
+    _wsprintf(szData,s_Stars______s_____s_____s_1120_0373,0x90,0x1120,pcVar3,0x1120,pcVar4);
   }
-  SetWindowText(hwndFrame,(LPCSTR)CONCAT22(unaff_SS,szData));
+  SetWindowText(hwndFrame,szData);
   if (idPlayer != -1) {
     if (hwndScanner == 0) {
       hwndScanner =
@@ -348,7 +347,7 @@ long FrameWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (message == WM_CREATE) {
     hdc = GetDC(hwnd);
     FCreateFonts(hdc);
-    GetTextMetrics(hdc,(TEXTMETRIC *)CONCAT22(unaff_SS,(TEXTMETRIC *)ps));
+    GetTextMetrics(hdc,ps);
     dySysFont = ps._0_2_;
     dySBar = (dyArial8 + 0xc) * 2;
     ReleaseDC(hwnd,hdc);
@@ -391,7 +390,7 @@ MDI_Default_5:
   if (message == WM_PAINT) {
     BVar6 = IsIconic(hwnd);
     if (BVar6 == 0) {
-      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+      hdc = BeginPaint(hwnd,ps);
       HVar7 = SelectObject(hdc,hbrButtonShadow);
       if ((iWindowLayout == 0) ||
          ((iWindowLayout != 1 && (iWindowLayout != 2)))) {
@@ -429,17 +428,17 @@ MDI_Default_5:
                (vfs.dx - vfs.xTop) + -6,1,0xf00021);
       }
       SelectObject(hdc,HVar7);
-      EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+      EndPaint(hwnd,ps);
       return 0;
     }
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+    hdc = BeginPaint(hwnd,ps);
     if (((idPlayer != -1) ||
         ((HVar5 = hiconHost, (int)game.lid == 0 && (game.lid._2_2_ == 0)))) &&
        (HVar5 = hiconStars, uTimerId != 0)) {
       HVar5 = hiconWait;
     }
     DrawIcon(hdc,2,2,HVar5);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+    EndPaint(hwnd,ps);
     return 0;
   }
   if (message == WM_CLOSE) {
@@ -449,17 +448,17 @@ MDI_Default_5:
   if (message == WM_ERASEBKGND) {
     BVar6 = IsIconic(hwnd);
     if (BVar6 != 0) {
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffee));
-      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffee),hbrDesktop);
+      GetClientRect(hwnd,&stack0xffee);
+      FillRect(wParam,&stack0xffee,hbrDesktop);
       return 0;
     }
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffee));
+    GetClientRect(hwnd,&stack0xffee);
     if (hwndScanner != 0) {
-      GetClientRect(hwndScanner,(RECT *)CONCAT22(unaff_SS,(RECT *)rc2));
-      MapWindowPoints(hwndScanner,hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)rc2),2);
+      GetClientRect(hwndScanner,rc2);
+      MapWindowPoints(hwndScanner,hwnd,rc2,2);
       ExcludeClipRect(wParam,rc2._0_2_,rc2._2_2_,lpProc._0_2_,lpProc._2_2_);
     }
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffee),hbrButtonFace);
+    FillRect(wParam,&stack0xffee,hbrButtonFace);
     return 1;
   }
   if ((message == WM_SYSCOLORCHANGE) || (message == WM_WININICHANGE)) {
@@ -470,13 +469,13 @@ MDI_Default_5:
     ich = 0;
     BVar6 = IsIconic(hwnd);
     if (BVar6 == 0) {
-      GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xfff0));
-      ScreenToClient(hwndFrame,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xfff0));
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)(rc2 + 2)));
+      GetCursorPos(&stack0xfff0);
+      ScreenToClient(hwndFrame,&stack0xfff0);
+      GetClientRect(hwnd,rc2 + 2);
       PVar11.y._0_1_ = (char)ptOld;
       PVar11.x = pt;
       PVar11.y._1_1_ = (char)(ptOld >> 8);
-      BVar6 = PtInRect((RECT *)CONCAT22(unaff_SS,(RECT *)(rc2 + 2)),PVar11);
+      BVar6 = PtInRect(rc2 + 2,PVar11);
       if (BVar6 != 0) {
         pt_00.y = ptOld;
         pt_00.x = pt;
@@ -582,8 +581,7 @@ MDI_Default_5:
                 sVar4 = 0x10;
                 pcVar3 = PszFormatIds(idsNewTurnCurrentlyGeneratedHostNewTurn,(short *)0x0);
                 AlertSz(pcVar3,sVar4);
-                _wsprintf((char *)CONCAT22(unaff_SS,lpProc + 2),
-                          (char *)CONCAT22(0x1120,MPCTD),idPlayer + 1);
+                _wsprintf((char *)(lpProc + 2),MPCTD,idPlayer + 1);
                 DestroyCurGame();
                 sVar4 = FLoadGame((char *)szBase,lpProc + 2);
                 if (sVar4 == 0) {
@@ -622,8 +620,7 @@ MDI_Default_5:
           ptOld = 6;
         }
         if (ptOld == 6) {
-          _wsprintf((char *)CONCAT22(unaff_SS,lpProc + 2),(char *)CONCAT22(0x1120,MPCTD),
-                    idPlayer + 1);
+          _wsprintf((char *)(lpProc + 2),MPCTD,idPlayer + 1);
           DestroyCurGame();
           sVar4 = FLoadGame((char *)szBase,lpProc + 2);
           if (sVar4 == 0) {
@@ -666,7 +663,7 @@ MDI_Default_5:
     rc__18 = (char *)uVar10;
     pt_02.y = (short)rc__18;
     pt_02.x = lpProc._2_2_;
-    uVar9 = HcrsFromFrameWindowPt(pt_02,(short *)&stack0xfff0);
+    uVar9 = HcrsFromFrameWindowPt(pt_02,&stack0xfff0);
     if (uVar9 == 0) {
       return 0;
     }
@@ -683,7 +680,7 @@ MDI_Default_5:
     rc2._2_2_ = 0;
     lpProc._0_2_ = 0;
     while( true ) {
-      sVar4 = FGetMouseMove((POINT *)(lpProc + 2));
+      sVar4 = FGetMouseMove(lpProc + 2);
       if (sVar4 == 0) break;
       if ((lpProc._2_2_ != ptOld) || (rc__18 != (char *)ich)) {
         lSerial = lpProc._2_2_ - ptStart;
@@ -692,7 +689,7 @@ MDI_Default_5:
         local_24 = (int)rc__18 - ich;
         dpt.y = rc2._0_2_;
         dpt.x = lSerial;
-        PVar11 = InvertPaneBorder(hdc,pt,dpt,(POINT *)(ps + 4));
+        PVar11 = InvertPaneBorder(hdc,pt,dpt,ps + 4);
         ptOld = lpProc._2_2_;
         ich = (short)rc__18;
         unique0x10001b31 = PVar11;
@@ -816,18 +813,17 @@ MDI_MapIt_2:
         EnsureAis();
         _wsprintf((char *)CONCAT13((char)((uint)unaff_SS >> 8),CONCAT12((char)unaff_SS,&stack0xff9e)
                                   ),s___s__Year___d_1120_0392,0x90,0x1120,game.turn + 0x960);
-        OutputSz(7,(char *)CONCAT22(unaff_SS,&stack0xff9e));
+        OutputSz(7,(char *)&stack0xff9e);
         for (i = 0; i < game.cPlayer; i = i + 1) {
           if (((short *)rgOut)[i] + 1 < 4) {
-            ich = _wsprintf((char *)CONCAT22(unaff_SS,&stack0xff9e),(char *)0x112003ac,i + 1);
+            ich = _wsprintf((char *)&stack0xff9e,(char *)0x112003ac,i + 1);
           }
           else {
-            ich = _wsprintf((char *)CONCAT22(unaff_SS,&stack0xff9e),s_Error___d__1120_03a0,i + 1);
+            ich = _wsprintf((char *)&stack0xff9e,s_Error___d__1120_03a0,i + 1);
           }
           if ((gd.grBits2._2_2_ >> 6 & 1) == 0) {
             pcVar3 = PszPlayerName(i,1,1,1,0,(PLAYER *)0x0);
-            sVar4 = _wsprintf((char *)CONCAT22(unaff_SS,&stack0xff9e + ich),(char *)0x112003b1,
-                              pcVar3,0x1120);
+            sVar4 = _wsprintf((char *)(&stack0xff9e + ich),(char *)0x112003b1,pcVar3,0x1120);
             ich = ich + sVar4;
           }
           pcVar3 = PszGetCompressedString(((short *)rgOut)[i] + idsTurned);
@@ -835,7 +831,7 @@ MDI_MapIt_2:
           if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1) != 0) {
             _strcat(&stack0xff9e,(char *)s___HACKER_1120_03b7);
           }
-          OutputSz(7,(char *)CONCAT22(unaff_SS,&stack0xff9e));
+          OutputSz(7,(char *)&stack0xff9e);
         }
       }
 MDI_LExit:
@@ -877,10 +873,10 @@ MDI_LTryNextBatch:
           if ((*_lpchBatch == '\n') ||
              ((_lpchBatch == _lpchBatchMac && (lpchBatch_2 == iRam112051b2)))) break;
           *rc__18 = *_lpchBatch;
-          _lpchBatch = (char *)CONCAT22(lpchBatch_2,_lpchBatch + 1);
+          _lpchBatch = _lpchBatch + 1;
           rc__18 = rc__18 + 1;
         }
-        _lpchBatch = (char *)CONCAT22(lpchBatch_2,_lpchBatch + 1);
+        _lpchBatch = _lpchBatch + 1;
         rc__18[-1] = '\0';
         ini.wFlags = ini.wFlags & 0xfffe | 1;
       }
@@ -952,7 +948,7 @@ MDI_LNop:
     PostQuitMessage(vretExitValue);
   }
   else {
-    sVar4 = FValidSerialNo((char *)szWork,(long *)&lSerial);
+    sVar4 = FValidSerialNo((char *)szWork,&lSerial);
     if (sVar4 == 0) {
       if (((int)vSerialNumber == 0) && (vSerialNumber._2_2_ == 0)) {
         _memcpy((byte *)vrgbMachineConfig,(byte_0_ *)&vrgbEnvCur,0xb);
@@ -1555,7 +1551,7 @@ short FFindSomethingAndSelectIt(void)
     while( true ) {
       if (((PLANET *)lpPlanets + cPlanet <= (PLANET *)lppl) ||
          (((PLANET *)lppl)->iPlayer == idPlayer)) break;
-      lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+      lppl = (PLANET *)lppl + 1;
     }
     if (((PLANET *)lppl == (PLANET *)lpPlanets + cPlanet) &&
        (lppl._2_2_ == lpPlanets._2_2_)) {
@@ -1761,7 +1757,7 @@ LAB_1020_3f6e:
     if (((game.wCrap >> 2 & 1) != 0) && (iPassCnt != 0)) {
       sVar7 = iPassCnt;
       pcVar9 = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
-      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),sVar7);
+      _wsprintf(szWork,pcVar9,sVar7);
       HVar10 = GetFocus();
       sVar7 = MessageBox(HVar10,szWork,(LPCSTR)0x112003de,0x2034);
       if (sVar7 != 6) {
@@ -1840,8 +1836,7 @@ LAB_1020_3f6e:
         iPassCnt = 0;
 MDI_LTutorialFinishUp:
         DestroyCurGame();
-        _wsprintf((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),iplrOld + 1
-                 );
+        _wsprintf(szExt,MPCTD,iplrOld + 1);
         sVar7 = FLoadGame((char *)szBase,szExt);
         if (sVar7 == 0) {
           setcursor((HCURSOR)pt);
@@ -1986,7 +1981,7 @@ LAB_1020_4be3:
           pPVar14 = (PLAYER *)&vplr;
           for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
             pPVar2 = pPVar14;
-            pPVar14 = (PLAYER *)&pPVar14->cPlanet;
+            pPVar14 = &pPVar14->cPlanet;
             puVar1 = puVar13;
             puVar13 = puVar13 + 1;
             uVar22 = *puVar1;
@@ -2032,7 +2027,7 @@ LAB_1020_440c:
         if (wParam == 0x89) goto LAB_1020_4df3;
         if (wParam == 0x8a) {
 LAB_1020_47b3:
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),3,0);
+          WinHelp(hwnd,_szHelpFile,3,0);
           return;
         }
         if ((wParam == 0x9c) || (wParam == 0x9d)) {
@@ -2046,9 +2041,9 @@ LAB_1020_47b3:
           pPVar15 = (PLAYER *)&vplr;
           for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
             pPVar3 = pPVar15;
-            pPVar15 = (PLAYER *)&pPVar15->cPlanet;
+            pPVar15 = &pPVar15->cPlanet;
             pPVar2 = pPVar14;
-            pPVar14 = (PLAYER *)&pPVar14->cPlanet;
+            pPVar14 = &pPVar14->cPlanet;
             cVar20 = pPVar2->cShDef;
             pPVar3->iPlayer = pPVar2->iPlayer;
             pPVar3->cShDef = cVar20;
@@ -2195,7 +2190,7 @@ LAB_1020_47b3:
               y__116 = y__116 + dyPrint;
               iVar11 = game.turn + 0x960;
               pcVar9 = PszGetCompressedString(idsYearD);
-              cch__146 = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),iVar11);
+              cch__146 = _wsprintf(szWork,pcVar9,iVar11);
               TextOut(local_5a,ptLegendA + xOff,y__116,szWork,cch__146);
               if ((grbitScan & 0xf) != 5) {
                 y__116 = local_7e + yOff;
@@ -2281,8 +2276,7 @@ LAB_1020_47b3:
                     DrawPlanetPrintDot(local_5a,(int)x,(short)(PLANET *)y,1);
                   }
                   else if (pPStack_2e->iPlayer != -1) {
-                    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
-                                    pPStack_2e->iPlayer + 1);
+                    cch = _wsprintf(szWork,PCTD,pPStack_2e->iPlayer + 1);
                     CtrTextOut(local_5a,(int)x,(int)(PLANET *)y - dyPrintTiny,
                                         (char *)szWork,cch);
                   }
@@ -2502,7 +2496,7 @@ LAB_1020_44cc:
             else {
               uVar22 = 0x73;
             }
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,psz__40),cObj,uVar22);
+            _wsprintf(szWork,psz__40,cObj,uVar22);
             hwndReportDlg =
                  CreateWindow(szReport,szWork,0x80cf0000,0,0,100,100,
                               hwndFrame,0,hInst,(void *)0x0);
@@ -2550,7 +2544,7 @@ LAB_1020_44cc:
             else {
               uVar12 = 0x32ca;
             }
-            WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(ulong)uVar12);
+            WinHelp(hwnd,_szHelpFile,1,(ulong)uVar12);
             return;
           }
           if ((wParam == 0x9c4) || (wParam == 0x9c5)) {
@@ -2576,7 +2570,7 @@ LAB_1020_44cc:
                 hmenu = GetASubMenu(hwnd,1);
                 hmenu = GetSubMenu(hmenu,3);
                 CheckMenuItem(hmenu,iScanZoom + 4,0x400);
-                GetClientRect(hwndScanner,(RECT *)CONCAT22(unaff_SS,&rc__32));
+                GetClientRect(hwndScanner,&rc__32);
                 sVar7 = ScanToPt(rc__32.right);
                 rc__32.right = sVar7 >> 1;
                 sVar7 = ScanToPt(rc__32.bottom);
@@ -2642,11 +2636,10 @@ LAB_1020_44cc:
                 return;
               }
               iplrOld = idPlayer;
-              __fstrcpy((char *)CONCAT22(unaff_SS,szT),
-                                (char *)CONCAT22(vrgszMRU._2_2_,
-                                                 (char *)vrgszMRU + (wParam + 0xef34) * 0x100
-                                                ));
-              pt = (PLANET *)_strrchr(szT,0x2e);
+              __fstrcpy(szT,(char *)CONCAT22(vrgszMRU._2_2_,
+                                                     (char *)vrgszMRU +
+                                                     (wParam + 0xef34) * 0x100));
+              pt = _strrchr(szT,0x2e);
               if ((pt == (PLANET *)0x0) || (sVar7 = __access(szT,0), sVar7 == -1)) {
                 _strcpy((char *)szWork,szT);
                 sVar7 = 0x10;
@@ -2720,7 +2713,7 @@ MDI_LWaitForTurn:
     FWriteHistFile(idPlayer);
     HVar10 = hwndFrame;
     pcVar9 = PszGetCompressedString(idsWaitingNewTurn);
-    SetWindowText(HVar10,(LPCSTR)CONCAT22(0x1120,pcVar9));
+    SetWindowText(HVar10,pcVar9);
     ShowWindow(hwndFrame,2);
     uTimerId =
          SetTimer(0xe,10000,lpfnHostTimerProc._2_2_,
@@ -2744,8 +2737,7 @@ MDI_LNewTurnAvail:
       return;
     }
   }
-  _wsprintf((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),
-            idPlayer + 1);
+  _wsprintf(szExt,MPCTD,idPlayer + 1);
   game.fDirty = 0;
   DestroyCurGame();
   sVar7 = FLoadGame((char *)szBase,szExt);
@@ -3204,9 +3196,9 @@ short FWasRaceFile(char *szFile,short fChkPass)
             pPVar9 = (PLAYER *)&vplr;
             for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
               pPVar2 = pPVar9;
-              pPVar9 = (PLAYER *)&pPVar9->cPlanet;
+              pPVar9 = &pPVar9->cPlanet;
               pPVar1 = pPVar8;
-              pPVar8 = (PLAYER *)&pPVar8->cPlanet;
+              pPVar8 = &pPVar8->cPlanet;
               cVar3 = pPVar1->cShDef;
               pPVar2->iPlayer = pPVar1->iPlayer;
               pPVar2->cShDef = cVar3;
@@ -3372,16 +3364,15 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
   SelectObject(hdc,rghfontArial8[1]);
   HVar13 = hdc;
   pcVar1 = PszGetCompressedString(idsN16);
-  DVar9 = GetTextExtent(HVar13,(LPCSTR)CONCAT22(0x1120,pcVar1),4);
+  DVar9 = GetTextExtent(HVar13,pcVar1,4);
   x = dyArial8 + 10 + (int)DVar9;
   yCur = 0x30;
-  SetRect((RECT *)CONCAT22(unaff_SS,&rcDiamond),6,0x30,dyArial8 + 7,
-          dyArial8 + 0x31);
+  SetRect(&rcDiamond,6,0x30,dyArial8 + 7,dyArial8 + 0x31);
   for (i = 0; i < game.cPlayer; i = i + 1) {
     DrawDiamond(hdc,&rcDiamond,hbrBBlue);
     iVar2 = i + 1;
     pcVar1 = PszGetCompressedString(idsD2);
-    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),iVar2);
+    cch = _wsprintf(szWork,pcVar1,iVar2);
     RightTextOut(hdc,x,yCur,(char *)szWork,cch,0);
     if (((short *)rgOut)[i] < 1) {
       uVar3 = 0x7f00;
@@ -3396,7 +3387,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
       pcVar4 = PszPlayerName(i,1,1,1,0,(PLAYER *)0x0);
       uVar11 = 0x1120;
       pcVar5 = PszGetCompressedString(idsSS);
-      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar5),pcVar4,uVar11,pcVar1);
+      cch = _wsprintf(szWork,pcVar5,pcVar4,uVar11,pcVar1);
     }
     else {
       cch = _wsprintf(szWork,(char *)0x112003ff,szStat);
@@ -3407,10 +3398,10 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
     }
     TextOut(hdc,x + 4,yCur,szWork,cch);
     SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
-    OffsetRect((RECT *)CONCAT22(unaff_SS,&rcDiamond),0,dyArial8 + 4);
+    OffsetRect(&rcDiamond,0,dyArial8 + 4);
     yCur = yCur + dyArial8 + 4;
   }
-  cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),game.turn + 0x961);
+  cch = _wsprintf(szWork,PCTD,game.turn + 0x961);
   HVar6 = GetDlgItem(hwnd,0x7e0);
   SetWindowText(HVar6,szWork);
   uVar12 = 0;
@@ -3421,7 +3412,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
   uVar3 = (uint)dsec;
   if (((int)(dsec >> 0x10) == 0) && (uVar3 < 0x3c)) {
     pcVar1 = PszGetCompressedString(idsDSeconds);
-    cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3);
+    cch = _wsprintf(szWork,pcVar1,uVar3);
   }
   else {
     uVar10 = __aFuldiv(dsec,0x3c);
@@ -3432,7 +3423,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
     if (uVar3 < 0x3c) {
       dmin = uVar3;
       pcVar1 = PszGetCompressedString(idsD02d);
-      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar3,iVar2);
+      cch = _wsprintf(szWork,pcVar1,uVar3,iVar2);
     }
     else {
       uVar7 = uVar3 / 0x3c;
@@ -3441,7 +3432,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
       if (uVar7 < 0x18) {
         dhour = uVar7;
         pcVar1 = PszGetCompressedString(idsD02d02d);
-        cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar7,uVar3,iVar2);
+        cch = _wsprintf(szWork,pcVar1,uVar7,uVar3,iVar2);
       }
       else {
         uVar8 = uVar7 / 0x18;
@@ -3449,7 +3440,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
         dday = uVar8;
         dhour = uVar7;
         pcVar1 = PszGetCompressedString(idsDDaysD02d02d);
-        cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar1),uVar8,uVar7,uVar3,iVar2);
+        cch = _wsprintf(szWork,pcVar1,uVar8,uVar7,uVar3,iVar2);
       }
     }
   }
@@ -3769,7 +3760,7 @@ short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
     return 0;
   }
   if (message == WM_PAINT) {
-    mf = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)(msg + 2)));
+    mf = BeginPaint(hwnd,msg + 2);
     if (((int)ctickLast == 0) && (ctickLast._2_2_ == 0)) {
       CFindTurnsOutstanding();
     }
@@ -3785,12 +3776,12 @@ short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
       EnableWindow(HVar2,BVar3);
     }
     DrawHostDialog2(hwnd,mf);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)(msg + 2)));
+    EndPaint(hwnd,msg + 2);
     return 1;
   }
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -3799,8 +3790,8 @@ short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   if (message == WM_SETCURSOR) {
 LAB_1020_6db6:
-    GetCursorPos((POINT *)CONCAT22(unaff_SS,&pt));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&pt));
+    GetCursorPos(&pt);
+    ScreenToClient(hwnd,&pt);
     if ((((5 < pt.x) && (pt.x < dyArial8 + 7)) && (0x2f < pt.y)) &&
        ((iDiamond = (pt.y + -0x30) / (dyArial8 + 4), iDiamond < game.cPlayer &&
         ((pt.y + -0x30) % (dyArial8 + 4) < dyArial8 + 1)))) {
@@ -3845,7 +3836,7 @@ LAB_1020_6db6:
         }
         AppendMenu(hmenuPopup,uVar1 | mf,i + 15000,szWork);
       }
-      ClientToScreen(hwnd,(POINT *)CONCAT22(unaff_SS,&pt));
+      ClientToScreen(hwnd,&pt);
       if (message == WM_LBUTTONDOWN) {
         tpm = 0;
       }
@@ -3855,7 +3846,7 @@ LAB_1020_6db6:
       TrackPopupMenu(hmenuPopup,tpm | 4,pt.x,pt.y,0,hwnd,(RECT *)0x0);
       DestroyMenu(hmenuPopup);
       iRet = -1;
-      BVar3 = PeekMessage((MSG *)CONCAT22(unaff_SS,(MSG *)msg),hwnd,0x111,0x111,2);
+      BVar3 = PeekMessage(msg,hwnd,0x111,0x111,2);
       if (((BVar3 != 0) && (14999 < local_32)) && (local_32 < 0x3afc)) {
         iRet = local_32 + 0xc568;
       }
@@ -3951,7 +3942,7 @@ LAB_1020_6db6:
           else {
             iVar4 = iPassCnt + 1;
             pcVar5 = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar5),iVar4);
+            _wsprintf(szWork,pcVar5,iVar4);
             HVar2 = GetFocus();
             sVar6 = MessageBox(HVar2,szWork,(LPCSTR)0x1120041a,0x2034);
             if (sVar6 != 6) {
@@ -3994,7 +3985,7 @@ LAB_1020_6db6:
         if (wParam != 0x76) {
           return 0;
         }
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x440);
+        WinHelp(hwnd,_szHelpFile,1,0x440);
         return 1;
       }
       lpProc = MakeProcInstance(HostOptionsDialog,hInst);
@@ -4060,9 +4051,9 @@ LAB_1020_76f3:
   }
   else {
     if (message == WM_PAINT) {
-      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+      hdc = BeginPaint(hwnd,&ps);
       DrawHostOptions(hwnd,hdc,-1);
-      EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+      EndPaint(hwnd,&ps);
       return 1;
     }
     if (message != WM_ERASEBKGND) {
@@ -4078,15 +4069,15 @@ LAB_1020_76f3:
             return 1;
           }
           if (wParam == 0x76) {
-            WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x440);
+            WinHelp(hwnd,_szHelpFile,1,0x440);
             return 1;
           }
         }
         goto LAB_1020_76f3;
       }
     }
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar1 = 1;
   }
   return sVar1;
@@ -4139,8 +4130,7 @@ void HostTimerProc(HWND hwnd,ushort msg,ushort idTimer,ulong dwTime)
       sVar5 = idPlayer;
       if (sVar2 != 0) {
         KillTimer(hwnd,uTimerId);
-        _wsprintf((char *)CONCAT22(unaff_SS,szExt),(char *)CONCAT22(0x1120,MPCTD),
-                  idPlayer + 1);
+        _wsprintf(szExt,MPCTD,idPlayer + 1);
         DestroyCurGame();
         sVar2 = FLoadGame((char *)szBase,szExt);
         if (sVar2 != 0) {
@@ -4153,7 +4143,7 @@ void HostTimerProc(HWND hwnd,ushort msg,ushort idTimer,ulong dwTime)
           FlashWindow(hwndFrame,1);
           HVar4 = hwndFrame;
           pcVar3 = PszGetCompressedString(idsNewTurnAvailable2);
-          SetWindowText(HVar4,(LPCSTR)CONCAT22(0x1120,pcVar3));
+          SetWindowText(HVar4,pcVar3);
           MessageBeep(0x30);
           cOut = 1;
           goto MDI_RedrawText_2;
@@ -4225,7 +4215,7 @@ void GetWindowRc(HWND hwnd,RECT *prc)
   WINDOWPLACEMENT wndpl;
   
   wndpl.length = 0x16;
-  GetWindowPlacement(hwnd,(WINDOWPLACEMENT *)CONCAT22(unaff_SS,&wndpl));
+  GetWindowPlacement(hwnd,&wndpl);
   prc->left = wndpl.rcNormalPosition.left;
   prc->top = wndpl.rcNormalPosition.top;
   prc->right = wndpl.rcNormalPosition.right;
@@ -4272,8 +4262,7 @@ void SetWindowIniString(char *sz,HWND hwnd)
   GetWindowRc(hwnd,&rc);
   iVar2 = (int)ch;
   pcVar3 = PszGetCompressedString(idsC04d04d04d04d);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar2,rc.left,rc.top,rc.right,rc.bottom
-            ,HVar4);
+  _wsprintf(szWork,pcVar3,iVar2,rc.left,rc.top,rc.right,rc.bottom,HVar4);
   return;
 }
 
@@ -4318,23 +4307,17 @@ void WriteIniSettings(void)
   CchGetString(idsGlobalsettings,szEntry);
   FormatSerialAndEnv(CONCAT22(vSerialNumber._2_2_,(undefined2)vSerialNumber),
                      (byte *)vrgbMachineConfig,(char *)szWork);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsResolution,szEntry);
   i = (short)(vcScreenColors < 5);
   if ((uint)gd.grBits >> 0xe == 0) {
     i = i | 2;
   }
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),i);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,i);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsMain,szEntry);
   SetWindowIniString((char *)szWork,hwndFrame);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsReportfleetwin,szEntry);
   iVar2 = vrptFleet.ptDlg.y + vrptFleet.ptSize.y;
   iVar3 = vrptFleet.ptDlg.x + vrptFleet.ptSize.x;
@@ -4342,10 +4325,8 @@ void WriteIniSettings(void)
   sVar7 = vrptFleet.ptDlg.x;
   sVar8 = vrptFleet.ptDlg.y;
   pcVar4 = PszGetCompressedString(idsC04d04d04d04d);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar6,sVar7,sVar8,iVar3,iVar2);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,pcVar4,uVar6,sVar7,sVar8,iVar3,iVar2);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsReportefleetwin,szEntry);
   iVar2 = vrptEFleet.ptDlg.y + vrptEFleet.ptSize.y;
   iVar3 = vrptEFleet.ptDlg.x + vrptEFleet.ptSize.x;
@@ -4353,10 +4334,8 @@ void WriteIniSettings(void)
   sVar7 = vrptEFleet.ptDlg.x;
   sVar8 = vrptEFleet.ptDlg.y;
   pcVar4 = PszGetCompressedString(idsC04d04d04d04d);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar6,sVar7,sVar8,iVar3,iVar2);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,pcVar4,uVar6,sVar7,sVar8,iVar3,iVar2);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsReportbtlwin,szEntry);
   iVar2 = vrptBattle.ptDlg.y + vrptBattle.ptSize.y;
   iVar3 = vrptBattle.ptDlg.x + vrptBattle.ptSize.x;
@@ -4364,10 +4343,8 @@ void WriteIniSettings(void)
   sVar7 = vrptBattle.ptDlg.x;
   sVar8 = vrptBattle.ptDlg.y;
   pcVar4 = PszGetCompressedString(idsC04d04d04d04d);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar6,sVar7,sVar8,iVar3,iVar2);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,pcVar4,uVar6,sVar7,sVar8,iVar3,iVar2);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsReportplanwin,szEntry);
   iVar2 = vrptPlanet.ptDlg.y + vrptPlanet.ptSize.y;
   iVar3 = vrptPlanet.ptDlg.x + vrptPlanet.ptSize.x;
@@ -4375,52 +4352,34 @@ void WriteIniSettings(void)
   sVar7 = vrptPlanet.ptDlg.x;
   sVar8 = vrptPlanet.ptDlg.y;
   pcVar4 = PszGetCompressedString(idsC04d04d04d04d);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar6,sVar7,sVar8,iVar3,iVar2);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,pcVar4,uVar6,sVar7,sVar8,iVar3,iVar2);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsLayout,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),iWindowLayout);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,iWindowLayout);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle1width,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dxPlanWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dxPlanWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle1height,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dyMsgWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dyMsgWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle1height2,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dyMinWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dyMinWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle2width,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dx2PlanWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dx2PlanWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle2height,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dy2MsgWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dy2MsgWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsStyle2height2,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),vfs.dy2MinWant);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,vfs.dy2MinWant);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsToolbar,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szPd),gd.grBits._2_2_ >> 0xf);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,szPd,gd.grBits._2_2_ >> 0xf);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   iPass = 2;
-  rgtile = (TILE *)(TILE *)&rgtilePlanet;
+  rgtile = (TILE *)&rgtilePlanet;
   ctile = 6;
   CchGetString(idsPlanettiles,szEntry);
   while (iPass != 0) {
@@ -4444,11 +4403,9 @@ void WriteIniSettings(void)
     }
     *psz = '\0';
     iPass = iPass + -1;
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsShiptiles,szEntry);
-    rgtile = (TILE *)(TILE *)&rgtileShip;
+    rgtile = (TILE *)&rgtileShip;
     ctile = 7;
   }
   iPass = iPass + -1;
@@ -4465,162 +4422,110 @@ void WriteIniSettings(void)
   else if (sel.grobj == grobjOther) {
     ch = 'E';
   }
-  iVar2 = (int)(char)((char)idPlayer + 'B');
+  iVar2 = (int)((char)idPlayer + 'B');
   iVar3 = (int)ch;
   sVar7 = sel.id;
   pcVar4 = PszGetCompressedString(idsCCD);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar3,iVar2,sVar7);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,pcVar4,iVar3,iVar2,sVar7);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsMessage,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),iMsgCur);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,PCTD,iMsgCur);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsGameid,szEntry);
   _wsprintf(szWork,(char *)0x11200423,(undefined2)game.lid,game.lid._2_2_);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsScanzoom,szEntry);
   szWork[0] = (char)iScanZoom + '5';
   szWork[1] = '\0';
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   if (((uint)gd.grBits2 >> 6 & 1) != 0) {
     __itoa(grbitScan,(char *)szWork,10);
     CchGetString(idsScanmodev25,szEntry);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     __itoa(grbitScanShip,(char *)szWork,10);
     CchGetString(idsScanfilterv25,szEntry);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     __itoa(grbitScanEShip,(char *)szWork,10);
     CchGetString(idsScanefilterv25,szEntry);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     __itoa(grbitScanMines,(char *)szWork,10);
     CchGetString(idsScanmines,szEntry);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     __itoa(vpctRadarView,(char *)szWork,10);
     CchGetString(idsScanradar,szEntry);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   }
   __itoa(cMinGrafMax,(char *)szWork,10);
   CchGetString(idsMineralscale,szEntry);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   if (idPlayer != -1) {
     CchGetString(idsFiles,szSection);
     CchGetString(idsWait2,szEntry);
     szWork[0] = (uTimerId != 0) + '0';
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     if (((uint)gd.grBits2 >> 8 & 1) != 0) {
       __itoa(game.turn,(char *)szWork,10);
       CchGetString(idsTurn,szEntry);
-      WritePrivateProfileString
-                ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-                 szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+      WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
       gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfeff;
     }
     CchGetString(idsFile1,szEntry);
     _wsprintf(szWork,(char *)0x11200427,(char *)szBase,0x1120,
               idPlayer + 1);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   }
   CchGetString(idsMisc,szSection);
   if (((uint)gd.grBits2 >> 7 & 1) != 0) {
     CchGetString(idsReportplanfld,szEntry);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
-              (undefined2)vrptPlanet.grbitVisible);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,(undefined2)vrptPlanet.grbitVisible);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportplansort,szEntry);
     i = vrptPlanet.icolSort;
     if (vrptPlanet.fAscending != 0) {
       i = vrptPlanet.icolSort | 0x100;
     }
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,i);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportfleetfld,szEntry);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
-              (undefined2)vrptFleet.grbitVisible);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,(undefined2)vrptFleet.grbitVisible);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportfleetsort,szEntry);
     i = vrptFleet.icolSort;
     if (vrptFleet.fAscending != 0) {
       i = vrptFleet.icolSort | 0x100;
     }
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,i);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportefleetfld,szEntry);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
-              (undefined2)vrptEFleet.grbitVisible);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,(undefined2)vrptEFleet.grbitVisible);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportefltsort,szEntry);
     i = vrptEFleet.icolSort;
     if (vrptEFleet.fAscending != 0) {
       i = vrptEFleet.icolSort | 0x100;
     }
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,i);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportbtlfld,szEntry);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),
-              (undefined2)vrptBattle.grbitVisible);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,(undefined2)vrptBattle.grbitVisible);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportbtlsort,szEntry);
     i = vrptBattle.icolSort;
     if (vrptBattle.fAscending != 0) {
       i = vrptBattle.icolSort | 0x100;
     }
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,i);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     CchGetString(idsReportdefgraph,szEntry);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),gd.grBits2._2_2_ & 0xf);
-    WritePrivateProfileString
-              ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-               szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+    _wsprintf(szWork,PCTD,gd.grBits2._2_2_ & 0xf);
+    WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   }
   CchGetString(idsHistoryinfo,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),uDateInstalled);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,PCTD,uDateInstalled);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsVcrspeed,szEntry);
-  _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),viSpeedVCR);
-  WritePrivateProfileString
-            ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-             szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+  _wsprintf(szWork,PCTD,viSpeedVCR);
+  WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   if (((uint)gd.grBits2 >> 4 & 1) != 0) {
     CchGetString(idsZiporders,szSection);
     for (i = 0; i < 4; i = i + 1) {
@@ -4647,9 +4552,7 @@ void WriteIniSettings(void)
         }
         _strcpy(psz,(char *)((int)vrgZip[0].szName + i * 0x18));
       }
-      WritePrivateProfileString
-                ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-                 szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+      WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     }
   }
   if (((uint)gd.grBits2 >> 5 & 1) != 0) {
@@ -4685,9 +4588,7 @@ void WriteIniSettings(void)
         }
         _strcpy(psz,((ZIPPRODQ *)vrgZipProd)[i].szName);
       }
-      WritePrivateProfileString
-                ((LPCSTR)CONCAT22(unaff_SS,szSection),(LPCSTR)CONCAT22(unaff_SS,szEntry),
-                 szWork,(LPCSTR)CONCAT22(unaff_SS,szIniFile));
+      WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
     }
   }
   return;
@@ -4890,7 +4791,7 @@ long TitleWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
        (vhdibTitle != 0)) {
       vhpalSplash = HpalFromDib(vhdibTitle);
     }
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    GetClientRect(hwnd,&rc);
     dx__24 = rc.right >> 3;
     if (dx__24 < 0x78) {
       dx__24 = 0x78;
@@ -4909,7 +4810,7 @@ long TitleWndProc(HWND hwnd,ushort msg,ushort wParam,long lParam)
     }
     for (i = 0; i < 4; i = i + 1) {
       psz = PszGetCompressedString(i + idsNewGame);
-      HVar1 = CreateWindow(s_BUTTON_1120_043a,(LPCSTR)CONCAT22(0x1120,psz),0x50000000,xCur,
+      HVar1 = CreateWindow(s_BUTTON_1120_043a,psz,0x50000000,xCur,
                            (rc.bottom - dy) - (dyArial8 * 5) / 2,dx__24,dy,hwnd,i,
                            hInst,(void *)0x0);
       *(HWND *)(i * 2 + 0x432) = HVar1;
@@ -4948,9 +4849,9 @@ MDI_Default_3:
       BVar3 = IsIconic(hwnd);
       if (BVar3 == 0) {
         plf = (LOGFONT *)LocalAlloc(0x40,0x32);
-        hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+        hdc = BeginPaint(hwnd,ps);
         hbrSav = SelectObject(hdc,hbrButtonFace);
-        GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rcWnd));
+        GetClientRect(hwnd,&rcWnd);
         if ((vcScreenColors < 8) || (SetTextColor(hdc,0x2ff7fff), vhdibTitle == 0))
         {
           rc.left = 0;
@@ -4960,7 +4861,7 @@ MDI_Default_3:
           DrawABunchOfStars(hdc,&rcWnd);
           plf->lfHeight = -rcWnd.bottom / 3;
           _strcpy(plf->lfFaceName,*(char (*) [32])(rgszArial + 3));
-          hfont = CreateFontIndirect((LOGFONT *)CONCAT22(0x1120,plf));
+          hfont = CreateFontIndirect(plf);
           SetTextColor(hdc,0x9b009b);
           if (hfont != 0) {
             hfontSav = SelectObject(hdc,hfont);
@@ -4991,18 +4892,18 @@ MDI_Default_3:
         SelectObject(hdc,rghfontArial10[1]);
         SetBkMode(hdc,1);
         SzVersion();
-        GetWindowRect(rghwndBtnSplash[0],(RECT *)CONCAT22(unaff_SS,&rcT__68));
+        GetWindowRect(rghwndBtnSplash[0],&rcT__68);
         rcWnd.top = rcT__68.top - (dyArial8 * 9) / 2;
         rcWnd.bottom = (dyArial8 * 3) / 2 + rcWnd.top;
         uVar4 = _strlen((char *)szWork);
         RcCtrTextOut(hdc,&rcWnd,(char *)szWork,uVar4);
-        EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+        EndPaint(hwnd,ps);
         LocalFree((HLOCAL)plf);
       }
       else {
-        hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+        hdc = BeginPaint(hwnd,ps);
         DrawIcon(hdc,2,2,hiconStars);
-        EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)ps));
+        EndPaint(hwnd,ps);
       }
     }
     else if (msg == 0x111) {

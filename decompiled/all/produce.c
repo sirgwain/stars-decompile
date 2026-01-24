@@ -33,7 +33,7 @@ short ChangeProduction(short fClear)
                            Impure (Non-shareable)
                         */
   penvMemSav = penvMem;
-  penvMem = (short (*) [9])env;
+  penvMem = env;
   sVar1 = __setjmp(env);
   if (sVar1 == 0) {
     if (fClear == 0) {
@@ -134,7 +134,7 @@ void InitProduction(PROD *rgprod)
   else {
     i = (short)((PLPROD *)sel.pl.lpplprod)->iprodMac;
   }
-  lpplProdGlob = (PLPROD *)LpplAlloc(4,i,htOrd);
+  lpplProdGlob = LpplAlloc(4,i,htOrd);
   if (((PLPROD *)sel.pl.lpplprod == (PLPROD *)0x0) &&
      (sel.pl.lpplprod._2_2_ == 0)) {
     i = 0;
@@ -142,9 +142,7 @@ void InitProduction(PROD *rgprod)
   else {
     __fmemcpy((PL *)CONCAT22((int)((ulong)lpplProdGlob >> 0x10),
                                      (PL *)lpplProdGlob + 1),
-                      (PLPROD *)
-                      CONCAT22(sel.pl.lpplprod._2_2_,
-                               (PLPROD *)sel.pl.lpplprod + 1),i << 2);
+                      (PLPROD *)sel.pl.lpplprod + 1,i << 2);
   }
   ((PLPROD *)lpplProdGlob)->iprodMac = (byte)i;
   cProdGlob = 0;
@@ -167,19 +165,17 @@ void InitProduction(PROD *rgprod)
         if (uVar6 <= (((HULDEF *)pHVar11)->hul).wtCargoMax) {
           uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
           pPVar8 = rgprod + cProdGlob;
-          *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff
-          ;
+          *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
           *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
           in_stack_0000ffe2 = 0x1008;
           lVar12 = __aFlshl(CONCAT22((PROD *)lpprod,uVar6),lpprod._2_2_);
           uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
           pPVar8 = rgprod + cProdGlob;
-          *(uint *)&pPVar8->dwFlags =
-               (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
+          *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
           *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe | (uint)((ulong)lVar12 >> 0x10);
           uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
           pPVar8 = rgprod + cProdGlob;
-          *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+          *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
           *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 4;
           cProdGlob = cProdGlob + 1;
         }
@@ -193,19 +189,18 @@ void InitProduction(PROD *rgprod)
         ((sel.pl.wFlags_0x4 >> 9 & 1) == 0)))) {
       uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
       *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
       in_stack_0000ffe2 = i + 0x10;
       uVar6 = (int)in_stack_0000ffe2 >> 0xf;
       lVar12 = __aFlshl((long)(int)in_stack_0000ffe2,(ushort)(PROD *)lpprod);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags =
-           (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe | (uint)((ulong)lVar12 >> 0x10);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+      *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 4;
       cProdGlob = cProdGlob + 1;
     }
@@ -216,15 +211,15 @@ void InitProduction(PROD *rgprod)
   if (sVar7 == 1) {
     uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
     *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x3400;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x3400;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
   }
@@ -233,19 +228,18 @@ void InitProduction(PROD *rgprod)
     for (i = 0; i < 4; i = i + 1) {
       uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
       *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
       in_stack_0000ffe2 = i + 0xe;
       uVar6 = (int)in_stack_0000ffe2 >> 0xf;
       lVar12 = __aFlshl((long)(int)in_stack_0000ffe2,(ushort)(PROD *)lpprod);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags =
-           (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe | (uint)((ulong)lVar12 >> 0x10);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+      *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
       cProdGlob = cProdGlob + 1;
     }
@@ -263,16 +257,15 @@ void InitProduction(PROD *rgprod)
     lVar12 = __aFlshl((ulong)in_stack_0000ffe2,(ushort)(PROD *)lpprod);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags =
-         (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 | (uint)((ulong)lVar12 >> 0x10);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x1c00;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x1c00;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
   }
@@ -288,16 +281,15 @@ void InitProduction(PROD *rgprod)
     lVar12 = __aFlshl((ulong)in_stack_0000ffe2,(ushort)(PROD *)lpprod);
     uVar6 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags =
-         (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar6 | (uint)((ulong)lVar12 >> 0x10);
     uVar6 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2000;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2000;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar6 & 0xfffe;
     uVar6 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar6 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
   }
@@ -308,30 +300,29 @@ void InitProduction(PROD *rgprod)
     lVar12 = __aFlshl(CONCAT22(uVar6,in_stack_0000ffe2),(ushort)(PROD *)lpprod);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags =
-         (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 | (uint)((ulong)lVar12 >> 0x10);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2400;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2400;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
   }
   uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
   pPVar8 = rgprod + cProdGlob;
-  *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
+  *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
   *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
   uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
   pPVar8 = rgprod + cProdGlob;
-  *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2c00;
+  *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x2c00;
   *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
   uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
   pPVar8 = rgprod + cProdGlob;
-  *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+  *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
   *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
   cProdGlob = cProdGlob + 1;
   uVar10 = __aFulshr(CONCAT22(uVar6,in_stack_0000ffe2),(ushort)(PROD *)lpprod);
@@ -340,15 +331,15 @@ void InitProduction(PROD *rgprod)
      sVar7 != raMacintosh)) {
     uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 1;
     *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x6c00;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x6c00;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
   }
@@ -358,16 +349,15 @@ void InitProduction(PROD *rgprod)
     lVar12 = __aFlshl((ulong)(uint)i,(ushort)(PROD *)lpprod);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags =
-         (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | (uint)lVar12;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 | (uint)((ulong)lVar12 >> 0x10);
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x3000;
+    *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | 0x3000;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe;
     uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
     pPVar8 = rgprod + cProdGlob;
-    *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+    *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
     *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
     cProdGlob = cProdGlob + 1;
     in_stack_0000ffe2 = i;
@@ -379,19 +369,18 @@ void InitProduction(PROD *rgprod)
         sVar7 != raTerra || ((i != 4 && (i != 5)))))) {
       uVar4 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0xfc00 | 0x3ff;
       *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar4;
       uVar6 = i >> 0xf;
       in_stack_0000ffe2 = i;
       lVar12 = __aFlshl((long)i,(ushort)(PROD *)lpprod);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(uint *)&pPVar8->dwFlags =
-           (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
+      *&pPVar8->dwFlags = (uint)(rgprod + cProdGlob)->dwFlags & 0x3ff | (uint)lVar12;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfffe | (uint)((ulong)lVar12 >> 0x10);
       uVar13 = *(uint *)((int)&rgprod[cProdGlob].dwFlags + 2);
       pPVar8 = rgprod + cProdGlob;
-      *(int *)&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
+      *&pPVar8->dwFlags = (int)(rgprod + cProdGlob)->dwFlags;
       *(uint *)((int)&pPVar8->dwFlags + 2) = uVar13 & 0xfff1 | 2;
       cProdGlob = cProdGlob + 1;
     }
@@ -400,7 +389,7 @@ void InitProduction(PROD *rgprod)
   uVar4 = lpplProdGlob._2_2_;
   pPVar5 = (PLPROD *)lpplProdGlob;
   do {
-    lpprod._0_2_ = (PROD *)(pPVar5 + 1);
+    lpprod._0_2_ = pPVar5 + 1;
     if ((int)(uint)((PLPROD *)lpplProdGlob)->iprodMac <= ipl) {
       if ((((uint)gd.grBits >> 0xb & 1) != 0) && (idPlayer == 0)) {
         AdvanceTutor();
@@ -431,7 +420,7 @@ void InitProduction(PROD *rgprod)
         uVar6 = 0;
         lVar12 = __aFlshl((ulong)in_stack_0000ffe2,(ushort)(PROD *)lpprod);
         uVar13 = *(uint *)&pPVar5[1].iprodMax;
-        *(uint *)&((PROD *)CONCAT22(uVar4,(PROD *)lpprod))->dwFlags =
+        *&((PROD *)CONCAT22(uVar4,(PROD *)lpprod))->dwFlags =
              (uint)((PROD *)CONCAT22(uVar4,(PROD *)lpprod))->dwFlags & 0xfc00 | (uint)lVar12;
         *(uint *)&pPVar5[1].iprodMax = uVar13 | (uint)((ulong)lVar12 >> 0x10);
       }
@@ -440,7 +429,7 @@ void InitProduction(PROD *rgprod)
             ((uint)((PROD *)CONCAT22(uVar4,(PROD *)lpprod))->dwFlags & 0x3ff)) {
           uVar9 = *(undefined2 *)((int)&pProdGlob[iSrc].dwFlags + 2);
           pPVar8 = pProdGlob + iSrc;
-          *(uint *)&pPVar8->dwFlags = (uint)(pProdGlob + iSrc)->dwFlags & 0xfc00;
+          *&pPVar8->dwFlags = (uint)(pProdGlob + iSrc)->dwFlags & 0xfc00;
           *(undefined2 *)((int)&pPVar8->dwFlags + 2) = uVar9;
         }
         else {
@@ -449,12 +438,12 @@ void InitProduction(PROD *rgprod)
           uVar6 = 0;
           pPVar8 = pProdGlob + iSrc;
           pPVar2 = pPVar8;
-          *(uint *)&pPVar2->dwFlags = (uint)pPVar2->dwFlags & 0xfc00;
+          *&pPVar2->dwFlags = (uint)pPVar2->dwFlags & 0xfc00;
           puVar3 = (undefined2 *)((int)&pPVar8->dwFlags + 2);
           *puVar3 = *puVar3;
           pPVar8 = pProdGlob + iSrc;
           pPVar2 = pPVar8;
-          *(uint *)&pPVar2->dwFlags = (uint)pPVar2->dwFlags | in_stack_0000ffe2;
+          *&pPVar2->dwFlags = (uint)pPVar2->dwFlags | in_stack_0000ffe2;
           puVar3 = (undefined2 *)((int)&pPVar8->dwFlags + 2);
           *puVar3 = *puVar3;
         }
@@ -474,7 +463,7 @@ void InitProduction(PROD *rgprod)
       *pbVar1 = *pbVar1 - 1;
     }
     ipl = ipl + 1;
-    pPVar5 = (PLPROD *)(PROD *)lpprod;
+    pPVar5 = (PROD *)lpprod;
   } while( true );
 }
 
@@ -499,14 +488,14 @@ void FinishProduction(short fWrite)
     sel.pl.rgbImp._4_2_ = sel.pl.rgbImp._4_2_ | (uint)lVar1;
     sel.pl.rgbImp._6_2_ =
          sel.pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar1 >> 0x10);
-    FreePl((PL *)lpplProdGlob);
+    FreePl(lpplProdGlob);
   }
   else {
     FreePl((PL *)CONCAT22(sel.pl.lpplprod._2_2_,
                                   (PLPROD *)sel.pl.lpplprod));
     if ((((PLPROD *)lpplProdGlob != (PLPROD *)0x0) || (lpplProdGlob._2_2_ != 0)) &&
        (((PLPROD *)lpplProdGlob)->iprodMac == 0)) {
-      FreePl((PL *)lpplProdGlob);
+      FreePl(lpplProdGlob);
       lpplProdGlob = (PLPROD *)0x0;
     }
     sel.pl.lpplprod._0_2_ = (PLPROD *)lpplProdGlob;
@@ -574,15 +563,15 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar9 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    hdc = BeginPaint(hwnd,&ps);
+    GetClientRect(hwnd,&rc);
     DrawProductionDlg(hwnd,hdc,&rc,-1);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+    EndPaint(hwnd,&ps);
     sVar6 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar6 = 1;
   }
   else {
@@ -597,8 +586,8 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     else if (message == WM_SETCURSOR) {
       cMax = 0;
-      GetCursorPos((POINT *)CONCAT22(unaff_SS,&pt));
-      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&pt));
+      GetCursorPos(&pt);
+      ScreenToClient(hwnd,&pt);
       BVar5 = PtInRect(&rcProdDiamond,pt);
       if (BVar5 != 0) {
         setcursor(hcurArrowHelp);
@@ -650,7 +639,7 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           pt.x = 0x244;
         }
         SetWindowPos(hwnd,0,0,0,dx,pt.x,6);
-        GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+        GetClientRect(hwnd,&rc);
         xCtr = rc.right >> 1;
         dyLB = (rc.bottom - (dyArial8 * 0x11) / 2) + -0x18;
         rc.left = (rc.right * 0xb) / 0x14 + 0x10;
@@ -681,10 +670,10 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar3 = GetDlgItem(hwnd,0x416);
         SetWindowPos(HVar3,0,6,6,rc.left + -0xc,dyLB,4);
         HVar3 = GetDlgItem(hwnd,0x416);
-        GetWindowRect(HVar3,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffc6));
+        GetWindowRect(HVar3,&stack0xffc6);
         HVar3 = GetDlgItem(hwnd,0x417);
         SetWindowPos(HVar3,0,rc.left + pt.y,6,rc.left + -0xc,cMax - i__56,4);
-        ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffca));
+        ScreenToClient(hwnd,&stack0xffca);
         yTopFutureTech = cMax;
         InitializeProductionDlg(hwnd);
         if (((uint)gd.grBits >> 0xe == 1) && (ptStickyProduceDlg.y == -1)) {
@@ -868,7 +857,7 @@ void ProdCommandHandler(HWND hwnd,ushort wParam,long lParam)
     return;
   }
   if (wParam == 0x76) {
-    WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x423);
+    WinHelp(hwnd,_szHelpFile,1,0x423);
     return;
   }
   if (wParam == 0x8b) {
@@ -953,12 +942,12 @@ PRODUCE_AddItem:
         lpplprodT._2_2_ = (int)(pProdGlob + iSrc)->dwFlags - (int)lVar25 & 0x3ff;
         pPVar15 = pProdGlob + iSrc;
         pPVar1 = pPVar15;
-        *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
+        *&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
         puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
         *puVar2 = *puVar2;
         pPVar15 = pProdGlob + iSrc;
         pPVar1 = pPVar15;
-        *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags | lpplprodT._2_2_;
+        *&pPVar1->dwFlags = (uint)pPVar1->dwFlags | lpplprodT._2_2_;
         puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
         *puVar2 = *puVar2;
       }
@@ -1042,7 +1031,7 @@ LAB_10d0_2099:
           goto PRODUCE_RedrawText;
         }
         if (iMac == (uint)((PLPROD *)lpplProdGlob)->iprodMax) {
-          lpplProdGlob = (PLPROD *)LpplReAlloc((PL *)lpplProdGlob,iMac + 4);
+          lpplProdGlob = LpplReAlloc(lpplProdGlob,iMac + 4);
           LVar21 = lSel;
         }
         lSel = LVar21;
@@ -1097,10 +1086,10 @@ LAB_10d0_2099:
           }
           InitProduction((PROD *)0x0);
           InitializeProductionDlg(hwnd);
-          GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+          GetClientRect(hwnd,&rc);
           rc.top = yTopFutureTech;
           rc.bottom = dyArial8 * 9 + yTopFutureTech;
-          InvalidateRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc),1);
+          InvalidateRect(hwnd,&rc,1);
           return;
         }
         if (wParam == 0x439) {
@@ -1222,12 +1211,12 @@ LAB_10d0_2099:
           lpplprodT._2_2_ = (int)lVar25 + (int)(pProdGlob + iSrc)->dwFlags & 0x3ff;
           pPVar15 = pProdGlob + iSrc;
           pPVar1 = pPVar15;
-          *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
+          *&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
           puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
           *puVar2 = *puVar2;
           pPVar15 = pProdGlob + iSrc;
           pPVar1 = pPVar15;
-          *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags | lpplprodT._2_2_;
+          *&pPVar1->dwFlags = (uint)pPVar1->dwFlags | lpplprodT._2_2_;
           puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
           *puVar2 = *puVar2;
         }
@@ -1291,8 +1280,8 @@ LAB_10d0_2099:
           iSrc = iSrc + 1;
         }
         pPVar8->iMac = (byte)iDst;
-        FreePl((PL *)lpplProdGlob);
-        lpplProdGlob = (PLPROD *)pPVar23;
+        FreePl(lpplProdGlob);
+        lpplProdGlob = pPVar23;
         __aFulmul(lParam,0x28);
         lVar25 = __aFlshl(in_stack_0000ffc4,in_stack_0000ffc8);
         uVar30 = (ushort)in_stack_0000ffc4;
@@ -1383,12 +1372,12 @@ LAB_10d0_2099:
     uVar24 = (pProdGlob + iSrc)->dwFlags;
     pPVar15 = pProdGlob + iSrc;
     pPVar1 = pPVar15;
-    *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
+    *&pPVar1->dwFlags = (uint)pPVar1->dwFlags & 0xfc00;
     puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
     *puVar2 = *puVar2;
     pPVar15 = pProdGlob + iSrc;
     pPVar1 = pPVar15;
-    *(uint *)&pPVar1->dwFlags = (uint)pPVar1->dwFlags | uVar10 + (int)uVar24 & 0x3ff;
+    *&pPVar1->dwFlags = (uint)pPVar1->dwFlags | uVar10 + (int)uVar24 & 0x3ff;
     puVar2 = (undefined2 *)((int)&pPVar15->dwFlags + 2);
     *puVar2 = *puVar2;
   }
@@ -1455,11 +1444,11 @@ LAB_10d0_2099:
     FillProdSrcLB(HVar11,sVar29);
   }
 PRODUCE_RedrawText:
-  GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwnd,&rc);
   rc.top = yTopFutureTech;
   rc.bottom = dyArial8 * 7 + yTopFutureTech;
   rc.left = rc.left + 0x82;
-  InvalidateRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc),1);
+  InvalidateRect(hwnd,&rc,1);
   DrawProductionDlg(hwnd,0,&rc,-1);
   return;
 }
@@ -1501,10 +1490,10 @@ void InitializeProductionDlg(HWND hwnd)
   pcVar1 = PszGetPlanetName(sel.pl.id);
   uVar10 = 0x1120;
   pcVar2 = PszGetCompressedString(idsProductionQueueS);
-  _wsprintf((char *)CONCAT22(unaff_SS,rgch),(char *)CONCAT22(0x1120,pcVar2),pcVar1,uVar10);
+  _wsprintf(rgch,pcVar2,pcVar1,uVar10);
   pcVar1 = rgch;
   HVar4 = hwnd;
-  SetWindowText(hwnd,(LPCSTR)CONCAT22(unaff_SS,pcVar1));
+  SetWindowText(hwnd,pcVar1);
   mdFill = -1;
   HVar3 = GetDlgItem(hwnd,0x416);
   FillProdSrcLB(HVar3,mdFill);
@@ -1515,10 +1504,9 @@ void InitializeProductionDlg(HWND hwnd)
     uVar10 = (undefined2)((ulong)lpplProdGlob >> 0x10);
     pPVar5 = (PLPROD *)lpplProdGlob;
     if ((int)(uint)pPVar5->iprodMac <= i) break;
-    uVar6 = __aFulshr((ulong)CONCAT22(unaff_SS,pcVar1),HVar4);
+    uVar6 = __aFulshr(pcVar1,HVar4);
     if ((((uint)uVar6 & 7) != 1) ||
-       (uVar6 = __aFulshr((ulong)CONCAT22(unaff_SS,pcVar1),HVar4), 6 < ((uint)uVar6 & 0x7f))
-       ) {
+       (uVar6 = __aFulshr(pcVar1,HVar4), 6 < ((uint)uVar6 & 0x7f))) {
       iSel = i;
     }
     i = i + 1;
@@ -1594,7 +1582,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
   SelectObject(hdc,rghfontArial8[0]);
   HVar16 = hdc;
   pcVar4 = PszGetCompressedString(idsKt);
-  DVar12 = GetTextExtent(HVar16,(LPCSTR)CONCAT22(0x1120,pcVar4),2);
+  DVar12 = GetTextExtent(HVar16,pcVar4,2);
   dxkT = (short)DVar12;
   SelectObject(hdc,rghfontArial8[1]);
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
@@ -1603,12 +1591,12 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
   do {
     lSel = lVar13;
     if (1 < i) {
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+      GetClientRect(hwnd,&rc);
       rc._2_2_ = rc._6_2_ - ((dyArial8 * 5) / 2 + 0xc);
       rc._6_2_ = (dyArial8 | 1U) + rc._2_2_;
       rc._0_2_ = 6;
       rc._4_2_ = dyArial8 + 6;
-      DrawDiamond(hdc,(RECT *)&rc,hbrBBlue);
+      DrawDiamond(hdc,&rc,hbrBBlue);
       rcProdDiamond.left = (int)rc;
       rcProdDiamond.top = rc._2_2_;
       rcProdDiamond.right = rc._4_2_;
@@ -1628,9 +1616,9 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
       idc = 0x417;
     }
     HVar5 = GetDlgItem(hwnd,idc);
-    GetWindowRect(HVar5,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar5,&rc);
+    ScreenToClient(hwnd,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     HVar5 = GetDlgItem(hwnd,idc);
     lVar13 = SendMessage(HVar5,0x409,0,0);
     uVar15 = lpplProdGlob._2_2_;
@@ -1665,8 +1653,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         prod.dwFlags._2_2_ = puVar11[1];
       }
       lSel = lVar1;
-      GetProductionCosts(&sel.pl,(PROD *)CONCAT22(unaff_SS,&prod),&rgCost,idPlayer,
-                         0);
+      GetProductionCosts(&sel.pl,&prod,&rgCost,idPlayer,0);
       rc._6_2_ = yTopFutureTech + 4;
       SelectObject(hdc,rghfontArial8[1]);
       c = CchGetString(idsRequiredMinerals,(char *)szWork);
@@ -1686,12 +1673,12 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         iVar7 = rc._6_2_;
         iVar9 = (int)rc;
         HVar16 = hdc;
-        sVar6 = lstrlen((LPCSTR)CONCAT22(0x1120,(char *)*(undefined2 *)(c * 2 + 0x4cc)));
+        sVar6 = lstrlen((char *)*(undefined2 *)(c * 2 + 0x4cc));
         TextOut(HVar16,iVar9,iVar7,(LPCSTR)CONCAT22(uVar15,pcVar4),sVar6);
         SelectObject(hdc,rghfontArial8[0]);
         SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
-        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTLD),
-                      *(undefined2 *)(&rgCost + k),*(undefined2 *)((int)&rgCost + k * 4 + 2));
+        c = _wsprintf(szWork,PCTLD,*(undefined2 *)(&rgCost + k),
+                      *(undefined2 *)((int)&rgCost + k * 4 + 2));
         RightTextOut
                   (hdc,(rc._4_2_ - dxkT) + -2,rc._6_2_,(char *)szWork,c,
                    dxMaxMineralQuan);
@@ -1700,7 +1687,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
           sVar6 = rc._6_2_;
           HVar16 = hdc;
           pcVar4 = PszGetCompressedString(idsKt);
-          TextOut(HVar16,iVar7,sVar6,(LPCSTR)CONCAT22(0x1120,pcVar4),2);
+          TextOut(HVar16,iVar7,sVar6,pcVar4,2);
         }
       }
       lVar13 = lSel;
@@ -1710,8 +1697,7 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         uVar14 = __aFulshr(uVar17,in_stack_0000ff6a);
         uVar8 = (uint)uVar14 & 0x7f;
         pcVar4 = PszGetCompressedString(idsDDoneCompletion);
-        c = _wsprintf((char *)CONCAT22(unaff_SS,&stack0xff6a),(char *)CONCAT22(0x1120,pcVar4),uVar8)
-        ;
+        c = _wsprintf((char *)&stack0xff6a,pcVar4,uVar8);
         PszProductionETA
                   (&sel.pl,
                    (PLPROD *)CONCAT22(lpplProdGlob._2_2_,(PLPROD *)lpplProdGlob),
@@ -1771,7 +1757,7 @@ void FillProdSrcLB(HWND hwndLB,short mdFill)
   SendMessage(hwndLB,0x405,0,0);
   for (i = 0; i < cProdGlob; i = i + 1) {
     if (((pProdGlob + i)->dwFlags & 0x3ff) != 0) {
-      pcVar1 = PszNameProdItem((PROD *)CONCAT22(0x1120,pProdGlob + i));
+      pcVar1 = PszNameProdItem(pProdGlob + i);
       _strcpy(local_4e,pcVar1);
       uVar2 = __aFulshr(uVar3,(ushort)pcVar1);
       if (((uint)uVar2 & 7) == 2) {
@@ -1793,7 +1779,7 @@ void FillProdSrcLB(HWND hwndLB,short mdFill)
           szT[0] = 0x20;
         }
       }
-      SendMessage(hwndLB,0x401,0,(LPARAM)CONCAT22(unaff_SS,szT));
+      SendMessage(hwndLB,0x401,0,(LPARAM)szT);
     }
   }
   return;
@@ -1982,7 +1968,7 @@ void GetProductionCosts(PLANET *lppl,PROD *lpprod,ulong *rgCost,short iplr,short
       lphulNew = (HUL *)CONCAT22(local_1e,(HUL *)(lpshdef + (int)uVar6));
       GetTrueHullCost(iplr,lphulCur,rgCostsCur);
       if (lphulCur->ihuldef == lphulNew->ihuldef) {
-        part.u_PART_0x0004.parmor = (ARMOR *)LphuldefFromId(lphulCur->ihuldef);
+        part.u_PART_0x0004.parmor = LphuldefFromId(lphulCur->ihuldef);
         costUpg = part.u_PART_0x0004._2_2_;
         costHalf = (short)part.u_PART_0x0004.parmor;
         part.hs.grhst =
@@ -2378,9 +2364,9 @@ void EstimateItemProdSched
   pPVar7 = (PLANET *)lppl;
   for (iVar5 = 0x1c; iVar5 != 0; iVar5 = iVar5 + -1) {
     pPVar2 = pPVar8;
-    pPVar8 = (PLANET *)&pPVar8->iPlayer;
+    pPVar8 = &pPVar8->iPlayer;
     pPVar1 = pPVar7;
-    pPVar7 = (PLANET *)&pPVar7->iPlayer;
+    pPVar7 = &pPVar7->iPlayer;
     pPVar2->id = pPVar1->id;
   }
   uVar9 = (undefined2)((ulong)lpplprod >> 0x10);
@@ -2388,7 +2374,7 @@ void EstimateItemProdSched
   pPVar11 = LpplAlloc(4,(uint)pPVar6->iprodMax,htOrd);
   pl.lpplprod._2_2_ = (ushort)((ulong)pPVar11 >> 0x10);
   pl.lpplprod._0_2_ = (PLPROD *)pPVar11;
-  __fmemcpy((PL *)CONCAT22(pl.lpplprod._2_2_,(PL *)(PLPROD *)pl.lpplprod + 1),
+  __fmemcpy((PL *)CONCAT22(pl.lpplprod._2_2_,(PLPROD *)pl.lpplprod + 1),
                     (PLPROD *)CONCAT22(uVar9,pPVar6 + 1),(uint)pPVar6->iprodMac << 2);
   bVar3 = pPVar6->iprodMac;
   ((PLPROD *)pl.lpplprod)->iprodMac = bVar3;
@@ -2405,21 +2391,20 @@ void EstimateItemProdSched
       *piLast = 100;
       lVar13 = cResearch;
 PRODUCE_LCleanUp:
-      if (((PL *)(PLPROD *)pl.lpplprod != (PL *)0x0) || (pl.lpplprod._2_2_ != 0)) {
+      if (((PLPROD *)pl.lpplprod != (PL *)0x0) || (pl.lpplprod._2_2_ != 0)) {
         cResearch = lVar13;
         FreePl((PL *)CONCAT22(pl.lpplprod._2_2_,(PLPROD *)pl.lpplprod));
       }
       return;
     }
-    EstMineralsMined((PLANET *)CONCAT22(unaff_SS,&pl),rglQuan,-1,1);
+    EstMineralsMined(&pl,rglQuan,-1,1);
     for (j = 0; j < 3; j = j + 1) {
       uVar9 = *(undefined2 *)((int)pl.rgwtMin + j * 4 + 2);
       iVar5 = j * 4;
       *(int *)(&rgRes + j) = (int)pl.rgwtMin[j];
       *(undefined2 *)((int)&rgRes + iVar5 + 2) = uVar9;
     }
-    local_62 = CResourcesAtPlanet
-                         ((PLANET *)CONCAT22(unaff_SS,&pl),((PLANET *)lppl)->iPlayer);
+    local_62 = CResourcesAtPlanet(&pl,((PLANET *)lppl)->iPlayer);
     local_60 = (int)local_62 >> 0xf;
     uVar12 = __aFulshr(CONCAT22((PROD *)lpprod,local_74),lpprod._2_2_);
     if ((uVar12 & 1) == 0) {
@@ -2446,7 +2431,7 @@ PRODUCE_LCleanUp:
         lpprod._2_2_ = unaff_SS;
       }
       else {
-        lpprod._0_2_ = (PROD *)((PLPROD *)pl.lpplprod + i + 1);
+        lpprod._0_2_ = (PLPROD *)pl.lpplprod + i + 1;
         lpprod._2_2_ = pl.lpplprod._2_2_;
       }
       if ((((PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod))->dwFlags & 0x3ff) != 0) {
@@ -2466,7 +2451,7 @@ PRODUCE_LCleanUp:
               goto PRODUCE_LCleanUp;
             }
             uVar9 = *(undefined2 *)((int)&((PROD *)lpprod)->dwFlags + 2);
-            *(uint *)&((PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod))->dwFlags =
+            *&((PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod))->dwFlags =
                  (uint)((PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod))->dwFlags & 0xfc00 | 0x3fc;
             *(undefined2 *)((int)&((PROD *)lpprod)->dwFlags + 2) = uVar9;
           }
@@ -2478,8 +2463,7 @@ PRODUCE_LCleanUp:
           pprodPartial = &prodPartial;
         }
         cBuilt = CBuildProdItem
-                           ((PLANET *)CONCAT22(unaff_SS,&pl),
-                            (PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod),pprodPartial,&rgRes,
+                           (&pl,(PROD *)CONCAT22(lpprod._2_2_,(PROD *)lpprod),pprodPartial,&rgRes,
                             fAlchemy,&mdStatus,0);
         if (iItem == i) {
           if ((0 < cBuilt) && (*piFirst == 0)) {
@@ -2548,7 +2532,7 @@ LAB_10d0_53bf:
       *(undefined2 *)(pl.rgwtMin + j) = *(undefined2 *)(&rgRes + j);
       *(undefined2 *)((int)pl.rgwtMin + j * 4 + 2) = uVar9;
     }
-    ChgPopFromPlanet((PLANET *)CONCAT22(unaff_SS,&pl),1);
+    ChgPopFromPlanet(&pl,1);
     iPass = iPass + 1;
   } while( true );
 }
@@ -2597,17 +2581,17 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   HDC hdc;
   
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+    hdc = BeginPaint(hwnd,&ps);
+    GetClientRect(hwnd,&rc);
     HVar4 = GetDlgItem(hwnd,0x431);
-    GetWindowRect(HVar4,(RECT *)CONCAT22(unaff_SS,(RECT *)(rc2 + 2)));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)(rc2 + 2)));
+    GetWindowRect(HVar4,rc2 + 2);
+    ScreenToClient(hwnd,rc2 + 2);
     HVar4 = GetDlgItem(hwnd,0x434);
-    GetWindowRect(HVar4,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar4,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     lpProc = (void *)rc._4_2_;
     dy = rc._6_2_;
-    ExpandRc((RECT *)(rc2 + 2),dyArial8,dyArial8 >> 1);
+    ExpandRc(rc2 + 2,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
     SelectObject(hdc,rghfontArial8[1]);
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
@@ -2623,12 +2607,12 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                              (char *)szWork);
       TextOut(hdc,rc2._2_2_,vyZPDStatic,szWork,rc2._0_2_);
     }
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+    EndPaint(hwnd,&ps);
     return 1;
   }
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -2646,12 +2630,12 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (message == WM_INITDIALOG) {
     HVar4 = hwnd;
     pcVar3 = PszGetCompressedString(idsCustomizeProductionTemplates);
-    SetWindowText(HVar4,(LPCSTR)CONCAT22(0x1120,pcVar3));
-    GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)rc2));
+    SetWindowText(HVar4,pcVar3);
+    GetWindowRect(hwnd,&rc);
+    GetClientRect(hwnd,rc2);
     dy = (rc._6_2_ - rc._2_2_) - (int)lpProc;
     HVar4 = GetDlgItem(hwnd,0x417);
-    GetWindowRect(HVar4,(RECT *)CONCAT22(unaff_SS,(RECT *)rc2));
+    GetWindowRect(HVar4,rc2);
     MapWindowPoints(0,hwnd,(POINT *)CONCAT13((char)((uint)unaff_SS >> 8),
                                              CONCAT12((char)unaff_SS,rc2)),2);
     vyZPDStatic = (int)lpProc + 2;
@@ -2665,7 +2649,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       iBase = i + -0x431;
       if (*(char *)((int)&vrgZipProd[0].fValid + iBase * 0x28) == '\0') {
         pcVar3 = PszGetCompressedString(idsUnusedD);
-        _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),(char)pcVar3,iBase + 1);
+        _wsprintf(szWork,pcVar3,(char)pcVar3,iBase + 1);
       }
       else {
         pszT = (char *)szWork;
@@ -2717,7 +2701,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       *(undefined1 *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) = 0;
       iVar6 = iResTechNow + 1;
       pcVar3 = PszGetCompressedString(idsUnusedD);
-      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),iVar6);
+      _wsprintf(szWork,pcVar3,iVar6);
       HVar4 = GetDlgItem(hwnd,iResTechNow + 0x431);
       SetWindowText(HVar4,szWork);
       FillZipProdLB(hwnd,(ZIPPRODQ *)vrgZipProd + iResTechNow);
@@ -2727,13 +2711,13 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (wParam != 0x76) {
       return 0;
     }
-    WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x452);
+    WinHelp(hwnd,_szHelpFile,1,0x452);
     return 1;
   }
   if (*(char *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) == '\0') {
     sVar5 = iResTechNow;
     pcVar3 = PszGetCompressedString(idsCustomD);
-    _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
+    _wsprintf(szWork,pcVar3,sVar5);
   }
   else {
     _strcpy((char *)szWork,
@@ -2751,7 +2735,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (szWork[0] == '\0') {
       sVar5 = iResTechNow;
       pcVar3 = PszGetCompressedString(idsCustomD);
-      _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar3),sVar5);
+      _wsprintf(szWork,pcVar3,sVar5);
     }
     _strcpy(((ZIPPRODQ *)vrgZipProd)[iResTechNow].szName,
                     (char *)szWork);
@@ -2784,11 +2768,10 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       dy = (short)((ulong)pvVar8 >> 0x10);
       lpProc = (void *)pvVar8;
       if ((int)(uint)((PLPROD *)lpplProdGlob)->iprodMac <= i) break;
-      uVar7 = __aFulshr((ulong)CONCAT22(uVar9,pcVar3),HVar4);
+      uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4);
       if ((((uint)uVar7 & 7) == 1) &&
-         (uVar7 = __aFulshr((ulong)CONCAT22(uVar9,pcVar3),HVar4), ((uint)uVar7 & 0x7f) < 7))
-      {
-        uVar7 = __aFulshr((ulong)CONCAT22(uVar9,pcVar3),HVar4);
+         (uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4), ((uint)uVar7 & 0x7f) < 7)) {
+        uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4);
         pvVar8 = (void *)CONCAT22(dy,lpProc);
         *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) =
              *(uint *)(iResTechNow * 0x28 + 0x2306 + rc2._0_2_ * 2) & 0xffc0 |
@@ -2807,7 +2790,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     *(undefined1 *)
      ((int)(ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1 +
      iResTechNow * 0x28 + 1) = (char)rc2._0_2_;
-    uVar7 = __aFulshr((ulong)CONCAT22(uVar9,pcVar3),HVar4);
+    uVar7 = __aFulshr(CONCAT22(uVar9,pcVar3),HVar4);
     *(byte *)((int)(ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1 +
              iResTechNow * 0x28) = (byte)uVar7 & 1;
     FillZipProdLB(hwnd,(ZIPPRODQ *)vrgZipProd + iResTechNow);
@@ -2876,17 +2859,17 @@ void FillZipProdLB(HWND hwndDlg,ZIPPRODQ *pzpq)
   short i;
   
   hwndLB = GetDlgItem(hwndDlg,0x417);
-  GetClientRect(hwndDlg,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwndDlg,&rc);
   rc.top = vyZPDStatic;
   rc.bottom = vyZPDStatic + dyArial8;
-  InvalidateRect(hwndDlg,(RECT *)CONCAT22(unaff_SS,&rc),1);
+  InvalidateRect(hwndDlg,&rc,1);
   SendMessage(hwndLB,0x405,0,0);
   if ((pzpq->fValid == 0) || (*(char *)((int)&pzpq->u_ZIPPRODQ_0x000e + 1) == '\0')) {
     UVar3 = 0x401;
     WVar2 = 0;
     HVar4 = hwndLB;
     pcVar1 = PszGetCompressedString(idsAutoBuildOrders);
-    SendMessage(HVar4,UVar3,WVar2,(LPARAM)CONCAT22(0x1120,pcVar1));
+    SendMessage(HVar4,UVar3,WVar2,(LPARAM)pcVar1);
   }
   else {
     CchGetString(idsSD2,szFormat);
@@ -2897,7 +2880,7 @@ void FillZipProdLB(HWND hwndDlg,ZIPPRODQ *pzpq)
         _strcpy((char *)szWork,szAuto);
       }
       else {
-        _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szFormat),szAuto);
+        _wsprintf(szWork,szFormat,szAuto);
       }
       SendMessage(hwndLB,0x401,0,0x112057a4);
     }

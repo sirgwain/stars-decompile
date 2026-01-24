@@ -48,16 +48,15 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     pcVar9 = _szButton;
     pcVar2 = PszGetCompressedString(idsDetonateMineFieldYear);
     hwndMineCB =
-         CreateWindow((LPCSTR)CONCAT22(uVar10,pcVar9),(LPCSTR)CONCAT22(0x1120,pcVar2),0x40000003,100
-                      ,100,0x96,dyArial8,hwnd,0,hInst,(void *)0x0);
+         CreateWindow((LPCSTR)CONCAT22(uVar10,pcVar9),pcVar2,0x40000003,100,100,0x96,
+                      dyArial8,hwnd,0,hInst,(void *)0x0);
     SendMessage(hwndMineCB,0x30,rghfontArial8[1],0);
     SetMineralTitleBar(hwnd);
   }
   else if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc__46));
-    SetRect((RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffbe),4,4,rc__46.right + -4,
-            dyArial8 * 2 + -4);
+    hdc = BeginPaint(hwnd,&ps);
+    GetClientRect(hwnd,&rc__46);
+    SetRect(&stack0xffbe,4,4,rc__46.right + -4,dyArial8 * 2 + -4);
     _Draw3dFrame();
     CVar5 = SetTextColor(hdc,CONCAT22(crButtonText._2_2_,
                                       (undefined2)crButtonText));
@@ -71,21 +70,20 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
       DVar6 = GetTextExtent(hdc,szMineralTitle,cch);
       if ((uint)DVar6 <= rtlt) break;
     }
-    RcCtrTextOut(hdc,(RECT *)&stack0xffbe,(char *)szMineralTitle,cch);
+    RcCtrTextOut(hdc,&stack0xffbe,(char *)szMineralTitle,cch);
     SetTextColor(hdc,CONCAT22(fDetonate,pt));
     SetBkColor(hdc,_crBack);
-    SetRect((RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffbe),(local_3e - (rc - local_40)) + 2,
-            local_40 + 3,local_3e + -4,rc + -2);
+    SetRect(&stack0xffbe,(local_3e - (rc - local_40)) + 2,local_40 + 3,local_3e + -4,rc + -2);
     fEnabled = FOtherStuffAtScanSel();
-    DrawSelectionArrow(hdc,(RECT *)&stack0xffbe,fEnabled);
+    DrawSelectionArrow(hdc,&stack0xffbe,fEnabled);
     rc__46.top = rc__46.top + dyArial8 * 2 + -4;
     DrawMineSurvey(hdc,&rc__46);
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+    EndPaint(hwnd,&ps);
   }
   else {
     if (message == WM_ERASEBKGND) {
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc__46));
-      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc__46),hbrButtonFace);
+      GetClientRect(hwnd,&rc__46);
+      FillRect(wParam,&rc__46,hbrButtonFace);
       return 1;
     }
     if (message == WM_CTLCOLOR) {
@@ -93,12 +91,12 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
       return (ulong)hbrButtonFace;
     }
     if (message == WM_SETCURSOR) {
-      GetCursorPos((POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffce));
-      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffce));
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffc4));
+      GetCursorPos(&stack0xffce);
+      ScreenToClient(hwnd,&stack0xffce);
+      GetClientRect(hwnd,&stack0xffc4);
       PVar1.y = fDetonate;
       PVar1.x = pt;
-      BVar3 = PtInRect((RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffc4),PVar1);
+      BVar3 = PtInRect(&stack0xffc4,PVar1);
       if (BVar3 != 0) {
         rtlt = HtMineWindow(hwnd,pt,fDetonate);
         if (rtlt != 0) {
@@ -166,17 +164,17 @@ void InvalidateMineralBars(void)
   short dyRow;
   HDC hdc;
   
-  GetClientRect(hwndMine,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwndMine,&rc);
   hdc = GetDC(hwndMine);
   hfontSav = SelectObject(hdc,rghfontArial8[0]);
   HVar5 = hdc;
   pcVar1 = PszGetCompressedString(idsN999mr);
-  DVar3 = GetTextExtent(HVar5,(LPCSTR)CONCAT22(0x1120,pcVar1),5);
+  DVar3 = GetTextExtent(HVar5,pcVar1,5);
   rc.right = rc.right - ((int)DVar3 + 6);
   SelectObject(hdc,rghfontArial8[1]);
   HVar5 = hdc;
   pcVar1 = PszGetCompressedString(idsPopulation1000000);
-  DVar3 = GetTextExtent(HVar5,(LPCSTR)CONCAT22(0x1120,pcVar1),0x15);
+  DVar3 = GetTextExtent(HVar5,pcVar1,0x15);
   dxPop = (int)DVar3 + 6;
   uVar4 = 0x1120;
   pcVar1 = pcRam11200480;
@@ -188,7 +186,7 @@ void InvalidateMineralBars(void)
     rc.left = rc.left + dx;
   }
   else {
-    DVar3 = GetTextExtent(hdc,(LPCSTR)CONCAT22(0x1120,pcRam11200480),4);
+    DVar3 = GetTextExtent(hdc,pcRam11200480,4);
     rc.left = rc.left + (int)DVar3 + 6;
   }
   SelectObject(hdc,hfontSav);
@@ -198,11 +196,11 @@ void InvalidateMineralBars(void)
   rcPop.bottom = rcPop.top + dyArial8;
   rcPop.right = rc.right;
   rcPop.left = rc.right - dxPop;
-  InvalidateRect(hwndMine,(RECT *)CONCAT22(unaff_SS,&rcPop),1);
+  InvalidateRect(hwndMine,&rcPop,1);
   dyRow = ((rc.bottom - rc.top) + dyArial8 * -4 + -2) / 6 + 1U & 0xfffe;
   rc.top = rc.top + (dyArial8 * 5 >> 1) + dyRow * 3 + 1;
   rc.bottom = dyRow * 3 + rc.top;
-  InvalidateRect(hwndMine,(RECT *)CONCAT22(unaff_SS,&rc),0);
+  InvalidateRect(hwndMine,&rc,0);
   return;
 }
 
@@ -233,7 +231,7 @@ void GetMineFieldCounts(ushort id,short *pithm,short *pcthm)
       sVar1 = ithFound;
     }
     ithFound = sVar1;
-    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+    lpth = (THING *)lpth + 1;
   }
   *pithm = ithFound;
   *pcthm = cthTotal;
@@ -425,7 +423,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         pctDecay = pctDecay + ((int)uVar12 >> 0xf) + (uint)bVar21;
       }
       CchGetString(idsShipCountLd,szT);
-      c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),cShip,pctDecay);
+      c__86 = _wsprintf(szWork,szT,cShip,pctDecay);
       TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
       iVar14 = (int)(THING *)yTop + dyArial8 + 2;
       yTop = (THING *)CONCAT22(yTop._2_2_,iVar14);
@@ -436,16 +434,16 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         yTop__208 = (short)((ulong)lVar24 >> 0x10);
         yTop._2_2_ = (ushort)lVar24;
         c__86 = CchGetString(idsFuel2,szT);
-        l__198 = GetTextExtent(hdc,(LPCSTR)CONCAT22(unaff_SS,szT),c__86);
+        l__198 = GetTextExtent(hdc,szT,c__86);
         c2 = CchGetString(idsCargo,(char *)szWork);
         l2 = GetTextExtent(hdc,szWork,c2);
         if ((long)l__198 < (long)l2) {
           l__198 = l2;
         }
-        SetRect((RECT *)CONCAT22(unaff_SS,&rcGauge),prc->left + 0x5a + (int)l__198,
-                (short)(THING *)yTop,prc->right + -4,(int)(THING *)yTop + dyArial8);
+        SetRect(&rcGauge,prc->left + 0x5a + (int)l__198,(short)(THING *)yTop,prc->right + -4,
+                (int)(THING *)yTop + dyArial8);
         if (rcGauge.left < rcGauge.right) {
-          TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,(LPCSTR)CONCAT22(unaff_SS,szT),c__86);
+          TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szT,c__86);
           yTop._0_2_ = (THING *)((int)(THING *)yTop + dyArial8 + 2);
           TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c2);
           DrawFleetGauge(hdc,&rcGauge,lpfl,4);
@@ -466,7 +464,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         SVar11 = idsMassLdkt;
       }
       c__86 = CchGetString(SVar11,szT);
-      c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),yTop._2_2_,yTop__208);
+      c__86 = _wsprintf(szWork,szT,yTop._2_2_,yTop__208);
       TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
       yTop = (THING *)CONCAT22(yTop._2_2_,(THING *)((int)(THING *)yTop + dyArial8 + 2));
       uVar25 = (undefined2)((ulong)lpfl >> 0x10);
@@ -486,8 +484,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         CchGetString(SVar11,szWP);
         if (((FLEET *)lpfl)->cord == 1) {
           pcVar9 = PszGetCompressedString(idsNone);
-          c__86 = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(unaff_SS,szWP),pcVar9,
-                            0x1120);
+          c__86 = _wsprintf(szT,szWP,pcVar9,0x1120);
         }
         else {
           uVar25 = (undefined2)((ulong)xLeft >> 0x10);
@@ -495,10 +492,9 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           pcVar9 = PszGetLocName((uint)psVar7[3] >> 8 &
                                        (grobjThing|grobjOther|grobjFleet|grobjPlanet),psVar7[2],
                                        *xLeft,psVar7[1]);
-          c__86 = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(unaff_SS,szWP),pcVar9,
-                            0x1120);
+          c__86 = _wsprintf(szT,szWP,pcVar9,0x1120);
         }
-        TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,(LPCSTR)CONCAT22(unaff_SS,szT),c__86);
+        TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szT,c__86);
         if ((gd.grBits._2_2_ >> 3 & 1) == 0) {
           SVar11 = idsWaypointTaskS;
         }
@@ -508,7 +504,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         yTop._0_2_ = (THING *)((int)&(((THING *)yTop)->pt).x + dyArial8);
         CchGetString(SVar11,szT);
         pcVar9 = PszGetCompressedString((((short *)xLeft)[3] & 0xfU) + idsTaskHere);
-        c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar9,0x1120);
+        c__86 = _wsprintf(szWork,szT,pcVar9,0x1120);
         TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
         yTop = (THING *)CONCAT22(yTop._2_2_,(int)(THING *)yTop + dyArial8 + 2);
         if (((FLEET *)lpfl)->cord < 2) {
@@ -531,8 +527,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
             SVar11 = idsWarpD;
           }
           CchGetString(SVar11,szT);
-          c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
-                            (uint)((short *)xLeft)[3] >> 4 & 0xf);
+          c__86 = _wsprintf(szWork,szT,(uint)((short *)xLeft)[3] >> 4 & 0xf);
         }
         TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
         yTop = (THING *)CONCAT22(yTop._2_2_,(THING *)((int)(THING *)yTop + dyArial8 + 2));
@@ -540,8 +535,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         l__198 = DVar22;
         if (0 < (long)DVar22) {
           pszT = PszGetCompressedString(idsFleetCanDestroyLdMinesPerYear);
-          c__86 = _wsprintf(szWork,(char *)CONCAT22(0x1120,pszT),(int)l__198,l__198._2_2_)
-          ;
+          c__86 = _wsprintf(szWork,pszT,(int)l__198,l__198._2_2_);
           TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
           yTop = (THING *)CONCAT22(yTop._2_2_,
                                    (THING *)((int)&(((THING *)yTop)->pt).x + dyArial8));
@@ -565,8 +559,8 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
             SVar11 = idsWarpD;
           }
           CchGetString(SVar11,szT);
-          c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
-                            *(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf);
+          c__86 = _wsprintf(szWork,szT,*(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf
+                           );
         }
         TextOut(hdc,prc->left + 0x56,(short)(THING *)yTop,szWork,c__86);
         yTop = (THING *)CONCAT22(yTop._2_2_,
@@ -588,8 +582,8 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           puVar3 = puVar20;
           puVar20 = puVar20 + 1;
           pPVar2 = pPVar19;
-          pPVar19 = (PLAYER *)&pPVar19->cPlanet;
-          *puVar3 = *(undefined2 *)pPVar2;
+          pPVar19 = &pPVar19->cPlanet;
+          *puVar3 = *pPVar2;
         }
         rc.left = prc->left;
         rc.top = prc->top;
@@ -612,7 +606,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         SelectObject(hdc,rghfontArial8[0]);
         HVar26 = hdc;
         pcVar9 = PszGetCompressedString(idsN999mr);
-        DVar22 = GetTextExtent(HVar26,(LPCSTR)CONCAT22(0x1120,pcVar9),5);
+        DVar22 = GetTextExtent(HVar26,pcVar9,5);
         dxRLabels = (int)DVar22 + 6;
         SelectObject(hdc,rghfontArial8[1]);
         uVar25 = 0x1120;
@@ -623,7 +617,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         dxLabels = (int)DVar22 + 6;
         if (dxLabels * 4 - rc.right != 0 && rc.right <= dxLabels * 4) {
           iplrbmp = 1;
-          DVar22 = GetTextExtent(hdc,(LPCSTR)CONCAT22(0x1120,pcRam11200480),4);
+          DVar22 = GetTextExtent(hdc,pcRam11200480,4);
           dxLabels = (int)DVar22 + 6;
         }
         pctDecay = rc.left + dxLabels;
@@ -652,8 +646,8 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText)
                       );
           TextOut(hdc,pctDecay,yCur,szWork,c);
-          dNum = PctPlanetDesirability((PLANET *)CONCAT22(unaff_SS,&pl),idPlayer);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDPCTPCT),dNum);
+          dNum = PctPlanetDesirability(&pl,idPlayer);
+          c = _wsprintf(szWork,PCTDPCTPCT,dNum);
           if (dNum < 0) {
             uVar12 = 0xff;
           }
@@ -665,7 +659,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           if (iplrbmp == 0) {
             DVar22 = GetTextExtent(hdc,szWork,c);
             dx = dx + (int)DVar22;
-            hbmpSav = PctPlanetOptValue((PLANET *)CONCAT22(unaff_SS,&pl),idPlayer);
+            hbmpSav = PctPlanetOptValue(&pl,idPlayer);
             if (dNum < (int)hbmpSav) {
               if (0 < (int)hbmpSav) {
                 if ((int)hbmpSav < 0xb) {
@@ -713,8 +707,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
               HVar26 = l;
               HVar27 = hbmpSav;
               pcVar9 = PszGetCompressedString(idsCLd00);
-              sVar8 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + c),
-                                (char *)CONCAT22(0x1120,pcVar9),uVar25,HVar26,HVar27);
+              sVar8 = _wsprintf((char *)szWork + c,pcVar9,uVar25,HVar26,HVar27);
               c = c + sVar8;
             }
             RightTextOut(hdc,xR,yCur,(char *)szWork,c,0);
@@ -736,11 +729,11 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
             SVar11 = idsCurrent;
           }
           pcVar9 = PszGetCompressedString(SVar11);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9));
+          c = _wsprintf(szWork,pcVar9);
         }
         else if (iplrbmp == 0) {
           pcVar9 = PszGetCompressedString(idsReportDYear);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),iVar14);
+          c = _wsprintf(szWork,pcVar9,iVar14);
           if (1 < dNum) {
             _strcat((char *)szWork,(char *)0x502);
             c = c + 1;
@@ -750,7 +743,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         }
         else {
           pcVar9 = PszGetCompressedString(idsOld2);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),iVar14);
+          c = _wsprintf(szWork,pcVar9,iVar14);
         }
         if (dNum < 6) {
           uVar12 = 0;
@@ -772,9 +765,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         PatBlt(hdc,pctDecay,cShip * 3 + yCur,xR - pctDecay,1,0xf00021);
         SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
         SetBkMode(hdc,1);
-        yTop__208 = FCanTerraformLppl
-                              ((PLANET *)CONCAT22(unaff_SS,&pl),&rgMin,(short *)rgMax,
-                               (short *)(rgMax + 3),1);
+        yTop__208 = FCanTerraformLppl(&pl,&rgMin,rgMax,rgMax + 3,1);
         dx = (xR - pctDecay) + -4;
         dy = (THING *)CONCAT22(dy._2_2_,(int)(cShip - dyArial8) >> 1);
         for (i = 0; i < 3; i = i + 1) {
@@ -793,7 +784,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
             psz = PszCalcEnvVar(i,iCur);
             c = _strlen(psz);
             SelectObject(hdc,rghfontArial8[0]);
-            TextOut(hdc,xR + 2,yCur + (int)(THING *)dy,(LPCSTR)CONCAT22(0x1120,psz),c);
+            TextOut(hdc,xR + 2,yCur + (int)(THING *)dy,psz,c);
           }
           SelectObject(hdc,rghfontArial8[1]);
           SelectObject(hdc,(*((ushort (*) [2])rghbrPlanetAttr + i))[0]);
@@ -870,7 +861,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         PatBlt(hdc,xR + -1,yCur + 1,1,cShip * 3 + 2,0xf00021);
         PatBlt(hdc,pctDecay,cShip * 3 + yCur + 2,xR - pctDecay,1,0xf00021);
         SelectObject(hdc,rghfontArial7[0]);
-        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),cMinGrafMax);
+        c = _wsprintf(szWork,PCTD,cMinGrafMax);
         DVar22 = GetTextExtent(hdc,szWork,c);
         dxNum = (short)DVar22;
         dxBar = (xR - pctDecay) + -3;
@@ -906,12 +897,12 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           lVar24 = __aFldiv(uVar23,CONCAT22(iVar14,sVar28));
           xBeg = (int)lVar24 + pctDecay;
           PatBlt(hdc,xBeg,yCur + 2,1,cShip * 3 + -1,0xf00021);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTD),i * dNum);
+          c = _wsprintf(szWork,PCTD,i * dNum);
           CtrTextOut(hdc,xBeg,(short)(THING *)dy,(char *)szWork,c);
         }
         RightTextOut(hdc,pctDecay - 4,(short)(THING *)dy,(char *)0x504,2,0);
         if (pl.iPlayer == idPlayer) {
-          EstMineralsMined((PLANET *)CONCAT22(unaff_SS,&pl),(long *)rgl,-1,0);
+          EstMineralsMined(&pl,rgl,-1,0);
         }
         else {
           rgl[4] = 0;
@@ -932,7 +923,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
                   && ((*(uint *)&((PLORD *)pFVar17->lpplord)[2].iordMax & 0xf) == 3)))) {
                 lVar24 = CMineFromLpfl((FLEET *)CONCAT22(iVar14,pFVar17));
                 if (0 < lVar24) {
-                  EstMineralsMined((PLANET *)CONCAT22(unaff_SS,&pl),(long *)&stack0xfe26,lVar24,0);
+                  EstMineralsMined(&pl,&stack0xfe26,lVar24,0);
                   for (hbmpSav = 0; (int)hbmpSav < 3; hbmpSav = hbmpSav + 1) {
                     uVar5 = rgMax[hbmpSav * 2 + -0xb];
                     iVar14 = *(int *)(&crTextSav + hbmpSav);
@@ -975,11 +966,9 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           uVar23 = __aFulmul((long)dxBar,CONCAT22(iVar16,iVar13));
           lVar24 = __aFldiv(uVar23,CONCAT22(iVar14,sVar8));
           dx = (short)lVar24;
-          SetRect((RECT *)CONCAT22(unaff_SS,&rcGauge),pctDecay + 1,yCur + 4,pctDecay + dx + 1,
-                  yCur + cShip + -1);
+          SetRect(&rcGauge,pctDecay + 1,yCur + 4,pctDecay + dx + 1,yCur + cShip + -1);
           if (dx != 0) {
-            FillRect(hdc,(RECT *)CONCAT22(unaff_SS,&rcGauge),
-                     *(HBRUSH *)((int)rghbrMinSum[0] + 2 + i * 4));
+            FillRect(hdc,&rcGauge,*(HBRUSH *)((int)rghbrMinSum[0] + 2 + i * 4));
           }
           l = rgl[i * 2] + *(uint *)(pl.rgwtMin + i);
           hbmpSav = rgl[i * 2 + 1] + *(int *)((int)pl.rgwtMin + i * 4 + 2) +
@@ -1002,11 +991,9 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
           uVar23 = __aFulmul((long)dxBar,CONCAT22(iVar13,sVar8));
           lVar24 = __aFldiv(uVar23,CONCAT22(iVar15,sVar28));
           dx = (short)lVar24;
-          SetRect((RECT *)CONCAT22(unaff_SS,&rcGauge),pctDecay + 1,yCur + 4,pctDecay + dx + 1,
-                  yCur + cShip + -1);
+          SetRect(&rcGauge,pctDecay + 1,yCur + 4,pctDecay + dx + 1,yCur + cShip + -1);
           if (dx != 0) {
-            FillRect(hdc,(RECT *)CONCAT22(unaff_SS,&rcGauge),
-                     (*((ushort (*) [2])rghbrMinSum + i))[0]);
+            FillRect(hdc,&rcGauge,(*((ushort (*) [2])rghbrMinSum + i))[0]);
           }
           if (2 < (pl.wFlags_0x4 & 0xff)) {
             for (hbmpSav = 0; (int)hbmpSav < 2; hbmpSav = hbmpSav + 1) {
@@ -1045,7 +1032,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         for (iVar14 = 0x60; l__198 = CONCAT22(l__198._2_2_,(int)l__198),
             l2 = CONCAT22(l2._2_2_,(undefined2)l2), iVar14 != 0; iVar14 = iVar14 + -1) {
           pPVar2 = pPVar19;
-          pPVar19 = (PLAYER *)&pPVar19->cPlanet;
+          pPVar19 = &pPVar19->cPlanet;
           puVar3 = puVar20;
           puVar20 = puVar20 + 1;
           uVar25 = *puVar3;
@@ -1128,13 +1115,13 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
   DibBlt(hdc,(short)((short *)xLeft + 1),yTop__208 + 2,0x40,0x40,hdibThings,
                   cShip << 6,0,0x40,0x40,0xcc0020);
   if (yTop->idFull >> 0xd == 1) {
-    xLeft = (short *)CONCAT22(xLeft._2_2_,(short *)xLeft + 0x28);
+    xLeft = (short *)xLeft + 0x28;
     SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     SelectObject(hdc,rghfontArial8[1]);
     if ((((&((THING *)yTop)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) != 0) {
       CchGetString(idsTravelingWarpD,szT);
-      c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
+      c__86 = _wsprintf(szWork,szT,
                         (((&((THING *)yTop)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4);
       TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
       yTop__208 = yTop__208 + dyArial8 + 2;
@@ -1146,7 +1133,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
       psVar7 = (short *)xLeft;
       HVar26 = hdc;
       uVar10 = _strlen(szT);
-      TextOut(HVar26,(short)psVar7,sVar8,(LPCSTR)CONCAT22(unaff_SS,pcVar9),uVar10);
+      TextOut(HVar26,(short)psVar7,sVar8,pcVar9,uVar10);
     }
     yTop__208 = yTop__208 + (dyArial8 * 3) / 2;
     uVar25 = 0x1120;
@@ -1165,9 +1152,9 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
       uVar25 = *(undefined2 *)(i * 2 + 0x4cc);
       uVar29 = 0x1120;
       pcVar9 = PszGetCompressedString(idsS2);
-      c__86 = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),uVar25,uVar29);
+      c__86 = _wsprintf(szWork,pcVar9,uVar25,uVar29);
       RightTextOut(hdc,(short)(short *)xLeft,yTop__208,(char *)szWork,c__86,0);
-      c__86 = _wsprintf(szWork,(char *)CONCAT22(0x1120,PCTDKT),
+      c__86 = _wsprintf(szWork,PCTDKT,
                         *(undefined2 *)((((THING *)yTop)->u_THING_0x0006).rgb + i * 2 + 2));
       TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
       yTop__208 = yTop__208 + dyArial8 + 2;
@@ -1177,12 +1164,11 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
   }
   if (yTop->idFull >> 0xd != 2) {
     if (yTop->idFull >> 0xd == 3) {
-      xLeft = (short *)CONCAT22(xLeft._2_2_,(short *)xLeft + 0x28);
+      xLeft = (short *)xLeft + 0x28;
       SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
       SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       SelectObject(hdc,rghfontArial8[1]);
-      SetRect((RECT *)CONCAT22(unaff_SS,&rc),(short)(short *)xLeft,yTop__208,prc->right + -8,
-              prc->bottom + -8);
+      SetRect(&rc,(short)(short *)xLeft,yTop__208,prc->right + -8,prc->bottom + -8);
       if ((1 << ((byte)idPlayer & 0x1f) &
           *(uint *)((int)&((THING *)yTop)->u_THING_0x0006 + 6)) == 0) {
         pcVar9 = PszGetCompressedString(idsTraderRequestsInterestedPartiesSendFleetLeast);
@@ -1190,13 +1176,12 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         HVar26 = hdc;
         psz = pcVar9;
         uVar10 = _strlen(pcVar9);
-        sVar8 = DRAWTEXT(HVar26,(LPCSTR)CONCAT22(uVar25,pcVar9),uVar10,
-                         (RECT *)CONCAT22(unaff_SS,&rc),0x810);
+        sVar8 = DRAWTEXT(HVar26,(LPCSTR)CONCAT22(uVar25,pcVar9),uVar10,&rc,0x810);
         yTop__208 = yTop__208 + sVar8 + 8;
       }
       uVar12 = *(uint *)((int)&((THING *)yTop)->u_THING_0x0006 + 4) & 0xf;
       pcVar9 = PszGetCompressedString(idsTraderTravelingWarpD);
-      cch = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar9),uVar12);
+      cch = _wsprintf(szWork,pcVar9,uVar12);
       TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,cch);
       l__198 = CONCAT22(l__198._2_2_,(int)l__198);
       l2 = CONCAT22(l2._2_2_,(undefined2)l2);
@@ -1209,18 +1194,17 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
       crTextSav = CONCAT22(crTextSav._2_2_,(undefined2)crTextSav);
       crBkSav = CONCAT22(crBkSav._2_2_,(undefined2)crBkSav);
       if (yTop->idFull >> 0xd == 0) {
-        xLeft = (short *)CONCAT22(xLeft._2_2_,(short *)xLeft + 0x28);
+        xLeft = (short *)xLeft + 0x28;
         SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
         SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
         SelectObject(hdc,rghfontArial8[1]);
         CchGetString(idsLocationDD,szT);
         uVar25 = (undefined2)((ulong)yTop >> 0x10);
-        c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),(&((THING *)yTop)->pt)->x,
-                          (((THING *)yTop)->pt).y);
+        c__86 = _wsprintf(szWork,szT,(&((THING *)yTop)->pt)->x,(((THING *)yTop)->pt).y);
         TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
         yTop__208 = yTop__208 + dyArial8 + 2;
         CchGetString(idsFieldTypeS,szT);
-        c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),
+        c__86 = _wsprintf(szWork,szT,
                           *(undefined2 *)
                            ((uint)*(byte *)((int)&((THING *)yTop)->u_THING_0x0006 + 6) * 2 + 0x4f2),
                           0x1120);
@@ -1237,7 +1221,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         lVar24 = __ftol((double)CONCAT26(crTextSav._2_2_,
                                                  CONCAT24((undefined2)crTextSav,
                                                           CONCAT22(in_stack_0000fe26,ifl))));
-        c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),(int)lVar24);
+        c__86 = _wsprintf(szWork,szT,(int)lVar24);
         TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
         yTop__208 = yTop__208 + dyArial8 + 2;
         sVar8 = GetRaceStat((PLAYER *)rgplr + (yTop->idFull >> 9 & 0xf),rsMajorAdv);
@@ -1276,13 +1260,13 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
         iOffset = (short)((ulong)lVar24 >> 0x10);
         xLeft = (short *)CONCAT22((int)lVar24,(short *)xLeft);
         CchGetString(idsDecayRateLdYear,szT);
-        c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),xLeft._2_2_);
+        c__86 = _wsprintf(szWork,szT,xLeft._2_2_);
         TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
         yTop__208 = yTop__208 + dyArial8 + 2;
         if ((yTop->idFull >> 9 & 0xf) == idPlayer) {
           GetMineFieldCounts(yTop->idFull,&i,&c2);
           CchGetString(idsFieldDD,szT);
-          c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),i);
+          c__86 = _wsprintf(szWork,szT,i);
           TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
           yTop__208 = yTop__208 + dyArial8 + 2;
         }
@@ -1299,13 +1283,12 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[1]);
   cch = CchGetString(idsLocation,szT);
-  DVar22 = GetTextExtent(hdc,(LPCSTR)CONCAT22(unaff_SS,szT),cch);
+  DVar22 = GetTextExtent(hdc,szT,cch);
   xLeft._0_2_ = (short *)((int)(short *)xLeft + (int)DVar22 + 0x14);
   RightTextOut(hdc,(short)((short *)xLeft + -2),yTop__208,szT,cch,0);
   cch = CchGetString(idsDD5,szT);
   uVar25 = (undefined2)((ulong)yTop >> 0x10);
-  c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),(&((THING *)yTop)->pt)->x,
-                    (((THING *)yTop)->pt).y);
+  c__86 = _wsprintf(szWork,szT,(&((THING *)yTop)->pt)->x,(((THING *)yTop)->pt).y);
   TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
   yTop__208 = yTop__208 + (dyArial8 * 3) / 2;
   c__86 = CchGetString(idsDestination2,(char *)szWork);
@@ -1321,8 +1304,7 @@ LAB_1028_19f8:
     dy = LpthFromId(*(short *)((int)&((THING *)yTop)->u_THING_0x0006 + 6));
     uVar25 = (undefined2)((ulong)dy >> 0x10);
     if (dy == (THING *)0x0) goto LAB_1028_19f8;
-    c__86 = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),(&((THING *)dy)->pt)->x,
-                      (((THING *)dy)->pt).y);
+    c__86 = _wsprintf(szWork,szT,(&((THING *)dy)->pt)->x,(((THING *)dy)->pt).y);
   }
   TextOut(hdc,(short)(short *)xLeft,yTop__208,szWork,c__86);
   yTop__208 = yTop__208 + (dyArial8 * 3) / 2;
@@ -1381,7 +1363,7 @@ short HtMineWindow(HWND hwnd,short x,short y)
       grobj = 1;
     }
   }
-  GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwnd,&rc);
   rc.top = rc.top + dyArial8 * 2;
   if ((((y < rc.top + -5) && (4 < y)) && (x < rc.right + -4)) &&
      ((rc.right - rc.top < x && (sVar2 = FOtherStuffAtScanSel(), sVar2 != 0)))) {
@@ -1531,7 +1513,7 @@ void MineClick(short x,short y,short msg,short sks)
   case 1:
   case 2:
   case 3:
-    FLookupPlanet(sel.scan.idpl,(PLANET *)pl);
+    FLookupPlanet(sel.scan.idpl,pl);
     GlobalPD.grPopup = 1;
     GlobalPD.u_POPUPDATA_0x0002.rgi[0] = (long)(ht + -1);
     for (i = 1; i < 5; i = i + 1) {
@@ -1550,7 +1532,7 @@ void MineClick(short x,short y,short msg,short sks)
         GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory = local_32[(ht + -1) * 2];
         GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fSummary = local_32[(ht + -1) * 2 + 1]
         ;
-        EstMineralsMined((PLANET *)CONCAT22(unaff_SS,(PLANET *)pl),(long *)&rglQuan,-1,0);
+        EstMineralsMined(pl,&rglQuan,-1,0);
         cMines_00 = CONCAT22(cMines._2_2_,(short)cMines);
         GlobalPD.u_POPUPDATA_0x0002.rgi[4]._0_2_ = (&rglQuan)[(ht + -1) * 2];
         GlobalPD.u_POPUPDATA_0x0002.rgi[4]._2_2_ = *(undefined2 *)(&lpfl__20 + ht + -1);
@@ -1568,8 +1550,7 @@ void MineClick(short x,short y,short msg,short sks)
               cMines_00 = CMineFromLpfl((FLEET *)CONCAT22(iVar6,pFVar4));
               if (0 < cMines_00) {
                 cMines = cMines_00;
-                EstMineralsMined((PLANET *)CONCAT22(unaff_SS,(PLANET *)pl),(long *)rglT,cMines_00,0)
-                ;
+                EstMineralsMined(pl,rglT,cMines_00,0);
                 bVar10 = CARRY2((uint)lVal,rglT[(ht + -1) * 2]);
                 lVal = (char *)((int)lVal + rglT[(ht + -1) * 2]);
                 local_68 = local_68 + rglT[(ht + -1) * 2 + 1] + (uint)bVar10;
@@ -1598,8 +1579,7 @@ void MineClick(short x,short y,short msg,short sks)
     lVal = (char *)rgbCur + 0x288;
     local_68 = 30000;
     for (cMines._0_2_ = 0; (short)cMines < 9; cMines._0_2_ = (short)cMines + 1) {
-      _wsprintf((char *)CONCAT22(unaff_SS,(char *)((int)&cMines + (short)cMines * 10 + 2)),
-                (char *)CONCAT22(0x1120,PCTDKT),rgi[(short)cMines]);
+      _wsprintf((char *)((int)&cMines + (short)cMines * 10 + 2),PCTDKT,rgi[(short)cMines]);
       psz[(short)cMines] = (char *)((int)&cMines + (short)cMines * 10 + 2);
       if (rgi[(short)cMines] == cMinGrafMax) {
         iChecked = (short)cMines;
@@ -1617,7 +1597,7 @@ void MineClick(short x,short y,short msg,short sks)
   case 6:
   case 7:
   case 8:
-    FLookupPlanet(sel.scan.idpl,(PLANET *)(pl + 6));
+    FLookupPlanet(sel.scan.idpl,pl + 6);
     GlobalPD.grPopup = 5;
     GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = ht + -6;
     GlobalPD.u_POPUPDATA_0x0002.part.hs.grhst = pl._6_2_;
@@ -1628,9 +1608,7 @@ void MineClick(short x,short y,short msg,short sks)
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = (short)acStack_42[ht];
     }
     if (((local_44 & 0xff) < 3) ||
-       (sVar5 = FCanTerraformLppl
-                          ((PLANET *)CONCAT22(unaff_SS,(PLANET *)(pl + 6)),(short *)&rgMin,
-                           (short *)(rglT + 4),(short *)pl,1), sVar5 == 0)) {
+       (sVar5 = FCanTerraformLppl(pl + 6,&rgMin,rglT + 4,pl,1), sVar5 == 0)) {
 MINE_NoTerra:
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = -1;
       GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory = -1;
@@ -1671,7 +1649,7 @@ MINE_NoTerra:
       pSVar8 = &scan;
       for (iVar6 = 8; iVar6 != 0; iVar6 = iVar6 + -1) {
         pSVar2 = pSVar8;
-        pSVar8 = (SCAN *)&(pSVar8->pt).y;
+        pSVar8 = &(pSVar8->pt).y;
         psVar1 = psVar7;
         psVar7 = psVar7 + 1;
         (pSVar2->pt).x = *psVar1;
@@ -1803,7 +1781,7 @@ MINE_ChangeIt:
         if (0 < ((FLEET *)lpfl)->rgcsh[ishdef]) {
           rgid[c] = ishdef;
           iVar6 = ((FLEET *)lpfl)->iPlayer * 4;
-          __fstrcpy((char *)CONCAT22(unaff_SS,rgsz + c * 0x20),
+          __fstrcpy(rgsz + c * 0x20,
                             (char *)CONCAT22(*(undefined2 *)(iVar6 + 0x100),
                                              (char *)(*(int *)(iVar6 + 0xfe) + ishdef * 0x93 + 8)));
           rgpsz[c] = rgsz + c * 0x20;
@@ -1952,7 +1930,7 @@ void SetMineralTitleBar(HWND hwnd)
                 (uint)(*(char *)((int)&((THING *)lpThings)[sel.scan.ith].
                                        u_THING_0x0006 + 7) != '\0'),0);
   }
-  GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwnd,&rc);
   if (fVisCB == 0) {
     uVar2 = 0x80;
   }
@@ -2234,15 +2212,15 @@ void PopupMineralScanChoices(HWND hwnd,short x,short y)
       (&rgid)[iVar6] = lpth->idFull;
       local_1ac[sVar5 * 2] = 0x2000;
     }
-    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+    lpth = (THING *)lpth + 1;
   }
-  i = PopupMenu(hwnd,x,y,c,(long *)&rgid,(char **)0x0,iChecked,1);
+  i = PopupMenu(hwnd,x,y,c,&rgid,(char **)0x0,iChecked,1);
   if (-1 < i) {
     psVar7 = (short *)&sel.scan;
     pSVar8 = &scan;
     for (iVar6 = 8; iVar6 != 0; iVar6 = iVar6 + -1) {
       pSVar2 = pSVar8;
-      pSVar8 = (SCAN *)&(pSVar8->pt).y;
+      pSVar8 = &(pSVar8->pt).y;
       psVar1 = psVar7;
       psVar7 = psVar7 + 1;
       (pSVar2->pt).x = *psVar1;
@@ -2261,7 +2239,7 @@ void PopupMineralScanChoices(HWND hwnd,short x,short y)
         lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
         while (((THING *)lpth < (THING *)lpThings + cThing &&
                (lpth->idFull != (&rgid)[i * 2]))) {
-          lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)lpth + 1);
+          lpth = (THING *)lpth + 1;
         }
         scan.ith = ((int)(THING *)lpth - (int)(THING *)lpThings) / 0x12;
         idNew = lpth->idFull;
@@ -2413,7 +2391,7 @@ void EstMineralsMined(PLANET *lppl,long *plQuan,long cMines,short fApply)
             cMines = lMine;
             if ((-1 < cMines_00) && ((0 < (int)((ulong)cMines_00 >> 0x10) || ((int)cMines_00 != 0)))
                ) {
-              EstMineralsMined(lppl,(long *)rglQuan,cMines_00,fApply);
+              EstMineralsMined(lppl,rglQuan,cMines_00,fApply);
               for (i = 0; i < 3; i = i + 1) {
                 uVar5 = rglQuan[i * 2];
                 uVar6 = rglQuan[i * 2 + 1];

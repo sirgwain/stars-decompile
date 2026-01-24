@@ -29,13 +29,12 @@ char * PszGetCompressedString(StringId ids)
   
   iNibble = 0;
   if (ids != (int)iLastStrGet) {
-    pchLen = (byte *)CONCAT22(0x1010,(byte *)acSTR + ((int)ids >> 6) * 0x40);
+    pchLen = (byte *)acSTR + ((int)ids >> 6) * 0x40;
     for (i = 0; i < (int)(ids & idsShieldAlsoContainsArmorComponentWhichWill); i = i + 1) {
       iNibble = iNibble + (uint)*pchLen;
-      pchLen = (byte *)CONCAT22(pchLen._2_2_,(byte *)pchLen + 1);
+      pchLen = (byte *)pchLen + 1;
     }
-    pch = (byte *)CONCAT22(0x1010,(byte *)(((short *)aiSTRChunkOffset)[(int)ids >> 6] +
-                                          (iNibble >> 1)));
+    pch = (byte *)(((short *)aiSTRChunkOffset)[(int)ids >> 6] + (iNibble >> 1));
     bVar3 = (iNibble & 1U) == 0;
     pszOut = (char *)szLastStrGet;
     iBuild = 0;
@@ -45,7 +44,7 @@ char * PszGetCompressedString(StringId ids)
         i = (int)(uint)*pch >> 4;
       }
       else {
-        pch = (byte *)CONCAT22(pch._2_2_,(byte *)pch + 1);
+        pch = (byte *)pch + 1;
         i = *pbVar2 & 0xf;
       }
       bVar3 = !bVar3;

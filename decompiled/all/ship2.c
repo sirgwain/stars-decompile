@@ -60,17 +60,17 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                            Impure (Non-shareable)
                         */
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
+    hdc = BeginPaint(hwnd,&ps);
+    GetClientRect(hwnd,&rc);
     HVar5 = GetDlgItem(hwnd,0x431);
-    GetWindowRect(HVar5,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xffc8));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffc8));
+    GetWindowRect(HVar5,&stack0xffc8);
+    ScreenToClient(hwnd,&stack0xffc8);
     HVar5 = GetDlgItem(hwnd,0x434);
-    GetWindowRect(HVar5,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+    GetWindowRect(HVar5,&rc);
+    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
     psz = rc._4_2_;
     hwndRad = rc._6_2_;
-    ExpandRc((RECT *)&stack0xffc8,dyArial8,dyArial8 >> 1);
+    ExpandRc(&stack0xffc8,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
     SelectObject(hdc,rghfontArial8[1]);
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
@@ -82,7 +82,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       TextOut(hdc,0xc,(short)pszT,szWork,sVar6);
     }
     else {
-      DVar11 = GetTextExtent(hdc,(LPCSTR)CONCAT22(0x1120,pcRam112004d0),9);
+      DVar11 = GetTextExtent(hdc,pcRam112004d0,9);
       for (i = 0; i < 5; i = i + 1) {
         SetTextColor(hdc,CONCAT22(*(undefined2 *)(i * 4 + 0x44a),*(undefined2 *)(i * 4 + 0x448)));
         RightTextOut
@@ -92,8 +92,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                           (((((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->
                             wFlags >> 0xc) + idsAction,(char *)szWork);
         if (*(char *)((int)(HCURSOR *)&hcurScanAdd + sVar6 + 1) == '.') {
-          _wsprintf((char *)CONCAT22(0x1120,(char *)szBase + 0xff + sVar6),
-                    (char *)0x112016ba,
+          _wsprintf((char *)szBase + 0xff + sVar6,(char *)0x112016ba,
                     (((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->wFlags &
                     0xfff);
         }
@@ -107,12 +106,12 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         pszT = pszT + dyArial8;
       }
     }
-    EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+    EndPaint(hwnd,&ps);
     sVar6 = 1;
   }
   else if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar6 = 1;
   }
   else {
@@ -132,7 +131,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         HVar5 = hwnd;
         pcVar4 = PszGetCompressedString(idsCustomizeZipOrders);
-        SetWindowText(HVar5,(LPCSTR)CONCAT22(0x1120,pcVar4));
+        SetWindowText(HVar5,pcVar4);
         HVar5 = GetDlgItem(hwnd,0x417);
         ShowWindow(HVar5,0);
         hwndZipOrderDlg = hwnd;
@@ -142,7 +141,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         for (i = 0x431; i < 0x435; i = i + 1) {
           if (*(char *)((int)&vrgZip[0].fValid + (i + -0x431) * 0x18) == '\0') {
             psz = PszGetCompressedString(idsUnusedD);
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,psz),(char)psz,i + -0x430);
+            _wsprintf(szWork,psz,(char)psz,i + -0x430);
           }
           else {
             pszT = (char *)szWork;
@@ -163,7 +162,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           }
           psz = (char *)szWork;
           hwndRad = GetDlgItem(hwnd,i);
-          SetWindowText(hwndRad,(LPCSTR)CONCAT22(0x1120,psz));
+          SetWindowText(hwndRad,psz);
         }
         StickyDlgPos(hwnd,(POINT *)&ptStickyZipOrderDlg,1);
         if (((uint)gd.grBits >> 0xb & 1) != 0) {
@@ -193,7 +192,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             {
               sVar6 = iResTechNow;
               pcVar4 = PszGetCompressedString(idsCustomD);
-              _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
+              _wsprintf(szWork,pcVar4,sVar6);
             }
             else {
               _strcpy((char *)szWork,
@@ -208,7 +207,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
               if (szWork[0] == '\0') {
                 sVar6 = iResTechNow;
                 pcVar4 = PszGetCompressedString(idsCustomD);
-                _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar6);
+                _wsprintf(szWork,pcVar4,sVar6);
               }
               _strcpy((char *)((int)vrgZip[0].szName +
                                       iResTechNow * 0x18),(char *)szWork);
@@ -239,7 +238,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                 pZVar10 = (ZIPORDER *)vrgZip + iResTechNow;
                 for (iVar7 = 5; iVar7 != 0; iVar7 = iVar7 + -1) {
                   pZVar2 = pZVar10;
-                  pZVar10 = (ZIPORDER *)((pZVar10->txp).rgia + 1);
+                  pZVar10 = (pZVar10->txp).rgia + 1;
                   puVar1 = puVar9;
                   puVar9 = puVar9 + 1;
                   (pZVar2->txp).rgia[0].wFlags = *puVar1;
@@ -256,14 +255,14 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             *(undefined1 *)((int)&vrgZip[0].fValid + iResTechNow * 0x18) = 0;
             iVar7 = iResTechNow + 1;
             pcVar4 = PszGetCompressedString(idsUnusedD);
-            _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar7);
+            _wsprintf(szWork,pcVar4,iVar7);
             HVar5 = GetDlgItem(hwnd,iResTechNow + 0x431);
             SetWindowText(HVar5,szWork);
             InvalidateRect(hwnd,(RECT *)0x0,1);
             gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffef | 0x10;
           }
           else if (wParam == 0x76) {
-            WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x44a);
+            WinHelp(hwnd,_szHelpFile,1,0x44a);
             return 1;
           }
         }
@@ -323,8 +322,8 @@ short RenameZipDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   short ids;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff2));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff2),hbrButtonFace);
+    GetClientRect(hwnd,&stack0xfff2);
+    FillRect(wParam,&stack0xfff2,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -344,7 +343,7 @@ short RenameZipDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
       HVar2 = hwnd;
       pcVar1 = PszGetCompressedString(ids);
-      SetWindowText(HVar2,(LPCSTR)CONCAT22(0x1120,pcVar1));
+      SetWindowText(HVar2,pcVar1);
       SetWindowPos(hwnd,0,ptStickyRenameDlg.x + 0x46,ptStickyRenameDlg.y + 0x46,0,0,
                    0x15);
       SendDlgItemMessage(hwnd,0x10c,0x415,0xc,0);
@@ -369,7 +368,7 @@ short RenameZipDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         else {
           uVar3 = 0xc1f;
         }
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,(ulong)uVar3);
+        WinHelp(hwnd,_szHelpFile,1,(ulong)uVar3);
         return 1;
       }
     }
@@ -404,8 +403,8 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   RECT rc;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     sVar3 = 1;
   }
   else {
@@ -421,7 +420,7 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         HVar2 = hwnd;
         pcVar1 = PszGetCompressedString(idsRenameFleet);
-        SetWindowText(HVar2,(LPCSTR)CONCAT22(0x1120,pcVar1));
+        SetWindowText(HVar2,pcVar1);
         SetWindowPos(hwnd,0,ptStickyRenameDlg.x + 0x46,ptStickyRenameDlg.y + 0x46,0,0,
                      0x15);
         SendDlgItemMessage(hwnd,0x10c,0x415,0x1f,0);
@@ -455,7 +454,7 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           fInEditUpdate = 0;
         }
         else if (wParam == 0x76) {
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x447);
+          WinHelp(hwnd,_szHelpFile,1,0x447);
           return 1;
         }
       }
@@ -534,9 +533,9 @@ short FStargateJump(FLEET *lpfl,short isbsSrc,short isbsDst,short dDist)
   pFVar7 = (FLEET *)lpfl;
   for (iVar5 = 0x3e; iVar5 != 0; iVar5 = iVar5 + -1) {
     pFVar2 = pFVar8;
-    pFVar8 = (FLEET *)&pFVar8->iPlayer;
+    pFVar8 = &pFVar8->iPlayer;
     pFVar1 = pFVar7;
-    pFVar7 = (FLEET *)&pFVar7->iPlayer;
+    pFVar7 = &pFVar7->iPlayer;
     pFVar2->id = pFVar1->id;
   }
   uVar9 = (undefined2)((ulong)flSrc.lpplord >> 0x10);
@@ -698,9 +697,9 @@ short FStargateJump(FLEET *lpfl,short isbsSrc,short isbsDst,short dDist)
           pFVar8 = &flSrc;
           for (iVar5 = 0x3e; iVar5 != 0; iVar5 = iVar5 + -1) {
             pFVar2 = (FLEET *)lpfl;
-            lpfl._0_2_ = (FLEET *)&((FLEET *)lpfl)->iPlayer;
+            lpfl._0_2_ = &((FLEET *)lpfl)->iPlayer;
             pFVar1 = pFVar8;
-            pFVar8 = (FLEET *)&pFVar8->iPlayer;
+            pFVar8 = &pFVar8->iPlayer;
             pFVar2->id = pFVar1->id;
           }
           return 1;
@@ -791,7 +790,7 @@ short MdCalcStargateDamage(short isbsSrc,short isbsDst,short dDist,short wt,shor
     local_6 = 0;
   }
   iVar2 = dDist >> 0xf;
-  uVar7 = __aFulmul((ulong)CONCAT22(local_6,dBaseDistance),5);
+  uVar7 = __aFulmul(CONCAT22(local_6,dBaseDistance),5);
   iVar3 = (int)(uVar7 >> 0x10);
   if ((iVar3 <= iVar2) && ((iVar3 < iVar2 || ((uint)uVar7 < (uint)dDist)))) {
     return -1;
@@ -852,7 +851,7 @@ LAB_1080_170f:
   else {
     pcVar11 = (char *)CONCAT22(local_6,dBaseDistance);
     uVar7 = 0x9c4;
-    uVar8 = __aFulmul((ulong)CONCAT22(local_6,dBaseDistance),5);
+    uVar8 = __aFulmul(CONCAT22(local_6,dBaseDistance),5);
     uVar8 = __aFulmul(uVar8 - (long)dDist,uVar7);
     uVar8 = __aFldiv(uVar8,(long)pcVar11);
     if (0 < (long)uVar8) goto LAB_1080_170f;
@@ -1444,7 +1443,7 @@ long PctTerraFromLpfl(FLEET *lpfl)
           pct = pct + uVar3;
           local_e = local_e + (uint)bVar5;
         }
-        lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
+        lphs = (HS *)lphs + 1;
       }
       uVar6 = __aFulmul(CONCAT22(local_e,pct),(long)((FLEET *)lpfl)->rgcsh[i]);
       lVar2 = uVar6 + lVar2;
@@ -1660,7 +1659,7 @@ long CMineSweepFromLphul(HUL *lphul)
     }
 LAB_1080_2c4d:
     j = j + 1;
-    lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
+    lphs = (HS *)lphs + 1;
   } while( true );
 }
 
@@ -1926,8 +1925,8 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
   short i;
   
   if (msg == 0x14) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (msg == 0x19) {
@@ -1948,7 +1947,7 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
           _strcat(szT,(char *)0x16c4);
         }
         HVar3 = GetDlgItem(hwnd,0x51);
-        SendMessage(HVar3,0x401,0,(LPARAM)CONCAT22(unaff_SS,szT));
+        SendMessage(HVar3,0x401,0,(LPARAM)szT);
         HVar3 = GetDlgItem(hwnd,0x51);
         if ((vcflMerge == 2) ||
            (((FLEET **)rglpfl)[vrgiflMerge[i]]->id == sel.fl.id)) {
@@ -1982,7 +1981,7 @@ short MergeFleetsDlg(HWND hwnd,ushort msg,ushort wParam,long lParam)
         return 1;
       }
       if (wParam == 0x76) {
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x453);
+        WinHelp(hwnd,_szHelpFile,1,0x453);
         return 1;
       }
       if ((wParam == 0x7f8) || (wParam == 0x7f9)) {

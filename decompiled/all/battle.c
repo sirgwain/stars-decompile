@@ -36,13 +36,13 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   else {
     if (message == WM_PAINT) {
-      hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+      hdc = BeginPaint(hwnd,&ps);
       HVar2 = GetDlgItem(hwnd,0x7d5);
-      GetWindowRect(HVar2,(RECT *)CONCAT22(unaff_SS,&rcGBox));
-      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,&rcGBox));
+      GetWindowRect(HVar2,&rcGBox);
+      ScreenToClient(hwnd,(POINT *)&rcGBox);
       HVar2 = GetDlgItem(hwnd,0x7d6);
-      GetWindowRect(HVar2,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-      ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)((int)&rc + 4)));
+      GetWindowRect(HVar2,&rc);
+      ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
       rcGBox.right = rc._4_2_;
       rcGBox.bottom = rc._6_2_;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
@@ -52,13 +52,13 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       i = CchGetString(idsRelation,(char *)szWork);
       TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,i);
       SelectObject(hdc,rghfontArial8[0]);
-      EndPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,&ps));
+      EndPaint(hwnd,&ps);
       return 1;
     }
     if (message == WM_ERASEBKGND) {
 LAB_10f0_0177:
-      GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc));
-      FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&rc),hbrButtonFace);
+      GetClientRect(hwnd,&rc);
+      FillRect(wParam,&rc,hbrButtonFace);
       return 1;
     }
     if (message == WM_CTLCOLOR) {
@@ -81,7 +81,7 @@ LAB_10f0_0177:
             UVar5 = 0x401;
             WVar4 = 0;
             pcVar1 = PszPlayerName(i,0,0,0,0,(PLAYER *)0x0);
-            SendMessage(HVar2,UVar5,WVar4,(LPARAM)CONCAT22(0x1120,pcVar1));
+            SendMessage(HVar2,UVar5,WVar4,(LPARAM)pcVar1);
           }
         }
         HVar2 = GetDlgItem(hwnd,0x7d3);
@@ -113,7 +113,7 @@ LAB_10f0_0177:
                             );
           }
           else if (wParam == 0x76) {
-            WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x43b);
+            WinHelp(hwnd,_szHelpFile,1,0x43b);
             return 1;
           }
         }
@@ -154,8 +154,8 @@ short NewPlanNameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort in_stack_0000fff4;
   
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,(RECT *)&stack0xfff4),hbrButtonFace);
+    GetClientRect(hwnd,&stack0xfff4);
+    FillRect(wParam,&stack0xfff4,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -170,20 +170,20 @@ short NewPlanNameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       SetWindowPos(hwnd,0,ptStickyBattlePlansDlg.x + 0x46,
                    ptStickyBattlePlansDlg.y + 0x46,0,0,0x15);
       SendDlgItemMessage(hwnd,0x10c,0x415,0x1f,0);
-      SetDlgItemText(hwnd,0x10c,(LPCSTR)btlplan.szName);
+      SetDlgItemText(hwnd,0x10c,btlplan.szName);
       return 1;
     }
     if (message == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
-          GetDlgItemText(hwnd,0x10c,(LPSTR)btlplan.szName,0x20);
+          GetDlgItemText(hwnd,0x10c,btlplan.szName,0x20);
           fDirtyPlan = 1;
         }
         EndDialog(hwnd,(uint)(wParam == 1));
         return 1;
       }
       if (wParam == 0x76) {
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x439);
+        WinHelp(hwnd,_szHelpFile,1,0x439);
         return 1;
       }
     }
@@ -234,8 +234,8 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   
   uVar12 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_CTLCOLOR) {
@@ -260,9 +260,9 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     pBVar11 = (BTLPLAN *)&btlplan;
     for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
       pBVar3 = pBVar11;
-      pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+      pBVar11 = &pBVar11->wFlags_0x2;
       pBVar2 = pBVar10;
-      pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+      pBVar10 = &pBVar10->wFlags_0x2;
       pBVar3->wFlags = pBVar2->wFlags;
     }
     for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
@@ -283,7 +283,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,0x421);
     SendMessage(HVar6,0x40e,btlplan.wFlags >> 8 & 0xf,0);
@@ -292,7 +292,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,0x41f);
     SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 & 0xf,0);
@@ -302,7 +302,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         UVar15 = 0x403;
         WVar14 = 0;
         pcVar5 = PszGetCompressedString(i);
-        SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+        SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
       }
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (i != idPlayer) {
@@ -310,7 +310,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           UVar15 = 0x403;
           WVar14 = 0;
           pcVar5 = PszPlayerName(i,0,1,0,0,(PLAYER *)0x0);
-          SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+          SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
         }
       }
       i = btlplan.wFlags_0x2 >> 8 & 0x1f;
@@ -325,7 +325,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(idsEveryone);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
       HVar6 = GetDlgItem(hwnd,0x422);
       SendMessage(HVar6,0x40e,0,0);
       HVar6 = GetDlgItem(hwnd,0x422);
@@ -336,7 +336,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       UVar15 = 0x403;
       WVar14 = 0;
       pcVar5 = PszGetCompressedString(i);
-      SendMessage(HVar6,UVar15,WVar14,(LPARAM)CONCAT22(0x1120,pcVar5));
+      SendMessage(HVar6,UVar15,WVar14,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,0x420);
     SendMessage(HVar6,0x40e,btlplan.wFlags_0x2 >> 4 & 0xf,0);
@@ -358,9 +358,9 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -386,9 +386,9 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -400,9 +400,9 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     pBVar10 = (BTLPLAN *)&btlplan;
     for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
       pBVar3 = pBVar11;
-      pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+      pBVar11 = &pBVar11->wFlags_0x2;
       pBVar2 = pBVar10;
-      pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+      pBVar10 = &pBVar10->wFlags_0x2;
       pBVar3->wFlags = pBVar2->wFlags;
     }
     btlplan.wFlags = btlplan.wFlags & 0xff0f | (iPlanSelDlg & 0xfU) << 4;
@@ -414,9 +414,9 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       return 0;
@@ -446,9 +446,9 @@ BATTLE_LSelectName:
         pBVar10 = (BTLPLAN *)&btlplan;
         for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
           pBVar3 = pBVar11;
-          pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+          pBVar11 = &pBVar11->wFlags_0x2;
           pBVar2 = pBVar10;
-          pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+          pBVar10 = &pBVar10->wFlags_0x2;
           pBVar3->wFlags = pBVar2->wFlags;
         }
         LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -460,9 +460,9 @@ BATTLE_LSelectName:
       pBVar11 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x41f);
@@ -530,7 +530,7 @@ BATTLE_LSelectName:
           if (wParam != 0x76) {
             return 0;
           }
-          WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x439);
+          WinHelp(hwnd,_szHelpFile,1,0x439);
           return 1;
         }
         goto BATTLE_LSelectName;
@@ -544,9 +544,9 @@ BATTLE_LSelectName:
         pBVar10 = (BTLPLAN *)&btlplan;
         for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
           pBVar3 = pBVar11;
-          pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+          pBVar11 = &pBVar11->wFlags_0x2;
           pBVar2 = pBVar10;
-          pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+          pBVar10 = &pBVar10->wFlags_0x2;
           pBVar3->wFlags = pBVar2->wFlags;
         }
         LogChangeBtlplan((BTLPLAN *)&btlplan);
@@ -579,9 +579,9 @@ BATTLE_LSelectName:
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x421);
@@ -625,9 +625,9 @@ BATTLE_LSelectName:
       pBVar10 = (BTLPLAN *)&btlplan;
       for (iVar9 = 0x12; iVar9 != 0; iVar9 = iVar9 + -1) {
         pBVar3 = pBVar11;
-        pBVar11 = (BTLPLAN *)&pBVar11->wFlags_0x2;
+        pBVar11 = &pBVar11->wFlags_0x2;
         pBVar2 = pBVar10;
-        pBVar10 = (BTLPLAN *)&pBVar10->wFlags_0x2;
+        pBVar10 = &pBVar10->wFlags_0x2;
         pBVar3->wFlags = pBVar2->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,0x41e);
@@ -722,9 +722,9 @@ BATTLE_LCommit:
         pBVar9 = ((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i;
         for (iVar7 = 0x12; iVar7 != 0; iVar7 = iVar7 + -1) {
           pBVar2 = pBVar9;
-          pBVar9 = (BTLPLAN *)&pBVar9->wFlags_0x2;
+          pBVar9 = &pBVar9->wFlags_0x2;
           pBVar1 = pBVar8;
-          pBVar8 = (BTLPLAN *)&pBVar8->wFlags_0x2;
+          pBVar8 = &pBVar8->wFlags_0x2;
           pBVar2->wFlags = pBVar1->wFlags;
         }
         (((BTLPLAN **)rglpbtlplan)[idPlayer * 2] + i)->wFlags =
@@ -921,7 +921,7 @@ void SpankTheCheaters(void)
         }
       }
 LAB_10f0_1dfe:
-      lppl = (PLANET *)CONCAT22(lppl._2_2_,(PLANET *)lppl + 1);
+      lppl = (PLANET *)lppl + 1;
     }
   }
   return;
@@ -998,7 +998,7 @@ short FHullHasBombs(HUL *lphul)
     if (((lphs->grhst == hstSpecialM) && ((((HS *)lphs)->wFlags_0x2 & 0xff) == 1)) &&
        (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) break;
     ihs = ihs + 1;
-    lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
+    lphs = (HS *)lphs + 1;
   }
   return 1;
 }
@@ -1062,7 +1062,7 @@ short FHullHasTeeth(HUL *lphul)
            hstMining|hstBomb|hstTorp|hstBeam|hstArmor|hstShield|hstScanner|hstEngine)) &&
        (((HS *)lphs)->wFlags_0x2 >> 8 != 0)) break;
     ihs = ihs + 1;
-    lphs = (HS *)CONCAT22(lphs._2_2_,(HS *)lphs + 1);
+    lphs = (HS *)lphs + 1;
   }
   return 1;
 }
@@ -1826,7 +1826,7 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
       if (fDumpCargo != 0) {
         spd = spd + -1;
       }
-      uVar2 = Random(0xf);
+      uVar2 = Random(15);
       pTVar9->wFlags = pTVar9->wFlags & 0xc3ff | (uVar2 & 0xf) << 10;
     }
     if (ptok != (TOK *)0x0) {
@@ -1837,7 +1837,7 @@ short SpdOfShip(FLEET *lpfl,short ishdef,TOK *ptok,short fDumpCargo,SHDEF *lpshd
     if (8 < (int)uVar2) {
       uVar4 = 8;
     }
-    if (uVar4 < 0x8000) {
+    if (uVar4 < 32768) {
       if (8 < (int)uVar2) {
         uVar2 = 8;
       }
@@ -1906,11 +1906,11 @@ short FCanKillTok(TOK *ptok1,TOK *ptok2)
   
   pSVar7 = LpshdefFromTok(ptok1);
   uVar6 = (undefined2)((ulong)pSVar7 >> 0x10);
-  uVar1 = *(uint *)&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
+  uVar1 = *&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
   uVar2 = *(uint *)((int)&((SHDEF *)pSVar7)->u_SHDEF_0x0087 + 2);
   pSVar7 = LpshdefFromTok(ptok2);
   uVar6 = (undefined2)((ulong)pSVar7 >> 0x10);
-  uVar3 = *(uint *)&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
+  uVar3 = *&((SHDEF *)pSVar7)->u_SHDEF_0x0087;
   uVar4 = *(uint *)((int)&((SHDEF *)pSVar7)->u_SHDEF_0x0087 + 2);
   if (((int)uVar4 < (int)uVar2) || (((int)uVar4 <= (int)uVar2 && (uVar3 <= uVar1)))) {
     if (((uVar2 & 0x7fff) < (uVar4 & 0x7fff)) ||
@@ -1966,10 +1966,9 @@ void DoBattles(short fPostMovement)
     pFVar1->wFlags_0x4 = pFVar1->wFlags_0x4 & 0xefff;
     if ((((pFVar1->wFlags_0x4 >> 0xb & 1) == 0) && ((pFVar1->wFlags_0x4 >> 10 & 1) == 0)) &&
        ((*(int *)&pFVar1->lpflNext != 0 || (*(int *)((int)&pFVar1->lpflNext + 2) != 0)))) {
-      cplr = CplrBattle((FLEET *)CONCAT22(iVar2,pFVar1),(ushort *)&stack0xffd0,&grfPlayer,
-                        &grfSpectator);
+      cplr = CplrBattle((FLEET *)CONCAT22(iVar2,pFVar1),&stack0xffd0,&grfPlayer,&grfSpectator);
       if ((cplr != -1) && (cplr != 0)) {
-        FDoCoolBattle(lpfl,cplr,(ushort *)&stack0xffd0,grfPlayer,grfSpectator);
+        FDoCoolBattle(lpfl,cplr,&stack0xffd0,grfPlayer,grfSpectator);
       }
     }
   }
@@ -2223,7 +2222,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
         HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
         HVar14.grhst = HVar8;
         HVar8 = hstSpecialM|hstArmor;
-        FLookupPart((PART *)&stack0xffc8);
+        FLookupPart(&stack0xffc8);
         idPlayer = -1;
         init = (uint)bVar1 + pBVar5->init;
         if (0x3f < init) {
@@ -2268,7 +2267,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
           idPlayer = (short)pTVar2->iplr;
           HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
           HVar14.grhst = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
-          FLookupPart((PART *)&stack0xffc8);
+          FLookupPart(&stack0xffc8);
           idPlayer = -1;
           pctJam = 100 - pBVar5->dRangeMax;
           HVar8 = hstSpecialM|hstArmor;
@@ -2279,7 +2278,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
           HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
           HVar14.grhst = hstSpecialM|hstMining|hstBomb|hstTorp|hstBeam;
           HVar8 = hstSpecialM|hstArmor;
-          FLookupPart((PART *)&stack0xffc8);
+          FLookupPart(&stack0xffc8);
           idPlayer = -1;
           for (i = HVar14.wFlags_0x2 >> 8; 0 < i; i = i + -1) {
             HVar14.grhst = hstBomb|hstTorp|hstShield;
@@ -2304,7 +2303,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
         HVar14.wFlags_0x2 = (ushort)&stack0xffc8;
         HVar14.grhst = HVar8;
         HVar8 = hstSpecialM|hstArmor;
-        FLookupPart((PART *)&stack0xffc8);
+        FLookupPart(&stack0xffc8);
         idPlayer = -1;
         for (i = HVar14.wFlags_0x2 >> 8; 0 < i; i = i + -1) {
           HVar14.grhst = hstBomb|hstTorp|hstShield;
@@ -2324,7 +2323,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
         }
       }
       if (dxyPart != -1) {
-        if (*(char *)&pTVar2->u_TOK_0x0003 == '\x01') {
+        if (*&pTVar2->u_TOK_0x0003 == '\x01') {
           dxyPart = dxyPart + 1;
         }
         if ((dxyMax < 0) || (dxyPart < dxyMax)) {
@@ -2354,7 +2353,7 @@ void CheckWeapons(TOK *ptok,short *pfDampeningField,byte *pinit)
       pTVar2->pctJam = 0x5f;
     }
   }
-  if (*(char *)&pTVar2->u_TOK_0x0003 == '\x01') {
+  if (*&pTVar2->u_TOK_0x0003 == '\x01') {
     pTVar2->pctJam = pTVar2->pctJam - pTVar2->pctJam / 4;
   }
   if (uVar10 != 1000) {
@@ -2417,7 +2416,7 @@ void RandomizeTokOrder(void)
         puVar2 = puVar9;
         puVar9 = puVar9 + 1;
         pTVar1 = pTVar8;
-        pTVar8 = (TOK *)&pTVar8->iplr;
+        pTVar8 = &pTVar8->iplr;
         *puVar2 = pTVar1->id;
       }
       *(char *)puVar9 = (char)pTVar8->id;
@@ -2425,23 +2424,23 @@ void RandomizeTokOrder(void)
       pTVar10 = (TOK *)vrgtok + iVar6;
       for (iVar6 = 0xe; iVar6 != 0; iVar6 = iVar6 + -1) {
         pTVar3 = pTVar10;
-        pTVar10 = (TOK *)&pTVar10->iplr;
+        pTVar10 = &pTVar10->iplr;
         pTVar1 = pTVar8;
-        pTVar8 = (TOK *)&pTVar8->iplr;
+        pTVar8 = &pTVar8->iplr;
         pTVar3->id = pTVar1->id;
       }
-      *(char *)&pTVar10->id = (char)pTVar8->id;
+      *&pTVar10->id = (char)pTVar8->id;
       uVar4 = vrgtok._2_2_;
       pTVar8 = (TOK *)vrgtok + itok;
       puVar9 = tok;
       for (iVar6 = 0xe; iVar6 != 0; iVar6 = iVar6 + -1) {
         pTVar1 = pTVar8;
-        pTVar8 = (TOK *)&pTVar8->iplr;
+        pTVar8 = &pTVar8->iplr;
         puVar2 = puVar9;
         puVar9 = puVar9 + 1;
         pTVar1->id = *puVar2;
       }
-      *(char *)&pTVar8->id = (char)*puVar9;
+      *&pTVar8->id = (char)*puVar9;
     }
   }
   return;
@@ -2512,7 +2511,7 @@ void InitializeBoard
        ((1 << ((byte)iplr & 0x1f) & grfPlayer) != 0)) {
       uVar12 = (undefined2)((ulong)ptok >> 0x10);
       pTVar8 = (TOK *)ptok;
-      *(undefined1 *)&pTVar8->u_TOK_0x0003 = 1;
+      *&pTVar8->u_TOK_0x0003 = 1;
       *(uint *)((int)&pPVar3->lStarbase + 2) =
            *(uint *)((int)&pPVar3->lStarbase + 2) & 0xbfff | 0x4000;
       pTVar8->brc = *(byte *)((uint)mpiplrdibrc[iplr] + ibrc);
@@ -2557,7 +2556,7 @@ void InitializeBoard
             if (((FLEET *)lpflCur)->rgcsh[ishdef] != 0) {
               uVar11 = (undefined2)((ulong)ptok >> 0x10);
               pTVar8 = (TOK *)ptok;
-              *(undefined1 *)&pTVar8->u_TOK_0x0003 = 2;
+              *&pTVar8->u_TOK_0x0003 = 2;
               pTVar8->brc = *(byte *)((uint)mpiplrdibrc[iplr] + ibrc);
               ptok->id = lpflCur->id;
               pTVar8->iplr = (byte)((uint)lpflCur->id >> 9) & 0xf;
@@ -2611,7 +2610,7 @@ BATTLE_LTooManyTokens:
     uVar11 = (undefined2)((ulong)ptokT >> 0x10);
     pTVar8 = (TOK *)ptokT;
     pTVar8->wFlags = pTVar8->wFlags & 0xfff7 | iVar5 << 3;
-    if ((fDampeningField != 0) && (*(char *)&pTVar8->u_TOK_0x0003 != '\x01')) {
+    if ((fDampeningField != 0) && (*&pTVar8->u_TOK_0x0003 != '\x01')) {
       if ((int)((pTVar8->wFlags_0x19 >> 8 & 0xf) - 4) < 1) {
         uVar6 = 0;
       }
@@ -2627,12 +2626,11 @@ BATTLE_LTooManyTokens:
       puVar2 = puVar10;
       puVar10 = puVar10 + 1;
       pTVar1 = pTVar9;
-      pTVar9 = (TOK *)&pTVar9->iplr;
+      pTVar9 = &pTVar9->iplr;
       *puVar2 = pTVar1->id;
     }
     *(byte *)puVar10 = (byte)pTVar9->id;
-    lpbBattleCur =
-         (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 0x1d);
+    lpbBattleCur = (byte *)lpbBattleCur + 0x1d;
     if ((pTVar8->initMin != 0xff) && ((initMin == -1 || ((int)(uint)pTVar8->initMin < initMin)))) {
       initMin = (short)pTVar8->initMin;
     }
@@ -2733,9 +2731,9 @@ long DpFromPtokBrcToBrc(TOK *ptok,byte brcSrc,byte brcTarget,TOK *ptokTarget,sho
         HVar15.wFlags_0x2 = pHVar9->wFlags_0x2;
         HVar15.grhst = pHVar9->grhst;
         idPlayer = (short)((TOK *)ptok)->iplr;
-        FLookupPart((PART *)&stack0xffce);
+        FLookupPart(&stack0xffce);
         idPlayer = -1;
-        uVar4 = (uint)(*(char *)&((TOK *)ptok)->u_TOK_0x0003 == '\x01') +
+        uVar4 = (uint)(*&((TOK *)ptok)->u_TOK_0x0003 == '\x01') +
                 ((BEAM *)in_stack_0000ffd2.pbeam)->dRangeMax;
         iVar7 = (int)uVar4 >> 0xf;
         if (((int)uVar3 >> 0xf < iVar7) || (((int)uVar3 >> 0xf <= iVar7 && (uVar3 <= uVar4)))) {
@@ -2908,7 +2906,7 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
     dzNonSapper = -1;
     lphul = &LpshdefFromTok(ptok)->hul;
     ihs = 0;
-    lpshdef = (SHDEF *)lphul;
+    lpshdef = lphul;
     while( true ) {
       uVar8 = (undefined2)((ulong)lphul >> 0x10);
       pHVar5 = (HUL *)lphul;
@@ -2971,7 +2969,7 @@ short DzMoveRangeToConsider(TOK *ptok,ushort grfAttack,byte *pbrc)
       }
     }
     itokLook = itokLook + 1;
-    ptokTarget = (TOK *)CONCAT22(ptokTarget._2_2_,(TOK *)ptokTarget + 1);
+    ptokTarget = (TOK *)ptokTarget + 1;
   } while( true );
 }
 
@@ -3016,7 +3014,7 @@ short FDoesPrimaryTargetTypeExist(TOK *ptok,ushort grfAttack)
           puVar2 = puVar5;
           puVar5 = puVar5 + 1;
           pTVar1 = pTVar4;
-          pTVar4 = (TOK *)&pTVar4->iplr;
+          pTVar4 = &pTVar4->iplr;
           *puVar2 = pTVar1->id;
         }
         *(char *)puVar5 = (char)pTVar4->id;
@@ -3094,7 +3092,7 @@ short FIsTargetOfMdTarget(TOK *ptok,short mdTarget)
     uVar1 = 1;
     break;
   case 2:
-    uVar1 = (uint)(*(char *)&pTVar2->u_TOK_0x0003 == '\x01');
+    uVar1 = (uint)(*&pTVar2->u_TOK_0x0003 == '\x01');
     break;
   case 3:
   case 6:
@@ -3291,7 +3289,7 @@ long ScoreGuessBattleDamage(TOK *ptokSrc,byte brc,short fPrimary,ushort grfAttac
       }
       dpTakenTotal = dpTakenBest + dpTakenTotal;
     }
-    ptok = (TOK *)CONCAT22(ptok._2_2_,(TOK *)ptok + 1);
+    ptok = (TOK *)ptok + 1;
   }
   lVar8 = ScoreFromGiveAndTakeAndTactic(dpGivenBest,dpTakenTotal,pTVar4->wFlags_0x17 >> 8 & 0xf);
   return lVar8;
@@ -3399,7 +3397,7 @@ short DxyMoveTokTo(TOK *ptok,short spdMove,ushort grfAttack)
   local_56 = 0;
   xCur = pTVar5->brc & 0xf;
   yCur = (int)(uint)pTVar5->brc >> 4;
-  if ((*(char *)&pTVar5->u_TOK_0x0003 == '\x01') || (spdMove == 0)) goto BATTLE_LReturnDxy;
+  if ((*&pTVar5->u_TOK_0x0003 == '\x01') || (spdMove == 0)) goto BATTLE_LReturnDxy;
   scoreBest._0_2_ = 0xc380;
   scoreBest._2_2_ = 0x1c9;
   mdTactic = pTVar5->wFlags_0x17 >> 8 & 0xf;
@@ -3847,7 +3845,7 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
   uVar15 = CONCAT22(cTorpsLeft._2_2_,(undefined2)cTorpsLeft);
   uVar20 = CONCAT22(dp._2_2_,(int)dp);
   ihs = 0;
-  lpshdef = (SHDEF *)lphul;
+  lpshdef = lphul;
   do {
     uVar12 = (undefined2)((ulong)lphul >> 0x10);
     pHVar6 = (HUL *)lphul;
@@ -3868,7 +3866,7 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
       cTorpsLeft = uVar15;
       dpMain = uVar21;
       score = lVar19;
-      FLookupPart((PART *)&stack0xff86);
+      FLookupPart(&stack0xff86);
       idPlayer = -1;
       cItem = ((HUL *)lphul)->rghs[ihs].wFlags_0x2 >> 8;
       uVar12 = (undefined2)((ulong)ptok >> 0x10);
@@ -3884,7 +3882,7 @@ short FAttack(short itokAttacker,short init,BTLREC *lpbtlrec,ushort grfAttack)
       uVar20 = dp;
       lVar19 = score;
       if (i == init) {
-        dxRangeCur = (uint)(*(char *)&pTVar8->u_TOK_0x0003 == '\x01') + pBVar9->dRangeMax;
+        dxRangeCur = (uint)(*&pTVar8->u_TOK_0x0003 == '\x01') + pBVar9->dRangeMax;
         HVar34 = (HullSlotType)(in_stack_0000ff84 >> 0x10);
         if ((HVar34 == hstBeam) && ((pBVar9->grfAbilities & 2U) != 0)) {
           uVar26 = 0;
@@ -4519,9 +4517,9 @@ void KillShips(TOK *ptok,short cshKill,short ishdef,FLEET *lpfl,short fFallout)
     pFVar6 = (FLEET *)lpfl;
     for (iVar4 = 0x3e; iVar4 != 0; iVar4 = iVar4 + -1) {
       pFVar2 = pFVar7;
-      pFVar7 = (FLEET *)&pFVar7->iPlayer;
+      pFVar7 = &pFVar7->iPlayer;
       pFVar1 = pFVar6;
-      pFVar6 = (FLEET *)&pFVar6->iPlayer;
+      pFVar6 = &pFVar6->iPlayer;
       pFVar2->id = pFVar1->id;
     }
     _memset(&flDead,0,0x7c);
@@ -4559,9 +4557,9 @@ void KillShips(TOK *ptok,short cshKill,short ishdef,FLEET *lpfl,short fFallout)
       pFVar7 = &flSrc;
       for (iVar4 = 0x3e; iVar4 != 0; iVar4 = iVar4 + -1) {
         pFVar2 = (FLEET *)lpfl;
-        lpfl._0_2_ = (FLEET *)&((FLEET *)lpfl)->iPlayer;
+        lpfl._0_2_ = &((FLEET *)lpfl)->iPlayer;
         pFVar1 = pFVar7;
-        pFVar7 = (FLEET *)&pFVar7->iPlayer;
+        pFVar7 = &pFVar7->iPlayer;
         pFVar2->id = pFVar1->id;
       }
     }
@@ -4636,7 +4634,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
           iVar9 = pfl->iPlayer * 4;
           uVar16 = *(undefined2 *)(iVar9 + 0x100);
           puVar10 = (undefined2 *)(*(int *)(iVar9 + 0xfe) + j * 0x93);
-          puVar11 = (undefined2 *)&stack0xff4a;
+          puVar11 = &stack0xff4a;
           for (iVar9 = 0x49; iVar9 != 0; iVar9 = iVar9 + -1) {
             puVar3 = puVar11;
             puVar11 = puVar11 + 1;
@@ -4645,7 +4643,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
             *puVar3 = *puVar2;
           }
           *(undefined1 *)puVar11 = *(undefined1 *)puVar10;
-          UpdateShdefCost((SHDEF *)CONCAT22(unaff_SS,(SHDEF *)&stack0xff4a));
+          UpdateShdefCost(&stack0xff4a);
           lpshdefT = &stack0xff4a;
           uVar16 = unaff_SS;
         }
@@ -4702,7 +4700,7 @@ void CreateSalvage(FLEET *pfl,THING **plpth)
       local_6 = local_6 + rgwtMinerals[i * 2 + 1] + (uint)bVar12;
     }
     if ((wtTotal != 0) || (local_6 != 0)) {
-      DropSalvage(plpth,(long *)CONCAT22(unaff_SS,rgwtMinerals),pfl->iPlayer,&pfl->pt);
+      DropSalvage(plpth,(long *)rgwtMinerals,pfl->iPlayer,&pfl->pt);
     }
   }
   gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfff7;
@@ -4816,8 +4814,7 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
       pbVar1 = (byte *)lpbBattleCur + 1;
       *pbVar1 = *pbVar1 | 0xc0;
     }
-    lpbBattleCur =
-         (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 8);
+    lpbBattleCur = (byte *)lpbBattleCur + 8;
   }
   else {
     if (pcTorp == (long *)0x0) {
@@ -4835,7 +4832,7 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
     uVar8 = (((SHDEF *)pSVar13)->hul).dp;
     uVar3 = (ulong)uVar8;
     uVar18 = (&pTVar9->dv)->dp;
-    if (*(char *)&pTVar9->u_TOK_0x0003 == '\x01') {
+    if (*&pTVar9->u_TOK_0x0003 == '\x01') {
       lppl_00 = LpplFromId(ptok->id);
       uVar19 = (undefined2)((ulong)lppl_00 >> 0x10);
       pPVar2 = (PLANET *)lppl_00;
@@ -4895,8 +4892,7 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
       }
       *(undefined2 *)pdpBeam = 0;
       *(undefined2 *)((int)pdpBeam + 2) = 0;
-      lpbBattleCur =
-           (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 8);
+      lpbBattleCur = (byte *)lpbBattleCur + 8;
     }
     else {
       if ((pTVar9->wFlags_0x17 >> 8 & 0xf) == 1) {
@@ -5021,8 +5017,7 @@ short FDamageTok(TOK *ptok,short itok,long *pdpBeam,long dpTorp,ushort grfWeapon
         *(undefined2 *)((int)pdpBeam + 2) = 0;
       }
       *(ushort *)((byte *)lpbBattleCur + 6) = (&pTVar9->dv)->dp;
-      lpbBattleCur =
-           (byte *)CONCAT22(lpbBattleCur._2_2_,(byte *)lpbBattleCur + 8);
+      lpbBattleCur = (byte *)lpbBattleCur + 8;
       if (pcTorp != (long *)0x0) {
         *(int *)pcTorp = cKillMax;
         *(int *)((int)pcTorp + 2) = local_26;
@@ -5126,7 +5121,7 @@ short FDoCoolBattle
   pasVar7 = penvMem;
   if (lpbBattleLog == (byte *)0x0) {
     _penvMemSav = (short (*) [9])CONCAT22(env,penvMem);
-    penvMem = (short (*) [9])&env;
+    penvMem = &env;
     sVar9 = __setjmp(&env);
     pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
     if (sVar9 != 0) {
@@ -5147,7 +5142,7 @@ short FDoCoolBattle
      (pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT),
      lpbBattleT._2_2_ == 0)) {
     _penvMemSav = (short (*) [9])CONCAT22(env,penvMem);
-    penvMem = (short (*) [9])&env;
+    penvMem = &env;
     sVar9 = __setjmp(&env);
     pbVar14 = (byte *)CONCAT22(lpbBattleT._2_2_,(byte *)lpbBattleT);
     if (sVar9 != 0) {
@@ -5171,7 +5166,7 @@ short FDoCoolBattle
   _memset(rgfInit,0,0x40);
   __fmemset((TOK *)CONCAT22(vrgtok._2_2_,(TOK *)vrgtok),0,0x1d00);
   vctok = 0;
-  lpbtldata = (BTLDATA *)lpbBattleCur;
+  lpbtldata = lpbBattleCur;
   lpbBattleCur._0_2_ = (byte *)lpbBattleCur + 0xe;
   _memset((byte *)rgTechBattle,0,6);
   _memset((byte *)rgTechTrader,0,0xd);
@@ -5251,7 +5246,7 @@ short FDoCoolBattle
       uVar13 = (undefined2)((ulong)ptok >> 0x10);
       pTVar12 = (TOK *)ptok;
       if ((pTVar12->wFlags & 1) != 0) {
-        if (*(char *)&pTVar12->u_TOK_0x0003 == '\x01') {
+        if (*&pTVar12->u_TOK_0x0003 == '\x01') {
           pTVar12->wFlags = pTVar12->wFlags & 0x3fff;
         }
         else {
@@ -5260,7 +5255,7 @@ short FDoCoolBattle
           ((TOK *)ptok)->wFlags = ((TOK *)ptok)->wFlags & 0x3fff | sVar9 << 0xe;
         }
       }
-      ptok = (TOK *)CONCAT22(ptok._2_2_,(TOK *)ptok + 1);
+      ptok = (TOK *)ptok + 1;
     }
     for (j = 3; 0 < j; j = j + -1) {
       wt = 30000;
@@ -5322,7 +5317,7 @@ short FDoCoolBattle
                 uVar3 = pTVar12->wFlags;
                 pTVar12->wFlags = pTVar12->wFlags & 0x3fff;
                 pTVar12->wFlags = pTVar12->wFlags | uVar3 + 0xc000 & 0xc000;
-                if ((*(char *)&pTVar12->u_TOK_0x0003 == '\x01') ||
+                if ((*&pTVar12->u_TOK_0x0003 == '\x01') ||
                    ((brcOrig == pTVar12->brc && (pTVar12->initMin != 0xff)))) {
                   lpbBattleCur._0_2_ = (byte *)lpbBattleCur + -6;
                 }
@@ -5333,7 +5328,7 @@ short FDoCoolBattle
             }
           }
 LAB_10f0_91a1:
-          ptok = (TOK *)CONCAT22(ptok._2_2_,(TOK *)ptok + 1);
+          ptok = (TOK *)ptok + 1;
         }
         wt = wtNext;
       } while (wtNext != 0);

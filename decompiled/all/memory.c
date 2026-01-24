@@ -45,7 +45,7 @@ HB * LphbAlloc(ushort cb,HeapType ht)
     AlertSz(sz,mbType);
     _longjmp(penvMem,-1);
   }
-  pHVar5 = (HB *)GlobalLock(HVar3);
+  pHVar5 = GlobalLock(HVar3);
   uVar4 = (undefined2)((ulong)pHVar5 >> 0x10);
   pHVar2 = (HB *)pHVar5;
   pHVar2->hmem = HVar3;
@@ -110,7 +110,7 @@ MEMORY_LReAllocOOM:
     AlertSz(sz,mbType);
     _longjmp(penvMem,-1);
   }
-  pHVar5 = (HB *)GlobalLock(hmem);
+  pHVar5 = GlobalLock(hmem);
   uVar3 = (undefined2)((ulong)pHVar5 >> 0x10);
   pHVar2 = (HB *)pHVar5;
   pHVar2->hmem = hmem;
@@ -240,7 +240,7 @@ void * LpAlloc(ushort cb,HeapType ht)
       pbVar3 = (byte *)((int)&pHVar5->cbFree + pHVar5->ibTop);
       lpbTop = (byte *)CONCAT22(uVar6,pbVar3);
       if (cb_00 <= pHVar5->cbSlop) {
-        *(uint *)lpbTop = cb_00 - 2;
+        *lpbTop = cb_00 - 2;
         pHVar5->ibTop = pHVar5->ibTop + cb_00;
         lphb->cbFree = lphb->cbFree - cb_00;
         pHVar5->cbSlop = pHVar5->cbSlop - cb_00;
@@ -250,17 +250,17 @@ LAB_1060_0586:
       lpb = (byte *)CONCAT22(uVar6,pHVar5 + 1);
       while (pbVar2 = lpb, pbVar1 = (byte *)lpb, (byte *)lpb < pbVar3) {
         uVar6 = lpb._2_2_;
-        uVar4 = *(uint *)lpb;
-        lpb = (byte *)CONCAT22(lpb._2_2_,(byte *)lpb + (*(uint *)lpb & 0xfffe) + 2);
+        uVar4 = *lpb;
+        lpb = (byte *)CONCAT22(lpb._2_2_,(byte *)lpb + (*lpb & 0xfffe) + 2);
         if ((uVar4 & 1) != 0) {
-          for (; (((byte *)lpb < pbVar3 && ((*(uint *)lpb & 1) != 0)) &&
+          for (; (((byte *)lpb < pbVar3 && ((*lpb & 1) != 0)) &&
                  ((uint)((int)(byte *)lpb - (int)pbVar1) < cb_00));
-              lpb = (byte *)CONCAT22(lpb._2_2_,(byte *)lpb + (*(uint *)lpb & 0xfffe) + 2)) {
+              lpb = (byte *)CONCAT22(lpb._2_2_,(byte *)lpb + (*lpb & 0xfffe) + 2)) {
           }
           uVar4 = (int)(byte *)lpb - (int)pbVar1;
-          *(uint *)pbVar2 = uVar4 - 2 | 1;
+          *pbVar2 = uVar4 - 2 | 1;
           if (cb_00 <= uVar4) {
-            *(uint *)pbVar2 = *(uint *)pbVar2 & 0xfffe;
+            *pbVar2 = *pbVar2 & 0xfffe;
             lphb->cbFree = lphb->cbFree - uVar4;
             pbVar3 = pbVar1;
             goto LAB_1060_0586;

@@ -33,12 +33,12 @@ short CchTutorString(char *pchOut,short idt)
     uVar3 = _strlen(pchOut);
   }
   else {
-    pchLen = (byte *)CONCAT22(0x1100,(byte *)acTUT + (idt >> 6) * 0x40);
+    pchLen = (byte *)acTUT + (idt >> 6) * 0x40;
     for (i = 0; i < (int)(idt & 0x3fU); i = i + 1) {
       iNibble = iNibble + (uint)*pchLen;
-      pchLen = (byte *)CONCAT22(pchLen._2_2_,(byte *)pchLen + 1);
+      pchLen = (byte *)pchLen + 1;
     }
-    pch = (byte *)CONCAT22(0x1100,(byte *)(((short *)aiTUTChunkOffset)[idt >> 6] + (iNibble >> 1)));
+    pch = (byte *)(((short *)aiTUTChunkOffset)[idt >> 6] + (iNibble >> 1));
     bVar4 = (iNibble & 1U) == 0;
     pszOut = pchOut;
     iBuild = 0;
@@ -48,7 +48,7 @@ short CchTutorString(char *pchOut,short idt)
         i = (int)(uint)*pch >> 4;
       }
       else {
-        pch = (byte *)CONCAT22(pch._2_2_,(byte *)pch + 1);
+        pch = (byte *)pch + 1;
         i = *pbVar2 & 0xf;
       }
       bVar4 = !bVar4;

@@ -454,12 +454,12 @@ short SetVCRBoard(short iStep)
         pTVar6 = (TOK *)vrgtok + i;
         for (iVar3 = 0xe; iVar3 != 0; iVar3 = iVar3 + -1) {
           pTVar2 = pTVar6;
-          pTVar6 = (TOK *)&pTVar6->iplr;
+          pTVar6 = &pTVar6->iplr;
           puVar1 = puVar7;
           puVar7 = puVar7 + 1;
           pTVar2->id = *puVar1;
         }
-        *(char *)&pTVar6->id = (char)*puVar7;
+        *&pTVar6->id = (char)*puVar7;
         lVar11 = LdpFromItokDv(i,(DV *)CONCAT22(vrgtok._2_2_,
                                                 &((TOK *)vrgtok)[i].dv));
         uVar10 = vrgdpVCR._2_2_;
@@ -605,19 +605,19 @@ short VCRDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   uVar12 = (undefined1)unaff_SS;
   uVar13 = (undefined1)((uint)unaff_SS >> 8);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,(PAINTSTRUCT *)CONCAT22(unaff_SS,(PAINTSTRUCT *)(btnt + 0xc)));
+    hdc = BeginPaint(hwnd,btnt + 0xc);
     DrawVCR(hdc,-1,-1);
     EndPaint(hwnd,(PAINTSTRUCT *)CONCAT13(uVar13,CONCAT12(uVar12,btnt + 0xc)));
     return 1;
   }
   if (message == WM_ERASEBKGND) {
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
-    FillRect(wParam,(RECT *)CONCAT22(unaff_SS,&rc),hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (message == WM_SETCURSOR) {
     GetCursorPos((POINT *)CONCAT13(uVar13,CONCAT12(uVar12,&stack0xffea)));
-    ScreenToClient(hwnd,(POINT *)CONCAT22(unaff_SS,(POINT *)&stack0xffea));
+    ScreenToClient(hwnd,&stack0xffea);
     if ((((8 < (int)pt__22) && ((int)pt__22 < (dxyVCRSquare + 3) * 10 + 8)) &&
         (7 < dyFrame)) && (dyFrame < (dxyVCRSquare + 3) * 10 + 8)) {
       setcursor(hcurHand);
@@ -627,11 +627,11 @@ short VCRDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   if (message == WM_INITDIALOG) {
     hwndVCRDlg = hwnd;
-    GetWindowRect(hwnd,(RECT *)CONCAT22(unaff_SS,(RECT *)rcWindow));
-    GetClientRect(hwnd,(RECT *)CONCAT22(unaff_SS,&rc));
+    GetWindowRect(hwnd,rcWindow);
+    GetClientRect(hwnd,&rc);
     dyFrame = (pt__22 - bkMode) - rc.bottom;
     HVar4 = GetDlgItem(hwnd,0xa1);
-    GetWindowRect(HVar4,(RECT *)CONCAT22(unaff_SS,&rc));
+    GetWindowRect(HVar4,&rc);
     SetWindowPos(hwnd,0,0,0,dxyVCRBoard + 0xfa,
                  dyFrame + 0x18 + dxyVCRBoard + (rc.bottom - rc.top),6);
     for (i = 0; i < 7; i = i + 1) {
@@ -645,8 +645,8 @@ short VCRDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         ibtn = 0x76;
       }
       HVar4 = GetDlgItem(hwnd,ibtn);
-      GetWindowRect(HVar4,(RECT *)CONCAT22(unaff_SS,&rc));
-      MapWindowPoints(0,hwnd,(POINT *)CONCAT22(unaff_SS,&rc),2);
+      GetWindowRect(HVar4,&rc);
+      MapWindowPoints(0,hwnd,(POINT *)&rc,2);
       if (dxyVCRSquare < 0x40) {
         dx = 0;
       }
@@ -671,7 +671,7 @@ short VCRDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         if (wParam != 0x76) {
           return 0;
         }
-        WinHelp(hwnd,(LPCSTR)CONCAT22(0x1120,_szHelpFile),1,0x43a);
+        WinHelp(hwnd,_szHelpFile,1,0x43a);
         return 1;
       }
       if (((uint)gd.grBits >> 0xd & 1) != 0) {
@@ -772,16 +772,15 @@ VCR_KillTime:
         crBkSav = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,
                                           (undefined2)crButtonFace));
         SelectObject(hdc,rghfontArial8[1]);
-        InitBtnTrack((BTNT *)btnt,hwnd,0,(RECT *)dx,(short)rcWindow,0x50,0,0,(char *)0x0);
+        InitBtnTrack(btnt,hwnd,0,(RECT *)dx,(short)rcWindow,0x50,0,0,(char *)0x0);
         while( true ) {
-          sVar8 = FTrackBtn((BTNT *)btnt);
+          sVar8 = FTrackBtn(btnt);
           if (sVar8 == 0) break;
           if (((iDir == -1) && (0 < iCur)) || ((iDir == 1 && (iCur < 4)))) {
             iCur = iCur + iDir;
             iVar6 = iCur + 1;
             pcVar7 = PszGetCompressedString(idsPlaybackSpeedD);
-            rcWindow = (undefined1  [2])
-                       _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),(char)iVar6);
+            rcWindow = (undefined1  [2])_wsprintf(szWork,pcVar7,(char)iVar6);
             TextOut(hdc,ptSpeedVCR.x,ptSpeedVCR.y,szWork,
                     (short)rcWindow);
           }
@@ -802,7 +801,7 @@ VCR_KillTime:
       if ((((9 < (int)pt) && (1 < (int)pt__22)) && ((int)pt__22 < 10)) &&
          (-1 < viVCRFocus)) {
         GlobalPD.grPopup = 0xb;
-        if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
+        if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
           bkMode = (*(byte *)((int)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 + 1
                              ) - 0x10) * 0x93;
           iVar6 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
@@ -1090,7 +1089,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
   hbrSav = SelectObject(hdc,hbrButtonFace);
   bkMode = SetBkMode(hdc,1);
   _memset(rgfSeen,0,0x100);
-  GetClientRect(hwndVCRDlg,(RECT *)CONCAT22(unaff_SS,&rc));
+  GetClientRect(hwndVCRDlg,&rc);
   if (iStart == -2) {
     PatBlt(hdc,dxyVCRBoard + 10,0,(rc.right - dxyVCRBoard) + -10,
            dxyVCRBoard + 8,0xf00021);
@@ -1118,12 +1117,12 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
     iVar2 = vcStepVCR + 2;
     iVar3 = viStepVCRCur + 2;
     pcVar4 = PszGetCompressedString(idsPhaseDDRoundDD);
-    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar3,iVar2,iVar1,iVar11);
+    c = _wsprintf(szWork,pcVar4,iVar3,iVar2,iVar1,iVar11);
     TextOut(hdc,x,y,szWork,c);
     y = y + dyArial8 + 4;
     iVar11 = viSpeedVCR + 1;
     pcVar4 = PszGetCompressedString(idsPlaybackSpeedD);
-    c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11);
+    c = _wsprintf(szWork,pcVar4,iVar11);
     DVar13 = GetTextExtent(hdc,szWork,c);
     dx = (short)DVar13;
     TextOut(hdc,x,y,szWork,c);
@@ -1159,7 +1158,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
       if ((uint)vlpbrVCR->itok == viVCRFocus) {
         SetTextColor(hdc,0x7f0000);
       }
-      if (*(char *)&((TOK *)vrgtok)[vlpbrVCR->itok].u_TOK_0x0003 == '\x01') {
+      if (*&((TOK *)vrgtok)[vlpbrVCR->itok].u_TOK_0x0003 == '\x01') {
         cshT = (*(byte *)((int)&((TOK *)vrgtok)[vlpbrVCR->itok].u_TOK_0x0003 + 1
                          ) - 0x10) * 0x93;
         iVar11 = (uint)((TOK *)vrgtok)[vlpbrVCR->itok].iplr * 4;
@@ -1183,7 +1182,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         iVar11 = lpshdef + 8;
         uVar18 = local_126;
         pcVar4 = PszGetCompressedString(idsSD);
-        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
+        c = _wsprintf(szWork,pcVar4,iVar11,uVar18,uVar6);
       }
       TextOut(hdc,x,y,szWork,c);
       y = y + dyArial8;
@@ -1197,8 +1196,8 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         uVar18 = 0x1120;
         psz = pcVar4;
         pcVar7 = PszGetCompressedString(idsAttacksS);
-        c = _wsprintf((char *)CONCAT22(unaff_SS,szT),(char *)CONCAT22(0x1120,pcVar7),pcVar4,uVar18);
-        TextOut(hdc,x,y,(LPCSTR)CONCAT22(unaff_SS,szT),c);
+        c = _wsprintf(szT,pcVar7,pcVar4,uVar18);
+        TextOut(hdc,x,y,szT,c);
         y = y + dyArial8;
         iVar11._0_1_ = ((BTLREC *)vlpbrVCR + 2)->itok;
         iVar11._1_1_ = ((BTLREC *)vlpbrVCR + 2)->brcDest;
@@ -1207,7 +1206,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         }
         uVar18 = (undefined2)((ulong)vlpbrVCR >> 0x10);
         pBVar10 = (BTLREC *)vlpbrVCR;
-        if (*(char *)&((TOK *)vrgtok)[pBVar10->wFlags_0x4 >> 8].u_TOK_0x0003 == '\x01') {
+        if (*&((TOK *)vrgtok)[pBVar10->wFlags_0x4 >> 8].u_TOK_0x0003 == '\x01') {
           dv.dp = (*(byte *)((int)&((TOK *)vrgtok)[pBVar10->wFlags_0x4 >> 8].u_TOK_0x0003
                             + 1) - 0x10) * 0x93;
           cshT = pBVar10->wFlags_0x4;
@@ -1233,7 +1232,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           iVar11 = lpshdef + 8;
           uVar18 = local_126;
           pcVar4 = PszGetCompressedString(idsSD);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,uVar6);
+          c = _wsprintf(szWork,pcVar4,iVar11,uVar18,uVar6);
         }
         TextOut(hdc,x,y,szWork,c);
         y = y + dyArial8;
@@ -1253,7 +1252,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           j = j + *(int *)((int)(BTLREC *)vlpbrVCR + (i + -1) * 8 + 8);
           if (rgfSeen[itokT] == '\0') {
             rgfSeen[itokT] = '\x01';
-            GetVCRStats(itokT,(long *)&dpT__22,(DV *)0x0,(long *)&dpShT,&cshT);
+            GetVCRStats(itokT,&dpT__22,(DV *)0x0,&dpShT,&cshT);
             uVar5 = *(uint *)((long *)vrgdpVCR + itokT);
             uVar8 = uVar5 - dpT__22;
             bVar12 = CARRY2(dpArmor,uVar8);
@@ -1269,7 +1268,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         iVar11 = (int)(uint)brcT >> 4;
         uVar5 = brcT & 0xf;
         pcVar4 = PszGetCompressedString(idsDDDoing);
-        c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
+        c = _wsprintf(szWork,pcVar4,uVar5,iVar11);
         TextOut(hdc,x,y,szWork,c);
         y = y + dyArial8;
         if ((dpShields != 0) || (local_e != 0)) {
@@ -1291,8 +1290,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar5 = dpShields;
           iVar11 = local_e;
           pcVar7 = PszGetCompressedString(idsLdDamageShieldsS);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar7),uVar5,iVar11,pcVar4,uVar18)
-          ;
+          c = _wsprintf(szWork,pcVar7,uVar5,iVar11,pcVar4,uVar18);
           TextOut(hdc,x,y,szWork,c);
           y = y + dyArial8;
         }
@@ -1306,7 +1304,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar5 = dpArmor;
           iVar11 = local_1a;
           pcVar4 = PszGetCompressedString(idsLdDamageArmorC);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11,uVar18);
+          c = _wsprintf(szWork,pcVar4,uVar5,iVar11,uVar18);
           TextOut(hdc,x,y,szWork,c);
           y = y + dyArial8;
         }
@@ -1325,7 +1323,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         if (0 < j) {
           sVar16 = j;
           pcVar4 = PszGetCompressedString(idsDestroyingDShip);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar16);
+          c = _wsprintf(szWork,pcVar4,sVar16);
           if (j == 1) {
             _strcpy((char *)szWork + c,(char *)0x1424);
             c = c + 1;
@@ -1357,7 +1355,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
       iVar11 = (int)(uint)vbrcVCRFocus >> 4;
       uVar5 = vbrcVCRFocus & 0xf;
       pcVar4 = PszGetCompressedString(idsSelectionDD);
-      c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,iVar11);
+      c = _wsprintf(szWork,pcVar4,uVar5,iVar11);
       TextOut(hdc,x,y,szWork,c);
       y = y + dyArial8;
       if (-1 < viVCRFocus) {
@@ -1367,7 +1365,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         c = _strlen(psz);
         TextOut(hdc,x,y,szWork,c);
         y = y + dyArial8;
-        if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
+        if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
           iVar11 = (uint)((TOK *)vrgtok)[viVCRFocus].iplr * 4;
           local_126 = *(undefined2 *)(iVar11 + 0x14e);
           lpshdef = *(int *)(iVar11 + 0x14c) +
@@ -1382,7 +1380,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
                                           u_TOK_0x0003 + 1) * 0x93;
         }
         csh = ((TOK *)vrgtok)[viVCRFocus].csh;
-        GetVCRStats(viVCRFocus,(long *)&dpT,&dv,(long *)&dpShields,&cshT);
+        GetVCRStats(viVCRFocus,&dpT,&dv,&dpShields,&cshT);
         sVar16 = cshT;
         cshT = csh - cshT;
         if ((csh < 2) && (cshT == 0)) {
@@ -1394,11 +1392,10 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           uVar18 = local_126;
           sVar9 = csh;
           pcVar4 = PszGetCompressedString(idsSD);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar11,uVar18,sVar9);
+          c = _wsprintf(szWork,pcVar4,iVar11,uVar18,sVar9);
         }
         if (cshT != 0) {
-          sVar9 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + c),(char *)0x11201429
-                            ,cshT);
+          sVar9 = _wsprintf((char *)szWork + c,(char *)0x11201429,cshT);
           c = c + sVar9;
         }
         SetTextColor(hdc,0x7f0000);
@@ -1412,7 +1409,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           y = y + dyArial8 * 5;
         }
         else {
-          if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
+          if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
             i = 0;
           }
           else {
@@ -1425,18 +1422,18 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             uVar5 = (uint)((TOK *)vrgtok)[viVCRFocus].initMin;
           }
           pcVar4 = PszGetCompressedString(idsInitiativeD);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+          c = _wsprintf(szWork,pcVar4,uVar5);
           TextOut(hdc,x,y,szWork,c);
           iVar1 = i * 3 + 0xca0;
           uVar18 = 0x1120;
           pcVar4 = PszGetCompressedString(idsMovementS);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),iVar1,uVar18);
+          c = _wsprintf(szWork,pcVar4,iVar1,uVar18);
           TextOut(hdc,iVar11,y,szWork,c);
           y = y + dyArial8;
           uVar5 = dpT;
           uVar8 = dpShT;
           pcVar4 = PszGetCompressedString(idsArmorLd);
-          c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5,uVar8);
+          c = _wsprintf(szWork,pcVar4,uVar5,uVar8);
           TextOut(hdc,x,y,szWork,c);
           if (dv.dp == 0) {
             c = CchGetString(idsDamageNone,(char *)szWork);
@@ -1457,17 +1454,17 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             }
             dpShT = 0;
             SetTextColor(hdc,0x7f);
-            if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
+            if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 == '\x01') {
               uVar5 = dpT;
               pcVar4 = PszGetCompressedString(idsDamageD);
-              c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+              c = _wsprintf(szWork,pcVar4,uVar5);
             }
             else {
               iVar1 = csh >> 0xf;
               sVar9 = csh;
               uVar5 = dpT;
               pcVar4 = PszGetCompressedString(idsDamageLdD);
-              c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),sVar9,iVar1,uVar5);
+              c = _wsprintf(szWork,pcVar4,sVar9,iVar1,uVar5);
             }
           }
           TextOut(hdc,iVar11,y,szWork,c);
@@ -1485,19 +1482,18 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
                                               dpShield,(long)sVar16);
             lVar15 = uVar14 - CONCAT22(local_e,dpShields);
             pcVar4 = PszGetCompressedString(idsShieldsLd);
-            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),(int)lVar15,
-                          (int)((ulong)lVar15 >> 0x10));
+            c = _wsprintf(szWork,pcVar4,(int)lVar15,(int)((ulong)lVar15 >> 0x10));
           }
           TextOut(hdc,x,y,szWork,c);
           y = y + dyArial8;
           if (((TOK *)vrgtok)[viVCRFocus].pctJam != 0) {
             uVar5 = (uint)((TOK *)vrgtok)[viVCRFocus].pctJam;
             pcVar4 = PszGetCompressedString(idsJammingD);
-            c = _wsprintf(szWork,(char *)CONCAT22(0x1120,pcVar4),uVar5);
+            c = _wsprintf(szWork,pcVar4,uVar5);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
           }
-          if (*(char *)&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 != '\x01') {
+          if (*&((TOK *)vrgtok)[viVCRFocus].u_TOK_0x0003 != '\x01') {
             if (vbrcVCRFocus == 0xff) {
               i = 0x19e;
             }
@@ -1508,12 +1504,12 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
               CchGetString(idsTacticSDMoves,szT);
               uVar5 = ((TOK *)vrgtok)[viVCRFocus].wFlags >> 5 & 0x1f;
               pcVar4 = PszGetCompressedString(i);
-              c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120,uVar5);
+              c = _wsprintf(szWork,szT,pcVar4,0x1120,uVar5);
             }
             else {
               CchGetString(idsTacticS,szT);
               pcVar4 = PszGetCompressedString(i);
-              c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+              c = _wsprintf(szWork,szT,pcVar4,0x1120);
             }
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
@@ -1523,20 +1519,19 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
             i = (((TOK *)vrgtok)[viVCRFocus].wFlags_0x17 & 0xf) +
                 idsNoneDisengage;
             pcVar4 = PszGetCompressedString(i);
-            c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+            c = _wsprintf(szWork,szT,pcVar4,0x1120);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
             CchGetString(idsSecondaryTargetS,szT);
             i = (((TOK *)vrgtok)[viVCRFocus].wFlags_0x17 >> 4 & 0xf) +
                 idsNoneDisengage;
             pcVar4 = PszGetCompressedString(i);
-            c = _wsprintf(szWork,(char *)CONCAT22(unaff_SS,szT),pcVar4,0x1120);
+            c = _wsprintf(szWork,szT,pcVar4,0x1120);
             TextOut(hdc,x,y,szWork,c);
             y = y + dyArial8;
           }
         }
-        SetRect((RECT *)CONCAT22(unaff_SS,&rc),x,y + 4,x + dyArial8 + 4,
-                y + dyArial8 + 8);
+        SetRect(&rc,x,y + 4,x + dyArial8 + 4,y + dyArial8 + 8);
         DrawBtn(hdc,&rc,8,0,(char *)0x1430);
       }
     }
@@ -1567,7 +1562,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
         dpT__22 = dpT__22 + ((TOK *)vrgtok)[j].csh;
         local_14 = local_14 + (uint)bVar12;
         if ((ibmp == -1) || (j == viVCRFocus)) {
-          if (*(char *)&((TOK *)vrgtok)[j].u_TOK_0x0003 == '\x01') {
+          if (*&((TOK *)vrgtok)[j].u_TOK_0x0003 == '\x01') {
             cshT = (*(byte *)((int)&((TOK *)vrgtok)[j].u_TOK_0x0003 + 1) - 0x10) * 0x93;
             iVar11 = (uint)((TOK *)vrgtok)[j].iplr * 4;
             ibmp = *(short *)(*(int *)(iVar11 + 0x14c) + cshT + 0x32);
@@ -2037,7 +2032,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
     if ((((TOK *)vrgtok)[i].brc == brc) && (((TOK *)vrgtok)[i].csh != 0)) {
       PszPlayerName((uint)((TOK *)vrgtok)[i].iplr,0,0,0,0,(PLAYER *)0x0);
       uVar1 = _strlen((char *)szWork);
-      if (*(char *)&((TOK *)vrgtok)[i].u_TOK_0x0003 == '\x01') {
+      if (*&((TOK *)vrgtok)[i].u_TOK_0x0003 == '\x01') {
         iVar3 = (uint)((TOK *)vrgtok)[i].iplr * 4;
         local_65c = *(undefined2 *)(iVar3 + 0x14e);
         lpshdef = *(int *)(iVar3 + 0x14c) +
@@ -2049,8 +2044,8 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
         lpshdef = *(int *)(iVar3 + 0xfe) +
                   (uint)*(byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) * 0x93;
       }
-      sVar2 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + uVar1),(char *)0x11201432
-                        ,lpshdef + 8,local_65c,((TOK *)vrgtok)[i].csh);
+      sVar2 = _wsprintf((char *)szWork + uVar1,(char *)0x11201432,lpshdef + 8,local_65c,
+                        ((TOK *)vrgtok)[i].csh);
       cch = uVar1 + sVar2;
       if (fAttack != 0) {
         uVar5 = (undefined2)((ulong)vlpbrVCR >> 0x10);
@@ -2063,8 +2058,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
             }
           }
           if (0 < cKilled) {
-            sVar2 = _wsprintf((char *)CONCAT22(0x1120,(char *)szWork + cch),
-                              (char *)0x1120143b,cKilled);
+            sVar2 = _wsprintf((char *)szWork + cch,(char *)0x1120143b,cKilled);
             cch = cch + sVar2;
           }
         }
