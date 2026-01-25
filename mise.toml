@@ -469,7 +469,36 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript DumpAsm.py "$1" 2>&1
+    -postScript DumpAsm.py "$@" 2>&1
+'''
+
+[tasks.dump-pcode]
+description = "Dump pcode listing for a function"
+run = '''
+#!/bin/bash
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: mise run dump-pcode -- <function_name>"
+    echo ""
+    echo "Example: mise run dump-pcode -- CalcPlayerScore"
+    exit 1
+fi
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript DumpPcode.py "$@" 2>&1
 '''
 
 [tasks.export-decompiled]
