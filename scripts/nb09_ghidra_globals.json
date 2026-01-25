@@ -4411,8 +4411,8 @@
       },
       "types": {
         "typind": 5770,
-        "c_type": "SHDEF *32[1]",
-        "c_decl": "SHDEF *32 rglpshdef[1]",
+        "c_type": "SHDEF *32[16]",
+        "c_decl": "SHDEF *32 rglpshdef[16]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -4479,8 +4479,8 @@
       },
       "types": {
         "typind": 5770,
-        "c_type": "SHDEF *32[1]",
-        "c_decl": "SHDEF *32 rglpshdefSB[1]",
+        "c_type": "SHDEF *32[16]",
+        "c_decl": "SHDEF *32 rglpshdefSB[16]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -6094,8 +6094,8 @@
       },
       "types": {
         "typind": 5734,
-        "c_type": "char *[1]",
-        "c_decl": "char * rgszPlanetAttr[1]",
+        "c_type": "char *[3]",
+        "c_decl": "char * rgszPlanetAttr[3]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -6128,8 +6128,8 @@
       },
       "types": {
         "typind": 5734,
-        "c_type": "char *[1]",
-        "c_decl": "char * rgszPlanetAttrAbbr[1]",
+        "c_type": "char *[3]",
+        "c_decl": "char * rgszPlanetAttrAbbr[3]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -6162,8 +6162,8 @@
       },
       "types": {
         "typind": 4731,
-        "c_type": "char *[1]",
-        "c_decl": "char * rgszMinerals[1]",
+        "c_type": "char *[6]",
+        "c_decl": "char * rgszMinerals[6]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -6196,8 +6196,8 @@
       },
       "types": {
         "typind": 5734,
-        "c_type": "char *[1]",
-        "c_decl": "char * rgszMineField[1]",
+        "c_type": "char *[3]",
+        "c_decl": "char * rgszMineField[3]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -6298,8 +6298,8 @@
       },
       "types": {
         "typind": 5723,
-        "c_type": "char *[1]",
-        "c_decl": "char * mpdtsz[1]",
+        "c_type": "char *[8]",
+        "c_decl": "char * mpdtsz[8]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -7490,8 +7490,8 @@
       },
       "types": {
         "typind": 5580,
-        "c_type": "char *[1]",
-        "c_decl": "char * rgszZipOrder[1]",
+        "c_type": "char *[4]",
+        "c_decl": "char * rgszZipOrder[4]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -8109,8 +8109,8 @@
       },
       "types": {
         "typind": 4877,
-        "c_type": "char *[1]",
-        "c_decl": "char * vrgszComputerPlayers[1]",
+        "c_type": "char *[7]",
+        "c_decl": "char * vrgszComputerPlayers[7]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -8143,8 +8143,8 @@
       },
       "types": {
         "typind": 4870,
-        "c_type": "char *[1]",
-        "c_decl": "char * vrgszComputerLevel[1]",
+        "c_type": "char *[5]",
+        "c_decl": "char * vrgszComputerLevel[5]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -8622,8 +8622,8 @@
       },
       "types": {
         "typind": 4228,
-        "c_type": "char *[1]",
-        "c_decl": "char * vrgszUnits[1]",
+        "c_type": "char *[0]",
+        "c_decl": "char * vrgszUnits[0]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9410,8 +9410,8 @@
       },
       "types": {
         "typind": 4709,
-        "c_type": "HB *32[1]",
-        "c_decl": "HB *32 rglphb[1]",
+        "c_type": "HB *32[12]",
+        "c_decl": "HB *32 rglphb[12]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -9924,8 +9924,8 @@
       },
       "types": {
         "typind": 4621,
-        "c_type": "char *[1]",
-        "c_decl": "char * vrgszRCWWidth[1]",
+        "c_type": "char *[2]",
+        "c_decl": "char * vrgszRCWWidth[2]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -11018,8 +11018,8 @@
       },
       "types": {
         "typind": 4282,
-        "c_type": "SCOREX *32[1]",
-        "c_decl": "SCOREX *32 rgsxPlr[1]",
+        "c_type": "SCOREX *32[16]",
+        "c_decl": "SCOREX *32 rgsxPlr[16]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -20373,8 +20373,8 @@
       },
       "types": {
         "typind": 4288,
-        "c_type": "BTLPLAN *32[1]",
-        "c_decl": "BTLPLAN *32 rglpbtlplan[1]",
+        "c_type": "BTLPLAN *32[16]",
+        "c_decl": "BTLPLAN *32 rglpbtlplan[16]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -21763,8 +21763,8 @@
             "name": "rgszScan",
             "kind": "local",
             "typind": 4136,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszScan[1]",
+            "c_type": "char *[20]",
+            "c_decl": "char * rgszScan[20]",
             "size": 40,
             "is_far_ptr": false,
             "bp_off": -94
@@ -37290,8 +37290,8 @@
             "name": "rgsz",
             "kind": "local",
             "typind": 4454,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgsz[1]",
+            "c_type": "char *[40]",
+            "c_decl": "char * rgsz[40]",
             "size": 80,
             "is_far_ptr": false,
             "bp_off": -84
@@ -40128,8 +40128,8 @@
             "name": "rglpflW",
             "kind": "local",
             "typind": 4384,
-            "c_type": "FLEET *32[1]",
-            "c_decl": "FLEET *32 rglpflW[1]",
+            "c_type": "FLEET *32[32]",
+            "c_decl": "FLEET *32 rglpflW[32]",
             "size": 128,
             "is_far_ptr": false,
             "bp_off": -132
@@ -43220,8 +43220,8 @@
             "name": "rgpsz",
             "kind": "local",
             "typind": 5727,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgpsz[1]",
+            "c_type": "char *[16]",
+            "c_decl": "char * rgpsz[16]",
             "size": 32,
             "is_far_ptr": false,
             "bp_off": -552
@@ -43410,8 +43410,8 @@
             "name": "psz",
             "kind": "local",
             "typind": 4138,
-            "c_type": "char *[1]",
-            "c_decl": "char * psz[1]",
+            "c_type": "char *[9]",
+            "c_decl": "char * psz[9]",
             "size": 18,
             "is_far_ptr": false,
             "bp_off": -138
@@ -47686,8 +47686,8 @@
             "name": "psz",
             "kind": "local",
             "typind": 4275,
-            "c_type": "char *[1]",
-            "c_decl": "char * psz[1]",
+            "c_type": "char *[32]",
+            "c_decl": "char * psz[32]",
             "size": 64,
             "is_far_ptr": false,
             "bp_off": -1846
@@ -48158,8 +48158,8 @@
             "name": "rgszZip",
             "kind": "local",
             "typind": 4731,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszZip[1]",
+            "c_type": "char *[6]",
+            "c_decl": "char * rgszZip[6]",
             "size": 12,
             "is_far_ptr": false,
             "bp_off": -66
@@ -67326,8 +67326,8 @@
             "name": "rglpth",
             "kind": "local",
             "typind": 4379,
-            "c_type": "THING *32[1]",
-            "c_decl": "THING *32 rglpth[1]",
+            "c_type": "THING *32[100]",
+            "c_decl": "THING *32 rglpth[100]",
             "size": 400,
             "is_far_ptr": false,
             "bp_off": -414
@@ -79338,8 +79338,8 @@
             "name": "rgpflNew",
             "kind": "local",
             "typind": 5570,
-            "c_type": "FLEET *[1]",
-            "c_decl": "FLEET * rgpflNew[1]",
+            "c_type": "FLEET *[2]",
+            "c_decl": "FLEET * rgpflNew[2]",
             "size": 4,
             "is_far_ptr": false,
             "bp_off": -138
@@ -94773,8 +94773,8 @@
             "name": "rgszZip",
             "kind": "local",
             "typind": 5560,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszZip[1]",
+            "c_type": "char *[11]",
+            "c_decl": "char * rgszZip[11]",
             "size": 22,
             "is_far_ptr": false,
             "bp_off": -266
@@ -105946,8 +105946,8 @@
             "name": "rgszScan",
             "kind": "local",
             "typind": 4134,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszScan[1]",
+            "c_type": "char *[12]",
+            "c_decl": "char * rgszScan[12]",
             "size": 24,
             "is_far_ptr": false,
             "bp_off": -32
@@ -106026,8 +106026,8 @@
             "name": "rgszScan",
             "kind": "local",
             "typind": 4136,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszScan[1]",
+            "c_type": "char *[20]",
+            "c_decl": "char * rgszScan[20]",
             "size": 40,
             "is_far_ptr": false,
             "bp_off": -50
@@ -106096,8 +106096,8 @@
             "name": "rgszScan",
             "kind": "local",
             "typind": 4134,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszScan[1]",
+            "c_type": "char *[12]",
+            "c_decl": "char * rgszScan[12]",
             "size": 24,
             "is_far_ptr": false,
             "bp_off": -32
@@ -106166,8 +106166,8 @@
             "name": "rgszScan",
             "kind": "local",
             "typind": 4138,
-            "c_type": "char *[1]",
-            "c_decl": "char * rgszScan[1]",
+            "c_type": "char *[9]",
+            "c_decl": "char * rgszScan[9]",
             "size": 18,
             "is_far_ptr": false,
             "bp_off": -26
@@ -116411,8 +116411,8 @@
             "name": "rglpflSrc",
             "kind": "local",
             "typind": 5678,
-            "c_type": "FLEET *32[1]",
-            "c_decl": "FLEET *32 rglpflSrc[1]",
+            "c_type": "FLEET *32[63]",
+            "c_decl": "FLEET *32 rglpflSrc[63]",
             "size": 252,
             "is_far_ptr": false,
             "bp_off": -260

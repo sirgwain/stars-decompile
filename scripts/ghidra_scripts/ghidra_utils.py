@@ -567,7 +567,7 @@ def wrapped_datatype(dt: DataType, decl_info: DeclInfo, is_far_ptr: bool) -> Dat
     else:
         # normal: pointers bind before arrays (array-of-pointers)
         if stars > 0:
-            wrapped_dt = wrap_pointers(wrapped_dt, stars, is_far_ptr)
+            wrapped_dt = wrap_pointers(wrapped_dt, stars, decl_info.array_of_far_ptrs)
         if dims:
             wrapped_dt = wrap_arrays(wrapped_dt, dims)
 
@@ -598,6 +598,9 @@ def datatype_from_decl_info(
     base_dt = c_type_to_data_type(base_name)
     if base_dt is None:
         base_dt = lookup_type(dtm, base_name, cat_paths)
+        print(
+            f"datatype_from_decl_info: lookup_type {name} - decl_info: {decl_info.base} ptr_to_array={decl_info.ptr_to_array} is_far_ptr={is_far_ptr} base_dt={base_dt.getName()}"
+        )
     if base_dt is None:
         return (
             None,
@@ -623,6 +626,7 @@ class NormalDeclInfo:
     stars: int  # number of '*' after FAR "*32" normalization
     dims: list[int]  # array dimensions, e.g. [10][4] -> [10, 4]
     ptr_to_array: bool = False
+    array_of_far_ptrs: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -656,9 +660,13 @@ def parse_c_decl(c_decl: str) -> DeclInfo:
 
     s = c_decl.strip()
 
+    # if this is an array of far pointers, we need to record that for future wrapped_datatype calls
+    _maybe_array_of_far_ptrs = s.find("*32") != -1
+
     # NB09 sometimes encodes FAR pointers in the C decl using "*32".
     # The pointer size itself comes from types.is_far_ptr; "32" here is just
     # a marker and must NOT become part of the base type name.
+    # we do need to record it, however, in order to track arrays of far pointers
     #
     # Normalize both "*32" and "(*32 name)" forms.
     s = re.sub(r"\(\s*\*\s*32\b", "(*", s)
@@ -693,6 +701,7 @@ def parse_c_decl(c_decl: str) -> DeclInfo:
             stars=1,
             dims=dims,
             ptr_to_array=True,
+            array_of_far_ptrs=_maybe_array_of_far_ptrs,
         )
 
     # Drop trailing variable name token if present
@@ -707,7 +716,13 @@ def parse_c_decl(c_decl: str) -> DeclInfo:
     stars = s_no_arr.count("*")
     base = re.sub(r"\s+", " ", s_no_arr.replace("*", " ")).strip()
 
-    return NormalDeclInfo(kind="normal", base=base, stars=stars, dims=dims)
+    return NormalDeclInfo(
+        kind="normal",
+        base=base,
+        stars=stars,
+        dims=dims,
+        array_of_far_ptrs=(len(dims) > 0 and _maybe_array_of_far_ptrs),
+    )
 
 
 def load_nb09_structs(path: str) -> Nb09GhidraStructs:

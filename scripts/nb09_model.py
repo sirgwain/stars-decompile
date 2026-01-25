@@ -959,9 +959,19 @@ class Nb09Db:
             elem_tid = d.get("elemtype")
             size = d.get("size")
             elem = self.resolve_typind(int(elem_tid)) if isinstance(elem_tid, int) else UnknownType(kind="unknown", size=None)
+
             count = None
-            if isinstance(size, int) and elem.size and elem.size > 0 and size % elem.size == 0:
-                count = size // elem.size
+            if isinstance(size, int):
+                elem_sz = elem.size
+
+                # PointerType currently has size=None; but we *do* know pointer width.
+                if elem_sz is None and isinstance(elem, PointerType):
+                    # In Stars!/your conventions: "*32" pointers are 4 bytes, near pointers are 2 bytes.
+                    elem_sz = 2 if int(elem.ptrtype) == 0 else 4
+
+                if isinstance(elem_sz, int) and elem_sz > 0 and (size % elem_sz) == 0:
+                    count = size // elem_sz
+
             rt = ArrayType(kind="array", size=size if isinstance(size, int) else None, elem=elem, count=count)
         elif k == "procedure":
             rv_tid = d.get("rvtype")

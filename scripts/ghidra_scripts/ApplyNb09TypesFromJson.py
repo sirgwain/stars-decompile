@@ -2,9 +2,6 @@
 # ApplyNb09TypesFromJson.py
 # @category Stars
 
-import re
-from dataclasses import dataclass
-from typing import Literal, TypeAlias
 
 from java.math import BigInteger
 
@@ -35,15 +32,10 @@ from ghidra_utils import (
     ProcEntry,
     datatype_from_decl_info,
     load_nb09_ghidra_globals,
-    lookup_type,
-    make_func_def,
-    pointer_dt,
     sanitize_name,
     dedupe_name,
     warn,
-    err,
     log,
-    wrapped_datatype,
 )
 
 
