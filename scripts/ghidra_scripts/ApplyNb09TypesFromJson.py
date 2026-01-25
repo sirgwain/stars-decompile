@@ -99,30 +99,13 @@ def set_cs_at_function_entry(func):
     ctx = currentProgram.getProgramContext()
     # Apply only at the entry point; keep the range minimal to avoid stepping
     # on other context propagation.
-    ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))
+    ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))    
     return True
 
 
 def calling_convention_for(proc: ProcEntry):
     if proc.types.is_pascal:
         return "__pascal16far"
-    tags = proc.types.tags
-    ret = proc.types.ret
-    # Win16 (MSC 6.x / Stars!): some functions that return values wider than 16 bits
-    # are annotated in the NB09 with a RET32-style tag. In the original source these
-    # were typically declared far stdcall to match the compiler's 16-bit ABI helpers.
-    #
-    # We already treat far-pointer returns (*32) as stdcall; extend the same rule to
-    # 32-bit scalar returns (long/ulong/int32_t/uint32_t), which show up as RET32 in
-    # our JSON.
-    if (
-        ("RETFAR" in tags)
-        or ret.is_far_ptr
-        or ("RET32" in tags)
-        or ret.is_32bit
-        or (ret.size == 4)
-    ):
-        return "__stdcall16far"
     return "__cdecl16far"
 
 
