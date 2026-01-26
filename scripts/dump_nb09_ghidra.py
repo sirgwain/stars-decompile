@@ -541,6 +541,17 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
             if getattr(ls, "is_arg_region", None) is not None:
                 entry["is_arg_region"] = bool(getattr(ls, "is_arg_region"))
 
+            # Lexical block id (CodeView S_BLOCK16 nesting). NB09 stores this as a 0-based
+            # index into ProcLocals.blocks; we emit 1-based block numbers and only include
+            # it for non-default locals (block != 1).
+            if getattr(ls, "block", None) is not None:
+                try:
+                    blk1 = int(getattr(ls, "block")) + 1
+                except Exception:
+                    blk1 = None
+                if isinstance(blk1, int) and blk1 != 1:
+                    entry["block"] = blk1
+
             if lkind == "param":
                 params.append(entry)
             elif lkind == "local":
@@ -961,6 +972,79 @@ def apply_windows_retypes_to_proc(proc_rec: Dict[str, Any], rules: List[Dict[str
                 changed += 1
     return changed
 
+
+def _patch_existing_blocks_inplace(existing: Dict[str, Any], proc_locals_index: Dict[str, Any]) -> int:
+    """
+    Patch an already-generated nb09_ghidra_globals.json in-place by adding a 1-based
+    "block" field to locals when NB09 indicates they belong to a non-default lexical
+    block (S_BLOCK16 nesting).
+
+    This intentionally *only* adds missing "block" keys and does not otherwise
+    regenerate or normalize the JSON, so diffs stay minimal.
+    """
+    changed = 0
+
+    procs = existing.get("procs")
+    if not isinstance(procs, list):
+        return 0
+
+    for prec in procs:
+        if not isinstance(prec, dict):
+            continue
+        name = prec.get("name") or ""
+        cv = prec.get("cv") or {}
+        seg = cv.get("seg")
+        off = cv.get("off")
+        if not isinstance(seg, int) or not isinstance(off, int):
+            continue
+
+        pl = proc_locals_index.get("by_segoff", {}).get((seg, off)) \
+             or proc_locals_index.get("by_name", {}).get(name)
+        if pl is None:
+            continue
+
+        types = prec.get("types")
+        if not isinstance(types, dict):
+            continue
+        locals_list = types.get("locals")
+        if not isinstance(locals_list, list) or not locals_list:
+            continue
+
+        # Build fast lookup for existing locals by (name, bp_off, reg, reg_off)
+        by_key: Dict[Tuple[Any, Any, Any, Any], Dict[str, Any]] = {}
+        for e in locals_list:
+            if not isinstance(e, dict):
+                continue
+            if e.get("kind") != "local":
+                continue
+            k = (e.get("name"), e.get("bp_off"), e.get("reg"), e.get("reg_off"))
+            by_key[k] = e
+
+        for ls in getattr(pl, "locals", []) or []:
+            try:
+                if str(getattr(ls, "kind") or "") != "local":
+                    continue
+                blk = getattr(ls, "block", None)
+                if blk is None:
+                    continue
+                blk1 = int(blk) + 1  # emit 1-based
+                if blk1 == 1:
+                    continue  # default block, omit
+                lk = (str(getattr(ls, "name") or ""), getattr(ls, "bp_off", None),
+                      getattr(ls, "reg", None), getattr(ls, "reg_off", None))
+            except Exception:
+                continue
+
+            e = by_key.get(lk)
+            if e is None:
+                continue
+            if "block" in e:
+                continue
+            e["block"] = blk1
+            changed += 1
+
+    return changed
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Emit Ghidra JSON for renaming globals/procs/labels from NB09.")
     ap.add_argument("nb09", help="Path to extracted CodeView NB09 blob (e.g., stars26jrc3.codeview.nb09.bin)")
@@ -1150,6 +1234,17 @@ def main() -> int:
         "procs": procs_out,
         "labels": labels_out,
     }
+
+    # If the output file already exists, keep the JSON stable and only patch in
+    # local block ids (to keep git diffs minimal).
+    if os.path.exists(args.out):
+        with open(args.out, "r", encoding="utf-8") as f:
+            existing = json.load(f)
+        changed = _patch_existing_blocks_inplace(existing, proc_locals_index)
+        with open(args.out, "w", encoding="utf-8") as f:
+            json.dump(existing, f, indent=2, sort_keys=False)
+        print(f"Patched {args.out} (added local block ids: {changed})")
+        return 0
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(out_obj, f, indent=2, sort_keys=False)
