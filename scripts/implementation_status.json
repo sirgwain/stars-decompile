@@ -1,0 +1,6976 @@
+{
+  "summary": {
+    "total": 846,
+    "implemented": 111,
+    "stub": 733,
+    "missing": 2,
+    "percent_implemented": 13.1
+  },
+  "by_file": {
+    "ai.c": {
+      "implemented": 0,
+      "stub": 12,
+      "missing": 0
+    },
+    "ai2.c": {
+      "implemented": 0,
+      "stub": 6,
+      "missing": 0
+    },
+    "ai3.c": {
+      "implemented": 0,
+      "stub": 6,
+      "missing": 0
+    },
+    "ai4.c": {
+      "implemented": 0,
+      "stub": 17,
+      "missing": 0
+    },
+    "aiutil.c": {
+      "implemented": 0,
+      "stub": 62,
+      "missing": 0
+    },
+    "battle.c": {
+      "implemented": 2,
+      "stub": 41,
+      "missing": 0
+    },
+    "build.c": {
+      "implemented": 0,
+      "stub": 22,
+      "missing": 0
+    },
+    "create.c": {
+      "implemented": 0,
+      "stub": 21,
+      "missing": 1
+    },
+    "file.c": {
+      "implemented": 20,
+      "stub": 2,
+      "missing": 0
+    },
+    "init.c": {
+      "implemented": 0,
+      "stub": 7,
+      "missing": 0
+    },
+    "log.c": {
+      "implemented": 0,
+      "stub": 23,
+      "missing": 0
+    },
+    "mdi.c": {
+      "implemented": 0,
+      "stub": 29,
+      "missing": 0
+    },
+    "memory.c": {
+      "implemented": 11,
+      "stub": 0,
+      "missing": 0
+    },
+    "mine.c": {
+      "implemented": 1,
+      "stub": 11,
+      "missing": 0
+    },
+    "msg.c": {
+      "implemented": 9,
+      "stub": 19,
+      "missing": 0
+    },
+    "parts.c": {
+      "implemented": 11,
+      "stub": 0,
+      "missing": 0
+    },
+    "planet.c": {
+      "implemented": 5,
+      "stub": 43,
+      "missing": 0
+    },
+    "popup.c": {
+      "implemented": 0,
+      "stub": 11,
+      "missing": 0
+    },
+    "produce.c": {
+      "implemented": 0,
+      "stub": 14,
+      "missing": 0
+    },
+    "race.c": {
+      "implemented": 3,
+      "stub": 23,
+      "missing": 0
+    },
+    "report.c": {
+      "implemented": 0,
+      "stub": 25,
+      "missing": 0
+    },
+    "research.c": {
+      "implemented": 1,
+      "stub": 9,
+      "missing": 0
+    },
+    "save.c": {
+      "implemented": 1,
+      "stub": 23,
+      "missing": 0
+    },
+    "scan.c": {
+      "implemented": 0,
+      "stub": 30,
+      "missing": 0
+    },
+    "ship.c": {
+      "implemented": 5,
+      "stub": 46,
+      "missing": 0
+    },
+    "ship2.c": {
+      "implemented": 0,
+      "stub": 21,
+      "missing": 0
+    },
+    "stars.c": {
+      "implemented": 0,
+      "stub": 8,
+      "missing": 0
+    },
+    "strings.c": {
+      "implemented": 0,
+      "stub": 1,
+      "missing": 0
+    },
+    "tb.c": {
+      "implemented": 0,
+      "stub": 12,
+      "missing": 0
+    },
+    "thing.c": {
+      "implemented": 0,
+      "stub": 8,
+      "missing": 0
+    },
+    "turn.c": {
+      "implemented": 0,
+      "stub": 6,
+      "missing": 0
+    },
+    "turn2.c": {
+      "implemented": 0,
+      "stub": 28,
+      "missing": 0
+    },
+    "turn3.c": {
+      "implemented": 0,
+      "stub": 1,
+      "missing": 0
+    },
+    "tutor.c": {
+      "implemented": 0,
+      "stub": 33,
+      "missing": 0
+    },
+    "tutor2.c": {
+      "implemented": 1,
+      "stub": 0,
+      "missing": 0
+    },
+    "util.c": {
+      "implemented": 16,
+      "stub": 51,
+      "missing": 0
+    },
+    "utilgen.c": {
+      "implemented": 19,
+      "stub": 53,
+      "missing": 1
+    },
+    "vcr.c": {
+      "implemented": 5,
+      "stub": 9,
+      "missing": 0
+    },
+    "winmain.c": {
+      "implemented": 1,
+      "stub": 0,
+      "missing": 0
+    }
+  },
+  "functions": {
+    "About": {
+      "addr": "1018:1252",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t About(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 35
+    },
+    "AddBackTrailingSpaces": {
+      "addr": "1040:280c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void AddBackTrailingSpaces(char * *, char *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 731
+    },
+    "AddItemToQueue": {
+      "addr": "1090:3e50",
+      "segment": "MEMORY_AIU",
+      "proto": "void AddItemToQueue(uint16_t, uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 64
+    },
+    "AddMinesToBlockedQueues": {
+      "addr": "1090:1792",
+      "segment": "MEMORY_AIU",
+      "proto": "void AddMinesToBlockedQueues(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 767
+    },
+    "AdvanceTutor": {
+      "addr": "10f8:0a30",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void AdvanceTutor(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 347
+    },
+    "AlertSz": {
+      "addr": "1040:2160",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t AlertSz(char *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 281
+    },
+    "AnimateAttack": {
+      "addr": "10e8:3ac2",
+      "segment": "MEMORY_VCR",
+      "proto": "void AnimateAttack(uint16_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 417
+    },
+    "AskSaveDialog": {
+      "addr": "1070:432a",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t AskSaveDialog(void)",
+      "status": "stub",
+      "file": "file.c",
+      "line": 2347
+    },
+    "AutoFleetOrder": {
+      "addr": "1080:23c8",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void AutoFleetOrder(FLEET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 62
+    },
+    "AutoRouteFleet": {
+      "addr": "1080:1e52",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void AutoRouteFleet(FLEET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 166
+    },
+    "AutoTerraform": {
+      "addr": "10b8:48f6",
+      "segment": "MEMORY_TURN2",
+      "proto": "void AutoTerraform(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 293
+    },
+    "BattlePlansDlg": {
+      "addr": "10f0:0652",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t BattlePlansDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 1003
+    },
+    "BattleVCR": {
+      "addr": "10e8:0000",
+      "segment": "MEMORY_VCR",
+      "proto": "void BattleVCR(int16_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 393
+    },
+    "BoundPoints": {
+      "addr": "1040:2f70",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void BoundPoints(RECT *, POINT *, int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 501
+    },
+    "BoundsCheckPlayer": {
+      "addr": "10e0:40ae",
+      "segment": "MEMORY_RACE",
+      "proto": "void BoundsCheckPlayer(PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 131
+    },
+    "BreedColonistsInTransit": {
+      "addr": "10b8:7e4e",
+      "segment": "MEMORY_TURN2",
+      "proto": "void BreedColonistsInTransit(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 446
+    },
+    "BringUpHostDlg": {
+      "addr": "1020:5ffc",
+      "segment": "MEMORY_MDI",
+      "proto": "void BringUpHostDlg(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 473
+    },
+    "BrowserDlg": {
+      "addr": "10d8:1ed8",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int16_t BrowserDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 182
+    },
+    "BrowserWndProc": {
+      "addr": "10d8:2876",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int32_t BrowserWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 213
+    },
+    "BtlDataGet": {
+      "addr": "10e8:0362",
+      "segment": "MEMORY_VCR",
+      "proto": "BTLDATA *32 BtlDataGet(int16_t)",
+      "status": "implemented",
+      "file": "vcr.c",
+      "line": 47
+    },
+    "CAdvantagePoints": {
+      "addr": "10e0:444c",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t CAdvantagePoints(PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 65
+    },
+    "CBattleKills": {
+      "addr": "10e8:062e",
+      "segment": "MEMORY_VCR",
+      "proto": "int32_t CBattleKills(BTLDATA *32, int16_t)",
+      "status": "implemented",
+      "file": "vcr.c",
+      "line": 101
+    },
+    "CBattleUnits": {
+      "addr": "10e8:0450",
+      "segment": "MEMORY_VCR",
+      "proto": "int32_t CBattleUnits(BTLDATA *32, uint16_t)",
+      "status": "implemented",
+      "file": "vcr.c",
+      "line": 167
+    },
+    "CBattles": {
+      "addr": "10e8:028c",
+      "segment": "MEMORY_VCR",
+      "proto": "int16_t CBattles(void)",
+      "status": "implemented",
+      "file": "vcr.c",
+      "line": 225
+    },
+    "CBuildProdItem": {
+      "addr": "10b8:0c92",
+      "segment": "MEMORY_TURN2",
+      "proto": "int16_t CBuildProdItem(PLANET *32, PROD *32, PROD *, int32_t *, int16_t, int16_t *, int16_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 263
+    },
+    "CFactoriesOperating": {
+      "addr": "1048:74be",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CFactoriesOperating(PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 530
+    },
+    "CFindTurnsOutstanding": {
+      "addr": "1020:6a26",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t CFindTurnsOutstanding(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 138
+    },
+    "CLayMinesFromLpfl": {
+      "addr": "1080:2886",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int32_t CLayMinesFromLpfl(FLEET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 137
+    },
+    "CMaxDefenses": {
+      "addr": "1048:7710",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxDefenses(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 423
+    },
+    "CMaxFactories": {
+      "addr": "1048:755c",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxFactories(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 359
+    },
+    "CMaxMines": {
+      "addr": "1048:7248",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxMines(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 406
+    },
+    "CMaxOperableDefenses": {
+      "addr": "1048:77ae",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxOperableDefenses(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 280
+    },
+    "CMaxOperableFactories": {
+      "addr": "1048:7618",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxOperableFactories(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 348
+    },
+    "CMaxOperableMines": {
+      "addr": "1048:7304",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMaxOperableMines(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 500
+    },
+    "CMineFromLpfl": {
+      "addr": "1080:25d2",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int32_t CMineFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 200
+    },
+    "CMineSweepFromLpfl": {
+      "addr": "1080:2b26",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int32_t CMineSweepFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 237
+    },
+    "CMineSweepFromLphul": {
+      "addr": "1080:2bfa",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int32_t CMineSweepFromLphul(HUL *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 73
+    },
+    "CMinesOperating": {
+      "addr": "1048:73fc",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CMinesOperating(PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 511
+    },
+    "CParseNumbers": {
+      "addr": "1040:6986",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t CParseNumbers(char *32, int32_t *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 308
+    },
+    "CPlanetsInCircle": {
+      "addr": "1110:02a0",
+      "segment": "MEMORY_THING",
+      "proto": "int16_t CPlanetsInCircle(POINT, int32_t)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 37
+    },
+    "CPtsCloakFromLphs": {
+      "addr": "1080:3170",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t CPtsCloakFromLphs(HS *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 228
+    },
+    "CResourcesAtPlanet": {
+      "addr": "1048:788e",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t CResourcesAtPlanet(PLANET *32, int16_t)",
+      "status": "implemented",
+      "file": "planet.c",
+      "line": 222
+    },
+    "CShipsScanVis": {
+      "addr": "1058:4bf4",
+      "segment": "MEMORY_SCAN",
+      "proto": "int32_t CShipsScanVis(FLEET *32)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 166
+    },
+    "CTorpHit": {
+      "addr": "10f0:6790",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int32_t CTorpHit(int32_t, TOK *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 420
+    },
+    "CTurnsOutSafe": {
+      "addr": "1020:6996",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t CTurnsOutSafe(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 89
+    },
+    "CalcPctSurvive": {
+      "addr": "1038:02f6",
+      "segment": "MEMORY_UTIL",
+      "proto": "void CalcPctSurvive(PLANET *32, float *, float *)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 683
+    },
+    "CalcPlanetMaxPop": {
+      "addr": "1048:7096",
+      "segment": "MEMORY_PLANET",
+      "proto": "int32_t CalcPlanetMaxPop(int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 463
+    },
+    "CalcPlayerScore": {
+      "addr": "1038:58a6",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t CalcPlayerScore(int16_t, SCORE *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1254
+    },
+    "CancelMemRt": {
+      "addr": "1048:a108",
+      "segment": "MEMORY_PLANET",
+      "proto": "void CancelMemRt(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 226
+    },
+    "CchGetETA": {
+      "addr": "1038:3bc8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1353
+    },
+    "CchGetString": {
+      "addr": "1040:221e",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t CchGetString(int16_t, char *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 423
+    },
+    "CchTutorString": {
+      "addr": "1100:5a14",
+      "segment": "MEMORY_TUTOR2",
+      "proto": "int16_t CchTutorString(char *, int16_t)",
+      "status": "implemented",
+      "file": "tutor2.c",
+      "line": 16
+    },
+    "ChFromNybble": {
+      "addr": "1040:49ea",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char ChFromNybble(int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 87
+    },
+    "ChangeMainObjSel": {
+      "addr": "1048:3e7a",
+      "segment": "MEMORY_PLANET",
+      "proto": "void ChangeMainObjSel(int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 791
+    },
+    "ChangeProduction": {
+      "addr": "10d0:0000",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "int16_t ChangeProduction(int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 127
+    },
+    "ChangeScanSel": {
+      "addr": "1058:8cc4",
+      "segment": "MEMORY_SCAN",
+      "proto": "void ChangeScanSel(SCAN *, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 365
+    },
+    "CheckAiShdefStatus": {
+      "addr": "1090:9b10",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t CheckAiShdefStatus(int16_t, int16_t, uint16_t, int16_t *, uint8_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 805
+    },
+    "CheckInitiative": {
+      "addr": "10f0:3e68",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void CheckInitiative(TOK *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 293
+    },
+    "CheckTarget": {
+      "addr": "10f0:212a",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void CheckTarget(TOK *32, FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 189
+    },
+    "CheckWeapons": {
+      "addr": "10f0:3ec2",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void CheckWeapons(TOK *32, int16_t *, uint8_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 739
+    },
+    "ChgCargo": {
+      "addr": "1050:6034",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t ChgCargo(int16_t, int16_t, int16_t, int32_t, void *)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 442
+    },
+    "ChgPopFromPlanet": {
+      "addr": "1038:7082",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t ChgPopFromPlanet(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1221
+    },
+    "ChopLastWord": {
+      "addr": "1040:2842",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void ChopLastWord(char *, char * *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 746
+    },
+    "ChopTrailingSpaces": {
+      "addr": "1040:28c6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void ChopTrailingSpaces(char *, char * *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 536
+    },
+    "ClearAiCurrentTask": {
+      "addr": "1090:60c0",
+      "segment": "MEMORY_AIU",
+      "proto": "void ClearAiCurrentTask(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 548
+    },
+    "ClearFile": {
+      "addr": "1038:7f6a",
+      "segment": "MEMORY_UTIL",
+      "proto": "void ClearFile(int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 335
+    },
+    "ClickInPlanetOrders": {
+      "addr": "1048:515c",
+      "segment": "MEMORY_PLANET",
+      "proto": "uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 860
+    },
+    "ClickInShipOrders": {
+      "addr": "1050:7cda",
+      "segment": "MEMORY_SHIP",
+      "proto": "uint16_t ClickInShipOrders(POINT, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1111
+    },
+    "CommaFormatLong": {
+      "addr": "1040:2440",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t CommaFormatLong(char *, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 798
+    },
+    "CommandHandler": {
+      "addr": "1020:2f7a",
+      "segment": "MEMORY_MDI",
+      "proto": "void CommandHandler(uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 186
+    },
+    "ComputeShdefPowers": {
+      "addr": "1038:0e4e",
+      "segment": "MEMORY_UTIL",
+      "proto": "void ComputeShdefPowers(void)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1025
+    },
+    "CopyFile": {
+      "addr": "1040:1ffa",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void CopyFile(char *, char *)",
+      "status": "missing",
+      "file": null,
+      "line": null
+    },
+    "CostOfDevelopingItem": {
+      "addr": "10d8:66e0",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int32_t CostOfDevelopingItem(char *32)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 13
+    },
+    "CplrBattle": {
+      "addr": "10f0:2952",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t CplrBattle(FLEET *32, uint16_t *, uint16_t *, uint16_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 778
+    },
+    "CreateBackupDir": {
+      "addr": "10b8:6dca",
+      "segment": "MEMORY_TURN2",
+      "proto": "void CreateBackupDir(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 39
+    },
+    "CreateChildWindows": {
+      "addr": "1020:038c",
+      "segment": "MEMORY_MDI",
+      "proto": "void CreateChildWindows(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 508
+    },
+    "CreateRandomRace": {
+      "addr": "10e0:5b08",
+      "segment": "MEMORY_RACE",
+      "proto": "void CreateRandomRace(PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 138
+    },
+    "CreateSalvage": {
+      "addr": "10f0:7ee8",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void CreateSalvage(FLEET *, THING *32 *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 199
+    },
+    "CreateShip": {
+      "addr": "10b8:2fd6",
+      "segment": "MEMORY_TURN2",
+      "proto": "void CreateShip(int16_t, FLEET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 440
+    },
+    "CreateStartupShip": {
+      "addr": "1078:4690",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t CreateStartupShip(int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 16
+    },
+    "CreateTutorWorld": {
+      "addr": "1078:5e5e",
+      "segment": "MEMORY_CREATE",
+      "proto": "void CreateTutorWorld(void)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 63
+    },
+    "CshQueued": {
+      "addr": "1050:c82c",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t CshQueued(int16_t, int16_t *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 38
+    },
+    "CtrPointScan": {
+      "addr": "1058:7278",
+      "segment": "MEMORY_SCAN",
+      "proto": "void CtrPointScan(POINT, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 572
+    },
+    "CtrTextOut": {
+      "addr": "1040:2534",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void CtrTextOut(uint16_t, int16_t, int16_t, char *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 889
+    },
+    "DGetDistance": {
+      "addr": "1038:3fe4",
+      "segment": "MEMORY_UTIL",
+      "proto": "double DGetDistance(int16_t, int16_t, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 540
+    },
+    "DecorateHullName": {
+      "addr": "1038:5e0e",
+      "segment": "MEMORY_UTIL",
+      "proto": "void DecorateHullName(int16_t, int16_t, char *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 757
+    },
+    "DecorateMsgTitleBar": {
+      "addr": "1030:799c",
+      "segment": "MEMORY_MSG",
+      "proto": "void DecorateMsgTitleBar(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 936
+    },
+    "Delay": {
+      "addr": "10e8:3a3e",
+      "segment": "MEMORY_VCR",
+      "proto": "void Delay(int16_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 463
+    },
+    "DeleteCurWayPoint": {
+      "addr": "1050:9b08",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DeleteCurWayPoint(int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 323
+    },
+    "DeleteWpFar": {
+      "addr": "1050:9e28",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DeleteWpFar(FLEET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 435
+    },
+    "DestroyAllIshdef": {
+      "addr": "1050:c336",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DestroyAllIshdef(int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 477
+    },
+    "DestroyAllIshdefSB": {
+      "addr": "1050:c280",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DestroyAllIshdefSB(int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 590
+    },
+    "DestroyCurGame": {
+      "addr": "1070:44b0",
+      "segment": "MEMORY_IO",
+      "proto": "void DestroyCurGame(void)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2783
+    },
+    "DiaganolTextOut": {
+      "addr": "1040:2afa",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void DiaganolTextOut(uint16_t, RECT *, char *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1165
+    },
+    "DibBlt": {
+      "addr": "1040:4db8",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t DibBlt(uint16_t, int16_t, int16_t, int16_t, int16_t, uint16_t, int16_t, int16_t, int16_t, int16_t, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1060
+    },
+    "DibFromBitmap": {
+      "addr": "1040:4e90",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t DibFromBitmap(uint16_t, uint32_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 917
+    },
+    "DibNumColors": {
+      "addr": "1040:4a9a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t DibNumColors(void *32)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 986
+    },
+    "DirtyGame": {
+      "addr": "1048:a228",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DirtyGame(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 66
+    },
+    "DiscoverNewMinerals": {
+      "addr": "10b8:5e0c",
+      "segment": "MEMORY_TURN2",
+      "proto": "void DiscoverNewMinerals(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 402
+    },
+    "DisplayComponentInfo": {
+      "addr": "10d8:2ac6",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "void DisplayComponentInfo(uint16_t, int16_t, int16_t, PART *)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 295
+    },
+    "DoAiTurn": {
+      "addr": "1088:0000",
+      "segment": "MEMORY_AI",
+      "proto": "void DoAiTurn(int16_t, uint16_t)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 15
+    },
+    "DoAutomitronAiTurn": {
+      "addr": "1098:01e0",
+      "segment": "MEMORY_AI2",
+      "proto": "void DoAutomitronAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 59
+    },
+    "DoBattles": {
+      "addr": "10f0:3a26",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void DoBattles(int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 213
+    },
+    "DoBombing": {
+      "addr": "10f0:aefa",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void DoBombing(void)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 612
+    },
+    "DoCyberAiTurn": {
+      "addr": "10a8:002a",
+      "segment": "MEMORY_AI4",
+      "proto": "void DoCyberAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 238
+    },
+    "DoCyberFreighter": {
+      "addr": "10a8:37b0",
+      "segment": "MEMORY_AI4",
+      "proto": "void DoCyberFreighter(FLEET *32, CYBERINFOTEMP *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 214
+    },
+    "DoCyberPackets": {
+      "addr": "10a8:1a78",
+      "segment": "MEMORY_AI4",
+      "proto": "void DoCyberPackets(void)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 137
+    },
+    "DoMacintiAiTurn": {
+      "addr": "10a0:0008",
+      "segment": "MEMORY_AI3",
+      "proto": "void DoMacintiAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 103
+    },
+    "DoMaidAiTurn": {
+      "addr": "1098:0000",
+      "segment": "MEMORY_AI2",
+      "proto": "void DoMaidAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 140
+    },
+    "DoOrders": {
+      "addr": "10b0:179a",
+      "segment": "MEMORY_TURN",
+      "proto": "void DoOrders(int16_t)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 14
+    },
+    "DoRobotoidAiTurn": {
+      "addr": "1088:0312",
+      "segment": "MEMORY_AI",
+      "proto": "void DoRobotoidAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 196
+    },
+    "DoRototillAiTurn": {
+      "addr": "1098:1e22",
+      "segment": "MEMORY_AI2",
+      "proto": "void DoRototillAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 12
+    },
+    "DoThingInteractions": {
+      "addr": "1110:0b3a",
+      "segment": "MEMORY_THING",
+      "proto": "void DoThingInteractions(int16_t)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 63
+    },
+    "DoTurinDroneAiTurn": {
+      "addr": "1088:3670",
+      "segment": "MEMORY_AI",
+      "proto": "void DoTurinDroneAiTurn(PROD *)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 68
+    },
+    "DpFromPtokBrcToBrc": {
+      "addr": "10f0:4d2e",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int32_t DpFromPtokBrcToBrc(TOK *32, uint8_t, uint8_t, TOK *32, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 927
+    },
+    "DpOfLpflIshdef": {
+      "addr": "1038:0746",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t DpOfLpflIshdef(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 939
+    },
+    "DpShieldOfShdef": {
+      "addr": "1038:0f24",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t DpShieldOfShdef(SHDEF *32, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1154
+    },
+    "DrawABunchOfStars": {
+      "addr": "1038:5fe2",
+      "segment": "MEMORY_UTIL",
+      "proto": "void DrawABunchOfStars(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1372
+    },
+    "DrawBitmapButton": {
+      "addr": "1068:078c",
+      "segment": "MEMORY_TB",
+      "proto": "void DrawBitmapButton(uint16_t, POINT, int16_t, int16_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 99
+    },
+    "DrawBtn": {
+      "addr": "1040:38b8",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void DrawBtn(uint16_t, RECT *, int16_t, int16_t, char *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1004
+    },
+    "DrawBuildSelComp": {
+      "addr": "10c8:3ab2",
+      "segment": "MEMORY_BUILD",
+      "proto": "void DrawBuildSelComp(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 194
+    },
+    "DrawBuildSelHull": {
+      "addr": "10c8:451e",
+      "segment": "MEMORY_BUILD",
+      "proto": "void DrawBuildSelHull(uint16_t, uint16_t, int16_t, RECT *)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 149
+    },
+    "DrawCBEntireItem": {
+      "addr": "1048:6128",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawCBEntireItem(DRAWITEMSTRUCT *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 678
+    },
+    "DrawDiamond": {
+      "addr": "1028:4b60",
+      "segment": "MEMORY_MINE",
+      "proto": "void DrawDiamond(uint16_t, RECT *, uint16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 331
+    },
+    "DrawDlgLBEntireItem": {
+      "addr": "10c8:59f0",
+      "segment": "MEMORY_BUILD",
+      "proto": "void DrawDlgLBEntireItem(DRAWITEMSTRUCT *32, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 138
+    },
+    "DrawFleetBitmap": {
+      "addr": "1050:490e",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawFleetBitmap(FLEET *32, uint16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1198
+    },
+    "DrawFleetCargoXferSide": {
+      "addr": "1050:72de",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawFleetCargoXferSide(uint16_t, RECT *, FLEET *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1258
+    },
+    "DrawFleetComp": {
+      "addr": "1050:1e72",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawFleetComp(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1042
+    },
+    "DrawFleetGauge": {
+      "addr": "1050:44b6",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawFleetGauge(uint16_t, RECT *, FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1244
+    },
+    "DrawFleetShipsXferSide": {
+      "addr": "1050:7726",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawFleetShipsXferSide(uint16_t, RECT *, FLEET *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1009
+    },
+    "DrawFuzzyBorder": {
+      "addr": "1040:427a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void DrawFuzzyBorder(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 931
+    },
+    "DrawHistoryReport": {
+      "addr": "1108:2494",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawHistoryReport(uint16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 482
+    },
+    "DrawHostDialog2": {
+      "addr": "1020:6240",
+      "segment": "MEMORY_MDI",
+      "proto": "void DrawHostDialog2(uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 335
+    },
+    "DrawHostOptions": {
+      "addr": "1020:7706",
+      "segment": "MEMORY_MDI",
+      "proto": "void DrawHostOptions(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 357
+    },
+    "DrawLockLight": {
+      "addr": "1058:6b00",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawLockLight(uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 314
+    },
+    "DrawMassWarpGauge": {
+      "addr": "1048:2afa",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawMassWarpGauge(uint16_t, RECT *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 687
+    },
+    "DrawMineSurvey": {
+      "addr": "1028:065a",
+      "segment": "MEMORY_MINE",
+      "proto": "void DrawMineSurvey(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 152
+    },
+    "DrawMineralItem": {
+      "addr": "1108:4ebe",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawMineralItem(uint16_t, int16_t, int16_t, int16_t, int32_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 474
+    },
+    "DrawNewGame2": {
+      "addr": "1078:9556",
+      "segment": "MEMORY_CREATE",
+      "proto": "void DrawNewGame2(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 384
+    },
+    "DrawNewGame3": {
+      "addr": "1078:9d5e",
+      "segment": "MEMORY_CREATE",
+      "proto": "void DrawNewGame3(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 362
+    },
+    "DrawPlanShip": {
+      "addr": "1048:0d16",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanShip(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 572
+    },
+    "DrawPlanShipBitmap": {
+      "addr": "1048:3336",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanShipBitmap(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 722
+    },
+    "DrawPlanetMinSum": {
+      "addr": "1048:12b2",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanetMinSum(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 664
+    },
+    "DrawPlanetPrintDot": {
+      "addr": "1038:7e44",
+      "segment": "MEMORY_UTIL",
+      "proto": "void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1386
+    },
+    "DrawPlanetProduction": {
+      "addr": "1048:2c38",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanetProduction(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 700
+    },
+    "DrawPlanetShipList": {
+      "addr": "1048:377e",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanetShipList(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 619
+    },
+    "DrawPlanetStarbase": {
+      "addr": "1048:22cc",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanetStarbase(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 643
+    },
+    "DrawPlanetStats": {
+      "addr": "1048:1716",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawPlanetStats(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 593
+    },
+    "DrawPlanetXferSide": {
+      "addr": "1050:79ca",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawPlanetXferSide(uint16_t, RECT *, PLANET *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1340
+    },
+    "DrawPopup": {
+      "addr": "10c0:01c0",
+      "segment": "MEMORY_POPUP",
+      "proto": "void DrawPopup(uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 47
+    },
+    "DrawProductionDlg": {
+      "addr": "10d0:35dc",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void DrawProductionDlg(uint16_t, uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 225
+    },
+    "DrawProductionItem": {
+      "addr": "1048:6208",
+      "segment": "MEMORY_PLANET",
+      "proto": "void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 801
+    },
+    "DrawProgressGauge": {
+      "addr": "1040:65f6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void DrawProgressGauge(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1195
+    },
+    "DrawRace2": {
+      "addr": "10e0:179a",
+      "segment": "MEMORY_RACE",
+      "proto": "void DrawRace2(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 408
+    },
+    "DrawRace3": {
+      "addr": "10e0:2aa4",
+      "segment": "MEMORY_RACE",
+      "proto": "void DrawRace3(uint16_t, uint16_t, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 364
+    },
+    "DrawRaceAdvantagePoints": {
+      "addr": "10e0:55c6",
+      "segment": "MEMORY_RACE",
+      "proto": "void DrawRaceAdvantagePoints(uint16_t, RECT *, PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 325
+    },
+    "DrawRadarCircle": {
+      "addr": "1058:4e7c",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawRadarCircle(DRAWCIR *, RECT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 132
+    },
+    "DrawReport": {
+      "addr": "1108:0bae",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawReport(uint16_t, uint16_t, RECT *)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 331
+    },
+    "DrawReportItem": {
+      "addr": "1108:3398",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawReportItem(uint16_t, RECT *, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 435
+    },
+    "DrawResearchDlg": {
+      "addr": "10d8:090a",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "void DrawResearchDlg(uint16_t, uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 244
+    },
+    "DrawScanFleetCount": {
+      "addr": "1058:47d2",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawScanFleetCount(FLEET *32, int16_t, int16_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 459
+    },
+    "DrawScanXorLines": {
+      "addr": "1058:8af6",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawScanXorLines(uint16_t, POINT *, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 585
+    },
+    "DrawScanner": {
+      "addr": "1058:108a",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t DrawScanner(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 472
+    },
+    "DrawScannerSBar": {
+      "addr": "1058:62d8",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawScannerSBar(uint16_t, RECT *, SBAR *, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 101
+    },
+    "DrawScoreReport": {
+      "addr": "1108:1e0c",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawScoreReport(uint16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 515
+    },
+    "DrawSelectionArrow": {
+      "addr": "1028:4a68",
+      "segment": "MEMORY_MINE",
+      "proto": "void DrawSelectionArrow(uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 279
+    },
+    "DrawShipCargo": {
+      "addr": "1050:1a54",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawShipCargo(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1353
+    },
+    "DrawShipOrders": {
+      "addr": "1050:0000",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawShipOrders(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1216
+    },
+    "DrawShipPlanet": {
+      "addr": "1050:17b6",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawShipPlanet(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1023
+    },
+    "DrawShipScanPath": {
+      "addr": "1058:540c",
+      "segment": "MEMORY_SCAN",
+      "proto": "void DrawShipScanPath(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 181
+    },
+    "DrawShipWayPtOrders": {
+      "addr": "1050:0912",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawShipWayPtOrders(uint16_t, TILE *, OBJ)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1291
+    },
+    "DrawSlotDlg": {
+      "addr": "10c8:2650",
+      "segment": "MEMORY_BUILD",
+      "proto": "void DrawSlotDlg(uint16_t, uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 225
+    },
+    "DrawThingGauge": {
+      "addr": "1110:044e",
+      "segment": "MEMORY_THING",
+      "proto": "void DrawThingGauge(uint16_t, RECT *, THING *32, int16_t)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 16
+    },
+    "DrawThingXferSide": {
+      "addr": "1050:7088",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawThingXferSide(uint16_t, RECT *, THING *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1278
+    },
+    "DrawToolbar": {
+      "addr": "1068:06f0",
+      "segment": "MEMORY_TB",
+      "proto": "void DrawToolbar(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 83
+    },
+    "DrawTutorText": {
+      "addr": "10f8:03c0",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void DrawTutorText(uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 46
+    },
+    "DrawVCR": {
+      "addr": "10e8:1c62",
+      "segment": "MEMORY_VCR",
+      "proto": "void DrawVCR(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 340
+    },
+    "DrawVCReport": {
+      "addr": "1108:168e",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DrawVCReport(uint16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 405
+    },
+    "DrawXferDlg": {
+      "addr": "1050:6908",
+      "segment": "MEMORY_SHIP",
+      "proto": "void DrawXferDlg(uint16_t, uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 996
+    },
+    "DropColonists": {
+      "addr": "10b8:34e2",
+      "segment": "MEMORY_TURN2",
+      "proto": "void DropColonists(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 68
+    },
+    "DropSalvage": {
+      "addr": "10f0:24dc",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void DropSalvage(THING *32 *, int32_t *32, int16_t, POINT *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 179
+    },
+    "DumpFleets": {
+      "addr": "1108:9530",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DumpFleets(void)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 27
+    },
+    "DumpPlanets": {
+      "addr": "1108:86e4",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DumpPlanets(void)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 53
+    },
+    "DumpUniverse": {
+      "addr": "1108:851e",
+      "segment": "MEMORY_REPORT",
+      "proto": "void DumpUniverse(void)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 10
+    },
+    "DxOfBtn": {
+      "addr": "1068:0bb2",
+      "segment": "MEMORY_TB",
+      "proto": "int16_t DxOfBtn(int16_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 92
+    },
+    "DxReportColHdr": {
+      "addr": "1108:305e",
+      "segment": "MEMORY_REPORT",
+      "proto": "int16_t DxReportColHdr(int16_t, int16_t, char *, uint16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 360
+    },
+    "DxStreamTextOut": {
+      "addr": "1040:2590",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t DxStreamTextOut(uint16_t, int16_t *, int16_t, char *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1142
+    },
+    "DxyFromSpdRound": {
+      "addr": "10f0:8b28",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t DxyFromSpdRound(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 412
+    },
+    "DxyMoveTokTo": {
+      "addr": "10f0:5f18",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t DxyMoveTokTo(TOK *32, int16_t, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 950
+    },
+    "DzFromBrcBrc": {
+      "addr": "10f0:4ca8",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t DzFromBrcBrc(uint8_t, uint8_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 918
+    },
+    "DzMoveRangeToConsider": {
+      "addr": "10f0:5312",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t DzMoveRangeToConsider(TOK *32, uint16_t, uint8_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 669
+    },
+    "EnableVCRButtons": {
+      "addr": "10e8:48f6",
+      "segment": "MEMORY_VCR",
+      "proto": "void EnableVCRButtons(void)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 310
+    },
+    "EnableZipBtns": {
+      "addr": "1080:0832",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void EnableZipBtns(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 313
+    },
+    "EnableZipProdBtns": {
+      "addr": "10d0:5df0",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void EnableZipProdBtns(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 142
+    },
+    "EndTutor": {
+      "addr": "10f8:0c02",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void EndTutor(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 40
+    },
+    "EnsureAiStarbaseDesigns": {
+      "addr": "1090:7222",
+      "segment": "MEMORY_AIU",
+      "proto": "void EnsureAiStarbaseDesigns(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 567
+    },
+    "EnsureAis": {
+      "addr": "1020:56bc",
+      "segment": "MEMORY_MDI",
+      "proto": "void EnsureAis(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 76
+    },
+    "EnsureCAShdefs": {
+      "addr": "1098:3020",
+      "segment": "MEMORY_AI2",
+      "proto": "void EnsureCAShdefs(int16_t)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 126
+    },
+    "EnsureCyberAiShdefs": {
+      "addr": "10a8:4826",
+      "segment": "MEMORY_AI4",
+      "proto": "void EnsureCyberAiShdefs(int16_t)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 74
+    },
+    "EnsureISShdefs": {
+      "addr": "1098:1938",
+      "segment": "MEMORY_AI2",
+      "proto": "void EnsureISShdefs(int16_t)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 132
+    },
+    "EnsureMacintiShdefs": {
+      "addr": "10a0:2b3c",
+      "segment": "MEMORY_AI3",
+      "proto": "void EnsureMacintiShdefs(void)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 24
+    },
+    "EnsureMacintiStarbaseDesigns": {
+      "addr": "1090:76e4",
+      "segment": "MEMORY_AIU",
+      "proto": "void EnsureMacintiStarbaseDesigns(uint8_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 615
+    },
+    "EnsureRobotoidShdefs": {
+      "addr": "1088:20ae",
+      "segment": "MEMORY_AI",
+      "proto": "void EnsureRobotoidShdefs(void)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 40
+    },
+    "EnsureTileSize": {
+      "addr": "1048:587e",
+      "segment": "MEMORY_PLANET",
+      "proto": "void EnsureTileSize(int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 851
+    },
+    "EnsureTurinDroneShdefs": {
+      "addr": "1088:58ba",
+      "segment": "MEMORY_AI",
+      "proto": "void EnsureTurinDroneShdefs(int16_t)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 135
+    },
+    "EnumLogRts": {
+      "addr": "1048:d6e0",
+      "segment": "MEMORY_PLANET",
+      "proto": "void EnumLogRts(int16_t (*32)(void *32, int16_t, int16_t, void *32, int16_t), void *32, int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 95
+    },
+    "EstFuelUse": {
+      "addr": "1050:9fe4",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t EstFuelUse(FLEET *32, int16_t, int16_t, int32_t, int16_t)",
+      "status": "implemented",
+      "file": "ship.c",
+      "line": 85
+    },
+    "EstMineralsMined": {
+      "addr": "1028:5362",
+      "segment": "MEMORY_MINE",
+      "proto": "void EstMineralsMined(PLANET *32, int32_t *, int32_t, int16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 66
+    },
+    "EstimateItemProdSched": {
+      "addr": "10d0:4f40",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void EstimateItemProdSched(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 51
+    },
+    "ExecuteButton": {
+      "addr": "1068:0db6",
+      "segment": "MEMORY_TB",
+      "proto": "void ExecuteButton(int16_t, int16_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 109
+    },
+    "ExecuteReportClick": {
+      "addr": "1108:7cd6",
+      "segment": "MEMORY_REPORT",
+      "proto": "void ExecuteReportClick(POINT, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 384
+    },
+    "ExpandRc": {
+      "addr": "1040:2f0c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void ExpandRc(RECT *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 318
+    },
+    "FAIFling": {
+      "addr": "1090:7dd6",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FAIFling(PLANET *32, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 162
+    },
+    "FAddPacketToQueue": {
+      "addr": "10a8:2bc0",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FAddPacketToQueue(PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 120
+    },
+    "FAddWayPoint": {
+      "addr": "1058:7504",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FAddWayPoint(POINT, SCAN *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 257
+    },
+    "FAppendFile": {
+      "addr": "1070:704e",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FAppendFile(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 246
+    },
+    "FAskKillTutor": {
+      "addr": "10f8:0f36",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FAskKillTutor(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 284
+    },
+    "FAttack": {
+      "addr": "10f0:69ac",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FAttack(int16_t, int16_t, BTLREC *32, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 341
+    },
+    "FAttackPlayer": {
+      "addr": "10f0:ae06",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FAttackPlayer(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 284
+    },
+    "FBadFileError": {
+      "addr": "1070:524e",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FBadFileError(int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 481
+    },
+    "FBogusLong": {
+      "addr": "1070:484c",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FBogusLong(uint32_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2983
+    },
+    "FBuildObject": {
+      "addr": "10b8:19b2",
+      "segment": "MEMORY_TURN2",
+      "proto": "int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 346
+    },
+    "FCalcFleetBombDamage": {
+      "addr": "1038:145c",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1124
+    },
+    "FCanBuildShdef": {
+      "addr": "1038:7b40",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FCanBuildShdef(SHDEF *32, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 767
+    },
+    "FCanFleetUseStargates": {
+      "addr": "1038:75e2",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FCanFleetUseStargates(FLEET *32, POINT, POINT)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 62
+    },
+    "FCanKillTok": {
+      "addr": "10f0:391e",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FCanKillTok(TOK *32, TOK *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 431
+    },
+    "FCanMerge": {
+      "addr": "1050:2522",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FCanMerge(FLEET *)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 465
+    },
+    "FCanSplit": {
+      "addr": "1050:245c",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FCanSplit(int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 458
+    },
+    "FCanSplitAll": {
+      "addr": "1050:24ae",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FCanSplitAll(int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 78
+    },
+    "FCanTerraformLppl": {
+      "addr": "1048:8022",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FCanTerraformLppl(PLANET *32, int16_t *, int16_t *, int16_t *, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 304
+    },
+    "FChangeAiShdef": {
+      "addr": "1090:08a2",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FChangeAiShdef(SHDEF *, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 687
+    },
+    "FCheckBtlPlan": {
+      "addr": "10f8:760a",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckBtlPlan(int16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 323
+    },
+    "FCheckBuilderPart": {
+      "addr": "10f8:77d8",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckBuilderPart(int16_t, HS *, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 271
+    },
+    "FCheckCargo": {
+      "addr": "10f8:7664",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckCargo(FLEET *32, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 62
+    },
+    "FCheckColonizeWP": {
+      "addr": "10f8:70c0",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckColonizeWP(uint16_t, int16_t, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 260
+    },
+    "FCheckFile": {
+      "addr": "1070:4fb2",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FCheckFile(uint16_t, int16_t, uint16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2658
+    },
+    "FCheckFleetName": {
+      "addr": "10f8:690a",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckFleetName(int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 114
+    },
+    "FCheckFleetWP": {
+      "addr": "10f8:6df4",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckFleetWP(uint16_t, int16_t, uint16_t, int16_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 160
+    },
+    "FCheckLayingWP": {
+      "addr": "10f8:6ff4",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckLayingWP(uint16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 198
+    },
+    "FCheckLogFile": {
+      "addr": "1048:cccc",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FCheckLogFile(int16_t, int16_t *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 135
+    },
+    "FCheckMessages": {
+      "addr": "10f8:6c48",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckMessages(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 208
+    },
+    "FCheckPassword": {
+      "addr": "1040:58d8",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FCheckPassword(void)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 295
+    },
+    "FCheckPatrolWP": {
+      "addr": "10f8:71ac",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckPatrolWP(uint16_t, int16_t, int16_t, uint16_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 188
+    },
+    "FCheckPlanetRoute": {
+      "addr": "10f8:6f86",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckPlanetRoute(int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 75
+    },
+    "FCheckQueue": {
+      "addr": "10f8:7442",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckQueue(int16_t, int16_t, uint16_t, uint16_t, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 216
+    },
+    "FCheckQueuedShip": {
+      "addr": "10c8:027c",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t FCheckQueuedShip(uint16_t, SHDEF *32, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 80
+    },
+    "FCheckResearch": {
+      "addr": "10f8:6da4",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckResearch(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 92
+    },
+    "FCheckScanner": {
+      "addr": "10f8:685c",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckScanner(int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 84
+    },
+    "FCheckSelection": {
+      "addr": "10f8:6af4",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckSelection(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 299
+    },
+    "FCheckShipBuilder": {
+      "addr": "10f8:7964",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckShipBuilder(int16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 332
+    },
+    "FCheckSummary": {
+      "addr": "10f8:69e2",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckSummary(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 308
+    },
+    "FCheckTemplate": {
+      "addr": "10f8:666e",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckTemplate(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 252
+    },
+    "FCheckXferWP": {
+      "addr": "10f8:7280",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckXferWP(uint16_t, int16_t, int16_t, uint16_t, ITEMACTION *32)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 142
+    },
+    "FCheckZip": {
+      "addr": "10f8:6460",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FCheckZip(int16_t, ITEMACTION *32, int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 124
+    },
+    "FColonizeAiFleet": {
+      "addr": "1090:0c78",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FColonizeAiFleet(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 596
+    },
+    "FColonizer": {
+      "addr": "1080:227c",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t FColonizer(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 157
+    },
+    "FCompressUserString": {
+      "addr": "1040:45a0",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FCompressUserString(char *32, char *32, int16_t *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 213
+    },
+    "FCreateAiShdef": {
+      "addr": "1090:012c",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FCreateAiShdef(int16_t, int16_t, uint8_t *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 364
+    },
+    "FCreateAiStarbase": {
+      "addr": "1090:7bca",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FCreateAiStarbase(int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 554
+    },
+    "FCreateFile": {
+      "addr": "1070:8e16",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FCreateFile(uint16_t, int16_t, char *)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 266
+    },
+    "FCreateFonts": {
+      "addr": "1000:0ab2",
+      "segment": "MEMORY_INIT",
+      "proto": "int16_t FCreateFonts(uint16_t)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 23
+    },
+    "FCreateStuff": {
+      "addr": "1000:0014",
+      "segment": "MEMORY_INIT",
+      "proto": "int16_t FCreateStuff(void)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 11
+    },
+    "FDamageTok": {
+      "addr": "10f0:81d4",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FDamageTok(TOK *32, int16_t, int32_t *, int32_t, uint16_t, int16_t, int32_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 836
+    },
+    "FDecompressUserString": {
+      "addr": "1040:46e8",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FDecompressUserString(char *32, int16_t, char *32, int16_t *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 136
+    },
+    "FDeleteBattlePlan": {
+      "addr": "10f0:1706",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FDeleteBattlePlan(int16_t, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 301
+    },
+    "FDeleteFleet": {
+      "addr": "1038:2d44",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FDeleteFleet(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 553
+    },
+    "FDestIsWP0": {
+      "addr": "1108:50b4",
+      "segment": "MEMORY_REPORT",
+      "proto": "int16_t FDestIsWP0(FLEET *32)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 274
+    },
+    "FDoCoolBattle": {
+      "addr": "10f0:8bcc",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FDoCoolBattle(FLEET *32, int16_t, uint16_t *, uint16_t, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 700
+    },
+    "FDoesPrimaryTargetTypeExist": {
+      "addr": "10f0:56d8",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FDoesPrimaryTargetTypeExist(TOK *32, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 906
+    },
+    "FDrawTileNC": {
+      "addr": "1048:1086",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FDrawTileNC(uint16_t, TILE *, RECT *, char *)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 741
+    },
+    "FDumpCargo": {
+      "addr": "10f0:234a",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FDumpCargo(FLEET *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 323
+    },
+    "FDupFleet": {
+      "addr": "1038:2332",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FDupFleet(FLEET *32, FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 608
+    },
+    "FDupPlanet": {
+      "addr": "1038:0032",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FDupPlanet(PLANET *32, PLANET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 616
+    },
+    "FEnsurePointOnScreen": {
+      "addr": "1058:715c",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FEnsurePointOnScreen(POINT, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 353
+    },
+    "FEnumCalcArmadaDest": {
+      "addr": "1088:3286",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FEnumCalcArmadaDest(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 55
+    },
+    "FEnumCalcArmadaHumanDest": {
+      "addr": "1088:3406",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FEnumCalcArmadaHumanDest(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 27
+    },
+    "FEnumCalcColonistDrop": {
+      "addr": "1088:5fc8",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FEnumCalcColonistDrop(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 186
+    },
+    "FEnumCalcEnemyFleets": {
+      "addr": "1088:325c",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FEnumCalcEnemyFleets(FLEET *32, FLEET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 152
+    },
+    "FEnumCalcEnemyPlanets": {
+      "addr": "10a8:45a6",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumCalcEnemyPlanets(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 130
+    },
+    "FEnumCalcJettison": {
+      "addr": "1050:4df4",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FEnumCalcJettison(void *32, int16_t, int16_t, PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 576
+    },
+    "FEnumCalcMinerDest": {
+      "addr": "1088:5f32",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FEnumCalcMinerDest(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 143
+    },
+    "FEnumDropOffStage1": {
+      "addr": "10a8:3d00",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumDropOffStage1(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 21
+    },
+    "FEnumDropOffStage2": {
+      "addr": "10a8:3dfe",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumDropOffStage2(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 12
+    },
+    "FEnumNeedMinerals": {
+      "addr": "10a8:3f5e",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumNeedMinerals(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 30
+    },
+    "FEnumOurStarbase": {
+      "addr": "1090:6110",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FEnumOurStarbase(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 470
+    },
+    "FEnumPickUp": {
+      "addr": "10a8:3f00",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumPickUp(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 198
+    },
+    "FEnumPktAttack": {
+      "addr": "10a8:4204",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FEnumPktAttack(PLANET *32, PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 303
+    },
+    "FFillProdMinesAndFactories": {
+      "addr": "10a8:2d72",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t FFillProdMinesAndFactories(PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 45
+    },
+    "FFindBuddyAndJoinUp": {
+      "addr": "1090:9d18",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FFindBuddyAndJoinUp(FLEET *32, int16_t, int16_t, int32_t, int32_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 292
+    },
+    "FFindNearestObject": {
+      "addr": "1038:4070",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FFindNearestObject(POINT, int16_t, SCAN *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1325
+    },
+    "FFindPlayerMessage": {
+      "addr": "1030:932a",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FFindPlayerMessage(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 24
+    },
+    "FFindSomethingAndSelectIt": {
+      "addr": "1020:2e1c",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t FFindSomethingAndSelectIt(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 127
+    },
+    "FFinishPlrMsgEntry": {
+      "addr": "1030:9bd6",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FFinishPlrMsgEntry(int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 148
+    },
+    "FFleetCanJumpgate": {
+      "addr": "1038:7960",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FFleetCanJumpgate(FLEET *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1243
+    },
+    "FFleetHasBombs": {
+      "addr": "10f0:1e16",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FFleetHasBombs(FLEET *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 402
+    },
+    "FFleetHasTeeth": {
+      "addr": "10f0:1fbe",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FFleetHasTeeth(FLEET *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 171
+    },
+    "FFleetInField": {
+      "addr": "1090:1cf6",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FFleetInField(FLEET *32, THING *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 122
+    },
+    "FFleetMergeAll": {
+      "addr": "1038:34d8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FFleetMergeAll(FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 780
+    },
+    "FFleetMightHaveTeeth": {
+      "addr": "1090:6152",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FFleetMightHaveTeeth(FLEET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 698
+    },
+    "FFleetSplitAll": {
+      "addr": "1038:3a00",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FFleetSplitAll(FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 948
+    },
+    "FFuelTanker": {
+      "addr": "10f0:20f6",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FFuelTanker(SHDEF *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 693
+    },
+    "FGenerateTurn": {
+      "addr": "10b0:0000",
+      "segment": "MEMORY_TURN",
+      "proto": "int16_t FGenerateTurn(void)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 40
+    },
+    "FGetAIPart": {
+      "addr": "1090:043e",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FGetAIPart(int16_t, PART *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 22
+    },
+    "FGetBestDefensePart": {
+      "addr": "1048:21f6",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FGetBestDefensePart(PART *)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 116
+    },
+    "FGetMouseMove": {
+      "addr": "1040:4146",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FGetMouseMove(POINT *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1069
+    },
+    "FGetNMsgbig": {
+      "addr": "1030:8444",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FGetNMsgbig(int16_t, MSGBIG *)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 33
+    },
+    "FGetNewGameName": {
+      "addr": "1078:7508",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t FGetNewGameName(char *)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 169
+    },
+    "FGetNextObjHere": {
+      "addr": "1058:909c",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FGetNextObjHere(SCAN *, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 323
+    },
+    "FGetPrevLogRt": {
+      "addr": "1048:a25e",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FGetPrevLogRt(HDR *, uint8_t *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 105
+    },
+    "FGetRMouseMove": {
+      "addr": "1040:41e0",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FGetRMouseMove(POINT *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 953
+    },
+    "FGetSystemColors": {
+      "addr": "1018:08d2",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t FGetSystemColors(void)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 59
+    },
+    "FGotoWormholeAiFleet": {
+      "addr": "1090:0d5c",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FGotoWormholeAiFleet(FLEET *32, THING *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 284
+    },
+    "FHandleChar": {
+      "addr": "1018:15de",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t FHandleChar(uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 103
+    },
+    "FHandleKey": {
+      "addr": "1018:165a",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t FHandleKey(uint16_t, int16_t, int16_t, uint32_t)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 80
+    },
+    "FHandleMeasuringTape": {
+      "addr": "1058:9974",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FHandleMeasuringTape(SCAN *, POINT)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 333
+    },
+    "FHandleWayPointDrag": {
+      "addr": "1058:8176",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FHandleWayPointDrag(POINT)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 397
+    },
+    "FHullHasBombs": {
+      "addr": "10f0:1ec2",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FHullHasBombs(HUL *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 992
+    },
+    "FHullHasTeeth": {
+      "addr": "10f0:2072",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FHullHasTeeth(HUL *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 393
+    },
+    "FIntersectCircleLine": {
+      "addr": "1040:53b4",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FIntersectCircleLine(POINT, POINT, POINT, int32_t, int16_t, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 363
+    },
+    "FIsAiAttack": {
+      "addr": "1090:4a72",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FIsAiAttack(FLEET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 256
+    },
+    "FIsAiTransport": {
+      "addr": "1090:4c08",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FIsAiTransport(FLEET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 678
+    },
+    "FIsButtonDown": {
+      "addr": "1068:0c3a",
+      "segment": "MEMORY_TB",
+      "proto": "int16_t FIsButtonDown(int16_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 134
+    },
+    "FIsPopupHullType": {
+      "addr": "10c0:0148",
+      "segment": "MEMORY_POPUP",
+      "proto": "int16_t FIsPopupHullType(int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 147
+    },
+    "FIsTargetOfMdTarget": {
+      "addr": "10f0:587a",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t FIsTargetOfMdTarget(TOK *32, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 440
+    },
+    "FIsTurinDroneAiAttack": {
+      "addr": "1090:4b9a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FIsTurinDroneAiAttack(FLEET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 378
+    },
+    "FLoadGame": {
+      "addr": "1070:0810",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FLoadGame(char *, char *)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 828
+    },
+    "FLoadLogFile": {
+      "addr": "1048:c7a2",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FLoadLogFile(char *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 43
+    },
+    "FLookupFleet": {
+      "addr": "1038:2160",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupFleet(int16_t, FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1089
+    },
+    "FLookupObject": {
+      "addr": "1038:24a0",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupObject(int16_t, int16_t, void *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1303
+    },
+    "FLookupOrbitingXfer": {
+      "addr": "1038:24fa",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1098
+    },
+    "FLookupPart": {
+      "addr": "1008:524e",
+      "segment": "MEMORY_PARTS",
+      "proto": "int16_t FLookupPart(PART *)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3677
+    },
+    "FLookupPartX": {
+      "addr": "1008:51fe",
+      "segment": "MEMORY_PARTS",
+      "proto": "int16_t FLookupPartX(PART *, uint16_t, uint16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3997
+    },
+    "FLookupPlanet": {
+      "addr": "1038:04a6",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupPlanet(int16_t, PLANET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1272
+    },
+    "FLookupSelPlanet": {
+      "addr": "1038:0000",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupSelPlanet(PLANET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1073
+    },
+    "FLookupSelShip": {
+      "addr": "1038:2032",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupSelShip(FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 319
+    },
+    "FLookupThing": {
+      "addr": "1038:07fe",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FLookupThing(int16_t, THING *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1080
+    },
+    "FMarkFile": {
+      "addr": "1070:904a",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FMarkFile(uint16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 150
+    },
+    "FMatchTarget": {
+      "addr": "1038:6612",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FMatchTarget(FLEET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 326
+    },
+    "FMoveAiFleet": {
+      "addr": "1090:3d0a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FMoveAiFleet(FLEET *32, ORDER *, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 387
+    },
+    "FMoveToNearestStarbase": {
+      "addr": "1090:6f7e",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FMoveToNearestStarbase(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 654
+    },
+    "FNearAWayPoint": {
+      "addr": "1058:8074",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FNearAWayPoint(POINT, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 436
+    },
+    "FNewTurnAvail": {
+      "addr": "1070:4f22",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FNewTurnAvail(int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2359
+    },
+    "FOKMergeDialog": {
+      "addr": "10f8:81da",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FOKMergeDialog(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 316
+    },
+    "FOpenFile": {
+      "addr": "1070:4ac2",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FOpenFile(uint16_t, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2204
+    },
+    "FOpenGame": {
+      "addr": "1020:58f4",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t FOpenGame(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 406
+    },
+    "FOtherStuffAtScanSel": {
+      "addr": "1028:4d6e",
+      "segment": "MEMORY_MINE",
+      "proto": "int16_t FOtherStuffAtScanSel(void)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 140
+    },
+    "FPacketDecay": {
+      "addr": "10b8:6e9c",
+      "segment": "MEMORY_TURN2",
+      "proto": "int16_t FPacketDecay(THING *32, int16_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 307
+    },
+    "FPotentISWarFleet": {
+      "addr": "1098:012e",
+      "segment": "MEMORY_AI2",
+      "proto": "int16_t FPotentISWarFleet(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "ai2.c",
+      "line": 117
+    },
+    "FPotentMacWarFleet": {
+      "addr": "10a0:42ec",
+      "segment": "MEMORY_AI3",
+      "proto": "int16_t FPotentMacWarFleet(FLEET *32, int16_t *)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 12
+    },
+    "FPotentRobWarFleet": {
+      "addr": "1088:31bc",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t FPotentRobWarFleet(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 262
+    },
+    "FProdIsTerra": {
+      "addr": "1048:7e9a",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FProdIsTerra(PROD *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 416
+    },
+    "FQueueAiDefenses": {
+      "addr": "1090:939a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FQueueAiDefenses(PLANET *32, int32_t *, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 102
+    },
+    "FQueueAiScanner": {
+      "addr": "1090:90d6",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FQueueAiScanner(PLANET *32, int32_t *, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 634
+    },
+    "FQueueAiTerraforming": {
+      "addr": "1090:8d28",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FQueueAiTerraforming(PLANET *32, int32_t *, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 717
+    },
+    "FQueueColonistDrop": {
+      "addr": "10b8:4faa",
+      "segment": "MEMORY_TURN2",
+      "proto": "int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 254
+    },
+    "FReadFleet": {
+      "addr": "1070:3a4c",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FReadFleet(FLEET *32)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 609
+    },
+    "FReadPlanet": {
+      "addr": "1070:3206",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FReadPlanet(int16_t, PLANET *32, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2396
+    },
+    "FReadShDef": {
+      "addr": "1070:0006",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FReadShDef(RTSHDEF *32, SHDEF *32, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2028
+    },
+    "FRemovePlayerMessage": {
+      "addr": "1030:9278",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FRemovePlayerMessage(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 344
+    },
+    "FRetargetMiner": {
+      "addr": "10a0:336c",
+      "segment": "MEMORY_AI3",
+      "proto": "int16_t FRetargetMiner(FLEET *32)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 89
+    },
+    "FRunLogFile": {
+      "addr": "1048:a2d6",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FRunLogFile(void)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 245
+    },
+    "FRunLogRecord": {
+      "addr": "1048:a38c",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FRunLogRecord(int16_t, int16_t, uint8_t *32)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 163
+    },
+    "FSalvageTargetFreighter2": {
+      "addr": "1090:395a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FSalvageTargetFreighter2(FLEET *32, int16_t, int16_t, int16_t, int32_t, int32_t, THING *32 *, int16_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 477
+    },
+    "FSaveRace": {
+      "addr": "10e0:58d4",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t FSaveRace(char *, PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 101
+    },
+    "FScout": {
+      "addr": "1080:2322",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t FScout(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 7
+    },
+    "FSelectSz": {
+      "addr": "1058:945a",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FSelectSz(char *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 277
+    },
+    "FSendPlrMsg": {
+      "addr": "1030:7ee8",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FSendPlrMsg(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 924
+    },
+    "FSendPlrMsg2": {
+      "addr": "1030:7eaa",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FSendPlrMsg2(int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 204
+    },
+    "FSendPlrMsg2XGen": {
+      "addr": "1030:823a",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FSendPlrMsg2XGen(int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 183
+    },
+    "FSendPrependedPlrMsg": {
+      "addr": "1030:7f80",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t FSendPrependedPlrMsg(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 312
+    },
+    "FSerialAndEnvFromSz": {
+      "addr": "1020:2aec",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t FSerialAndEnvFromSz(int32_t *, uint8_t *, char *)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 24
+    },
+    "FSetUpBatchProcessing": {
+      "addr": "1018:06a4",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t FSetUpBatchProcessing(void)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 10
+    },
+    "FSetupXferBtns": {
+      "addr": "1050:6bea",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FSetupXferBtns(RECT *)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1175
+    },
+    "FShouldPartBeHidden": {
+      "addr": "10d8:68c4",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int16_t FShouldPartBeHidden(PART *)",
+      "status": "implemented",
+      "file": "research.c",
+      "line": 51
+    },
+    "FShouldPlanetBuildColonizer": {
+      "addr": "1090:9f30",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FShouldPlanetBuildColonizer(PLANET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 843
+    },
+    "FShouldWeBuildColonizers": {
+      "addr": "1090:476a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FShouldWeBuildColonizers(int16_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 580
+    },
+    "FStargateJump": {
+      "addr": "1080:0cfe",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t FStargateJump(FLEET *32, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 16
+    },
+    "FStringFitsScreen": {
+      "addr": "1040:43aa",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FStringFitsScreen(char *32, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 975
+    },
+    "FTrackBtn": {
+      "addr": "1040:364a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t FTrackBtn(BTNT *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1114
+    },
+    "FTrackNewGameDlg3": {
+      "addr": "1078:a210",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 225
+    },
+    "FTrackRaceDlg2": {
+      "addr": "10e0:2204",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t FTrackRaceDlg2(uint16_t, POINT, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 454
+    },
+    "FTrackRaceDlg3": {
+      "addr": "10e0:2fb8",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t FTrackRaceDlg3(uint16_t, POINT, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 437
+    },
+    "FTrackResearchDlg": {
+      "addr": "10d8:1a8c",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int16_t FTrackResearchDlg(uint16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 229
+    },
+    "FTrackSlot": {
+      "addr": "10c8:306a",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t FTrackSlot(uint16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 324
+    },
+    "FTrackXfer": {
+      "addr": "1050:5a16",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t FTrackXfer(uint16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1385
+    },
+    "FTravelThroughMineFields": {
+      "addr": "10b0:4f60",
+      "segment": "MEMORY_TURN",
+      "proto": "int16_t FTravelThroughMineFields(FLEET *32, int16_t *, THING *32)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 152
+    },
+    "FTutorTaskDone": {
+      "addr": "10f8:0fbc",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FTutorTaskDone(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 99
+    },
+    "FTutorialEnabledShipBuilder": {
+      "addr": "10f8:79f6",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t FTutorialEnabledShipBuilder(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 231
+    },
+    "FUpgradeAiStarbase": {
+      "addr": "1090:882a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t FUpgradeAiStarbase(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 411
+    },
+    "FValidSerialLong": {
+      "addr": "1070:48c4",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FValidSerialLong(uint32_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2777
+    },
+    "FValidSerialNo": {
+      "addr": "1038:62f8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t FValidSerialNo(char *, int32_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 661
+    },
+    "FWasRaceFile": {
+      "addr": "1020:5da8",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t FWasRaceFile(char *, int16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 59
+    },
+    "FWriteDataFile": {
+      "addr": "1070:5964",
+      "segment": "MEMORY_IO",
+      "proto": "int16_t FWriteDataFile(char *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 202
+    },
+    "FWriteHistFile": {
+      "addr": "1048:d29e",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FWriteHistFile(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 207
+    },
+    "FWriteLogFile": {
+      "addr": "1048:cdf6",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FWriteLogFile(char *, int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 16
+    },
+    "FWriteTutorialMFile": {
+      "addr": "1048:d058",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t FWriteTutorialMFile(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 78
+    },
+    "FakeCEProc": {
+      "addr": "1068:1df0",
+      "segment": "MEMORY_TB",
+      "proto": "int32_t FakeCEProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 48
+    },
+    "FakeComboProc": {
+      "addr": "1068:1d72",
+      "segment": "MEMORY_TB",
+      "proto": "int32_t FakeComboProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 41
+    },
+    "FakeEditProc": {
+      "addr": "1050:a700",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t FakeEditProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 959
+    },
+    "FakeListProc": {
+      "addr": "10c8:6758",
+      "segment": "MEMORY_BUILD",
+      "proto": "int32_t FakeListProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 299
+    },
+    "FileError": {
+      "addr": "1070:4a10",
+      "segment": "MEMORY_IO",
+      "proto": "void FileError(int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 404
+    },
+    "FillBattleDD": {
+      "addr": "1050:9a36",
+      "segment": "MEMORY_SHIP",
+      "proto": "void FillBattleDD(int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1090
+    },
+    "FillBuildDD": {
+      "addr": "10c8:5e80",
+      "segment": "MEMORY_BUILD",
+      "proto": "void FillBuildDD(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 261
+    },
+    "FillBuildPartsLB": {
+      "addr": "10c8:63e8",
+      "segment": "MEMORY_BUILD",
+      "proto": "void FillBuildPartsLB(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 288
+    },
+    "FillFleetCompLB": {
+      "addr": "1050:9166",
+      "segment": "MEMORY_SHIP",
+      "proto": "void FillFleetCompLB(void)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1103
+    },
+    "FillOrdersLB": {
+      "addr": "1050:928c",
+      "segment": "MEMORY_SHIP",
+      "proto": "void FillOrdersLB(void)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1370
+    },
+    "FillPlanetProdLB": {
+      "addr": "1048:6692",
+      "segment": "MEMORY_PLANET",
+      "proto": "void FillPlanetProdLB(uint16_t, PLPROD *32, PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 830
+    },
+    "FillProdSrcLB": {
+      "addr": "10d0:3b00",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void FillProdSrcLB(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 216
+    },
+    "FillProductionQueue": {
+      "addr": "10a8:2ce2",
+      "segment": "MEMORY_AI4",
+      "proto": "void FillProductionQueue(void)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 229
+    },
+    "FillShipDD": {
+      "addr": "1048:42a0",
+      "segment": "MEMORY_PLANET",
+      "proto": "void FillShipDD(int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 780
+    },
+    "FillZipProdLB": {
+      "addr": "10d0:5e58",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void FillZipProdLB(uint16_t, ZIPPRODQ *)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 262
+    },
+    "FindDlg": {
+      "addr": "1058:9286",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t FindDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 92
+    },
+    "FinishProduction": {
+      "addr": "10d0:1090",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void FinishProduction(int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 246
+    },
+    "FixPlanetsUnderAttack": {
+      "addr": "1090:69e6",
+      "segment": "MEMORY_AIU",
+      "proto": "void FixPlanetsUnderAttack(PROD *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 835
+    },
+    "FleetOrdersChangeTarget": {
+      "addr": "1050:cafe",
+      "segment": "MEMORY_SHIP",
+      "proto": "void FleetOrdersChangeTarget(FLEET *32)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 928
+    },
+    "FleetTransferCargoBalance": {
+      "addr": "1050:ae74",
+      "segment": "MEMORY_SHIP",
+      "proto": "void FleetTransferCargoBalance(FLEET *, FLEET *)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 371
+    },
+    "FormatSerialAndEnv": {
+      "addr": "1020:2886",
+      "segment": "MEMORY_MDI",
+      "proto": "void FormatSerialAndEnv(int32_t, uint8_t *, char *)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 43
+    },
+    "FrameWndProc": {
+      "addr": "1020:06d6",
+      "segment": "MEMORY_MDI",
+      "proto": "int32_t FrameWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 267
+    },
+    "FreeHb": {
+      "addr": "1060:02d8",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void FreeHb(HB *32)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 521
+    },
+    "FreeHbr": {
+      "addr": "1040:4532",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void FreeHbr(uint16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1104
+    },
+    "FreeLp": {
+      "addr": "1060:07a8",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void FreeLp(void *32, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 263
+    },
+    "FreeLpth": {
+      "addr": "1110:0224",
+      "segment": "MEMORY_THING",
+      "proto": "void FreeLpth(THING *32)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 31
+    },
+    "FreePl": {
+      "addr": "1060:0918",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void FreePl(PL *32)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 124
+    },
+    "FreeStuff": {
+      "addr": "1018:0bae",
+      "segment": "MEMORY_MAIN",
+      "proto": "void FreeStuff(void)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 72
+    },
+    "FuelFleets": {
+      "addr": "10b0:2efa",
+      "segment": "MEMORY_TURN",
+      "proto": "void FuelFleets(void)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 22
+    },
+    "GenNewGameFromFile": {
+      "addr": "1078:4812",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t GenNewGameFromFile(char *)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 182
+    },
+    "GenerateWorld": {
+      "addr": "1078:0136",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t GenerateWorld(int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 81
+    },
+    "GetASubMenu": {
+      "addr": "1020:589a",
+      "segment": "MEMORY_MDI",
+      "proto": "uint16_t GetASubMenu(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 397
+    },
+    "GetCachedFleetScannerRange": {
+      "addr": "1038:4e02",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t GetCachedFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 305
+    },
+    "GetCargoFree": {
+      "addr": "1050:5f98",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t GetCargoFree(FLEET *32)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 19
+    },
+    "GetDiskSerialNumber": {
+      "addr": "1040:5fc0",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint32_t GetDiskSerialNumber(void)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 343
+    },
+    "GetDxDyOrientation": {
+      "addr": "1058:987c",
+      "segment": "MEMORY_SCAN",
+      "proto": "void GetDxDyOrientation(int16_t, int16_t, POINT *, POINT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 297
+    },
+    "GetFileSeeds": {
+      "addr": "1040:1a4e",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void GetFileSeeds(int32_t *, int32_t *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 558
+    },
+    "GetFileStatus": {
+      "addr": "1070:4a60",
+      "segment": "MEMORY_IO",
+      "proto": "void GetFileStatus(int16_t, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2388
+    },
+    "GetFleetScannerRange": {
+      "addr": "1038:4fb8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1310
+    },
+    "GetFuelFree": {
+      "addr": "1050:6004",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t GetFuelFree(FLEET *32)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 12
+    },
+    "GetIniWinRc": {
+      "addr": "1000:1020",
+      "segment": "MEMORY_INIT",
+      "proto": "void GetIniWinRc(char *, char *, int16_t, WN *)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 79
+    },
+    "GetMineFieldCounts": {
+      "addr": "1028:05ac",
+      "segment": "MEMORY_MINE",
+      "proto": "void GetMineFieldCounts(uint16_t, int16_t *, int16_t *)",
+      "status": "implemented",
+      "file": "mine.c",
+      "line": 36
+    },
+    "GetPlanetScannerRange": {
+      "addr": "1038:4c02",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t GetPlanetScannerRange(PLANET *32, int16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1033
+    },
+    "GetProdQCost": {
+      "addr": "1090:57c0",
+      "segment": "MEMORY_AIU",
+      "proto": "void GetProdQCost(PLANET *32, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 219
+    },
+    "GetProductionCosts": {
+      "addr": "10d0:3f20",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void GetProductionCosts(PLANET *32, PROD *32, uint32_t *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 21
+    },
+    "GetRaceGrbit": {
+      "addr": "10e0:3176",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t GetRaceGrbit(PLAYER *, int16_t)",
+      "status": "implemented",
+      "file": "race.c",
+      "line": 49
+    },
+    "GetRaceStat": {
+      "addr": "10e0:30d2",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t GetRaceStat(PLAYER *, int16_t)",
+      "status": "implemented",
+      "file": "race.c",
+      "line": 115
+    },
+    "GetResourcesAvailable": {
+      "addr": "1090:56d0",
+      "segment": "MEMORY_AIU",
+      "proto": "void GetResourcesAvailable(PLANET *32, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 455
+    },
+    "GetScanFleetOrientation": {
+      "addr": "1058:978c",
+      "segment": "MEMORY_SCAN",
+      "proto": "void GetScanFleetOrientation(FLEET *32, POINT *, POINT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 224
+    },
+    "GetShdefScannerRange": {
+      "addr": "1038:50d0",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1174
+    },
+    "GetTechLevelCost": {
+      "addr": "10d8:1dba",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int32_t GetTechLevelCost(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 27
+    },
+    "GetTrueHullCost": {
+      "addr": "1038:5dba",
+      "segment": "MEMORY_UTIL",
+      "proto": "void GetTrueHullCost(int16_t, HUL *32, uint16_t *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1167
+    },
+    "GetTruePartCost": {
+      "addr": "1050:cd00",
+      "segment": "MEMORY_SHIP",
+      "proto": "void GetTruePartCost(int16_t, PART *, uint16_t *)",
+      "status": "implemented",
+      "file": "ship.c",
+      "line": 598
+    },
+    "GetVCCheck": {
+      "addr": "1078:b60c",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t GetVCCheck(GAME *, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 25
+    },
+    "GetVCRStats": {
+      "addr": "10e8:193e",
+      "segment": "MEMORY_VCR",
+      "proto": "void GetVCRStats(int16_t, int32_t *, DV *, int32_t *, int16_t *)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 380
+    },
+    "GetVCVal": {
+      "addr": "1078:b710",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t GetVCVal(GAME *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 47
+    },
+    "GetWindowRc": {
+      "addr": "1020:79ac",
+      "segment": "MEMORY_MDI",
+      "proto": "void GetWindowRc(uint16_t, RECT *)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 328
+    },
+    "GetXferLeftRightRcs": {
+      "addr": "1050:6b46",
+      "segment": "MEMORY_SHIP",
+      "proto": "void GetXferLeftRightRcs(RECT *, RECT *, RECT *)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1379
+    },
+    "HandleBasicAiTasks": {
+      "addr": "1090:95a4",
+      "segment": "MEMORY_AIU",
+      "proto": "void HandleBasicAiTasks(int16_t, PROD *, int16_t, int32_t *, int32_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 707
+    },
+    "HandleFocusState": {
+      "addr": "1048:60e6",
+      "segment": "MEMORY_PLANET",
+      "proto": "void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 761
+    },
+    "HbrGet": {
+      "addr": "1040:4448",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t HbrGet(uint32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 879
+    },
+    "HcrsFromFrameWindowPt": {
+      "addr": "1020:24b0",
+      "segment": "MEMORY_MDI",
+      "proto": "uint16_t HcrsFromFrameWindowPt(POINT, int16_t *)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 435
+    },
+    "HdibLoadBigResource": {
+      "addr": "1040:5220",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t HdibLoadBigResource(int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 866
+    },
+    "HealShips": {
+      "addr": "10b8:444c",
+      "segment": "MEMORY_TURN2",
+      "proto": "void HealShips(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 425
+    },
+    "HfontPrinterCreate": {
+      "addr": "1040:6aa6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t HfontPrinterCreate(uint16_t, int16_t, int16_t *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 961
+    },
+    "HideProgressGauge": {
+      "addr": "1040:63b2",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void HideProgressGauge(void)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 896
+    },
+    "HostModeDialog": {
+      "addr": "1020:6c16",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 102
+    },
+    "HostOptionsDialog": {
+      "addr": "1020:75ce",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 487
+    },
+    "HostTimerProc": {
+      "addr": "1020:7716",
+      "segment": "MEMORY_MDI",
+      "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 380
+    },
+    "HpalBlackReserved": {
+      "addr": "1040:4c9c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t HpalBlackReserved(void)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 942
+    },
+    "HpalFromDib": {
+      "addr": "1040:4b50",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t HpalFromDib(uint16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1046
+    },
+    "HtMineWindow": {
+      "addr": "1028:37ac",
+      "segment": "MEMORY_MINE",
+      "proto": "int16_t HtMineWindow(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 319
+    },
+    "HtMsgBox": {
+      "addr": "1030:7d8c",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t HtMsgBox(POINT)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 960
+    },
+    "IBestRemoteTerra": {
+      "addr": "10b8:8b70",
+      "segment": "MEMORY_TURN2",
+      "proto": "int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 382
+    },
+    "IBestTerraform": {
+      "addr": "1048:5dd2",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t IBestTerraform(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 432
+    },
+    "ICompFleetPoint": {
+      "addr": "1038:1f0c",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t ICompFleetPoint(void *, void *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 960
+    },
+    "ICompFleetPoint2": {
+      "addr": "1038:1fa2",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t ICompFleetPoint2(void *, void *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 799
+    },
+    "ICompLong": {
+      "addr": "1040:1d74",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t ICompLong(void *, void *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 716
+    },
+    "ICompReport": {
+      "addr": "1108:5bb8",
+      "segment": "MEMORY_REPORT",
+      "proto": "int16_t ICompReport(void *, void *)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 283
+    },
+    "IDropPart": {
+      "addr": "10c8:5476",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t IDropPart(POINT, HS, int16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 275
+    },
+    "IEmptyBmpFromGrhst": {
+      "addr": "10c8:6716",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t IEmptyBmpFromGrhst(int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 25
+    },
+    "IFindIdealWarp": {
+      "addr": "1050:a76e",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t IFindIdealWarp(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 424
+    },
+    "IMsgNext": {
+      "addr": "1030:7808",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t IMsgNext(int16_t)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 869
+    },
+    "IMsgPrev": {
+      "addr": "1030:78d8",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t IMsgPrev(int16_t)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 814
+    },
+    "IPlrAlsoCheater": {
+      "addr": "1018:07aa",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t IPlrAlsoCheater(int16_t)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 25
+    },
+    "IRaceChecksum": {
+      "addr": "10e0:5888",
+      "segment": "MEMORY_RACE",
+      "proto": "uint16_t IRaceChecksum(PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 120
+    },
+    "IStargateFromLppl": {
+      "addr": "1038:10fa",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t IStargateFromLppl(PLANET *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 928
+    },
+    "ITechLearnATech": {
+      "addr": "10f0:9918",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t ITechLearnATech(int16_t, int16_t, int16_t, int16_t, uint16_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 824
+    },
+    "IValidateWormholePos": {
+      "addr": "1110:064c",
+      "segment": "MEMORY_THING",
+      "proto": "int16_t IValidateWormholePos(THING *32)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 131
+    },
+    "IWarpBestForWaypoint": {
+      "addr": "1058:7a18",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t IWarpBestForWaypoint(FLEET *32, ORDER *32)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 17
+    },
+    "IWarpMAFromLppl": {
+      "addr": "1048:7b10",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t IWarpMAFromLppl(PLANET *32, int16_t *)",
+      "status": "implemented",
+      "file": "planet.c",
+      "line": 47
+    },
+    "IdFindAdjStarbase": {
+      "addr": "1048:474e",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t IdFindAdjStarbase(int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 767
+    },
+    "IdGetBestScannerDest": {
+      "addr": "10a8:282a",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t IdGetBestScannerDest(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 184
+    },
+    "IdNearestColonizablePlanet": {
+      "addr": "1090:0e3e",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdNearestColonizablePlanet(FLEET *32, THING *32 *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 196
+    },
+    "IdNearestUnknownPlanet": {
+      "addr": "1090:15a4",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdNearestUnknownPlanet(FLEET *32, THING *32 *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 729
+    },
+    "IdRandomPlanetNearby": {
+      "addr": "1090:5f54",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdRandomPlanetNearby(POINT, int16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 785
+    },
+    "IdTargetArmada": {
+      "addr": "1088:288e",
+      "segment": "MEMORY_AI",
+      "proto": "int16_t IdTargetArmada(FLEET *32)",
+      "status": "stub",
+      "file": "ai.c",
+      "line": 159
+    },
+    "IdTargetAttack": {
+      "addr": "1090:1ffe",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdTargetAttack(FLEET *32, FLEET *32, FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 74
+    },
+    "IdTargetFreighter": {
+      "addr": "1090:286c",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdTargetFreighter(FLEET *32, PLANET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 325
+    },
+    "IdTargetMacFreighter": {
+      "addr": "10a0:3524",
+      "segment": "MEMORY_AI3",
+      "proto": "int16_t IdTargetMacFreighter(FLEET *32)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 43
+    },
+    "IdTargetScout": {
+      "addr": "1090:61de",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdTargetScout(FLEET *32, FLEET *32, FLEET *32, int16_t, THING *32 *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 495
+    },
+    "IdmGetMessageN": {
+      "addr": "1030:8412",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t IdmGetMessageN(int16_t)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 138
+    },
+    "IdmGiveTraderPart": {
+      "addr": "1110:1a96",
+      "segment": "MEMORY_THING",
+      "proto": "int16_t IdmGiveTraderPart(uint16_t, int16_t, uint16_t *)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 7
+    },
+    "IdplFindClosestStarbase": {
+      "addr": "1090:6e04",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IdplFindClosestStarbase(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 440
+    },
+    "IflFromLpfl": {
+      "addr": "1038:2ce8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t IflFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1146
+    },
+    "IncreaseAIMinefieldSizes": {
+      "addr": "1090:9c66",
+      "segment": "MEMORY_AIU",
+      "proto": "void IncreaseAIMinefieldSizes(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 645
+    },
+    "InitBattlePlan": {
+      "addr": "1078:00c0",
+      "segment": "MEMORY_CREATE",
+      "proto": "void InitBattlePlan(BTLPLAN *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 32
+    },
+    "InitBtnTrack": {
+      "addr": "1040:354c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void InitBtnTrack(BTNT *, uint16_t, uint16_t, RECT *, int16_t, int16_t, int16_t, int16_t, char *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 902
+    },
+    "InitFromHuldef": {
+      "addr": "10f0:3cba",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t InitFromHuldef(HUL *32, int16_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 234
+    },
+    "InitInstance": {
+      "addr": "1000:0d70",
+      "segment": "MEMORY_INIT",
+      "proto": "int16_t InitInstance(int16_t)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 70
+    },
+    "InitMDIApp": {
+      "addr": "1020:0000",
+      "segment": "MEMORY_MDI",
+      "proto": "int16_t InitMDIApp(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 500
+    },
+    "InitNewGame3": {
+      "addr": "1078:74f8",
+      "segment": "MEMORY_CREATE",
+      "proto": "void InitNewGame3(void)",
+      "status": "missing",
+      "file": null,
+      "line": null
+    },
+    "InitNewGamePlr": {
+      "addr": "1078:6e44",
+      "segment": "MEMORY_CREATE",
+      "proto": "void InitNewGamePlr(int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 38
+    },
+    "InitProduction": {
+      "addr": "10d0:015e",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void InitProduction(PROD *)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 73
+    },
+    "InitRandomPlanetList": {
+      "addr": "1090:a082",
+      "segment": "MEMORY_AIU",
+      "proto": "void InitRandomPlanetList(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 132
+    },
+    "InitScoreDlg": {
+      "addr": "1108:13b6",
+      "segment": "MEMORY_REPORT",
+      "proto": "void InitScoreDlg(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 236
+    },
+    "InitTiles": {
+      "addr": "1000:0eaa",
+      "segment": "MEMORY_INIT",
+      "proto": "void InitTiles(void)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 100
+    },
+    "InitializeBoard": {
+      "addr": "10f0:45b4",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void InitializeBoard(FLEET *32, int16_t, uint16_t, uint8_t *, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 647
+    },
+    "InitializeMenu": {
+      "addr": "1020:5376",
+      "segment": "MEMORY_MDI",
+      "proto": "void InitializeMenu(uint16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 426
+    },
+    "InitializeProductionDlg": {
+      "addr": "10d0:3430",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void InitializeProductionDlg(uint16_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 252
+    },
+    "IntToRoman": {
+      "addr": "1040:5830",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void IntToRoman(int16_t, char *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 752
+    },
+    "InvalidateAdvPtsRect": {
+      "addr": "10e0:54d4",
+      "segment": "MEMORY_RACE",
+      "proto": "void InvalidateAdvPtsRect(uint16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 386
+    },
+    "InvalidateMineralBars": {
+      "addr": "1028:040a",
+      "segment": "MEMORY_MINE",
+      "proto": "void InvalidateMineralBars(void)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 241
+    },
+    "InvalidateReport": {
+      "addr": "1108:7af6",
+      "segment": "MEMORY_REPORT",
+      "proto": "void InvalidateReport(int16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 349
+    },
+    "InvertPaneBorder": {
+      "addr": "1020:1e3c",
+      "segment": "MEMORY_MDI",
+      "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 446
+    },
+    "IpctCanTerraformLppl": {
+      "addr": "1048:7f56",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t IpctCanTerraformLppl(PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 451
+    },
+    "IrcRaceDlgHitTest": {
+      "addr": "10e0:2164",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t IrcRaceDlgHitTest(POINT)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 475
+    },
+    "IroEnsureAi": {
+      "addr": "1090:425a",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IroEnsureAi(uint8_t *32, int16_t, int16_t *, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 604
+    },
+    "IshFindSimilarDesign": {
+      "addr": "1038:7c5e",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t IshFindSimilarDesign(HUL *32, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 747
+    },
+    "IshdefAiSBLatest": {
+      "addr": "1090:84be",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IshdefAiSBLatest(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 463
+    },
+    "IshdefAiSBLatestOF": {
+      "addr": "1090:8458",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t IshdefAiSBLatestOF(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 627
+    },
+    "IshdefPrimaryFromLpfl": {
+      "addr": "1038:3e1c",
+      "segment": "MEMORY_UTIL",
+      "proto": "int16_t IshdefPrimaryFromLpfl(FLEET *32, int16_t *)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 265
+    },
+    "ItbFromPpt": {
+      "addr": "1068:0b12",
+      "segment": "MEMORY_TB",
+      "proto": "int16_t ItbFromPpt(POINT *)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 141
+    },
+    "KeepFleetsMoving": {
+      "addr": "1090:45ca",
+      "segment": "MEMORY_AIU",
+      "proto": "void KeepFleetsMoving(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 395
+    },
+    "KillQueuedMassPackets": {
+      "addr": "10c8:6a52",
+      "segment": "MEMORY_BUILD",
+      "proto": "void KillQueuedMassPackets(PLANET *32)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 16
+    },
+    "KillQueuedShips": {
+      "addr": "10c8:6c2a",
+      "segment": "MEMORY_BUILD",
+      "proto": "void KillQueuedShips(PLANET *32)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 69
+    },
+    "KillShips": {
+      "addr": "10f0:7cde",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void KillShips(TOK *32, int16_t, int16_t, FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 864
+    },
+    "KillUsedWaypoints": {
+      "addr": "1080:189a",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void KillUsedWaypoints(void)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 185
+    },
+    "LCalcFuelGainFromRamScoops": {
+      "addr": "1038:56b8",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t LCalcFuelGainFromRamScoops(FLEET *32, int16_t, int32_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 197
+    },
+    "LComputePower": {
+      "addr": "1038:0b32",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t LComputePower(SHDEF *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 343
+    },
+    "LDistance2": {
+      "addr": "1040:685c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int32_t LDistance2(POINT, POINT)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 737
+    },
+    "LDrawGauge": {
+      "addr": "1040:31a2",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int32_t LDrawGauge(uint16_t, RECT *, int16_t, int32_t *, uint16_t *, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1150
+    },
+    "LFetchScoreXVal": {
+      "addr": "1108:2f94",
+      "segment": "MEMORY_REPORT",
+      "proto": "int32_t LFetchScoreXVal(SCOREX *32, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 377
+    },
+    "LFuelUseToWaypoint": {
+      "addr": "1050:a9f4",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t LFuelUseToWaypoint(FLEET *32, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "ship.c",
+      "line": 765
+    },
+    "LGetFleetStat": {
+      "addr": "1050:40f2",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t LGetFleetStat(FLEET *32, int16_t)",
+      "status": "implemented",
+      "file": "ship.c",
+      "line": 50
+    },
+    "LGetNextFileXor": {
+      "addr": "1040:1b54",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int32_t LGetNextFileXor(void)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 463
+    },
+    "LInnateRaceHabitability": {
+      "addr": "10e0:4c6e",
+      "segment": "MEMORY_RACE",
+      "proto": "int32_t LInnateRaceHabitability(PLAYER *)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 157
+    },
+    "LSaltFromSz": {
+      "addr": "1040:59ce",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int32_t LSaltFromSz(char *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 438
+    },
+    "LdpFromItokDv": {
+      "addr": "10e8:07a8",
+      "segment": "MEMORY_VCR",
+      "proto": "int32_t LdpFromItokDv(int16_t, DV *32)",
+      "status": "implemented",
+      "file": "vcr.c",
+      "line": 10
+    },
+    "LinkFleets": {
+      "addr": "1038:1bb4",
+      "segment": "MEMORY_UTIL",
+      "proto": "void LinkFleets(int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1109
+    },
+    "LogChangeBtlplan": {
+      "addr": "1048:93d0",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeBtlplan(BTLPLAN *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 150
+    },
+    "LogChangeFleet": {
+      "addr": "1048:8ebe",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeFleet(FLEET *32, FLEET *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 274
+    },
+    "LogChangeName": {
+      "addr": "1048:8d5a",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeName(int16_t, int16_t, char *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 300
+    },
+    "LogChangePlanet": {
+      "addr": "1048:9420",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangePlanet(PLANET *32, PLANET *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 122
+    },
+    "LogChangeRelations": {
+      "addr": "1048:9340",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeRelations(void)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 156
+    },
+    "LogChangeShDef": {
+      "addr": "1048:8c28",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeShDef(SHDEF *32)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 309
+    },
+    "LogChangeThing": {
+      "addr": "1048:9908",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogChangeThing(THING *32, THING *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 113
+    },
+    "LogMakeValidXfer": {
+      "addr": "1048:99f6",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogMakeValidXfer(LOGXFER *, LOGXFER *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 256
+    },
+    "LogMakeValidXferf": {
+      "addr": "1048:9fa6",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogMakeValidXferf(LOGXFERF *, LOGXFERF *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 232
+    },
+    "LogMergeFleet": {
+      "addr": "1048:8b6c",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogMergeFleet(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 33
+    },
+    "LogSplitFleet": {
+      "addr": "1048:8b0e",
+      "segment": "MEMORY_PLANET",
+      "proto": "void LogSplitFleet(int16_t)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 72
+    },
+    "LogicalToScan": {
+      "addr": "1058:744e",
+      "segment": "MEMORY_SCAN",
+      "proto": "void LogicalToScan(POINT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 430
+    },
+    "LongFromSerialCh": {
+      "addr": "1038:6280",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t LongFromSerialCh(char)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 496
+    },
+    "LookupBestPlanetaryScanner": {
+      "addr": "1008:60be",
+      "segment": "MEMORY_PARTS",
+      "proto": "void LookupBestPlanetaryScanner(PART *)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3578
+    },
+    "LpAlloc": {
+      "addr": "1060:03b2",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void *32 LpAlloc(uint16_t, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 292
+    },
+    "LpReAlloc": {
+      "addr": "1060:0660",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void *32 LpReAlloc(void *32, uint16_t, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 370
+    },
+    "LpengineFromId": {
+      "addr": "1008:5168",
+      "segment": "MEMORY_PARTS",
+      "proto": "ENGINE *32 LpengineFromId(int16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 4014
+    },
+    "LpflFindClosestEnum": {
+      "addr": "1090:5bae",
+      "segment": "MEMORY_AIU",
+      "proto": "FLEET *32 LpflFindClosestEnum(FLEET *32, int16_t (*32)(FLEET *32, FLEET *32))",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 34
+    },
+    "LpflFromId": {
+      "addr": "1038:2078",
+      "segment": "MEMORY_UTIL",
+      "proto": "FLEET *32 LpflFromId(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 86
+    },
+    "LpflNew": {
+      "addr": "1038:300c",
+      "segment": "MEMORY_UTIL",
+      "proto": "FLEET *32 LpflNew(int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1046
+    },
+    "LpflNewSplit": {
+      "addr": "1038:3372",
+      "segment": "MEMORY_UTIL",
+      "proto": "FLEET *32 LpflNewSplit(FLEET *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1284
+    },
+    "LphbAlloc": {
+      "addr": "1060:0000",
+      "segment": "MEMORY_MEMORY",
+      "proto": "HB *32 LphbAlloc(uint16_t, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 432
+    },
+    "LphbFromLpHt": {
+      "addr": "1060:058c",
+      "segment": "MEMORY_MEMORY",
+      "proto": "HB *32 LphbFromLpHt(void *32, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 233
+    },
+    "LphbReAlloc": {
+      "addr": "1060:0108",
+      "segment": "MEMORY_MEMORY",
+      "proto": "HB *32 LphbReAlloc(HB *32)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 132
+    },
+    "LphuldefFromId": {
+      "addr": "1008:512c",
+      "segment": "MEMORY_PARTS",
+      "proto": "HULDEF *32 LphuldefFromId(int16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3906
+    },
+    "LphuldefSBFromId": {
+      "addr": "1008:510a",
+      "segment": "MEMORY_PARTS",
+      "proto": "HULDEF *32 LphuldefSBFromId(int16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3972
+    },
+    "LpplAlloc": {
+      "addr": "1060:088c",
+      "segment": "MEMORY_MEMORY",
+      "proto": "PL *32 LpplAlloc(uint16_t, uint16_t, int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 501
+    },
+    "LpplFindBestEnum": {
+      "addr": "1090:5e06",
+      "segment": "MEMORY_AIU",
+      "proto": "PLANET *32 LpplFindBestEnum(PLANET *32, int16_t (*32)(PLANET *32, PLANET *32))",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 818
+    },
+    "LpplFindClosestEnum": {
+      "addr": "1090:5cd4",
+      "segment": "MEMORY_AIU",
+      "proto": "PLANET *32 LpplFindClosestEnum(PLANET *32, int16_t (*32)(PLANET *32, PLANET *32))",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 49
+    },
+    "LpplFromId": {
+      "addr": "1038:021e",
+      "segment": "MEMORY_UTIL",
+      "proto": "PLANET *32 LpplFromId(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 138
+    },
+    "LpplReAlloc": {
+      "addr": "1060:0836",
+      "segment": "MEMORY_MEMORY",
+      "proto": "PL *32 LpplReAlloc(PL *32, uint16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 219
+    },
+    "LpplanetaryFromId": {
+      "addr": "1008:51dc",
+      "segment": "MEMORY_PARTS",
+      "proto": "PLANETARY *32 LpplanetaryFromId(int16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3986
+    },
+    "LpplrComp": {
+      "addr": "1078:b570",
+      "segment": "MEMORY_CREATE",
+      "proto": "PLAYER *32 LpplrComp(int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 162
+    },
+    "LpscannerFromId": {
+      "addr": "1008:518a",
+      "segment": "MEMORY_PARTS",
+      "proto": "SCANNER *32 LpscannerFromId(int16_t)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 4008
+    },
+    "LpshdefFromTok": {
+      "addr": "10f0:388e",
+      "segment": "MEMORY_BATTLE",
+      "proto": "SHDEF *32 LpshdefFromTok(TOK *32)",
+      "status": "implemented",
+      "file": "battle.c",
+      "line": 762
+    },
+    "LpshdefSBT": {
+      "addr": "1008:51c4",
+      "segment": "MEMORY_PARTS",
+      "proto": "SHDEF *32 LpshdefSBT(void)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3992
+    },
+    "LpshdefT": {
+      "addr": "1008:51ac",
+      "segment": "MEMORY_PARTS",
+      "proto": "SHDEF *32 LpshdefT(void)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3981
+    },
+    "LpthFromId": {
+      "addr": "1038:01b2",
+      "segment": "MEMORY_UTIL",
+      "proto": "THING *32 LpthFromId(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 184
+    },
+    "LpthNew": {
+      "addr": "1110:0000",
+      "segment": "MEMORY_THING",
+      "proto": "THING *32 LpthNew(int16_t, int16_t)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 120
+    },
+    "LpthWormFind": {
+      "addr": "1090:12e6",
+      "segment": "MEMORY_AIU",
+      "proto": "THING *32 LpthWormFind(POINT *, int32_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 531
+    },
+    "MakeNewName": {
+      "addr": "10c8:694c",
+      "segment": "MEMORY_BUILD",
+      "proto": "void MakeNewName(char *32)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 62
+    },
+    "MarkFleet": {
+      "addr": "1070:885e",
+      "segment": "MEMORY_IO",
+      "proto": "void MarkFleet(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 361
+    },
+    "MarkPlanet": {
+      "addr": "1070:8adc",
+      "segment": "MEMORY_IO",
+      "proto": "void MarkPlanet(PLANET *32, int16_t, uint16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 372
+    },
+    "MarkPlanetsPlayerLost": {
+      "addr": "1030:93c6",
+      "segment": "MEMORY_MSG",
+      "proto": "void MarkPlanetsPlayerLost(int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 162
+    },
+    "MarkPlanetsUnderAttack": {
+      "addr": "1090:6896",
+      "segment": "MEMORY_AIU",
+      "proto": "void MarkPlanetsUnderAttack(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 520
+    },
+    "MarkPlayersThatSentMsgs": {
+      "addr": "1030:9604",
+      "segment": "MEMORY_MSG",
+      "proto": "void MarkPlayersThatSentMsgs(int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 321
+    },
+    "MarkTechsSeen": {
+      "addr": "1080:36b6",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void MarkTechsSeen(HUL *32, int16_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 218
+    },
+    "MdCalcStargateDamage": {
+      "addr": "1080:152e",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t MdCalcStargateDamage(int16_t, int16_t, int16_t, int16_t, int16_t *)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 87
+    },
+    "Merge2Fleets": {
+      "addr": "1050:c9f6",
+      "segment": "MEMORY_SHIP",
+      "proto": "void Merge2Fleets(FLEET *32, FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 363
+    },
+    "MergeAllShdefs": {
+      "addr": "1090:58be",
+      "segment": "MEMORY_AIU",
+      "proto": "void MergeAllShdefs(int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 142
+    },
+    "MergeFleetsDlg": {
+      "addr": "1080:3376",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t MergeFleetsDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 262
+    },
+    "MessageWndProc": {
+      "addr": "1030:5c92",
+      "segment": "MEMORY_MSG",
+      "proto": "int32_t MessageWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 1007
+    },
+    "MeteorStrike": {
+      "addr": "10b8:560e",
+      "segment": "MEMORY_TURN2",
+      "proto": "void MeteorStrike(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 410
+    },
+    "MineClick": {
+      "addr": "1028:3b4e",
+      "segment": "MEMORY_MINE",
+      "proto": "void MineClick(int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 94
+    },
+    "MineMinerals": {
+      "addr": "10b8:55a4",
+      "segment": "MEMORY_TURN2",
+      "proto": "void MineMinerals(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 337
+    },
+    "MineWndProc": {
+      "addr": "1028:0000",
+      "segment": "MEMORY_MINE",
+      "proto": "int32_t MineWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 254
+    },
+    "MoveFleets": {
+      "addr": "10b0:32ce",
+      "segment": "MEMORY_TURN",
+      "proto": "void MoveFleets(void)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 84
+    },
+    "MoveThings": {
+      "addr": "10b0:18f4",
+      "segment": "MEMORY_TURN",
+      "proto": "void MoveThings(int16_t)",
+      "status": "stub",
+      "file": "turn.c",
+      "line": 213
+    },
+    "MoveToNearestPlanetOrEnemy": {
+      "addr": "1090:7014",
+      "segment": "MEMORY_AIU",
+      "proto": "void MoveToNearestPlanetOrEnemy(FLEET *32, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 230
+    },
+    "MsgDlg": {
+      "addr": "1030:8f68",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t MsgDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 989
+    },
+    "MysteryTrader": {
+      "addr": "10b8:5efa",
+      "segment": "MEMORY_TURN2",
+      "proto": "void MysteryTrader(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 242
+    },
+    "NewGameDlg": {
+      "addr": "1078:7e92",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 324
+    },
+    "NewGameDlg2": {
+      "addr": "1078:87d2",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 287
+    },
+    "NewGameDlg3": {
+      "addr": "1078:99f4",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 270
+    },
+    "NewGameWizard": {
+      "addr": "1078:6022",
+      "segment": "MEMORY_CREATE",
+      "proto": "void NewGameWizard(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 242
+    },
+    "NewPasswordDlg": {
+      "addr": "1040:5cba",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t NewPasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 852
+    },
+    "NewPlanNameDlg": {
+      "addr": "10f0:04ce",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t NewPlanNameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 1021
+    },
+    "NoAutoTrackFleet": {
+      "addr": "1080:1d32",
+      "segment": "MEMORY_SHIP2",
+      "proto": "void NoAutoTrackFleet(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 125
+    },
+    "NthValidEnemyShdef": {
+      "addr": "10c8:5cf4",
+      "segment": "MEMORY_BUILD",
+      "proto": "SHDEF *32 NthValidEnemyShdef(int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 41
+    },
+    "NthValidShdef": {
+      "addr": "10c8:5c06",
+      "segment": "MEMORY_BUILD",
+      "proto": "SHDEF *32 NthValidShdef(int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 33
+    },
+    "NybbleFromCh": {
+      "addr": "1040:4880",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t NybbleFromCh(uint8_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 23
+    },
+    "OffsetRc": {
+      "addr": "1040:2f3e",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void OffsetRc(RECT *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 710
+    },
+    "OrderInfoDlg": {
+      "addr": "1018:151e",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t OrderInfoDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "stars.c",
+      "line": 51
+    },
+    "OutputFileString": {
+      "addr": "1040:1f64",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void OutputFileString(char *, char *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 758
+    },
+    "OutputSz": {
+      "addr": "1038:7fe6",
+      "segment": "MEMORY_UTIL",
+      "proto": "void OutputSz(int16_t, char *32)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 969
+    },
+    "PackageUpMsg": {
+      "addr": "1030:802a",
+      "segment": "MEMORY_MSG",
+      "proto": "int16_t PackageUpMsg(uint8_t *, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 116
+    },
+    "PaletteSize": {
+      "addr": "1040:4d60",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "uint16_t PaletteSize(void *32)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1095
+    },
+    "PanicDlg": {
+      "addr": "10f8:026a",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t PanicDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 31
+    },
+    "PasswordDlg": {
+      "addr": "1040:5a72",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t PasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 823
+    },
+    "PctCloakFromHuldef": {
+      "addr": "1048:88c0",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t PctCloakFromHuldef(HUL *32, int16_t, int16_t *)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 15
+    },
+    "PctCloakFromLpfl": {
+      "addr": "1080:2d5e",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t PctCloakFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 102
+    },
+    "PctJammerFromHul": {
+      "addr": "10c8:42e6",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t PctJammerFromHul(HUL *32)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 50
+    },
+    "PctPlanetCapacity": {
+      "addr": "1048:6aca",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t PctPlanetCapacity(PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 521
+    },
+    "PctPlanetDesirability": {
+      "addr": "1048:6e1e",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t PctPlanetDesirability(PLANET *32, int16_t)",
+      "status": "implemented",
+      "file": "planet.c",
+      "line": 126
+    },
+    "PctPlanetOptValue": {
+      "addr": "1048:6b88",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t PctPlanetOptValue(PLANET *32, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 27
+    },
+    "PctTerraFromLpfl": {
+      "addr": "1080:275c",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int32_t PctTerraFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 45
+    },
+    "PctTrueMaxGrowth": {
+      "addr": "10e0:65d4",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t PctTrueMaxGrowth(int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 94
+    },
+    "PctWormholeMoves": {
+      "addr": "1110:0adc",
+      "segment": "MEMORY_THING",
+      "proto": "int16_t PctWormholeMoves(THING *32)",
+      "status": "stub",
+      "file": "thing.c",
+      "line": 55
+    },
+    "PickANameAndBmp": {
+      "addr": "1090:055a",
+      "segment": "MEMORY_AIU",
+      "proto": "void PickANameAndBmp(SHDEF *, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 247
+    },
+    "PlanetClick": {
+      "addr": "1048:489e",
+      "segment": "MEMORY_PLANET",
+      "proto": "void PlanetClick(int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 876
+    },
+    "PlanetWndProc": {
+      "addr": "1048:0000",
+      "segment": "MEMORY_PLANET",
+      "proto": "int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 542
+    },
+    "PlanetaryClimateChange": {
+      "addr": "10b8:5c54",
+      "segment": "MEMORY_TURN2",
+      "proto": "void PlanetaryClimateChange(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 392
+    },
+    "PopRandom": {
+      "addr": "1040:14a2",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void PopRandom(void)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 542
+    },
+    "Popup": {
+      "addr": "10c0:0c7c",
+      "segment": "MEMORY_POPUP",
+      "proto": "void Popup(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 117
+    },
+    "PopupMenu": {
+      "addr": "10c0:136c",
+      "segment": "MEMORY_POPUP",
+      "proto": "int16_t PopupMenu(uint16_t, int16_t, int16_t, int16_t, int32_t *, char * *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 25
+    },
+    "PopupMineralScanChoices": {
+      "addr": "1028:4ecc",
+      "segment": "MEMORY_MINE",
+      "proto": "void PopupMineralScanChoices(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 288
+    },
+    "PopupVCRMenu": {
+      "addr": "10e8:4518",
+      "segment": "MEMORY_VCR",
+      "proto": "int16_t PopupVCRMenu(uint16_t, int16_t, int16_t, uint8_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 317
+    },
+    "PopupWndProc": {
+      "addr": "10c0:0000",
+      "segment": "MEMORY_POPUP",
+      "proto": "int32_t PopupWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 12
+    },
+    "PrintMapDlg": {
+      "addr": "1108:a1c2",
+      "segment": "MEMORY_REPORT",
+      "proto": "int16_t PrintMapDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 193
+    },
+    "ProdCommandHandler": {
+      "addr": "10d0:1994",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "void ProdCommandHandler(uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 99
+    },
+    "Produce": {
+      "addr": "10b8:0000",
+      "segment": "MEMORY_TURN2",
+      "proto": "void Produce(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 7
+    },
+    "ProductionDlg": {
+      "addr": "10d0:1204",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "int16_t ProductionDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 149
+    },
+    "ProgressGaugeDlg": {
+      "addr": "1040:647e",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t ProgressGaugeDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 836
+    },
+    "ProjectedResearchSpending": {
+      "addr": "10d8:65ae",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int32_t ProjectedResearchSpending(int32_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 37
+    },
+    "PromptSaveGame": {
+      "addr": "1070:43ee",
+      "segment": "MEMORY_IO",
+      "proto": "void PromptSaveGame(void)",
+      "status": "stub",
+      "file": "file.c",
+      "line": 2650
+    },
+    "PszCalcEnvVar": {
+      "addr": "1048:5fcc",
+      "segment": "MEMORY_PLANET",
+      "proto": "char * PszCalcEnvVar(int16_t, int16_t)",
+      "status": "implemented",
+      "file": "planet.c",
+      "line": 323
+    },
+    "PszCalcGravity": {
+      "addr": "1048:6058",
+      "segment": "MEMORY_PLANET",
+      "proto": "char * PszCalcGravity(int16_t)",
+      "status": "implemented",
+      "file": "planet.c",
+      "line": 375
+    },
+    "PszFleetNameFromWord": {
+      "addr": "1038:2b5e",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszFleetNameFromWord(uint16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 624
+    },
+    "PszFormatIds": {
+      "addr": "1030:924c",
+      "segment": "MEMORY_MSG",
+      "proto": "char * PszFormatIds(int16_t, int16_t *32)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 915
+    },
+    "PszFormatMessage": {
+      "addr": "1030:9220",
+      "segment": "MEMORY_MSG",
+      "proto": "char * PszFormatMessage(int16_t, int16_t *32)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 176
+    },
+    "PszFormatString": {
+      "addr": "1030:85cc",
+      "segment": "MEMORY_MSG",
+      "proto": "char * PszFormatString(char *, int16_t *32)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 354
+    },
+    "PszFromInt": {
+      "addr": "1040:2274",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char * PszFromInt(int16_t, int16_t *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 723
+    },
+    "PszFromLong": {
+      "addr": "1040:22b6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char * PszFromLong(int32_t, int16_t *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 689
+    },
+    "PszFromLongK": {
+      "addr": "1040:22fe",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char * PszFromLongK(int32_t, int16_t *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 333
+    },
+    "PszGetCompressedMessage": {
+      "addr": "1030:9eb8",
+      "segment": "MEMORY_MSG",
+      "proto": "char * PszGetCompressedMessage(int16_t)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 792
+    },
+    "PszGetCompressedPlanet": {
+      "addr": "1040:1d96",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char * PszGetCompressedPlanet(int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 787
+    },
+    "PszGetCompressedString": {
+      "addr": "1010:743a",
+      "segment": "MEMORY_STRINGS",
+      "proto": "char * PszGetCompressedString(int16_t)",
+      "status": "stub",
+      "file": "strings.c",
+      "line": 15
+    },
+    "PszGetDestName": {
+      "addr": "1108:4f60",
+      "segment": "MEMORY_REPORT",
+      "proto": "char * PszGetDestName(FLEET *32, uint16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 119
+    },
+    "PszGetDistance": {
+      "addr": "1038:3f00",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszGetDistance(int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 673
+    },
+    "PszGetETA": {
+      "addr": "1108:51a8",
+      "segment": "MEMORY_REPORT",
+      "proto": "char * PszGetETA(uint16_t, FLEET *32, int16_t *)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 85
+    },
+    "PszGetFleetName": {
+      "addr": "1038:292c",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszGetFleetName(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 360
+    },
+    "PszGetLine": {
+      "addr": "1040:68ba",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "char *32 PszGetLine(char *32 *)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 627
+    },
+    "PszGetLocName": {
+      "addr": "1038:3b08",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszGetLocName(int16_t, int16_t, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 39
+    },
+    "PszGetMessageN": {
+      "addr": "1030:8580",
+      "segment": "MEMORY_MSG",
+      "proto": "char * PszGetMessageN(int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 129
+    },
+    "PszGetPlanetName": {
+      "addr": "1038:2c6a",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszGetPlanetName(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 589
+    },
+    "PszGetTaskName": {
+      "addr": "1108:53b8",
+      "segment": "MEMORY_REPORT",
+      "proto": "char * PszGetTaskName(FLEET *32, int16_t *)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 101
+    },
+    "PszGetThingName": {
+      "addr": "1038:26de",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszGetThingName(int16_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 425
+    },
+    "PszNameProdItem": {
+      "addr": "10d0:3c92",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "char * PszNameProdItem(PROD *32)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 8
+    },
+    "PszPlayerName": {
+      "addr": "1038:11f2",
+      "segment": "MEMORY_UTIL",
+      "proto": "char * PszPlayerName(int16_t, int16_t, int16_t, int16_t, int16_t, PLAYER *)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 815
+    },
+    "PszProductionETA": {
+      "addr": "1048:310c",
+      "segment": "MEMORY_PLANET",
+      "proto": "char * PszProductionETA(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 290
+    },
+    "PtDisplayFactoryMineInfo": {
+      "addr": "10c0:3110",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayFactoryMineInfo(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 200
+    },
+    "PtDisplayPlanetPopInfo": {
+      "addr": "10c0:228e",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayPlanetPopInfo(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 166
+    },
+    "PtDisplayPlanetStateInfo": {
+      "addr": "10c0:1938",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayPlanetStateInfo(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 92
+    },
+    "PtDisplayResourceInfo": {
+      "addr": "10c0:3378",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayResourceInfo(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 72
+    },
+    "PtDisplayString": {
+      "addr": "10c0:355c",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayString(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 155
+    },
+    "PtDisplayZipOrdInfo": {
+      "addr": "10c0:2d66",
+      "segment": "MEMORY_POPUP",
+      "proto": "POINT PtDisplayZipOrdInfo(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "popup.c",
+      "line": 188
+    },
+    "PtToScan": {
+      "addr": "1058:0efc",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t PtToScan(int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 235
+    },
+    "PushRandom": {
+      "addr": "1040:1440",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void PushRandom(int32_t, int32_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 697
+    },
+    "QueueAiStarbases": {
+      "addr": "1090:8524",
+      "segment": "MEMORY_AIU",
+      "proto": "void QueueAiStarbases(PROD *, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 12
+    },
+    "QuickBuildDefenses": {
+      "addr": "1090:6a7e",
+      "segment": "MEMORY_AIU",
+      "proto": "void QuickBuildDefenses(PLANET *32, PROD *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 663
+    },
+    "RaceCreationWizard": {
+      "addr": "10e0:0000",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 344
+    },
+    "RaceWizardDlg1": {
+      "addr": "10e0:03ac",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg1(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 287
+    },
+    "RaceWizardDlg2": {
+      "addr": "10e0:1060",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 260
+    },
+    "RaceWizardDlg3": {
+      "addr": "10e0:2792",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 243
+    },
+    "RaceWizardDlg4": {
+      "addr": "10e0:320a",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg4(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 225
+    },
+    "RaceWizardDlg5": {
+      "addr": "10e0:378e",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg5(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 207
+    },
+    "RaceWizardDlg6": {
+      "addr": "10e0:3bae",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t RaceWizardDlg6(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 191
+    },
+    "Random": {
+      "addr": "1040:16d2",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t Random(int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 636
+    },
+    "RandomEvents": {
+      "addr": "10b8:3064",
+      "segment": "MEMORY_TURN2",
+      "proto": "void RandomEvents(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 460
+    },
+    "RandomSeedDlg": {
+      "addr": "1040:188a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t RandomSeedDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 812
+    },
+    "Randomize": {
+      "addr": "1040:15ea",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void Randomize(uint32_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 405
+    },
+    "Randomize2": {
+      "addr": "1040:165a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void Randomize2(uint32_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 388
+    },
+    "RandomizeTokOrder": {
+      "addr": "10f0:44d4",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void RandomizeTokOrder(void)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 225
+    },
+    "RcCtrTextOut": {
+      "addr": "1040:28fc",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void RcCtrTextOut(uint16_t, RECT *, char *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 908
+    },
+    "ReadBigBlock": {
+      "addr": "1040:5310",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "int16_t ReadBigBlock(int16_t, char *32, uint32_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 324
+    },
+    "ReadIniSettings": {
+      "addr": "1000:124c",
+      "segment": "MEMORY_INIT",
+      "proto": "void ReadIniSettings(void)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 50
+    },
+    "ReadIniTileSettings": {
+      "addr": "1000:2b8a",
+      "segment": "MEMORY_INIT",
+      "proto": "void ReadIniTileSettings(char *, TILE *, int16_t)",
+      "status": "stub",
+      "file": "init.c",
+      "line": 35
+    },
+    "ReadPlayerMessages": {
+      "addr": "1030:994a",
+      "segment": "MEMORY_MSG",
+      "proto": "void ReadPlayerMessages(void)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 211
+    },
+    "ReadRt": {
+      "addr": "1070:5168",
+      "segment": "MEMORY_IO",
+      "proto": "void ReadRt(void)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2170
+    },
+    "ReadRtPlr": {
+      "addr": "1070:05e2",
+      "segment": "MEMORY_IO",
+      "proto": "void ReadRtPlr(PLAYER *, uint8_t *)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 524
+    },
+    "RedrawScanSel": {
+      "addr": "1058:6f30",
+      "segment": "MEMORY_SCAN",
+      "proto": "void RedrawScanSel(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 382
+    },
+    "RefitFrameChildren": {
+      "addr": "1020:8c88",
+      "segment": "MEMORY_MDI",
+      "proto": "void RefitFrameChildren(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 533
+    },
+    "ReflowColumn": {
+      "addr": "1048:5b80",
+      "segment": "MEMORY_PLANET",
+      "proto": "void ReflowColumn(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 914
+    },
+    "RegenShield": {
+      "addr": "10f0:3c16",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void RegenShield(TOK *32)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 315
+    },
+    "RelationsDlg": {
+      "addr": "10f0:0088",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t RelationsDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 1029
+    },
+    "RemoteTerraforming": {
+      "addr": "10b8:4c56",
+      "segment": "MEMORY_TURN2",
+      "proto": "void RemoteTerraforming(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 155
+    },
+    "RemoveIshdefFromAllQueues": {
+      "addr": "1050:c5e6",
+      "segment": "MEMORY_SHIP",
+      "proto": "void RemoveIshdefFromAllQueues(int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 754
+    },
+    "RenameDlg": {
+      "addr": "1080:0a68",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t RenameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 250
+    },
+    "RenameZipDlg": {
+      "addr": "1080:0880",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t RenameZipDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 304
+    },
+    "ReportColumnPopup": {
+      "addr": "1108:74d4",
+      "segment": "MEMORY_REPORT",
+      "proto": "void ReportColumnPopup(POINT, int16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 251
+    },
+    "ReportDlg": {
+      "addr": "1108:0018",
+      "segment": "MEMORY_REPORT",
+      "proto": "int32_t ReportDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 160
+    },
+    "ResearchDlg": {
+      "addr": "10d8:0000",
+      "segment": "MEMORY_RESEARCH",
+      "proto": "int16_t ResearchDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "research.c",
+      "line": 153
+    },
+    "ResetHb": {
+      "addr": "1060:0348",
+      "segment": "MEMORY_MEMORY",
+      "proto": "void ResetHb(int16_t)",
+      "status": "implemented",
+      "file": "memory.c",
+      "line": 98
+    },
+    "ResetMessages": {
+      "addr": "1030:98d6",
+      "segment": "MEMORY_MSG",
+      "proto": "void ResetMessages(void)",
+      "status": "implemented",
+      "file": "msg.c",
+      "line": 328
+    },
+    "RestoreGameState": {
+      "addr": "10f8:0e1c",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void RestoreGameState(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 181
+    },
+    "RestoreSelection": {
+      "addr": "1020:2614",
+      "segment": "MEMORY_MDI",
+      "proto": "void RestoreSelection(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 526
+    },
+    "RgFromStream": {
+      "addr": "1070:53f4",
+      "segment": "MEMORY_IO",
+      "proto": "void RgFromStream(void *32, uint16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2952
+    },
+    "RgToStream": {
+      "addr": "1070:9554",
+      "segment": "MEMORY_IO",
+      "proto": "void RgToStream(void *32, uint16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 86
+    },
+    "RightTextOut": {
+      "addr": "1040:29d6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void RightTextOut(uint16_t, int16_t, int16_t, char *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 996
+    },
+    "SatisfyOrders": {
+      "addr": "10b0:6798",
+      "segment": "MEMORY_TURN",
+      "proto": "void SatisfyOrders(int16_t)",
+      "status": "stub",
+      "file": "turn3.c",
+      "line": 7
+    },
+    "SaveGameState": {
+      "addr": "10f8:0c90",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void SaveGameState(void)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 135
+    },
+    "ScanToLogical": {
+      "addr": "1058:7490",
+      "segment": "MEMORY_SCAN",
+      "proto": "void ScanToLogical(POINT *)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 308
+    },
+    "ScanToPt": {
+      "addr": "1058:0fc2",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t ScanToPt(int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 242
+    },
+    "ScannerWndProc": {
+      "addr": "1058:0032",
+      "segment": "MEMORY_SCAN",
+      "proto": "int32_t ScannerWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 48
+    },
+    "ScoreFromGiveAndTakeAndTactic": {
+      "addr": "10f0:5e34",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int32_t ScoreFromGiveAndTakeAndTactic(int32_t, int32_t, int16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 333
+    },
+    "ScoreGuessBattleDamage": {
+      "addr": "10f0:598c",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int32_t ScoreGuessBattleDamage(TOK *32, uint8_t, int16_t, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 248
+    },
+    "ScoreXDlg": {
+      "addr": "1108:0f66",
+      "segment": "MEMORY_REPORT",
+      "proto": "int16_t ScoreXDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 135
+    },
+    "ScrollScanner": {
+      "addr": "1058:6d30",
+      "segment": "MEMORY_SCAN",
+      "proto": "void ScrollScanner(int16_t, int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 446
+    },
+    "SelectAdjFleet": {
+      "addr": "1050:3d32",
+      "segment": "MEMORY_SHIP",
+      "proto": "void SelectAdjFleet(int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 408
+    },
+    "SelectAdjPlanet": {
+      "addr": "1048:44da",
+      "segment": "MEMORY_PLANET",
+      "proto": "void SelectAdjPlanet(int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 900
+    },
+    "SelectOursAtObject": {
+      "addr": "1038:08f2",
+      "segment": "MEMORY_UTIL",
+      "proto": "void SelectOursAtObject(POINT *)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 577
+    },
+    "SendBattleMessages": {
+      "addr": "10f0:9c0e",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void SendBattleMessages(FLEET *32, int16_t, int16_t, uint16_t *, int16_t, int16_t, int16_t, uint16_t)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 874
+    },
+    "SetAiFleetIdealSpeed": {
+      "addr": "1090:1d9e",
+      "segment": "MEMORY_AIU",
+      "proto": "void SetAiFleetIdealSpeed(FLEET *32, int16_t, int16_t, THING *32 *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 309
+    },
+    "SetBuildSelection": {
+      "addr": "10c8:53da",
+      "segment": "MEMORY_BUILD",
+      "proto": "void SetBuildSelection(int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 370
+    },
+    "SetFileSeeds": {
+      "addr": "1040:1a7c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void SetFileSeeds(int32_t, int32_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 552
+    },
+    "SetFileXorStream": {
+      "addr": "1040:1aa6",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void SetFileXorStream(int32_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 565
+    },
+    "SetFilteringGroups": {
+      "addr": "1030:a018",
+      "segment": "MEMORY_MSG",
+      "proto": "void SetFilteringGroups(int16_t, int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 197
+    },
+    "SetFleetDropDownSel": {
+      "addr": "1050:400e",
+      "segment": "MEMORY_SHIP",
+      "proto": "void SetFleetDropDownSel(int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1081
+    },
+    "SetHScrollBar": {
+      "addr": "1108:09e8",
+      "segment": "MEMORY_REPORT",
+      "proto": "void SetHScrollBar(void)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 207
+    },
+    "SetMineralTitleBar": {
+      "addr": "1028:47dc",
+      "segment": "MEMORY_MINE",
+      "proto": "void SetMineralTitleBar(uint16_t)",
+      "status": "stub",
+      "file": "mine.c",
+      "line": 307
+    },
+    "SetMsgTitle": {
+      "addr": "1030:7218",
+      "segment": "MEMORY_MSG",
+      "proto": "void SetMsgTitle(uint16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 971
+    },
+    "SetNGWTitle": {
+      "addr": "1078:a320",
+      "segment": "MEMORY_CREATE",
+      "proto": "void SetNGWTitle(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 217
+    },
+    "SetOrdersLbSel": {
+      "addr": "1050:9354",
+      "segment": "MEMORY_SHIP",
+      "proto": "void SetOrdersLbSel(int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1097
+    },
+    "SetPlanetTitleBar": {
+      "addr": "1048:3dec",
+      "segment": "MEMORY_PLANET",
+      "proto": "void SetPlanetTitleBar(uint16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 753
+    },
+    "SetRCWTitle": {
+      "addr": "10e0:5ab8",
+      "segment": "MEMORY_RACE",
+      "proto": "void SetRCWTitle(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 400
+    },
+    "SetRaceGrbit": {
+      "addr": "10e0:31b8",
+      "segment": "MEMORY_RACE",
+      "proto": "void SetRaceGrbit(PLAYER *, int16_t, int16_t)",
+      "status": "implemented",
+      "file": "race.c",
+      "line": 24
+    },
+    "SetRaceStat": {
+      "addr": "10e0:3114",
+      "segment": "MEMORY_RACE",
+      "proto": "int16_t SetRaceStat(PLAYER *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "race.c",
+      "line": 87
+    },
+    "SetScanScrollBars": {
+      "addr": "1058:6c14",
+      "segment": "MEMORY_SCAN",
+      "proto": "void SetScanScrollBars(uint16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 155
+    },
+    "SetScanWp": {
+      "addr": "1058:8c5a",
+      "segment": "MEMORY_SCAN",
+      "proto": "int16_t SetScanWp(int16_t)",
+      "status": "stub",
+      "file": "scan.c",
+      "line": 249
+    },
+    "SetSzWorkFromDt": {
+      "addr": "1070:8cfe",
+      "segment": "MEMORY_IO",
+      "proto": "void SetSzWorkFromDt(uint16_t, int16_t)",
+      "status": "implemented",
+      "file": "save.c",
+      "line": 100
+    },
+    "SetVCCheck": {
+      "addr": "1078:b5bc",
+      "segment": "MEMORY_CREATE",
+      "proto": "void SetVCCheck(GAME *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 57
+    },
+    "SetVCRBoard": {
+      "addr": "10e8:08d8",
+      "segment": "MEMORY_VCR",
+      "proto": "int16_t SetVCRBoard(int16_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 407
+    },
+    "SetVCVal": {
+      "addr": "1078:b644",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t SetVCVal(GAME *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 70
+    },
+    "SetVisPFFinish": {
+      "addr": "1070:c41c",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisPFFinish(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 253
+    },
+    "SetVisPFFleets": {
+      "addr": "1070:a100",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisPFFleets(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 313
+    },
+    "SetVisPFInit": {
+      "addr": "1070:9654",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisPFInit(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 171
+    },
+    "SetVisPFPlanets": {
+      "addr": "1070:abde",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisPFPlanets(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 277
+    },
+    "SetVisPFThings": {
+      "addr": "1070:b9ee",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisPFThings(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 379
+    },
+    "SetVisiblePlanFleet": {
+      "addr": "1070:95bc",
+      "segment": "MEMORY_IO",
+      "proto": "void SetVisiblePlanFleet(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 420
+    },
+    "SetWindowIniString": {
+      "addr": "1020:79f6",
+      "segment": "MEMORY_MDI",
+      "proto": "void SetWindowIniString(char *, uint16_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 518
+    },
+    "ShipBuilder": {
+      "addr": "10c8:008c",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t ShipBuilder(POINT)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 185
+    },
+    "ShipCommandProc": {
+      "addr": "1050:2640",
+      "segment": "MEMORY_SHIP",
+      "proto": "void ShipCommandProc(uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 966
+    },
+    "ShowMainControls": {
+      "addr": "10c8:0160",
+      "segment": "MEMORY_BUILD",
+      "proto": "void ShowMainControls(uint16_t, int16_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 255
+    },
+    "ShowProgressGauge": {
+      "addr": "1040:636c",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void ShowProgressGauge(void)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 289
+    },
+    "ShowTooltip": {
+      "addr": "1068:17ea",
+      "segment": "MEMORY_TB",
+      "proto": "void ShowTooltip(int16_t, RECT *)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 72
+    },
+    "ShowTutor": {
+      "addr": "10f8:0374",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void ShowTutor(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 175
+    },
+    "SimpleNewGameDlg": {
+      "addr": "1078:76aa",
+      "segment": "MEMORY_CREATE",
+      "proto": "int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "create.c",
+      "line": 342
+    },
+    "SlotDlg": {
+      "addr": "10c8:0550",
+      "segment": "MEMORY_BUILD",
+      "proto": "int16_t SlotDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 92
+    },
+    "SortReportCache": {
+      "addr": "1108:589c",
+      "segment": "MEMORY_REPORT",
+      "proto": "void SortReportCache(int16_t, int16_t)",
+      "status": "stub",
+      "file": "report.c",
+      "line": 223
+    },
+    "SpankTheCheaters": {
+      "addr": "10f0:192a",
+      "segment": "MEMORY_BATTLE",
+      "proto": "void SpankTheCheaters(void)",
+      "status": "stub",
+      "file": "battle.c",
+      "line": 808
+    },
+    "SpdOfShip": {
+      "addr": "10f0:339c",
+      "segment": "MEMORY_BATTLE",
+      "proto": "int16_t SpdOfShip(FLEET *32, int16_t, TOK *32, int16_t, SHDEF *32)",
+      "status": "implemented",
+      "file": "battle.c",
+      "line": 447
+    },
+    "SplitOutShdefs": {
+      "addr": "1090:98d8",
+      "segment": "MEMORY_AIU",
+      "proto": "void SplitOutShdefs(uint8_t *)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 265
+    },
+    "StargateRangeFromLppl": {
+      "addr": "1048:7cfa",
+      "segment": "MEMORY_PLANET",
+      "proto": "int16_t StargateRangeFromLppl(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 487
+    },
+    "StartTutor": {
+      "addr": "10f8:06b4",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void StartTutor(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 291
+    },
+    "StickyDlgPos": {
+      "addr": "1040:3094",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void StickyDlgPos(uint16_t, POINT *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1077
+    },
+    "StreamClose": {
+      "addr": "1070:53cc",
+      "segment": "MEMORY_IO",
+      "proto": "void StreamClose(void)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 2354
+    },
+    "StreamOpen": {
+      "addr": "1070:52ae",
+      "segment": "MEMORY_IO",
+      "proto": "void StreamOpen(char *, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 413
+    },
+    "SweepForMines": {
+      "addr": "10b8:76a4",
+      "segment": "MEMORY_TURN2",
+      "proto": "void SweepForMines(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 188
+    },
+    "SzVersion": {
+      "addr": "1018:1212",
+      "segment": "MEMORY_MAIN",
+      "proto": "char * SzVersion(void)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 24
+    },
+    "TargetCyberArmada": {
+      "addr": "10a8:51a4",
+      "segment": "MEMORY_AI4",
+      "proto": "void TargetCyberArmada(FLEET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 102
+    },
+    "TargetMacArmada": {
+      "addr": "10a0:3e3a",
+      "segment": "MEMORY_AI3",
+      "proto": "void TargetMacArmada(FLEET *32)",
+      "status": "stub",
+      "file": "ai3.c",
+      "line": 71
+    },
+    "TbWndProc": {
+      "addr": "1068:001e",
+      "segment": "MEMORY_TB",
+      "proto": "int32_t TbWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 12
+    },
+    "TechStatus": {
+      "addr": "1008:6148",
+      "segment": "MEMORY_PARTS",
+      "proto": "int16_t TechStatus(char *32)",
+      "status": "implemented",
+      "file": "parts.c",
+      "line": 3923
+    },
+    "TerminateToolbarFocus": {
+      "addr": "1068:1680",
+      "segment": "MEMORY_TB",
+      "proto": "void TerminateToolbarFocus(int16_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 151
+    },
+    "ThingDecay": {
+      "addr": "10b8:70c6",
+      "segment": "MEMORY_TURN2",
+      "proto": "void ThingDecay(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 46
+    },
+    "TitleWndProc": {
+      "addr": "1020:9126",
+      "segment": "MEMORY_MDI",
+      "proto": "int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 151
+    },
+    "TooltipWndProc": {
+      "addr": "1068:19e4",
+      "segment": "MEMORY_TB",
+      "proto": "int32_t TooltipWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tb.c",
+      "line": 55
+    },
+    "TossNonAutoBuildItems": {
+      "addr": "10b8:5aec",
+      "segment": "MEMORY_TURN2",
+      "proto": "void TossNonAutoBuildItems(PLANET *32)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 107
+    },
+    "TransferDlg": {
+      "addr": "1050:5686",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t TransferDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 944
+    },
+    "TransferStuff": {
+      "addr": "1050:4faa",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t TransferStuff(int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 338
+    },
+    "TransferToOthers": {
+      "addr": "10b8:3088",
+      "segment": "MEMORY_TURN2",
+      "proto": "void TransferToOthers(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 319
+    },
+    "TurnLog": {
+      "addr": "1038:80c2",
+      "segment": "MEMORY_UTIL",
+      "proto": "void TurnLog(int16_t)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 808
+    },
+    "TutorDlg": {
+      "addr": "10f8:0000",
+      "segment": "MEMORY_TUTOR",
+      "proto": "int16_t TutorDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 17
+    },
+    "TutorError": {
+      "addr": "10f8:67ae",
+      "segment": "MEMORY_TUTOR",
+      "proto": "void TutorError(int16_t)",
+      "status": "stub",
+      "file": "tutor.c",
+      "line": 341
+    },
+    "UlFleetPower": {
+      "addr": "1090:14de",
+      "segment": "MEMORY_AIU",
+      "proto": "uint32_t UlFleetPower(FLEET *32)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 430
+    },
+    "UninhabitPlanet": {
+      "addr": "1048:8732",
+      "segment": "MEMORY_PLANET",
+      "proto": "void UninhabitPlanet(PLANET *32)",
+      "status": "stub",
+      "file": "planet.c",
+      "line": 477
+    },
+    "UnmarkMineFields": {
+      "addr": "10b8:7638",
+      "segment": "MEMORY_TURN2",
+      "proto": "void UnmarkMineFields(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 466
+    },
+    "UnpackBattlePlan": {
+      "addr": "1070:40ce",
+      "segment": "MEMORY_IO",
+      "proto": "void UnpackBattlePlan(uint8_t *32, BTLPLAN *32, int16_t)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 447
+    },
+    "UpdateBattleRecords": {
+      "addr": "1070:41ac",
+      "segment": "MEMORY_IO",
+      "proto": "void UpdateBattleRecords(void)",
+      "status": "implemented",
+      "file": "file.c",
+      "line": 603
+    },
+    "UpdateGuesses": {
+      "addr": "10b8:532c",
+      "segment": "MEMORY_TURN2",
+      "proto": "void UpdateGuesses(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 229
+    },
+    "UpdateOrdersDDs": {
+      "addr": "1050:93ee",
+      "segment": "MEMORY_SHIP",
+      "proto": "void UpdateOrdersDDs(int16_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1063
+    },
+    "UpdatePlayerScores": {
+      "addr": "10b8:6258",
+      "segment": "MEMORY_TURN2",
+      "proto": "void UpdatePlayerScores(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 208
+    },
+    "UpdatePopulations": {
+      "addr": "10b8:50a0",
+      "segment": "MEMORY_TURN2",
+      "proto": "void UpdatePopulations(void)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 172
+    },
+    "UpdateProgressGauge": {
+      "addr": "1040:63da",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void UpdateProgressGauge(int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1085
+    },
+    "UpdateResearchStatus": {
+      "addr": "10b8:80fe",
+      "segment": "MEMORY_TURN2",
+      "proto": "void UpdateResearchStatus(int16_t)",
+      "status": "stub",
+      "file": "turn2.c",
+      "line": 115
+    },
+    "UpdateShdefCost": {
+      "addr": "1038:47b0",
+      "segment": "MEMORY_UTIL",
+      "proto": "void UpdateShdefCost(SHDEF *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1057
+    },
+    "UpdateSlotGlobals": {
+      "addr": "10c8:6528",
+      "segment": "MEMORY_BUILD",
+      "proto": "void UpdateSlotGlobals(void)",
+      "status": "stub",
+      "file": "build.c",
+      "line": 312
+    },
+    "UpdateXferBtns": {
+      "addr": "1050:66a8",
+      "segment": "MEMORY_SHIP",
+      "proto": "void UpdateXferBtns(void)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 1164
+    },
+    "VCRDlg": {
+      "addr": "10e8:0e90",
+      "segment": "MEMORY_VCR",
+      "proto": "int16_t VCRDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "vcr.c",
+      "line": 271
+    },
+    "ValidateStarbaseHistory": {
+      "addr": "1090:4cf0",
+      "segment": "MEMORY_AIU",
+      "proto": "void ValidateStarbaseHistory(void)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 744
+    },
+    "ValidateWaypoints": {
+      "addr": "1038:68c6",
+      "segment": "MEMORY_UTIL",
+      "proto": "void ValidateWaypoints(void)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1201
+    },
+    "VerifyTurns": {
+      "addr": "1020:6686",
+      "segment": "MEMORY_MDI",
+      "proto": "void VerifyTurns(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 12
+    },
+    "WFromLpfl": {
+      "addr": "1038:2b10",
+      "segment": "MEMORY_UTIL",
+      "proto": "uint16_t WFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 1293
+    },
+    "WPackLong": {
+      "addr": "1038:4ba2",
+      "segment": "MEMORY_UTIL",
+      "proto": "uint16_t WPackLong(int32_t)",
+      "status": "implemented",
+      "file": "util.c",
+      "line": 524
+    },
+    "WinMain": {
+      "addr": "1018:0000",
+      "segment": "MEMORY_MAIN",
+      "proto": "int16_t WinMain(uint16_t, uint16_t, char *32, int16_t)",
+      "status": "implemented",
+      "file": "winmain.c",
+      "line": 20
+    },
+    "WrapTextOut": {
+      "addr": "1040:25fe",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void WrapTextOut(uint16_t, int16_t *, int16_t *, char *, int16_t, int16_t, int16_t, int16_t *, int16_t, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1124
+    },
+    "WriteBOF": {
+      "addr": "1070:8ea4",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteBOF(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 22
+    },
+    "WriteBattlePlan": {
+      "addr": "1070:89b8",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteBattlePlan(BTLPLAN *32, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 192
+    },
+    "WriteBattles": {
+      "addr": "1070:709c",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteBattles(int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 39
+    },
+    "WriteFleet": {
+      "addr": "1070:81c6",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteFleet(FLEET *32)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 61
+    },
+    "WriteIniSettings": {
+      "addr": "1020:7a76",
+      "segment": "MEMORY_MDI",
+      "proto": "void WriteIniSettings(void)",
+      "status": "stub",
+      "file": "mdi.c",
+      "line": 363
+    },
+    "WriteMemRt": {
+      "addr": "1048:a130",
+      "segment": "MEMORY_PLANET",
+      "proto": "void WriteMemRt(int16_t, int16_t, void *)",
+      "status": "stub",
+      "file": "log.c",
+      "line": 8
+    },
+    "WriteOrders": {
+      "addr": "1070:547e",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteOrders(FLEET *32)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 78
+    },
+    "WritePlanet": {
+      "addr": "1070:7a6a",
+      "segment": "MEMORY_IO",
+      "proto": "void WritePlanet(PLANET *32, int16_t, int16_t)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 347
+    },
+    "WritePlayerMessages": {
+      "addr": "1030:9702",
+      "segment": "MEMORY_MSG",
+      "proto": "void WritePlayerMessages(int16_t)",
+      "status": "stub",
+      "file": "msg.c",
+      "line": 803
+    },
+    "WriteRt": {
+      "addr": "1070:947c",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteRt(int16_t, int16_t, void *32)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 7
+    },
+    "WriteRtPlr": {
+      "addr": "1070:551c",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteRtPlr(PLAYER *, uint8_t *)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 410
+    },
+    "WriteRtShDef": {
+      "addr": "1070:574e",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteRtShDef(SHDEF *32, uint8_t * *)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 29
+    },
+    "WriteRtString": {
+      "addr": "1070:87b4",
+      "segment": "MEMORY_IO",
+      "proto": "void WriteRtString(char *32)",
+      "status": "stub",
+      "file": "save.c",
+      "line": 14
+    },
+    "WtFromLpfl": {
+      "addr": "1038:7a68",
+      "segment": "MEMORY_UTIL",
+      "proto": "int32_t WtFromLpfl(FLEET *32)",
+      "status": "stub",
+      "file": "util.c",
+      "line": 568
+    },
+    "WtMaxShdefStat": {
+      "addr": "1050:41b2",
+      "segment": "MEMORY_SHIP",
+      "proto": "int16_t WtMaxShdefStat(SHDEF *32, int16_t)",
+      "status": "implemented",
+      "file": "ship.c",
+      "line": 494
+    },
+    "XferAiSupply": {
+      "addr": "1090:0ad0",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t XferAiSupply(int16_t, int16_t, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 112
+    },
+    "XferAiTroopers": {
+      "addr": "1090:0bc2",
+      "segment": "MEMORY_AIU",
+      "proto": "int16_t XferAiTroopers(int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "aiutil.c",
+      "line": 188
+    },
+    "XferSupply": {
+      "addr": "1050:64cc",
+      "segment": "MEMORY_SHIP",
+      "proto": "int32_t XferSupply(int16_t, int32_t)",
+      "status": "stub",
+      "file": "ship.c",
+      "line": 28
+    },
+    "XorFileBuf": {
+      "addr": "1040:1cc4",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void XorFileBuf(char *, int16_t)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 600
+    },
+    "ZipOrderDlg": {
+      "addr": "1080:0000",
+      "segment": "MEMORY_SHIP2",
+      "proto": "int16_t ZipOrderDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "ship2.c",
+      "line": 276
+    },
+    "ZipProdDlg": {
+      "addr": "10d0:5490",
+      "segment": "MEMORY_PRODUCE",
+      "proto": "int16_t ZipProdDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+      "status": "stub",
+      "file": "produce.c",
+      "line": 186
+    },
+    "_Draw3dFrame": {
+      "addr": "1040:336a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void _Draw3dFrame(uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1036
+    },
+    "iAddAttackFleet": {
+      "addr": "10a8:4eba",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t iAddAttackFleet(PLANET *32, int16_t, int16_t, int16_t, int16_t)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 91
+    },
+    "iBuildCyberStarbase": {
+      "addr": "10a8:45de",
+      "segment": "MEMORY_AI4",
+      "proto": "int16_t iBuildCyberStarbase(PLANET *32)",
+      "status": "stub",
+      "file": "ai4.c",
+      "line": 205
+    }
+  }
+}

@@ -623,6 +623,40 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript ExportAllDecompiled.py "$OUTPUT_DIR" $PROJECT_DIR/scripts/nb09_ghidra_globals.json "$SEGMENT" 2>&1
 '''
 
+[tasks.track-implementation]
+description = "Track implementation status (usage: mise run track-implementation [-- --update-docs] [output.json])"
+run = '''
+#!/bin/bash
+set -e
+
+python3 "$PROJECT_DIR/scripts/track_implementation.py" "$@"
+'''
+
+[tasks.build-call-graph]
+description = "Build function call graph JSON (usage: mise run build-call-graph [-- output.json])"
+run = '''
+#!/bin/bash
+set -e
+
+OUTPUT_FILE="${1:-$PROJECT_DIR/scripts/call_graph.json}"
+
+GHIDRA_PATH="${GHIDRA_HOME:-$GHIDRA_HOME_}"
+GHIDRA_EXPANDED="${GHIDRA_PATH/#~/$HOME}"
+ANALYZER="$GHIDRA_EXPANDED/support/pyghidraRun"
+
+if [ ! -f "$ANALYZER" ]; then
+    echo "Error: Ghidra not found at $GHIDRA_EXPANDED"
+    exit 1
+fi
+
+echo "Building call graph -> $OUTPUT_FILE ..."
+bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
+    -process stars.exe \
+    -noanalysis \
+    -scriptPath "$SCRIPTS_DIR" \
+    -postScript BuildCallGraph.py "$OUTPUT_FILE" "$JSON_GLOBALS" 2>&1
+'''
+
 [tasks.dump-structmeta-json]
 description = "dump the nb09_structmeta.json"
 run = '''
