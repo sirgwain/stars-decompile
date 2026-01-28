@@ -59,8 +59,10 @@ int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw)
 
 void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked)
 {
+    uint8_t hi;
 
-    /* TODO: implement */
+    hi = (fChecked == 0) ? 0 : 0x80;
+    pgame->rgvc[vc] = (uint8_t)((pgame->rgvc[vc] & 0x7f) | hi);
 }
 
 void CreateTutorWorld(void)
@@ -164,9 +166,7 @@ int16_t GenerateWorld(int16_t fBatchMode)
 
 PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi)
 {
-
-    /* TODO: implement */
-    return NULL;
+    return &vrgplrComp[idAi][lvlAi];
 }
 
 int16_t FGetNewGameName(char *szFileSuggest)

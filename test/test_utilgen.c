@@ -252,6 +252,24 @@ static void test_LSaltFromSz(void)
     TEST_CHECK(s3a != 0);
 }
 
+
+static void test_ExpandRc_OffsetRc(void)
+{
+    RECT rc = {10, 20, 30, 40};
+
+    ExpandRc(&rc, 2, 3);
+    TEST_CHECK(rc.left == 8);
+    TEST_CHECK(rc.top == 17);
+    TEST_CHECK(rc.right == 32);
+    TEST_CHECK(rc.bottom == 43);
+
+    OffsetRc(&rc, -1, 5);
+    TEST_CHECK(rc.left == 7);
+    TEST_CHECK(rc.top == 22);
+    TEST_CHECK(rc.right == 31);
+    TEST_CHECK(rc.bottom == 48);
+}
+
 TEST_LIST = {
     {"ICompLong", test_ICompLong},
     {"compress/decompress user string", test_FCompressDecompressUserString},
@@ -262,4 +280,5 @@ TEST_LIST = {
     {"PszFromInt", test_PszFromInt},
     {"PszFromLong", test_PszFromLong},
     {"LSaltFromSz", test_LSaltFromSz},
+    {"ExpandRc/OffsetRc", test_ExpandRc_OffsetRc},
     {NULL, NULL}};

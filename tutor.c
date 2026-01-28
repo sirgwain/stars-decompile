@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "tutor.h"
 
@@ -91,11 +92,49 @@ int16_t FCheckScanner(int16_t md, int16_t iZoom)
 
 int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct)
 {
+    uint16_t cur;
 
-    /* TODO: implement */
+    /*
+     * rgplr[0].iTechCur packs two 4-bit tech fields into one byte/word:
+     *
+     *   bits 0–3  : current research tech (iTech)
+     *   bits 4–7  : next research tech     (iTechNext)
+     *
+     * This function verifies that:
+     *   1) the player is currently researching `iTech`
+     *   2) the queued/next tech is `iTechNext`
+     *   3) the research percentage matches `pct`
+     *
+     * If all three match, the research state is exactly what the caller
+     * expects and we return true.
+     */
+    cur = (uint16_t)rgplr[0].iTechCur;
+
+    if (((cur & 0x000F) == (uint16_t)iTech) &&
+        ((cur >> 4) == (uint16_t)iTechNext) &&
+        (rgplr[0].pctResearch == pct))
+    {
+        return 1;
+    }
+
+    /*
+     * Otherwise, the research state does not match expectations.
+     *
+     * Setting tutor.idh updates the *context-sensitive help topic*
+     * that should be shown to the player explaining why this action
+     * is invalid or unavailable.
+     *
+     * NOTE:
+     *  - tutor.idh is a global UI/help routing field
+     *  - 0x042e is a numeric help/context ID, NOT necessarily a
+     *    string table index
+     *  - Many Stars! help IDs map to indirect topics, dialog states,
+     *    or tutorial contexts rather than literal text entries
+     */
+    tutor.idh = 0x042e;
+
     return 0;
 }
-
 int16_t FTutorTaskDone(void)
 {
     HS hs1;
@@ -174,8 +213,14 @@ int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, 
 
 void ShowTutor(int16_t fShow)
 {
+    int16_t cmd;
 
-    /* TODO: implement */
+    if (tutor.hwnd != 0)
+    {
+        cmd = (fShow == 0) ? 0 : 5;
+        ShowWindow(tutor.hwnd, cmd);
+        tutor.fVisible = (uint16_t)(fShow != 0);
+    }
 }
 
 void RestoreGameState(void)

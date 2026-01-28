@@ -104,8 +104,17 @@ int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam)
 {
     HWND hwndF;
 
-    /* TODO: implement */
-    return 0;
+    (void)hwnd;
+
+    if ((((hwndScanner == 0) || ((ch != '+') && (ch != '-'))) &&
+         (ch != 'v') && (ch != 'V')) ||
+        ((hwndMessage != 0) && ((hwndF = GetFocus()) == hwndMsgEdit)))
+    {
+        return 0;
+    }
+
+    SendMessage(hwndScanner, WM_CHAR, ch, lParam);
+    return 1;
 }
 
 #endif /* _WIN32 */

@@ -225,8 +225,9 @@ int16_t FWriteHistFile(int16_t iPlayer)
 
 void CancelMemRt(int16_t rt)
 {
-
-    /* TODO: implement */
+    (void)rt;
+    imemLogCur = (int16_t)(imemLogCur - (int16_t)((uint16_t)hdrPrev.cb + 2u));
+    hdrPrev.rt = 0;
 }
 
 void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)

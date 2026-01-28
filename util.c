@@ -1419,8 +1419,19 @@ void DrawABunchOfStars(HDC hdc, RECT *prc)
 
 void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize)
 {
-
-    /* TODO: implement */
+    if (iSize == 0)
+    {
+        PatBlt(hdc, (int16_t)(x - 3), (int16_t)(y - 1), 7, 3, PATINVERT);
+        PatBlt(hdc, (int16_t)(x - 1), (int16_t)(y - 3), 3, 7, PATINVERT);
+        PatBlt(hdc, (int16_t)(x - 2), (int16_t)(y - 2), 5, 5, PATINVERT);
+    }
+    else
+    {
+        PatBlt(hdc, (int16_t)(x - 5), (int16_t)(y - 2), 11, 5, PATINVERT);
+        PatBlt(hdc, (int16_t)(x - 2), (int16_t)(y - 5), 5, 11, PATINVERT);
+        PatBlt(hdc, (int16_t)(x - 4), (int16_t)(y - 3), 9, 7, PATINVERT);
+        PatBlt(hdc, (int16_t)(x - 3), (int16_t)(y - 4), 7, 9, PATINVERT);
+    }
 }
 
 #endif /* _WIN32 */

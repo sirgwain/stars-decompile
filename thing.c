@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "thing.h"
 
 /* functions */
@@ -30,8 +31,16 @@ void DrawThingGauge(uint16_t hdc, RECT *prc, THING *lpth, int16_t md)
 
 void FreeLpth(THING *lpth)
 {
+    THING *end;
+    size_t idx;
 
-    /* TODO: implement */
+    end = lpThings + cThing;
+    if (lpth < end - 1)
+    {
+        idx = (size_t)(lpth - lpThings);
+        memmove(lpth, lpth + 1, (size_t)(cThing - (int32_t)idx - 1) * sizeof(*lpth));
+    }
+    cThing = (int16_t)(cThing - 1);
 }
 
 int16_t CPlanetsInCircle(POINT pt, int32_t r2)
@@ -56,8 +65,18 @@ int16_t PctWormholeMoves(THING *lpth)
 {
     int16_t pct;
 
-    /* TODO: implement */
-    return 0;
+    pct = (int16_t)((int16_t)(lpth->thw.cLastMove / 5) - (int16_t)(2 - lpth->thw.iStable));
+
+    if (pct < 0)
+    {
+        pct = 0;
+    }
+    else if (pct > 6)
+    {
+        pct = 6;
+    }
+
+    return pct;
 }
 
 void DoThingInteractions(int16_t fPostMove)

@@ -397,6 +397,8 @@ COLORREF rgcrMinerals[6] = {0x00ff0000, 0x00007f00, 0x0000ffff, 0x00ffffff, 0x00
 COLORREF rgcrPlrHistory[16] = {0x003ff0f0, 0x000000ff, 0x0000ff00, 0x00ff0000, 0x0000ffff, 0x00ff00ff, 0x00ffff00, 0x0000007f, 0x00007f00, 0x007f0000, 0x007f7f7f, 0x0067c839, 0x00237fff, 0x00ff7f23, 0x00007f7f, 0x00606060};
 
 HINSTANCE hInst = 0;
+WNDPROC lpfnRealEditProc = NULL;
+
 HPEN hpenDkBlue = 0;
 HPEN hpenDkGreen = 0;
 HPEN hpenDkPurple = 0;

@@ -1,5 +1,6 @@
 
 #include "types.h"
+#include "globals.h"
 
 #include "ship2.h"
 
@@ -314,7 +315,10 @@ void EnableZipBtns(HWND hwnd, int16_t iSel)
 {
     int16_t fEnabled;
 
-    /* TODO: implement */
+    // TODO: replace with constants
+    fEnabled = (int16_t)(vrgZip[iSel].fValid != 0);
+    EnableWindow(GetDlgItem(hwnd, 0x0817), fEnabled);
+    EnableWindow(GetDlgItem(hwnd, 0x041b), fEnabled);
 }
 
 #endif /* _WIN32 */

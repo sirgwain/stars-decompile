@@ -972,9 +972,14 @@ INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if ((msg == WM_CHAR) &&
+        (((wParam < (WPARAM)'0') || ((WPARAM)'9' < wParam)) && (wParam != (WPARAM)8)))
+    {
+        return 0;
+    }
 
-    /* TODO: implement */
-    return 0;
+    /* In the original, this called the previously-subclassed edit proc. */
+    return CallWindowProc(lpfnRealEditProc, hwnd, msg, wParam, lParam);
 }
 
 void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam)

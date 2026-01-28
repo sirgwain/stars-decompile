@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "turn2.h"
 
 /* functions */
@@ -13,15 +14,15 @@ void Produce(void)
     int16_t mdStatus;
     int16_t cBuilt;
     int16_t fNoResearch;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
     int16_t idm;
     PROD prodPartial;
     int16_t fPrevProdIsAlch;
     int16_t fAutoBuildDone;
     int32_t lResearchTake;
-    PROD * lpprod;
-    PLANET * lpplMac;
+    PROD *lpprod;
+    PLANET *lpplMac;
     int16_t cMax2;
 
     /* debug symbols */
@@ -45,12 +46,12 @@ void CreateBackupDir(void)
 
 void ThingDecay(void)
 {
-    THING * lpthMac;
+    THING *lpthMac;
     int32_t pctDecay;
     int16_t i;
     int16_t ifl;
-    FLEET * lpfl;
-    THING * lpth;
+    FLEET *lpfl;
+    THING *lpth;
     uint16_t wDecay;
     int32_t lDecay;
     int16_t fMineExpert;
@@ -67,13 +68,13 @@ void ThingDecay(void)
 
 void DropColonists(void)
 {
-    COLDROP * lpcdLook;
+    COLDROP *lpcdLook;
     int16_t fTie;
     int32_t cMax;
     PLANET pl;
     int32_t lDefensePower;
     int32_t cPowerTot;
-    COLDROP * lpcdCur;
+    COLDROP *lpcdCur;
     int16_t iMax;
     int16_t idPlanet;
     int16_t iplrOldOwner;
@@ -86,7 +87,7 @@ void DropColonists(void)
     float pctSurvive;
     int32_t rgcCol[16];
     int32_t lPower;
-    COLDROP * lpcdMax;
+    COLDROP *lpcdMax;
     int16_t cpq;
     int16_t iTech;
     int16_t iDst;
@@ -157,9 +158,9 @@ void RemoteTerraforming(void)
     int16_t fHelp;
     int16_t iBest;
     int16_t pctCur;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t ifl;
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t cDone;
     int16_t iEnv;
     int16_t cAllowed;
@@ -172,8 +173,8 @@ void RemoteTerraforming(void)
 void UpdatePopulations(void)
 {
     int32_t lPopChg;
-    PLANET * lppl;
-    PLANET * lpplMac;
+    PLANET *lppl;
+    PLANET *lpplMac;
     int16_t fMac;
     int32_t lPopOld;
 
@@ -188,19 +189,19 @@ void UpdatePopulations(void)
 void SweepForMines(void)
 {
     int16_t iplr;
-    THING * lpthMac;
+    THING *lpthMac;
     POINT pt;
     int32_t dy;
     int32_t lCur;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t ifl;
-    FLEET * lpfl;
-    THING * lpth;
+    FLEET *lpfl;
+    THING *lpth;
     int32_t cMineCur;
     int32_t dx;
     int32_t cMine;
     uint16_t grbitPlr;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
 
     /* TODO: implement */
 }
@@ -228,9 +229,9 @@ void UpdatePlayerScores(void)
 
 void UpdateGuesses(void)
 {
-    PLANET * lppl;
+    PLANET *lppl;
     float pct;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
     int32_t l;
 
     /* debug symbols */
@@ -244,7 +245,7 @@ void MysteryTrader(void)
     int16_t iSrc;
     int16_t cRand;
     int16_t i;
-    THING * lpth;
+    THING *lpth;
     int16_t grbitTrader;
     int16_t rgC[4];
 
@@ -254,7 +255,7 @@ void MysteryTrader(void)
 int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists)
 {
     int16_t iColDrop;
-    COLDROP * lpcdT;
+    COLDROP *lpcdT;
 
     /* TODO: implement */
     return 0;
@@ -294,12 +295,12 @@ void AutoTerraform(void)
 {
     int16_t rgMax[3];
     int16_t rgp[16];
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
     int16_t rgMin[3];
     int16_t rgCost[3];
     int16_t fTerra;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
 
     /* TODO: implement */
 }
@@ -324,8 +325,8 @@ void TransferToOthers(void)
     int16_t idSrc;
     int16_t i;
     int16_t idm;
-    XFERFULL * lpxfMax;
-    XFERFULL * lpxfCur;
+    XFERFULL *lpxfMax;
+    XFERFULL *lpxfCur;
     int32_t l;
 
     /* debug symbols */
@@ -337,8 +338,8 @@ void TransferToOthers(void)
 void MineMinerals(void)
 {
     int32_t rglQuan[3];
-    PLANET * lppl;
-    PLANET * lpplMac;
+    PLANET *lppl;
+    PLANET *lpplMac;
 
     /* TODO: implement */
 }
@@ -347,20 +348,20 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
 {
     int16_t iWarp;
     int16_t i;
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t idm;
     int16_t fTwoMAs;
-    SHDEF * lpshdef;
+    SHDEF *lpshdef;
     int16_t cAllowed;
     int16_t iEnv;
     int32_t dpOrig;
-    THING * lpthMac;
+    THING *lpthMac;
     int16_t cshDamaged;
     int16_t cshOrig;
     int16_t iDecayRate;
     PART part;
     uint16_t dpShdef;
-    THING * lpth;
+    THING *lpth;
     int16_t raMajor;
     int16_t iWarpAsked;
     int16_t cSize;
@@ -392,7 +393,7 @@ int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp)
 void PlanetaryClimateChange(void)
 {
     int16_t iT;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
     int16_t j;
 
@@ -401,7 +402,7 @@ void PlanetaryClimateChange(void)
 
 void DiscoverNewMinerals(void)
 {
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
 
     /* TODO: implement */
@@ -413,7 +414,7 @@ void MeteorStrike(void)
     int16_t iT;
     int32_t rgQuan[4];
     int16_t iSize;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t rgAffect[3];
     int16_t i;
     int16_t iConc;
@@ -426,13 +427,13 @@ void HealShips(void)
 {
     int16_t pctShipHeal;
     int16_t dpHeal;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t i;
-    FLEET * lpfl;
-    SHDEF * lpshdef;
+    FLEET *lpfl;
+    SHDEF *lpshdef;
     int16_t pct;
     int16_t ishdef;
-    PLANET * lpplMac;
+    PLANET *lpplMac;
 
     /* TODO: implement */
 }
@@ -448,9 +449,9 @@ void BreedColonistsInTransit(void)
     int16_t fNoBreeders;
     char grfBreeder[16];
     int32_t lColGain;
-    PLANET * lppl;
+    PLANET *lppl;
     int16_t ifl;
-    FLEET * lpfl;
+    FLEET *lpfl;
     int16_t i;
     int32_t lColGainAct;
 
@@ -465,8 +466,15 @@ void RandomEvents(void)
 
 void UnmarkMineFields(void)
 {
-    THING * lpthMac;
-    THING * lpth;
+    THING *lpth;
+    THING *end;
 
-    /* TODO: implement */
+    end = lpThings + cThing;
+    for (lpth = lpThings; lpth < end; lpth++)
+    {
+        if (lpth->ith == 0)
+        {
+            lpth->thm.grbitPlrNow = 0;
+        }
+    }
 }

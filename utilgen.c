@@ -317,8 +317,10 @@ int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax)
 
 void ExpandRc(RECT *prc, int16_t dx, int16_t dy)
 {
-
-    /* TODO: implement */
+    prc->left = (int16_t)(prc->left - dx);
+    prc->right = (int16_t)(prc->right + dx);
+    prc->top = (int16_t)(prc->top - dy);
+    prc->bottom = (int16_t)(prc->bottom + dy);
 }
 
 int16_t ReadBigBlock(int16_t hFile, char *lpBuffer, uint32_t dwSize)
@@ -734,8 +736,10 @@ void PushRandom(int32_t lNew1, int32_t lNew2)
 
 void OffsetRc(RECT *prc, int16_t dx, int16_t dy)
 {
-
-    /* TODO: implement */
+    prc->left = (int16_t)(prc->left + dx);
+    prc->right = (int16_t)(prc->right + dx);
+    prc->top = (int16_t)(prc->top + dy);
+    prc->bottom = (int16_t)(prc->bottom + dy);
 }
 
 int16_t ICompLong(void *arg1, void *arg2)
@@ -929,15 +933,33 @@ HBRUSH HbrGet(COLORREF cr)
 
 void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen)
 {
+    SIZE sz;
     int16_t dx;
+    int16_t x0;
 
-    /* TODO: implement */
+    if (cLen == 0)
+    {
+        cLen = (int16_t)lstrlenA(psz);
+    }
+
+    if (!GetTextExtentPointA(hdc, psz, (int)cLen, &sz))
+    {
+        return;
+    }
+
+    dx = (int16_t)sz.cx;
+    x0 = (int16_t)(x - (dx / 2));
+
+    TextOutA(hdc, (int)x0, (int)y, psz, (int)cLen);
 }
 
 void HideProgressGauge(void)
 {
-
-    /* TODO: implement */
+    if (hwndProgressGauge != 0)
+    {
+        DestroyWindow(hwndProgressGauge);
+        hwndProgressGauge = 0;
+    }
 }
 
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText)
@@ -1182,10 +1204,29 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
 
 int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint)
 {
+    SIZE sz;
     int16_t dx;
 
-    /* TODO: implement */
-    return 0;
+    if (cLen == 0)
+    {
+        cLen = (int16_t)lstrlenA(psz);
+    }
+
+    /* Measure text width */
+    if (!GetTextExtentPointA(hdc, psz, (int)cLen, &sz))
+    {
+        return 0;
+    }
+
+    dx = (int16_t)sz.cx;
+
+    if (fPrint != 0)
+    {
+        TextOutA(hdc, (int)*px, (int)y, psz, (int)cLen);
+    }
+
+    *px += dx;
+    return dx;
 }
 
 int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot)

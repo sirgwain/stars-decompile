@@ -18,6 +18,7 @@
 
 // TODO: remove this when we make the few non win32 methods requiring HDCs better
 typedef uint16_t HDC;
+typedef uint16_t HWND;
 
 /* MessageBox-style flags (Win16/Win32 compatible values) */
 typedef enum MBFlags
@@ -2900,7 +2901,7 @@ typedef struct _tutor
     int16_t iScanZoom;  /* +0x000a */
     int16_t icolFSort;  /* +0x000c */
     uint16_t grbitScan; /* +0x000e */
-    uint16_t hwnd;      /* +0x0010 */
+    HWND hwnd;          /* +0x0010 */
     ZIPPRODQ1 zpq;      /* +0x0012 */
 } TUTOR;
 #ifdef STARS_LAYOUT_CHECKS

@@ -676,6 +676,18 @@ set -e
 python3 "$PROJECT_DIR/scripts/build_implementation_plan.py" "$@"
 '''
 
+
+
+[tasks.update-progress]
+description = "Update project index + implementation tracking + implementation plan (exclude AI)"
+run = '''
+#!/bin/bash
+set -e
+
+"$PROJECT_DIR/scripts/update_project_index.sh"
+python3 "$PROJECT_DIR/scripts/track_implementation.py"
+python3 "$PROJECT_DIR/scripts/build_implementation_plan.py" --exclude-ai
+'''
 [tasks.build-call-graph]
 description = "Build function call graph JSON (usage: mise run build-call-graph [-- output.json])"
 run = '''

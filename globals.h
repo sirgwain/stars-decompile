@@ -5,6 +5,7 @@
 #include "types.h"
 #ifdef _WIN32
 #include <windows.h>
+
 #endif /* _WIN32 */
 
 #ifdef NDEBUG
@@ -568,6 +569,9 @@ extern HGLOBAL hdibToolbar;
 extern HICON hiconHost;
 extern HICON hiconStars;
 extern HICON hiconWait;
+/* Subclassing: real edit control proc (Win32 only) */
+extern WNDPROC lpfnRealEditProc;
+
 #endif /* _WIN32 */
 
 #endif /* GLOBALS_H_ */

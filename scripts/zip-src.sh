@@ -137,7 +137,8 @@ PRUNE_EXPR="$PRUNE_EXPR \\) -prune -o"
         -x "**/.DS_Store" \
            "**/*.o" "**/*.obj" \
            "**/*.a" "**/*.so" "**/*.dll" \
-           "**/*.dSYM/**"
+           "**/*.dSYM/**" \
+           decompiled/asm/**
 )
 
 echo "Wrote $OUT"

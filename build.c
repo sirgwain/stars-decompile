@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "build.h"
 
 /* globals */
@@ -26,7 +27,13 @@ int16_t IEmptyBmpFromGrhst(HullSlotType grhst)
 {
     int16_t i;
 
-    /* TODO: implement */
+    for (i = 0; i < (int16_t)(sizeof(rgmapBuildBmps) / sizeof(rgmapBuildBmps[0])); i++)
+    {
+        if ((HullSlotType)rgmapBuildBmps[i] == grhst)
+        {
+            return i;
+        }
+    }
     return 0;
 }
 

@@ -329,7 +329,13 @@ void GetWindowRc(HWND hwnd, RECT *prc)
 {
     WINDOWPLACEMENT wndpl;
 
-    /* TODO: implement */
+    wndpl.length = sizeof(wndpl);
+    GetWindowPlacement(hwnd, &wndpl);
+
+    prc->left = wndpl.rcNormalPosition.left;
+    prc->top = wndpl.rcNormalPosition.top;
+    prc->right = (int16_t)(wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left);
+    prc->bottom = (int16_t)(wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top);
 }
 
 void DrawHostDialog2(HWND hwnd, HDC hdcIn)

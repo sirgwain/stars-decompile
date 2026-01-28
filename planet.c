@@ -760,8 +760,12 @@ void SetPlanetTitleBar(HWND hwnd)
 
 void HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate)
 {
+    (void)inflate;
 
-    /* TODO: implement */
+    if (lpdis->itemState & ODS_FOCUS)
+    {
+        FrameRect(lpdis->hDC, &lpdis->rcItem, hbr50Screen);
+    }
 }
 
 int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)
