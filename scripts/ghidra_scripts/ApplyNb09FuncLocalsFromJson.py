@@ -4,22 +4,16 @@
 # Apply NB09 (CodeView) *local stack variables* to Ghidra functions using
 # bp-relative offsets from nb09_ghidra_globals.json (PROC records only).
 #
-# What it does:
-#   - For each function with a PROC record, matches NB09 locals to existing
-#     Ghidra stack vars by stack offset (stack_off = bp_off - 2).
-#   - Renames the chosen stack var to the NB09 name (USER_DEFINED).
-#   - Retypes only when it is safe:
-#       * current type is undefined-like (undefined*, arrays of undefined, etc.)
-#       * NB09 size matches the stack var length exactly
-#       * desired datatype length matches exactly
-#
-# What it does NOT do:
-#   - Does not create new stack vars, resize vars, or delete overlaps.
-#   - Skips ambiguous offsets (multiple vars at same offset with no unique match).
+# Updated behavior (per Craig):
+#   - Only apply NB09 locals whose stack byte ranges do NOT overlap with any
+#     other NB09 local (i.e., the slot is stable / not re-used across scopes).
+#   - If a stable NB09 local is applied, delete any existing Ghidra stack vars
+#     that intersect the target byte range, then create/rename/retype.
+#   - We do not care about matching Ghidra's inferred types/sizes.
 #
 # Notes:
-#   - CodeView commonly reuses stack slots across scopes; we select one “best”
-#     NB09 local per stack slot (prefer larger/known sizes).
+#   - CodeView commonly reuses stack slots across scopes; overlapping NB09 locals
+#     are treated as unsafe and are skipped entirely.
 #   - Function naming/signatures are handled elsewhere (ApplyNb09NamesFromJson.py).
 #
 
@@ -69,9 +63,140 @@ class BestVarByStack:
     local: VarInfo
 
 
+def _intervals_overlap(a0: int, a1: int, b0: int, b1: int) -> bool:
+    # half-open [a0,a1) overlaps [b0,b1)
+    return (a0 < b1) and (b0 < a1)
+
+
+def _var_interval(off: int, ln: int) -> tuple[int, int]:
+    if ln is None or ln <= 0:
+        ln = 1
+    return (off, off + ln)
+
+
+def _delete_vars_intersecting(func: Function, target0: int, target1: int):
+    """Delete any existing local stack vars that intersect [target0,target1).
+
+    IMPORTANT: Variable objects don't expose a .delete() method in many Ghidra builds.
+    The supported way is Function.removeVariable(var).
+    """
+    # Snapshot list first; we'll be mutating the function's symbol table.
+    vars_now = list(func.getLocalVariables())
+    for v in vars_now:
+        try:
+            off = v.getStackOffset()
+            if off is None or off >= 0:
+                continue  # locals only (negative stack offsets)
+            (v0, v1) = _var_interval(off, v.getLength())
+            if not _intervals_overlap(target0, target1, v0, v1):
+                continue
+            log(
+                "[BPVAR-DEL] %s deleting %s sp=%+d len=%d (conflicts with [%+d,%+d))"
+                % (func.getName(), v.getName(), off, v.getLength(), target0, target1)
+            )
+            func.removeVariable(v)
+        except Throwable as ex:
+            warn(
+                "[BPVAR-DELFAIL] %s sp=%+d name=%s : %s"
+                % (
+                    func.getName(),
+                    off if "off" in locals() else 0,
+                    getattr(v, "getName", lambda: "?")(),
+                    str(ex),
+                )
+            )
+        except Exception as ex:
+            warn("[BPVAR-DELFAIL] %s : %s" % (func.getName(), str(ex)))
+
+
+def _create_or_get_stack_local(
+    func: Function, stack_off: int, name: str, dt: DataType
+) -> Variable:
+    """Create a local stack variable at stack_off, or return existing one."""
+    # Try to find an existing var exactly at offset after deletions
+    for v in func.getLocalVariables():
+        try:
+            if v.getStackOffset() == stack_off:
+                return v
+        except Throwable:
+            pass
+
+    sf = func.getStackFrame()
+    try:
+        # createVariable(name, stackOffset, dataType, sourceType)
+        return sf.createVariable(name, stack_off, dt, SourceType.USER_DEFINED)
+    except Throwable as ex:
+        warn(
+            "[BPVAR-CREATEFAIL] %s sp=%+d name=%s : %s"
+            % (func.getName(), stack_off, name, str(ex))
+        )
+        return None
+
+
 # ------------------------------------------------------------
 # stack var (bp relative) application for locals/params
 # ------------------------------------------------------------
+
+
+def _intervals_intersect(a0: int, a1: int, b0: int, b1: int) -> bool:
+    """Half-open intervals [a0,a1) and [b0,b1) intersect."""
+    return (a0 < b1) and (b0 < a1)
+
+
+def _nb09_local_interval(local: VarInfo):
+    """Return (start,end) stack interval for this NB09 local or None if unsafe."""
+    off = local.bp_off
+    ln = local.size
+    if off is None:
+        return None
+    if ln is None or ln <= 0:
+        return None
+    return (off, off + ln)
+
+
+def _stable_nb09_locals(
+    locals_list: list[VarInfo],
+) -> tuple[list[VarInfo], list[VarInfo]]:
+    """Split into (stable, overlapping/unsafe) based on NB09 byte-range overlaps."""
+    items = []
+    unsafe = []
+    for l in locals_list:
+        iv = _nb09_local_interval(l)
+        if iv is None:
+            unsafe.append(l)
+            continue
+        s, e = iv
+        items.append((s, e, l))
+
+    # Sweep for overlaps
+    items.sort(key=lambda t: (t[0], t[1]))
+    overlap_set = set()
+    if items:
+        group = [items[0]]
+        cur_end = items[0][1]
+        for it in items[1:]:
+            s, e, l = it
+            if s < cur_end:
+                # overlaps current group
+                group.append(it)
+                cur_end = max(cur_end, e)
+            else:
+                if len(group) > 1:
+                    for _, __, gl in group:
+                        overlap_set.add(gl)
+                group = [it]
+                cur_end = e
+        if len(group) > 1:
+            for _, __, gl in group:
+                overlap_set.add(gl)
+
+    stable = []
+    for s, e, l in items:
+        if l in overlap_set:
+            unsafe.append(l)
+        else:
+            stable.append(l)
+    return stable, unsafe
 
 
 def _collect_stack_vars(func: Function) -> dict[int, Variable]:
@@ -158,106 +283,6 @@ def _rename_var_user_defined(
         return False
 
 
-def _is_undefined_like_datatype(dt: DataType):
-    """
-    True if dt is undefined/unknown-ish, including arrays of undefined.
-    We key off the datatype name because exact classes vary by Ghidra version.
-    """
-    if dt is None:
-        return True
-    while isinstance(dt, ArrayDataType) or isinstance(dt, PointerDataType):
-        dt = dt.getDataType()
-
-    return dt.getName().lower().startswith("undefined")
-
-
-def _maybe_retype_stack_var(
-    func: Function,
-    name: str,
-    v: Variable,
-    desired_dt: DataType,
-    want_len: int,
-    stack_off: int,
-    is_far_ptr
-):
-    """
-    Retype v to desired_dt ONLY if:
-      - current dt is undefined-like
-      - v.getLength == want_len (if provided)
-      - desired_dt.getLength == v.getLength
-    Returns True if changed.
-    """
-    if desired_dt is None:
-        return False
-
-    v_len = v.getLength()
-
-    if want_len is not None and want_len > 0 and v_len != want_len:
-        log(
-            "[BPVAR-RETYPE] skip %s:%s sp=%+d want_dt=%s v_dt=%s v_len=%d want_len=%d"
-            % (
-                func.getName(),
-                name,
-                stack_off,
-                desired_dt.getName(),
-                v.getDataType().getName(),
-                v_len,
-                want_len,
-            )
-        )
-        return False
-    
-    # ghidra automatically makes pointer DataType.getLength() return 4
-    if isinstance(desired_dt, PointerDataType):
-        dt_len = 4 if is_far_ptr else 2
-    else:
-        dt_len = desired_dt.getLength()
-    if dt_len != v_len:
-        log(
-            "[BPVAR-RETYPE] skip %s:%s sp=%+d dt_len=%d vs desired v_len=%d"
-            % (func.getName(), name, stack_off, dt_len, v_len)
-        )
-        return False
-
-    cur_dt = v.getDataType()
-
-    if not _is_undefined_like_datatype(cur_dt):
-        log(
-            "[BPVAR-RETYPE] %s:%s sp=%+d %s %s is not undefined"
-            % (func.getName(), name, stack_off, desired_dt.getName(), cur_dt.getName())
-        )
-        return False
-
-    # Already correct?
-    try:
-        if cur_dt is not None and cur_dt.equals(desired_dt):
-            return False
-    except Exception:
-        pass
-
-    try:
-        # Variable.setDataType(DataType, SourceType) exists on most versions
-        v.setDataType(desired_dt, SourceType.USER_DEFINED)
-        log(
-            "[BPVAR-RETYPE] %s:%s sp=%+d <- %s"
-            % (func.getName(), name, stack_off, desired_dt.getName())
-        )
-        return True
-    except VariableSizeException:
-        # We explicitly do not resize/recreate in this mode.
-        log(
-            "[BPVAR-RETYPE-SKIP] %s:%s sp=%+d : size mismatch (len=%d)"
-            % (func.getName(), name, stack_off, v_len)
-        )
-        return False
-    except Throwable as ex:
-        warn(
-            "[BPVAR-RETYPE-FAIL] %s:%s sp=%+d : %s"
-            % (func.getName(), name, stack_off, str(ex))
-        )
-        return False
-
-
 def apply_bp_relative_vars(
     dtm: DataTypeManager, func: Function, proc: ProcEntry
 ) -> int:
@@ -278,124 +303,75 @@ def apply_bp_relative_vars(
         log("[BPVAR] %s no locals" % (func.getName()))
         return 0
 
-    log("[BPVAR] %s collecting stack vars" % (func.getName()))
-    by_off = _collect_stack_vars(func)
-
-    # One NB09 local per stack slot (CodeView slot reuse is common).
-    # Prefer larger known sizes (arrays/structs win).
-    best_by_stack: dict[int, BestVarByStack] = {}
+    # Build NB09 intervals and mark unsafe (overlapping) bytes.
+    nb = []  # list of (local, off0, off1)
     for local in proc.types.locals:
         bp_off = local.bp_off
         nm = local.name
         if bp_off is None or not nm:
-            log("[BPVAR] %s local has no name or offset" % (func.getName()))
             continue
+        if bp_off >= 0:
+            continue  # locals only
+        bp_off = bp_off - 2
 
-        stack_off = bp_off - 2
-        log("[BPVAR] %s local %s stack_off %s" % (func.getName(), nm, stack_off))
-
-        want_len = local.size
-        try:
-            want_len = want_len if want_len is not None else None
-        except Exception:
+        if local.size is None or local.size <= 0:
+            # Without a size, we can't reason about stability; treat as unsafe.
             log(
-                "[BPVAR] %s local %s unable to determine want_len %s"
-                % (func.getName(), nm, want_len)
-            )
-            want_len = None
-
-        dt, err = datatype_from_decl_info(dtm, local.name, local.decl, local.is_far_ptr)
-        if dt is None:
-            warn(f"unable to find type for local {local.c_decl}")
-            continue
-        cur = best_by_stack.get(stack_off)
-        if cur is None:
-            best_by_stack[stack_off] = BestVarByStack(
-                bp_off=bp_off, name=nm, want_len=want_len, dt=dt, local=local
-            )
-            log(
-                "[BPVAR] %s local %s best by stack stack_off %s"
-                % (func.getName(), nm, stack_off)
+                "[BPVAR-SKIP] %s sp=%+d name=%s (unknown size; assuming unsafe)"
+                % (func.getName(), bp_off, nm)
             )
             continue
+        (o0, o1) = _var_interval(bp_off, local.size)
+        nb.append((local, o0, o1))
 
-        log(
-            "[BPVAR] %s sp=%+d bp=%+d name=%s c_type: %s"
-            % (func.getName(), stack_off, bp_off, nm, local.c_type)
-        )
-
-        if (want_len is not None and want_len > 0) and not (
-            cur.want_len is not None and cur.want_len > 0
-        ):
-            best_by_stack[stack_off] = BestVarByStack(
-                bp_off=bp_off, name=nm, want_len=want_len, dt=dt, local=local
-            )
-        elif (
-            want_len is not None
-            and cur.want_len is not None
-            and want_len > cur.want_len
-        ):
-            best_by_stack[stack_off] = BestVarByStack(
-                bp_off=bp_off, name=nm, want_len=want_len, dt=dt, local=local
-            )
+    unsafe = set()  # byte offsets that are in any overlapping region
+    for i in range(len(nb)):
+        (_, a0, a1) = nb[i]
+        for j in range(i + 1, len(nb)):
+            (_, b0, b1) = nb[j]
+            if _intervals_overlap(a0, a1, b0, b1):
+                for k in range(max(a0, b0), min(a1, b1)):
+                    unsafe.add(k)
 
     changed = 0
 
-    for stack_off in sorted(best_by_stack.keys()):
-        # bp_off, nm, want_len, c_type = best_by_stack[stack_off]
-        best = best_by_stack[stack_off]
-        bp_off = best.bp_off
-        nm = best.name
-
-        # We only target locals (negative stack offsets). Safety belt:
-        if stack_off >= 0:
+    # Apply only locals whose entire byte range is safe.
+    # Deterministic order: by bp_off ascending.
+    for local, o0, o1 in sorted(nb, key=lambda t: t[1]):
+        nm = local.name
+        if any((k in unsafe) for k in range(o0, o1)):
+            log(
+                "[BPVAR-UNSAFE] %s sp=%+d..%+d name=%s (overlaps another NB09 local; skipping)"
+                % (func.getName(), o0, o1, nm)
+            )
             continue
 
-        vars_here = by_off.get(stack_off, [])
-        v = _choose_stack_var_for_rename(vars_here, best.want_len)
+        dt, derr = datatype_from_decl_info(
+            dtm, local.name, local.decl, local.is_far_ptr
+        )
+        if dt is None:
+            warn("unable to find type for local %s" % local.c_decl)
+            continue
+
+        # Clear any conflicting locals in Ghidra, then create/apply.
+        _delete_vars_intersecting(func, o0, o1)
+        v = _create_or_get_stack_local(func, o0, nm, dt)
         if v is None:
-            log(
-                "[BPVAR-SKIP] %s sp=%+d bp=%+d name=%s (ambiguous or missing)"
-                % (func.getName(), stack_off, bp_off, nm)
-            )
             continue
 
-        if _rename_var_user_defined(func, v, nm, stack_off):
+        if _rename_var_user_defined(func, v, nm, o0):
             changed += 1
-            log(
-                "[BPVAR-RENAME] %s sp=%+d bp=%+d <- %s"
-                % (func.getName(), stack_off, bp_off, nm)
-            )
+            log("[BPVAR-RENAME] %s sp=%+d <- %s" % (func.getName(), o0, nm))
 
-        # Safe retype: only if same size and current is undefined-like
-        if best.dt is not None:
-            if _maybe_retype_stack_var(func, nm, v, best.dt, best.want_len, stack_off, best.local.is_far_ptr):
-                changed += 1
-                log(
-                    "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s <- %s"
-                    % (
-                        func.getName(),
-                        stack_off,
-                        bp_off,
-                        nm,
-                        best.dt.getName(),
-                    )
-                )
-            else:
-                log(
-                    "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s not retyping to %s"
-                    % (
-                        func.getName(),
-                        stack_off,
-                        bp_off,
-                        nm,
-                        best.local.c_type,
-                    )
-                )
-        else:
-            log(
-                "[BPVAR-RETYPE] %s sp=%+d bp=%+d name=%s no c_type"
-                % (func.getName(), stack_off, bp_off, nm)
+        # For stable slots, just force the datatype (even if non-undefined).
+        try:
+            v.setDataType(dt, SourceType.USER_DEFINED)
+            changed += 1
+            log("[BPVAR-RETYPE] %s sp=%+d <- %s" % (func.getName(), o0, dt.getName()))
+        except Throwable as ex:
+            warn(
+                "[BPVAR-RETYPE-FAIL] %s sp=%+d name=%s : %s"
+                % (func.getName(), o0, nm, str(ex))
             )
 
     return changed
@@ -418,13 +394,13 @@ def main():
     dtm = currentProgram.getDataTypeManager()
 
     # stats
-    total = 0
+    total = len(root.procs)
     applied = 0
     fails = 0
     skipped = 0
     misses = 0
 
-    log("PROC records in JSON: %d" % len(root.globals))
+    log("PROC records in JSON: %d" % len(root.procs))
     log("")
 
     monitor.initialize(total)

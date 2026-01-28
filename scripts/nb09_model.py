@@ -880,7 +880,8 @@ class Nb09Db:
             base_tid = typind & 0x00FF
             base = self.resolve_typind(base_tid)
             ptrtype = {0x0100: 0, 0x0200: 1, 0x0300: 2, 0x0400: 10, 0x0500: 11}[hi]
-            rt = PointerType(kind="pointer", to=base, ptrtype=ptrtype, ptrmode=0, isflat32=(ptrtype in (10, 11)))
+            ptr_size = 4 if is_far_ptrtype(ptrtype) else 2
+            rt = PointerType(kind="pointer", size=ptr_size, to=base, ptrtype=ptrtype, ptrmode=0, isflat32=(ptrtype in (10, 11)))
             self._resolved_type_cache[typind] = rt
             return rt
 
@@ -954,7 +955,8 @@ class Nb09Db:
             ptrmode = (int(attr_val) >> 5) & 0x07
             isflat32 = bool(((int(attr_val) >> 8) & 0x01) or (ptrtype in (10, 11)))
 
-            rt = PointerType(kind="pointer", size=None, to=to, ptrtype=ptrtype, ptrmode=ptrmode, isflat32=isflat32)
+            ptr_size = 4 if is_far_ptrtype(ptrtype) else 2
+            rt = PointerType(kind="pointer", size=ptr_size, to=to, ptrtype=ptrtype, ptrmode=ptrmode, isflat32=isflat32)
         elif k == "array":
             elem_tid = d.get("elemtype")
             size = d.get("size")

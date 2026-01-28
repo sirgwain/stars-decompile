@@ -156,6 +156,7 @@ short FLookupPart(PART *ppart)
   uint uVar2;
   short sVar3;
   short sVar4;
+  HS hs;
   short raMajor;
   
   sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);

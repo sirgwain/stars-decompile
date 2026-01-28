@@ -25,6 +25,8 @@ from ghidra.program.model.data import (
     VoidDataType,
     Undefined2DataType,
     ParameterDefinitionImpl,
+    DoubleDataType,
+    Pointer16DataType,
 )
 
 
@@ -99,7 +101,7 @@ def set_cs_at_function_entry(func):
     ctx = currentProgram.getProgramContext()
     # Apply only at the entry point; keep the range minimal to avoid stepping
     # on other context propagation.
-    ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))    
+    ctx.setValue(reg, entry, func.getBody().getMaxAddress(), BigInteger.valueOf(seg))
     return True
 
 
@@ -130,6 +132,11 @@ def build_function_def(
                 % (ret.c_type, name, err)
             )
             ret_dt = VoidDataType()
+
+    if isinstance(ret_dt, DoubleDataType):
+        # this is only for DGetDistance. It actually returns a pointer.
+        ret_dt = Pointer16DataType(ret_dt)
+
     fdef.setReturnType(ret_dt)
 
     # params
@@ -220,9 +227,14 @@ def main():
             continue
 
         # ----- Type -----
-        dt, err = datatype_from_decl_info(dtm, rec.name, rec.types.decl, rec.types.is_far_ptr)
+        dt, err = datatype_from_decl_info(
+            dtm, rec.name, rec.types.decl, rec.types.is_far_ptr
+        )
         if dt is None:
-            print("[TYPE-FAIL] %s @ %s unable to resolve DataType, err=%s" % (name, addr_str, err))
+            print(
+                "[TYPE-FAIL] %s @ %s unable to resolve DataType, err=%s"
+                % (name, addr_str, err)
+            )
             type_failed += 1
             continue
 

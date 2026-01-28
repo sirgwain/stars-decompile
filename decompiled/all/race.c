@@ -20,7 +20,7 @@ short RaceCreationWizard(HWND hwndParent,short fReadOnly,short fDontWrite)
   long lVar5;
   short cpts;
   RECT rgrcStack [17];
-  undefined4 lpProc;
+  fn_lpProc *lpProc;
   short mdRet;
   
                     /* Segment:    29
@@ -40,11 +40,10 @@ short RaceCreationWizard(HWND hwndParent,short fReadOnly,short fDontWrite)
 RACE_Step1:
   iPanelActive = 1;
   pvVar4 = MakeProcInstance(RaceWizardDlg1,hInst);
-  lpProc = pvVar4;
-  mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x92,hwndRaceParent),(HWND)((ulong)pvVar4 >> 0x10),
+  sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x92,hwndRaceParent),(HWND)((ulong)pvVar4 >> 0x10),
                     (char)pvVar4);
-  FreeProcInstance(lpProc);
-  if (mdRet == 0) {
+  FreeProcInstance(pvVar4);
+  if (sVar1 == 0) {
     sVar1 = 0;
     lVar5 = lSaltCur;
 LAB_10e0_03a6:
@@ -52,77 +51,72 @@ LAB_10e0_03a6:
     lSaltCur._0_2_ = (undefined2)lVar5;
     return sVar1;
   }
-  if (mdRet == 3) goto RACE_Finish;
+  if (sVar1 == 3) goto RACE_Finish;
 RACE_Step2:
   do {
     iPanelActive = 2;
     pvVar4 = MakeProcInstance(RaceWizardDlg4,hInst);
-    lpProc = pvVar4;
-    mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x95,hwndRaceParent),
+    sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x95,hwndRaceParent),
                       (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-    FreeProcInstance(lpProc);
-    if (mdRet == 0) {
+    FreeProcInstance(pvVar4);
+    if (sVar1 == 0) {
       sVar1 = 0;
       lVar5 = lSaltCur;
       goto LAB_10e0_03a6;
     }
-    if (mdRet == 1) goto RACE_Step1;
-    if (mdRet == 3) goto RACE_Finish;
+    if (sVar1 == 1) goto RACE_Step1;
+    if (sVar1 == 3) goto RACE_Finish;
 RACE_Step3:
     iPanelActive = 3;
     pvVar4 = MakeProcInstance(RaceWizardDlg5,hInst);
-    lpProc = pvVar4;
-    mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x96,hwndRaceParent),
+    sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x96,hwndRaceParent),
                       (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-    FreeProcInstance(lpProc);
-    if (mdRet == 0) {
+    FreeProcInstance(pvVar4);
+    if (sVar1 == 0) {
       sVar1 = 0;
       lVar5 = lSaltCur;
       goto LAB_10e0_03a6;
     }
-    if (mdRet != 1) {
-      if (mdRet == 3) goto RACE_Finish;
+    if (sVar1 != 1) {
+      if (sVar1 == 3) goto RACE_Finish;
 RACE_Step4:
       iPanelActive = 4;
       pvVar4 = MakeProcInstance((FARPROC)0x10e01060,hInst);
-      lpProc = pvVar4;
-      mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x93,hwndRaceParent),
+      sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x93,hwndRaceParent),
                         (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-      FreeProcInstance(lpProc);
-      if (mdRet == 0) {
+      FreeProcInstance(pvVar4);
+      if (sVar1 == 0) {
         sVar1 = 0;
         lVar5 = lSaltCur;
         goto LAB_10e0_03a6;
       }
-      if (mdRet != 1) {
-        if (mdRet == 3) goto RACE_Finish;
+      if (sVar1 != 1) {
+        if (sVar1 == 3) goto RACE_Finish;
 RACE_Step5:
         iPanelActive = 5;
         pvVar4 = MakeProcInstance(RaceWizardDlg3,hInst);
-        lpProc = pvVar4;
-        mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x94,hwndRaceParent),
+        sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x94,hwndRaceParent),
                           (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-        FreeProcInstance(lpProc);
-        if (mdRet == 0) {
+        FreeProcInstance(pvVar4);
+        if (sVar1 == 0) {
           sVar1 = 0;
           lVar5 = lSaltCur;
           goto LAB_10e0_03a6;
         }
-        if (mdRet != 1) {
-          if (mdRet == 3) goto RACE_Finish;
+        if (sVar1 != 1) {
+          if (sVar1 == 3) goto RACE_Finish;
           while( true ) {
             iPanelActive = 6;
             pvVar4 = MakeProcInstance(RaceWizardDlg6,hInst);
-            lpProc = pvVar4;
-            mdRet = DialogBox(0,(LPCSTR)CONCAT22(0x97,hwndRaceParent),
+            sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x97,hwndRaceParent),
                               (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-            FreeProcInstance(lpProc);
-            if (mdRet == 0) {
+            FreeProcInstance(pvVar4);
+            if (sVar1 == 0) {
               sVar1 = 0;
               lVar5 = lSaltCur;
               goto LAB_10e0_03a6;
             }
-            if (mdRet == 1) break;
+            if (sVar1 == 1) break;
 RACE_Finish:
             if (fRCWReadOnly != 0) {
               sVar1 = 0;
@@ -188,82 +182,80 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
   POINT PVar4;
   POINT PVar5;
   POINT PVar6;
-  short sVar7;
+  WPARAM WVar7;
   BOOL BVar8;
   UINT UVar9;
   HWND HVar10;
-  uint uVar11;
-  char *pcVar12;
-  HBRUSH HVar13;
-  int iVar14;
+  short sVar11;
+  uint uVar12;
+  char *pcVar13;
+  HBRUSH HVar14;
+  int iVar15;
   undefined2 unaff_SI;
-  undefined2 *puVar15;
+  undefined2 *puVar16;
   undefined2 unaff_DI;
-  PLAYER *pPVar16;
+  PLAYER *pPVar17;
   undefined2 unaff_SS;
-  ulong uVar17;
-  LRESULT LVar18;
-  long lVar19;
+  ulong uVar18;
+  LRESULT LVar19;
+  long lVar20;
   ushort in_stack_0000ffba;
-  undefined8 rcGBox;
+  RECT rcGBox;
   short cch;
   short j;
-  undefined1 ps [4];
-  short iCur;
-  short iDir;
-  RECT *szBuf;
-  short bt;
-  int pt;
+  undefined1 local_38 [32];
+  int local_18;
   uint local_16;
-  HDC hdc;
-  HWND pt__18;
-  short iPlrBmp;
-  undefined8 rc;
+  PLAYER *local_14;
+  HWND local_12;
+  PLAYER *local_10;
+  RECT rc;
   short i;
   
   if (message == WM_PAINT) {
-    pt__18 = BeginPaint(hwnd,ps);
+    local_12 = BeginPaint(hwnd,local_38);
     for (j = 0x10f; j < 0x117; j = j + 1) {
       UVar9 = IsDlgButtonChecked(hwnd,j);
       if (UVar9 != 0) break;
     }
     if (j < 0x116) {
-      hdc = (j + -0x10f) * 0xc0 + 0xda2;
+      local_14 = (PLAYER *)((j + -0x10f) * 0xc0 + vrgplrDef);
     }
     else {
-      hdc = (HDC)&vplr;
+      local_14 = (PLAYER *)&vplr;
     }
     GetClientRect(hwnd,&rc);
-    DrawRaceAdvantagePoints(pt__18,&rc,(PLAYER *)hdc);
+    DrawRaceAdvantagePoints(local_12,&rc,local_14);
     HVar10 = GetDlgItem(hwnd,0x10f);
     GetWindowRect(HVar10,&rcGBox);
-    ScreenToClient(hwnd,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
     HVar10 = GetDlgItem(hwnd,0x116);
     GetWindowRect(HVar10,&rc);
-    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
-    rcGBox._4_2_ = rc._4_2_;
-    rcGBox._6_2_ = rc._6_2_;
+    ScreenToClient(hwnd,(POINT *)&rc.right);
+    rcGBox.right = rc.right;
+    rcGBox.bottom = rc.bottom;
     ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
     _Draw3dFrame();
-    SelectObject(pt__18,rghfontArial8[1]);
-    SetBkColor(pt__18,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    cch = CchGetString(idsPredefinedRaces,(char *)szWork);
-    TextOut(pt__18,(int)rcGBox + 8,rcGBox._2_2_ - (dyArial8 >> 1),szWork,cch);
+    SelectObject(local_12,rghfontArial8[1]);
+    SetBkColor(local_12,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+    sVar11 = CchGetString(idsPredefinedRaces,(char *)szWork);
+    TextOut(local_12,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar11)
+    ;
     HVar10 = GetDlgItem(hwnd,0x81a);
     GetWindowRect(HVar10,&rcGBox);
-    ScreenToClient(hwnd,(POINT *)((int)&rcGBox + 4));
-    pt = rcGBox._4_2_ + 0x20;
-    local_16 = rcGBox._6_2_ - 0x20;
-    iPlrBmp = vplr.wMdPlr >> 3 & 0x1f;
-    if (0x1f < (uint)iPlrBmp) {
-      iPlrBmp = 0;
+    ScreenToClient(hwnd,(POINT *)&rcGBox.right);
+    local_18 = rcGBox.right + 0x20;
+    local_16 = rcGBox.bottom + -0x20;
+    local_10 = (PLAYER *)(vplr.wMdPlr >> 3 & 0x1f);
+    if (0x1f < local_10) {
+      local_10 = (PLAYER *)0x0;
     }
-    SelectPalette(pt__18,vhpal,0);
-    RealizePalette(pt__18);
-    DibBlt(pt__18,pt,local_16,0x20,0x20,hdibRaces,(iPlrBmp & 7U) << 5,
-                    (3 - (iPlrBmp >> 3)) * 0x20,0x20,0x20,0xcc0020);
+    SelectPalette(local_12,vhpal,0);
+    RealizePalette(local_12);
+    DibBlt(local_12,local_18,local_16,0x20,0x20,hdibRaces,
+                    ((uint)local_10 & 7) << 5,(3 - ((int)local_10 >> 3)) * 0x20,0x20,0x20,0xcc0020);
     if (fRCWReadOnly == 0) {
-      SetRect(rgrcBuildSpin,pt + 2,local_16 + 0x23,pt + 0x10,local_16 + 0x31);
+      SetRect(rgrcBuildSpin,local_18 + 2,local_16 + 0x23,local_18 + 0x10,local_16 + 0x31);
       rgrcBuildSpin[1].left = rgrcBuildSpin[0].left;
       rgrcBuildSpin[1].top = rgrcBuildSpin[0].top;
       rgrcBuildSpin[1].right = rgrcBuildSpin[0].right;
@@ -271,43 +263,43 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       OffsetRect(rgrcBuildSpin + 1,0xe,0);
       for (i = 0; i < 2; i = i + 1) {
         if (i == 0) {
-          uVar11 = 2;
+          uVar12 = 2;
         }
         else {
-          uVar11 = 3;
+          uVar12 = 3;
         }
-        DrawBtn(pt__18,(RECT *)rgrcBuildSpin + i,uVar11 | 0x20,0,(char *)0x0);
+        DrawBtn(local_12,(RECT *)rgrcBuildSpin + i,uVar12 | 0x20,0,(char *)0x0);
       }
     }
-    EndPaint(hwnd,ps);
-    HVar13 = 1;
-    lVar19 = vplr.lSalt;
+    EndPaint(hwnd,local_38);
+    HVar14 = 1;
+    lVar20 = vplr.lSalt;
     goto LAB_10e0_1057;
   }
   if (message == WM_ERASEBKGND) {
     GetClientRect(hwnd,&rc);
     FillRect(wParam,&rc,hbrButtonFace);
-    HVar13 = 1;
-    lVar19 = vplr.lSalt;
+    HVar14 = 1;
+    lVar20 = vplr.lSalt;
     goto LAB_10e0_1057;
   }
   if (message == WM_CTLCOLOR) {
     for (i = 0x10f; i < 0x117; i = i + 1) {
-      iPlrBmp = (short)lParam;
+      local_10 = (PLAYER *)(HWND)lParam;
       HVar10 = GetDlgItem(hwnd,i);
-      if (iPlrBmp == HVar10) break;
+      if (local_10 == (PLAYER *)HVar10) break;
     }
     if (0x116 < i) {
-      uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
-      if ((int)uVar17 != 6) goto LAB_10e0_1051;
+      uVar18 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
+      if ((int)uVar18 != 6) goto LAB_10e0_1051;
     }
     SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    HVar13 = hbrButtonFace;
-    lVar19 = vplr.lSalt;
+    HVar14 = hbrButtonFace;
+    lVar20 = vplr.lSalt;
     goto LAB_10e0_1057;
   }
   if (message == WM_INITDIALOG) {
-    iPlrBmp = vplr.wMdPlr >> 3 & 0x1f;
+    local_10 = (PLAYER *)(vplr.wMdPlr >> 3 & 0x1f);
     SetRCWTitle(hwnd,iPanelActive);
     SetDlgItemText(hwnd,0x10c,vplr.szName);
     SetDlgItemText(hwnd,0x81b,vplr.szNames);
@@ -321,10 +313,10 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       for (i = 0; i < 7; i = i + 1) {
         local_16 = *(uint *)(i * 0xc0 + 0xda8) >> 3 & 0x1f;
         vplr.wMdPlr = vplr.wMdPlr & 0xff07 | local_16 << 3;
-        sVar7 = __fmemcmp(&vplr,(void *)(i * 0xc0 + vrgplrDef),0x80);
-        if (sVar7 == 0) break;
+        sVar11 = __fmemcmp(&vplr,(void *)(i * 0xc0 + vrgplrDef),0x80);
+        if (sVar11 == 0) break;
       }
-      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | (iPlrBmp & 0x1fU) << 3;
+      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | ((uint)local_10 & 0x1f) << 3;
     }
     else {
       i = 0;
@@ -333,13 +325,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     SendDlgItemMessage(hwnd,0x10c,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x81b,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x10d,0x415,0x10,0);
-    pt__18 = GetDlgItem(hwnd,0x81a);
+    local_12 = GetDlgItem(hwnd,0x81a);
     for (i = 0x106; i < 0x10b; i = i + 1) {
-      hdc = (HDC)PszGetCompressedString(i);
-      SendMessage(pt__18,0x403,0,(LPARAM)hdc);
+      local_14 = PszGetCompressedString(i);
+      SendMessage(local_12,0x403,0,(LPARAM)local_14);
     }
-    i = GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
-    SendMessage(pt__18,0x40e,i,0);
+    WVar7 = GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
+    SendMessage(local_12,0x40e,WVar7,0);
     if (vplr.lSalt != 0) {
       SetDlgItemText(hwnd,0x10d,&szRacePass);
     }
@@ -354,17 +346,17 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar10 = GetDlgItem(hwnd,i);
         EnableWindow(HVar10,0);
       }
-      EnableWindow(pt__18,0);
+      EnableWindow(local_12,0);
     }
-    HVar13 = 1;
-    lVar19 = vplr.lSalt;
+    HVar14 = 1;
+    lVar20 = vplr.lSalt;
     goto LAB_10e0_1057;
   }
   if (message == WM_COMMAND) {
     if (wParam == 0x76) {
       WinHelp(hwnd,_szHelpFile,1,0x3ff);
-      HVar13 = 1;
-      lVar19 = vplr.lSalt;
+      HVar14 = 1;
+      lVar20 = vplr.lSalt;
       goto LAB_10e0_1057;
     }
     i = 0;
@@ -373,20 +365,20 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     if (i < 4) {
       if (wParam != 2) {
-        iPlrBmp = vplr.wMdPlr >> 3 & 0x1f;
-        for (pt__18 = 0x10f; (int)pt__18 < 0x117; pt__18 = pt__18 + 1) {
-          UVar9 = IsDlgButtonChecked(hwnd,pt__18);
+        local_10 = (PLAYER *)(vplr.wMdPlr >> 3 & 0x1f);
+        for (local_12 = 0x10f; (int)local_12 < 0x117; local_12 = local_12 + 1) {
+          UVar9 = IsDlgButtonChecked(hwnd,local_12);
           if (UVar9 != 0) break;
         }
-        if ((int)pt__18 < 0x116) {
-          hdc = pt__18 - 0x10f;
-          puVar15 = (undefined2 *)(hdc * 0xc0 + vrgplrDef);
-          pPVar16 = (PLAYER *)&vplr;
-          for (iVar14 = 0x60; iVar14 != 0; iVar14 = iVar14 + -1) {
-            pPVar3 = pPVar16;
-            pPVar16 = &pPVar16->cPlanet;
-            puVar1 = puVar15;
-            puVar15 = puVar15 + 1;
+        if ((int)local_12 < 0x116) {
+          local_14 = (PLAYER *)(local_12 + -0x10f);
+          puVar16 = (undefined2 *)((int)local_14 * 0xc0 + 0xda2);
+          pPVar17 = (PLAYER *)&vplr;
+          for (iVar15 = 0x60; iVar15 != 0; iVar15 = iVar15 + -1) {
+            pPVar3 = pPVar17;
+            pPVar17 = &pPVar17->cPlanet;
+            puVar1 = puVar16;
+            puVar16 = puVar16 + 1;
             uVar2 = *puVar1;
             pPVar3->iPlayer = (char)uVar2;
             pPVar3->cShDef = (char)((uint)uVar2 >> 8);
@@ -397,30 +389,30 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
         GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
         GetDlgItemText(hwnd,0x10d,&szRacePass,0x10);
         HVar10 = GetDlgItem(hwnd,0x81a);
-        LVar18 = SendMessage(HVar10,0x407,0,0);
-        pt__18 = (HWND)LVar18;
-        SetRaceStat((PLAYER *)&vplr,rsUseLeftover,pt__18);
-        lVar19 = LSaltFromSz((char *)&szRacePass);
-        vplr.wMdPlr = vplr.wMdPlr & 0xff07 | (iPlrBmp & 0x1fU) << 3;
-        vplr.lSalt = lVar19;
+        LVar19 = SendMessage(HVar10,0x407,0,0);
+        local_12 = (HWND)LVar19;
+        SetRaceStat((PLAYER *)&vplr,rsUseLeftover,local_12);
+        lVar20 = LSaltFromSz((char *)&szRacePass);
+        vplr.wMdPlr = vplr.wMdPlr & 0xff07 | ((uint)local_10 & 0x1f) << 3;
+        vplr.lSalt = lVar20;
       }
       StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,0);
       EndDialog(hwnd,i);
-      HVar13 = 1;
-      lVar19 = vplr.lSalt;
+      HVar14 = 1;
+      lVar20 = vplr.lSalt;
       goto LAB_10e0_1057;
     }
-    uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
-    if ((((int)uVar17 == 0) && (0x10e < wParam)) && (wParam < 0x117)) {
+    uVar18 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
+    if ((((int)uVar18 == 0) && (0x10e < wParam)) && (wParam < 0x117)) {
       _memset((void *)vplr.szName,0,0x20);
       GetDlgItemText(hwnd,0x10c,vplr.szName,0x20);
       _memset((void *)vplr.szNames,0,0x20);
       GetDlgItemText(hwnd,0x81b,vplr.szNames,0x20);
-      GetDlgItemText(hwnd,wParam,(LPSTR)&stack0xffd0,0x20);
+      GetDlgItemText(hwnd,wParam,(LPSTR)(local_38 + 8),0x20);
       for (i = 0; i < 7; i = i + 1) {
-        pcVar12 = PszGetCompressedString(i + idsHumanoid);
-        sVar7 = _strcmp((char *)vplr.szName,pcVar12);
-        if (sVar7 == 0) break;
+        pcVar13 = PszGetCompressedString(i + idsHumanoid);
+        sVar11 = _strcmp((char *)vplr.szName,pcVar13);
+        if (sVar11 == 0) break;
       }
       if ((i < 7) && (wParam < 0x116)) {
         _memset((void *)vplr.szName,0,0x20);
@@ -429,90 +421,92 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
                    (char *)vplr.szName);
         SetDlgItemText(hwnd,0x10c,vplr.szName);
         _memset((void *)vplr.szNames,0,0x20);
-        iDir = (short)PszPlayerName(0,1,1,0,0,(PLAYER *)&vplr);
-        _strcpy((char *)vplr.szNames,(char *)iDir);
+        local_38._6_2_ = PszPlayerName(0,1,1,0,0,(PLAYER *)&vplr);
+        _strcpy((char *)vplr.szNames,(char *)local_38._6_2_);
         SetDlgItemText(hwnd,0x81b,vplr.szNames);
       }
       if (wParam < 0x116) {
-        iPlrBmp = (wParam - 0x10f) * 0xc0 + 0xda2;
+        local_10 = (PLAYER *)((wParam - 0x10f) * 0xc0 + vrgplrDef);
       }
       else {
-        iPlrBmp = (short)&vplr;
+        local_10 = (PLAYER *)&vplr;
       }
       InvalidateAdvPtsRect(hwnd);
-      i = GetRaceStat((PLAYER *)iPlrBmp,rsUseLeftover);
+      WVar7 = GetRaceStat(local_10,rsUseLeftover);
       HVar10 = GetDlgItem(hwnd,0x81a);
-      SendMessage(HVar10,0x40e,i,0);
+      SendMessage(HVar10,0x40e,WVar7,0);
       HVar10 = GetDlgItem(hwnd,0x42f);
       EnableWindow(HVar10,(uint)(wParam != 0x115));
-      iDir = *(uint *)(iPlrBmp + 6) >> 3 & 0x1f;
-      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | iDir << 3;
+      local_38._6_2_ = local_10->wMdPlr >> 3 & 0x1f;
+      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | local_38._6_2_ << 3;
       HVar10 = GetDlgItem(hwnd,0x81a);
       GetWindowRect(HVar10,&rc);
-      ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
-      rc._0_2_ = rc._4_2_ + 0x20;
-      rc._2_2_ = rc._6_2_ + -0x20;
-      rc._4_2_ = rc._4_2_ + 0x40;
+      ScreenToClient(hwnd,(POINT *)&rc.right);
+      rc.left = rc.right + 0x20;
+      rc.top = rc.bottom + -0x20;
+      rc.right = rc.right + 0x40;
       InvalidateRect(hwnd,&rc,1);
     }
   }
   else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-    pt__18 = (short)lParam;
-    uVar17 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
-    iPlrBmp = (short)uVar17;
+    local_12 = (HWND)lParam;
+    uVar18 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
+    local_10 = (PLAYER *)uVar18;
     if (fRCWReadOnly == 0) {
-      PVar4.y = iPlrBmp;
-      PVar4.x = pt__18;
+      PVar4.y = (short)local_10;
+      PVar4.x = local_12;
       BVar8 = PtInRect(rgrcBuildSpin,PVar4);
       if (BVar8 == 0) {
-        PVar5.y = iPlrBmp;
-        PVar5.x = pt__18;
+        PVar5.y = (short)local_10;
+        PVar5.x = local_12;
         BVar8 = PtInRect(rgrcBuildSpin + 1,PVar5);
         if (BVar8 == 0) goto LAB_10e0_1051;
       }
-      PVar6.y = iPlrBmp;
-      PVar6.x = pt__18;
+      PVar6.y = (short)local_10;
+      PVar6.x = local_12;
       BVar8 = PtInRect(rgrcBuildSpin,PVar6);
       if (BVar8 == 0) {
-        iDir = 1;
-        bt = 0x23;
-        szBuf = (RECT *)(rgrcBuildSpin + 1);
+        local_38._6_2_ = 1;
+        local_38._10_2_ = 0x23;
+        local_38._8_2_ = SUB42(rgrcBuildSpin + 1,0);
       }
       else {
-        iDir = -1;
-        bt = 0x22;
-        szBuf = (RECT *)rgrcBuildSpin;
+        local_38._6_2_ = -1;
+        local_38._10_2_ = 0x22;
+        local_38._8_2_ = SUB42(rgrcBuildSpin,0);
       }
-      iCur = vplr.wMdPlr >> 3 & 0x1f;
-      if (0x1f < (uint)iCur) {
-        iCur = 0;
+      local_38._4_2_ = vplr.wMdPlr >> 3 & 0x1f;
+      if (0x1f < (uint)local_38._4_2_) {
+        local_38._4_2_ = 0;
       }
-      hdc = GetDC(hwnd);
-      SelectPalette(hdc,vhpal,0);
-      RealizePalette(hdc);
-      InitBtnTrack(&stack0xffd4,hwnd,0,szBuf,bt,0x50,0,0,(char *)0x0);
+      local_14 = (PLAYER *)GetDC(hwnd);
+      SelectPalette((HDC)local_14,vhpal,0);
+      RealizePalette((HDC)local_14);
+      InitBtnTrack
+                (local_38 + 0xc,hwnd,0,(RECT *)local_38._8_2_,local_38._10_2_,0x50,0,0,(char *)0x0);
       while( true ) {
-        sVar7 = FTrackBtn(&stack0xffd4);
-        if (sVar7 == 0) break;
-        iCur = (iCur + 0x20 + iDir) % 0x20;
-        DibBlt(hdc,rgrcBuildSpin[0].left + -2,
+        sVar11 = FTrackBtn(local_38 + 0xc);
+        if (sVar11 == 0) break;
+        local_38._4_2_ = (int)(local_38._4_2_ + 0x20 + local_38._6_2_) % 0x20;
+        DibBlt((HDC)local_14,rgrcBuildSpin[0].left + -2,
                         rgrcBuildSpin[0].top + -0x23,0x20,0x20,hdibRaces,
-                        (iCur & 7U) << 5,(3 - (iCur >> 3)) * 0x20,0x20,0x20,0xcc0020);
+                        (local_38._4_2_ & 7) << 5,(3 - ((int)local_38._4_2_ >> 3)) * 0x20,0x20,0x20,
+                        0xcc0020);
       }
-      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | (iCur & 0x1fU) << 3;
-      ReleaseDC(hwnd,hdc);
-      HVar13 = 1;
-      lVar19 = vplr.lSalt;
+      vplr.wMdPlr = vplr.wMdPlr & 0xff07 | (local_38._4_2_ & 0x1f) << 3;
+      ReleaseDC(hwnd,(HDC)local_14);
+      HVar14 = 1;
+      lVar20 = vplr.lSalt;
       goto LAB_10e0_1057;
     }
   }
 LAB_10e0_1051:
-  HVar13 = 0;
-  lVar19 = vplr.lSalt;
+  HVar14 = 0;
+  lVar20 = vplr.lSalt;
 LAB_10e0_1057:
-  vplr.lSalt._2_2_ = (undefined2)((ulong)lVar19 >> 0x10);
-  vplr.lSalt._0_2_ = (undefined2)lVar19;
-  return HVar13;
+  vplr.lSalt._2_2_ = (undefined2)((ulong)lVar20 >> 0x10);
+  vplr.lSalt._0_2_ = (undefined2)lVar20;
+  return HVar14;
 }
 
 
@@ -529,8 +523,8 @@ LAB_10e0_1057:
 short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
+  POINT pt;
   POINT pt_00;
-  POINT pt_01;
   RECT *pRVar1;
   int iVar2;
   HWND HVar3;
@@ -544,22 +538,17 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   ulong uVar8;
   LRESULT LVar9;
   ushort in_stack_0000ffce;
-  undefined1 ps [22];
-  short cch;
-  short dxLabel;
-  short dxMiddle;
-  short dy;
-  HDC pt;
-  HDC hdc;
+  undefined1 local_30 [32];
+  HDC local_10;
   RECT rc;
   short i;
   
   uVar8 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,ps);
+    local_10 = BeginPaint(hwnd,local_30);
     viStore = -2;
-    DrawRace2(hwnd,hdc,-1);
-    EndPaint(hwnd,ps);
+    DrawRace2(hwnd,local_10,-1);
+    EndPaint(hwnd,local_30);
     sVar4 = 1;
   }
   else if (message == WM_ERASEBKGND) {
@@ -570,9 +559,9 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_CTLCOLOR) {
       for (i = 0x123; i < 0x126; i = i + 1) {
-        hdc = (HDC)lParam;
+        local_10 = (HWND)lParam;
         HVar3 = GetDlgItem(hwnd,i);
-        if (hdc == HVar3) break;
+        if (local_10 == HVar3) break;
       }
       if ((i < 0x126) || (uVar8 = __aFulshr(uVar8,in_stack_0000ffce), (int)uVar8 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
@@ -581,11 +570,11 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
     }
     else if (message == WM_SETCURSOR) {
-      GetCursorPos(&stack0xffee);
-      ScreenToClient(hwnd,&stack0xffee);
-      pt_00.y = hdc;
-      pt_00.x = pt;
-      sVar4 = IrcRaceDlgHitTest(pt_00);
+      GetCursorPos(local_30 + 0x1e);
+      ScreenToClient(hwnd,local_30 + 0x1e);
+      pt.y = local_10;
+      pt.x = local_30._30_2_;
+      sVar4 = IrcRaceDlgHitTest(pt);
       if (-1 < sVar4) {
         setcursor(hcurHand);
         return 1;
@@ -595,23 +584,29 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         SetRCWTitle(hwnd,iPanelActive);
         viStore = -1;
-        hdc = GetDC(hwnd);
+        local_10 = GetDC(hwnd);
         GetClientRect(hwnd,&rc);
-        ps._0_2_ = SelectObject(hdc,rghfontArial8[1]);
-        cch = CchGetString(idsTemperature,ps + 2);
-        DVar7 = GetTextExtent(hdc,(LPCSTR)(ps + 2),cch);
-        dxLabel = (int)DVar7 + 10;
-        DVar7 = GetTextExtent(hdc,(LPCSTR)0x11201331,5);
-        dxMiddle = (rc.right - dxLabel) - ((int)DVar7 + 10);
-        dy = (dyArial8 * 3) / 2;
-        pt = dyArial8 * 3;
-        SetRect(vrgrcRCW,dxLabel,pt,dxLabel + dy,pt + dy);
-        SetRect(vrgrcRCW + 1,dxLabel + dy + 6,pt,((dxLabel + dxMiddle) - dy) + -6,pt + dy)
+        local_30._0_2_ = SelectObject(local_10,rghfontArial8[1]);
+        local_30._22_2_ = CchGetString(idsTemperature,local_30 + 2);
+        DVar7 = GetTextExtent(local_10,(LPCSTR)(local_30 + 2),local_30._22_2_);
+        local_30._24_2_ = (int)DVar7 + 10;
+        DVar7 = GetTextExtent(local_10,(LPCSTR)0x11201331,5);
+        local_30._26_2_ = (rc.right - local_30._24_2_) - ((int)DVar7 + 10);
+        local_30._28_2_ = (dyArial8 * 3) / 2;
+        local_30._30_2_ = dyArial8 * 3;
+        SetRect(vrgrcRCW,local_30._24_2_,local_30._30_2_,local_30._24_2_ + local_30._28_2_
+                ,local_30._30_2_ + local_30._28_2_);
+        SetRect(vrgrcRCW + 1,local_30._24_2_ + local_30._28_2_ + 6,local_30._30_2_,
+                ((local_30._24_2_ + local_30._26_2_) - local_30._28_2_) + -6,
+                local_30._30_2_ + local_30._28_2_);
+        SetRect(vrgrcRCW + 2,(local_30._24_2_ + local_30._26_2_) - local_30._28_2_,
+                local_30._30_2_,local_30._24_2_ + local_30._26_2_,local_30._30_2_ + local_30._28_2_)
         ;
-        SetRect(vrgrcRCW + 2,(dxLabel + dxMiddle) - dy,pt,dxLabel + dxMiddle,pt + dy);
-        SetRect(vrgrcRCW + 3,dxLabel,pt + dy + 4,dy * 3 + dxLabel,dy * 2 + pt + 4);
-        SetRect(vrgrcRCW + 4,dxLabel + dxMiddle + dy * -3,pt + dy + 4,dxLabel + dxMiddle,
-                dy * 2 + pt + 4);
+        SetRect(vrgrcRCW + 3,local_30._24_2_,local_30._30_2_ + local_30._28_2_ + 4,
+                local_30._28_2_ * 3 + local_30._24_2_,local_30._28_2_ * 2 + local_30._30_2_ + 4);
+        SetRect(vrgrcRCW + 4,local_30._24_2_ + local_30._26_2_ + local_30._28_2_ * -3,
+                local_30._30_2_ + local_30._28_2_ + 4,local_30._24_2_ + local_30._26_2_,
+                local_30._28_2_ * 2 + local_30._30_2_ + 4);
         for (i = 0; i < 5; i = i + 1) {
           pRVar5 = vrgrcRCW + i;
           pRVar6 = vrgrcRCW + i + 5;
@@ -619,28 +614,30 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
           pRVar6->top = pRVar5->top;
           pRVar6->right = pRVar5->right;
           pRVar6->bottom = pRVar5->bottom;
-          OffsetRect(vrgrcRCW + i + 5,0,dy * 3);
+          OffsetRect(vrgrcRCW + i + 5,0,local_30._28_2_ * 3);
           pRVar5 = vrgrcRCW + i;
           pRVar6 = vrgrcRCW + i + 10;
           pRVar6->left = pRVar5->left;
           pRVar6->top = pRVar5->top;
           pRVar6->right = pRVar5->right;
           pRVar6->bottom = pRVar5->bottom;
-          OffsetRect(vrgrcRCW + i + 10,0,dy * 6);
+          OffsetRect(vrgrcRCW + i + 10,0,local_30._28_2_ * 6);
         }
         for (i = 0; i < 3; i = i + 1) {
           HVar3 = GetDlgItem(hwnd,i + 0x123);
-          SetWindowPos(HVar3,0,dy * 3 + dxLabel + 6,vrgrcRCW[i * 5 + 3].top,
-                       dxMiddle + dy * -6 + -0xc,dy,4);
+          SetWindowPos(HVar3,0,local_30._28_2_ * 3 + local_30._24_2_ + 6,
+                       vrgrcRCW[i * 5 + 3].top,
+                       local_30._26_2_ + local_30._28_2_ * -6 + -0xc,local_30._28_2_,4);
           CheckDlgButton(hwnd,i + 0x123,
                          (uint)(*(char *)((int)vplr.rgEnvVarMax + i) < '\0'));
         }
-        cch = CchGetString(idsMaximumColonistGrowthRatePerYear,(char *)szWork);
-        DVar7 = GetTextExtent(hdc,(LPCSTR)0x11201337,3);
+        local_30._22_2_ =
+             CchGetString(idsMaximumColonistGrowthRatePerYear,(char *)szWork);
+        DVar7 = GetTextExtent(local_10,(LPCSTR)0x11201337,3);
         iVar2 = (int)DVar7;
-        DVar7 = GetTextExtent(hdc,szWork,cch);
-        (vrgrcRCW + 0xf)->left = dxLabel + (int)DVar7 + iVar2 + 4;
-        vrgrcRCW[0xf].top = dy * 9 + pt + -3;
+        DVar7 = GetTextExtent(local_10,szWork,local_30._22_2_);
+        (vrgrcRCW + 0xf)->left = local_30._24_2_ + (int)DVar7 + iVar2 + 4;
+        vrgrcRCW[0xf].top = local_30._28_2_ * 9 + local_30._30_2_ + -3;
         vrgrcRCW[0xf].right = (vrgrcRCW + 0xf)->left + 0xf;
         vrgrcRCW[0xf].bottom = (dyArial8 >> 1) + vrgrcRCW[0xf].top + 3
         ;
@@ -654,8 +651,8 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         OffsetRect(vrgrcRCW + 0x10,0,
                    (vrgrcRCW[0xf].bottom - vrgrcRCW[0xf].top) + -1);
         crcRCW = 0x11;
-        SelectObject(hdc,ps._0_2_);
-        ReleaseDC(hwnd,hdc);
+        SelectObject(local_10,local_30._0_2_);
+        ReleaseDC(hwnd,local_10);
         if (fRCWReadOnly != 0) {
           for (i = 0x123; i < 0x126; i = i + 1) {
             HVar3 = GetDlgItem(hwnd,i);
@@ -682,9 +679,8 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         if ((0x122 < wParam) && (wParam < 0x126)) {
           HVar3 = GetDlgItem(hwnd,wParam);
           LVar9 = SendMessage(HVar3,0x400,0,0);
-          i = (short)LVar9;
-          hdc = wParam - 0x123;
-          if (i == 1) {
+          local_10 = wParam - 0x123;
+          if ((int)LVar9 == 1) {
             ((char *)rgbCur + 0x2ef)[wParam] = -1;
             ((char *)rgbCur + 0x2f5)[wParam] = -1;
             ((char *)rgbCur + 0x2f2)[wParam] = -1;
@@ -694,16 +690,16 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
             ((char *)rgbCur + 0x2f5)[wParam] = 'P';
             ((char *)rgbCur + 0x2ef)[wParam] = '2';
           }
-          DrawRace2(hwnd,0,1 << ((byte)hdc & 0x1f) | 0xff00);
+          DrawRace2(hwnd,0,1 << ((byte)local_10 & 0x1f) | 0xff00);
         }
       }
       else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-        pt = (HDC)lParam;
+        local_30._30_2_ = (HWND)lParam;
         uVar8 = __aFulshr(uVar8,in_stack_0000ffce);
-        hdc = (HDC)uVar8;
-        pt_01.y = hdc;
-        pt_01.x = pt;
-        sVar4 = FTrackRaceDlg2(hwnd,pt_01,wParam);
+        local_10 = (HDC)uVar8;
+        pt_00.y = local_10;
+        pt_00.x = local_30._30_2_;
+        sVar4 = FTrackRaceDlg2(hwnd,pt_00,wParam);
         return sVar4;
       }
     }
@@ -726,30 +722,37 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
 void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
 
 {
-  char *szText;
-  short sVar1;
-  int iVar2;
-  int iVar3;
-  uint uVar4;
+  int iVar1;
+  uint uVar2;
+  short sVar3;
+  int iVar4;
+  char *pcVar5;
+  short sVar6;
+  uint uVar7;
+  int iVar8;
+  int iVar9;
+  int iVar10;
+  int iVar11;
   StringId ids;
   ushort unaff_DI;
   undefined2 unaff_SS;
-  bool bVar5;
-  DWORD DVar6;
-  ulong uVar7;
-  long lVar8;
-  undefined2 uVar9;
-  HDC HVar11;
-  undefined2 uVar12;
-  ulong uVar10;
+  bool bVar12;
+  bool bVar13;
+  DWORD DVar14;
+  ulong uVar15;
+  long lVar16;
+  undefined2 uVar17;
+  HDC HVar19;
+  undefined2 uVar20;
+  ulong uVar18;
+  long l;
   short cch;
   short iStore;
   char szT [100];
-  uint l2;
-  short cch__74;
+  uint local_4c;
+  int local_4a;
   RECT rc;
   short bt1;
-  short cch__62;
   short dx;
   char *psz;
   short iMod;
@@ -759,56 +762,53 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
   short bkMode;
   short iMin;
   short dy;
-  char szT__42 [32];
+  char acStack_2a [32];
   short iMax;
   short bt;
   short iPit;
   
-  fCreatedDC = 0;
   if (fRCWReadOnly == 0) {
-    bt1 = 0;
+    uVar2 = 0;
   }
   else {
-    bt1 = 4;
+    uVar2 = 4;
   }
-  if (hdc == 0) {
-    fCreatedDC = 1;
+  bVar13 = hdc == 0;
+  if (bVar13) {
     hdc = GetDC(hwnd);
   }
   GetClientRect(hwnd,&rc);
   DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
-  bkMode = SetBkMode(hdc,1);
+  sVar3 = SetBkMode(hdc,1);
   SelectObject(hdc,rghfontArial8[1]);
-  xRLabel = (rc.right - vrgrcRCW[2].right) / 2 + vrgrcRCW[2].right;
+  iVar4 = (rc.right - vrgrcRCW[2].right) / 2 + vrgrcRCW[2].right;
   for (i = 0; i < 3; i = i + 1) {
     if ((1 << ((byte)i & 0x1f) & iDraw) != 0) {
       if (iDraw != -1) {
         SelectObject(hdc,hbrButtonFace);
-        cch__74 = vrgrcRCW[i * 5 + 4].bottom;
         PatBlt(hdc,vrgrcRCW[2].right,vrgrcRCW[i * 5 + 2].top,
-               rc.right - vrgrcRCW[2].right,cch__74 - vrgrcRCW[i * 5 + 2].top,
-               0xf00021);
+               rc.right - vrgrcRCW[2].right,
+               vrgrcRCW[i * 5 + 4].bottom - vrgrcRCW[i * 5 + 2].top,0xf00021);
       }
       if (*(char *)((int)vplr.rgEnvVarMax + i) < '\0') {
-        cch__62 = CchGetString(idsN2,szT__42);
-        CtrTextOut(hdc,xRLabel,vrgrcRCW[i * 5 + 2].top + 1 + dyArial8,
-                            szT__42,cch__62);
+        sVar6 = CchGetString(idsN2,acStack_2a);
+        CtrTextOut(hdc,iVar4,vrgrcRCW[i * 5 + 2].top + 1 + dyArial8,
+                            acStack_2a,sVar6);
       }
       else {
-        psz = PszCalcEnvVar(i,(int)*(char *)((int)vplr.rgEnvVarMin + i));
-        CtrTextOut(hdc,xRLabel,vrgrcRCW[i * 5 + 2].top + 1,psz,0);
-        cch__62 = CchGetString(idsTo2,szT__42);
-        CtrTextOut(hdc,xRLabel,vrgrcRCW[i * 5 + 2].top + 1 + dyArial8,
-                            szT__42,cch__62);
-        psz = PszCalcEnvVar(i,(int)*(char *)((int)vplr.rgEnvVarMax + i));
-        cch__74 = dyArial8 * 2;
-        CtrTextOut(hdc,xRLabel,vrgrcRCW[i * 5 + 2].top + 1 + cch__74,psz,0);
+        pcVar5 = PszCalcEnvVar(i,(int)*(char *)((int)vplr.rgEnvVarMin + i));
+        CtrTextOut(hdc,iVar4,vrgrcRCW[i * 5 + 2].top + 1,pcVar5,0);
+        sVar6 = CchGetString(idsTo2,acStack_2a);
+        CtrTextOut(hdc,iVar4,vrgrcRCW[i * 5 + 2].top + 1 + dyArial8,
+                            acStack_2a,sVar6);
+        pcVar5 = PszCalcEnvVar(i,(int)*(char *)((int)vplr.rgEnvVarMax + i));
+        CtrTextOut(hdc,iVar4,vrgrcRCW[i * 5 + 2].top + 1 + dyArial8 * 2
+                            ,pcVar5,0);
       }
       if (iDraw == -1) {
-        cch__74 = dyArial8 / 4;
         RightTextOut
                   (hdc,(vrgrcRCW + i * 5)->left + -4,
-                   cch__74 + vrgrcRCW[i * 5].top,
+                   dyArial8 / 4 + vrgrcRCW[i * 5].top,
                    (char *)*(undefined2 *)(i * 2 + rgszPlanetAttr),0,0);
       }
     }
@@ -828,12 +828,12 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
     if ((iMod == 0) || (iMod == 2)) {
       if ((iDraw & 0xfff0U) != 0) {
         if (iMod == 0) {
-          uVar4 = 2;
+          uVar7 = 2;
         }
         else {
-          uVar4 = 3;
+          uVar7 = 3;
         }
-        DrawBtn(hdc,vrgrcRCW + i,uVar4 | bt | bt1,0,(char *)0x0);
+        DrawBtn(hdc,vrgrcRCW + i,uVar7 | bt | uVar2,0,(char *)0x0);
       }
     }
     else if (iMod == 1) {
@@ -841,108 +841,104 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
          (PatBlt(hdc,(vrgrcRCW + i)->left,vrgrcRCW[i].top,
                  vrgrcRCW[i].right - (vrgrcRCW + i)->left,
                  vrgrcRCW[i].bottom - vrgrcRCW[i].top,0x42), bt == 0)) {
-        iMin = (short)*(char *)((int)vplr.rgEnvVarMin + iPit);
+        iVar8 = (int)*(char *)((int)vplr.rgEnvVarMin + iPit);
         iMax = (short)*(char *)((int)vplr.rgEnvVarMax + iPit);
-        dx = (vrgrcRCW[i].right - (vrgrcRCW + i)->left) + -2;
-        dy = (vrgrcRCW[i].bottom - vrgrcRCW[i].top) + -2;
+        iVar9 = (vrgrcRCW[i].right - (vrgrcRCW + i)->left) + -2;
+        iVar4 = vrgrcRCW[i].bottom;
+        iVar1 = vrgrcRCW[i].top;
         SelectObject(hdc,(*((ushort (*) [2])rghbrPlanetAttr + iPit))[0]);
-        HVar11 = hdc;
-        sVar1 = MulDiv(iMin,dx,100);
-        iVar2 = sVar1 + (vrgrcRCW + i)->left + 1;
-        iVar3 = vrgrcRCW[i].top + 1;
-        sVar1 = MulDiv(iMax - iMin,dx,100);
-        PatBlt(HVar11,iVar2,iVar3,sVar1,dy,0xf00021);
+        HVar19 = hdc;
+        sVar6 = MulDiv(iVar8,iVar9,100);
+        iVar10 = sVar6 + (vrgrcRCW + i)->left + 1;
+        iVar11 = vrgrcRCW[i].top + 1;
+        sVar6 = MulDiv(iMax - iVar8,iVar9,100);
+        PatBlt(HVar19,iVar10,iVar11,sVar6,(iVar4 - iVar1) + -2,0xf00021);
       }
       iPit = iPit + 1;
     }
     else if ((iDraw & 0xfff0U) != 0) {
       if (iMod == 3) {
-        szText = (char *)0x133b;
+        pcVar5 = (char *)0x133b;
       }
       else {
-        szText = (char *)0x1345;
+        pcVar5 = (char *)0x1345;
       }
-      DrawBtn(hdc,vrgrcRCW + i,bt | 8U | bt1,0,szText);
+      DrawBtn(hdc,vrgrcRCW + i,bt | 8U | uVar2,0,pcVar5);
     }
     iMod = iMod + 1;
   }
   if ((iDraw & 8U) != 0) {
     if (iDraw == -1) {
-      cch__74 = CchGetString(idsMaximumColonistGrowthRatePerYear,(char *)szWork);
-      TextOut(hdc,vrgrcRCW->left,vrgrcRCW[0xf].top + 3,szWork,cch__74)
-      ;
-      DrawBtn(hdc,vrgrcRCW + 0xf,bt1 | 0xa0,0,(char *)0x0);
-      DrawBtn(hdc,vrgrcRCW + 0x10,bt1 | 0xa1,0,(char *)0x0);
+      sVar6 = CchGetString(idsMaximumColonistGrowthRatePerYear,(char *)szWork);
+      TextOut(hdc,vrgrcRCW->left,vrgrcRCW[0xf].top + 3,szWork,sVar6);
+      DrawBtn(hdc,vrgrcRCW + 0xf,uVar2 | 0xa0,0,(char *)0x0);
+      DrawBtn(hdc,vrgrcRCW + 0x10,uVar2 | 0xa1,0,(char *)0x0);
     }
     else {
-      DVar6 = GetTextExtent(hdc,(LPCSTR)0x1120134f,3);
-      dx = (short)DVar6;
+      DVar14 = GetTextExtent(hdc,(LPCSTR)0x1120134f,3);
       SelectObject(hdc,hbrButtonFace);
-      PatBlt(hdc,((vrgrcRCW + 0xf)->left + -4) - dx,vrgrcRCW[0xf].top + 3,dx,
-             dyArial8,0xf00021);
+      PatBlt(hdc,((vrgrcRCW + 0xf)->left + -4) - (int)DVar14,
+             vrgrcRCW[0xf].top + 3,(int)DVar14,dyArial8,0xf00021);
     }
-    cch__74 = _wsprintf(szWork,PCTDPCTPCT,(int)vplr.pctIdealGrowth);
+    sVar6 = _wsprintf(szWork,PCTDPCTPCT,(int)vplr.pctIdealGrowth);
     RightTextOut
               (hdc,(vrgrcRCW + 0xf)->left + -4,vrgrcRCW[0xf].top + 3,
-               (char *)szWork,cch__74,0);
+               (char *)szWork,sVar6,0);
   }
-  lVar8 = CONCAT22(cch__74,l2);
   if ((iDraw & 7U) != 0) {
-    uVar7 = 1;
+    uVar15 = 1;
     for (i = 0; i < 3; i = i + 1) {
       if ((*(char *)((int)vplr.rgEnvVarMax + i) < '\0') ||
          ((int)*(char *)((int)vplr.rgEnvVarMax + i) -
           (int)*(char *)((int)vplr.rgEnvVarMin + i) == 100)) {
-        uVar7 = __aFulmul(uVar7,100);
+        uVar15 = __aFulmul(uVar15,100);
       }
       else if (i == 2) {
-        uVar7 = __aFulmul(uVar7,(long)((int)vplr.rgEnvVarMax[2] -
-                                              (int)vplr.rgEnvVarMin[2]));
+        uVar15 = __aFulmul(uVar15,(long)((int)vplr.rgEnvVarMax[2] -
+                                                (int)vplr.rgEnvVarMin[2]));
       }
       else {
-        l2 = 0;
-        cch__74 = 0;
+        local_4c = 0;
+        local_4a = 0;
         for (iStore = (short)*(char *)((int)vplr.rgEnvVarMin + i);
             iStore <= *(char *)((int)vplr.rgEnvVarMax + i); iStore = iStore + 1) {
           if (iStore < 10) {
-            bVar5 = CARRY2(l2,iStore);
-            l2 = l2 + iStore;
-            cch__74 = cch__74 + (iStore >> 0xf) + (uint)bVar5;
+            bVar12 = CARRY2(local_4c,iStore);
+            local_4c = local_4c + iStore;
+            local_4a = local_4a + (iStore >> 0xf) + (uint)bVar12;
           }
           else if (iStore < 0x5a) {
-            bVar5 = 0xfff5 < l2;
-            l2 = l2 + 10;
-            cch__74 = cch__74 + (uint)bVar5;
+            bVar12 = 0xfff5 < local_4c;
+            local_4c = local_4c + 10;
+            local_4a = local_4a + (uint)bVar12;
           }
           else {
-            uVar4 = 100 - iStore;
-            bVar5 = CARRY2(l2,uVar4);
-            l2 = l2 + uVar4;
-            cch__74 = cch__74 + ((int)uVar4 >> 0xf) + (uint)bVar5;
+            uVar2 = 100 - iStore;
+            bVar12 = CARRY2(local_4c,uVar2);
+            local_4c = local_4c + uVar2;
+            local_4a = local_4a + ((int)uVar2 >> 0xf) + (uint)bVar12;
           }
         }
-        uVar12 = 0;
-        uVar9 = 9;
-        uVar7 = __aFulmul(uVar7,CONCAT22(cch__74,l2));
-        uVar7 = __aFldiv(uVar7,CONCAT22(uVar12,uVar9));
+        uVar20 = 0;
+        uVar17 = 9;
+        uVar15 = __aFulmul(uVar15,CONCAT22(local_4a,local_4c));
+        uVar15 = __aFldiv(uVar15,CONCAT22(uVar20,uVar17));
       }
     }
-    if ((long)uVar7 < 1) {
-      uVar7 = 1;
+    if ((long)uVar15 < 1) {
+      uVar15 = 1;
     }
-    uVar10 = uVar7;
-    lVar8 = __aFlshr(uVar7,unaff_DI);
-    lVar8 = __aFldiv(lVar8 + 1000000,uVar10);
-    cch__74 = (short)((ulong)lVar8 >> 0x10);
-    l2 = (uint)lVar8;
-    iStore = l2;
-    if (uVar7 == 1000000) {
+    uVar18 = uVar15;
+    lVar16 = __aFlshr(uVar15,unaff_DI);
+    lVar16 = __aFldiv(lVar16 + 1000000,uVar18);
+    iStore = (short)lVar16;
+    if (uVar15 == 1000000) {
       iStore = 0;
     }
     if (iStore != viStore) {
       viStore = iStore;
-      if (lVar8 == 1) {
-        if (uVar7 == 1000000) {
+      if (lVar16 == 1) {
+        if (uVar15 == 1000000) {
           ids = idsPlanetsWillHabitableRace;
         }
         else {
@@ -952,7 +948,7 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
       }
       else {
         CchGetString(idsCanExpect1DPlanetsWillHabitable,szT);
-        cch = _wsprintf(szWork,szT,l2,cch__74);
+        cch = _wsprintf(szWork,szT,(short)lVar16,(int)((ulong)lVar16 >> 0x10));
       }
       rc.left = vrgrcRCW->left;
       rc.top = vrgrcRCW[0xf].top + dyArial8 + 8;
@@ -961,13 +957,10 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
       SelectObject(hdc,hbrButtonFace);
       PatBlt(hdc,rc.left,rc.top,rc.right - rc.left,rc.bottom - rc.top,0xf00021);
       DRAWTEXT(hdc,szWork,cch,&rc,0x10);
-      lVar8 = CONCAT22(cch__74,l2);
     }
   }
-  cch__74 = (short)((ulong)lVar8 >> 0x10);
-  l2 = (uint)lVar8;
-  SetBkMode(hdc,bkMode);
-  if (fCreatedDC != 0) {
+  SetBkMode(hdc,sVar3);
+  if (bVar13) {
     ReleaseDC(hwnd,hdc);
   }
   return;
@@ -1111,7 +1104,7 @@ short FTrackRaceDlg2(HWND hwnd,POINT pt,short kbd)
       else {
         dWidth = -1;
         bt = 8;
-        psz = pcRam11201306;
+        psz = vrgszRCWWidth[1];
       }
       InitBtnTrack(&btnt,hwnd,0,vrgrcRCW + sVar3,bt,0x50,0,0,psz);
       if ((kbd & 4U) != 0) {
@@ -1198,8 +1191,8 @@ short FTrackRaceDlg2(HWND hwnd,POINT pt,short kbd)
 short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
+  POINT pt;
   POINT pt_00;
-  POINT pt_01;
   WPARAM WVar1;
   HWND HVar2;
   short sVar3;
@@ -1210,15 +1203,14 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   LRESULT LVar5;
   UINT UVar6;
   ushort in_stack_0000ffd0;
-  HDC pt;
-  HDC hdc;
+  POINT local_12;
   RECT rc;
   short i;
   
   uVar4 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,&stack0xffd0);
-    DrawRace3(hwnd,hdc,-1);
+    local_12.y = BeginPaint(hwnd,&stack0xffd0);
+    DrawRace3(hwnd,local_12.y,-1);
     EndPaint(hwnd,&stack0xffd0);
     sVar3 = 1;
   }
@@ -1229,20 +1221,21 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   else {
     if (message == WM_CTLCOLOR) {
-      hdc = (HDC)lParam;
+      local_12.y = (HWND)lParam;
       HVar2 = GetDlgItem(hwnd,0x123);
-      if ((hdc == HVar2) || (uVar4 = __aFulshr(uVar4,in_stack_0000ffd0), (int)uVar4 == 6)) {
+      if ((local_12.y == HVar2) ||
+         (uVar4 = __aFulshr(uVar4,in_stack_0000ffd0), (int)uVar4 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
       }
     }
     else if (message == WM_SETCURSOR) {
-      GetCursorPos(&stack0xffee);
-      ScreenToClient(hwnd,&stack0xffee);
-      pt_00.y = hdc;
-      pt_00.x = pt;
-      sVar3 = IrcRaceDlgHitTest(pt_00);
+      GetCursorPos(&local_12);
+      ScreenToClient(hwnd,&local_12);
+      pt.y = local_12.y;
+      pt.x = local_12.x;
+      sVar3 = IrcRaceDlgHitTest(pt);
       if (-1 < sVar3) {
         setcursor(hcurHand);
         return 1;
@@ -1280,18 +1273,17 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
         if (wParam == 0x123) {
           HVar2 = GetDlgItem(hwnd,0x123);
           LVar5 = SendMessage(HVar2,0x400,0,0);
-          i = (short)LVar5;
-          SetRaceGrbit((PLAYER *)&vplr,ibitRaceCheapFact,i);
+          SetRaceGrbit((PLAYER *)&vplr,ibitRaceCheapFact,(short)LVar5);
           DrawRace3(hwnd,0,99);
         }
       }
       else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-        pt = (HDC)lParam;
+        local_12.x = (HWND)lParam;
         uVar4 = __aFulshr(uVar4,in_stack_0000ffd0);
-        hdc = (HDC)uVar4;
-        pt_01.y = hdc;
-        pt_01.x = pt;
-        sVar3 = FTrackRaceDlg3(hwnd,pt_01,wParam);
+        local_12.y = (short)uVar4;
+        pt_00.y = local_12.y;
+        pt_00.x = local_12.x;
+        sVar3 = FTrackRaceDlg3(hwnd,pt_00,wParam);
         return sVar3;
       }
     }
@@ -1312,12 +1304,20 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
 void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
 
 {
-  short sVar1;
-  HWND HVar2;
-  RECT *pRVar3;
-  RECT *pRVar4;
+  int iVar1;
+  int x;
+  short sVar2;
+  HWND HVar3;
+  short sVar4;
+  RECT *pRVar5;
+  RECT *pRVar6;
   undefined2 unaff_SS;
-  DWORD DVar5;
+  bool bVar7;
+  bool bVar8;
+  COLORREF CVar9;
+  DWORD DVar10;
+  DWORD DVar11;
+  DWORD DVar12;
   RECT rc;
   short cch;
   short dx;
@@ -1335,65 +1335,60 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
   short idsT;
   short dxItem;
   
-  fCreatedDC = 0;
   if (fRCWReadOnly == 0) {
     bt = 0;
   }
   else {
     bt = 4;
   }
-  sVar1 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
-  fMacintosh = (short)(sVar1 == raMacintosh);
-  if (hdc == 0) {
-    fCreatedDC = 1;
+  sVar2 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
+  bVar7 = sVar2 == raMacintosh;
+  bVar8 = hdc == 0;
+  if (bVar8) {
     hdc = GetDC(hwnd);
   }
   GetClientRect(hwnd,&rc);
   DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
-  bkMode = SetBkMode(hdc,2);
-  crBkSav = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace)
-                      );
+  sVar2 = SetBkMode(hdc,2);
+  CVar9 = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
   SelectObject(hdc,rghfontArial8[1]);
   yTop = dyArial8 * 3 + 6;
-  DVar5 = GetTextExtent(hdc,(LPCSTR)0x11201353,1);
-  dxDig = (short)DVar5;
-  DVar5 = GetTextExtent(hdc,(LPCSTR)0x11201355,2);
-  dxkT = (short)DVar5;
+  DVar10 = GetTextExtent(hdc,(LPCSTR)0x11201353,1);
+  DVar11 = GetTextExtent(hdc,(LPCSTR)0x11201355,2);
   ids = 0xf6;
   irc = 0;
   for (i = 0; i < 7; i = i + 1) {
-    if ((i == 1) && (fMacintosh != 0)) {
+    if ((i == 1) && (bVar7)) {
       SetTextColor(hdc,CONCAT22(crButtonShadow._2_2_,(undefined2)crButtonShadow)
                   );
       bt = 4;
     }
     if (i == 4) {
       if (iDraw == -1) {
-        HVar2 = GetDlgItem(hwnd,0x123);
-        SetWindowPos(HVar2,0,6,yTop,rc.right + -0xc,(dyArial8 * 3) / 2,4);
+        HVar3 = GetDlgItem(hwnd,0x123);
+        SetWindowPos(HVar3,0,6,yTop,rc.right + -0xc,(dyArial8 * 3) / 2,4);
       }
       yTop = yTop + (dyArial8 * 5) / 2;
     }
-    if ((fMacintosh == 0) || (ids != 0xf6)) {
-      idsT = ids;
-    }
-    else {
+    if ((bVar7) && (ids == 0xf6)) {
       idsT = 0x104;
     }
-    ids = ids + 1;
-    cch = CchGetString(idsT,(char *)szWork);
-    if (iDraw == -1) {
-      TextOut(hdc,6,yTop,szWork,cch);
+    else {
+      idsT = ids;
     }
-    DVar5 = GetTextExtent(hdc,szWork,cch);
-    dx = (int)DVar5 + 6;
-    sVar1 = _abs((int)((char *)rgRW3Width)[i]);
-    dxItem = sVar1 * dxDig;
-    sVar1 = GetRaceStat((PLAYER *)&vplr,(int)((char *)rgRW3IStat)[i]);
-    _wsprintf(szWork,PCTD,sVar1);
-    if ((((char *)rgRW3Width)[i] < '\0') && ((0 < i || (fMacintosh == 0)))) {
-      dxItem = dxItem + dxkT;
+    iVar1 = ids + 1;
+    sVar4 = CchGetString(idsT,(char *)szWork);
+    if (iDraw == -1) {
+      TextOut(hdc,6,yTop,szWork,sVar4);
+    }
+    DVar12 = GetTextExtent(hdc,szWork,sVar4);
+    sVar4 = _abs((int)((char *)rgRW3Width)[i]);
+    dxItem = sVar4 * (int)DVar10;
+    sVar4 = GetRaceStat((PLAYER *)&vplr,(int)((char *)rgRW3IStat)[i]);
+    _wsprintf(szWork,PCTD,sVar4);
+    if ((((char *)rgRW3Width)[i] < '\0') && ((0 < i || (!bVar7)))) {
+      dxItem = dxItem + (int)DVar11;
       if (i == 0) {
         _strcat((char *)szWork,(char *)0x1358);
       }
@@ -1401,47 +1396,45 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
         _strcat((char *)szWork,(char *)0x135b);
       }
     }
-    dx = dx + dxItem;
+    x = (int)DVar12 + 6 + dxItem;
     if ((iDraw == -1) || (iDraw == i)) {
-      RightTextOut(hdc,dx,yTop,(char *)szWork,0,dxItem);
+      RightTextOut(hdc,x,yTop,(char *)szWork,0,dxItem);
     }
-    (vrgrcRCW + irc)->left = dx + 4;
+    (vrgrcRCW + irc)->left = x + 4;
     vrgrcRCW[irc].top = yTop + -3;
     vrgrcRCW[irc].right = (vrgrcRCW + irc)->left + 0xf;
     vrgrcRCW[irc].bottom = (dyArial8 >> 1) + vrgrcRCW[irc].top + 3;
-    pRVar3 = vrgrcRCW + irc;
-    pRVar4 = vrgrcRCW + irc + 1;
-    pRVar4->left = pRVar3->left;
-    pRVar4->top = pRVar3->top;
-    pRVar4->right = pRVar3->right;
-    pRVar4->bottom = pRVar3->bottom;
+    pRVar5 = vrgrcRCW + irc;
+    pRVar6 = vrgrcRCW + irc + 1;
+    pRVar6->left = pRVar5->left;
+    pRVar6->top = pRVar5->top;
+    pRVar6->right = pRVar5->right;
+    pRVar6->bottom = pRVar5->bottom;
     OffsetRect(vrgrcRCW + irc + 1,0,
                (vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) + -1);
     if (iDraw == -1) {
       DrawBtn(hdc,vrgrcRCW + irc,bt | 0xa0,0,(char *)0x0);
       DrawBtn(hdc,vrgrcRCW + irc + 1,bt | 0xa1,0,(char *)0x0);
-      if ((fMacintosh == 0) || (ids != 0xf7)) {
-        idsT = ids;
-      }
-      else {
+      idsT = iVar1;
+      if ((bVar7) && (iVar1 == 0xf7)) {
         idsT = 0x105;
       }
-      cch = CchGetString(idsT,(char *)szWork);
-      TextOut(hdc,vrgrcRCW[irc].right + 4,yTop,szWork,cch);
+      sVar4 = CchGetString(idsT,(char *)szWork);
+      TextOut(hdc,vrgrcRCW[irc].right + 4,yTop,szWork,sVar4);
     }
-    ids = ids + 1;
+    ids = ids + 2;
     irc = irc + 2;
     yTop = yTop + (((char *)rgRW3Spacing)[i] * dyArial8) / 2;
   }
-  if (fMacintosh == 0) {
-    crcRCW = irc;
-  }
-  else {
+  if (bVar7) {
     crcRCW = 2;
   }
-  SetBkColor(hdc,crBkSav);
-  SetBkMode(hdc,bkMode);
-  if (fCreatedDC != 0) {
+  else {
+    crcRCW = irc;
+  }
+  SetBkColor(hdc,CVar9);
+  SetBkMode(hdc,sVar2);
+  if (bVar8) {
     ReleaseDC(hwnd,hdc);
   }
   return;
@@ -1577,6 +1570,8 @@ short GetRaceGrbit(PLAYER *pplr,RaceGrbit ibit)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: grMask */
+
 void SetRaceGrbit(PLAYER *pplr,RaceGrbit ibit,short fSet)
 
 {
@@ -1585,9 +1580,9 @@ void SetRaceGrbit(PLAYER *pplr,RaceGrbit ibit,short fSet)
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   long lVar3;
-  ushort in_stack_0000fff8;
+  ulong grMask;
   
-  lVar3 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),in_stack_0000fff8);
+  lVar3 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),(ushort)grMask);
   uVar2 = (uint)((ulong)lVar3 >> 0x10);
   if (fSet == 0) {
     *(uint *)&pplr->grbitAttr = (uint)pplr->grbitAttr & ~(uint)lVar3;
@@ -1611,11 +1606,13 @@ void SetRaceGrbit(PLAYER *pplr,RaceGrbit ibit,short fSet)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: rcGBox */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
+  HDC hdc_00;
   HWND HVar1;
   short sVar2;
   undefined2 unaff_SI;
@@ -1624,45 +1621,46 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
   ulong uVar3;
   short sVar4;
   short sVar5;
-  ushort in_stack_0000fd6c;
-  int local_292;
+  RECT rcGBox;
   short cch;
   PAINTSTRUCT ps;
   short ids;
   char szT [600];
   HDC hdc;
-  undefined8 rc;
+  RECT rc;
   short i;
   
   uVar3 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,&ps);
+    hdc_00 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
-    SelectObject(hdc,rghfontArial8[1]);
-    SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+    DrawRaceAdvantagePoints(hdc_00,&rc,(PLAYER *)0x0);
+    SelectObject(hdc_00,rghfontArial8[1]);
+    SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     HVar1 = GetDlgItem(hwnd,0x10f);
-    GetWindowRect(HVar1,&stack0xfd6c);
-    ScreenToClient(hwnd,&stack0xfd6c);
+    GetWindowRect(HVar1,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
     HVar1 = GetDlgItem(hwnd,0x118);
     GetWindowRect(HVar1,&rc);
-    ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
-    ExpandRc(&stack0xfd6c,dyArial8 + 2,dyArial8 >> 1);
+    ScreenToClient(hwnd,(POINT *)&rc.right);
+    rcGBox.right = rc.right;
+    rcGBox.bottom = rc.bottom;
+    ExpandRc(&rcGBox,dyArial8 + 2,dyArial8 >> 1);
+    rcGBox.top = rcGBox.top + -4;
     _Draw3dFrame();
     sVar2 = CchGetString(idsPrimaryRacialTrait,(char *)szWork);
-    TextOut(hdc,in_stack_0000fd6c + 8,(local_292 + -4) - (dyArial8 >> 1),szWork,
-            sVar2);
+    TextOut(hdc_00,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar2);
     GetClientRect(hwnd,&rc);
-    rc._2_2_ = rc._6_2_ + 0xc;
-    rc._0_2_ = (int)rc + 0xc;
-    rc._4_2_ = rc._4_2_ + -0xc;
+    rc.top = rcGBox.bottom + 0xc;
+    rc.left = rc.left + 0xc;
+    rc.right = rc.right + -0xc;
     HVar1 = GetDlgItem(hwnd,0x76);
-    GetWindowRect(HVar1,&stack0xfd6c);
-    ScreenToClient(hwnd,&stack0xfd6c);
-    rc._6_2_ = local_292 + -10;
+    GetWindowRect(HVar1,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
+    rc.bottom = rcGBox.top + -6;
     _Draw3dFrame();
     sVar2 = CchGetString(idsDescriptionTrait,(char *)szWork);
-    TextOut(hdc,(int)rc + 8,rc._2_2_ - (dyArial8 >> 1),szWork,sVar2);
+    TextOut(hdc_00,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,sVar2);
     sVar2 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
     ids = sVar2 * 3 + 0x114;
     cch = 0;
@@ -1672,12 +1670,12 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
       ids = ids + 1;
     }
     ExpandRc(&rc,-2 - dyArial8,-(dyArial8 >> 1));
-    rc._2_2_ = rc._2_2_ + 4;
-    DRAWTEXT(hdc,szT,cch,&rc,0x10);
-    rcCargo.left = (int)rc;
-    rcCargo.top = rc._2_2_;
-    rcCargo.right = rc._4_2_;
-    rcCargo.bottom = rc._6_2_;
+    rc.top = rc.top + 4;
+    DRAWTEXT(hdc_00,szT,cch,&rc,0x10);
+    rcCargo.left = rc.left;
+    rcCargo.top = rc.top;
+    rcCargo.right = rc.right;
+    rcCargo.bottom = rc.bottom;
     EndPaint(hwnd,&ps);
     sVar2 = 1;
   }
@@ -1689,11 +1687,10 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_CTLCOLOR) {
       for (i = 0x10f; i < 0x119; i = i + 1) {
-        hdc = (HDC)lParam;
         HVar1 = GetDlgItem(hwnd,i);
-        if (hdc == HVar1) break;
+        if ((HWND)lParam == HVar1) break;
       }
-      if ((i < 0x119) || (uVar3 = __aFulshr(uVar3,in_stack_0000fd6c), (int)uVar3 == 6)) {
+      if ((i < 0x119) || (uVar3 = __aFulshr(uVar3,rcGBox.left), (int)uVar3 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -1730,10 +1727,9 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
           EndDialog(hwnd,i);
           return 1;
         }
-        uVar3 = __aFulshr(uVar3,in_stack_0000fd6c);
+        uVar3 = __aFulshr(uVar3,rcGBox.left);
         if ((((int)uVar3 == 0) && (0x10e < wParam)) && (wParam < 0x119)) {
-          i = wParam - 0x10f;
-          SetRaceStat((PLAYER *)&vplr,rsMajorAdv,i);
+          SetRaceStat((PLAYER *)&vplr,rsMajorAdv,wParam - 0x10f);
           sVar2 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
           if (sVar2 == raMacintosh) {
             SetRaceStat((PLAYER *)&vplr,rsFactProd,10);
@@ -1763,78 +1759,76 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: rcGBox */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
   char *pcVar1;
-  WPARAM WVar2;
-  HWND HVar3;
-  short sVar4;
+  HDC hdc;
+  HWND HVar2;
+  short sVar3;
+  undefined1 *puVar4;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
+  undefined2 uVar5;
   undefined2 unaff_SS;
-  ulong uVar5;
-  LRESULT LVar6;
-  UINT UVar7;
-  ushort in_stack_0000ffc6;
-  int local_38;
-  POINT local_36;
+  ulong uVar6;
+  LRESULT LVar7;
+  RECT rcGBox;
   short cch;
   PAINTSTRUCT ps;
-  HWND hwndCtl;
   RECT rc;
   short i;
   
-  uVar5 = CONCAT22(unaff_SI,unaff_DI);
+  uVar6 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hwndCtl = BeginPaint(hwnd,&ps);
+    hdc = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    DrawRaceAdvantagePoints(hwndCtl,&rc,(PLAYER *)0x0);
-    SelectObject(hwndCtl,rghfontArial8[1]);
-    SetBkColor(hwndCtl,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    HVar3 = GetDlgItem(hwnd,0x130);
-    GetWindowRect(HVar3,&stack0xffc6);
-    ScreenToClient(hwnd,&local_36);
+    DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
+    SelectObject(hdc,rghfontArial8[1]);
+    SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+    HVar2 = GetDlgItem(hwnd,0x130);
+    GetWindowRect(HVar2,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox.right);
     GetClientRect(hwnd,&rc);
-    rc.top = local_36.y + 0xc;
+    rc.top = rcGBox.bottom + 0xc;
     rc.left = rc.left + 0xc;
     rc.right = rc.right + -0xc;
-    HVar3 = GetDlgItem(hwnd,0x76);
-    GetWindowRect(HVar3,&stack0xffc6);
-    ScreenToClient(hwnd,&stack0xffc6);
-    rc.bottom = local_38 + -0xc;
+    HVar2 = GetDlgItem(hwnd,0x76);
+    GetWindowRect(HVar2,&rcGBox);
+    ScreenToClient(hwnd,(POINT *)&rcGBox);
+    rc.bottom = rcGBox.top + -0xc;
     _Draw3dFrame();
     rcCargo.left = rc.left;
     rcCargo.right = rc.right;
     rcCargo.bottom = rc.bottom;
     rcCargo.top = rc.top - (dyArial8 >> 1);
-    cch = CchGetString
-                    (cColDrop + idsImprovedFuelEfficiency,(char *)szWork);
-    TextOut(hwndCtl,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,cch);
-    cch = CchGetString
-                    (cColDrop + idsGivesFuelMizerGalaxyScoopEnginesIncreases,
-                     (char *)szWork);
+    sVar3 = CchGetString
+                      (cColDrop + idsImprovedFuelEfficiency,(char *)szWork);
+    TextOut(hdc,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,sVar3);
+    sVar3 = CchGetString
+                      (cColDrop + idsGivesFuelMizerGalaxyScoopEnginesIncreases,
+                       (char *)szWork);
     ExpandRc(&rc,-2 - dyArial8,-(dyArial8 >> 1));
     rc.top = rc.top + 4;
-    DRAWTEXT(hwndCtl,szWork,cch,&rc,0x10);
+    DRAWTEXT(hdc,szWork,sVar3,&rc,0x10);
     EndPaint(hwnd,&ps);
-    sVar4 = 1;
+    sVar3 = 1;
   }
   else if (message == WM_ERASEBKGND) {
     GetClientRect(hwnd,&rc);
     FillRect(wParam,&rc,hbrButtonFace);
-    sVar4 = 1;
+    sVar3 = 1;
   }
   else {
     if (message == WM_CTLCOLOR) {
       for (i = 0x123; i < 0x131; i = i + 1) {
-        hwndCtl = (HWND)lParam;
-        HVar3 = GetDlgItem(hwnd,i);
-        if (hwndCtl == HVar3) break;
+        HVar2 = GetDlgItem(hwnd,i);
+        if ((HWND)lParam == HVar2) break;
       }
-      if ((i < 0x131) || (uVar5 = __aFulshr(uVar5,in_stack_0000ffc6), (int)uVar5 == 6)) {
+      if ((i < 0x131) || (uVar6 = __aFulshr(uVar6,rcGBox.left), (int)uVar6 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -1842,22 +1836,57 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     else {
       if (message == WM_INITDIALOG) {
+        uVar5 = 0x10e0;
         SetRCWTitle(hwnd,iPanelActive);
+        puVar4 = &stack0xffc2;
         cColDrop = 0;
         for (i = 0; i < 0xe; i = i + 1) {
-          HVar3 = GetDlgItem(hwnd,i + 0x123);
-          hwndCtl = HVar3;
-          pcVar1 = PszGetCompressedString(i + idsImprovedFuelEfficiency);
-          SetWindowText(HVar3,pcVar1);
-          UVar7 = 0x401;
-          HVar3 = hwndCtl;
-          WVar2 = GetRaceGrbit((PLAYER *)&vplr,i);
-          SendMessage(HVar3,UVar7,WVar2,0);
+          *(HWND *)(puVar4 + -2) = hwnd;
+          *(short *)(puVar4 + -4) = i + 0x123;
+          *(undefined2 *)(puVar4 + -6) = uVar5;
+          *(undefined2 *)(puVar4 + -8) = 0x37c9;
+          HVar2 = GetDlgItem(*(HWND *)(puVar4 + -2),*(short *)(puVar4 + -4));
+          *(HWND *)(puVar4 + -2) = HVar2;
+          *(short *)(puVar4 + -4) = i + 0x132;
+          *(undefined2 *)(puVar4 + -6) = 0x14f8;
+          *(undefined2 *)(puVar4 + -8) = 0x37db;
+          pcVar1 = PszGetCompressedString(*(StringId *)(puVar4 + -4));
+          *(undefined2 *)(puVar4 + -4) = 0x1120;
+          *(char **)(puVar4 + -6) = pcVar1;
+          *(undefined2 *)(puVar4 + -8) = 0x1010;
+          *(undefined2 *)(puVar4 + -10) = 0x37e7;
+          SetWindowText(*(HWND *)(puVar4 + -2),*(LPCSTR *)(puVar4 + -6));
+          *(HWND *)(puVar4 + -8) = HVar2;
+          *(undefined2 *)(puVar4 + -10) = 0x401;
+          *(short *)(puVar4 + -0xc) = i;
+          *(PLAYER **)(puVar4 + -0xe) = (PLAYER *)&vplr;
+          *(undefined2 *)(puVar4 + -0x10) = 0x14f8;
+          *(undefined2 *)(puVar4 + -0x12) = 0x37fa;
+          sVar3 = GetRaceGrbit(*(PLAYER **)(puVar4 + -0xe),*(RaceGrbit *)(puVar4 + -0xc));
+          *(short *)(puVar4 + -0xc) = sVar3;
+          *(undefined2 *)(puVar4 + -0xe) = 0;
+          *(undefined2 *)(puVar4 + -0x10) = 0;
+          *(undefined2 *)(puVar4 + -0x12) = 0x10e0;
+          *(undefined2 *)(puVar4 + -0x14) = 0x380b;
+          SendMessage(*(HWND *)(puVar4 + -8),*(UINT *)(puVar4 + -10),*(WPARAM *)(puVar4 + -0xc),
+                      *(LPARAM *)(puVar4 + -0x10));
           if (fRCWReadOnly != 0) {
-            EnableWindow(hwndCtl,0);
+            *(HWND *)(puVar4 + -8) = HVar2;
+            *(undefined2 *)(puVar4 + -10) = 0;
+            *(undefined2 *)(puVar4 + -0xc) = 0x14f8;
+            *(undefined2 *)(puVar4 + -0xe) = 0x3821;
+            EnableWindow(*(HWND *)(puVar4 + -8),*(BOOL *)(puVar4 + -10));
           }
+          puVar4 = puVar4 + -6;
+          uVar5 = 0x14f8;
         }
-        StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
+        *(undefined2 *)(puVar4 + -2) = 1;
+        *(POINT **)(puVar4 + -4) = (POINT *)&ptStickyRaceDlg;
+        *(HWND *)(puVar4 + -6) = hwnd;
+        *(undefined2 *)(puVar4 + -8) = uVar5;
+        *(undefined2 *)(puVar4 + -10) = 0x383e;
+        StickyDlgPos
+                  (*(HWND *)(puVar4 + -6),*(POINT **)(puVar4 + -4),*(short *)(puVar4 + -2));
         return 1;
       }
       if (message == WM_COMMAND) {
@@ -1875,19 +1904,18 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if ((0x122 < wParam) && (wParam < 0x131)) {
-          HVar3 = GetDlgItem(hwnd,wParam);
-          LVar6 = SendMessage(HVar3,0x400,0,0);
-          i = (short)LVar6;
+          HVar2 = GetDlgItem(hwnd,wParam);
+          LVar7 = SendMessage(HVar2,0x400,0,0);
           cColDrop = wParam - 0x123;
-          SetRaceGrbit((PLAYER *)&vplr,cColDrop,i);
+          SetRaceGrbit((PLAYER *)&vplr,cColDrop,(short)LVar7);
           InvalidateAdvPtsRect(hwnd);
           InvalidateRect(hwnd,&rcCargo,0);
         }
       }
     }
-    sVar4 = 0;
+    sVar3 = 0;
   }
-  return sVar4;
+  return sVar3;
 }
 
 
@@ -1899,6 +1927,7 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: rcGBox */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
@@ -1908,133 +1937,131 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
   int iVar2;
   char *pcVar3;
   WPARAM WVar4;
+  HDC hdc_00;
   HWND HVar5;
   short sVar6;
   short sVar7;
-  HBRUSH HVar8;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  ulong uVar9;
-  LRESULT LVar10;
-  UINT UVar11;
-  ushort in_stack_0000ffc6;
-  int local_38;
+  ulong uVar8;
+  LRESULT LVar9;
+  UINT UVar10;
+  RECT rcGBox;
   short cch;
   PAINTSTRUCT ps;
   HDC hdc;
-  undefined8 rc;
+  RECT rc;
   short i;
   
-  uVar9 = CONCAT22(unaff_SI,unaff_DI);
+  uVar8 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
-    hdc = BeginPaint(hwnd,&ps);
+    hdc_00 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
-    SelectObject(hdc,rghfontArial8[1]);
-    SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+    DrawRaceAdvantagePoints(hdc_00,&rc,(PLAYER *)0x0);
+    SelectObject(hdc_00,rghfontArial8[1]);
+    SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     for (i = 0; i < 6; i = i + 1) {
       HVar5 = GetDlgItem(hwnd,i * 3 + 0x10f);
-      GetWindowRect(HVar5,&stack0xffc6);
-      ScreenToClient(hwnd,&stack0xffc6);
+      GetWindowRect(HVar5,&rcGBox);
+      ScreenToClient(hwnd,(POINT *)&rcGBox);
       HVar5 = GetDlgItem(hwnd,i * 3 + 0x111);
       GetWindowRect(HVar5,&rc);
-      ScreenToClient(hwnd,(POINT *)((int)&rc + 4));
-      ExpandRc(&stack0xffc6,dyArial8,dyArial8 >> 1);
+      ScreenToClient(hwnd,(POINT *)&rc.right);
+      rcGBox.right = rc.right;
+      rcGBox.bottom = rc.bottom;
+      ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
       _Draw3dFrame();
       sVar6 = CchGetString(i + idsEnergy,(char *)szWork);
       sVar7 = CchGetString(idsResearch,(char *)szWork + sVar6);
-      TextOut(hdc,in_stack_0000ffc6 + 8,local_38 - (dyArial8 >> 1),szWork,
+      TextOut(hdc_00,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,
               sVar6 + sVar7);
     }
     EndPaint(hwnd,&ps);
-    return 1;
+    sVar6 = 1;
   }
-  if (message == WM_ERASEBKGND) {
+  else if (message == WM_ERASEBKGND) {
     GetClientRect(hwnd,&rc);
     FillRect(wParam,&rc,hbrButtonFace);
-    return 1;
-  }
-  if (message == WM_CTLCOLOR) {
-    for (i = 0x10f; i < 0x121; i = i + 1) {
-      hdc = (HDC)lParam;
-      HVar5 = GetDlgItem(hwnd,i);
-      if (hdc == HVar5) break;
-    }
-    if (0x120 < i) {
-      hdc = (HDC)lParam;
-      HVar5 = GetDlgItem(hwnd,0x123);
-      if ((hdc != HVar5) && (uVar9 = __aFulshr(uVar9,in_stack_0000ffc6), (int)uVar9 != 6))
-      goto LAB_10e0_409f;
-    }
-    SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    HVar8 = hbrButtonFace;
+    sVar6 = 1;
   }
   else {
-    if (message == WM_INITDIALOG) {
-      SetRCWTitle(hwnd,iPanelActive);
-      for (i = 0; i < 6; i = i + 1) {
-        iVar1 = i * 3 + 0x10f;
-        iVar2 = i * 3 + 0x111;
-        HVar5 = hwnd;
-        hdc = GetRaceStat((PLAYER *)&vplr,i + rsTechBonus1);
-        CheckRadioButton(HVar5,iVar1,iVar2,i * 3 + 0x10f + hdc);
-      }
-      if (fRCWReadOnly != 0) {
-        for (i = 0x10f; i < 0x121; i = i + 1) {
-          HVar5 = GetDlgItem(hwnd,i);
-          EnableWindow(HVar5,0);
-        }
-      }
-      sVar6 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
-      iVar1 = (sVar6 == raNone) + 3;
-      pcVar3 = PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech);
-      _wsprintf(szWork,pcVar3,iVar1);
-      HVar5 = GetDlgItem(hwnd,0x123);
-      SetWindowText(HVar5,szWork);
-      HVar5 = GetDlgItem(hwnd,0x123);
-      UVar11 = 0x401;
-      WVar4 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3);
-      SendMessage(HVar5,UVar11,WVar4,0);
-      if (fRCWReadOnly != 0) {
-        HVar5 = GetDlgItem(hwnd,0x123);
-        EnableWindow(HVar5,0);
-      }
-      StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
-      return 1;
-    }
-    if (message == WM_COMMAND) {
-      if (wParam == 0x76) {
-        WinHelp(hwnd,_szHelpFile,1,0x421);
-        return 1;
-      }
-      i = 0;
-      while ((i < 4 && (wParam != *(ushort *)((ushort_0_ *)&rgidRaceBtn + i * 2)))) {
+    if (message == WM_CTLCOLOR) {
+      i = 0x10f;
+      while ((i < 0x121 && (HVar5 = GetDlgItem(hwnd,i), (HWND)lParam != HVar5))) {
         i = i + 1;
       }
-      if (i < 4) {
-        StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,0);
-        EndDialog(hwnd,i);
-        return 1;
-      }
-      uVar9 = __aFulshr(uVar9,in_stack_0000ffc6);
-      if ((((int)uVar9 == 0) && (0x10e < wParam)) && (wParam < 0x121)) {
-        i = wParam - 0x10f;
-        SetRaceStat((PLAYER *)&vplr,i / 3 + rsTechBonus1,i % 3);
-        InvalidateAdvPtsRect(hwnd);
-      }
-      else if (wParam == 0x123) {
-        HVar5 = GetDlgItem(hwnd,0x123);
-        LVar10 = SendMessage(HVar5,0x400,0,0);
-        i = (short)LVar10;
-        SetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3,i);
-        InvalidateAdvPtsRect(hwnd);
+      if (((i < 0x121) || (HVar5 = GetDlgItem(hwnd,0x123), (HWND)lParam == HVar5)) ||
+         (uVar8 = __aFulshr(uVar8,rcGBox.left), (int)uVar8 == 6)) {
+        SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
+        ;
+        return hbrButtonFace;
       }
     }
-LAB_10e0_409f:
-    HVar8 = 0;
+    else {
+      if (message == WM_INITDIALOG) {
+        SetRCWTitle(hwnd,iPanelActive);
+        for (i = 0; i < 6; i = i + 1) {
+          iVar1 = i * 3 + 0x10f;
+          iVar2 = i * 3 + 0x111;
+          HVar5 = hwnd;
+          sVar6 = GetRaceStat((PLAYER *)&vplr,i + rsTechBonus1);
+          CheckRadioButton(HVar5,iVar1,iVar2,i * 3 + 0x10f + sVar6);
+        }
+        if (fRCWReadOnly != 0) {
+          for (i = 0x10f; i < 0x121; i = i + 1) {
+            HVar5 = GetDlgItem(hwnd,i);
+            EnableWindow(HVar5,0);
+          }
+        }
+        sVar6 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
+        iVar1 = (sVar6 == raNone) + 3;
+        pcVar3 = PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech);
+        _wsprintf(szWork,pcVar3,iVar1);
+        HVar5 = GetDlgItem(hwnd,0x123);
+        SetWindowText(HVar5,szWork);
+        HVar5 = GetDlgItem(hwnd,0x123);
+        UVar10 = 0x401;
+        WVar4 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3);
+        SendMessage(HVar5,UVar10,WVar4,0);
+        if (fRCWReadOnly != 0) {
+          HVar5 = GetDlgItem(hwnd,0x123);
+          EnableWindow(HVar5,0);
+        }
+        StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
+        return 1;
+      }
+      if (message == WM_COMMAND) {
+        if (wParam == 0x76) {
+          WinHelp(hwnd,_szHelpFile,1,0x421);
+          return 1;
+        }
+        i = 0;
+        while ((i < 4 && (wParam != *(ushort *)((ushort_0_ *)&rgidRaceBtn + i * 2)))) {
+          i = i + 1;
+        }
+        if (i < 4) {
+          StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,0);
+          EndDialog(hwnd,i);
+          return 1;
+        }
+        uVar8 = __aFulshr(uVar8,rcGBox.left);
+        if ((((int)uVar8 == 0) && (0x10e < wParam)) && (wParam < 0x121)) {
+          SetRaceStat((PLAYER *)&vplr,(int)(wParam - 0x10f) / 3 + rsTechBonus1,
+                      (int)(wParam - 0x10f) % 3);
+          InvalidateAdvPtsRect(hwnd);
+        }
+        else if (wParam == 0x123) {
+          HVar5 = GetDlgItem(hwnd,0x123);
+          LVar9 = SendMessage(HVar5,0x400,0,0);
+          SetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3,(short)LVar9);
+          InvalidateAdvPtsRect(hwnd);
+        }
+      }
+    }
+    sVar6 = 0;
   }
-  return HVar8;
+  return sVar6;
 }
 
 
@@ -2124,7 +2151,6 @@ short CAdvantagePoints(PLAYER *pplr)
   int iVar8;
   short sVar9;
   uint uVar10;
-  uint unaff_DI;
   bool bVar11;
   long lVar12;
   ulong uVar13;
@@ -2133,19 +2159,20 @@ short CAdvantagePoints(PLAYER *pplr)
   short cProduce;
   short cOperate;
   short raMajor;
+  long lInnate;
   short cGood;
+  short rgi [3];
   short i;
   short cCur;
   short cBad;
-  char *cPoints;
-  int local_a;
+  long cPoints;
   short iSpread;
   short pctGrowth;
   
-  cPoints = (char *)0x672;
+  cPoints._0_2_ = (char *)0x672;
   BoundsCheckPlayer(pplr);
   sVar3 = GetRaceStat(pplr,rsMajorAdv);
-  lVar15 = (ulong)unaff_DI << 0x10;
+  lVar15 = 2000;
   lVar12 = LInnateRaceHabitability(pplr);
   uVar13 = __aFldiv(lVar12,lVar15);
   if (pplr->pctIdealGrowth < '\x15') {
@@ -2176,16 +2203,16 @@ short CAdvantagePoints(PLAYER *pplr)
   else {
     if (iSpread < 0xe) {
       if (iSpread == 6) {
-        cPoints = (char *)s__s__d_1120_147d + 5;
+        cPoints._0_2_ = (char *)s__s__d_1120_147d + 5;
       }
       else if (iSpread == 7) {
-        cPoints = (char *)0xf3c;
+        cPoints._0_2_ = (char *)0xf3c;
       }
       else if (iSpread == 8) {
-        cPoints = (char *)0x8ca;
+        cPoints._0_2_ = (char *)0x8ca;
       }
       else if (iSpread == 9) {
-        cPoints = (char *)0x753;
+        cPoints._0_2_ = (char *)0x753;
       }
       iSpread = (iSpread + -5) * 2 + 5;
     }
@@ -2195,7 +2222,7 @@ short CAdvantagePoints(PLAYER *pplr)
     else {
       iSpread = 0x2d;
     }
-    uVar14 = ZEXT24(cPoints);
+    uVar14 = ZEXT24((char *)cPoints);
   }
   lVar12 = 0x18;
   uVar13 = __aFulmul(uVar13,(long)iSpread);
@@ -2204,8 +2231,8 @@ short CAdvantagePoints(PLAYER *pplr)
   cGood = 0;
   i = 0;
   while( true ) {
-    local_a = (int)((ulong)lVar12 >> 0x10);
-    cPoints = (char *)lVar12;
+    cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+    cPoints._0_2_ = (char *)lVar12;
     if (2 < i) break;
     if (pplr->rgEnvVar[i] < '\0') {
       cGood = cGood + 1;
@@ -2217,7 +2244,7 @@ short CAdvantagePoints(PLAYER *pplr)
     i = i + 1;
   }
   if (1 < cGood) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 0x96),(int)cPoints - 0x96);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0x96),(int)(char *)cPoints - 0x96);
   }
   sVar4 = GetRaceStat(pplr,rsFactOperate);
   sVar5 = GetRaceStat(pplr,rsFactProd);
@@ -2257,20 +2284,20 @@ short CAdvantagePoints(PLAYER *pplr)
       lVar12 = lVar12 - lVar15;
     }
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   iVar6 = GetRaceStat(pplr,rsResGen);
   if (0x18 < iVar6) {
     iVar6 = 0x19;
   }
   if (iVar6 < 8) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 0x960),(int)cPoints - 0x960);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0x960),(int)(char *)cPoints - 0x960);
   }
   else if (iVar6 == 8) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 0x4ec),(int)cPoints - 0x4ec);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0x4ec),(int)(char *)cPoints - 0x4ec);
   }
   else if (iVar6 == 9) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 600),(int)cPoints - 600);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 600),(int)(char *)cPoints - 600);
   }
   else if (10 < iVar6) {
     lVar12 = lVar12 + (iVar6 + -10) * 0x78;
@@ -2374,38 +2401,39 @@ short CAdvantagePoints(PLAYER *pplr)
   if (4 < cBad + cGood) {
     lVar12 = lVar12 - (cBad + cGood) * 10 * (cBad + cGood + -4);
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   if (3 < cGood - cBad) {
     iVar6 = (cGood - cBad) + -3;
     uVar10 = iVar6 * 0x3c;
-    lVar12 = CONCAT22((local_a - ((int)uVar10 >> 0xf)) - (uint)(cPoints < uVar10),
-                      (int)cPoints + iVar6 * -0x3c);
+    lVar12 = CONCAT22((cPoints._2_2_ - ((int)uVar10 >> 0xf)) - (uint)((char *)cPoints < uVar10),
+                      (int)(char *)cPoints + iVar6 * -0x3c);
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   if (3 < cBad - cGood) {
     iVar6 = (cBad - cGood) + -3;
     uVar10 = iVar6 * 0x28;
-    lVar12 = CONCAT22((local_a - ((int)uVar10 >> 0xf)) - (uint)(cPoints < uVar10),
-                      (int)cPoints + iVar6 * -0x28);
+    lVar12 = CONCAT22((cPoints._2_2_ - ((int)uVar10 >> 0xf)) - (uint)((char *)cPoints < uVar10),
+                      (int)(char *)cPoints + iVar6 * -0x28);
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   sVar9 = GetRaceGrbit(pplr,ibitRaceNoAdvScanner);
   if (sVar9 != 0) {
     if (sVar3 == raMassAccel) {
-      lVar12 = CONCAT22(local_a - (uint)(cPoints < 0x118),(int)cPoints - 0x118);
+      lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0x118),(int)(char *)cPoints - 0x118
+                       );
     }
     else if (sVar3 == raStealth) {
-      lVar12 = CONCAT22(local_a - (uint)(cPoints < 200),(int)cPoints - 200);
+      lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 200),(int)(char *)cPoints - 200);
     }
     else if (sVar3 == raNone) {
-      lVar12 = CONCAT22(local_a - (uint)(cPoints < 0x28),(int)cPoints - 0x28);
+      lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0x28),(int)(char *)cPoints - 0x28);
     }
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   cCur = 0;
   for (i = 8; i < 0xe; i = i + 1) {
     sVar9 = GetRaceStat(pplr,i);
@@ -2426,31 +2454,31 @@ short CAdvantagePoints(PLAYER *pplr)
   }
   else {
     uVar10 = cCur * cCur * 0x82;
-    bVar11 = cPoints < uVar10;
-    cPoints = (char *)((int)cPoints + cCur * cCur * -0x82);
-    local_a = (local_a - ((int)uVar10 >> 0xf)) - (uint)bVar11;
+    bVar11 = (char *)cPoints < uVar10;
+    cPoints._0_2_ = (char *)((int)(char *)cPoints + cCur * cCur * -0x82);
+    cPoints._2_2_ = (cPoints._2_2_ - ((int)uVar10 >> 0xf)) - (uint)bVar11;
     if (cCur == 6) {
-      bVar11 = 0xfa69 < cPoints;
-      cPoints = (char *)((int)cPoints + 0x596);
-      local_a = local_a + (uint)bVar11;
+      bVar11 = 0xfa69 < (char *)cPoints;
+      cPoints._0_2_ = (char *)((int)(char *)cPoints + 0x596);
+      cPoints._2_2_ = cPoints._2_2_ + (uint)bVar11;
     }
     else if (cCur == 5) {
-      bVar11 = 0xfdf7 < cPoints;
-      cPoints = (char *)((int)cPoints + 0x208);
-      local_a = local_a + (uint)bVar11;
+      bVar11 = 0xfdf7 < (char *)cPoints;
+      cPoints._0_2_ = (char *)((int)(char *)cPoints + 0x208);
+      cPoints._2_2_ = cPoints._2_2_ + (uint)bVar11;
     }
-    lVar12 = CONCAT22(local_a,cPoints);
+    lVar12 = CONCAT22(cPoints._2_2_,(char *)cPoints);
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   sVar9 = GetRaceGrbit(pplr,ibitRaceTech3);
   if (sVar9 != 0) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 0xb4),(int)cPoints - 0xb4);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 0xb4),(int)(char *)cPoints - 0xb4);
   }
-  local_a = (int)((ulong)lVar12 >> 0x10);
-  cPoints = (char *)lVar12;
+  cPoints._2_2_ = (int)((ulong)lVar12 >> 0x10);
+  cPoints._0_2_ = (char *)lVar12;
   if ((sVar3 == raMacintosh) && (sVar3 = GetRaceStat(pplr,rsTechBonus1), sVar3 == 2)) {
-    lVar12 = CONCAT22(local_a - (uint)(cPoints < 100),(int)cPoints - 100);
+    lVar12 = CONCAT22(cPoints._2_2_ - (uint)((char *)cPoints < 100),(int)(char *)cPoints - 100);
   }
   lVar12 = __aFldiv(lVar12,3);
   return (short)lVar12;
@@ -2469,86 +2497,83 @@ long LInnateRaceHabitability(PLAYER *pplr)
 
 {
   PLAYER *pPVar1;
-  undefined2 *puVar2;
-  PLAYER *pPVar3;
-  char cVar4;
+  PLAYER *pPVar2;
+  char cVar3;
+  short sVar4;
   short sVar5;
   uint uVar6;
   int iVar7;
   undefined2 unaff_SI;
   PLAYER *pPVar8;
-  undefined2 *puVar9;
+  PLAYER *pPVar9;
   undefined2 unaff_DI;
-  PLAYER *pPVar10;
   undefined2 unaff_SS;
-  bool bVar11;
-  ulong uVar12;
-  long lVar13;
+  bool bVar10;
+  ulong uVar11;
+  long lVar12;
+  undefined2 uVar13;
   undefined2 uVar14;
-  undefined2 uVar15;
   undefined2 in_stack_0000feac;
   undefined2 in_stack_0000feae;
-  long local_14c;
   short pctTerra;
   double lInnate;
   short k;
-  uint pctDesire;
-  int local_136;
+  long pctDesire;
   short iDelta;
   double l3;
-  int rgBase [3];
+  short rgBase [3];
   long l1;
   short j;
   short iTerra;
   short i;
-  int rgInc [3];
+  short rgInc [3];
   short fTotalTerra;
-  short rgDelta;
-  short local_110;
-  short local_10e;
-  undefined2 plrT [96];
-  int rgSteps [3];
+  short rgDelta [3];
+  PLAYER plrT;
+  short rgSteps [3];
   double l2;
   PLANET pl;
   short iTry;
   
   pPVar8 = (PLAYER *)rgplr;
-  puVar9 = plrT;
+  pPVar9 = &plrT;
   for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-    puVar2 = puVar9;
-    puVar9 = puVar9 + 1;
+    pPVar2 = pPVar9;
+    pPVar9 = &pPVar9->cPlanet;
     pPVar1 = pPVar8;
     pPVar8 = &pPVar8->cPlanet;
-    *puVar2 = *pPVar1;
+    cVar3 = pPVar1->cShDef;
+    pPVar2->iPlayer = pPVar1->iPlayer;
+    pPVar2->cShDef = cVar3;
   }
-  fTotalTerra = GetRaceGrbit(pplr,ibitRaceTT);
-  pPVar10 = (PLAYER *)rgplr;
-  pPVar8 = pplr;
+  sVar4 = GetRaceGrbit(pplr,ibitRaceTT);
+  pPVar8 = (PLAYER *)rgplr;
+  pPVar9 = pplr;
   for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-    pPVar3 = pPVar10;
-    pPVar10 = &pPVar10->cPlanet;
-    pPVar1 = pPVar8;
+    pPVar2 = pPVar8;
     pPVar8 = &pPVar8->cPlanet;
-    cVar4 = pPVar1->cShDef;
-    pPVar3->iPlayer = pPVar1->iPlayer;
-    pPVar3->cShDef = cVar4;
+    pPVar1 = pPVar9;
+    pPVar9 = &pPVar9->cPlanet;
+    cVar3 = pPVar1->cShDef;
+    pPVar2->iPlayer = pPVar1->iPlayer;
+    pPVar2->cShDef = cVar3;
   }
-  local_10e = 0;
-  local_110 = 0;
-  rgDelta = 0;
+  rgDelta[2] = 0;
+  rgDelta[1] = 0;
+  rgDelta[0] = 0;
   for (iTerra = 0; iTerra < 3; iTerra = iTerra + 1) {
     if (iTerra == 0) {
       pctTerra = 0;
     }
     else if (iTerra == 1) {
-      if (fTotalTerra == 0) {
+      if (sVar4 == 0) {
         pctTerra = 5;
       }
       else {
         pctTerra = 8;
       }
     }
-    else if (fTotalTerra == 0) {
+    else if (sVar4 == 0) {
       pctTerra = 0xf;
     }
     else {
@@ -2565,16 +2590,16 @@ long LInnateRaceHabitability(PLAYER *pplr)
         pplr->rgEnvVarMin[i] = -1;
         pplr->rgEnvVar[i] = -1;
         pplr->wFlags = pplr->wFlags & 0xffef | 0x10;
-        pPVar10 = (PLAYER *)rgplr;
-        pPVar8 = pplr;
+        pPVar8 = (PLAYER *)rgplr;
+        pPVar9 = pplr;
         for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-          pPVar3 = pPVar10;
-          pPVar10 = &pPVar10->cPlanet;
-          pPVar1 = pPVar8;
+          pPVar2 = pPVar8;
           pPVar8 = &pPVar8->cPlanet;
-          cVar4 = pPVar1->cShDef;
-          pPVar3->iPlayer = pPVar1->iPlayer;
-          pPVar3->cShDef = cVar4;
+          pPVar1 = pPVar9;
+          pPVar9 = &pPVar9->cPlanet;
+          cVar3 = pPVar1->cShDef;
+          pPVar2->iPlayer = pPVar1->iPlayer;
+          pPVar2->cShDef = cVar3;
         }
       }
       if (pplr->rgEnvVar[i] < '\0') {
@@ -2616,11 +2641,10 @@ long LInnateRaceHabitability(PLAYER *pplr)
         else {
           iDelta = 0;
         }
-        rgDelta = iDelta;
+        rgDelta[0] = iDelta;
         iTry = pplr->rgEnvVar[0] - iDelta;
       }
       pl.rgEnvVar[0] = (char)iTry;
-      l2 = 0.0;
       for (j = 0; j < rgSteps[1]; j = j + 1) {
         if ((j == 0) || (rgSteps[1] < 2)) {
           iTry = rgBase[1];
@@ -2642,7 +2666,7 @@ long LInnateRaceHabitability(PLAYER *pplr)
           else {
             iDelta = 0;
           }
-          local_110 = iDelta;
+          rgDelta[1] = iDelta;
           iTry = pplr->rgEnvVar[1] - iDelta;
         }
         pl.rgEnvVar[1] = (char)iTry;
@@ -2668,54 +2692,49 @@ long LInnateRaceHabitability(PLAYER *pplr)
             else {
               iDelta = 0;
             }
-            local_10e = iDelta;
+            rgDelta[2] = iDelta;
             iTry = pplr->rgEnvVar[2] - iDelta;
           }
           pl.rgEnvVar[2] = (char)iTry;
-          pctDesire = PctPlanetDesirability(&pl,0);
-          local_136 = (int)pctDesire >> 0xf;
-          iVar7 = rgDelta + local_110 + local_10e;
+          pctDesire._0_2_ = PctPlanetDesirability(&pl,0);
+          pctDesire._2_2_ = (int)(uint)pctDesire >> 0xf;
+          iVar7 = rgDelta[0] + rgDelta[1] + rgDelta[2];
           if (pctTerra < iVar7) {
             uVar6 = iVar7 - pctTerra;
-            bVar11 = pctDesire < uVar6;
-            pctDesire = pctDesire - uVar6;
-            local_136 = (local_136 - ((int)uVar6 >> 0xf)) - (uint)bVar11;
-            if ((local_136 < 1) && (local_136 < 0)) {
-              pctDesire = 0;
-              local_136 = 0;
+            bVar10 = (uint)pctDesire < uVar6;
+            pctDesire._0_2_ = (uint)pctDesire - uVar6;
+            pctDesire._2_2_ = (pctDesire._2_2_ - ((int)uVar6 >> 0xf)) - (uint)bVar10;
+            if ((pctDesire._2_2_ < 1) && (pctDesire._2_2_ < 0)) {
+              pctDesire._0_2_ = 0;
+              pctDesire._2_2_ = 0;
             }
           }
-          uVar12 = __aFulmul(CONCAT22(local_136,pctDesire),CONCAT22(local_136,pctDesire));
+          uVar11 = __aFulmul(CONCAT22(pctDesire._2_2_,(uint)pctDesire),
+                                     CONCAT22(pctDesire._2_2_,(uint)pctDesire));
           if (iTerra == 0) {
-            uVar12 = __aFulmul(uVar12,7);
+            uVar11 = __aFulmul(uVar11,7);
           }
           else if (iTerra == 1) {
-            uVar12 = __aFulmul(uVar12,5);
+            uVar11 = __aFulmul(uVar11,5);
           }
           else {
-            uVar12 = __aFulmul(uVar12,6);
+            uVar11 = __aFulmul(uVar11,6);
           }
-          l1 = uVar12 + l1;
+          l1 = uVar11 + l1;
         }
         if (pplr->rgEnvVar[2] < '\0') {
-          l1 = __aFulmul(l1,0xb);
+          __aFulmul(l1,0xb);
         }
         else {
-          uVar15 = 0;
-          uVar14 = 100;
-          uVar12 = __aFulmul(l1,(long)rgInc[2]);
-          l1 = __aFldiv(uVar12,CONCAT22(uVar15,uVar14));
+          uVar14 = 0;
+          uVar13 = 100;
+          uVar11 = __aFulmul(l1,(long)rgInc[2]);
+          __aFldiv(uVar11,CONCAT22(uVar14,uVar13));
         }
-        l2 = l2 + (double)l1;
       }
-      if (pplr->rgEnvVar[1] < '\0') {
-        l2 = l2 * 11.0;
-      }
-      else {
-        local_14c = (long)rgInc[1];
+      if (-1 < pplr->rgEnvVar[1]) {
         in_stack_0000feac = 100;
         in_stack_0000feae = 0;
-        l2 = ((double)local_14c * l2) / 100.0;
       }
     }
     if (-1 < pplr->rgEnvVar[0]) {
@@ -2724,22 +2743,22 @@ long LInnateRaceHabitability(PLAYER *pplr)
     }
   }
   if (pplr != (PLAYER *)rgplr) {
-    puVar9 = plrT;
+    pPVar9 = &plrT;
     pPVar8 = (PLAYER *)rgplr;
     for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-      pPVar1 = pPVar8;
+      pPVar2 = pPVar8;
       pPVar8 = &pPVar8->cPlanet;
-      puVar2 = puVar9;
-      puVar9 = puVar9 + 1;
-      uVar14 = *puVar2;
-      pPVar1->iPlayer = (char)uVar14;
-      pPVar1->cShDef = (char)((uint)uVar14 >> 8);
+      pPVar1 = pPVar9;
+      pPVar9 = &pPVar9->cPlanet;
+      cVar3 = pPVar1->cShDef;
+      pPVar2->iPlayer = pPVar1->iPlayer;
+      pPVar2->cShDef = cVar3;
     }
   }
-  lVar13 = __ftol((double)CONCAT26(in_stack_0000feae,
+  lVar12 = __ftol((double)CONCAT26(in_stack_0000feae,
                                            CONCAT24(in_stack_0000feac,CONCAT22(unaff_SI,unaff_DI))))
   ;
-  return lVar13;
+  return lVar12;
 }
 
 
@@ -2754,9 +2773,12 @@ long LInnateRaceHabitability(PLAYER *pplr)
 void InvalidateAdvPtsRect(HWND hwnd)
 
 {
-  HGDIOBJ HVar1;
+  LOGFONT *pLVar1;
+  HDC HVar2;
+  HFONT HVar3;
+  HGDIOBJ HVar4;
   undefined2 unaff_SS;
-  DWORD DVar2;
+  DWORD DVar5;
   HFONT hfontSav;
   RECT rc;
   short dx;
@@ -2766,23 +2788,21 @@ void InvalidateAdvPtsRect(HWND hwnd)
   TEXTMETRIC tm;
   HDC hdc;
   
-  plf = (LOGFONT *)LocalAlloc(0x40,0x32);
-  hdc = GetDC(hwnd);
-  plf->lfHeight = -0x18;
-  _strcpy(plf->lfFaceName,*(char (*) [32])(rgszArial + 1));
-  hfont = CreateFontIndirect(plf);
-  HVar1 = SelectObject(hdc,hfont);
-  GetTextMetrics(hdc,&tm);
-  dyBig = tm.tmHeight + tm.tmExternalLeading;
-  DVar2 = GetTextExtent(hdc,(LPCSTR)0x1120135e,6);
-  dx = (int)DVar2 + 8;
+  pLVar1 = (LOGFONT *)LocalAlloc(0x40,0x32);
+  HVar2 = GetDC(hwnd);
+  pLVar1->lfHeight = -0x18;
+  _strcpy(pLVar1->lfFaceName,*(char (*) [32])(rgszArial + 1));
+  HVar3 = CreateFontIndirect(pLVar1);
+  HVar4 = SelectObject(HVar2,HVar3);
+  GetTextMetrics(HVar2,&tm);
+  DVar5 = GetTextExtent(HVar2,(LPCSTR)0x1120135e,6);
   GetClientRect(hwnd,&rc);
-  rc.left = rc.right - dx;
-  rc.bottom = rc.top + dyBig + 4;
-  SelectObject(hdc,HVar1);
-  DeleteObject(hfont);
-  LocalFree((HLOCAL)plf);
-  ReleaseDC(hwnd,hdc);
+  rc.left = rc.right - ((int)DVar5 + 8);
+  rc.bottom = rc.top + tm.tmHeight + tm.tmExternalLeading + 4;
+  SelectObject(HVar2,HVar4);
+  DeleteObject(HVar3);
+  LocalFree((HLOCAL)pLVar1);
+  ReleaseDC(hwnd,HVar2);
   InvalidateRect(hwnd,&rc,1);
   return;
 }
@@ -2799,10 +2819,17 @@ void InvalidateAdvPtsRect(HWND hwnd)
 void DrawRaceAdvantagePoints(HDC hdc,RECT *prc,PLAYER *pplr)
 
 {
-  HGDIOBJ HVar1;
-  uint uVar2;
+  LOGFONT *pLVar1;
+  HFONT HVar2;
+  HGDIOBJ HVar3;
+  short sVar4;
+  short sVar5;
+  uint uVar6;
+  short cLen;
   undefined2 unaff_SS;
-  DWORD DVar3;
+  DWORD DVar7;
+  COLORREF CVar8;
+  COLORREF CVar9;
   HFONT hfontSav;
   RECT rc;
   short cch;
@@ -2818,54 +2845,50 @@ void DrawRaceAdvantagePoints(HDC hdc,RECT *prc,PLAYER *pplr)
   LOGFONT *plf;
   TEXTMETRIC tm;
   
-  plf = (LOGFONT *)LocalAlloc(0x40,0x32);
-  plf->lfHeight = -0x18;
-  CchGetString(idsArialBold,plf->lfFaceName);
-  hfont = CreateFontIndirect(plf);
-  HVar1 = SelectObject(hdc,hfont);
+  pLVar1 = (LOGFONT *)LocalAlloc(0x40,0x32);
+  pLVar1->lfHeight = -0x18;
+  CchGetString(idsArialBold,pLVar1->lfFaceName);
+  HVar2 = CreateFontIndirect(pLVar1);
+  HVar3 = SelectObject(hdc,HVar2);
   GetTextMetrics(hdc,&tm);
-  dyBig = tm.tmHeight + tm.tmExternalLeading;
-  DVar3 = GetTextExtent(hdc,(LPCSTR)0x11201365,6);
-  dx = (int)DVar3 + 8;
+  DVar7 = GetTextExtent(hdc,(LPCSTR)0x11201365,6);
   rc.top = prc->top;
   rc.right = prc->right;
-  rc.left = rc.right - dx;
-  rc.bottom = rc.top + dyBig + 4;
+  rc.left = rc.right - ((int)DVar7 + 8);
+  rc.bottom = rc.top + tm.tmHeight + tm.tmExternalLeading + 4;
   if (pplr == (PLAYER *)0x0) {
     pplr = (PLAYER *)&vplr;
   }
-  iPts = CAdvantagePoints(pplr);
-  bkMode = SetBkMode(hdc,2);
-  if (iPts < 0) {
-    uVar2 = 0x7f;
+  sVar4 = CAdvantagePoints(pplr);
+  sVar5 = SetBkMode(hdc,2);
+  if (sVar4 < 0) {
+    uVar6 = 0x7f;
   }
   else {
-    uVar2 = 0;
+    uVar6 = 0;
   }
-  crSav = SetTextColor(hdc,(ulong)uVar2);
-  crBkSav = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace)
-                      );
-  c = _wsprintf(szWork,PCTD,iPts);
+  CVar8 = SetTextColor(hdc,(ulong)uVar6);
+  CVar9 = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+  _wsprintf(szWork,PCTD,sVar4);
   RcCtrTextOut(hdc,&rc,(char *)szWork,-1);
   SetTextColor(hdc,0);
   SelectObject(hdc,rghfontArial8[1]);
-  c = CchGetString(idsPointsLeft,(char *)szWork);
-  DVar3 = GetTextExtent(hdc,szWork,c);
-  dx = (short)DVar3;
-  cch = CchGetString(idsAdvantage,szAdvantage);
-  RightTextOut(hdc,rc.left,3,szAdvantage,cch,0);
-  RightTextOut(hdc,rc.left,dyArial8 + 3,(char *)szWork,c,0);
-  rc.left = rc.left - (dx + 4);
+  sVar4 = CchGetString(idsPointsLeft,(char *)szWork);
+  DVar7 = GetTextExtent(hdc,szWork,sVar4);
+  cLen = CchGetString(idsAdvantage,szAdvantage);
+  RightTextOut(hdc,rc.left,3,szAdvantage,cLen,0);
+  RightTextOut(hdc,rc.left,dyArial8 + 3,(char *)szWork,sVar4,0);
+  rc.left = rc.left - ((int)DVar7 + 4);
   PatBlt(hdc,rc.left + -1,0,1,rc.bottom + 1,0x42);
   PatBlt(hdc,rc.left + -4,0,2,rc.bottom + 4,0x42);
   PatBlt(hdc,rc.left,rc.bottom,rc.right - rc.left,1,0x42);
   PatBlt(hdc,rc.left + -2,rc.bottom + 2,(rc.right - rc.left) + 2,2,0x42);
-  SetBkColor(hdc,crBkSav);
-  SetTextColor(hdc,crSav);
-  SetBkMode(hdc,bkMode);
-  SelectObject(hdc,HVar1);
-  DeleteObject(hfont);
-  LocalFree((HLOCAL)plf);
+  SetBkColor(hdc,CVar9);
+  SetTextColor(hdc,CVar8);
+  SetBkMode(hdc,sVar5);
+  SelectObject(hdc,HVar3);
+  DeleteObject(HVar2);
+  LocalFree((HLOCAL)pLVar1);
   return;
 }
 
@@ -2902,6 +2925,8 @@ ushort IRaceChecksum(PLAYER *pplr)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: ofn */
+
 short FSaveRace(char *szFileSuggest,PLAYER *pplr)
 
 {
@@ -2909,15 +2934,12 @@ short FSaveRace(char *szFileSuggest,PLAYER *pplr)
   char *sz;
   short sVar2;
   undefined2 unaff_SS;
-  undefined2 ofn;
-  undefined2 local_44e;
-  HWND local_44c;
-  char *local_448;
-  int local_41c;
+  OFN ofn;
   char szFile [256];
   ushort i;
   char szFilter [256];
-  undefined1 szDirName;
+  char szDirName [256];
+  char szFileTitle [256];
   ushort icksum;
   
   if (szFileSuggest == (char *)0x0) {
@@ -2926,7 +2948,7 @@ short FSaveRace(char *szFileSuggest,PLAYER *pplr)
   else {
     _strcpy(szFile,szFileSuggest);
   }
-  szDirName = 0;
+  szDirName[0] = '\0';
   CchGetString(idsStarsRaceFilesR,szFilter);
   for (i = 0; szFilter[i] != '\0'; i = i + 1) {
     if (szFilter[i] == '|') {
@@ -2934,11 +2956,24 @@ short FSaveRace(char *szFileSuggest,PLAYER *pplr)
     }
   }
   _memset(&ofn,0,0x48);
-  ofn = 0x48;
-  local_44e = 0;
-  local_44c = hwndRaceParent;
-  local_448 = szFilter;
-  iVar1 = GetSaveFileName(0x1118,&ofn);
+  ofn.lStructSize._0_2_ = 0x48;
+  ofn.lStructSize._2_2_ = 0;
+  ofn.hwndOwner = hwndRaceParent;
+  ofn.lpstrFilter._0_2_ = szFilter;
+  ofn.nFilterIndex._0_2_ = 1;
+  ofn.nFilterIndex._2_2_ = 0;
+  ofn.lpstrFile._0_2_ = szFile;
+  ofn.nMaxFile._0_2_ = 0x100;
+  ofn.nMaxFile._2_2_ = 0;
+  ofn.lpstrFileTitle._0_2_ = szFileTitle;
+  ofn.nMaxFileTitle._0_2_ = 0x100;
+  ofn.nMaxFileTitle._2_2_ = 0;
+  ofn.lpstrInitialDir._0_2_ = szDirName;
+  ofn.lpstrDefExt._0_2_ = (char *)0x136c;
+  ofn.lpstrDefExt._2_2_ = 0x1120;
+  ofn.Flags._0_2_ = 0x8806;
+  ofn.Flags._2_2_ = 0;
+  iVar1 = GetSaveFileName(&ofn);
   if (iVar1 == 0) {
     sVar2 = 0;
   }
@@ -2955,7 +2990,7 @@ short FSaveRace(char *szFileSuggest,PLAYER *pplr)
       icksum = IRaceChecksum(pplr);
       WriteRt(0,2,&icksum);
       StreamClose();
-      _strcpy((char *)&szRaceFile,szFile + local_41c);
+      _strcpy((char *)&szRaceFile,szFile + ofn.nFileOffset);
       sVar2 = 1;
     }
   }
@@ -2976,7 +3011,7 @@ void SetRCWTitle(HWND hwnd,short iStep)
 {
   undefined2 unaff_SS;
   short cch;
-  char szBuf [52];
+  char szBuf [50];
   
   CchGetString(fRCWReadOnly + idsCustomRaceWizardStepD6,szBuf);
   _wsprintf(szWork,szBuf,iStep);
@@ -3006,7 +3041,7 @@ void CreateRandomRace(PLAYER *pplr)
   undefined2 *puVar8;
   PLAYER *pPVar9;
   undefined2 unaff_SS;
-  undefined2 plrT [64];
+  undefined2 local_d4 [64];
   char local_54 [60];
   short local_18;
   int local_16;
@@ -3205,7 +3240,7 @@ LAB_10e0_6072:
               }
             }
             else {
-              puVar8 = plrT;
+              puVar8 = local_d4;
               pPVar9 = pplr;
               for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
                 puVar3 = puVar8;
@@ -3225,7 +3260,7 @@ LAB_10e0_6072:
                 dAwayNew = -cPts;
               }
               if (dAwayCur <= dAwayNew) {
-                puVar8 = plrT;
+                puVar8 = local_d4;
                 pPVar9 = pplr;
                 for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
                   pPVar1 = pPVar9;
@@ -3285,7 +3320,7 @@ LAB_10e0_6072:
       }
       goto LAB_10e0_6072;
     }
-    puVar8 = plrT;
+    puVar8 = local_d4;
     pPVar9 = pplr;
     cPass = cPass + 1;
     for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {

@@ -411,6 +411,8 @@ def _type_meta(db, typind: int, name: str) -> Dict[str, Any]:
         c_decl = rt.c_decl(name)
         is_far_ptr = isinstance(rt, PointerType) and is_far_ptrtype(int(getattr(rt, "ptrtype", 0) or 0))
         size = getattr(rt, "size", None)
+        if size is None and isinstance(rt, PointerType):
+            size = 4 if is_far_ptrtype(int(getattr(rt, "ptrtype", 0))) else 2
         return {
             "typind": int(typind),
             "c_type": c_type,
@@ -578,6 +580,9 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
             stack_order = list(reversed(arg_types)) if out.get("is_pascal") else list(arg_types)
             for aty in stack_order:
                 sz = getattr(aty, "size", None)
+                if sz is None and isinstance(aty, PointerType):
+                    sz = 4 if is_far_ptrtype(int(getattr(aty, "ptrtype", 0))) else 2
+
                 try:
                     sz_i = int(sz) if sz is not None else 2
                 except Exception:
@@ -643,6 +648,8 @@ def enrich_types_for_proc(db, p, proc_locals_index: Optional[Dict[str, Dict[Any,
                 c_decl = aty.c_decl(pname)
                 is_far_ptr = isinstance(aty, PointerType) and is_far_ptrtype(int(getattr(aty, "ptrtype", 0) or 0))
                 size = getattr(aty, "size", None)
+                if size is None and isinstance(aty, PointerType):
+                    size = 4 if is_far_ptrtype(int(getattr(aty, "ptrtype", 0))) else 2
             except Exception:
                 c_type = None
                 c_decl = None

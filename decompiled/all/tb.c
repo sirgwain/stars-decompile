@@ -18,16 +18,20 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   POINT PVar1;
   POINT pt_00;
   POINT pt_01;
-  HWND HVar2;
+  int iVar2;
   short sVar3;
-  HCURSOR HVar4;
-  int iVar5;
+  HWND HVar4;
+  short sVar5;
+  HCURSOR HVar6;
+  HDC HVar7;
+  UINT *pUVar8;
+  UINT *pUVar9;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  fn_lpfnRealComboProc *pfVar6;
-  fn_lpfnRealCEProc *pfVar7;
-  ulong uVar8;
+  fn_lpfnRealComboProc *pfVar10;
+  fn_lpfnRealCEProc *pfVar11;
+  ulong uVar12;
   short pct;
   HWND hwndCE;
   RECT rc;
@@ -46,109 +50,203 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   short fInside;
   HDC hdc;
   
+  uVar12 = CONCAT22(unaff_SI,unaff_DI);
   if (msg == WM_CREATE) {
     x = 4;
+    pUVar9 = &stack0xffae;
     for (i = 0; i < 0x1d; i = i + 1) {
-      itb = (short)*(char *)i;
-      dx = DxOfBtn(itb);
-      if ((itb < -2) && (itb == -3)) {
+      iVar2 = (int)*(char *)i;
+      pUVar9[-1] = iVar2;
+      pUVar9[-2] = 0x1068;
+      pUVar9[-3] = 0x4e;
+      sVar3 = DxOfBtn(pUVar9[-1]);
+      pUVar8 = pUVar9;
+      if ((iVar2 < -2) && (iVar2 == -3)) {
+        pUVar9[-1] = 0x1120;
+        pUVar9[-2] = (UINT)(char *)s_COMBOBOX_1120_16ce;
+        pUVar9[-3] = 0;
+        pUVar9[-4] = 0;
+        pUVar9[-5] = 0x5020;
+        pUVar9[-6] = 0x42;
+        pUVar9[-7] = x;
+        pUVar9[-8] = (0x14 - dyArial8) / 2 + 4;
+        pUVar9[-9] = sVar3;
+        pUVar9[-10] = dyArial8 * 0xb + 0x1c;
+        pUVar9[-0xb] = hwnd;
+        pUVar9[-0xc] = 0;
+        pUVar9[-0xd] = hInst;
+        pUVar9[-0xe] = 0;
+        pUVar9[-0xf] = 0;
+        pUVar9[-0x10] = 0x1068;
+        pUVar9[-0x11] = 0xba;
         hwndTBRadar =
-             CreateWindow(s_COMBOBOX_1120_16ce,(LPCSTR)0x0,0x50200042,x,
-                          (0x14 - dyArial8) / 2 + 4,dx,dyArial8 * 0xb + 0x1c,
-                          hwnd,0,hInst,(void *)0x0);
-        SendMessage(hwndTBRadar,0x30,rghfontArial8[1],0);
+             CreateWindow(*(LPCSTR *)(pUVar9 + -2),*(LPCSTR *)(pUVar9 + -4),*(DWORD *)(pUVar9 + -6),
+                          pUVar9[-7],pUVar9[-8],pUVar9[-9],pUVar9[-10],pUVar9[-0xb],pUVar9[-0xc],
+                          pUVar9[-0xd],*(void **)(pUVar9 + -0xf));
+        pUVar9[1] = hwndTBRadar;
+        *pUVar9 = 0x30;
+        pUVar9[-1] = rghfontArial8[1];
+        pUVar9[-2] = 0;
+        pUVar9[-3] = 0;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0xd6;
+        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
         iSel = -1;
         for (j = 0; j < 10; j = j + 1) {
-          iVar5 = j * -10 + 100;
-          if (iVar5 == vpctRadarView) {
+          iVar2 = j * -10 + 100;
+          if (iVar2 == vpctRadarView) {
             iSel = j;
           }
-          _wsprintf(szWork,PCTDPCTPCT,iVar5);
-          SendMessage(hwndTBRadar,0x403,0,0x112057a4);
+          pUVar9[1] = iVar2;
+          *pUVar9 = 0x1120;
+          pUVar9[-1] = (UINT)PCTDPCTPCT;
+          pUVar9[-2] = 0x1120;
+          pUVar9[-3] = (UINT)(char *)szWork;
+          pUVar9[-4] = 0x14f8;
+          pUVar9[-5] = 0x118;
+          _wsprintf(*(char **)(pUVar9 + -3),*(char **)(pUVar9 + -1));
+          pUVar9[1] = hwndTBRadar;
+          *pUVar9 = 0x403;
+          pUVar9[-1] = 0;
+          pUVar9[-2] = 0x1120;
+          pUVar9[-3] = (UINT)(char *)szWork;
+          pUVar9[-4] = 0x14f8;
+          pUVar9[-5] = 0x133;
+          SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
         }
-        SendMessage(hwndTBRadar,0x415,4,0);
-        SendMessage(hwndTBRadar,0x40e,iSel,0);
-        _wsprintf(szWork,PCTDPCTPCT,vpctRadarView);
-        SetWindowText(hwndTBRadar,szWork);
-        pfVar6 = (fn_lpfnRealComboProc *)GetWindowLong(hwndTBRadar,-4);
-        lpfnRealComboProc = pfVar6;
-        SetWindowLong(hwndTBRadar,-4,
-                      (long)CONCAT22(lpfnFakeComboProc._2_2_,
-                                     (fn_lpfnFakeComboProc *)lpfnFakeComboProc));
-        HVar2 = GetWindow(hwndTBRadar,5);
-        if (HVar2 != 0) {
-          pfVar7 = (fn_lpfnRealCEProc *)GetWindowLong(HVar2,-4);
-          lpfnRealCEProc = pfVar7;
-          SetWindowLong(HVar2,-4,(long)CONCAT22(lpfnFakeCEProc._2_2_,
-                                                (fn_lpfnFakeCEProc *)lpfnFakeCEProc));
+        pUVar9[1] = hwndTBRadar;
+        *pUVar9 = 0x415;
+        pUVar9[-1] = 4;
+        pUVar9[-2] = 0;
+        pUVar9[-3] = 0;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0x159;
+        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
+        pUVar9[1] = hwndTBRadar;
+        *pUVar9 = 0x40e;
+        pUVar9[-1] = iSel;
+        pUVar9[-2] = 0;
+        pUVar9[-3] = 0;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0x172;
+        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
+        pUVar9[1] = vpctRadarView;
+        *pUVar9 = 0x1120;
+        pUVar9[-1] = (UINT)PCTDPCTPCT;
+        pUVar9[-2] = 0x1120;
+        pUVar9[-3] = (UINT)(char *)szWork;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0x189;
+        _wsprintf(*(char **)(pUVar9 + -3),*(char **)(pUVar9 + -1));
+        pUVar9[1] = hwndTBRadar;
+        *pUVar9 = 0x1120;
+        pUVar9[-1] = (UINT)(char *)szWork;
+        pUVar9[-2] = 0x14f8;
+        pUVar9[-3] = 0x19c;
+        SetWindowText(pUVar9[1],*(LPCSTR *)(pUVar9 + -1));
+        pUVar9[-2] = hwndTBRadar;
+        pUVar9[-3] = 0xfffc;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0x1a9;
+        pfVar10 = (fn_lpfnRealComboProc *)GetWindowLong(pUVar9[-2],pUVar9[-3]);
+        pUVar9[-2] = hwndTBRadar;
+        pUVar9[-3] = 0xfffc;
+        pUVar9[-4] = lpfnFakeComboProc._2_2_;
+        pUVar9[-5] = (UINT)(fn_lpfnFakeComboProc *)lpfnFakeComboProc;
+        pUVar9[-6] = 0x14f8;
+        pUVar9[-7] = 0x1c6;
+        lpfnRealComboProc = pfVar10;
+        SetWindowLong(pUVar9[-2],pUVar9[-3],*(long *)(pUVar9 + -5));
+        pUVar9[-2] = hwndTBRadar;
+        pUVar9[-3] = 5;
+        pUVar9[-4] = 0x14f8;
+        pUVar9[-5] = 0x1d3;
+        HVar4 = GetWindow(pUVar9[-2],pUVar9[-3]);
+        pUVar8 = pUVar9 + -1;
+        if (HVar4 != 0) {
+          pUVar9[-2] = HVar4;
+          pUVar9[-3] = 0xfffc;
+          pUVar9[-4] = 0x14f8;
+          pUVar9[-5] = 0x1eb;
+          pfVar11 = (fn_lpfnRealCEProc *)GetWindowLong(pUVar9[-2],pUVar9[-3]);
+          pUVar9[-2] = HVar4;
+          pUVar9[-3] = 0xfffc;
+          pUVar9[-4] = lpfnFakeCEProc._2_2_;
+          pUVar9[-5] = (UINT)(fn_lpfnFakeCEProc *)lpfnFakeCEProc;
+          pUVar9[-6] = 0x14f8;
+          pUVar9[-7] = 0x207;
+          lpfnRealCEProc = pfVar11;
+          SetWindowLong(pUVar9[-2],pUVar9[-3],*(long *)(pUVar9 + -5));
+          pUVar8 = pUVar9 + -1;
         }
       }
-      x = x + dx;
+      x = x + sVar3;
+      pUVar9 = pUVar8;
     }
   }
   else if (msg == WM_PAINT) {
-    hdc = BeginPaint(hwnd,&ps);
+    HVar7 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    PatBlt(hdc,0,0,rc.right,1,0x42);
-    PatBlt(hdc,0,rc.bottom + -1,rc.right,1,0x42);
+    PatBlt(HVar7,0,0,rc.right,1,0x42);
+    PatBlt(HVar7,0,rc.bottom + -1,rc.right,1,0x42);
     if (iWindowLayout == 0) {
-      PatBlt(hdc,0,0,1,rc.bottom,0x42);
+      PatBlt(HVar7,0,0,1,rc.bottom,0x42);
     }
-    DrawToolbar(hdc,&rc);
+    DrawToolbar(HVar7,&rc);
     EndPaint(hwnd,&ps);
   }
   else {
     if (msg == WM_ERASEBKGND) {
       GetClientRect(hwnd,&rc);
       FillRect(wParam,&rc,hbrButtonFace);
-      uVar8 = 1;
-      pfVar6 = lpfnRealComboProc;
-      pfVar7 = lpfnRealCEProc;
+      uVar12 = 1;
+      pfVar10 = lpfnRealComboProc;
+      pfVar11 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
     if (msg == WM_CTLCOLOR) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-      uVar8 = (ulong)hbrButtonFace;
-      pfVar6 = lpfnRealComboProc;
-      pfVar7 = lpfnRealCEProc;
+      uVar12 = (ulong)hbrButtonFace;
+      pfVar10 = lpfnRealComboProc;
+      pfVar11 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
     if (msg == WM_SETCURSOR) {
-      HVar4 = LoadCursor(0,(LPCSTR)0x7f00);
-      setcursor(HVar4);
-      uVar8 = 1;
-      pfVar6 = lpfnRealComboProc;
-      pfVar7 = lpfnRealCEProc;
+      HVar6 = LoadCursor(0,(LPCSTR)0x7f00);
+      setcursor(HVar6);
+      uVar12 = 1;
+      pfVar10 = lpfnRealComboProc;
+      pfVar11 = lpfnRealCEProc;
       goto LAB_1068_06e7;
     }
     if (msg == WM_COMMAND) {
       if ((HWND)lParam == hwndTBRadar) {
-        uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
-        if ((int)uVar8 == 8) {
+        uVar12 = __aFulshr(uVar12,pct);
+        if ((int)uVar12 == 8) {
           PostMessage(hwnd,0x5f4,0,0);
         }
       }
     }
     else if (msg == WM_MOUSEMOVE) {
       pt.x = (HWND)lParam;
-      uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
-      pt.y = (short)uVar8;
+      uVar12 = __aFulshr(uVar12,pct);
+      pt.y = (short)uVar12;
       if (hwnd != hwndTb) {
         MapWindowPoints(hwnd,hwndTb,&pt,1);
       }
       if ((pt.x != vptTbLast.x) || (pt.y != vptTbLast.y)) {
         vptTbLast.x = pt.x;
         vptTbLast.y = pt.y;
-        itb = ItbFromPpt(&pt);
-        if (itb < 0) {
-          if (itb != -3) goto LAB_1068_06de;
+        sVar3 = ItbFromPpt(&pt);
+        if (sVar3 < 0) {
+          if (sVar3 != -3) goto LAB_1068_06de;
           ids = 0x17c;
         }
         else {
-          ids = itb + 0x16a;
+          ids = sVar3 + 0x16a;
         }
         rc.left = pt.x;
-        sVar3 = DxOfBtn(itb);
+        sVar3 = DxOfBtn(sVar3);
         rc.right = sVar3 + rc.left;
         rc.top = pt.y;
         rc.bottom = 0x1c;
@@ -159,56 +257,56 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
     else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
       ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt,(RECT *)0x0);
       pt.x = (HWND)lParam;
-      uVar8 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),pct);
-      ptBtn.y = (short)uVar8;
+      uVar12 = __aFulshr(uVar12,pct);
+      ptBtn.y = (short)uVar12;
       ptBtn.x = pt.x;
       pt.y = ptBtn.y;
-      itb = ItbFromPpt(&ptBtn);
-      if (-1 < itb) {
-        fDown = FIsButtonDown(itb);
-        if ((fDown == 0) || (5 < itb)) {
-          if ((itb == 0xd) || (((itb == 0xf || (itb == 0x10)) || (itb == 8)))) {
-            ExecuteButton(itb,(uint)(fDown == 0));
+      sVar3 = ItbFromPpt(&ptBtn);
+      if (-1 < sVar3) {
+        fDown = FIsButtonDown(sVar3);
+        if ((fDown == 0) || (5 < sVar3)) {
+          if ((sVar3 == 0xd) || (((sVar3 == 0xf || (sVar3 == 0x10)) || (sVar3 == 8)))) {
+            ExecuteButton(sVar3,(uint)(fDown == 0));
           }
           else {
-            dx = DxOfBtn(itb);
+            sVar5 = DxOfBtn(sVar3);
             rc.left = ptBtn.x;
             rc.top = ptBtn.y;
-            rc.right = ptBtn.x + dx;
+            rc.right = ptBtn.x + sVar5;
             rc.bottom = ptBtn.y + 0x1c;
-            hdc = GetDC(hwnd);
-            SelectPalette(hdc,vhpal,0);
-            RealizePalette(hdc);
+            HVar7 = GetDC(hwnd);
+            SelectPalette(HVar7,vhpal,0);
+            RealizePalette(HVar7);
             SetCapture(hwnd);
             fCur = -1;
             while( true ) {
-              sVar3 = FGetMouseMove(&pt);
-              if (sVar3 == 0) break;
+              sVar5 = FGetMouseMove(&pt);
+              if (sVar5 == 0) break;
               PVar1.y = pt.y;
               PVar1.x = pt.x;
               fInside = PtInRect(&rc,PVar1);
               if (fCur != fInside) {
                 pt_00.y = ptBtn.y;
                 pt_00.x = ptBtn.x;
-                DrawBitmapButton(hdc,pt_00,itb,fDown + fInside);
+                DrawBitmapButton(HVar7,pt_00,sVar3,fDown + fInside);
                 fCur = fInside;
               }
             }
             ReleaseCapture();
             if (fInside != 0) {
-              ExecuteButton(itb,(uint)(fDown == 0));
-              fDown = FIsButtonDown(itb);
+              ExecuteButton(sVar3,(uint)(fDown == 0));
+              fDown = FIsButtonDown(sVar3);
             }
-            if (itb < 6) {
+            if (sVar3 < 6) {
               GetClientRect(hwnd,&rc);
-              DrawToolbar(hdc,&rc);
+              DrawToolbar(HVar7,&rc);
             }
             else {
               pt_01.y = ptBtn.y;
               pt_01.x = ptBtn.x;
-              DrawBitmapButton(hdc,pt_01,itb,fDown);
+              DrawBitmapButton(HVar7,pt_01,sVar3,fDown);
             }
-            ReleaseDC(hwnd,hdc);
+            ReleaseDC(hwnd,HVar7);
           }
         }
         else {
@@ -218,24 +316,24 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
     }
     else {
       if (msg != 0x5f4) {
-        uVar8 = DefWindowProc(hwnd,msg,wParam,lParam);
-        pfVar6 = lpfnRealComboProc;
-        pfVar7 = lpfnRealCEProc;
+        uVar12 = DefWindowProc(hwnd,msg,wParam,lParam);
+        pfVar10 = lpfnRealComboProc;
+        pfVar11 = lpfnRealCEProc;
         goto LAB_1068_06e7;
       }
       TerminateToolbarFocus(0);
     }
   }
 LAB_1068_06de:
-  uVar8 = 0;
-  pfVar6 = lpfnRealComboProc;
-  pfVar7 = lpfnRealCEProc;
+  uVar12 = 0;
+  pfVar10 = lpfnRealComboProc;
+  pfVar11 = lpfnRealCEProc;
 LAB_1068_06e7:
-  lpfnRealCEProc._2_2_ = (undefined2)((ulong)pfVar7 >> 0x10);
-  lpfnRealCEProc._0_2_ = (fn_lpfnRealCEProc *)pfVar7;
-  lpfnRealComboProc._2_2_ = (undefined2)((ulong)pfVar6 >> 0x10);
-  lpfnRealComboProc._0_2_ = (fn_lpfnRealComboProc *)pfVar6;
-  return uVar8;
+  lpfnRealCEProc._2_2_ = (undefined2)((ulong)pfVar11 >> 0x10);
+  lpfnRealCEProc._0_2_ = (fn_lpfnRealCEProc *)pfVar11;
+  lpfnRealComboProc._2_2_ = (undefined2)((ulong)pfVar10 >> 0x10);
+  lpfnRealComboProc._0_2_ = (fn_lpfnRealComboProc *)pfVar10;
+  return uVar12;
 }
 
 
@@ -255,21 +353,21 @@ void DrawToolbar(HDC hdc,RECT *prc)
   POINT pt_00;
   short ibtn;
   short i;
-  int pt;
+  POINT pt;
   
   SelectPalette(hdc,vhpal,0);
   RealizePalette(hdc);
-  pt = 4;
+  pt.x = 4;
   for (i = 0; i < 0x1d; i = i + 1) {
     itb = (int)*(char *)i;
     if (-1 < itb) {
       sVar1 = FIsButtonDown(itb);
       pt_00.y = 4;
-      pt_00.x = pt;
+      pt_00.x = pt.x;
       DrawBitmapButton(hdc,pt_00,(int)*(char *)i,sVar1);
     }
     sVar1 = DxOfBtn(itb);
-    pt = pt + sVar1;
+    pt.x = pt.x + sVar1;
   }
   return;
 }
@@ -495,31 +593,37 @@ void ExecuteButton(short itb,short fDown)
 
 {
   ushort uVar1;
-  short sVar2;
-  uint uVar3;
+  int iVar2;
+  short sVar3;
+  uint uVar4;
+  byte bVar5;
+  undefined1 *puVar6;
+  undefined2 uVar7;
   undefined2 unaff_SS;
   short iSel;
-  uint rgid [24];
-  short iSel__90;
-  uint rgid__88 [9];
-  short iSel__70;
-  uint rgid__68 [5];
-  short c;
-  short i;
-  short ish;
-  char *rgszScan [6];
-  ushort grbit;
-  short i__38;
-  short c__36;
-  char *rgszScan__34;
-  short i__32;
-  short c__30;
-  char *rgszScan__28 [8];
-  undefined1 pt [4];
-  ushort grbitSh;
+  uint local_8a [24];
+  int local_5a;
+  uint local_58 [9];
+  short local_46;
+  uint local_44 [5];
+  int local_3a;
+  StringId local_38;
+  int local_36;
+  char *local_34 [6];
+  undefined2 local_28;
+  StringId local_26;
+  int local_24;
+  char *local_22;
+  int local_20;
+  int local_1e;
+  char *local_1c [8];
+  undefined1 local_c [4];
+  uint local_8;
   ushort grbitNew;
   
+  puVar6 = &stack0xff70;
   gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffbf | 0x40;
+  uVar7 = 0x1068;
   switch(itb) {
   case 0:
   case 1:
@@ -531,6 +635,7 @@ void ExecuteButton(short itb,short fDown)
       return;
     }
     grbitScan = itb + (grbitScan & 0x3ff0);
+    puVar6 = &stack0xff70;
     goto LAB_1068_1644;
   case 6:
     grbitNew = 0x10;
@@ -539,43 +644,48 @@ void ExecuteButton(short itb,short fDown)
     grbitNew = 0x20;
     break;
   case 8:
-    grbit = 1;
-    c__36 = 0;
+    local_28 = 1;
+    local_24 = 0;
     if ((grbitScan & 0x40) == 0) {
       grbitScanMines = 0;
     }
-    for (i__38 = 0x4fe; sVar2 = c__36, i__38 < 0x500; i__38 = i__38 + 1) {
-      if (i__38 == 0x4fe) {
-        rgid__88[c__36 * 2] = (uint)(grbitScanMines == 0xf);
-        rgid__88[sVar2 * 2 + 1] = 0;
+    for (local_26 = idsMineFields; iVar2 = local_24, (int)local_26 < 0x500;
+        local_26 = local_26 + idsPlayerLogFileAppearsCorruptUnableLoad) {
+      if (local_26 == idsMineFields) {
+        local_58[local_24 * 2] = (uint)(grbitScanMines == 0xf);
+        local_58[iVar2 * 2 + 1] = 0;
       }
       else {
-        rgid__88[c__36 * 2] = (uint)(grbitScanMines == 0);
-        rgid__88[sVar2 * 2 + 1] = 0;
+        local_58[local_24 * 2] = (uint)(grbitScanMines == 0);
+        local_58[iVar2 * 2 + 1] = 0;
       }
-      CchGetString(i__38,(char *)szWork + 0xa0 + (i__38 + -0x4fe) * 0x1e);
-      (&rgszScan__34)[c__36] = (char *)szWork + 0xa0 + (i__38 + -0x4fe) * 0x1e;
-      c__36 = c__36 + 1;
+      CchGetString
+                (local_26,(char *)szWork + 0xa0 + (local_26 - idsMineFields) * 0x1e);
+      (&local_22)[local_24] = (char *)szWork + 0xa0 + (local_26 - idsMineFields) * 0x1e;
+      local_24 = local_24 + 1;
     }
-    rgid__88[c__36 * 2] = 0;
-    rgid__88[sVar2 * 2 + 1] = 0;
+    local_58[local_24 * 2] = 0;
+    local_58[iVar2 * 2 + 1] = 0;
     szWork[0xfa] = -1;
     szWork[0xfb] = '\0';
-    (&rgszScan__34)[c__36] = (char *)szWork + 0xfa;
-    for (i__38 = 0; c__36 = c__36 + 1, sVar2 = c__36, i__38 < 4; i__38 = i__38 + 1) {
-      rgid__88[c__36 * 2] = (uint)((1 << ((byte)i__38 & 0x1f) & grbitScanMines) != 0);
-      rgid__88[sVar2 * 2 + 1] = 0;
-      CchGetString(i__38 + idsMineFields3,(char *)szWork + i__38 * 0x1e);
-      (&rgszScan__34)[c__36] = (char *)szWork + i__38 * 0x1e;
+    (&local_22)[local_24] = (char *)szWork + 0xfa;
+    for (local_26 = 0; local_24 = local_24 + 1, iVar2 = local_24, (int)local_26 < 4;
+        local_26 = local_26 + 1) {
+      local_58[local_24 * 2] =
+           (uint)((1 << ((byte)local_26 & 0x1f) & grbitScanMines) != 0);
+      local_58[iVar2 * 2 + 1] = 0;
+      CchGetString(local_26 + idsMineFields3,(char *)szWork + local_26 * 0x1e);
+      (&local_22)[local_24] = (char *)szWork + local_26 * 0x1e;
     }
-    GetCursorPos(pt + 2);
-    ScreenToClient(hwndTb,pt + 2);
-    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,rgid__88,&rgszScan__34,-2,0);
-    if (iSel__90 == -1) {
+    GetCursorPos(local_c + 2);
+    ScreenToClient(hwndTb,local_c + 2);
+    local_5a = PopupMenu(hwndTb,local_c._2_2_,local_8,local_24,local_58,&local_22,-2,0
+                               );
+    if (local_5a == -1) {
       return;
     }
-    if (iSel__90 < 3) {
-      if (iSel__90 == 0) {
+    if (local_5a < 3) {
+      if (local_5a == 0) {
         grbitScanMines = 0xf;
       }
       else {
@@ -583,8 +693,8 @@ void ExecuteButton(short itb,short fDown)
       }
     }
     else {
-      iSel__90 = iSel__90 + -3;
-      grbitScanMines = grbitScanMines ^ 1 << ((byte)iSel__90 & 0x1f);
+      local_5a = local_5a + -3;
+      grbitScanMines = grbitScanMines ^ 1 << ((byte)local_5a & 0x1f);
     }
     if (grbitScanMines == 0) {
       grbitScan = grbitScan & 0xffbf;
@@ -592,7 +702,9 @@ void ExecuteButton(short itb,short fDown)
     else {
       grbitScan = grbitScan | 0x40;
     }
+    uVar7 = 0x14f8;
     InvalidateRect(hwndTb,(RECT *)0x0,1);
+    puVar6 = &stack0xff6e;
     goto LAB_1068_1644;
   case 9:
     grbitNew = 0x80;
@@ -607,147 +719,167 @@ void ExecuteButton(short itb,short fDown)
     grbitNew = 0x200;
     break;
   case 0xd:
-    c = 0;
-    for (i = 0x4fb; sVar2 = c, i < 0x4fe; i = i + 1) {
-      rgid[c * 2] = 0;
-      rgid[sVar2 * 2 + 1] = 0;
-      CchGetString(i,(char *)szWork + (i + -0x4fb) * 0x14);
-      rgszScan[c] = (char *)szWork + (i + -0x4fb) * 0x14;
-      c = c + 1;
+    local_3a = 0;
+    for (local_38 = idsDesigns; iVar2 = local_3a, (int)local_38 < 0x4fe;
+        local_38 = local_38 + idsPlayerLogFileAppearsCorruptUnableLoad) {
+      local_8a[local_3a * 2] = 0;
+      local_8a[iVar2 * 2 + 1] = 0;
+      CchGetString(local_38,(char *)szWork + (local_38 - idsDesigns) * 0x14);
+      local_34[local_3a] = (char *)szWork + (local_38 - idsDesigns) * 0x14;
+      local_3a = local_3a + 1;
     }
-    rgid[c * 2] = 0;
-    rgid[sVar2 * 2 + 1] = 0;
+    local_8a[local_3a * 2] = 0;
+    local_8a[iVar2 * 2 + 1] = 0;
     szWork[200] = -1;
     szWork[0xc9] = '\0';
-    rgszScan[c] = (char *)szWork + 200;
-    grbitSh = 1;
-    c = c + 1;
-    for (ish = 0; sVar2 = c, ish < 0x10; ish = ish + 1) {
-      if ((*(uint *)((int)&rgshdef[0].wFlags + ish * 0x93) >> 9 & 1) == 0) {
-        rgid[c * 2] = (uint)((grbitSh & grbitScanShip) != 0);
-        rgid[sVar2 * 2 + 1] = 0;
-        rgszScan[c] = (char *)(ish * 0x93 + 0x3f08);
-        c = c + 1;
+    local_34[local_3a] = (char *)szWork + 200;
+    local_8 = 1;
+    local_3a = local_3a + 1;
+    for (local_36 = 0; iVar2 = local_3a, local_36 < 0x10; local_36 = local_36 + 1) {
+      if ((*(uint *)((int)&rgshdef[0].wFlags + local_36 * 0x93) >> 9 & 1) == 0) {
+        local_8a[local_3a * 2] = (uint)((local_8 & grbitScanShip) != 0);
+        local_8a[iVar2 * 2 + 1] = 0;
+        local_34[local_3a] = (char *)(local_36 * 0x93 + 0x3f08);
+        local_3a = local_3a + 1;
       }
-      grbitSh = grbitSh << 1;
+      local_8 = local_8 << 1;
     }
-    GetCursorPos(pt);
-    ScreenToClient(hwndTb,pt);
-    sVar2 = PopupMenu(hwndTb,pt._0_2_,pt._2_2_,c,rgid,rgszScan,-2,0);
-    if (sVar2 == -1) {
+    GetCursorPos(local_c);
+    ScreenToClient(hwndTb,local_c);
+    uVar7 = 0x10c0;
+    sVar3 = PopupMenu(hwndTb,local_c._0_2_,local_c._2_2_,local_3a,local_8a,local_34,-2
+                             ,0);
+    puVar6 = &stack0xff6c;
+    if (sVar3 == -1) {
       return;
     }
-    if (sVar2 < 4) {
-      if (sVar2 == 0) {
+    if (sVar3 < 4) {
+      if (sVar3 == 0) {
         grbitScanShip = 0xffff;
       }
-      else if (sVar2 == 1) {
+      else if (sVar3 == 1) {
         grbitScanShip = grbitScanShip ^ 0xffff;
       }
       else {
         grbitScanShip = 0;
       }
+      puVar6 = &stack0xff6c;
       uVar1 = grbitScanShip;
       if ((grbitScan & 0x200) == 0) goto joined_r0x10681246;
     }
     else {
-      iSel = sVar2 + -4;
-      ish = 0;
-      while ((ish < 0x10 &&
-             (((*(uint *)((int)&rgshdef[0].wFlags + ish * 0x93) >> 9 & 1) != 0 ||
+      iSel = sVar3 + -4;
+      local_36 = 0;
+      while ((local_36 < 0x10 &&
+             (((*(uint *)((int)&rgshdef[0].wFlags + local_36 * 0x93) >> 9 & 1) != 0 ||
               (iSel = iSel + -1, -1 < iSel))))) {
-        ish = ish + 1;
+        local_36 = local_36 + 1;
       }
-      grbitScanShip = grbitScanShip ^ 1 << ((byte)ish & 0x1f);
+      grbitScanShip = grbitScanShip ^ 1 << ((byte)local_36 & 0x1f);
       if ((grbitScan & 0x200) == 0) {
-        uVar1 = 1 << ((byte)ish & 0x1f) & grbitScanShip;
+        uVar1 = 1 << ((byte)local_36 & 0x1f) & grbitScanShip;
 joined_r0x10681246:
+        puVar6 = &stack0xff6c;
         if (uVar1 != 0) {
           grbitScan = grbitScan | 0x200;
+          uVar7 = 0x14f8;
           InvalidateRect(hwndTb,(RECT *)0x0,1);
+          puVar6 = &stack0xff6e;
         }
       }
     }
-    uVar3 = grbitScan & 0x200;
+    uVar4 = grbitScan & 0x200;
     goto joined_r0x1068150e;
   case 0xe:
     grbitNew = 0x800;
     break;
   case 0xf:
-    grbit = 1;
-    c__36 = 0;
-    for (i__38 = 0x4fb; sVar2 = c__36, i__38 < 0x4fe; i__38 = i__38 + 1) {
-      rgid__88[c__36 * 2] = 0;
-      rgid__88[sVar2 * 2 + 1] = 0;
-      CchGetString(i__38,(char *)szWork + 200 + (i__38 + -0x4fb) * 0x19);
-      (&rgszScan__34)[c__36] = (char *)szWork + 200 + (i__38 + -0x4fb) * 0x19;
-      c__36 = c__36 + 1;
+    local_28 = 1;
+    local_24 = 0;
+    for (local_26 = idsDesigns; iVar2 = local_24, (int)local_26 < 0x4fe;
+        local_26 = local_26 + idsPlayerLogFileAppearsCorruptUnableLoad) {
+      local_58[local_24 * 2] = 0;
+      local_58[iVar2 * 2 + 1] = 0;
+      CchGetString
+                (local_26,(char *)szWork + 200 + (local_26 - idsDesigns) * 0x19);
+      (&local_22)[local_24] = (char *)szWork + 200 + (local_26 - idsDesigns) * 0x19;
+      local_24 = local_24 + 1;
     }
-    rgid__88[c__36 * 2] = 0;
-    rgid__88[sVar2 * 2 + 1] = 0;
+    local_58[local_24 * 2] = 0;
+    local_58[iVar2 * 2 + 1] = 0;
     szWork[300] = -1;
     szWork[0x12d] = '\0';
-    (&rgszScan__34)[c__36] = (char *)szWork + 300;
-    for (i__38 = 0; c__36 = c__36 + 1, sVar2 = c__36, i__38 < 8; i__38 = i__38 + 1) {
-      rgid__88[c__36 * 2] = (uint)((1 << ((byte)i__38 & 0x1f) & grbitScanEShip) != 0);
-      rgid__88[sVar2 * 2 + 1] = 0;
-      CchGetString(i__38 + idsColony,(char *)szWork + i__38 * 0x19);
-      (&rgszScan__34)[c__36] = (char *)szWork + i__38 * 0x19;
+    (&local_22)[local_24] = (char *)szWork + 300;
+    for (local_26 = 0; local_24 = local_24 + 1, iVar2 = local_24, (int)local_26 < 8;
+        local_26 = local_26 + 1) {
+      local_58[local_24 * 2] =
+           (uint)((1 << ((byte)local_26 & 0x1f) & grbitScanEShip) != 0);
+      local_58[iVar2 * 2 + 1] = 0;
+      CchGetString(local_26 + idsColony,(char *)szWork + local_26 * 0x19);
+      (&local_22)[local_24] = (char *)szWork + local_26 * 0x19;
     }
-    GetCursorPos(pt + 2);
-    ScreenToClient(hwndTb,pt + 2);
-    iSel__90 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__36,rgid__88,&rgszScan__34,-2,0);
-    if (iSel__90 == -1) {
+    GetCursorPos(local_c + 2);
+    ScreenToClient(hwndTb,local_c + 2);
+    uVar7 = 0x10c0;
+    sVar3 = PopupMenu(hwndTb,local_c._2_2_,local_8,local_24,local_58,&local_22,-2,0);
+    puVar6 = &stack0xff6c;
+    local_5a = sVar3;
+    if (sVar3 == -1) {
       return;
     }
-    if (iSel__90 < 4) {
-      if (iSel__90 == 0) {
+    if (sVar3 < 4) {
+      if (sVar3 == 0) {
         grbitScanEShip = 0xff;
       }
-      else if (iSel__90 == 1) {
+      else if (sVar3 == 1) {
         grbitScanEShip = grbitScanEShip ^ 0xff;
       }
       else {
         grbitScanEShip = 0;
       }
+      puVar6 = &stack0xff6c;
       uVar1 = grbitScanEShip;
       if ((grbitScan & 0x800) == 0) goto joined_r0x106814ad;
     }
     else {
-      iSel__90 = iSel__90 + -4;
-      grbitScanEShip = grbitScanEShip ^ 1 << ((byte)iSel__90 & 0x1f);
+      local_5a = sVar3 + -4;
+      bVar5 = (byte)(sVar3 + -4);
+      grbitScanEShip = grbitScanEShip ^ 1 << (bVar5 & 0x1f);
       if ((grbitScan & 0x800) == 0) {
-        uVar1 = 1 << ((byte)iSel__90 & 0x1f) & grbitScanEShip;
+        uVar1 = 1 << (bVar5 & 0x1f) & grbitScanEShip;
 joined_r0x106814ad:
+        puVar6 = &stack0xff6c;
         if (uVar1 != 0) {
           grbitScan = grbitScan | 0x800;
+          uVar7 = 0x14f8;
           InvalidateRect(hwndTb,(RECT *)0x0,1);
+          puVar6 = &stack0xff6e;
         }
       }
     }
-    uVar3 = grbitScan & 0x800;
+    uVar4 = grbitScan & 0x800;
 joined_r0x1068150e:
-    if (uVar3 == 0) {
+    if (uVar4 == 0) {
       return;
     }
     goto LAB_1068_1644;
   case 0x10:
-    c__30 = 0;
-    for (i__32 = 0; sVar2 = c__30, i__32 < 9; i__32 = i__32 + 1) {
-      rgid__68[c__30 * 2] = (uint)(iScanZoom + 4 == i__32);
-      rgid__68[sVar2 * 2 + 1] = 0;
-      _wsprintf((char *)szWork + i__32 * 8,PCTDPCTPCT,
-                *(undefined2 *)(i__32 * 2 + vrgpctZoom));
-      rgszScan__28[c__30] = (char *)szWork + i__32 * 8;
-      c__30 = c__30 + 1;
+    local_1e = 0;
+    for (local_20 = 0; iVar2 = local_1e, local_20 < 9; local_20 = local_20 + 1) {
+      local_44[local_1e * 2] = (uint)(iScanZoom + 4 == local_20);
+      local_44[iVar2 * 2 + 1] = 0;
+      _wsprintf((char *)szWork + local_20 * 8,PCTDPCTPCT);
+      local_1c[local_1e] = (char *)szWork + local_20 * 8;
+      local_1e = local_1e + 1;
     }
-    GetCursorPos(pt + 2);
-    ScreenToClient(hwndTb,pt + 2);
-    iSel__70 = PopupMenu(hwndTb,pt._2_2_,grbitSh,c__30,rgid__68,rgszScan__28,-2,0);
-    if (iSel__70 == -1) {
+    GetCursorPos(local_c + 2);
+    ScreenToClient(hwndTb,local_c + 2);
+    local_46 = PopupMenu(hwndTb,local_c._2_2_,local_8,local_1e,local_44,local_1c,-2,0)
+    ;
+    if (local_46 == -1) {
       return;
     }
-    CommandHandler(hwndFrame,iSel__70 + 0xf3d);
+    CommandHandler(hwndFrame,local_46 + 0xf3d);
     return;
   case 0x11:
     grbitNew = 0x1000;
@@ -757,15 +889,26 @@ joined_r0x1068150e:
   }
   if (fDown == 0) {
     grbitScan = grbitScan & ~grbitNew;
+    puVar6 = &stack0xff70;
   }
   else {
     grbitScan = grbitScan | grbitNew;
   }
 LAB_1068_1644:
   if (itb != 6) {
-    InvalidateRect(hwndScanner,(RECT *)0x0,1);
+    *(HWND *)(puVar6 + -2) = hwndScanner;
+    *(undefined2 *)(puVar6 + -4) = 0;
+    *(undefined2 *)(puVar6 + -6) = 0;
+    *(undefined2 *)(puVar6 + -8) = 1;
+    *(undefined2 *)(puVar6 + -10) = uVar7;
+    uVar7 = 0x14f8;
+    *(char **)(puVar6 + -0xc) = (char *)s__s_pla_1120_165c + 6;
+    InvalidateRect(*(HWND *)(puVar6 + -2),*(RECT **)(puVar6 + -6),*(BOOL *)(puVar6 + -8));
+    puVar6 = puVar6 + 2;
   }
   if (((uint)gd.grBits >> 0xb & 1) != 0) {
+    *(undefined2 *)(puVar6 + -2) = uVar7;
+    *(undefined2 *)(puVar6 + -4) = 0x167a;
     AdvanceTutor();
   }
 switchD_1068_161b_default:
@@ -784,22 +927,32 @@ switchD_1068_161b_default:
 void TerminateToolbarFocus(short fCancel)
 
 {
+  undefined1 *puVar1;
+  undefined1 *puVar2;
+  undefined1 *puVar3;
+  undefined2 uVar4;
+  undefined2 unaff_SS;
   char *psz;
   short pct;
   
+  uVar4 = 0x1068;
   gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffbf | 0x40;
   if (fCancel == 0) {
+    uVar4 = 0x14f8;
     GetWindowText(hwndTBRadar,szWork,0x14);
+    puVar1 = &stack0xffea;
     pct = 0;
     for (psz = (char *)szWork; ('/' < *psz && (*psz < ':')); psz = psz + 1) {
       pct = pct * 10 + *psz + -0x30;
     }
-    if ((*psz != '\0') && (*psz != '%')) {
+    if ((*psz != '\0') && (puVar1 = &stack0xffea, *psz != '%')) {
       pct = 0;
+      puVar1 = &stack0xffea;
     }
   }
   else {
     pct = vpctRadarView;
+    puVar1 = &stack0xfff2;
   }
   if (pct < 2) {
     pct = 2;
@@ -807,18 +960,57 @@ void TerminateToolbarFocus(short fCancel)
   else if (100 < pct) {
     pct = 100;
   }
-  SendMessage(hwndTBRadar,0x40e,(100 - pct) / 10,0);
-  _wsprintf(szWork,PCTDPCTPCT,pct);
-  SetWindowText(hwndTBRadar,szWork);
+  *(HWND *)(puVar1 + -2) = hwndTBRadar;
+  *(undefined2 *)(puVar1 + -4) = 0x40e;
+  *(int *)(puVar1 + -6) = (100 - pct) / 10;
+  *(undefined2 *)(puVar1 + -8) = 0;
+  *(undefined2 *)(puVar1 + -10) = 0;
+  *(undefined2 *)(puVar1 + -0xc) = uVar4;
+  *(undefined2 *)(puVar1 + -0xe) = 0x1764;
+  SendMessage(*(HWND *)(puVar1 + -2),*(UINT *)(puVar1 + -4),*(WPARAM *)(puVar1 + -6),
+              *(LPARAM *)(puVar1 + -10));
+  *(short *)(puVar1 + -2) = pct;
+  *(undefined2 *)(puVar1 + -4) = 0x1120;
+  *(char **)(puVar1 + -6) = PCTDPCTPCT;
+  *(undefined2 *)(puVar1 + -8) = 0x1120;
+  *(char **)(puVar1 + -10) = (char *)szWork;
+  *(undefined2 *)(puVar1 + -0xc) = 0x14f8;
+  *(undefined2 *)(puVar1 + -0xe) = 0x177a;
+  _wsprintf(*(char **)(puVar1 + -10),*(char **)(puVar1 + -6));
+  *(HWND *)(puVar1 + -2) = hwndTBRadar;
+  *(undefined2 *)(puVar1 + -4) = 0x1120;
+  *(char **)(puVar1 + -6) = (char *)szWork;
+  *(undefined2 *)(puVar1 + -8) = 0x14f8;
+  *(undefined2 *)(puVar1 + -10) = 0x178d;
+  SetWindowText(*(HWND *)(puVar1 + -2),*(LPCSTR *)(puVar1 + -6));
+  puVar2 = puVar1 + -6;
+  puVar3 = puVar1 + -6;
   if (pct != vpctRadarView) {
     vpctRadarView = pct;
     if ((grbitScan & 0x20) == 0) {
-      InvalidateRect(hwndTb,(RECT *)0x0,1);
+      *(HWND *)(puVar1 + -8) = hwndTb;
+      *(undefined2 *)(puVar1 + -10) = 0;
+      *(undefined2 *)(puVar1 + -0xc) = 0;
+      *(undefined2 *)(puVar1 + -0xe) = 1;
+      *(undefined2 *)(puVar1 + -0x10) = 0x14f8;
+      *(undefined2 *)(puVar1 + -0x12) = 0x17c1;
+      InvalidateRect(*(HWND *)(puVar1 + -8),*(RECT **)(puVar1 + -0xc),*(BOOL *)(puVar1 + -0xe));
+      puVar2 = puVar1 + -4;
     }
     grbitScan = grbitScan | 0x20;
-    InvalidateRect(hwndScanner,(RECT *)0x0,1);
+    *(HWND *)(puVar2 + -2) = hwndScanner;
+    *(undefined2 *)(puVar2 + -4) = 0;
+    *(undefined2 *)(puVar2 + -6) = 0;
+    *(undefined2 *)(puVar2 + -8) = 1;
+    *(undefined2 *)(puVar2 + -10) = 0x14f8;
+    *(undefined2 *)(puVar2 + -0xc) = 0x17db;
+    InvalidateRect(*(HWND *)(puVar2 + -2),*(RECT **)(puVar2 + -6),*(BOOL *)(puVar2 + -8));
+    puVar3 = puVar2 + 2;
   }
-  SetFocus(hwndFrame);
+  *(HWND *)(puVar3 + -2) = hwndFrame;
+  *(undefined2 *)(puVar3 + -4) = 0x14f8;
+  *(undefined2 *)(puVar3 + -6) = 0x17e4;
+  SetFocus(*(HWND *)(puVar3 + -2));
   return;
 }
 
@@ -837,76 +1029,177 @@ void ShowTooltip(StringId ids,RECT *prc)
 
 {
   bool bVar1;
-  BOOL BVar2;
-  short sVar3;
-  HDC HVar4;
-  HGDIOBJ HVar5;
-  int iVar6;
-  ushort wParam;
+  undefined1 *puVar2;
+  BOOL BVar3;
+  short sVar4;
+  HDC HVar5;
+  HGDIOBJ HVar6;
   int iVar7;
-  DWORD DVar8;
+  int iVar8;
+  undefined1 *puVar9;
+  undefined1 *puVar10;
+  undefined2 uVar11;
+  undefined2 unaff_SS;
+  DWORD DVar12;
   short fShowNow;
   short cch;
   short fVisCur;
   HFONT hfontSav;
   HDC hdc;
   
-  if ((hwndTooltip == 0) || (BVar2 = IsWindowVisible(hwndTooltip), BVar2 == 0)) {
+  uVar11 = 0x1068;
+  puVar2 = &stack0xffea;
+  if (hwndTooltip == 0) {
+LAB_1068_1814:
+    puVar9 = puVar2;
     bVar1 = false;
   }
   else {
+    uVar11 = 0x14f8;
+    BVar3 = IsWindowVisible(hwndTooltip);
+    puVar9 = &stack0xffe8;
+    puVar2 = &stack0xffe8;
+    if (BVar3 == 0) goto LAB_1068_1814;
     bVar1 = true;
   }
   if (((int)ids < 0) || (prc == (RECT *)0x0)) {
     if (hwndTooltip != 0) {
-      DestroyWindow(hwndTooltip);
+      *(HWND *)(puVar9 + -2) = hwndTooltip;
+      *(undefined2 *)(puVar9 + -4) = uVar11;
+      uVar11 = 0x14f8;
+      *(undefined2 *)(puVar9 + -6) = 0x183f;
+      DestroyWindow(*(HWND *)(puVar9 + -2));
     }
-    DVar8 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
+    DVar12 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
     if (bVar1) {
-      DVar8 = GetTickCount();
+      *(undefined2 *)(puVar9 + -2) = uVar11;
+      *(undefined2 *)(puVar9 + -4) = 0x184d;
+      DVar12 = GetTickCount();
     }
   }
   else {
     if (ids == vidsTooltip) {
-      BVar2 = EqualRect(prc,&vrcTooltip);
-      DVar8 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
-      if (BVar2 != 0) goto LAB_1068_19dd;
+      *(undefined2 *)(puVar9 + -2) = 0x1120;
+      *(RECT **)(puVar9 + -4) = prc;
+      *(undefined2 *)(puVar9 + -6) = 0x1120;
+      *(RECT **)(puVar9 + -8) = (RECT *)&vrcTooltip;
+      *(undefined2 *)(puVar9 + -10) = uVar11;
+      uVar11 = 0x14f8;
+      *(undefined2 *)(puVar9 + -0xc) = 0x1875;
+      BVar3 = EqualRect(*(RECT **)(puVar9 + -4),*(RECT **)(puVar9 + -8));
+      DVar12 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
+      if (BVar3 != 0) goto LAB_1068_19dd;
     }
     vidsTooltip = ids;
-    sVar3 = CchGetString(ids,(char *)szWork);
-    vrcTooltip.left = prc->left;
-    vrcTooltip.top = prc->top;
-    vrcTooltip.right = prc->right;
-    vrcTooltip.bottom = prc->bottom;
-    HVar4 = GetDC(0);
-    HVar5 = SelectObject(HVar4,rghfontArial8[0]);
-    DVar8 = GetTextExtent(HVar4,szWork,sVar3);
-    dxTip = (short)DVar8;
-    SelectObject(HVar4,HVar5);
-    ReleaseDC(0,HVar4);
+    *(char **)(puVar9 + -2) = (char *)szWork;
+    *(StringId *)(puVar9 + -4) = ids;
+    *(undefined2 *)(puVar9 + -6) = uVar11;
+    *(undefined2 *)(puVar9 + -8) = 0x1893;
+    sVar4 = CchGetString(*(StringId *)(puVar9 + -4),*(char **)(puVar9 + -2));
+    *(undefined2 *)(puVar9 + -2) = 0x1120;
+    uVar11 = *(undefined2 *)(puVar9 + -2);
+    ((RECT *)&vrcTooltip)->left = prc->left;
+    *(short *)&vrcTooltip.top = prc->top;
+    *(short *)&vrcTooltip.right = prc->right;
+    *(short *)&vrcTooltip.bottom = prc->bottom;
+    *(undefined2 *)(puVar9 + -2) = 0;
+    *(undefined2 *)(puVar9 + -4) = 0x1040;
+    *(undefined2 *)(puVar9 + -6) = 0x18b1;
+    HVar5 = GetDC(*(HWND *)(puVar9 + -2));
+    *(HDC *)(puVar9 + -2) = HVar5;
+    *(ushort *)(puVar9 + -4) = rghfontArial8[0];
+    *(undefined2 *)(puVar9 + -6) = 0x14f8;
+    *(undefined2 *)(puVar9 + -8) = 0x18c0;
+    HVar6 = SelectObject(*(HDC *)(puVar9 + -2),*(HGDIOBJ *)(puVar9 + -4));
+    *(HDC *)(puVar9 + -2) = HVar5;
+    *(undefined2 *)(puVar9 + -4) = 0x1120;
+    *(char **)(puVar9 + -6) = (char *)szWork;
+    *(short *)(puVar9 + -8) = sVar4;
+    *(undefined2 *)(puVar9 + -10) = 0x14f8;
+    *(undefined2 *)(puVar9 + -0xc) = 0x18d5;
+    DVar12 = GetTextExtent(*(HDC *)(puVar9 + -2),*(LPCSTR *)(puVar9 + -6),*(short *)(puVar9 + -8));
+    dxTip = (short)DVar12;
+    *(HDC *)(puVar9 + -2) = HVar5;
+    *(HGDIOBJ *)(puVar9 + -4) = HVar6;
+    *(undefined2 *)(puVar9 + -6) = 0x14f8;
+    *(undefined2 *)(puVar9 + -8) = 0x18e3;
+    SelectObject(*(HDC *)(puVar9 + -2),*(HGDIOBJ *)(puVar9 + -4));
+    *(undefined2 *)(puVar9 + -2) = 0;
+    *(HDC *)(puVar9 + -4) = HVar5;
+    *(undefined2 *)(puVar9 + -6) = 0x14f8;
+    *(undefined2 *)(puVar9 + -8) = 0x18ef;
+    ReleaseDC(*(HWND *)(puVar9 + -2),*(HDC *)(puVar9 + -4));
     if (hwndTooltip == 0) {
-      CreateWindow(szTooltip,(LPCSTR)0x0,0x80000000,100,100,dxTip + 6,
-                   dyArial8 + 6,hwndTb,0,hInst,(void *)0x0);
+      *(undefined2 *)(puVar9 + -2) = 0x1120;
+      *(undefined2 *)(puVar9 + -4) = 0x24a;
+      *(undefined2 *)(puVar9 + -6) = 0;
+      *(undefined2 *)(puVar9 + -8) = 0;
+      *(undefined2 *)(puVar9 + -10) = 0x8000;
+      *(undefined2 *)(puVar9 + -0xc) = 0;
+      *(undefined2 *)(puVar9 + -0xe) = 100;
+      *(undefined2 *)(puVar9 + -0x10) = 100;
+      *(short *)(puVar9 + -0x12) = dxTip + 6;
+      *(short *)(puVar9 + -0x14) = dyArial8 + 6;
+      *(HWND *)(puVar9 + -0x16) = hwndTb;
+      *(undefined2 *)(puVar9 + -0x18) = 0;
+      *(HINSTANCE *)(puVar9 + -0x1a) = hInst;
+      *(undefined2 *)(puVar9 + -0x1c) = 0;
+      *(undefined2 *)(puVar9 + -0x1e) = 0;
+      *(undefined2 *)(puVar9 + -0x20) = 0x14f8;
+      *(undefined2 *)(puVar9 + -0x22) = 0x193f;
+      CreateWindow(*(LPCSTR *)(puVar9 + -4),*(LPCSTR *)(puVar9 + -8),*(DWORD *)(puVar9 + -0xc),
+                   *(short *)(puVar9 + -0xe),*(short *)(puVar9 + -0x10),*(short *)(puVar9 + -0x12),
+                   *(short *)(puVar9 + -0x14),*(HWND *)(puVar9 + -0x16),*(HMENU *)(puVar9 + -0x18),
+                   *(HINSTANCE *)(puVar9 + -0x1a),*(void **)(puVar9 + -0x1e));
+      puVar10 = puVar9 + 4;
     }
     else {
-      InvalidateRect(hwndTooltip,(RECT *)0x0,1);
+      *(HWND *)(puVar9 + -2) = hwndTooltip;
+      *(undefined2 *)(puVar9 + -4) = 0;
+      *(undefined2 *)(puVar9 + -6) = 0;
+      *(undefined2 *)(puVar9 + -8) = 1;
+      *(undefined2 *)(puVar9 + -10) = 0x14f8;
+      *(undefined2 *)(puVar9 + -0xc) = 0x1957;
+      InvalidateRect(*(HWND *)(puVar9 + -2),*(RECT **)(puVar9 + -6),*(BOOL *)(puVar9 + -8));
+      puVar10 = puVar9 + 2;
     }
-    SetWindowPos(hwndTooltip,0xffff,0,0,dxTip + 6,dyArial8 + 6,0x216);
-    iVar6 = (uint)vtickTooltipLast + 400;
-    iVar7 = vtickTooltipLast._2_2_ + (uint)(0xfe6f < (uint)vtickTooltipLast);
-    DVar8 = GetTickCount();
-    if ((DVar8 <= CONCAT22(iVar7,iVar6)) || (bVar1)) {
-      wParam = 1;
+    *(HWND *)(puVar10 + -2) = hwndTooltip;
+    *(undefined2 *)(puVar10 + -4) = 0xffff;
+    *(undefined2 *)(puVar10 + -6) = 0;
+    *(undefined2 *)(puVar10 + -8) = 0;
+    *(short *)(puVar10 + -10) = dxTip + 6;
+    *(short *)(puVar10 + -0xc) = dyArial8 + 6;
+    *(undefined2 *)(puVar10 + -0xe) = 0x216;
+    *(undefined2 *)(puVar10 + -0x10) = 0x14f8;
+    *(undefined2 *)(puVar10 + -0x12) = 0x197e;
+    SetWindowPos(*(HWND *)(puVar10 + -2),*(HWND *)(puVar10 + -4),*(short *)(puVar10 + -6),
+                 *(short *)(puVar10 + -8),*(short *)(puVar10 + -10),*(short *)(puVar10 + -0xc),
+                 *(UINT *)(puVar10 + -0xe));
+    iVar7 = (uint)vtickTooltipLast + 400;
+    iVar8 = vtickTooltipLast._2_2_ + (uint)(0xfe6f < (uint)vtickTooltipLast);
+    *(undefined2 *)(puVar10 + -2) = 0x14f8;
+    *(undefined2 *)(puVar10 + -4) = 0x1996;
+    DVar12 = GetTickCount();
+    if ((DVar12 <= CONCAT22(iVar8,iVar7)) || (bVar1)) {
+      uVar11 = 1;
     }
     else {
-      wParam = 0;
+      uVar11 = 0;
     }
-    TooltipWndProc(hwndTooltip,0x5f3,wParam,0);
-    DVar8 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
+    *(HWND *)(puVar10 + -2) = hwndTooltip;
+    *(undefined2 *)(puVar10 + -4) = 0x5f3;
+    *(undefined2 *)(puVar10 + -6) = uVar11;
+    *(undefined2 *)(puVar10 + -8) = 0;
+    *(undefined2 *)(puVar10 + -10) = 0;
+    *(undefined2 *)(puVar10 + -0xc) = 0x14f8;
+    *(undefined2 *)(puVar10 + -0xe) = 0x19dd;
+    TooltipWndProc(*(HWND *)(puVar10 + -2),*(WMType *)(puVar10 + -4),*(ushort *)(puVar10 + -6),
+                   *(long *)(puVar10 + -10));
+    DVar12 = CONCAT22(vtickTooltipLast._2_2_,(uint)vtickTooltipLast);
   }
 LAB_1068_19dd:
-  vtickTooltipLast._2_2_ = (int)(DVar8 >> 0x10);
-  vtickTooltipLast._0_2_ = (uint)DVar8;
+  vtickTooltipLast._2_2_ = (int)(DVar12 >> 0x10);
+  vtickTooltipLast._0_2_ = (uint)DVar12;
   return;
 }
 
@@ -924,16 +1217,18 @@ LAB_1068_19dd:
 long TooltipWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
-  POINT PVar1;
-  POINT PVar2;
-  ulong uVar3;
-  ulong uVar4;
-  BOOL BVar5;
-  UINT UVar6;
-  short sVar7;
+  ulong uVar1;
+  ulong uVar2;
+  BOOL BVar3;
+  HDC HVar4;
+  UINT UVar5;
+  short sVar6;
+  undefined1 *puVar7;
+  undefined1 *puVar8;
+  undefined2 uVar9;
   undefined2 unaff_SS;
-  LRESULT LVar8;
-  undefined1 uVar9;
+  LRESULT LVar10;
+  POINT PVar11;
   short cch;
   short bkSav;
   RECT rc;
@@ -941,6 +1236,8 @@ long TooltipWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   POINT pt;
   HDC hdc;
   
+  uVar9 = 0x1068;
+  puVar7 = &stack0xffc6;
   if (msg == WM_CREATE) {
     hwndTooltip = hwnd;
   }
@@ -954,35 +1251,35 @@ long TooltipWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   }
   else {
     if (msg == WM_PAINT) {
-      hdc = BeginPaint(hwnd,&ps);
+      HVar4 = BeginPaint(hwnd,&ps);
       GetClientRect(hwnd,&rc);
-      FrameRect(hdc,&rc,hbrWindowFrame);
-      SelectObject(hdc,rghfontArial8[0]);
-      UVar6 = CchGetString(vidsTooltip,(char *)szWork);
-      sVar7 = SetBkMode(hdc,1);
-      SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
-      ExtTextOut(hdc,3,3,0,(RECT *)0x0,szWork,UVar6,(short *)0x0);
-      SetBkMode(hdc,sVar7);
+      FrameRect(HVar4,&rc,hbrWindowFrame);
+      SelectObject(HVar4,rghfontArial8[0]);
+      UVar5 = CchGetString(vidsTooltip,(char *)szWork);
+      sVar6 = SetBkMode(HVar4,1);
+      SetTextColor(HVar4,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
+      ExtTextOut(HVar4,3,3,0,(RECT *)0x0,szWork,UVar5,(short *)0x0);
+      SetBkMode(HVar4,sVar6);
       EndPaint(hwnd,&ps);
-      LVar8 = 0;
-      uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-      uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+      LVar10 = 0;
+      uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+      uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
       goto LAB_1068_1d6a;
     }
     if (msg == WM_ERASEBKGND) {
       GetClientRect(hwnd,&rc);
       FillRect(wParam,&rc,hbrTooltip);
-      LVar8 = 1;
-      uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-      uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+      LVar10 = 1;
+      uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+      uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
       goto LAB_1068_1d6a;
     }
     if (msg != WM_TIMER) {
       if (((msg == WM_MOUSEMOVE) || (msg == WM_LBUTTONDOWN)) || (msg == WM_LBUTTONDBLCLK)) {
         DestroyWindow(hwnd);
-        uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
-        uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-        LVar8 = 0;
+        uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+        uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+        LVar10 = 0;
         goto LAB_1068_1d6a;
       }
       if (msg != 0x5f3) goto LAB_1068_1d53;
@@ -990,87 +1287,143 @@ long TooltipWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
         if (vidTimerTooltip != -1) {
           KillTimer(hwnd,vidTimerTooltip);
         }
-        UVar6 = SetTimer(0x39e,700,0,0);
-        uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
-        uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-        if (UVar6 == 0) {
+        UVar5 = SetTimer(0x39e,700,0,0);
+        uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+        uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+        if (UVar5 == 0) {
           vidTimerTooltip = -1;
         }
         else {
           vidTimerTooltip = 0x39e;
         }
-        LVar8 = 0;
+        LVar10 = 0;
         goto LAB_1068_1d6a;
       }
       wParam = 0x39e;
     }
     if (wParam == 0x39e) {
-      if ((msg == WM_TIMER) && (BVar5 = IsWindowVisible(hwnd), BVar5 != 0)) {
+      if (msg == WM_TIMER) {
+        uVar9 = 0x14f8;
+        BVar3 = IsWindowVisible(hwnd);
+        puVar7 = &stack0xffc4;
+        if (BVar3 == 0) goto LAB_1068_1abb;
         vtickTooltipLast = GetTickCount();
         GetCursorPos(&pt);
-        PVar2.y = pt.y;
-        PVar2.x = pt.x;
-        BVar5 = PtInRect(&vrcTooltip,PVar2);
-        uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+        PVar11.y = pt.y;
+        PVar11.x = pt.x;
+        BVar3 = PtInRect(&vrcTooltip,PVar11);
+        uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+        puVar8 = &stack0xffc0;
         vtickTooltip1stVis =
              CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
-        if ((BVar5 == 0) ||
-           (vtickTooltip1stVis =
-                 CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis),
+        if ((BVar3 == 0) ||
+           (puVar8 = &stack0xffc0,
+           vtickTooltip1stVis =
+                CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis),
            CONCAT22(vtickTooltip1stVis._2_2_ +
                     (uint)(0xd8ef < (uint)vtickTooltip1stVis),
                     (uint)vtickTooltip1stVis + 10000) < vtickTooltipLast))
         goto TB_LKillTip;
       }
       else {
+LAB_1068_1abb:
+        *(undefined2 *)(puVar7 + -2) = uVar9;
+        *(undefined2 *)(puVar7 + -4) = 0x1ac0;
         vtickTooltip1stVis = GetTickCount();
-        GetCursorPos(&pt);
-        PVar1.y = pt.y;
-        PVar1.x = pt.x;
-        BVar5 = PtInRect(&vrcTooltip,PVar1);
-        if (BVar5 != 0) {
-          uVar9 = (undefined1)((uint)unaff_SS >> 8);
-          ScreenToClient(hwndFrame,(POINT *)CONCAT13(uVar9,CONCAT12((char)unaff_SS,&pt)));
+        *(undefined2 *)(puVar7 + -2) = unaff_SS;
+        *(POINT **)(puVar7 + -4) = &pt;
+        *(undefined2 *)(puVar7 + -6) = 0x14f8;
+        *(undefined2 *)(puVar7 + -8) = 0x1ad3;
+        GetCursorPos(*(POINT **)(puVar7 + -4));
+        *(undefined2 *)(puVar7 + -6) = 0x1120;
+        *(RECT **)(puVar7 + -8) = (RECT *)&vrcTooltip;
+        *(short *)(puVar7 + -10) = pt.y;
+        *(short *)(puVar7 + -0xc) = pt.x;
+        *(undefined2 *)(puVar7 + -0xe) = 0x14f8;
+        *(undefined2 *)(puVar7 + -0x10) = 0x1ae5;
+        BVar3 = PtInRect(*(RECT **)(puVar7 + -8),*(puVar7 + -0xc));
+        puVar8 = puVar7 + -4;
+        if (BVar3 != 0) {
+          *(HWND *)(puVar7 + -6) = hwndFrame;
+          *(undefined2 *)(puVar7 + -8) = unaff_SS;
+          *(POINT **)(puVar7 + -10) = &pt;
+          *(undefined2 *)(puVar7 + -0xc) = 0x14f8;
+          *(undefined2 *)(puVar7 + -0xe) = 0x1b00;
+          ScreenToClient(*(HWND *)(puVar7 + -6),*(POINT **)(puVar7 + -10));
           if (vfs.dx < pt.x + dxTip) {
             pt.x = (vfs.dx - dxTip) + -5;
           }
-          ClientToScreen(hwndFrame,(POINT *)CONCAT13(uVar9,CONCAT12((char)unaff_SS,&pt)));
-          SetWindowPos(hwnd,0xffff,pt.x,(dyArial8 * 3) / 2 + pt.y,0,0,0x251);
-          UpdateWindow(hwnd);
+          *(HWND *)(puVar7 + -6) = hwndFrame;
+          *(undefined2 *)(puVar7 + -8) = unaff_SS;
+          *(POINT **)(puVar7 + -10) = &pt;
+          *(undefined2 *)(puVar7 + -0xc) = 0x14f8;
+          *(undefined2 *)(puVar7 + -0xe) = 0x1b2d;
+          ClientToScreen(*(HWND *)(puVar7 + -6),*(POINT **)(puVar7 + -10));
+          *(HWND *)(puVar7 + -6) = hwnd;
+          *(undefined2 *)(puVar7 + -8) = 0xffff;
+          *(short *)(puVar7 + -10) = pt.x;
+          *(int *)(puVar7 + -0xc) = (dyArial8 * 3) / 2 + pt.y;
+          *(undefined2 *)(puVar7 + -0xe) = 0;
+          *(undefined2 *)(puVar7 + -0x10) = 0;
+          *(undefined2 *)(puVar7 + -0x12) = 0x251;
+          *(undefined2 *)(puVar7 + -0x14) = 0x14f8;
+          *(undefined2 *)(puVar7 + -0x16) = 0x1b59;
+          SetWindowPos(*(HWND *)(puVar7 + -6),*(HWND *)(puVar7 + -8),*(short *)(puVar7 + -10),
+                       *(short *)(puVar7 + -0xc),*(short *)(puVar7 + -0xe),
+                       *(short *)(puVar7 + -0x10),*(UINT *)(puVar7 + -0x12));
+          *(HWND *)(puVar7 + -6) = hwnd;
+          *(undefined2 *)(puVar7 + -8) = 0x14f8;
+          *(undefined2 *)(puVar7 + -10) = 0x1b61;
+          UpdateWindow(*(HWND *)(puVar7 + -6));
           if (vidTimerTooltip != -1) {
-            KillTimer(hwnd,vidTimerTooltip);
+            *(HWND *)(puVar7 + -6) = hwnd;
+            *(short *)(puVar7 + -8) = vidTimerTooltip;
+            *(undefined2 *)(puVar7 + -10) = 0x14f8;
+            *(undefined2 *)(puVar7 + -0xc) = 0x1b77;
+            KillTimer(*(HWND *)(puVar7 + -6),*(UINT *)(puVar7 + -8));
           }
-          UVar6 = SetTimer(0x39e,0x32,0,0);
-          if (UVar6 == 0) {
+          *(HWND *)(puVar7 + -6) = hwnd;
+          *(undefined2 *)(puVar7 + -8) = 0x39e;
+          *(undefined2 *)(puVar7 + -10) = 0x32;
+          *(undefined2 *)(puVar7 + -0xc) = 0;
+          *(undefined2 *)(puVar7 + -0xe) = 0;
+          *(undefined2 *)(puVar7 + -0x10) = 0x14f8;
+          *(undefined2 *)(puVar7 + -0x12) = 0x1b8f;
+          UVar5 = SetTimer(*(HWND *)(puVar7 + -8),*(UINT *)(puVar7 + -10),*(UINT *)(puVar7 + -0xc),
+                           puVar7[-0xe]);
+          if (UVar5 == 0) {
             vidTimerTooltip = -1;
           }
           else {
             vidTimerTooltip = 0x39e;
           }
-          LVar8 = 0;
-          uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-          uVar3 = vtickTooltip1stVis;
+          LVar10 = 0;
+          uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+          uVar1 = vtickTooltip1stVis;
           goto LAB_1068_1d6a;
         }
 TB_LKillTip:
-        DestroyWindow(hwnd);
-        uVar3 = vtickTooltip1stVis;
+        *(HWND *)(puVar8 + -2) = hwnd;
+        *(undefined2 *)(puVar8 + -4) = 0x14f8;
+        *(undefined2 *)(puVar8 + -6) = 0x1c0d;
+        DestroyWindow(*(HWND *)(puVar8 + -2));
+        uVar1 = vtickTooltip1stVis;
       }
-      LVar8 = 0;
-      uVar4 = vtickTooltipLast;
+      LVar10 = 0;
+      uVar2 = vtickTooltipLast;
       goto LAB_1068_1d6a;
     }
   }
 LAB_1068_1d53:
-  LVar8 = DefWindowProc(hwnd,msg,wParam,lParam);
-  uVar4 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
-  uVar3 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
+  LVar10 = DefWindowProc(hwnd,msg,wParam,lParam);
+  uVar2 = CONCAT22(vtickTooltipLast._2_2_,(undefined2)vtickTooltipLast);
+  uVar1 = CONCAT22(vtickTooltip1stVis._2_2_,(uint)vtickTooltip1stVis);
 LAB_1068_1d6a:
-  vtickTooltip1stVis._2_2_ = (int)(uVar3 >> 0x10);
-  vtickTooltip1stVis._0_2_ = (uint)uVar3;
-  vtickTooltipLast._2_2_ = (undefined2)(uVar4 >> 0x10);
-  vtickTooltipLast._0_2_ = (undefined2)uVar4;
-  return LVar8;
+  vtickTooltip1stVis._2_2_ = (int)(uVar1 >> 0x10);
+  vtickTooltip1stVis._0_2_ = (uint)uVar1;
+  vtickTooltipLast._2_2_ = (undefined2)(uVar2 >> 0x10);
+  vtickTooltipLast._0_2_ = (undefined2)uVar2;
+  return LVar10;
 }
 
 

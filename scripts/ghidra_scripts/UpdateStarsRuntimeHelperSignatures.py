@@ -271,6 +271,33 @@ def _ret_cc_for(dt):
         return "__cdecl16far"
     return "__stdcall16far"
 
+
+# Calling convention overrides for known CRT/compiler helpers where the default
+# return-size heuristic is insufficient.
+#
+# IMPORTANT:
+#   - __stdcall16far_8: callee cleans up 8 bytes of arguments (RETF 0x8)
+#   - __compiler_helper_dxax_cx: register helper (param_1 in DX:AX, param_2 in CX)
+CALLING_CONVENTION_OVERRIDES = {
+    # 32-bit helpers that end with RETF 0x8 (two 32-bit stack args)
+    "__aFldiv":  "__stdcall16far_8",
+    "__aFulmul": "__stdcall16far_8",
+    "__aFuldiv": "__stdcall16far_8",
+    "__aFulrem": "__stdcall16far_8",
+    "__aFlrem":  "__stdcall16far_8",
+
+    # Register-based helpers (no stack args; uses DX:AX and CX)
+    "__aFulshr": "__compiler_helper_dxax_cx",
+    "__aFlshl":  "__compiler_helper_dxax_cx",
+    "__aFlshr":  "__compiler_helper_dxax_cx",
+}
+
+def _cc_for(name, ret_dt):
+    cc = CALLING_CONVENTION_OVERRIDES.get(name)
+    if cc is not None:
+        return cc
+    return _ret_cc_for(ret_dt)
+
 def run():
     prog = currentProgram
     dtm = prog.getDataTypeManager()
@@ -352,18 +379,18 @@ def run():
         # Float/double helpers (best effort)
         "__ftol":     ("long",  ["double"]),
         "__fcmp":     ("int16", ["double", "double"]),
-        "__aFCIsqrt": ("double", ["double"]),
-        "__aFCIpow":  ("double", ["double", "double"]),
-        "__aFCIlog":  ("double", ["double"]),
-        "__aFCIlog10":("double", ["double"]),
-        "__aFCIexp":  ("double", ["double"]),
-        "__aFCIsin":  ("double", ["double"]),
-        "__aFCIcos":  ("double", ["double"]),
-        "__aFCItan":  ("double", ["double"]),
-        "__aFCIasin": ("double", ["double"]),
-        "__aFCIacos": ("double", ["double"]),
-        "__aFCIatan": ("double", ["double"]),
-        "__aFCIatan2":("double", ["double", "double"]),
+        "__aFCIsqrt": ("ptr_double", ["double"]),
+        "__aFCIpow":  ("ptr_double", ["double", "double"]),
+        "__aFCIlog":  ("ptr_double", ["double"]),
+        "__aFCIlog10":("ptr_double", ["double"]),
+        "__aFCIexp":  ("ptr_double", ["double"]),
+        "__aFCIsin":  ("ptr_double", ["double"]),
+        "__aFCIcos":  ("ptr_double", ["double"]),
+        "__aFCItan":  ("ptr_double", ["double"]),
+        "__aFCIasin": ("ptr_double", ["double"]),
+        "__aFCIacos": ("ptr_double", ["double"]),
+        "__aFCIatan": ("ptr_double", ["double"]),
+        "__aFCIatan2":("ptr_double", ["double", "double"]),
     }
 
     # C runtime / misc (16-bit int, near pointers unless noted)
@@ -399,20 +426,20 @@ def run():
         "_remove":  ("int16", ["ptr_char"]),
 
         # math (Borland-ish CRT names)
-        "_sqrt":    ("double", ["double"]),
-        "_pow":     ("double", ["double", "double"]),
-        "_log":     ("double", ["double"]),
-        "_log10":   ("double", ["double"]),
-        "_exp":     ("double", ["double"]),
-        "_sin":     ("double", ["double"]),
-        "_cos":     ("double", ["double"]),
-        "_tan":     ("double", ["double"]),
-        "_asin":    ("double", ["double"]),
-        "_acos":    ("double", ["double"]),
-        "_atan":    ("double", ["double"]),
-        "_atan2":   ("double", ["double", "double"]),
+        "_sqrt":    ("ptr_double", ["double"]),
+        "_pow":     ("ptr_double", ["double", "double"]),
+        "_log":     ("ptr_double", ["double"]),
+        "_log10":   ("ptr_double", ["double"]),
+        "_exp":     ("ptr_double", ["double"]),
+        "_sin":     ("ptr_double", ["double"]),
+        "_cos":     ("ptr_double", ["double"]),
+        "_tan":     ("ptr_double", ["double"]),
+        "_asin":    ("ptr_double", ["double"]),
+        "_acos":    ("ptr_double", ["double"]),
+        "_atan":    ("ptr_double", ["double"]),
+        "_atan2":   ("ptr_double", ["double", "double"]),
 
-        "_atof":    ("double", ["ptr_char"]),
+        "_atof":    ("ptr_double", ["ptr_char"]),
 
         # Win16 KERNEL file APIs (HFILE + far buffer)
         "_lclose":  ("int16",  ["int16"]),
@@ -430,6 +457,8 @@ def run():
             return _ptr_near(find_t)
         if tname == "ptr_diskfree_t":
             return _ptr_near(diskfree_t)
+        if tname == "ptr_double":
+            return _ptr_near(DoubleDataType.dataType)
 
         # Far (32-bit) pointers - ONLY for __f* family
         if tname == "ptr32_char":
@@ -484,7 +513,7 @@ def run():
             ret_dt = resolve_type(spec[0])
             arg_dts = [resolve_type(x) for x in spec[1]]
 
-        cc = _ret_cc_for(ret_dt)
+        cc = _cc_for(name, ret_dt)
 
         # Apply calling convention
         try:

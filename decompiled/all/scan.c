@@ -13,41 +13,45 @@
 /* WARNING: Removing unreachable block (ram,0x105809f8) */
 /* WARNING: Removing unreachable block (ram,0x1058094a) */
 /* WARNING: Removing unreachable block (ram,0x1058014f) */
-/* WARNING: Type propagation algorithm not settling */
 
 long ScannerWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
 {
-  ushort uVar1;
-  FLEET *pFVar2;
-  int iVar3;
+  int iVar1;
+  int iVar2;
+  FLEET *pFVar3;
   POINT PVar4;
   POINT PVar5;
   POINT pt_00;
-  POINT pt_01;
   POINT ptIn;
+  POINT pt_01;
   POINT pt_02;
   POINT pt_03;
-  POINT pt_04;
-  BOOL BVar6;
-  short sVar7;
-  uint uVar8;
-  HCURSOR HVar9;
+  HDC HVar6;
+  BOOL BVar7;
+  short sVar8;
+  uint uVar9;
+  HCURSOR HVar10;
   GrobjClass grobj;
+  undefined1 *puVar11;
+  undefined1 *puVar12;
+  undefined1 *puVar13;
+  undefined1 *puVar14;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
-  undefined2 uVar10;
+  undefined2 uVar15;
   undefined2 unaff_SS;
-  DWORD DVar11;
-  ulong uVar12;
-  LRESULT LVar13;
+  bool bVar16;
+  DWORD DVar17;
+  ulong uVar18;
+  LRESULT LVar19;
   short dy;
   ushort in_stack_0000fdda;
   short id;
+  THING *lpthMac;
   short iSel;
   short iChecked;
-  ushort rgid;
-  uint local_218 [199];
+  long rgid [100];
   short fSep;
   FLEET *lpfl;
   THING *lpth;
@@ -55,17 +59,15 @@ long ScannerWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   short i;
   SCAN scan;
   short fChgScan;
-  undefined1 plT [48];
-  short i__58;
-  short iRopSav;
-  HPEN hpenSav;
-  short iScanNew;
+  PLANET local_6a;
   RECT rc;
   PAINTSTRUCT ps;
   POINT pt;
   HDC hdc;
   
-  uVar12 = CONCAT22(unaff_SI,unaff_DI);
+  uVar15 = 0x1058;
+  puVar14 = &stack0xfdd6;
+  uVar18 = CONCAT22(unaff_SI,unaff_DI);
   if (msg == WM_CREATE) {
     yScanTop = 1000;
     xScanTop = 1000;
@@ -73,417 +75,462 @@ long ScannerWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   }
   if (msg == WM_SIZE) {
     SetScanScrollBars(hwnd);
+    uVar15 = 0x14f8;
     PostMessage(hwndFrame,0x111,iScanZoom + 0xf41,0);
+    puVar14 = &stack0xfdd6;
+SCAN_Default_2:
+    *(HWND *)(puVar14 + -2) = hwnd;
+    *(WMType *)(puVar14 + -4) = msg;
+    *(ushort *)(puVar14 + -6) = wParam;
+    *(undefined2 *)(puVar14 + -8) = lParam._2_2_;
+    *(int *)(puVar14 + -10) = (int)lParam;
+    *(undefined2 *)(puVar14 + -0xc) = uVar15;
+    *(undefined2 *)(puVar14 + -0xe) = 0xe81;
+    LVar19 = DefWindowProc(*(HWND *)(puVar14 + -2),*(UINT *)(puVar14 + -4),*(WPARAM *)(puVar14 + -6)
+                           ,*(LPARAM *)(puVar14 + -10));
+    return LVar19;
   }
-  else {
-    if (msg == WM_PAINT) {
-      hdc = BeginPaint(hwnd,&ps);
-      if ((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) &&
-         (((uint)gd.grBits2 & 1) == 0)) {
-        GetClientRect(hwnd,&rc);
-        DrawScannerSBar(hdc,&ps.rcPaint,(SBAR *)0x0,1);
-        rc.bottom = rc.bottom - dySBar;
-        DrawScanner(hdc,&ps.rcPaint);
-      }
-      EndPaint(hwnd,&ps);
-      return 0;
+  if (msg == WM_PAINT) {
+    HVar6 = BeginPaint(hwnd,&ps);
+    if ((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) &&
+       (((uint)gd.grBits2 & 1) == 0)) {
+      GetClientRect(hwnd,&rc);
+      DrawScannerSBar(HVar6,&ps.rcPaint,(SBAR *)0x0,1);
+      rc.bottom = rc.bottom - dySBar;
+      DrawScanner(HVar6,&ps.rcPaint);
     }
-    if (msg != WM_SETCURSOR) {
-      if (msg == WM_CHAR) {
-        if ((wParam == 0x76) || (wParam == 0x56)) {
-          hdc = GetDC(hwndScanner);
-          pt.x = sel.scan.pt.x;
-          pt.y = sel.scan.pt.y;
-          LogicalToScan(&pt);
-          iRopSav = SetROP2(hdc,7);
-          hpenSav = SelectObject(hdc,hpenYellow);
-          for (i__58 = 0; i__58 < 2; i__58 = i__58 + 1) {
-            MoveTo(hdc,pt.x + -300,pt.y + -300);
-            LineTo(hdc,pt.x + 300,pt.y + 300);
-            MoveTo(hdc,pt.x + -300,pt.y + 300);
-            LineTo(hdc,pt.x + 300,pt.y + -300);
-            if (i__58 == 0) {
-              DVar11 = GetTickCount();
-              plT._44_4_ = DVar11;
-              while( true ) {
-                DVar11 = GetTickCount();
-                if (plT._44_4_ + 0x96 <= DVar11) break;
-                Yield();
-              }
+    EndPaint(hwnd,&ps);
+    return 0;
+  }
+  if (msg != WM_SETCURSOR) {
+    if (msg == WM_CHAR) {
+      if ((wParam == 0x76) || (wParam == 0x56)) {
+        HVar6 = GetDC(hwndScanner);
+        pt.x = sel.scan.pt.x;
+        pt.y = sel.scan.pt.y;
+        LogicalToScan(&pt);
+        local_6a.turn = SetROP2(HVar6,7);
+        local_6a.lpplprod._0_2_ = (PLPROD *)SelectObject(HVar6,hpenYellow);
+        for (local_6a.wRouting = 0; (int)local_6a.wRouting < 2;
+            local_6a.wRouting = local_6a.wRouting + 1) {
+          MoveTo(HVar6,pt.x + -300,pt.y + -300);
+          LineTo(HVar6,pt.x + 300,pt.y + 300);
+          MoveTo(HVar6,pt.x + -300,pt.y + 300);
+          LineTo(HVar6,pt.x + 300,pt.y + -300);
+          if (local_6a.wRouting == 0) {
+            DVar17 = GetTickCount();
+            local_6a.lStarbase = DVar17;
+            while( true ) {
+              DVar17 = GetTickCount();
+              if (local_6a.lStarbase + 0x96U <= DVar17) break;
+              Yield();
             }
           }
-          SelectObject(hdc,hpenSav);
-          SetROP2(hdc,iRopSav);
-          ReleaseDC(hwndScanner,hdc);
+        }
+        SelectObject(HVar6,(HGDIOBJ)(PLPROD *)local_6a.lpplprod);
+        SetROP2(HVar6,local_6a.turn);
+        ReleaseDC(hwndScanner,HVar6);
+      }
+      else {
+        if (wParam == 0x2d) {
+          local_6a.lpplprod._2_2_ = iScanZoom + -1;
+          if ((int)local_6a.lpplprod._2_2_ < -4) {
+            local_6a.lpplprod._2_2_ = -4;
+          }
         }
         else {
-          if (wParam == 0x2d) {
-            iScanNew = iScanZoom + -1;
-            if (iScanNew < -4) {
-              iScanNew = -4;
-            }
+          local_6a.lpplprod._2_2_ = iScanZoom + 1;
+          if (4 < (int)local_6a.lpplprod._2_2_) {
+            local_6a.lpplprod._2_2_ = 4;
           }
-          else {
-            iScanNew = iScanZoom + 1;
-            if (4 < iScanNew) {
-              iScanNew = 4;
-            }
-          }
-          if (iScanNew != iScanZoom) {
-            SendMessage(hwndFrame,0x111,iScanNew + 0xf41,0);
-          }
+        }
+        if (local_6a.lpplprod._2_2_ != iScanZoom) {
+          SendMessage(hwndFrame,0x111,local_6a.lpplprod._2_2_ + 0xf41,0);
         }
       }
-      else if ((msg == WM_HSCROLL) || (msg == WM_VSCROLL)) {
-        switch(wParam) {
-        case 0:
-          iScanNew = -dScanInc;
-          break;
-        case 1:
-          iScanNew = dScanInc;
-          break;
-        case 2:
-          iScanNew = -dScanPage;
-          break;
-        case 3:
-          iScanNew = dScanPage;
-          break;
-        case 4:
-        case 5:
-          sVar7 = yScanTop;
-          if (msg != WM_VSCROLL) {
-            sVar7 = xScanTop;
-          }
-          iScanNew = (int)lParam - sVar7 & 0xfffc;
-          break;
-        default:
-          iScanNew = 0;
+    }
+    else if ((msg == WM_HSCROLL) || (msg == WM_VSCROLL)) {
+      switch(wParam) {
+      case 0:
+        local_6a.lpplprod._2_2_ = -dScanInc;
+        break;
+      case 1:
+        local_6a.lpplprod._2_2_ = dScanInc;
+        break;
+      case 2:
+        local_6a.lpplprod._2_2_ = -dScanPage;
+        break;
+      case 3:
+        local_6a.lpplprod._2_2_ = dScanPage;
+        break;
+      case 4:
+      case 5:
+        sVar8 = yScanTop;
+        if (msg != WM_VSCROLL) {
+          sVar8 = xScanTop;
         }
-        if (iScanNew != 0) {
-          if (msg == WM_VSCROLL) {
-            hpenSav = yScanTop;
-            SetScrollPos(hwnd,1,yScanTop + iScanNew,1);
-            yScanTop = GetScrollPos(hwnd,1);
-            sVar7 = PtToScan(hpenSav - yScanTop);
-            ScrollScanner(0,sVar7);
-          }
-          else {
-            hpenSav = xScanTop;
-            SetScrollPos(hwnd,0,xScanTop + iScanNew,1);
-            xScanTop = GetScrollPos(hwnd,0);
-            dy = 0;
-            sVar7 = PtToScan(hpenSav - xScanTop);
-            ScrollScanner(sVar7,dy);
-          }
+        local_6a.lpplprod._2_2_ = (int)lParam - sVar8 & 0xfffc;
+        break;
+      default:
+        local_6a.lpplprod._2_2_ = 0;
+      }
+      if (local_6a.lpplprod._2_2_ != 0) {
+        if (msg == WM_VSCROLL) {
+          local_6a.lpplprod._0_2_ = (PLPROD *)yScanTop;
+          SetScrollPos(hwnd,1,yScanTop + local_6a.lpplprod._2_2_,1);
+          yScanTop = GetScrollPos(hwnd,1);
+          sVar8 = PtToScan((int)(PLPROD *)local_6a.lpplprod - yScanTop);
+          ScrollScanner(0,sVar8);
+        }
+        else {
+          local_6a.lpplprod._0_2_ = (PLPROD *)xScanTop;
+          SetScrollPos(hwnd,0,xScanTop + local_6a.lpplprod._2_2_,1);
+          xScanTop = GetScrollPos(hwnd,0);
+          dy = 0;
+          sVar8 = PtToScan((int)(PLPROD *)local_6a.lpplprod - xScanTop);
+          ScrollScanner(sVar8,dy);
         }
       }
-      else if ((((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) || (msg == WM_RBUTTONDOWN))
-              || (msg == WM_MBUTTONDOWN)) {
-        SetFocus(hwndFrame);
-        pt.x = (int)lParam;
-        uVar12 = __aFulshr(uVar12,in_stack_0000fdda);
-        pt.y = (short)uVar12;
-        GetClientRect(hwnd,&rc);
-        if (pt.y < rc.bottom - dySBar) {
-          ScanToLogical(&pt);
-          if (((gd.grBits._2_2_ >> 8 & 1) == 0) && ((gd.grBits._2_2_ >> 0xd & 1) == 0)
-             ) {
-            grobj = grobjThing|grobjOther|grobjFleet|grobjPlanet;
-          }
-          else {
-            grobj = grobjPlanet;
-          }
-          pt_01.y = pt.y;
-          pt_01.x = pt.x;
-          FFindNearestObject(pt_01,grobj,&scan);
-          if ((((gd.grBits._2_2_ >> 8 & 1) == 0) &&
-              (((sel.grobj != grobjPlanet || ((wParam & 4) == 0)) ||
-               (sVar7 = IWarpMAFromLppl(&sel.pl,(short *)0x0), sVar7 < 1)))) ||
+    }
+    else if ((((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) || (msg == WM_RBUTTONDOWN)) ||
+            (msg == WM_MBUTTONDOWN)) {
+      SetFocus(hwndFrame);
+      pt.x = (int)lParam;
+      uVar18 = __aFulshr(uVar18,in_stack_0000fdda);
+      pt.y = (short)uVar18;
+      GetClientRect(hwnd,&rc);
+      if (pt.y < rc.bottom - dySBar) {
+        ScanToLogical(&pt);
+        if (((gd.grBits._2_2_ >> 8 & 1) == 0) && ((gd.grBits._2_2_ >> 0xd & 1) == 0))
+        {
+          grobj = grobjThing|grobjOther|grobjFleet|grobjPlanet;
+        }
+        else {
+          grobj = grobjPlanet;
+        }
+        pt_00.y = pt.y;
+        pt_00.x = pt.x;
+        FFindNearestObject(pt_00,grobj,&scan);
+        if ((((gd.grBits._2_2_ >> 8 & 1) == 0) &&
+            (((sel.grobj != grobjPlanet || ((wParam & 4) == 0)) ||
+             (sVar8 = IWarpMAFromLppl(&sel.pl,(short *)0x0), sVar8 < 1)))) ||
+           (msg != WM_LBUTTONDOWN)) {
+          if ((((gd.grBits._2_2_ >> 0xd & 1) == 0) &&
+              ((sel.grobj != grobjPlanet || ((wParam & 8) == 0)))) ||
              (msg != WM_LBUTTONDOWN)) {
-            if ((((gd.grBits._2_2_ >> 0xd & 1) == 0) &&
-                ((sel.grobj != grobjPlanet || ((wParam & 8) == 0)))) ||
-               (msg != WM_LBUTTONDOWN)) {
-              if ((msg == WM_MBUTTONDOWN) || ((msg == WM_RBUTTONDOWN && ((wParam & 4) != 0)))) {
-                pt_03.y = pt.y;
-                pt_03.x = pt.x;
-                FHandleMeasuringTape(&scan,pt_03);
-              }
-              else {
-                if (msg == WM_RBUTTONDOWN) {
-                  iChecked = -1;
-                  pt.x = scan.pt.x;
-                  pt.y = scan.pt.y;
-                  if ((scan.grobjFull & grobjPlanet) == grobjNone) {
-                    c = 0;
+            if ((msg == WM_MBUTTONDOWN) || ((msg == WM_RBUTTONDOWN && ((wParam & 4) != 0)))) {
+              pt_02.y = pt.y;
+              pt_02.x = pt.x;
+              FHandleMeasuringTape(&scan,pt_02);
+            }
+            else {
+              if (msg == WM_RBUTTONDOWN) {
+                iChecked = -1;
+                pt.x = scan.pt.x;
+                pt.y = scan.pt.y;
+                if ((scan.grobjFull & grobjPlanet) == grobjNone) {
+                  c = 0;
+                }
+                else {
+                  rgid[0]._2_2_ = scan.idpl >> 0xf;
+                  rgid[0]._0_2_ = scan.idpl;
+                  rgid[1]._0_2_ = 0xffff;
+                  rgid[1]._2_2_ = 0xffff;
+                  c = 2;
+                  if ((sel.grobj == grobjPlanet) && (sel.id == scan.idpl)) {
+                    iChecked = 0;
+                  }
+                }
+                for (i = 0; i < cFleet; i = i + 1) {
+                    /* WARNING: Load size is inaccurate */
+                  pFVar3 = ((FLEET **)rglpfl)[i];
+                  iVar1 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+                  lpfl = (FLEET *)CONCAT22(iVar1,pFVar3);
+                  if ((pFVar3 == (FLEET *)0x0) && (iVar1 == 0)) break;
+                  if ((pt.x == (&pFVar3->pt)->x) && (pt.y == (pFVar3->pt).y)) {
+                    if ((sel.grobj == grobjFleet) && (lpfl->id == sel.id)) {
+                      iChecked = c;
+                    }
+                    iVar2 = lpfl->id;
+                    iVar1 = c + 1;
+                    *(int *)(rgid + c) = iVar2;
+                    *(uint *)((int)rgid + c * 4 + 2) = iVar2 >> 0xf | 0x8000;
+                    c = iVar1;
+                    if (0x61 < iVar1) break;
+                  }
+                }
+                if ((c == 2) && ((scan.grobjFull & grobjPlanet) != grobjNone)) {
+                  c = 1;
+                }
+                bVar16 = c == 0;
+                lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
+                while ((THING *)lpth < (THING *)lpThings + cThing) {
+                  uVar15 = (undefined2)((ulong)lpth >> 0x10);
+                  if ((pt.x == (&((THING *)lpth)->pt)->x) && (pt.y == (((THING *)lpth)->pt).y)) {
+                    if (!bVar16) {
+                      *(undefined2 *)(rgid + c) = 0xffff;
+                      *(undefined2 *)((int)rgid + c * 4 + 2) = 0xffff;
+                      bVar16 = true;
+                      c = c + 1;
+                    }
+                    iVar1 = c + 1;
+                    *(ushort *)(rgid + c) = lpth->idFull;
+                    *(undefined2 *)((int)rgid + c * 4 + 2) = 0x2000;
+                    c = iVar1;
+                    if (99 < iVar1) break;
+                  }
+                  lpth = (THING *)CONCAT22(uVar15,(THING *)lpth + 1);
+                }
+                LogicalToScan(&pt);
+                sVar8 = PopupMenu(hwnd,pt.x,pt.y,c,rgid,(char **)0x0,iChecked,1);
+                if (sVar8 < 0) {
+                  return 0;
+                }
+                if ((*(uint *)((int)rgid + sVar8 * 4 + 2) & 0x8000) == 0) {
+                  if ((*(uint *)((int)rgid + sVar8 * 4 + 2) & 0x2000) == 0) {
+                    scan.grobj = grobjPlanet;
                   }
                   else {
-                    local_218[0] = scan.idpl >> 0xf;
-                    rgid = scan.idpl;
-                    local_218[1] = 0xffff;
-                    local_218[2] = 0xffff;
-                    c = 2;
-                    if ((sel.grobj == grobjPlanet) && (sel.id == scan.idpl)) {
-                      iChecked = 0;
+                    scan.grobj = grobjThing;
+                    lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
+                    while (((THING *)lpth < (THING *)lpThings + cThing &&
+                           (lpth->idFull != *(ushort *)(rgid + sVar8)))) {
+                      lpth = (THING *)lpth + 1;
                     }
-                  }
-                  for (i = 0; sVar7 = c, i < cFleet; i = i + 1) {
-                    /* WARNING: Load size is inaccurate */
-                    pFVar2 = ((FLEET **)rglpfl)[i];
-                    iVar3 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-                    lpfl = (FLEET *)CONCAT22(iVar3,pFVar2);
-                    if ((pFVar2 == (FLEET *)0x0) && (iVar3 == 0)) break;
-                    if ((pt.x == (&pFVar2->pt)->x) && (pt.y == (pFVar2->pt).y)) {
-                      if ((sel.grobj == grobjFleet) && (lpfl->id == sel.id)) {
-                        iChecked = c;
-                      }
-                      uVar1 = lpfl->id;
-                      iVar3 = c * 2;
-                      c = c + 1;
-                      (&rgid)[iVar3] = uVar1;
-                      local_218[sVar7 * 2] = (int)uVar1 >> 0xf | 0x8000;
-                      if (0x61 < c) break;
-                    }
-                  }
-                  if ((c == 2) && ((scan.grobjFull & grobjPlanet) != grobjNone)) {
-                    c = 1;
-                  }
-                  fSep = (short)(c == 0);
-                  lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
-                  while (sVar7 = c, (THING *)lpth < (THING *)lpThings + cThing) {
-                    uVar10 = (undefined2)((ulong)lpth >> 0x10);
-                    if ((pt.x == (&((THING *)lpth)->pt)->x) && (pt.y == (((THING *)lpth)->pt).y)) {
-                      if (fSep == 0) {
-                        iVar3 = c * 2;
-                        c = c + 1;
-                        (&rgid)[iVar3] = 0xffff;
-                        local_218[sVar7 * 2] = 0xffff;
-                        fSep = 1;
-                      }
-                      sVar7 = c;
-                      iVar3 = c * 2;
-                      c = c + 1;
-                      (&rgid)[iVar3] = lpth->idFull;
-                      local_218[sVar7 * 2] = 0x2000;
-                      if (99 < c) break;
-                    }
-                    lpth = (THING *)lpth + 1;
-                  }
-                  LogicalToScan(&pt);
-                  sVar7 = PopupMenu(hwnd,pt.x,pt.y,c,&rgid,(char **)0x0,iChecked,1);
-                  if (sVar7 < 0) {
-                    return 0;
-                  }
-                  if ((local_218[sVar7 * 2] & 0x8000) == 0) {
-                    if ((local_218[sVar7 * 2] & 0x2000) == 0) {
-                      scan.grobj = grobjPlanet;
-                    }
-                    else {
-                      scan.grobj = grobjThing;
-                      lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
-                      while (((THING *)lpth < (THING *)lpThings + cThing &&
-                             (lpth->idFull != (&rgid)[sVar7 * 2]))) {
-                        lpth = (THING *)lpth + 1;
-                      }
-                      scan.ith = ((int)(THING *)lpth - (int)(THING *)lpThings) / 0x12;
-                    }
-                  }
-                  else {
-                    scan.grobj = grobjFleet;
-                    for (i = 0; i < cFleet; i = i + 1) {
-                    /* WARNING: Load size is inaccurate */
-                      pFVar2 = ((FLEET **)rglpfl)[i];
-                      iVar3 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-                      lpfl = (FLEET *)CONCAT22(iVar3,pFVar2);
-                      if (((pFVar2 == (FLEET *)0x0) && (iVar3 == 0)) ||
-                         (lpfl->id == (&rgid)[sVar7 * 2])) break;
-                    }
-                    scan.ifl = i;
-                  }
-                  ChangeScanSel(&scan,2);
-                  if (scan.grobj == grobjPlanet) {
-                    sVar7 = FLookupPlanet(scan.idpl,plT);
-                    if (sVar7 == 0) {
-                      return 0;
-                    }
-                    if (plT._2_2_ != idPlayer) {
-                      return 0;
-                    }
+                    scan.ith = ((int)(THING *)lpth - (int)(THING *)lpThings) / 0x12;
                   }
                 }
                 else {
-                  if ((sel.grobj == grobjFleet) &&
-                     (((wParam & 4) != 0 || ((grbitScan & 0x10) != 0)))) {
-                    ptIn.y = pt.y;
-                    ptIn.x = pt.x;
-                    FAddWayPoint(ptIn,&scan);
+                  scan.grobj = grobjFleet;
+                  for (i = 0; i < cFleet; i = i + 1) {
+                    /* WARNING: Load size is inaccurate */
+                    pFVar3 = ((FLEET **)rglpfl)[i];
+                    iVar1 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+                    lpfl = (FLEET *)CONCAT22(iVar1,pFVar3);
+                    if (((pFVar3 == (FLEET *)0x0) && (iVar1 == 0)) || (lpfl->id == (int)rgid[sVar8])
+                       ) break;
+                  }
+                  scan.ifl = i;
+                }
+                ChangeScanSel(&scan,2);
+                if (scan.grobj == grobjPlanet) {
+                  sVar8 = FLookupPlanet(scan.idpl,&local_6a);
+                  if (sVar8 == 0) {
                     return 0;
                   }
-                  if ((scan.pt.x == sel.scan.pt.x) &&
-                     (scan.pt.y == sel.scan.pt.y)) {
-                    fChgScan = 1;
-                  }
-                  else {
-                    fChgScan = 0;
-                  }
-                  ChangeScanSel(&scan,1);
-                  pt_02.y = pt.y;
-                  pt_02.x = pt.x;
-                  sVar7 = FNearAWayPoint(pt_02,1);
-                  if ((sVar7 != 0) &&
-                     (pt_04.y = pt.y, pt_04.x = pt.x, sVar7 = FHandleWayPointDrag(pt_04), sVar7 != 0
-                     )) {
+                  if (local_6a.iPlayer != idPlayer) {
                     return 0;
-                  }
-                  if (fChgScan == 0) {
-                    return 0;
-                  }
-                  if ((scan.grobj != grobjFleet) && (scan.grobj != grobjPlanet)) {
-                    return 0;
-                  }
-                  if ((scan.pt.x == sel.pt.x) && (scan.pt.y == sel.pt.y)) {
-                    sVar7 = FGetNextObjHere(&scan,1);
-                    if (sVar7 == 0) {
-                      return 0;
-                    }
-                  }
-                  else if (scan.grobj == grobjPlanet) {
-                    sVar7 = FLookupPlanet(scan.idpl,plT);
-                    if (sVar7 == 0) {
-                      return 0;
-                    }
-                    if ((plT._2_2_ != idPlayer) ||
-                       ((((scan.grobjFull & grobjFleet) != grobjNone &&
-                         (sel.grobj == grobjPlanet)) && (scan.idpl == sel.id))))
-                    {
-                      if ((scan.grobjFull & grobjFleet) == grobjNone) {
-                        return 0;
-                      }
-                      scan.grobj = grobjFleet;
-                    }
                   }
                 }
-                if (((scan.grobj != grobjFleet) ||
-                    (((FLEET *)((FLEET **)rglpfl)[scan.ifl])->iPlayer == idPlayer)) &&
-                   (scan.grobj != grobjThing)) {
-                  if (scan.grobj == grobjFleet) {
-                    scan.iwp = -1;
-                  }
-                  ChangeScanSel(&scan,1);
-                  RedrawScanSel(0,0);
-                  if (scan.grobj != grobjPlanet) {
-                    scan.idpl = ((FLEET **)rglpfl)[scan.ifl]->id;
-                  }
-                  ChangeMainObjSel(scan.grobj,scan.idpl);
-                  RedrawScanSel(0,1);
-                  if ((scan.grobj == grobjFleet) && ((scan.grobjFull & grobjPlanet) != grobjNone)) {
-                    scan.grobj = grobjPlanet;
-                    ChangeScanSel(&scan,1);
-                  }
-                }
-              }
-            }
-            else {
-              DrawShipScanPath(0,0);
-              if (scan.idpl == sel.pl.id) {
-                sel.pl.wRouting = sel.pl.wRouting & 0xfc00;
               }
               else {
-                i = scan.idpl + 1;
-                sel.pl.wRouting = sel.pl.wRouting & 0xfc00 | i & 0x3ffU;
+                if ((sel.grobj == grobjFleet) &&
+                   (((wParam & 4) != 0 || ((grbitScan & 0x10) != 0)))) {
+                  ptIn.y = pt.y;
+                  ptIn.x = pt.x;
+                  FAddWayPoint(ptIn,&scan);
+                  return 0;
+                }
+                if ((scan.pt.x == sel.scan.pt.x) && (scan.pt.y == sel.scan.pt.y)
+                   ) {
+                  bVar16 = true;
+                }
+                else {
+                  bVar16 = false;
+                }
+                ChangeScanSel(&scan,1);
+                pt_01.y = pt.y;
+                pt_01.x = pt.x;
+                sVar8 = FNearAWayPoint(pt_01,1);
+                if ((sVar8 != 0) &&
+                   (pt_03.y = pt.y, pt_03.x = pt.x, sVar8 = FHandleWayPointDrag(pt_03), sVar8 != 0))
+                {
+                  return 0;
+                }
+                if (!bVar16) {
+                  return 0;
+                }
+                if ((scan.grobj != grobjFleet) && (scan.grobj != grobjPlanet)) {
+                  return 0;
+                }
+                if ((scan.pt.x == sel.pt.x) && (scan.pt.y == sel.pt.y)) {
+                  sVar8 = FGetNextObjHere(&scan,1);
+                  if (sVar8 == 0) {
+                    return 0;
+                  }
+                }
+                else if (scan.grobj == grobjPlanet) {
+                  sVar8 = FLookupPlanet(scan.idpl,&local_6a);
+                  if (sVar8 == 0) {
+                    return 0;
+                  }
+                  if ((local_6a.iPlayer != idPlayer) ||
+                     ((((scan.grobjFull & grobjFleet) != grobjNone &&
+                       (sel.grobj == grobjPlanet)) && (scan.idpl == sel.id)))) {
+                    if ((scan.grobjFull & grobjFleet) == grobjNone) {
+                      return 0;
+                    }
+                    scan.grobj = grobjFleet;
+                  }
+                }
               }
-              FLookupPlanet(-1,(PLANET *)&sel.pl);
-              gd.grBits._2_2_ = gd.grBits._2_2_ & 0xdfff;
-              DrawShipScanPath(0,1);
-              DrawPlanShip(0,0x4040);
+              if (((scan.grobj != grobjFleet) ||
+                  (((FLEET *)((FLEET **)rglpfl)[scan.ifl])->iPlayer == idPlayer)) &&
+                 (scan.grobj != grobjThing)) {
+                if (scan.grobj == grobjFleet) {
+                  scan.iwp = -1;
+                }
+                ChangeScanSel(&scan,1);
+                RedrawScanSel(0,0);
+                if (scan.grobj != grobjPlanet) {
+                  scan.idpl = ((FLEET **)rglpfl)[scan.ifl]->id;
+                }
+                ChangeMainObjSel(scan.grobj,scan.idpl);
+                RedrawScanSel(0,1);
+                if ((scan.grobj == grobjFleet) && ((scan.grobjFull & grobjPlanet) != grobjNone)) {
+                  scan.grobj = grobjPlanet;
+                  ChangeScanSel(&scan,1);
+                }
+              }
             }
           }
           else {
             DrawShipScanPath(0,0);
             if (scan.idpl == sel.pl.id) {
-              sel.pl.lStarbase._2_2_ = sel.pl.lStarbase._2_2_ & 0xfc00;
+              sel.pl.wRouting = sel.pl.wRouting & 0xfc00;
             }
             else {
-              i = scan.idpl + 1;
-              sel.pl.lStarbase._2_2_ =
-                   sel.pl.lStarbase._2_2_ & 0xfc00 | i & 0x3ffU;
+              sel.pl.wRouting =
+                   sel.pl.wRouting & 0xfc00 | scan.idpl + 1U & 0x3ff;
             }
             FLookupPlanet(-1,(PLANET *)&sel.pl);
-            gd.grBits._2_2_ = gd.grBits._2_2_ & 0xfeff;
+            gd.grBits._2_2_ = gd.grBits._2_2_ & 0xdfff;
             DrawShipScanPath(0,1);
-            DrawPlanShip(0,0x4100);
-          }
-        }
-        else if (((msg == WM_LBUTTONDOWN) && (pt.y < rc.bottom - (dySBar >> 1))) &&
-                ((sel.scan.grobjFull & (grobjFleet|grobjPlanet)) != grobjNone)) {
-          if (sel.scan.grobj == grobjFleet) {
-            GlobalPD.grPopup = 3;
-            GlobalPD.u_POPUPDATA_0x0002.part.hs.grhst =
-                 *(undefined2 *)((FLEET **)rglpfl + sel.scan.ifl);
-            GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 =
-                 *(ushort *)((int)((FLEET **)rglpfl + sel.scan.ifl) + 2);
-          }
-          else {
-            GlobalPD.grPopup = 4;
-          }
-          Popup(hwnd,pt.x,pt.y);
-        }
-      }
-      else {
-        if (msg != WM_MDIACTIVATE) goto SCAN_Default_2;
-        hwndActive = hwnd;
-        if (wParam == 0) {
-          hwndActive = 0;
-        }
-      }
-      return 0;
-    }
-    GetCursorPos(&pt);
-    ScreenToClient(hwndScanner,&pt);
-    GetClientRect(hwnd,&rc);
-    PVar4.y = pt.y;
-    PVar4.x = pt.x;
-    BVar6 = PtInRect(&rc,PVar4);
-    if (BVar6 != 0) {
-      rc.bottom = rc.bottom - dySBar;
-      PVar5.y = pt.y;
-      PVar5.x = pt.x;
-      BVar6 = PtInRect(&rc,PVar5);
-      if (BVar6 == 0) {
-        HVar9 = LoadCursor(0,(LPCSTR)0x7f00);
-        setcursor(HVar9);
-      }
-      else if ((sel.grobj == grobjFleet) &&
-              ((uVar8 = GetAsyncKeyState(0x10), (uVar8 & 0xfffe) != 0 ||
-               ((grbitScan & 0x10) != 0)))) {
-        setcursor(hcurScanAdd);
-      }
-      else {
-        pt_00.y = pt.y;
-        pt_00.x = pt.x;
-        sVar7 = FNearAWayPoint(pt_00,0);
-        if (sVar7 == 0) {
-          if ((((gd.grBits._2_2_ >> 8 & 1) == 0) &&
-              ((gd.grBits._2_2_ >> 0xd & 1) == 0)) &&
-             ((sel.grobj != grobjPlanet ||
-              (((uVar8 = GetAsyncKeyState(0x10), (uVar8 & 0xfffe) == 0 ||
-                (sVar7 = IWarpMAFromLppl(&sel.pl,(short *)0x0), sVar7 < 1)) &&
-               (uVar8 = GetAsyncKeyState(0x11), (uVar8 & 0xfffe) == 0)))))) {
-            setcursor(hcurScanner);
-          }
-          else {
-            setcursor(hcurScanAdd);
+            DrawPlanShip(0,0x4040);
           }
         }
         else {
-          setcursor(hcurOpenGrab);
+          DrawShipScanPath(0,0);
+          if (scan.idpl == sel.pl.id) {
+            sel.pl.lStarbase._2_2_ = sel.pl.lStarbase._2_2_ & 0xfc00;
+          }
+          else {
+            sel.pl.lStarbase._2_2_ =
+                 sel.pl.lStarbase._2_2_ & 0xfc00 | scan.idpl + 1U & 0x3ff;
+          }
+          FLookupPlanet(-1,(PLANET *)&sel.pl);
+          gd.grBits._2_2_ = gd.grBits._2_2_ & 0xfeff;
+          DrawShipScanPath(0,1);
+          DrawPlanShip(0,0x4100);
         }
       }
+      else if (((msg == WM_LBUTTONDOWN) && (pt.y < rc.bottom - (dySBar >> 1))) &&
+              ((sel.scan.grobjFull & (grobjFleet|grobjPlanet)) != grobjNone)) {
+        if (sel.scan.grobj == grobjFleet) {
+          GlobalPD.grPopup = 3;
+          GlobalPD.u_POPUPDATA_0x0002.part.hs.grhst =
+               *(undefined2 *)((FLEET **)rglpfl + sel.scan.ifl);
+          GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 =
+               *(ushort *)((int)((FLEET **)rglpfl + sel.scan.ifl) + 2);
+        }
+        else {
+          GlobalPD.grPopup = 4;
+        }
+        Popup(hwnd,pt.x,pt.y);
+      }
+    }
+    else {
+      if (msg != WM_MDIACTIVATE) goto SCAN_Default_2;
+      hwndActive = hwnd;
+      if (wParam == 0) {
+        hwndActive = 0;
+      }
+    }
+    return 0;
+  }
+  GetCursorPos(&pt);
+  ScreenToClient(hwndScanner,&pt);
+  GetClientRect(hwnd,&rc);
+  uVar15 = 0x14f8;
+  PVar4.y = pt.y;
+  PVar4.x = pt.x;
+  BVar7 = PtInRect(&rc,PVar4);
+  puVar14 = &stack0xfdd2;
+  if (BVar7 == 0) goto SCAN_Default_2;
+  rc.bottom = rc.bottom - dySBar;
+  PVar5.y = pt.y;
+  PVar5.x = pt.x;
+  BVar7 = PtInRect(&rc,PVar5);
+  puVar13 = &stack0xfdd2;
+  if (BVar7 == 0) {
+    HVar10 = LoadCursor(0,(LPCSTR)0x7f00);
+    setcursor(HVar10);
+    return 1;
+  }
+  if (sel.grobj == grobjFleet) {
+    uVar9 = GetAsyncKeyState(0x10);
+    puVar13 = &stack0xfdd0;
+    if (((uVar9 & 0xfffe) != 0) || ((grbitScan & 0x10) != 0)) {
+      setcursor(hcurScanAdd);
       return 1;
     }
   }
-SCAN_Default_2:
-  LVar13 = DefWindowProc(hwnd,msg,wParam,lParam);
-  return LVar13;
+  *(undefined2 *)(puVar13 + -2) = 0;
+  *(short *)(puVar13 + -4) = pt.y;
+  *(short *)(puVar13 + -6) = pt.x;
+  *(undefined2 *)(puVar13 + -8) = 0x14f8;
+  uVar15 = 0x1058;
+  *(undefined2 *)(puVar13 + -10) = 0x321;
+  sVar8 = FNearAWayPoint(*(puVar13 + -6),*(short *)(puVar13 + -2));
+  if (sVar8 != 0) {
+    *(HCURSOR *)(puVar13 + -2) = hcurOpenGrab;
+    *(undefined2 *)(puVar13 + -4) = 0x1058;
+    *(undefined2 *)(puVar13 + -6) = 0x335;
+    setcursor(*(HCURSOR *)(puVar13 + -2));
+    return 1;
+  }
+  puVar12 = puVar13;
+  if (((gd.grBits._2_2_ >> 8 & 1) == 0) && ((gd.grBits._2_2_ >> 0xd & 1) == 0)) {
+    if (sel.grobj == grobjPlanet) {
+      *(undefined2 *)(puVar13 + -2) = 0x10;
+      *(undefined2 *)(puVar13 + -4) = 0x1058;
+      uVar15 = 0x14f8;
+      *(undefined2 *)(puVar13 + -6) = 0x371;
+      uVar9 = GetAsyncKeyState(*(short *)(puVar13 + -2));
+      if ((uVar9 & 0xfffe) != 0) {
+        *(undefined2 *)(puVar13 + -4) = 0;
+        *(undefined2 *)(puVar13 + -6) = 0x1120;
+        *(undefined2 *)(puVar13 + -8) = 0x49ee;
+        *(undefined2 *)(puVar13 + -10) = 0x14f8;
+        uVar15 = 0x1048;
+        *(undefined2 *)(puVar13 + -0xc) = 0x38c;
+        sVar8 = IWarpMAFromLppl(*(PLANET **)(puVar13 + -8),*(short **)(puVar13 + -4));
+        puVar12 = puVar13 + -2;
+        if (0 < sVar8) goto LAB_1058_03ab;
+      }
+      *(undefined2 *)(puVar13 + -4) = 0x11;
+      *(undefined2 *)(puVar13 + -6) = uVar15;
+      uVar15 = 0x14f8;
+      *(undefined2 *)(puVar13 + -8) = 0x3a0;
+      uVar9 = GetAsyncKeyState(*(short *)(puVar13 + -4));
+      puVar11 = puVar13 + -4;
+      puVar13 = puVar13 + -4;
+      puVar12 = puVar11;
+      if ((uVar9 & 0xfffe) != 0) goto LAB_1058_03ab;
+    }
+    *(HCURSOR *)(puVar13 + -2) = hcurScanner;
+    *(undefined2 *)(puVar13 + -4) = uVar15;
+    *(undefined2 *)(puVar13 + -6) = 0x3c0;
+    setcursor(*(HCURSOR *)(puVar13 + -2));
+  }
+  else {
+LAB_1058_03ab:
+    *(HCURSOR *)(puVar12 + -2) = hcurScanAdd;
+    *(undefined2 *)(puVar12 + -4) = uVar15;
+    *(undefined2 *)(puVar12 + -6) = 0x3b4;
+    setcursor(*(HCURSOR *)(puVar12 + -2));
+  }
+  return 1;
 }
 
 
@@ -583,7 +630,6 @@ short ScanToPt(short d)
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: dPlanRange */
 /* WARNING: Removing unreachable block (ram,0x105838a5) */
 /* WARNING: Removing unreachable block (ram,0x10583928) */
 /* WARNING: Removing unreachable block (ram,0x10581d7f) */
@@ -594,48 +640,71 @@ short ScanToPt(short d)
 short DrawScanner(HDC hdc,RECT *prc)
 
 {
-  double dVar1;
-  HGDIOBJ HVar2;
+  short sVar1;
+  short sVar2;
   short sVar3;
-  uint uVar4;
-  HBRUSH HVar5;
-  HPEN HVar6;
-  undefined2 uVar7;
-  int *piVar8;
-  PLANET *pPVar9;
-  THING *pTVar10;
-  FLEET *pFVar11;
-  int iVar12;
-  HDC unaff_SI;
-  RECT *unaff_DI;
+  short sVar4;
+  char cVar5;
+  FLEET *pFVar6;
+  short sVar7;
+  uint uVar8;
+  uint uVar9;
+  HGDIOBJ HVar10;
+  int dx_00;
+  short sVar11;
+  short sVar12;
+  short sVar13;
+  int iVar14;
+  int iVar15;
+  int iVar16;
+  int iVar17;
+  int iVar18;
+  HDC HVar19;
+  short sVar20;
+  int iVar21;
+  HGDIOBJ HVar22;
+  HBRUSH HVar23;
+  HPEN HVar24;
+  HGDIOBJ HVar25;
+  HGDIOBJ HVar26;
+  int iVar27;
+  undefined2 uVar28;
+  int *piVar29;
+  PLANET *pPVar30;
+  int iVar31;
+  THING *pTVar32;
+  int iVar33;
+  undefined2 unaff_SI;
+  undefined2 unaff_DI;
   undefined2 unaff_SS;
-  bool bVar13;
-  COLORREF CVar14;
-  long lVar15;
-  RECT *pRVar16;
-  undefined2 uVar17;
-  HDC HVar18;
+  bool bVar34;
+  bool bVar35;
+  COLORREF CVar36;
+  COLORREF CVar37;
+  PLANET *pPVar38;
+  long lVar39;
+  RECT *pRVar40;
+  undefined2 uVar41;
+  HDC HVar42;
   THING *in_stack_0000f586;
-  short dPlanRange;
-  short *psVar19;
-  short *psVar20;
-  short sVar21;
-  short rgrad [500];
-  short fPlanetScanner;
-  short rgy [240];
+  PLANET *in_stack_0000f588;
+  PLANET *local_a76;
+  DRAWCIR local_a74;
+  short local_a5c [250];
+  short local_868 [250];
+  uint local_674;
+  short local_672 [240];
   THING *local_492;
-  HBITMAP hbmpTrSav;
-  THING *lpthMac;
-  uint l;
-  THING *lpth;
-  undefined4 hbr;
-  int pt2;
-  short fTerra;
-  undefined4 crBack;
-  undefined4 l__1146;
+  PLANET *local_490;
+  THING *local_48e;
+  PLANET *local_48c;
+  undefined4 local_48a;
+  undefined4 local_486;
+  POINT local_482;
+  COLORREF crBack;
+  long l;
   RECT rc;
-  uint ptOrigin;
-  uint local_46c;
+  POINT ptOrigin;
   short fDoDraw;
   short xLeft;
   HBRUSH hbrSav;
@@ -643,33 +712,25 @@ short DrawScanner(HDC hdc,RECT *prc)
   short yMin;
   ushort mdScanBase;
   short fStargate;
-  THING *lpthMac__1116;
-  uint local_45a;
-  short ptSelMain;
-  short local_456;
+  THING *lpthMac;
+  POINT ptSelMain;
   short fStarbase;
   short fMA;
   short fSelected;
   POINT ptO;
   short idP;
   short dRange;
-  short rcDraw;
-  short sStack_444;
-  short sStack_442;
-  short sStack_440;
+  RECT rcDraw;
   short yOff;
-  short rcClip;
-  short local_43a;
-  short local_438;
-  short local_436;
+  RECT rcClip;
   short iord;
   HBITMAP hbmpSav;
   short xMin;
   short i;
   FLEET *lpfl;
-  THING *lpth__1064;
+  THING *lpth;
   HDC hdcMem;
-  char rgWhatsHere [1000];
+  char rgWhatsHere [999];
   short yMax;
   PLANET *lppl;
   HDC hdcScreen;
@@ -679,10 +740,9 @@ short DrawScanner(HDC hdc,RECT *prc)
   short dy;
   short yBmp;
   PLANET *lpplMac;
-  short local_26;
   POINT ptD;
   short iBkPrev;
-  undefined4 crFore;
+  COLORREF crFore;
   short id;
   POINT pt;
   short xMax;
@@ -693,77 +753,72 @@ short DrawScanner(HDC hdc,RECT *prc)
   short dExpand;
   short xOff;
   
-  mdScanBase = grbitScan & 0xf;
+  sVar7 = xScanTop;
+  sVar20 = yScanTop;
+  uVar8 = grbitScan & 0xf;
   hdcScreen = 0;
   hbmpScreen = 0;
   if (((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) &&
       (((uint)gd.grBits2 & 1) == 0)) && (((uint)gd.grBits >> 1 & 1) == 0)) {
-    xLeft = xScanTop;
-    yTop = yScanTop;
-    ptOrigin = PtToScan(4000 - xScanTop);
-    ptOrigin = ptOrigin & 7;
-    local_46c = PtToScan(4000 - yScanTop);
-    local_46c = local_46c & 7;
+    uVar9 = PtToScan(4000 - xScanTop);
+    ptOrigin.x = uVar9 & 7;
+    uVar9 = PtToScan(4000 - yScanTop);
+    ptOrigin.y = uVar9 & 7;
     GetClientRect(hwndScanner,&rc);
     ExcludeClipRect(hdc,0,rc.bottom - dySBar,rc.right,rc.bottom);
-    l__1146._0_2_ = prc->right - prc->left;
-    l__1146._2_2_ = (int)l__1146 >> 0xf;
-    l__1146 = __aFulmul((long)(int)l__1146,(long)(prc->bottom - prc->top));
-    if ((long)l__1146 < 48000) {
-      hdcMem = CreateCompatibleDC(hdc);
-      if (hdcMem != 0) {
+    l._0_2_ = prc->right - prc->left;
+    l._2_2_ = (int)l >> 0xf;
+    l = __aFulmul((long)(int)l,(long)(prc->bottom - prc->top));
+    if (l < 48000) {
+      HVar19 = CreateCompatibleDC(hdc);
+      if (HVar19 != 0) {
         hbmpScreen = CreateCompatibleBitmap
                                (hdc,prc->right - (prc->left & 0xfff8U),
                                 prc->bottom - (prc->top & 0xfff8U));
         if (hbmpScreen == 0) {
-          DeleteDC(hdcMem);
+          DeleteDC(HVar19);
         }
       }
-      HVar18 = hdcMem;
       if (hbmpScreen != 0) {
         hdcScreen = hdc;
-        hdc = hdcMem;
-        hbmpXSav = SelectObject(hdcMem,hbmpScreen);
-        SetWindowOrg(HVar18,prc->left & 0xfff8,prc->top & 0xfff8);
+        hbmpXSav = SelectObject(HVar19,hbmpScreen);
+        SetWindowOrg(HVar19,prc->left & 0xfff8,prc->top & 0xfff8);
         pt.y = 0;
         pt.x = 0;
         ClientToScreen(hwndScanner,&pt);
-        ptOrigin = (ptOrigin + 8) - (pt.x & 7U) & 7;
-        local_46c = (local_46c + 8) - (pt.y & 7U) & 7;
-        rcDraw = prc->left;
-        sStack_444 = prc->top;
-        sStack_442 = prc->right;
-        sStack_440 = prc->bottom;
+        ptOrigin.x = (ptOrigin.x + 8U) - (pt.x & 7U) & 7;
+        ptOrigin.y = (ptOrigin.y + 8U) - (pt.y & 7U) & 7;
+        hdc = HVar19;
       }
     }
-    uVar17 = 0x1120;
-    pRVar16 = prc;
-    HVar18 = hdc;
-    HVar2 = GetStockObject(4);
-    FillRect(HVar18,(RECT *)CONCAT22(uVar17,pRVar16),HVar2);
-    rcClip = prc->left;
-    local_43a = prc->top;
-    local_438 = prc->right;
-    local_436 = prc->bottom;
-    if (((iScanZoom < 3) || (mdScanBase != 4)) &&
-       ((iScanZoom < 0 || ((mdScanBase != 1 && (mdScanBase != 2)))))) {
-      dExpand = 9;
+    uVar41 = 0x1120;
+    pRVar40 = prc;
+    HVar19 = hdc;
+    HVar10 = GetStockObject(4);
+    FillRect(HVar19,(RECT *)CONCAT22(uVar41,pRVar40),HVar10);
+    sVar1 = prc->left;
+    sVar2 = prc->top;
+    sVar3 = prc->right;
+    sVar4 = prc->bottom;
+    if (((iScanZoom < 3) || (uVar8 != 4)) &&
+       ((iScanZoom < 0 || ((uVar8 != 1 && (uVar8 != 2)))))) {
+      dx_00 = 9;
     }
     else {
-      dExpand = 0x14;
+      dx_00 = 0x14;
     }
-    ExpandRc(prc,dExpand,dExpand);
+    ExpandRc(prc,dx_00,dx_00);
     prc->bottom = prc->bottom + 0xe;
-    dx = ScanToPt(prc->right - prc->left);
-    dy = ScanToPt(prc->bottom - prc->top);
-    sVar3 = ScanToPt(prc->left);
-    xMin = sVar3 + xLeft;
-    xMax = xMin + dx;
-    sVar3 = ScanToPt(prc->top);
-    yMax = (dGalInv - yTop) - sVar3;
-    yMin = yMax - dy;
-    xOff = -xLeft;
-    yOff = dGalInv - yTop;
+    sVar11 = ScanToPt(prc->right - prc->left);
+    sVar12 = ScanToPt(prc->bottom - prc->top);
+    sVar13 = ScanToPt(prc->left);
+    iVar14 = sVar13 + sVar7;
+    iVar15 = iVar14 + sVar11;
+    sVar11 = ScanToPt(prc->top);
+    iVar27 = (dGalInv - sVar20) - sVar11;
+    iVar16 = iVar27 - sVar12;
+    iVar17 = -sVar7;
+    iVar18 = dGalInv - sVar20;
     id = 1;
     for (i = 0; i < 0x10; i = i + 1) {
       if ((*(uint *)((int)&rgshdef[0].wFlags + i * 0x93) >> 9 & 1) != 0) {
@@ -771,545 +826,524 @@ short DrawScanner(HDC hdc,RECT *prc)
       }
       id = id << 1;
     }
-    hdcMem = CreateCompatibleDC(hdc);
-    hbmpSav = SelectObject(hdcMem,hbmpScanner);
+    HVar19 = CreateCompatibleDC(hdc);
+    HVar10 = SelectObject(HVar19,hbmpScanner);
     if (sel.grobj == grobjNone) {
-      local_456 = -2;
-      ptSelMain = -2;
+      ptSelMain.y = -2;
+      ptSelMain.x = -2;
     }
     else {
-      ptSelMain = sel.pt.x;
-      local_456 = sel.pt.y;
+      ptSelMain.x = sel.pt.x;
+      ptSelMain.y = sel.pt.y;
     }
     if (((uint)gd.grBits2 >> 10 & 1) == 0) {
       LinkFleets(0);
     }
     else {
       for (i = 0; i < cFleet; i = i + 1) {
-                    /* WARNING: Load size is inaccurate */
-        pFVar11 = ((FLEET **)rglpfl)[i];
-        iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-        lpfl = (FLEET *)CONCAT22(iVar12,pFVar11);
-        if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-        pFVar11->wFlags_0x4 = pFVar11->wFlags_0x4 & 0xf7ff;
+        iVar21 = *(int *)((FLEET **)rglpfl + i);
+        iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+        if ((iVar21 == 0) && (iVar31 == 0)) break;
+        *(uint *)(iVar21 + 4) = *(uint *)(iVar21 + 4) & 0xf7ff;
       }
     }
     if ((grbitScan & 0x20) != 0) {
-      fPlanetScanner = 0;
-      IntersectClipRect(hdc,rcClip,local_43a,local_438,local_436);
-      hbrSav = SelectObject(hdc,hbrRadar);
-      hpenSav = SelectObject(hdc,hpenRadar);
-      dPlanRange = lpPlanets._2_2_;
-      lpplMac = (PLANET *)lpPlanets + cPlanet;
-      local_26 = lpPlanets._2_2_;
+      local_674 = 0;
+      local_a74.rgx = local_868;
+      local_a74.rgy = local_672;
+      local_a74.rgrad = local_a5c;
+      local_a74.cCur = 0;
+      local_a74.cMax = 0xfa;
+      local_a74.hdc = hdc;
+      local_a74.rcClip.left = prc->left;
+      local_a74.rcClip.top = prc->top;
+      local_a74.rcClip.right = prc->right;
+      local_a74.rcClip.bottom = prc->bottom;
+      local_a74.fCovered = 0;
+      local_a74.fHollowOut = 0;
+      IntersectClipRect(hdc,sVar1,sVar2,sVar3,sVar4);
+      HVar26 = SelectObject(hdc,hbrRadar);
+      HVar25 = SelectObject(hdc,hpenRadar);
+      local_a76 = lpPlanets._2_2_;
+      pPVar30 = (PLANET *)lpPlanets + cPlanet;
       lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,(PLANET *)lpPlanets);
-      while ((PLANET *)lppl < lpplMac) {
+      in_stack_0000f588 = (PLANET *)lpPlanets;
+      while ((PLANET *)lppl < pPVar30) {
+        uVar41 = (undefined2)((ulong)lppl >> 0x10);
         if (((PLANET *)lppl)->iPlayer == idPlayer) {
-          dRange = GetPlanetScannerRange(lppl,&dPlanRange);
-          if (0 < dPlanRange) {
-            fPlanetScanner = 1;
+          dRange = GetPlanetScannerRange(lppl,&local_a76);
+          if (0 < (int)local_a76) {
+            local_674 = 1;
           }
           if (vpctRadarView < 100) {
             dRange = MulDiv(dRange,vpctRadarView,100);
           }
-          id = lppl->id;
-          rc.left = PtToScan((xOff + ((POINT *)rgptPlan + id)->x) - dRange);
-          rc.top = PtToScan((yOff - *(int *)((int)&rgptPlan[0].y + id * 4)) - dRange);
-          rc.right = PtToScan(xOff + ((POINT *)rgptPlan + id)->x + dRange);
-          rc.bottom = PtToScan((yOff - *(int *)((int)&rgptPlan[0].y + id * 4)) + dRange);
-          DrawRadarCircle(&stack0xf58c,&rc);
+          iVar21 = lppl->id;
+          rc.left = PtToScan((iVar17 + ((POINT *)rgptPlan + iVar21)->x) - dRange);
+          rc.top = PtToScan((iVar18 - *(int *)((int)&rgptPlan[0].y + iVar21 * 4)) - dRange
+                           );
+          rc.right = PtToScan(iVar17 + ((POINT *)rgptPlan + iVar21)->x + dRange);
+          rc.bottom = PtToScan((iVar18 - *(int *)((int)&rgptPlan[0].y + iVar21 * 4)) +
+                               dRange);
+          DrawRadarCircle(&local_a74,&rc);
         }
-        lppl = (PLANET *)lppl + 1;
+        lppl = (PLANET *)CONCAT22(uVar41,(PLANET *)lppl + 1);
       }
       for (i = 0; i < cFleet; i = i + 1) {
                     /* WARNING: Load size is inaccurate */
-        pFVar11 = ((FLEET **)rglpfl)[i];
-        iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-        lpfl = (FLEET *)CONCAT22(iVar12,pFVar11);
-        if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-        if (pFVar11->iPlayer == idPlayer) {
+        pFVar6 = ((FLEET **)rglpfl)[i];
+        iVar21 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+        if ((pFVar6 == (FLEET *)0x0) && (iVar21 == 0)) break;
+        if (pFVar6->iPlayer == idPlayer) {
           dRange = GetFleetScannerRange
-                             ((FLEET *)CONCAT22(iVar12,pFVar11),&dPlanRange,(short *)0x0,
-                              (short *)0x0);
-          if (0 < dPlanRange) {
-            fPlanetScanner = fPlanetScanner | 2;
+                             ((FLEET *)CONCAT22(iVar21,pFVar6),&local_a76,(short *)0x0,(short *)0x0)
+          ;
+          if (0 < (int)local_a76) {
+            local_674 = local_674 | 2;
           }
           if (0 < dRange) {
             if (vpctRadarView < 100) {
               dRange = MulDiv(dRange,vpctRadarView,100);
             }
-            rc.left = PtToScan((xOff + (&((FLEET *)lpfl)->pt)->x) - dRange);
-            rc.top = PtToScan((yOff - (((FLEET *)lpfl)->pt).y) - dRange);
-            rc.right = PtToScan(xOff + (&((FLEET *)lpfl)->pt)->x + dRange);
-            rc.bottom = PtToScan((yOff - (((FLEET *)lpfl)->pt).y) + dRange);
-            DrawRadarCircle(&stack0xf58c,&rc);
+            rc.left = PtToScan((iVar17 + (&pFVar6->pt)->x) - dRange);
+            rc.top = PtToScan((iVar18 - (pFVar6->pt).y) - dRange);
+            rc.right = PtToScan(iVar17 + (&pFVar6->pt)->x + dRange);
+            rc.bottom = PtToScan((iVar18 - (pFVar6->pt).y) + dRange);
+            DrawRadarCircle(&local_a74,&rc);
           }
         }
       }
-      DrawRadarCircle(&stack0xf58c,(RECT *)0x0);
+      DrawRadarCircle(&local_a74,(RECT *)0x0);
       if (hbrRadarNear == 0) {
         if (vcScreenColors < 9) {
-          uVar4 = 0x7f7f;
+          uVar9 = 0x7f7f;
         }
         else {
-          uVar4 = 0x6060;
+          uVar9 = 0x6060;
         }
-        hbrRadarNear = HbrGet((ulong)uVar4);
+        hbrRadarNear = HbrGet((ulong)uVar9);
       }
       if (hpenRadarNear == 0) {
         if (vcScreenColors < 9) {
-          uVar4 = 0x7f7f;
+          uVar9 = 0x7f7f;
         }
         else {
-          uVar4 = 0x6060;
+          uVar9 = 0x6060;
         }
-        hpenRadarNear = CreatePen(0,1,(ulong)uVar4);
+        hpenRadarNear = CreatePen(0,1,(ulong)uVar9);
       }
       SelectObject(hdc,hbrRadarNear);
       SelectObject(hdc,hpenRadarNear);
-      if ((fPlanetScanner & 1U) != 0) {
-        dPlanRange = lpPlanets._2_2_;
-        lpplMac = (PLANET *)lpPlanets + cPlanet;
-        local_26 = lpPlanets._2_2_;
+      if ((local_674 & 1) != 0) {
+        local_a76 = lpPlanets._2_2_;
+        pPVar30 = (PLANET *)lpPlanets + cPlanet;
         lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,(PLANET *)lpPlanets);
-        while ((PLANET *)lppl < lpplMac) {
+        in_stack_0000f588 = (PLANET *)lpPlanets;
+        while ((PLANET *)lppl < pPVar30) {
+          uVar41 = (undefined2)((ulong)lppl >> 0x10);
           if (((PLANET *)lppl)->iPlayer == idPlayer) {
-            dRange = GetPlanetScannerRange(lppl,&dPlanRange);
-            if (0 < dPlanRange) {
-              dRange = dRange >> 1;
+            sVar20 = GetPlanetScannerRange(lppl,&local_a76);
+            if (0 < (int)local_a76) {
+              dRange = sVar20 >> 1;
               if (vpctRadarView < 100) {
                 dRange = MulDiv(dRange,vpctRadarView,100);
               }
-              id = lppl->id;
-              rc.left = PtToScan((xOff + ((POINT *)rgptPlan + id)->x) - dRange);
-              rc.top = PtToScan((yOff - *(int *)((int)&rgptPlan[0].y + id * 4)) - dRange);
-              rc.right = PtToScan(xOff + ((POINT *)rgptPlan + id)->x + dRange);
-              rc.bottom = PtToScan((yOff - *(int *)((int)&rgptPlan[0].y + id * 4)) +
+              iVar21 = lppl->id;
+              rc.left = PtToScan((iVar17 + ((POINT *)rgptPlan + iVar21)->x) - dRange);
+              rc.top = PtToScan((iVar18 - *(int *)((int)&rgptPlan[0].y + iVar21 * 4)) -
+                                dRange);
+              rc.right = PtToScan(iVar17 + ((POINT *)rgptPlan + iVar21)->x + dRange);
+              rc.bottom = PtToScan((iVar18 - *(int *)((int)&rgptPlan[0].y + iVar21 * 4)) +
                                    dRange);
-              DrawRadarCircle(&stack0xf58c,&rc);
+              DrawRadarCircle(&local_a74,&rc);
             }
           }
-          lppl = (PLANET *)lppl + 1;
+          lppl = (PLANET *)CONCAT22(uVar41,(PLANET *)lppl + 1);
         }
       }
-      if ((fPlanetScanner & 2U) != 0) {
+      if ((local_674 & 2) != 0) {
         for (i = 0; i < cFleet; i = i + 1) {
                     /* WARNING: Load size is inaccurate */
-          pFVar11 = ((FLEET **)rglpfl)[i];
-          iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-          lpfl = (FLEET *)CONCAT22(iVar12,pFVar11);
-          if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-          if (pFVar11->iPlayer == idPlayer) {
-            dRange = GetFleetScannerRange
-                               ((FLEET *)CONCAT22(iVar12,pFVar11),&dPlanRange,(short *)0x0,
-                                (short *)0x0);
-            if (0 < dPlanRange) {
+          pFVar6 = ((FLEET **)rglpfl)[i];
+          iVar21 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+          if ((pFVar6 == (FLEET *)0x0) && (iVar21 == 0)) break;
+          if (pFVar6->iPlayer == idPlayer) {
+            GetFleetScannerRange
+                      ((FLEET *)CONCAT22(iVar21,pFVar6),&local_a76,(short *)0x0,(short *)0x0);
+            if (0 < (int)local_a76) {
               if (vpctRadarView < 100) {
-                dPlanRange = MulDiv(dPlanRange,vpctRadarView,100);
+                local_a76 = (PLANET *)MulDiv((short)local_a76,vpctRadarView,100);
               }
-              rc.left = PtToScan((xOff + (&((FLEET *)lpfl)->pt)->x) - dPlanRange);
-              rc.top = PtToScan((yOff - (((FLEET *)lpfl)->pt).y) - dPlanRange);
-              rc.right = PtToScan(xOff + (&((FLEET *)lpfl)->pt)->x + dPlanRange);
-              rc.bottom = PtToScan((yOff - (((FLEET *)lpfl)->pt).y) + dPlanRange);
-              DrawRadarCircle(&stack0xf58c,&rc);
+              rc.left = PtToScan((iVar17 + (&pFVar6->pt)->x) - (int)local_a76);
+              rc.top = PtToScan((iVar18 - (pFVar6->pt).y) - (int)local_a76);
+              rc.right = PtToScan(iVar17 + (&pFVar6->pt)->x + (int)local_a76);
+              rc.bottom = PtToScan((iVar18 - (pFVar6->pt).y) + (int)local_a76);
+              DrawRadarCircle(&local_a74,&rc);
             }
           }
         }
       }
-      sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-      if (sVar3 == raMassAccel) {
-        dPlanRange = lpThings._2_2_;
-        lpthMac__1116 = (THING *)lpThings + cThing;
-        local_45a = lpThings._2_2_;
-        lpth__1064 = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
-        while ((THING *)lpth__1064 < lpthMac__1116) {
-          if (((lpth__1064->idFull >> 0xd == 1) &&
-              ((lpth__1064->idFull >> 9 & 0xf) == idPlayer)) &&
-             (uVar17 = (undefined2)((ulong)lpth__1064 >> 0x10),
-             (((&((THING *)lpth__1064)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) != 0)) {
-            iVar12 = (((&((THING *)lpth__1064)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4;
-            dPlanRange = iVar12 * iVar12;
+      sVar20 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
+      if (sVar20 == raMassAccel) {
+        local_a76 = lpThings._2_2_;
+        pTVar32 = (THING *)lpThings + cThing;
+        lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
+        in_stack_0000f588 = (THING *)lpThings;
+        while ((THING *)lpth < pTVar32) {
+          uVar41 = (undefined2)((ulong)lpth >> 0x10);
+          if (((lpth->idFull >> 0xd == 1) && ((lpth->idFull >> 9 & 0xf) == idPlayer)) &&
+             ((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) != 0)) {
+            iVar21 = (((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4;
+            local_a76 = (PLANET *)(iVar21 * iVar21);
             if (vpctRadarView < 100) {
-              dPlanRange = MulDiv(dPlanRange,vpctRadarView,100);
+              local_a76 = (PLANET *)MulDiv((short)local_a76,vpctRadarView,100);
             }
-            rc.left = PtToScan((xOff + (&((THING *)lpth__1064)->pt)->x) - dPlanRange);
-            rc.top = PtToScan((yOff - (((THING *)lpth__1064)->pt).y) - dPlanRange);
-            rc.right = PtToScan(xOff + (&((THING *)lpth__1064)->pt)->x + dPlanRange);
-            rc.bottom = PtToScan((yOff - (((THING *)lpth__1064)->pt).y) + dPlanRange);
-            DrawRadarCircle(&stack0xf58c,&rc);
+            rc.left = PtToScan((iVar17 + (&((THING *)lpth)->pt)->x) - (int)local_a76);
+            rc.top = PtToScan((iVar18 - (((THING *)lpth)->pt).y) - (int)local_a76);
+            rc.right = PtToScan(iVar17 + (&((THING *)lpth)->pt)->x + (int)local_a76);
+            rc.bottom = PtToScan((iVar18 - (((THING *)lpth)->pt).y) + (int)local_a76);
+            DrawRadarCircle(&local_a74,&rc);
           }
-          lpth__1064 = (THING *)lpth__1064 + 1;
+          lpth = (THING *)CONCAT22(uVar41,(THING *)lpth + 1);
         }
       }
-      DrawRadarCircle(&stack0xf58c,(RECT *)0x0);
+      DrawRadarCircle(&local_a74,(RECT *)0x0);
       SelectObject(hdc,hbrRadar);
       SelectObject(hdc,hpenRadar);
-      if (mdScanBase != 5) {
-        id = sel.fl.id;
+      if (uVar8 != 5) {
+        iVar21 = sel.fl.id;
         if (sel.grobj != grobjFleet) {
-          id = -1;
+          iVar21 = -1;
         }
         if (sel.scan.grobj == grobjFleet) {
-          id2 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
+          sVar20 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
         }
         else {
-          id2 = -1;
+          sVar20 = -1;
         }
-        SelectObject(hdcMem,hbmpScanShip);
+        SelectObject(HVar19,hbmpScanShip);
         SetTextColor(hdc,0);
         SetBkColor(hdc,0xffffff);
         for (i = 0; i < cFleet; i = i + 1) {
                     /* WARNING: Load size is inaccurate */
-          pFVar11 = ((FLEET **)rglpfl)[i];
-          iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-          lpfl = (FLEET *)CONCAT22(iVar12,pFVar11);
-          if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-          if (pFVar11->idPlanet == -1) {
-            lVar15 = CShipsScanVis((FLEET *)CONCAT22(iVar12,pFVar11));
-            if (((0 < lVar15) || (lpfl->id == id)) || (lpfl->id == id2)) {
-              uVar17 = (undefined2)((ulong)lpfl >> 0x10);
-              pt.x = (&((FLEET *)lpfl)->pt)->x;
-              pt.y = (((FLEET *)lpfl)->pt).y;
-              if ((((xMin <= pt.x) && (pt.x < xMax)) && (yMin <= pt.y)) && (pt.y < yMax)) {
-                pt.x = PtToScan((int)&((RECT *)pt.x)->left + xOff);
-                pt.y = PtToScan(yOff - pt.y);
-                uVar17 = (undefined2)((ulong)lpfl >> 0x10);
-                if (((&((FLEET *)lpfl)->pt)->x == ptSelMain) &&
-                   ((((FLEET *)lpfl)->pt).y == local_456)) {
-                  fSelected = 1;
+          pFVar6 = ((FLEET **)rglpfl)[i];
+          iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+          lpfl = (FLEET *)CONCAT22(iVar31,pFVar6);
+          if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0)) break;
+          if (pFVar6->idPlanet == -1) {
+            lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31,pFVar6));
+            if (((0 < lVar39) || (lpfl->id == iVar21)) || (lpfl->id == sVar20)) {
+              pt.x = (&pFVar6->pt)->x;
+              pt.y = (pFVar6->pt).y;
+              if ((((iVar14 <= pt.x) && (pt.x < iVar15)) && (iVar16 <= pt.y)) && (pt.y < iVar27)) {
+                pt.x = PtToScan(iVar17 + pt.x);
+                pt.y = PtToScan(iVar18 - pt.y);
+                if (((&pFVar6->pt)->x == ptSelMain.x) && ((pFVar6->pt).y == ptSelMain.y)) {
+                  bVar35 = true;
                 }
                 else {
-                  fSelected = 0;
+                  bVar35 = false;
                 }
-                if (fSelected == 0) {
-                  GetScanFleetOrientation(lpfl,&ptO,&ptD);
-                  unaff_DI = (RECT *)(pt.x - ptD.x / 2);
-                  unaff_SI = hdc;
-                  BitBlt(hdc,(short)unaff_DI,pt.y - ptD.y / 2,ptD.x,ptD.y,hdcMem,ptO.x,ptO.y,
+                if (bVar35) {
+                  SelectObject(HVar19,hbmpScanner);
+                  BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0xb,0x50,0x8800c6);
+                  SelectObject(HVar19,hbmpScanShip);
+                }
+                else {
+                  GetScanFleetOrientation((FLEET *)CONCAT22(iVar31,pFVar6),&ptO,&ptD);
+                  BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,HVar19,ptO.x,ptO.y,
                          0x8800c6);
-                }
-                else {
-                  SelectObject(hdcMem,hbmpScanner);
-                  BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,
-                         0xb,0x50,0x8800c6);
-                  unaff_DI = (RECT *)hbmpScanShip;
-                  unaff_SI = hdcMem;
-                  SelectObject(hdcMem,hbmpScanShip);
                 }
               }
             }
           }
         }
-        SelectObject(hdcMem,hbmpScanner);
+        SelectObject(HVar19,hbmpScanner);
       }
-      SelectObject(hdc,hpenSav);
-      SelectObject(hdc,hbrSav);
+      SelectObject(hdc,HVar25);
+      SelectObject(hdc,HVar26);
     }
     if ((grbitScan & 0x40) != 0) {
-      psVar19 = rgy;
-      psVar20 = rgrad;
-      sVar3 = 0;
-      sVar21 = 0xfa;
+      local_a74.rgx = local_868;
+      local_a74.rgy = local_672;
+      local_a74.rgrad = local_a5c;
+      local_a74.cCur = 0;
+      local_a74.cMax = 0xfa;
+      local_a74.hdc = hdc;
+      local_a74.rcClip.left = prc->left;
+      local_a74.rcClip.top = prc->top;
+      local_a74.rcClip.right = prc->right;
+      local_a74.rcClip.bottom = prc->bottom;
+      local_a74.fCovered = 0;
+      local_a74.fHollowOut = 1;
       for (i = 0; i < 3; i = i + 1) {
         UnrealizeObject(((ushort *)rghbrPat)[i]);
       }
-      SetBrushOrg(hdc,ptOrigin,local_46c);
-      IntersectClipRect(hdc,rcClip,local_43a,local_438,local_436);
-      hbrSav = SelectObject(hdc,rghbrPat[0]);
-      HVar18 = hdc;
-      HVar2 = GetStockObject(8);
-      hpenSav = SelectObject(HVar18,HVar2);
-      fPlanetScanner = GetROP2(hdc);
+      SetBrushOrg(hdc,ptOrigin.x,ptOrigin.y);
+      IntersectClipRect(hdc,sVar1,sVar2,sVar3,sVar4);
+      HVar26 = SelectObject(hdc,rghbrPat[0]);
+      HVar42 = hdc;
+      HVar25 = GetStockObject(8);
+      HVar25 = SelectObject(HVar42,HVar25);
+      local_674 = GetROP2(hdc);
       SetBkColor(hdc,0);
-      for (j = 0; j < 3; j = j + 1) {
+      for (j = 0; pPVar30 = lpThings._2_2_, j < 3; j = j + 1) {
         if (((j != 0) || ((grbitScanMines & 1) != 0)) &&
            (((j != 1 || ((grbitScanMines & 2) != 0)) &&
             ((j != 2 || ((grbitScanMines & 0xc) != 0)))))) {
           for (i = 0; i < 3; i = i + 1) {
-            for (dPlanRange = 0; dPlanRange <= (int)(uint)(i == 0); dPlanRange = dPlanRange + 1) {
-              SetBrushOrg(hdc,ptOrigin,local_46c);
+            for (local_a76 = (PLANET *)0x0; (int)local_a76 <= (int)(uint)(i == 0);
+                local_a76 = (PLANET *)((int)&local_a76->id + 1)) {
+              SetBrushOrg(hdc,ptOrigin.x,ptOrigin.y);
               SelectObject(hdc,((ushort *)rghbrPat)[i]);
-              if (dPlanRange == 0) {
-                uVar17 = *(undefined2 *)(j * 4 + rgcrScanMine);
-                uVar7 = *(undefined2 *)(j * 4 + hbrBlue);
+              if (local_a76 == (PLANET *)0x0) {
+                uVar41 = *(undefined2 *)(j * 4 + rgcrScanMine);
+                uVar28 = *(undefined2 *)(j * 4 + hbrBlue);
               }
               else {
-                uVar17 = 0xff;
-                uVar7 = 0xff;
+                uVar41 = 0xff;
+                uVar28 = 0xff;
               }
-              SetTextColor(hdc,CONCAT22(uVar7,uVar17));
-              lpthMac__1116 = (THING *)lpThings + cThing;
-              local_45a = lpThings._2_2_;
-              lpth__1064 = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
+              SetTextColor(hdc,CONCAT22(uVar28,uVar41));
+              pTVar32 = (THING *)lpThings + cThing;
+              lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
               in_stack_0000f586 = (THING *)lpThings;
-              while ((THING *)lpth__1064 < lpthMac__1116) {
-                if ((((lpth__1064->idFull >> 0xd == 0) &&
-                     (uVar17 = (undefined2)((ulong)lpth__1064 >> 0x10),
-                     (uint)*(byte *)((int)&((THING *)lpth__1064)->u_THING_0x0006 + 6) == i)) &&
-                    ((j != 0 || ((lpth__1064->idFull >> 9 & 0xf) == idPlayer)))) &&
-                   ((j < 1 || (((lpth__1064->idFull >> 9 & 0xf) != idPlayer &&
-                               (in_stack_0000f586 =
-                                     (THING *)(uint)(*(char *)(idPlayer * 0xc0 + 0x5a12 +
-                                                              (lpth__1064->idFull >> 9 & 0xf)) ==
-                                                    '\x01'),
-                               in_stack_0000f586 != (THING *)(uint)(j == 2))))))) {
-                  if ((j == 2) && ((grbitScanMines & 0xc) != 0xc)) {
-                    if (*(char *)(idPlayer * 0xc0 + 0x5a12 + (lpth__1064->idFull >> 9 & 0xf))
-                        == '\0') {
-                      uVar4 = grbitScanMines & 4;
+              in_stack_0000f588 = lpThings._2_2_;
+              while ((THING *)lpth < pTVar32) {
+                uVar41 = (undefined2)((ulong)lpth >> 0x10);
+                if (((lpth->idFull >> 0xd == 0) &&
+                    ((uint)*(byte *)((int)&((THING *)lpth)->u_THING_0x0006 + 6) == i)) &&
+                   ((j != 0 || ((lpth->idFull >> 9 & 0xf) == idPlayer)))) {
+                  if (j < 1) {
+LAB_1058_21da:
+                    if ((j == 2) && ((grbitScanMines & 0xc) != 0xc)) {
+                      in_stack_0000f588 =
+                           (PLANET *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0)
+                      ;
+                      if (in_stack_0000f588->rgpctMinLevel[(lpth->idFull >> 9 & 0xf) - 6] == 0) {
+                        uVar9 = grbitScanMines & 4;
+                      }
+                      else {
+                        uVar9 = grbitScanMines & 8;
+                      }
+                      if (uVar9 == 0) goto LAB_1058_243c;
                     }
-                    else {
-                      uVar4 = grbitScanMines & 8;
+                    if ((PLANET *)(uint)*(byte *)((int)&((THING *)lpth)->u_THING_0x0006 + 7) ==
+                        local_a76) {
+                      pt.x = (&((THING *)lpth)->pt)->x;
+                      pt.y = (((THING *)lpth)->pt).y;
+                      _sqrt((double)((&((THING *)lpth)->u_THING_0x0006)->thm).cMines);
+                      lVar39 = __ftol((double)CONCAT26(in_stack_0000f588,
+                                                               CONCAT24(in_stack_0000f586,
+                                                                        CONCAT22(unaff_SI,unaff_DI))
+                                                              ));
+                      iVar21 = (int)lVar39;
+                      rc.left = PtToScan((iVar17 + pt.x) - iVar21);
+                      rc.top = PtToScan((iVar18 - pt.y) - iVar21);
+                      rc.right = PtToScan(iVar17 + pt.x + iVar21);
+                      rc.bottom = PtToScan((iVar18 - pt.y) + iVar21);
+                      DrawRadarCircle(&local_a74,&rc);
+                      id = 0;
+                      while ((id < game.cPlanMax &&
+                             ((((POINT *)rgptPlan + id)->x != pt.x ||
+                              (*(int *)((int)&rgptPlan[0].y + id * 4) != pt.y))))) {
+                        id = id + 1;
+                      }
+                      if (id == game.cPlanMax) {
+                        pt.x = PtToScan(iVar17 + pt.x);
+                        pt.y = PtToScan(iVar18 - pt.y);
+                        dRange = PtToScan(1);
+                        if (dRange < 1) {
+                          dRange = 1;
+                        }
+                        else if (3 < dRange) {
+                          dRange = 3;
+                        }
+                        SetRect(&rc,pt.x - dRange,pt.y - dRange,pt.x + dRange + 1,pt.y + dRange + 1)
+                        ;
+                        SetBkColor(hdc,CONCAT22(*(undefined2 *)(j * 4 + hbrBlue),
+                                                *(undefined2 *)(j * 4 + rgcrScanMine)));
+                        ExtTextOut(hdc,rc.left,rc.top,2,&rc,(LPCSTR)0x0,0,(short *)0x0);
+                        SetBkColor(hdc,0);
+                      }
                     }
-                    if (uVar4 == 0) goto LAB_1058_243c;
                   }
-                  if ((uint)*(byte *)((int)&((THING *)lpth__1064)->u_THING_0x0006 + 7) == dPlanRange
-                     ) {
-                    pt.x = (&((THING *)lpth__1064)->pt)->x;
-                    pt.y = (((THING *)lpth__1064)->pt).y;
-                    dVar1 = (double)((&((THING *)lpth__1064)->u_THING_0x0006)->thm).cMines;
-                    _sqrt(SUB84(dVar1,0),
-                                  (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)dVar1 >>
-                                                                                    0x20))));
-                    dPlanRange = 0x229d;
-                    lVar15 = __ftol((double)CONCAT26(sVar21,CONCAT24(sVar3,(short *)CONCAT22
-                                                  (psVar20,psVar19))));
-                    dRange = (short)lVar15;
-                    dPlanRange = 0x1118;
-                    rc.left = PtToScan(pt.x + (xOff - dRange));
-                    dPlanRange = 0x1058;
-                    rc.top = PtToScan((yOff - pt.y) - dRange);
-                    dPlanRange = 0x1058;
-                    rc.right = PtToScan((int)(short *)pt.x + dRange + xOff);
-                    dPlanRange = 0x1058;
-                    rc.bottom = PtToScan((yOff - pt.y) + dRange);
-                    dPlanRange = (short)&stack0xf58c;
+                  else if ((lpth->idFull >> 9 & 0xf) != idPlayer) {
+                    in_stack_0000f588 =
+                         (PLANET *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0);
                     in_stack_0000f586 =
-                         ((ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1)->rgpq + 4;
-                    DrawRadarCircle((DRAWCIR *)dPlanRange,&rc);
-                    id = 0;
-                    while ((id < game.cPlanMax &&
-                           (((RECT *)((POINT *)rgptPlan + id)->x != (RECT *)pt.x ||
-                            (*(uint *)((int)&rgptPlan[0].y + id * 4) != pt.y))))) {
-                      id = id + 1;
-                    }
-                    if (id == game.cPlanMax) {
-                      dPlanRange = 0x1058;
-                      pt.x = PtToScan((int)(short *)pt.x + xOff);
-                      dPlanRange = 0x1058;
-                      pt.y = PtToScan(yOff - pt.y);
-                      dPlanRange = 0x1058;
-                      dRange = PtToScan(1);
-                      if (dRange < 1) {
-                        dRange = 1;
-                      }
-                      else if (3 < dRange) {
-                        dRange = 3;
-                      }
-                      dPlanRange = (short)&rc;
-                      SetRect((RECT *)dPlanRange,pt.x - dRange,pt.y - dRange,
-                              (int)(short *)pt.x + dRange + 1,pt.y + dRange + 1);
-                      dPlanRange = *(short *)(j * 4 + hbrBlue);
-                      SetBkColor(hdc,CONCAT22(dPlanRange,*(undefined2 *)(j * 4 + rgcrScanMine)));
-                      dPlanRange = rc.left;
-                      unaff_DI = &rc;
-                      ExtTextOut(hdc,rc.left,rc.top,2,unaff_DI,(LPCSTR)0x0,0,(short *)0x0);
-                      dPlanRange = 0;
-                      in_stack_0000f586 = (THING *)&vrptFleet.iSubsort;
-                      unaff_SI = 0x243c;
-                      SetBkColor(hdc,0);
-                    }
+                         (THING *)(uint)(in_stack_0000f588->rgpctMinLevel
+                                         [(lpth->idFull >> 9 & 0xf) - 6] == 1);
+                    if (in_stack_0000f586 != (THING *)(uint)(j == 2)) goto LAB_1058_21da;
                   }
                 }
 LAB_1058_243c:
-                lpth__1064 = (THING *)lpth__1064 + 1;
+                lpth = (THING *)CONCAT22(uVar41,(THING *)lpth + 1);
               }
-              DrawRadarCircle(&stack0xf58c,(RECT *)0x0);
+              DrawRadarCircle(&local_a74,(RECT *)0x0);
             }
           }
         }
       }
-      if ((sel.scan.grobj == grobjThing) &&
-         (lpth__1064 = (THING *)CONCAT22(lpThings._2_2_,
-                                         (THING *)lpThings + sel.scan.ith),
-         lpth__1064->idFull >> 0xd == 0)) {
-        SetBrushOrg(hdc,ptOrigin,local_46c);
-        SelectObject(hdc,((ushort *)rghbrPat)
-                         [*(byte *)((int)&((THING *)lpth__1064)->u_THING_0x0006 + 6)]);
-        SetTextColor(hdc,0xffff00);
-        uVar17 = (undefined2)((ulong)lpth__1064 >> 0x10);
-        pTVar10 = (THING *)lpth__1064;
-        pt.x = (&pTVar10->pt)->x;
-        pt.y = (pTVar10->pt).y;
-        dVar1 = (double)((&pTVar10->u_THING_0x0006)->thm).cMines;
-        _sqrt(SUB84(dVar1,0),
-                      (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)dVar1 >> 0x20))));
-        dPlanRange = 0x2532;
-        lVar15 = __ftol((double)CONCAT26(sVar21,CONCAT24(sVar3,(short *)CONCAT22(psVar20,
-                                                  psVar19))));
-        dRange = (short)lVar15;
-        dPlanRange = 0x1118;
-        rc.left = PtToScan(pt.x + (xOff - dRange));
-        dPlanRange = 0x1058;
-        rc.top = PtToScan((yOff - pt.y) - dRange);
-        dPlanRange = 0x1058;
-        rc.right = PtToScan((int)(short *)pt.x + dRange + xOff);
-        dPlanRange = 0x1058;
-        rc.bottom = PtToScan((yOff - pt.y) + dRange);
-        dPlanRange = (short)&stack0xf58c;
-        DrawRadarCircle((DRAWCIR *)dPlanRange,&rc);
-        dPlanRange = (short)&stack0xf58c;
-        in_stack_0000f586 = (char *)szMineralTitle + 0x18;
-        DrawRadarCircle((DRAWCIR *)dPlanRange,(RECT *)0x0);
+      if (sel.scan.grobj == grobjThing) {
+        pTVar32 = (THING *)lpThings + sel.scan.ith;
+        lpth = (THING *)CONCAT22(lpThings._2_2_,pTVar32);
+        if (lpth->idFull >> 0xd == 0) {
+          SetBrushOrg(hdc,ptOrigin.x,ptOrigin.y);
+          SelectObject(hdc,((ushort *)rghbrPat)
+                           [*(byte *)((int)&pTVar32->u_THING_0x0006 + 6)]);
+          SetTextColor(hdc,0xffff00);
+          pt.x = (&pTVar32->pt)->x;
+          pt.y = (pTVar32->pt).y;
+          _sqrt((double)((&pTVar32->u_THING_0x0006)->thm).cMines);
+          lVar39 = __ftol((double)CONCAT26(in_stack_0000f588,
+                                                   CONCAT24(in_stack_0000f586,
+                                                            CONCAT22(unaff_SI,unaff_DI))));
+          iVar21 = (int)lVar39;
+          rc.left = PtToScan((iVar17 + pt.x) - iVar21);
+          rc.top = PtToScan((iVar18 - pt.y) - iVar21);
+          rc.right = PtToScan(iVar17 + pt.x + iVar21);
+          rc.bottom = PtToScan((iVar18 - pt.y) + iVar21);
+          DrawRadarCircle(&local_a74,&rc);
+          DrawRadarCircle(&local_a74,(RECT *)0x0);
+        }
       }
-      SetROP2(hdc,fPlanetScanner);
-      SelectObject(hdc,hpenSav);
-      SelectObject(hdc,hbrSav);
+      SetROP2(hdc,local_674);
+      SelectObject(hdc,HVar25);
+      SelectObject(hdc,HVar26);
     }
-    if ((cThing != 0) &&
-       (crBack = CONCAT22(crBack._2_2_,(undefined2)crBack),
-       crFore = CONCAT22(crFore._2_2_,(undefined2)crFore), mdScanBase != 5)) {
-      IntersectClipRect(hdc,rcClip,local_43a,local_438,local_436);
-      hbrSav = SelectObject(hdc,hbrShip);
-      hpenSav = SelectObject(hdc,hpenDkPurple);
+    if ((cThing != 0) && (crBack = CONCAT22(crBack._2_2_,(undefined2)crBack), uVar8 != 5)) {
+      IntersectClipRect(hdc,sVar1,sVar2,sVar3,sVar4);
+      HVar26 = SelectObject(hdc,hbrShip);
+      HVar25 = SelectObject(hdc,hpenDkPurple);
       local_492 = (THING *)lpThings;
-      hbmpTrSav = lpThings._2_2_;
-      lpthMac = (THING *)lpThings + cThing;
-      l = lpThings._2_2_;
-      lpth = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
-      while ((THING *)lpth < lpthMac) {
-        if (((lpth->idFull >> 0xd == 1) || (lpth->idFull >> 0xd == 2)) || (lpth->idFull >> 0xd == 3)
-           ) {
-          uVar17 = (undefined2)((ulong)lpth >> 0x10);
-          pt.x = (&((THING *)lpth)->pt)->x;
-          pt.y = (((THING *)lpth)->pt).y;
+      local_490 = lpThings._2_2_;
+      local_48e = (THING *)lpThings + cThing;
+      local_48c = lpThings._2_2_;
+      local_48a = (THING *)CONCAT22(lpThings._2_2_,(THING *)lpThings);
+      while ((THING *)local_48a < local_48e) {
+        if (((local_48a->idFull >> 0xd == 1) || (local_48a->idFull >> 0xd == 2)) ||
+           (local_48a->idFull >> 0xd == 3)) {
+          uVar41 = (undefined2)((ulong)local_48a >> 0x10);
+          pt.x = (&((THING *)local_48a)->pt)->x;
+          pt.y = (((THING *)local_48a)->pt).y;
           LogicalToScan(&pt);
-          if (lpth->idFull >> 0xd == 2) {
-            uVar17 = (undefined2)((ulong)lpth >> 0x10);
-            pTVar10 = (THING *)lpth;
-            if ((lpth->idFull < *(uint *)((int)&pTVar10->u_THING_0x0006 + 6)) &&
-               ((1 << ((byte)idPlayer & 0x1f) & *(uint *)((int)&pTVar10->u_THING_0x0006 + 4))
+          if (local_48a->idFull >> 0xd == 2) {
+            uVar41 = (undefined2)((ulong)local_48a >> 0x10);
+            pTVar32 = (THING *)local_48a;
+            if ((local_48a->idFull < *(uint *)((int)&pTVar32->u_THING_0x0006 + 6)) &&
+               ((1 << ((byte)idPlayer & 0x1f) & *(uint *)((int)&pTVar32->u_THING_0x0006 + 4))
                 != 0)) {
-              hbr = LpthFromId(*(short *)((int)&pTVar10->u_THING_0x0006 + 6));
-              if (hbr != (THING *)0x0) {
+              local_486 = LpthFromId(*(short *)((int)&pTVar32->u_THING_0x0006 + 6));
+              if (local_486 != (THING *)0x0) {
                 MoveTo(hdc,pt.x,pt.y);
-                uVar17 = (undefined2)((ulong)hbr >> 0x10);
-                pt2 = (&((THING *)hbr)->pt)->x;
-                fTerra = (((THING *)hbr)->pt).y;
-                LogicalToScan(&stack0xfb7e);
-                LineTo(hdc,pt2,fTerra);
-                unaff_DI = (RECT *)hdc;
-                LineTo(hdc,pt2,fTerra + 1);
+                uVar41 = (undefined2)((ulong)local_486 >> 0x10);
+                local_482.x = (&((THING *)local_486)->pt)->x;
+                local_482.y = (((THING *)local_486)->pt).y;
+                LogicalToScan(&local_482);
+                LineTo(hdc,local_482.x,local_482.y);
+                LineTo(hdc,local_482.x,local_482.y + 1);
               }
             }
           }
-          if (lpth->idFull >> 0xd == 2) {
-            BitBlt(hdc,(short)&((RECT *)(pt.x + -8))->right,pt.y - 4,9,9,hdcMem,9,0x5c,0x8800c6);
-            BitBlt(hdc,(short)&((RECT *)(pt.x + -8))->right,pt.y - 4,9,9,hdcMem,0,0x5c,0xee0086);
+          if (local_48a->idFull >> 0xd == 2) {
+            BitBlt(hdc,pt.x + -4,pt.y + -4,9,9,HVar19,9,0x5c,0x8800c6);
+            BitBlt(hdc,pt.x + -4,pt.y + -4,9,9,HVar19,0,0x5c,0xee0086);
           }
-          else if (lpth->idFull >> 0xd == 3) {
-            hbmpTrSav = SelectObject(hdcMem,hbmpScanShip);
-            CVar14 = SetTextColor(hdc,0xffff00);
-            crFore = CVar14;
-            CVar14 = SetBkColor(hdc,0);
-            uVar17 = (undefined2)((ulong)lpth >> 0x10);
-            pTVar10 = (THING *)lpth;
-            crBack = CVar14;
-            GetDxDyOrientation(((&pTVar10->u_THING_0x0006)->thp).wFlags - (&pTVar10->pt)->x,
-                               *(int *)((int)&pTVar10->u_THING_0x0006 + 2) - (pTVar10->pt).y,&ptO,
+          else if (local_48a->idFull >> 0xd == 3) {
+            local_490 = (PLANET *)SelectObject(HVar19,hbmpScanShip);
+            CVar36 = SetTextColor(hdc,0xffff00);
+            CVar37 = SetBkColor(hdc,0);
+            uVar41 = (undefined2)((ulong)local_48a >> 0x10);
+            pTVar32 = (THING *)local_48a;
+            crBack = CVar37;
+            GetDxDyOrientation(((&pTVar32->u_THING_0x0006)->thp).wFlags - (&pTVar32->pt)->x,
+                               *(int *)((int)&pTVar32->u_THING_0x0006 + 2) - (pTVar32->pt).y,&ptO,
                                &ptD);
-            BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,hdcMem,ptO.x,ptO.y,0xee0086);
-            SetTextColor(hdc,crFore);
+            BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,HVar19,ptO.x,ptO.y,0xee0086);
+            SetTextColor(hdc,CVar36);
             SetBkColor(hdc,crBack);
-            SelectObject(hdcMem,hbmpTrSav);
+            SelectObject(HVar19,(HGDIOBJ)local_490);
           }
           else {
             if (iScanZoom < 1) {
-              dRange = 2;
+              iVar21 = 2;
             }
             else if (iScanZoom < 3) {
-              dRange = 3;
+              iVar21 = 3;
             }
             else {
-              dRange = 5;
+              iVar21 = 5;
             }
-            dx = dRange * 2 + 1;
-            if ((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) == 0) {
+            iVar31 = iVar21 * 2 + 1;
+            if ((((&((THING *)local_48a)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) == 0) {
               SelectObject(hdc,hpenYellow);
-              MoveTo(hdc,pt.x,(pt.y - dRange) + -1);
-              LineTo(hdc,pt.x + (-1 - dRange),pt.y);
-              LineTo(hdc,pt.x,pt.y + dRange + 1);
-              LineTo(hdc,(int)(short *)pt.x + dRange + 1,pt.y);
-              LineTo(hdc,pt.x,(pt.y - dRange) + -1);
+              MoveTo(hdc,pt.x,(pt.y - iVar21) + -1);
+              LineTo(hdc,(pt.x - iVar21) + -1,pt.y);
+              LineTo(hdc,pt.x,pt.y + iVar21 + 1);
+              LineTo(hdc,pt.x + iVar21 + 1,pt.y);
+              LineTo(hdc,pt.x,(pt.y - iVar21) + -1);
               SelectObject(hdc,hpenDkPurple);
             }
             else {
-              if ((lpth->idFull >> 9 & 0xf) != idPlayer) {
+              if ((local_48a->idFull >> 9 & 0xf) != idPlayer) {
                 SelectObject(hdc,hbrRed);
               }
-              PatBlt(hdc,pt.x - dRange,pt.y - dRange,dx,1,0xf00021);
-              PatBlt(hdc,pt.x - dRange,pt.y - dRange,1,dx,0xf00021);
-              PatBlt(hdc,pt.x - dRange,pt.y + dRange,dx,1,0xf00021);
-              PatBlt(hdc,(int)(short *)pt.x + dRange,pt.y - dRange,1,dx,0xf00021);
-              if ((lpth->idFull >> 9 & 0xf) != idPlayer) {
+              PatBlt(hdc,pt.x - iVar21,pt.y - iVar21,iVar31,1,0xf00021);
+              PatBlt(hdc,pt.x - iVar21,pt.y - iVar21,1,iVar31,0xf00021);
+              PatBlt(hdc,pt.x - iVar21,pt.y + iVar21,iVar31,1,0xf00021);
+              PatBlt(hdc,pt.x + iVar21,pt.y - iVar21,1,iVar31,0xf00021);
+              if ((local_48a->idFull >> 9 & 0xf) != idPlayer) {
                 SelectObject(hdc,hbrShip);
               }
             }
           }
         }
-        lpth = (THING *)lpth + 1;
+        local_48a = (THING *)local_48a + 1;
       }
-      SelectObject(hdc,hbrSav);
-      SelectObject(hdc,hpenSav);
+      SelectObject(hdc,HVar26);
+      SelectObject(hdc,HVar25);
     }
-    if (((grbitScan & 0x80) != 0) && (mdScanBase != 5)) {
-      id = sel.fl.id;
+    if (((grbitScan & 0x80) != 0) && (uVar8 != 5)) {
+      iVar21 = sel.fl.id;
       if (sel.grobj != grobjFleet) {
-        id = -1;
+        iVar21 = -1;
       }
       if (sel.scan.grobj == grobjFleet) {
-        id2 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
+        sVar20 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
       }
       else {
-        id2 = -1;
+        sVar20 = -1;
       }
-      hpenSav = SelectObject(hdc,hpenStarbase);
+      HVar26 = SelectObject(hdc,hpenStarbase);
       for (i = 0; i < cFleet; i = i + 1) {
                     /* WARNING: Load size is inaccurate */
-        pFVar11 = ((FLEET **)rglpfl)[i];
-        iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-        lpfl = (FLEET *)CONCAT22(iVar12,pFVar11);
-        if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-        if (((pFVar11->wFlags_0x4 >> 10 & 1) == 0) &&
-           ((6 < (pFVar11->wFlags_0x4 & 0xff) && (1 < pFVar11->cord)))) {
-          lVar15 = CShipsScanVis((FLEET *)CONCAT22(iVar12,pFVar11));
-          if ((0 < lVar15) || ((lpfl->id == id || (lpfl->id == id2)))) {
-            iord = 0;
-            while( true ) {
-              uVar17 = (undefined2)((ulong)lpfl >> 0x10);
-              pFVar11 = (FLEET *)lpfl;
-              if (pFVar11->cord <= iord) break;
-              uVar7 = *(undefined2 *)((int)&pFVar11->lpplord + 2);
-              piVar8 = (int *)(*(int *)&pFVar11->lpplord + 4 + iord * 0x12);
-              pt.x = *piVar8;
-              pt.y = piVar8[1];
-              pt.x = PtToScan(xOff + pt.x);
-              pt.y = PtToScan(yOff - pt.y);
-              unaff_DI = (RECT *)pt.x;
+        pFVar6 = ((FLEET **)rglpfl)[i];
+        iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+        lpfl = (FLEET *)CONCAT22(iVar31,pFVar6);
+        if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0)) break;
+        if (((pFVar6->wFlags_0x4 >> 10 & 1) == 0) &&
+           ((6 < (pFVar6->wFlags_0x4 & 0xff) && (1 < pFVar6->cord)))) {
+          lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31,pFVar6));
+          if ((0 < lVar39) || ((lpfl->id == iVar21 || (lpfl->id == sVar20)))) {
+            for (iord = 0; iord < pFVar6->cord; iord = iord + 1) {
+              uVar41 = *(undefined2 *)((int)&pFVar6->lpplord + 2);
+              piVar29 = (int *)(*(int *)&pFVar6->lpplord + 4 + iord * 0x12);
+              pt.x = *piVar29;
+              pt.y = piVar29[1];
+              pt.x = PtToScan(iVar17 + pt.x);
+              pt.y = PtToScan(iVar18 - pt.y);
               if (iord == 0) {
-                unaff_SI = hdc;
                 MoveTo(hdc,pt.x,pt.y);
               }
               else {
-                unaff_SI = hdc;
                 LineTo(hdc,pt.x,pt.y);
               }
-              iord = iord + 1;
             }
           }
         }
       }
-      SelectObject(hdc,hpenSav);
+      SelectObject(hdc,HVar26);
     }
     SelectClipRgn(hdc,hrgnHuge);
     GetClientRect(hwndScanner,&rc);
@@ -1330,84 +1364,79 @@ LAB_1058_243c:
     case -1:
       SelectObject(hdc,rghfontArial6[0]);
     }
-    CVar14 = SetTextColor(hdc,0xffffff);
-    crFore = CVar14;
-    CVar14 = SetBkColor(hdc,0);
-    crBack = CVar14;
-    iBkPrev = SetBkMode(hdc,1);
-    if ((iScanZoom < 3) || (mdScanBase != 4)) {
-      j = 0;
+    CVar36 = SetTextColor(hdc,0xffffff);
+    CVar37 = SetBkColor(hdc,0);
+    crBack = CVar37;
+    sVar20 = SetBkMode(hdc,1);
+    if ((iScanZoom < 3) || (uVar8 != 4)) {
+      iVar21 = 0;
     }
     else {
-      j = 0xb;
+      iVar21 = 0xb;
     }
     for (i = 0; i < game.cPlanMax; i = i + 1) {
-      if ((((((POINT *)rgptPlan + i)->x < xMin) ||
-           (xMax <= ((POINT *)rgptPlan + i)->x)) ||
-          (*(int *)((int)&rgptPlan[0].y + i * 4) < yMin)) ||
-         (yMax <= *(int *)((int)&rgptPlan[0].y + i * 4))) {
+      if ((((((POINT *)rgptPlan + i)->x < iVar14) ||
+           (iVar15 <= ((POINT *)rgptPlan + i)->x)) ||
+          (*(int *)((int)&rgptPlan[0].y + i * 4) < iVar16)) ||
+         (iVar27 <= *(int *)((int)&rgptPlan[0].y + i * 4))) {
         if ((grbitScan & 0x400) != 0) {
-          fDoDraw = 0;
+          bVar35 = false;
           goto SCAN_LBailIn;
         }
       }
       else {
-        fDoDraw = 1;
+        bVar35 = true;
 SCAN_LBailIn:
-        pt.x = PtToScan(xOff + ((POINT *)rgptPlan + i)->x);
-        pt.y = PtToScan(yOff - *(int *)((int)&rgptPlan[0].y + i * 4));
-        if (fDoDraw != 0) {
-          if (((ptSelMain == ((POINT *)rgptPlan + i)->x) &&
-              (local_456 == *(int *)((int)&rgptPlan[0].y + i * 4))) && (mdScanBase < 3)) {
-            BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,0,0x45,
-                   0x8800c6);
-            BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,0,0x21,
-                   0xee0086);
+        pt.x = PtToScan(iVar17 + ((POINT *)rgptPlan + i)->x);
+        pt.y = PtToScan(iVar18 - *(int *)((int)&rgptPlan[0].y + i * 4));
+        if (bVar35) {
+          if (((ptSelMain.x == ((POINT *)rgptPlan + i)->x) &&
+              (ptSelMain.y == *(int *)((int)&rgptPlan[0].y + i * 4))) && (uVar8 < 3)) {
+            BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0,0x45,0x8800c6);
+            BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0,0x21,0xee0086);
           }
           else {
-            BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->bottom + 1),pt.y - 1,3,3,hdcMem,0xb,0xf,
-                   0xcc0020);
+            BitBlt(hdc,pt.x + -1,pt.y + -1,3,3,HVar19,0xb,0xf,0xcc0020);
           }
         }
         if ((((grbitScan & 0x400) != 0) && (-2 < iScanZoom)) &&
-           ((xMin + -0x32 <= ((POINT *)rgptPlan + i)->x &&
-            (((((POINT *)rgptPlan + i)->x < xMax + 0x32 &&
-              (yMin + -0x14 <= *(int *)((int)&rgptPlan[0].y + i * 4))) &&
-             (*(int *)((int)&rgptPlan[0].y + i * 4) < yMax + 0x14)))))) {
+           ((iVar14 + -0x32 <= ((POINT *)rgptPlan + i)->x &&
+            (((((POINT *)rgptPlan + i)->x < iVar15 + 0x32 &&
+              (iVar16 + -0x14 <= *(int *)((int)&rgptPlan[0].y + i * 4))) &&
+             (*(int *)((int)&rgptPlan[0].y + i * 4) < iVar27 + 0x14)))))) {
           PszGetPlanetName(i);
           if ((grbitScan & 0x2000) != 0) {
-            lppl = LpplFromId(i);
-            iVar12 = (int)((ulong)lppl >> 0x10);
-            pPVar9 = (PLANET *)lppl;
-            if (((pPVar9 != (PLANET *)0x0) || (iVar12 != 0)) && (pPVar9->iPlayer != -1)) {
-              if (pPVar9->iPlayer == idPlayer) {
-                uVar17 = 0xffff;
-                uVar7 = 0xff;
+            pPVar38 = LpplFromId(i);
+            iVar31 = (int)((ulong)pPVar38 >> 0x10);
+            pPVar30 = (PLANET *)pPVar38;
+            if (((pPVar30 != (PLANET *)0x0) || (iVar31 != 0)) && (pPVar30->iPlayer != -1)) {
+              if (pPVar30->iPlayer == idPlayer) {
+                uVar41 = 0xffff;
+                uVar28 = 0xff;
               }
               else {
-                iVar12 = pPVar9->iPlayer * 4;
-                uVar17 = *(undefined2 *)(iVar12 + rgcrPlrHistory);
-                uVar7 = *(undefined2 *)(iVar12 + rgcrPlrHistory_0x2);
+                iVar31 = pPVar30->iPlayer * 4;
+                uVar41 = *(undefined2 *)(iVar31 + rgcrPlrHistory);
+                uVar28 = *(undefined2 *)(iVar31 + rgcrPlrHistory_0x2);
               }
-              unaff_DI = (RECT *)hdc;
-              SetTextColor(hdc,CONCAT22(uVar7,uVar17));
+              SetTextColor(hdc,CONCAT22(uVar28,uVar41));
             }
           }
-          CtrTextOut(hdc,pt.x,pt.y + 5U + j,(char *)szWork,0);
+          CtrTextOut(hdc,pt.x,pt.y + 5 + iVar21,(char *)szWork,0);
           if ((grbitScan & 0x2000) != 0) {
             SetTextColor(hdc,0xffffff);
           }
         }
       }
     }
-    SetBkMode(hdc,iBkPrev);
+    SetBkMode(hdc,sVar20);
     SetBkColor(hdc,crBack);
-    SetTextColor(hdc,crFore);
-    if ((iScanZoom < 3) || (mdScanBase != 4)) {
-      j = 0;
+    SetTextColor(hdc,CVar36);
+    if ((iScanZoom < 3) || (uVar8 != 4)) {
+      iVar21 = 0;
     }
     else {
-      j = 0xb;
+      iVar21 = 0xb;
     }
     if (((sel.grobj == grobjNone) || (sel.pt.x != sel.scan.pt.x)) ||
        (sel.pt.y != sel.scan.pt.y)) {
@@ -1415,501 +1444,487 @@ SCAN_LBailIn:
         pt.x = sel.scan.pt.x;
         pt.y = sel.scan.pt.y;
         LogicalToScan(&pt);
-        BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->right + 1),pt.y + 7U + j,7,8,hdcMem,0x16,
-               0x50,0x8800c6);
-        BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->right + 1),pt.y + 7U + j,7,8,hdcMem,0x16,
-               0x31,0xee0086);
+        BitBlt(hdc,pt.x + -3,pt.y + 7 + iVar21,7,8,HVar19,0x16,0x50,0x8800c6);
+        BitBlt(hdc,pt.x + -3,pt.y + 7 + iVar21,7,8,HVar19,0x16,0x31,0xee0086);
       }
     }
     else {
       pt.x = sel.pt.x;
       pt.y = sel.pt.y;
       LogicalToScan(&pt);
-      BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y + 0xbU + j,0xb,0xc,hdcMem,0,0x50
-             ,0x8800c6);
-      BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y + 0xbU + j,0xb,0xc,hdcMem,0,0x39
-             ,0xee0086);
+      BitBlt(hdc,pt.x + -5,pt.y + 0xb + iVar21,0xb,0xc,HVar19,0,0x50,0x8800c6);
+      BitBlt(hdc,pt.x + -5,pt.y + 0xb + iVar21,0xb,0xc,HVar19,0,0x39,0xee0086);
     }
-    if ((cPlanet != 0) && (mdScanBase != 5)) {
+    if ((cPlanet != 0) && (uVar8 != 5)) {
       lppl = (PLANET *)CONCAT22(lpPlanets._2_2_,(PLANET *)lpPlanets);
       for (i = 0; i < cPlanet; i = i + 1) {
-        id = lppl->id;
-        uVar17 = (undefined2)((ulong)lppl >> 0x10);
-        pPVar9 = (PLANET *)lppl;
-        if (((pPVar9->wFlags_0x4 >> 9 & 1) == 0) || (pPVar9->iPlayer == -1)) {
+        iVar21 = lppl->id;
+        uVar41 = (undefined2)((ulong)lppl >> 0x10);
+        pPVar30 = (PLANET *)lppl;
+        if (((pPVar30->wFlags_0x4 >> 9 & 1) == 0) || (pPVar30->iPlayer == -1)) {
           fStarbase = 0;
         }
         else {
           fStarbase = 1;
         }
         if (fStarbase == 0) {
-          fMA = 0;
-          fStargate = 0;
+          bVar35 = false;
+          bVar34 = false;
         }
         else {
-          iVar12 = pPVar9->iPlayer * 4;
-          if (*(int *)(*(int *)(iVar12 + rglpshdefSB) + (*(uint *)&pPVar9->lStarbase & 0xf) * 0x93)
+          iVar31 = pPVar30->iPlayer * 4;
+          if (*(int *)(*(int *)(iVar31 + rglpshdefSB) + (*(uint *)&pPVar30->lStarbase & 0xf) * 0x93)
               == 0x20) {
             fStarbase = 2;
           }
-          sVar3 = IWarpMAFromLppl(lppl,(short *)0x0);
-          fMA = (short)(0 < sVar3);
-          sVar3 = IStargateFromLppl(lppl);
-          fStargate = (short)(sVar3 != -1);
+          sVar20 = IWarpMAFromLppl(lppl,(short *)0x0);
+          bVar35 = 0 < sVar20;
+          sVar20 = IStargateFromLppl(lppl);
+          bVar34 = sVar20 != -1;
         }
-        if ((((xMin <= ((POINT *)rgptPlan + id)->x) &&
-             (((POINT *)rgptPlan + id)->x < xMax)) &&
-            (yMin <= *(int *)((int)&rgptPlan[0].y + id * 4))) &&
-           (*(int *)((int)&rgptPlan[0].y + id * 4) < yMax)) {
-          pt.x = PtToScan(xOff + ((POINT *)rgptPlan + id)->x);
-          pt.y = PtToScan(yOff - *(int *)((int)&rgptPlan[0].y + id * 4));
-          pPVar9 = (PLANET *)lppl;
-          uVar17 = (undefined2)((ulong)lppl >> 0x10);
-          if (mdScanBase == 3) {
-            fTerra = 0;
-            if (2 < (pPVar9->wFlags_0x4 & 0xff)) {
-              sVar3 = PctPlanetDesirability(lppl,idPlayer);
-              hbr = (THING *)CONCAT22(sVar3,(THING *)hbr);
-              if (sVar3 < 0) {
+        if ((((iVar14 <= ((POINT *)rgptPlan + iVar21)->x) &&
+             (((POINT *)rgptPlan + iVar21)->x < iVar15)) &&
+            (iVar16 <= *(int *)((int)&rgptPlan[0].y + iVar21 * 4))) &&
+           (*(int *)((int)&rgptPlan[0].y + iVar21 * 4) < iVar27)) {
+          pt.x = PtToScan(iVar17 + ((POINT *)rgptPlan + iVar21)->x);
+          pt.y = PtToScan(iVar18 - *(int *)((int)&rgptPlan[0].y + iVar21 * 4));
+          if (uVar8 == 3) {
+            local_482.y = 0;
+            if (2 < (pPVar30->wFlags_0x4 & 0xff)) {
+              sVar20 = PctPlanetDesirability(lppl,idPlayer);
+              local_486 = (THING *)CONCAT22(sVar20,(THING *)local_486);
+              if (sVar20 < 0) {
 LAB_1058_343d:
-                sVar3 = PctPlanetOptValue(lppl,idPlayer);
-                hbr = (THING *)CONCAT22(sVar3,(THING *)hbr);
-                if (-1 < sVar3) {
-                  sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-                  if (sVar3 != raTerra) {
-                    fTerra = 1;
+                sVar20 = PctPlanetOptValue(lppl,idPlayer);
+                local_486 = (THING *)CONCAT22(sVar20,(THING *)local_486);
+                if (-1 < sVar20) {
+                  sVar20 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv)
+                  ;
+                  if (sVar20 != raTerra) {
+                    local_482.y = 1;
                   }
                 }
               }
               else {
-                sVar3 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
-                if (sVar3 == raTerra) goto LAB_1058_343d;
+                sVar20 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv);
+                if (sVar20 == raTerra) goto LAB_1058_343d;
               }
-              HVar5 = hbrRadar;
-              if ((-1 < (long)hbr) && (HVar5 = hbrDkYellow, fTerra == 0)) {
-                HVar5 = hbrGreen;
+              HVar23 = hbrRadar;
+              if ((-1 < (long)local_486) && (HVar23 = hbrDkYellow, local_482.y == 0)) {
+                HVar23 = hbrGreen;
               }
-              hbrSav = SelectObject(hdc,HVar5);
-              HVar6 = hpenRadar;
-              if ((-1 < (long)hbr) && (HVar6 = hpenDkYellow, fTerra == 0)) {
-                HVar6 = hpenDkGreen;
+              HVar26 = SelectObject(hdc,HVar23);
+              HVar24 = hpenRadar;
+              if ((-1 < (long)local_486) && (HVar24 = hpenDkYellow, local_482.y == 0)) {
+                HVar24 = hpenDkGreen;
               }
-              hpenSav = SelectObject(hdc,HVar6);
-              if ((long)hbr < 0) {
-                pt2 = -hbr._2_2_ / 5;
+              HVar25 = SelectObject(hdc,HVar24);
+              if ((long)local_486 < 0) {
+                local_482.x = -local_486._2_2_ / 5;
               }
               else {
-                pt2 = hbr._2_2_ / 0xb;
+                local_482.x = local_486._2_2_ / 0xb;
               }
-              pt2 = pt2 + 2;
-              if (10 < pt2) {
-                pt2 = 10;
+              local_482.x = local_482.x + 2;
+              if (10 < local_482.x) {
+                local_482.x = 10;
               }
-              Ellipse(hdc,pt.x - pt2,pt.y - pt2,(int)(short *)pt.x + pt2 + 1,pt.y + pt2 + 1);
-              iVar12 = pt2 + -2;
-              if (pt2 + -2 < 3) {
-                iVar12 = pt2 + -1;
+              Ellipse(hdc,pt.x - local_482.x,pt.y - local_482.x,pt.x + local_482.x + 1,
+                      pt.y + local_482.x + 1);
+              iVar21 = local_482.x + -2;
+              if (local_482.x + -2 < 3) {
+                iVar21 = local_482.x + -1;
               }
-              pt2 = iVar12;
-              if (pt2 < 1) {
-                pt2 = 1;
+              local_482.x = iVar21;
+              if (local_482.x < 1) {
+                local_482.x = 1;
               }
-              HVar5 = hbrEnemy;
-              if ((-1 < (long)hbr) && (HVar5 = hbrYellow, fTerra == 0)) {
-                HVar5 = hbrShip;
+              HVar23 = hbrEnemy;
+              if ((-1 < (long)local_486) && (HVar23 = hbrYellow, local_482.y == 0)) {
+                HVar23 = hbrShip;
               }
-              SelectObject(hdc,HVar5);
-              HVar6 = hpenEnemy;
-              if ((-1 < (long)hbr) && (HVar6 = hpenYellow, fTerra == 0)) {
-                HVar6 = hpenShip;
+              SelectObject(hdc,HVar23);
+              HVar24 = hpenEnemy;
+              if ((-1 < (long)local_486) && (HVar24 = hpenYellow, local_482.y == 0)) {
+                HVar24 = hpenShip;
               }
-              SelectObject(hdc,HVar6);
-              Ellipse(hdc,pt.x - pt2,pt.y - pt2,(int)(short *)pt.x + pt2 + 1,pt.y + pt2 + 1);
-              if (((PLANET *)lppl)->iPlayer != -1) {
-                rc.left = (int)&((RECT *)(pt.x + -8))->bottom + 1;
+              SelectObject(hdc,HVar24);
+              Ellipse(hdc,pt.x - local_482.x,pt.y - local_482.x,pt.x + local_482.x + 1,
+                      pt.y + local_482.x + 1);
+              if (pPVar30->iPlayer != -1) {
+                rc.left = pt.x + -1;
                 rc.right = pt.x + 8;
-                rc.top = pt.y - 0x14;
-                rc.bottom = pt.y - 0xc;
-                pRVar16 = &rc;
-                uVar17 = unaff_SS;
-                HVar18 = hdc;
-                HVar2 = GetStockObject(4);
-                FillRect(HVar18,(RECT *)CONCAT22(uVar17,pRVar16),HVar2);
-                uVar17 = (undefined2)((ulong)lppl >> 0x10);
-                pPVar9 = (PLANET *)lppl;
-                if (pPVar9->iPlayer == idPlayer) {
-                  hbr = (THING *)CONCAT22(hbr._2_2_,hbrBBlue);
+                rc.top = pt.y + -0x14;
+                rc.bottom = pt.y + -0xc;
+                pRVar40 = &rc;
+                uVar28 = unaff_SS;
+                HVar42 = hdc;
+                HVar22 = GetStockObject(4);
+                FillRect(HVar42,(RECT *)CONCAT22(uVar28,pRVar40),HVar22);
+                if (pPVar30->iPlayer == idPlayer) {
+                  local_486 = (THING *)CONCAT22(local_486._2_2_,hbrBBlue);
                 }
                 else {
-                  iVar12 = idPlayer * 0xc0 + 0x5a12;
-                  lpth = (THING *)CONCAT22(iVar12,(THING *)lpth);
-                  if (*(char *)(iVar12 + pPVar9->iPlayer) == '\x01') {
-                    hbr = (THING *)CONCAT22(hbr._2_2_,hbrStarbase);
+                  iVar21 = idPlayer * 0xc0 + 0x5a12;
+                  local_48a = (THING *)CONCAT22(iVar21,(THING *)local_48a);
+                  if (*(char *)(iVar21 + pPVar30->iPlayer) == '\x01') {
+                    local_486 = (THING *)CONCAT22(local_486._2_2_,hbrStarbase);
                   }
                   else {
-                    iVar12 = idPlayer * 0xc0 + 0x5a12;
-                    lpth = (THING *)CONCAT22(iVar12,(THING *)lpth);
-                    if (*(char *)(iVar12 + pPVar9->iPlayer) == '\0') {
-                      hbr = (THING *)CONCAT22(hbr._2_2_,hbrRadar);
+                    iVar21 = idPlayer * 0xc0 + 0x5a12;
+                    local_48a = (THING *)CONCAT22(iVar21,(THING *)local_48a);
+                    if (*(char *)(iVar21 + pPVar30->iPlayer) == '\0') {
+                      local_486 = (THING *)CONCAT22(local_486._2_2_,hbrRadar);
                     }
                     else {
-                      hbr = (THING *)CONCAT22(hbr._2_2_,hbrEnemy);
+                      local_486 = (THING *)CONCAT22(local_486._2_2_,hbrEnemy);
                     }
                   }
                 }
-                SelectObject(hdc,(HGDIOBJ)(THING *)hbr);
-                PatBlt(hdc,pt.x,pt.y - 0x13,1,0x15,0xf00021);
-                PatBlt(hdc,pt.x,pt.y - 0x13,7,6,0xf00021);
+                SelectObject(hdc,(HGDIOBJ)(THING *)local_486);
+                PatBlt(hdc,pt.x,pt.y + -0x13,1,0x15,0xf00021);
+                PatBlt(hdc,pt.x,pt.y + -0x13,7,6,0xf00021);
               }
-              SelectObject(hdc,hpenSav);
-              SelectObject(hdc,hbrSav);
+              SelectObject(hdc,HVar25);
+              SelectObject(hdc,HVar26);
             }
           }
           else {
-            if ((mdScanBase == 1) || (mdScanBase == 2)) {
-              pTVar10 = (THING *)(uint)(mdScanBase == 2);
-              hbr = (THING *)CONCAT22(hbr._2_2_,pTVar10);
-              fTerra = (short)(iScanZoom < 0);
-              if ((3 < (pPVar9->wFlags_0x4 & 0xff)) ||
-                 ((pTVar10 != (THING *)0x0 && (2 < (pPVar9->wFlags_0x4 & 0xff))))) {
-                hbr = (THING *)CONCAT22(pt.x - *(int *)(fTerra * 10 + vrgScanPO),pTVar10);
-                lpth = (THING *)CONCAT22(pt.y - *(int *)(fTerra * 10 + vrgScanPO_0x2),(THING *)lpth)
+            if ((uVar8 == 1) || (uVar8 == 2)) {
+              pTVar32 = (THING *)(uint)(uVar8 == 2);
+              local_486 = (THING *)CONCAT22(local_486._2_2_,pTVar32);
+              local_482.y = (short)(iScanZoom < 0);
+              if ((3 < (pPVar30->wFlags_0x4 & 0xff)) ||
+                 ((pTVar32 != (THING *)0x0 && (2 < (pPVar30->wFlags_0x4 & 0xff))))) {
+                local_486 = (THING *)CONCAT22(pt.x - *(int *)(local_482.y * 10 + vrgScanPO),pTVar32)
                 ;
-                hbrSav = SelectObject(hdc,hbrButtonFace);
-                PatBlt(hdc,hbr._2_2_ + -2,lpth._2_2_,*(short *)(fTerra * 10 + 0x590),1,0xf00021);
-                PatBlt(hdc,hbr._2_2_ + -2,(lpth._2_2_ - *(int *)(fTerra * 10 + 0x590)) + 1,1,
-                       *(short *)(fTerra * 10 + 0x590),0xf00021);
-                for (pt2 = 0; pt2 < 3; pt2 = pt2 + 1) {
-                  if ((THING *)hbr == (THING *)0x0) {
-                    l = *(uint *)(((PLANET *)lppl)->rgwtMin + pt2);
-                    pTVar10 = (THING *)*(uint *)((int)(((PLANET *)lppl)->rgwtMin + pt2) + 2);
-                    lpth = (THING *)CONCAT22(lpth._2_2_,pTVar10);
-                    uVar4 = cMinGrafMax / 0x28;
-                    lVar15 = __aFldiv(CONCAT22((int)&pTVar10->idFull +
-                                                       (uint)CARRY2(uVar4,l) + ((int)uVar4 >> 0xf),
-                                                       uVar4 + l),(long)(cMinGrafMax / 0x14))
+                local_48a = (THING *)CONCAT22(pt.y - *(int *)(local_482.y * 10 + vrgScanPO_0x2),
+                                              (THING *)local_48a);
+                HVar26 = SelectObject(hdc,hbrButtonFace);
+                PatBlt(hdc,local_486._2_2_ + -2,local_48a._2_2_,*(short *)(local_482.y * 10 + 0x590)
+                       ,1,0xf00021);
+                PatBlt(hdc,local_486._2_2_ + -2,
+                       (local_48a._2_2_ - *(int *)(local_482.y * 10 + 0x590)) + 1,1,
+                       *(short *)(local_482.y * 10 + 0x590),0xf00021);
+                for (local_482.x = 0; local_482.x < 3; local_482.x = local_482.x + 1) {
+                  if ((THING *)local_486 == (THING *)0x0) {
+                    local_48c = *(PLANET **)(pPVar30->rgwtMin + local_482.x);
+                    local_48a._0_2_ = (THING *)*(uint *)((int)(pPVar30->rgwtMin + local_482.x) + 2);
+                    uVar9 = cMinGrafMax / 0x28;
+                    pPVar38 = (PLANET *)
+                              __aFldiv(CONCAT22(((int)uVar9 >> 0xf) +
+                                                        (int)(THING *)local_48a +
+                                                        (uint)CARRY2(uVar9,(uint)local_48c),
+                                                        uVar9 + (int)local_48c),
+                                               (long)(cMinGrafMax / 0x14));
+                    local_48c = (PLANET *)pPVar38;
+                    local_48a = (THING *)CONCAT22(local_48a._2_2_,(THING *)((ulong)pPVar38 >> 0x10))
                     ;
-                    l = (uint)lVar15;
-                    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)((ulong)lVar15 >> 0x10));
-                    if (0x14 < lVar15) {
-                      l = 0x14;
-                      lpth = (THING *)((ulong)lpth._2_2_ << 0x10);
+                    if (0x14 < (long)pPVar38) {
+                      local_48c = (PLANET *)&hbrButtonHilite;
+                      local_48a = (THING *)((ulong)local_48a._2_2_ << 0x10);
                     }
                   }
                   else {
-                    l = ((PLANET *)lppl)->rgMinConc[pt2] / 5;
-                    if (0x14 < l) {
-                      l = 0x14;
+                    local_48c = (PLANET *)(pPVar30->rgMinConc[local_482.x] / 5);
+                    if ((PLANET *)&hbrButtonHilite < local_48c) {
+                      local_48c = (PLANET *)&hbrButtonHilite;
                     }
-                    lpth = (THING *)((ulong)lpth._2_2_ << 0x10);
+                    local_48a = (THING *)((ulong)local_48a._2_2_ << 0x10);
                   }
-                  if (fTerra != 0) {
-                    lVar15 = __aFldiv(CONCAT22((THING *)lpth,l),2);
-                    l = (uint)lVar15;
-                    lpth = (THING *)CONCAT22(lpth._2_2_,(THING *)((ulong)lVar15 >> 0x10));
+                  if (local_482.y != 0) {
+                    pPVar38 = (PLANET *)
+                              __aFldiv((long)CONCAT22((THING *)local_48a,local_48c),2);
+                    local_48c = (PLANET *)pPVar38;
+                    local_48a = (THING *)CONCAT22(local_48a._2_2_,(THING *)((ulong)pPVar38 >> 0x10))
+                    ;
                   }
-                  if ((-1 < (int)(THING *)lpth) && ((0 < (int)(THING *)lpth || (l != 0)))) {
-                    SelectObject(hdc,((ushort *)rghbrMineral)[pt2]);
-                    PatBlt(hdc,hbr._2_2_,lpth._2_2_ - l,*(short *)(fTerra * 10 + 0x592),l,0xf00021);
+                  if ((-1 < (int)(THING *)local_48a) &&
+                     ((0 < (int)(THING *)local_48a || (local_48c != (PLANET *)0x0)))) {
+                    SelectObject(hdc,((ushort *)rghbrMineral)[local_482.x]);
+                    PatBlt(hdc,local_486._2_2_,local_48a._2_2_ - (int)local_48c,
+                           *(short *)(local_482.y * 10 + 0x592),(short)local_48c,0xf00021);
                   }
-                  hbr = (THING *)CONCAT22(hbr._2_2_ + *(int *)(fTerra * 10 + 0x594),(THING *)hbr);
+                  local_486 = (THING *)CONCAT22(local_486._2_2_ + *(int *)(local_482.y * 10 + 0x594)
+                                                ,(THING *)local_486);
                 }
-                SelectObject(hdc,hbrSav);
+                SelectObject(hdc,HVar26);
               }
             }
-            else if (mdScanBase == 4) {
-              pt2 = 0;
-              if (((pPVar9->wFlags_0x4 & 0xff) < 3) || (pPVar9->iPlayer == -1)) {
-                if (pPVar9->iPlayer == -1) goto SCAN_LNormalScannerMode;
+            else if (uVar8 == 4) {
+              local_482.x = 0;
+              if (((pPVar30->wFlags_0x4 & 0xff) < 3) || (pPVar30->iPlayer == -1)) {
+                if (pPVar30->iPlayer == -1) goto SCAN_LNormalScannerMode;
               }
               else {
-                if (pPVar9->iPlayer == idPlayer) {
-                  pTVar10 = (THING *)*(int *)((int)pPVar9->rgwtMin + 0xe);
-                  lpth = (THING *)CONCAT22((int)pPVar9->rgwtMin[3],(THING *)lpth);
+                if (pPVar30->iPlayer == idPlayer) {
+                  pTVar32 = (THING *)*(int *)((int)pPVar30->rgwtMin + 0xe);
+                  local_48a = (THING *)CONCAT22((int)pPVar30->rgwtMin[3],(THING *)local_48a);
                 }
                 else {
-                  lVar15 = __aFlshl((long)CONCAT22(unaff_SI,unaff_DI),
-                                            (ushort)in_stack_0000f586);
-                  pTVar10 = (THING *)((ulong)lVar15 >> 0x10);
-                  lpth = (THING *)CONCAT22((int)lVar15,(THING *)lpth);
+                  lVar39 = __aFlshl(CONCAT22(unaff_SI,unaff_DI),(ushort)in_stack_0000f586);
+                  pTVar32 = (THING *)((ulong)lVar39 >> 0x10);
+                  local_48a = (THING *)CONCAT22((int)lVar39,(THING *)local_48a);
                 }
-                for (hbr._2_2_ = 0; hbr._2_2_ < 0x13; hbr._2_2_ = hbr._2_2_ + 1) {
-                  iVar12 = (int)*(uint *)(hbr._2_2_ * 2) >> 0xf;
-                  if (((int)pTVar10 <= iVar12) &&
-                     (((int)pTVar10 < iVar12 || (lpth._2_2_ < *(uint *)(hbr._2_2_ * 2))))) break;
+                for (local_486._2_2_ = 0; local_486._2_2_ < 0x13;
+                    local_486._2_2_ = local_486._2_2_ + 1) {
+                  iVar21 = (int)*(uint *)(local_486._2_2_ * 2) >> 0xf;
+                  if (((int)pTVar32 <= iVar21) &&
+                     (((int)pTVar32 < iVar21 || (local_48a._2_2_ < *(uint *)(local_486._2_2_ * 2))))
+                     ) break;
                 }
-                hbr = (THING *)CONCAT22(hbr._2_2_ + 2,pTVar10);
-                uVar17 = (undefined2)((ulong)lppl >> 0x10);
-                if (((PLANET *)lppl)->iPlayer == idPlayer) {
-                  fTerra = 0;
+                local_486 = (THING *)CONCAT22(local_486._2_2_ + 2,pTVar32);
+                if (pPVar30->iPlayer == idPlayer) {
+                  local_482.y = 0;
                 }
                 else {
-                  pTVar10 = (THING *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0)
+                  pTVar32 = (THING *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0)
                   ;
-                  lpth = (THING *)CONCAT22(lpth._2_2_,pTVar10);
-                  if (*(char *)((int)&pTVar10->idFull + ((PLANET *)lppl)->iPlayer) == '\x01') {
-                    fTerra = 1;
+                  local_48a = (THING *)CONCAT22(local_48a._2_2_,pTVar32);
+                  if (*(char *)((int)&pTVar32->idFull + pPVar30->iPlayer) == '\x01') {
+                    local_482.y = 1;
                   }
                   else {
-                    fTerra = 3;
+                    local_482.y = 3;
                   }
                 }
-                HVar5 = hbrShip;
-                if ((fTerra != 0) && (HVar5 = hbrEnemy, fTerra != 3)) {
-                  HVar5 = hbrYellow;
+                HVar23 = hbrShip;
+                if ((local_482.y != 0) && (HVar23 = hbrEnemy, local_482.y != 3)) {
+                  HVar23 = hbrYellow;
                 }
-                hbrSav = SelectObject(hdc,HVar5);
-                HVar6 = hpenDkGreen;
-                if ((fTerra != 0) && (HVar6 = hpenEnemy, fTerra != 3)) {
-                  HVar6 = hpenDkYellow;
+                HVar26 = SelectObject(hdc,HVar23);
+                HVar24 = hpenDkGreen;
+                if ((local_482.y != 0) && (HVar24 = hpenEnemy, local_482.y != 3)) {
+                  HVar24 = hpenDkYellow;
                 }
-                hpenSav = SelectObject(hdc,HVar6);
+                HVar25 = SelectObject(hdc,HVar24);
                 if (iScanZoom < 3) {
-                  hbr = (THING *)CONCAT22(hbr._2_2_ + 1 >> 1,(THING *)hbr);
+                  local_486 = (THING *)CONCAT22(local_486._2_2_ + 1 >> 1,(THING *)local_486);
                 }
-                Ellipse(hdc,pt.x - hbr._2_2_,pt.y - hbr._2_2_,(int)(short *)pt.x + hbr._2_2_ + 1,
-                        pt.y + hbr._2_2_ + 1);
-                SelectObject(hdc,hpenSav);
-                SelectObject(hdc,hbrSav);
+                Ellipse(hdc,pt.x - local_486._2_2_,pt.y - local_486._2_2_,pt.x + local_486._2_2_ + 1
+                        ,pt.y + local_486._2_2_ + 1);
+                SelectObject(hdc,HVar25);
+                SelectObject(hdc,HVar26);
               }
               goto LAB_1058_3257;
             }
 SCAN_LNormalScannerMode:
-            uVar17 = (undefined2)((ulong)lppl >> 0x10);
-            pPVar9 = (PLANET *)lppl;
-            if (pPVar9->iPlayer == -1) {
-              if ((((POINT *)rgptPlan + id)->x != ptSelMain) ||
-                 (*(int *)((int)&rgptPlan[0].y + id * 4) != local_456)) {
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->bottom + 1),pt.y - 1,3,3,hdcMem,0xb,
-                       0x12,0xcc0020);
+            if (pPVar30->iPlayer == -1) {
+              if ((((POINT *)rgptPlan + iVar21)->x != ptSelMain.x) ||
+                 (*(int *)((int)&rgptPlan[0].y + iVar21 * 4) != ptSelMain.y)) {
+                BitBlt(hdc,pt.x + -1,pt.y + -1,3,3,HVar19,0xb,0x12,0xcc0020);
               }
             }
-            else if ((((POINT *)rgptPlan + id)->x == ptSelMain) &&
-                    (*(int *)((int)&rgptPlan[0].y + id * 4) == local_456)) {
-              if (pPVar9->iPlayer == idPlayer) {
+            else if ((((POINT *)rgptPlan + iVar21)->x == ptSelMain.x) &&
+                    (*(int *)((int)&rgptPlan[0].y + iVar21 * 4) == ptSelMain.y)) {
+              if (pPVar30->iPlayer == idPlayer) {
                 yBmp = 0;
               }
               else {
-                fTerra = idPlayer * 0xc0 + 0x5a12;
-                if (*(char *)(fTerra + pPVar9->iPlayer) == '\x01') {
+                local_482.y = idPlayer * 0xc0 + 0x5a12;
+                if (*(char *)(local_482.y + pPVar30->iPlayer) == '\x01') {
                   yBmp = 0x16;
                 }
                 else {
                   yBmp = 0xb;
                 }
               }
-              BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,0,
-                     0x45,0x8800c6);
-              BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,0,
-                     yBmp,0xee0086);
+              BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0,0x45,0x8800c6);
+              BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0,yBmp,0xee0086);
               if (fStarbase != 0) {
-                HVar5 = hbrBlue;
+                HVar23 = hbrBlue;
                 if (fStarbase != 2) {
-                  HVar5 = hbrYellow;
+                  HVar23 = hbrYellow;
                 }
-                hbrSav = SelectObject(hdc,HVar5);
-                PatBlt(hdc,pt.x + 4,pt.y - 6,5,5,0x42);
-                PatBlt(hdc,(short)((int)(pt.x + 4) + 1),pt.y - 6,3,5,0xf00021);
-                PatBlt(hdc,pt.x + 4,pt.y - 5,5,3,0xf00021);
-                SelectObject(hdc,hbrSav);
+                HVar26 = SelectObject(hdc,HVar23);
+                PatBlt(hdc,pt.x + 4,pt.y + -6,5,5,0x42);
+                PatBlt(hdc,pt.x + 5,pt.y + -6,3,5,0xf00021);
+                PatBlt(hdc,pt.x + 4,pt.y + -5,5,3,0xf00021);
+                SelectObject(hdc,HVar26);
               }
-              if (fStargate != 0) {
-                hbrSav = SelectObject(hdc,hbrGreen);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->left + 1),pt.y - 6,5,5,0x42);
-                PatBlt(hdc,(short)&((RECT *)(pt.x + -8))->top,pt.y - 6,3,5,0xf00021);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->left + 1),pt.y - 5,5,3,0xf00021);
-                SelectObject(hdc,hbrSav);
+              if (bVar34) {
+                HVar26 = SelectObject(hdc,hbrGreen);
+                PatBlt(hdc,pt.x + -7,pt.y + -6,5,5,0x42);
+                PatBlt(hdc,pt.x + -6,pt.y + -6,3,5,0xf00021);
+                PatBlt(hdc,pt.x + -7,pt.y + -5,5,3,0xf00021);
+                SelectObject(hdc,HVar26);
               }
-              if (fMA != 0) {
-                hbrSav = SelectObject(hdc,hbrPurple);
-                PatBlt(hdc,(short)&((RECT *)(pt.x + -8))->bottom,pt.y - 9,5,5,0x42);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->bottom + 1),pt.y - 9,3,5,0xf00021);
-                PatBlt(hdc,(short)&((RECT *)(pt.x + -8))->bottom,pt.y - 8,5,3,0xf00021);
-                SelectObject(hdc,hbrSav);
+              if (bVar35) {
+                HVar26 = SelectObject(hdc,hbrPurple);
+                PatBlt(hdc,pt.x + -2,pt.y + -9,5,5,0x42);
+                PatBlt(hdc,pt.x + -1,pt.y + -9,3,5,0xf00021);
+                PatBlt(hdc,pt.x + -2,pt.y + -8,5,3,0xf00021);
+                SelectObject(hdc,HVar26);
               }
             }
             else {
-              if (pPVar9->iPlayer == idPlayer) {
+              if (pPVar30->iPlayer == idPlayer) {
                 yBmp = 0;
               }
               else {
-                fTerra = idPlayer * 0xc0 + 0x5a12;
-                if (*(char *)(fTerra + pPVar9->iPlayer) == '\x01') {
+                local_482.y = idPlayer * 0xc0 + 0x5a12;
+                if (*(char *)(local_482.y + pPVar30->iPlayer) == '\x01') {
                   yBmp = 10;
                 }
                 else {
                   yBmp = 5;
                 }
               }
-              BitBlt(hdc,(short)&((RECT *)(pt.x + -8))->bottom,pt.y - 2,5,5,hdcMem,0xb,yBmp,0xcc0020
-                    );
+              BitBlt(hdc,pt.x + -2,pt.y + -2,5,5,HVar19,0xb,yBmp,0xcc0020);
               if (fStarbase != 0) {
-                HVar5 = hbrBlue;
+                HVar23 = hbrBlue;
                 if (fStarbase != 2) {
-                  HVar5 = hbrYellow;
+                  HVar23 = hbrYellow;
                 }
-                hbrSav = SelectObject(hdc,HVar5);
-                PatBlt(hdc,(short)((int)(pt.x + 2) + 1),pt.y - 4,3,3,0xf00021);
-                SelectObject(hdc,hbrSav);
+                HVar26 = SelectObject(hdc,HVar23);
+                PatBlt(hdc,pt.x + 3,pt.y + -4,3,3,0xf00021);
+                SelectObject(hdc,HVar26);
               }
-              if (fStargate != 0) {
-                hbrSav = SelectObject(hdc,hbrGreen);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 4,3,3,0x42);
-                PatBlt(hdc,(short)&((RECT *)(pt.x + -8))->right,pt.y - 4,1,3,0xf00021);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 3,3,1,0xf00021);
-                SelectObject(hdc,hbrSav);
+              if (bVar34) {
+                HVar26 = SelectObject(hdc,hbrGreen);
+                PatBlt(hdc,pt.x + -5,pt.y + -4,3,3,0x42);
+                PatBlt(hdc,pt.x + -4,pt.y + -4,1,3,0xf00021);
+                PatBlt(hdc,pt.x + -5,pt.y + -3,3,1,0xf00021);
+                SelectObject(hdc,HVar26);
               }
-              if (fMA != 0) {
-                hbrSav = SelectObject(hdc,hbrPurple);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->bottom + 1),pt.y - 6,3,3,0x42);
-                PatBlt(hdc,pt.x,pt.y - 6,1,3,0xf00021);
-                PatBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->bottom + 1),pt.y - 5,3,1,0xf00021);
-                SelectObject(hdc,hbrSav);
+              if (bVar35) {
+                HVar26 = SelectObject(hdc,hbrPurple);
+                PatBlt(hdc,pt.x + -1,pt.y + -6,3,3,0x42);
+                PatBlt(hdc,pt.x,pt.y + -6,1,3,0xf00021);
+                PatBlt(hdc,pt.x + -1,pt.y + -5,3,1,0xf00021);
+                SelectObject(hdc,HVar26);
               }
             }
           }
         }
 LAB_1058_3257:
-        lppl = (PLANET *)lppl + 1;
+        lppl = (PLANET *)CONCAT22(uVar41,pPVar30 + 1);
       }
     }
-    if ((cFleet != 0) && (mdScanBase != 5)) {
-                    /* WARNING: Load size is inaccurate */
-      lpflT = (FLEET *)CONCAT22(*(undefined2 *)((int)(FLEET **)rglpfl + 2),*rglpfl);
-      hbrSav = SelectObject(hdc,hbrShip);
-      id = sel.fl.id;
+    if ((cFleet != 0) && (uVar8 != 5)) {
+      HVar26 = SelectObject(hdc,hbrShip);
+      iVar21 = sel.fl.id;
       if (sel.grobj != grobjFleet) {
-        id = -1;
+        iVar21 = -1;
       }
       if (sel.scan.grobj == grobjFleet) {
-        id2 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
+        sVar20 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
       }
       else {
-        id2 = -1;
+        sVar20 = -1;
       }
       for (i = 0; i < cFleet; i = i + 1) {
                     /* WARNING: Load size is inaccurate */
-        pFVar11 = ((FLEET **)rglpfl)[i];
-        iVar12 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-        lpflT = (FLEET *)CONCAT22(iVar12,pFVar11);
-        if ((pFVar11 == (FLEET *)0x0) && (iVar12 == 0)) break;
-        lVar15 = CShipsScanVis((FLEET *)CONCAT22(iVar12,pFVar11));
-        if ((0 < lVar15) || ((lpflT->id == id || (lpflT->id == id2)))) {
-          uVar17 = (undefined2)((ulong)lpflT >> 0x10);
-          pFVar11 = (FLEET *)lpflT;
-          idP = pFVar11->idPlanet;
-          if (idP == -1) {
-            pt.x = (&pFVar11->pt)->x;
-            pt.y = (pFVar11->pt).y;
+        pFVar6 = ((FLEET **)rglpfl)[i];
+        iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
+        lpflT = (FLEET *)CONCAT22(iVar31,pFVar6);
+        if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0)) break;
+        lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31,pFVar6));
+        if ((0 < lVar39) || ((lpflT->id == iVar21 || (lpflT->id == sVar20)))) {
+          iVar33 = pFVar6->idPlanet;
+          if (iVar33 == -1) {
+            pt.x = (&pFVar6->pt)->x;
+            pt.y = (pFVar6->pt).y;
           }
           else {
-            pt.x = ((POINT *)rgptPlan + idP)->x;
-            pt.y = *(uint *)((int)&rgptPlan[0].y + idP * 4);
+            pt.x = ((POINT *)rgptPlan + iVar33)->x;
+            pt.y = *(short *)((int)&rgptPlan[0].y + iVar33 * 4);
           }
-          if ((((xMin <= pt.x) && (pt.x < xMax)) && (yMin <= pt.y)) && (pt.y < yMax)) {
-            pt.x = PtToScan((int)(short *)pt.x + xOff);
-            pt.y = PtToScan(yOff - pt.y);
-            uVar17 = (undefined2)((ulong)lpflT >> 0x10);
-            pFVar11 = (FLEET *)lpflT;
-            bVar13 = pFVar11->iPlayer != idPlayer;
-            yBmp = (short)bVar13;
-            if (((&pFVar11->pt)->x == ptSelMain) && ((pFVar11->pt).y == local_456)) {
-              fSelected = 1;
+          if ((((iVar14 <= pt.x) && (pt.x < iVar15)) && (iVar16 <= pt.y)) && (pt.y < iVar27)) {
+            pt.x = PtToScan(iVar17 + pt.x);
+            pt.y = PtToScan(iVar18 - pt.y);
+            bVar35 = pFVar6->iPlayer != idPlayer;
+            uVar9 = (uint)bVar35;
+            if (((&pFVar6->pt)->x == ptSelMain.x) && ((pFVar6->pt).y == ptSelMain.y)) {
+              bVar34 = true;
             }
             else {
-              fSelected = 0;
+              bVar34 = false;
             }
-            if (idP == -1) {
-              if (fSelected == 0) {
-                SelectObject(hdcMem,hbmpScanShip);
-                if (yBmp == 0) {
-                  pt2 = 0;
-                  fTerra = 0xff;
+            if (iVar33 == -1) {
+              if (bVar34) {
+                BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0xb,uVar9 * 0xb + 0x24,0xee0086);
+                if (((grbitScan & 0x1000) != 0) && ((pFVar6->wFlags_0x4 >> 0xb & 1) == 0)) {
+                  DrawScanFleetCount((FLEET *)CONCAT22(iVar31,pFVar6),pt.x,pt.y + -7,hdc,HVar19);
+                }
+              }
+              else {
+                SelectObject(HVar19,hbmpScanShip);
+                if (uVar9 == 0) {
+                  local_482.x = 0;
+                  local_482.y = 0xff;
                 }
                 else {
-                  iVar12 = idPlayer * 0xc0 + 0x5a12;
-                  hbr = (THING *)CONCAT22(iVar12,(THING *)hbr);
-                  if (*(char *)(iVar12 + ((FLEET *)lpflT)->iPlayer) == '\x01') {
-                    pt2 = -1;
-                    fTerra = 0;
+                  iVar33 = idPlayer * 0xc0 + 0x5a12;
+                  local_486 = (THING *)CONCAT22(iVar33,(THING *)local_486);
+                  if (*(char *)(iVar33 + pFVar6->iPlayer) == '\x01') {
+                    local_482.x = -1;
+                    local_482.y = 0;
                   }
                   else {
-                    pt2 = 0xff;
-                    fTerra = 0;
+                    local_482.x = 0xff;
+                    local_482.y = 0;
                   }
                 }
-                SetTextColor(hdc,CONCAT22(fTerra,pt2));
+                SetTextColor(hdc,CONCAT22(local_482.y,local_482.x));
                 SetBkColor(hdc,0);
-                GetScanFleetOrientation(lpflT,&ptO,&ptD);
-                BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,hdcMem,ptO.x,ptO.y,0xee0086
+                GetScanFleetOrientation((FLEET *)CONCAT22(iVar31,pFVar6),&ptO,&ptD);
+                BitBlt(hdc,pt.x - ptD.x / 2,pt.y - ptD.y / 2,ptD.x,ptD.y,HVar19,ptO.x,ptO.y,0xee0086
                       );
-                if (((grbitScan & 0x1000) != 0) &&
-                   ((((FLEET *)lpflT)->wFlags_0x4 >> 0xb & 1) == 0)) {
-                  DrawScanFleetCount(lpflT,pt.x,(pt.y - ptD.y / 2) + -2,hdc,hdcMem);
+                if (((grbitScan & 0x1000) != 0) && ((pFVar6->wFlags_0x4 >> 0xb & 1) == 0)) {
+                  DrawScanFleetCount((FLEET *)CONCAT22(iVar31,pFVar6),pt.x,(pt.y - ptD.y / 2) + -2,
+                                     hdc,HVar19);
                 }
-                SelectObject(hdcMem,hbmpScanner);
-              }
-              else {
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,0xb
-                       ,yBmp * 0xb + 0x24,0xee0086);
-                if (((grbitScan & 0x1000) != 0) &&
-                   ((((FLEET *)lpflT)->wFlags_0x4 >> 0xb & 1) == 0)) {
-                  DrawScanFleetCount(lpflT,pt.x,pt.y - 7,hdc,hdcMem);
-                }
+                SelectObject(HVar19,hbmpScanner);
               }
             }
-            else if (((rgWhatsHere[idP] != '\x03') && ((int)rgWhatsHere[idP] != yBmp + 1U)) &&
-                    (mdScanBase < 3)) {
-              rgWhatsHere[idP] = rgWhatsHere[idP] + bVar13 + '\x01';
-              yBmp = rgWhatsHere[idP] + -1;
-              if (fSelected == 0) {
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,
-                       0x10,0x45,0x8800c6);
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -8))->top + 1),pt.y - 5,0xb,0xb,hdcMem,
-                       0x10,yBmp * 0xb,0xee0086);
+            else if (((rgWhatsHere[iVar33] != '\x03') && ((int)rgWhatsHere[iVar33] != uVar9 + 1)) &&
+                    (uVar8 < 3)) {
+              rgWhatsHere[iVar33] = rgWhatsHere[iVar33] + bVar35 + '\x01';
+              cVar5 = rgWhatsHere[iVar33];
+              if (bVar34) {
+                BitBlt(hdc,pt.x + -9,pt.y + -9,0x13,0x13,HVar19,0x1d,0x45,0x8800c6);
+                BitBlt(hdc,pt.x + -9,pt.y + -9,0x13,0x13,HVar19,0x1d,(cVar5 + -1) * 0x13,0xee0086);
               }
               else {
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -0x10))->bottom + 1),pt.y - 9,0x13,0x13,
-                       hdcMem,0x1d,0x45,0x8800c6);
-                BitBlt(hdc,(short)((int)&((RECT *)(pt.x + -0x10))->bottom + 1),pt.y - 9,0x13,0x13,
-                       hdcMem,0x1d,yBmp * 0x13,0xee0086);
+                BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0x10,0x45,0x8800c6);
+                BitBlt(hdc,pt.x + -5,pt.y + -5,0xb,0xb,HVar19,0x10,(cVar5 + -1) * 0xb,0xee0086);
               }
-              if (((grbitScan & 0x1000) != 0) &&
-                 ((((FLEET *)lpflT)->wFlags_0x4 >> 0xb & 1) == 0)) {
-                if (fSelected == 0) {
-                  iVar12 = 5;
+              if (((grbitScan & 0x1000) != 0) && ((pFVar6->wFlags_0x4 >> 0xb & 1) == 0)) {
+                if (bVar34) {
+                  iVar33 = 9;
                 }
                 else {
-                  iVar12 = 9;
+                  iVar33 = 5;
                 }
-                DrawScanFleetCount(lpflT,pt.x,(pt.y - iVar12) + -2,hdc,hdcMem);
+                DrawScanFleetCount((FLEET *)CONCAT22(iVar31,pFVar6),pt.x,(pt.y - iVar33) + -2,hdc,
+                                   HVar19);
               }
             }
           }
         }
       }
-      SelectObject(hdc,hbrSav);
+      SelectObject(hdc,HVar26);
     }
-    ExpandRc(prc,-dExpand,-dExpand);
+    ExpandRc(prc,-dx_00,-dx_00);
     prc->bottom = prc->bottom + -0xe;
-    CVar14 = SetTextColor(hdc,0);
-    crFore = CVar14;
-    CVar14 = GetBkColor(hdc);
+    CVar37 = SetTextColor(hdc,0);
+    CVar36 = GetBkColor(hdc);
     if ((((sel.grobj == grobjFleet) || (sel.scan.grobj == grobjFleet)) ||
         (sel.scan.grobj == grobjThing)) ||
        ((sel.grobj == grobjPlanet && ((sel.pl.wFlags_0x4 >> 9 & 1) != 0)))) {
-      crBack = CVar14;
+      crBack = CVar36;
       IntersectClipRect(hdc,prc->left,prc->top,prc->right,prc->bottom);
       fOrdersVis = 0;
       DrawShipScanPath(hdc,1);
       SelectClipRgn(hdc,hrgnHuge);
-      CVar14 = crBack;
+      CVar36 = crBack;
     }
-    crBack = CVar14;
-    SetBkColor(hdc,CVar14);
-    SetTextColor(hdc,crFore);
-    SelectObject(hdcMem,hbmpSav);
-    DeleteDC(hdcMem);
+    crBack = CVar36;
+    SetBkColor(hdc,CVar36);
+    SetTextColor(hdc,CVar37);
+    SelectObject(HVar19,HVar10);
+    DeleteDC(HVar19);
     if (hdcScreen != 0) {
       SetWindowOrg(hdc,0,0);
       BitBlt(hdcScreen,prc->left,prc->top,prc->right - prc->left,prc->bottom - prc->top,hdc,
@@ -1946,13 +1961,13 @@ void DrawScanFleetCount(FLEET *lpfl,short x,short y,HDC hdc,HDC hdcMem)
   HGDIOBJ HVar4;
   long lVar5;
   long lVar6;
-  int l;
+  long l;
   HBITMAP hbmpSav;
   short iPlr;
   FLEET *lpflWalk;
-  int cr;
-  int local_c;
+  COLORREF cr;
   short f999;
+  long l2;
   
   lpflWalk = lpfl;
   if ((grbitScan & 0x2000) == 0) {
@@ -1987,54 +2002,54 @@ void DrawScanFleetCount(FLEET *lpfl,short x,short y,HDC hdc,HDC hdcMem)
   else {
     lVar6 = 999;
   }
-  l = (int)lVar6;
+  l._0_2_ = (int)lVar6;
   HVar4 = SelectObject(hdcMem,hbmpNumbers);
   SetBkColor(hdc,0);
   SetTextColor(hdc,0xffffff);
   if ((iPlr < 0) || (iPlr == idPlayer)) {
-    cr = -1;
-    local_c = 0xff;
+    cr._0_2_ = -1;
+    cr._2_2_ = 0xff;
   }
   else {
-    cr = *(int *)(iPlr * 4 + rgcrPlrHistory);
-    local_c = *(int *)(iPlr * 4 + rgcrPlrHistory_0x2);
+    cr._0_2_ = *(int *)(iPlr * 4 + rgcrPlrHistory);
+    cr._2_2_ = *(int *)(iPlr * 4 + rgcrPlrHistory_0x2);
   }
   iVar1 = y + -7;
   iVar3 = x + -1;
   if (99 < lVar6) {
     bVar2 = true;
-    if ((cr != -1) || (local_c != 0xff)) {
-      BitBlt(hdc,x + -6,iVar1,4,7,hdcMem,l / 100 << 2,0,0x220326);
-      SetTextColor(hdc,CONCAT22(local_c,cr));
+    if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
+      BitBlt(hdc,x + -6,iVar1,4,7,hdcMem,(int)l / 100 << 2,0,0x220326);
+      SetTextColor(hdc,CONCAT22(cr._2_2_,(int)cr));
     }
-    BitBlt(hdc,x + -6,iVar1,4,7,hdcMem,l / 100 << 2,0,0xee0086);
-    if ((cr != -1) || (local_c != 0xff)) {
+    BitBlt(hdc,x + -6,iVar1,4,7,hdcMem,(int)l / 100 << 2,0,0xee0086);
+    if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
       SetTextColor(hdc,0xffffff);
     }
     lVar6 = __aFlrem(lVar6,100);
     iVar3 = x + 2;
   }
   x = iVar3;
-  l = (int)lVar6;
+  l._0_2_ = (int)lVar6;
   if ((9 < lVar6) || (bVar2)) {
-    if ((cr != -1) || (local_c != 0xff)) {
-      BitBlt(hdc,x + -3,iVar1,4,7,hdcMem,l / 10 << 2,0,0x220326);
-      SetTextColor(hdc,CONCAT22(local_c,cr));
+    if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
+      BitBlt(hdc,x + -3,iVar1,4,7,hdcMem,(int)l / 10 << 2,0,0x220326);
+      SetTextColor(hdc,CONCAT22(cr._2_2_,(int)cr));
     }
-    BitBlt(hdc,x + -3,iVar1,4,7,hdcMem,l / 10 << 2,0,0xee0086);
-    if ((cr != -1) || (local_c != 0xff)) {
+    BitBlt(hdc,x + -3,iVar1,4,7,hdcMem,(int)l / 10 << 2,0,0xee0086);
+    if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
       SetTextColor(hdc,0xffffff);
     }
     x = x + 2;
     lVar6 = __aFlrem(lVar6,10);
   }
-  l = (int)lVar6;
-  if ((cr != -1) || (local_c != 0xff)) {
-    BitBlt(hdc,x,iVar1,4,7,hdcMem,l << 2,0,0x220326);
-    SetTextColor(hdc,CONCAT22(local_c,cr));
+  l._0_2_ = (int)lVar6;
+  if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
+    BitBlt(hdc,x,iVar1,4,7,hdcMem,(int)l << 2,0,0x220326);
+    SetTextColor(hdc,CONCAT22(cr._2_2_,(int)cr));
   }
-  BitBlt(hdc,x,iVar1,4,7,hdcMem,l << 2,0,0xee0086);
-  if ((cr != -1) || (local_c != 0xff)) {
+  BitBlt(hdc,x,iVar1,4,7,hdcMem,(int)l << 2,0,0xee0086);
+  if (((int)cr != -1) || (cr._2_2_ != 0xff)) {
     SetTextColor(hdc,0xffffff);
   }
   SelectObject(hdcMem,HVar4);
@@ -2057,14 +2072,13 @@ long CShipsScanVis(FLEET *lpfl)
   int iVar2;
   bool bVar3;
   HULDEF *pHVar4;
-  ushort grbitSh;
+  ushort local_e;
   short k;
-  uint csh;
-  int local_8;
+  long csh;
   short j;
   
-  csh = 0;
-  local_8 = 0;
+  csh._0_2_ = 0;
+  csh._2_2_ = 0;
   if ((grbitScan & 0x100) != 0) {
     if ((((FLEET *)lpfl)->iPlayer == idPlayer) &&
        ((((((FLEET *)lpfl)->cord != 1 ||
@@ -2072,14 +2086,14 @@ long CShipsScanVis(FLEET *lpfl)
          ((*(uint *)&((PLORD *)((FLEET *)lpfl)->lpplord)[2].iordMax & 0xf) == 5)) ||
         (((*(uint *)&((PLORD *)((FLEET *)lpfl)->lpplord)[2].iordMax & 0xf) == 3 ||
          ((*(uint *)&((PLORD *)((FLEET *)lpfl)->lpplord)[2].iordMax & 0xf) == 7)))))) {
-      csh = 0;
-      local_8 = 0;
+      csh._0_2_ = 0;
+      csh._2_2_ = 0;
       goto LAB_1058_4e75;
     }
     if ((((FLEET *)lpfl)->iPlayer != idPlayer) &&
        ((*(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf) == 0)) {
-      csh = 0;
-      local_8 = 0;
+      csh._0_2_ = 0;
+      csh._2_2_ = 0;
       goto LAB_1058_4e75;
     }
   }
@@ -2087,24 +2101,24 @@ long CShipsScanVis(FLEET *lpfl)
     if (((grbitScan & 0x800) == 0) || (((FLEET *)lpfl)->iPlayer == idPlayer)) {
       for (j = 0; j < 0x10; j = j + 1) {
         uVar1 = ((FLEET *)lpfl)->rgcsh[j];
-        bVar3 = CARRY2(csh,uVar1);
-        csh = csh + uVar1;
-        local_8 = local_8 + ((int)uVar1 >> 0xf) + (uint)bVar3;
+        bVar3 = CARRY2((uint)csh,uVar1);
+        csh._0_2_ = (uint)csh + uVar1;
+        csh._2_2_ = csh._2_2_ + ((int)uVar1 >> 0xf) + (uint)bVar3;
       }
     }
     else {
       j = 0;
-      for (grbitSh = grbitScanEShip; grbitSh != 0; grbitSh = grbitSh >> 1) {
-        if ((grbitSh & 1) != 0) {
+      for (local_e = grbitScanEShip; local_e != 0; local_e = local_e >> 1) {
+        if ((local_e & 1) != 0) {
           for (k = 0; k < 0x10; k = k + 1) {
             if ((0 < ((FLEET *)lpfl)->rgcsh[k]) &&
                (iVar2 = ((FLEET *)lpfl)->iPlayer * 4,
                pHVar4 = LphuldefFromId(*(HullDef *)(*(int *)(iVar2 + rglpshdef) + k * 0x93)),
                (((HULDEF *)pHVar4)->wFlags_0x7b >> 10 & 0xf) == j)) {
               uVar1 = ((FLEET *)lpfl)->rgcsh[k];
-              bVar3 = CARRY2(csh,uVar1);
-              csh = csh + uVar1;
-              local_8 = local_8 + ((int)uVar1 >> 0xf) + (uint)bVar3;
+              bVar3 = CARRY2((uint)csh,uVar1);
+              csh._0_2_ = (uint)csh + uVar1;
+              csh._2_2_ = csh._2_2_ + ((int)uVar1 >> 0xf) + (uint)bVar3;
             }
           }
         }
@@ -2114,18 +2128,18 @@ long CShipsScanVis(FLEET *lpfl)
   }
   else {
     j = 0;
-    for (grbitSh = grbitScanShip; grbitSh != 0; grbitSh = grbitSh >> 1) {
-      if (((grbitSh & 1) != 0) && (0 < ((FLEET *)lpfl)->rgcsh[j])) {
+    for (local_e = grbitScanShip; local_e != 0; local_e = local_e >> 1) {
+      if (((local_e & 1) != 0) && (0 < ((FLEET *)lpfl)->rgcsh[j])) {
         uVar1 = ((FLEET *)lpfl)->rgcsh[j];
-        bVar3 = CARRY2(csh,uVar1);
-        csh = csh + uVar1;
-        local_8 = local_8 + ((int)uVar1 >> 0xf) + (uint)bVar3;
+        bVar3 = CARRY2((uint)csh,uVar1);
+        csh._0_2_ = (uint)csh + uVar1;
+        csh._2_2_ = csh._2_2_ + ((int)uVar1 >> 0xf) + (uint)bVar3;
       }
       j = j + 1;
     }
   }
 LAB_1058_4e75:
-  return CONCAT22(local_8,csh);
+  return CONCAT22(csh._2_2_,(uint)csh);
 }
 
 
@@ -2146,20 +2160,19 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
 {
   BOOL BVar1;
   int iVar2;
-  int *piVar3;
-  undefined2 unaff_SI;
-  undefined2 unaff_DI;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  int iVar7;
+  int iVar8;
   undefined2 unaff_SS;
-  bool bVar4;
-  bool bVar5;
-  ulong uVar6;
-  int local_44;
-  int iStack_42;
-  ZIPORDER *pZStack_40;
-  undefined2 uStack_3e;
-  longdouble local_3c;
-  long local_32;
-  undefined4 local_2e;
+  bool bVar9;
+  bool bVar10;
+  ulong uVar11;
+  ulong uVar12;
+  ulong uVar13;
+  COLORREF CVar14;
   RECT rc;
   short x;
   long l;
@@ -2170,30 +2183,39 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
   short iFree;
   short y;
   short dy;
-  undefined4 crSav;
-  ulong r2;
+  COLORREF crSav;
+  long r2;
   short y2;
   
+  CVar14 = CONCAT22(crSav._2_2_,(undefined2)crSav);
   if ((prc == (RECT *)0x0) ||
-     ((pdc->fCovered == 0 && (BVar1 = IntersectRect(&rc,prc,&pdc->rcClip), BVar1 != 0)))) {
+     ((pdc->fCovered == 0 &&
+      (BVar1 = IntersectRect(&rc,(RECT *)CONCAT62((int6)(CONCAT44(&rc,0x11200000) >> 0x10),prc),
+                             &pdc->rcClip), BVar1 != 0)))) {
     if (prc == (RECT *)0x0) {
       if (pdc->fHollowOut != 0) {
         SetROP2(pdc->hdc,9);
-        crSav = SetBkColor(pdc->hdc,0xffffff);
+        CVar14 = SetBkColor(pdc->hdc,(COLORREF)
+                                     (CONCAT44((long)(CONCAT26(pdc->hdc,0xff00000000) >> 0x20),
+                                               0xffff0000) >> 0x10));
         l = 1;
       }
       while( true ) {
-        for (i = 0; i < pdc->cCur; i = i + 1) {
+        i = 0;
+        while( true ) {
+          crSav._2_2_ = (undefined2)(CVar14 >> 0x10);
+          crSav._0_2_ = (undefined2)CVar14;
+          if (pdc->cCur <= i) break;
           if (0 < pdc->rgrad[i]) {
-            x = pdc->rgx[i];
-            y = pdc->rgy[i];
-            rad = pdc->rgrad[i];
-            Ellipse(pdc->hdc,x - rad,y - rad,x + rad + 1,y + rad + 1);
+            iVar2 = pdc->rgrad[i];
+            Ellipse(pdc->hdc,pdc->rgx[i] - iVar2,pdc->rgy[i] - iVar2,pdc->rgx[i] + iVar2 + 1,
+                    pdc->rgy[i] + iVar2 + 1);
           }
+          i = i + 1;
         }
         if (((pdc->fHollowOut == 0) || ((int)l != 1)) || (l._2_2_ != 0)) break;
         l = 0;
-        SetBkColor(pdc->hdc,crSav);
+        SetBkColor(pdc->hdc,(COLORREF)CONCAT42(CONCAT22(pdc->hdc,crSav._2_2_),(undefined2)crSav));
         SetROP2(pdc->hdc,0xf);
       }
       pdc->fCovered = 0;
@@ -2201,31 +2223,33 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
     }
     else {
       iVar2 = prc->right - prc->left;
-      rad = iVar2 >> 1;
-      x = prc->left + rad;
-      y = prc->top + rad;
+      iVar3 = iVar2 >> 1;
+      iVar4 = prc->left + iVar3;
+      iVar5 = prc->top + iVar3;
       iVar2 = iVar2 >> 0xf;
-      r2 = __aFulmul(CONCAT22(iVar2,rad),CONCAT22(iVar2,rad));
+      uVar11 = CONCAT22(iVar2,iVar3);
+      uVar11 = __aFulmul((ulong)CONCAT62(CONCAT42(uVar11,iVar2),iVar3),uVar11);
       for (i = 0; i < 4; i = i + 1) {
         if (i < 2) {
-          x2 = (&pdc->rcClip)->left;
+          iVar2 = (&pdc->rcClip)->left;
         }
         else {
-          x2 = (pdc->rcClip).right;
+          iVar2 = (pdc->rcClip).right;
         }
         if ((i & 1U) == 0) {
-          y2 = (pdc->rcClip).bottom;
+          iVar6 = (pdc->rcClip).bottom;
         }
         else {
-          y2 = (pdc->rcClip).top;
+          iVar6 = (pdc->rcClip).top;
         }
-        dx = x2 - x;
-        dy = y2 - y;
-        if (((long)r2 < (long)dx) || ((long)r2 < (long)dy)) break;
-        uVar6 = __aFulmul((long)dy,(long)dy);
-        local_2e = uVar6;
-        uVar6 = __aFulmul((long)dx,(long)dx);
-        if ((long)r2 < (long)(uVar6 + local_2e)) break;
+        iVar2 = iVar2 - iVar4;
+        iVar6 = iVar6 - iVar5;
+        if (((long)uVar11 < (long)iVar2) || ((long)uVar11 < (long)iVar6)) break;
+        uVar13 = __aFulmul((ulong)CONCAT62(CONCAT42((long)iVar6,iVar6 >> 0xf),iVar6),
+                                   (long)iVar6);
+        uVar12 = __aFulmul((ulong)CONCAT62(CONCAT42((long)iVar2,iVar2 >> 0xf),iVar2),
+                                   (long)iVar2);
+        if ((long)uVar11 < (long)(uVar12 + uVar13)) break;
       }
       if (i == 4) {
         pdc->fCovered = 1;
@@ -2236,9 +2260,9 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
         i = 0;
         do {
           if (pdc->cCur <= i) {
-            pdc->rgx[iFree] = x;
-            pdc->rgy[iFree] = y;
-            pdc->rgrad[iFree] = rad;
+            pdc->rgx[iFree] = iVar4;
+            pdc->rgy[iFree] = iVar5;
+            pdc->rgrad[iFree] = iVar3;
             if (iFree != pdc->cCur) {
               return;
             }
@@ -2249,51 +2273,34 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
             iFree = i;
           }
           else {
-            x2 = pdc->rgx[i];
-            y2 = pdc->rgy[i];
-            dx = x - x2;
-            dy = y - y2;
-            uVar6 = __aFulmul((long)dy,(long)dy);
-            local_2e = uVar6;
-            uVar6 = __aFulmul((long)dx,(long)dx);
-            l = uVar6 + local_2e;
-            if (pdc->rgrad[i] < rad) {
-              local_32 = (long)rad;
-              local_3c = (longdouble)local_32;
-              _sqrt(SUB84((double)l,0),
-                            (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)(double)l >>
-                                                                              0x20))));
-              bVar4 = CARRY2((uint)pdc->rgrad,i * 2);
-              piVar3 = pdc->rgrad + i;
-              bVar5 = piVar3 == (int *)0x0;
-              local_44 = *piVar3;
-              iStack_42 = local_44 >> 0xf;
-              uStack_3e = 0x1118;
-              pZStack_40 = (ZIPORDER *)0x51d2;
+            iVar2 = pdc->rgx[i];
+            iVar6 = pdc->rgy[i];
+            iVar7 = iVar4 - iVar2;
+            iVar8 = iVar5 - iVar6;
+            uVar11 = __aFulmul((ulong)CONCAT62(CONCAT42((long)iVar8,iVar8 >> 0xf),iVar8),
+                                       (long)iVar8);
+            uVar13 = __aFulmul((ulong)CONCAT62(CONCAT42((long)iVar7,iVar7 >> 0xf),iVar7),
+                                       (long)iVar7);
+            if (pdc->rgrad[i] < iVar3) {
+              _sqrt((double)(long)(uVar13 + uVar11));
+              bVar9 = CARRY2((uint)pdc->rgrad,i * 2);
+              bVar10 = pdc->rgrad + i == (short *)0x0;
               __aFfcompp();
-              if (bVar4 || bVar5) {
+              if (bVar9 || bVar10) {
                 pdc->rgrad[i] = 0;
                 iFree = i;
               }
             }
-            else if (rad < pdc->rgrad[i]) {
-              local_32 = (long)pdc->rgrad[i];
-              local_3c = (longdouble)local_32;
-              _sqrt(SUB84((double)l,0),
-                            (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)(double)l >>
-                                                                              0x20))));
-              bVar4 = (undefined1 *)0xfff7 < &local_44;
-              bVar5 = &stack0x0000 == (undefined1 *)((int)(ulong *)rgcrPlrHistory + 0xe);
-              iStack_42 = rad >> 0xf;
-              local_44 = rad;
-              uStack_3e = 0x1118;
-              pZStack_40 = (ZIPORDER *)vrgZip;
+            else if (iVar3 < pdc->rgrad[i]) {
+              _sqrt((double)(long)(uVar13 + uVar11));
+              bVar9 = (undefined1 *)0xfff7 < &stack0xffb0;
+              bVar10 = &stack0x0000 == (undefined1 *)((int)(ulong *)rgcrPlrHistory + 0x1a);
               __aFfcompp();
-              if (bVar4 || bVar5) {
+              if (bVar9 || bVar10) {
                 return;
               }
             }
-            else if ((x2 == x) && (y2 == y)) {
+            else if ((iVar2 == iVar4) && (iVar6 == iVar5)) {
               return;
             }
           }
@@ -2302,9 +2309,13 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
       }
       if (pdc->fHollowOut != 0) {
         SetROP2(pdc->hdc,9);
-        crSav = SetBkColor(pdc->hdc,0xffffff);
+        CVar14 = SetBkColor(pdc->hdc,(COLORREF)
+                                     (CONCAT44((long)(CONCAT26(pdc->hdc,0xff00000000) >> 0x20),
+                                               0xffff0000) >> 0x10));
         Ellipse(pdc->hdc,prc->left,prc->top,prc->right,prc->bottom);
-        SetBkColor(pdc->hdc,crSav);
+        crSav._2_2_ = (undefined2)(CVar14 >> 0x10);
+        crSav._0_2_ = (undefined2)CVar14;
+        SetBkColor(pdc->hdc,(COLORREF)CONCAT42(CONCAT22(pdc->hdc,crSav._2_2_),(undefined2)crSav));
         SetROP2(pdc->hdc,0xf);
       }
       Ellipse(pdc->hdc,prc->left,prc->top,prc->right,prc->bottom);
@@ -2322,47 +2333,42 @@ void DrawRadarCircle(DRAWCIR *pdc,RECT *prc)
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: m */
-/* WARNING: Variable defined which should be unmapped: dy5 */
-/* WARNING: Variable defined which should be unmapped: dAngle */
-/* WARNING: Variable defined which should be unmapped: dx5 */
-/* WARNING: Variable defined which should be unmapped: dx */
-
 void DrawShipScanPath(HDC hdc,short fShow)
 
 {
-  FLEET *pFVar1;
-  double dVar2;
-  double dVar3;
+  int iVar1;
+  int iVar2;
+  bool bVar3;
   uint uVar4;
   short sVar5;
-  int iVar6;
-  HGDIOBJ HVar7;
-  int iVar8;
-  ORDER *pOVar9;
-  ushort *puVar10;
+  short sVar6;
+  double *pdVar7;
+  HGDIOBJ HVar8;
+  short sVar9;
+  HGDIOBJ HVar10;
+  THING *pTVar11;
+  ORDER *pOVar12;
+  short *psVar13;
   undefined2 unaff_SI;
-  undefined2 unaff_DI;
-  undefined2 uVar11;
+  ushort unaff_DI;
+  undefined2 uVar14;
   undefined2 unaff_SS;
-  bool bVar12;
-  long lVar13;
-  ulong uVar14;
-  double *pdVar15;
-  THING *pTVar16;
-  undefined2 in_stack_0000fef0;
-  undefined2 uVar17;
-  undefined2 in_stack_0000fef6;
+  bool bVar15;
+  ulong uVar16;
+  long lVar17;
+  undefined8 uVar18;
+  long lVar19;
+  HDC HVar20;
+  undefined2 in_stack_0000fee8;
+  short sVar21;
+  undefined2 uVar22;
+  long local_10e;
   double m;
   short dy5;
-  ushort uVar18;
-  int local_fa;
+  POINT ptTick;
   short dx5;
-  int rgptArrow;
-  THING *pTStack_f4;
-  int iStack_f2;
-  undefined2 uStack_f0;
-  double dAngle;
+  POINT rgptArrow [2];
+  undefined8 local_ee;
   RECT rc;
   short dx;
   short dRad;
@@ -2378,10 +2384,9 @@ void DrawShipScanPath(HDC hdc,short fShow)
   POINT pt2;
   HPEN hpenSav;
   short j;
-  int rgDup [87];
+  short rgDup [87];
   ORDER *lpord2;
   
-  fHdc = 0;
   if (((sel.grobj != grobjFleet) && (sel.scan.grobj != grobjFleet)) &&
      (sel.scan.grobj != grobjThing)) {
     if (sel.grobj != grobjPlanet) {
@@ -2400,169 +2405,135 @@ void DrawShipScanPath(HDC hdc,short fShow)
     return;
   }
   fOrdersVis = fShow;
-  bVar12 = hdc == 0;
-  if (bVar12) {
+  bVar15 = hdc == 0;
+  if (bVar15) {
     hdc = GetDC(hwndScanner);
   }
-  fHdc = (short)bVar12;
   if ((sel.scan.grobj == grobjThing) && (sel.scan.ith != -1)) {
-    dAngle._4_2_ = (THING *)lpThings + sel.scan.ith;
-    dAngle._6_2_ = lpThings._2_2_;
-    ptCur.x = (&(dAngle._4_2_)->pt)->x;
-    ptCur.y = ((dAngle._4_2_)->pt).y;
-    if (((THING *)CONCAT22(lpThings._2_2_,dAngle._4_2_))->idFull >> 0xd == 3) {
-      dx = ((&(dAngle._4_2_)->u_THING_0x0006)->thp).wFlags - ptCur.x;
-      dy = *(int *)((int)&(dAngle._4_2_)->u_THING_0x0006 + 2) - ptCur.y;
-      uVar4 = *(uint *)((int)&(dAngle._4_2_)->u_THING_0x0006 + 4) & 0xf;
+    pTVar11 = (THING *)lpThings + sel.scan.ith;
+    ptCur.x = (&pTVar11->pt)->x;
+    ptCur.y = (pTVar11->pt).y;
+    if (((THING *)CONCAT22(lpThings._2_2_,pTVar11))->idFull >> 0xd == 3) {
+      dx = ((&pTVar11->u_THING_0x0006)->thp).wFlags - ptCur.x;
+      dy = *(int *)((int)&pTVar11->u_THING_0x0006 + 2) - ptCur.y;
+      uVar4 = *(uint *)((int)&pTVar11->u_THING_0x0006 + 4) & 0xf;
     }
     else {
-      if ((((THING *)CONCAT22(lpThings._2_2_,dAngle._4_2_))->idFull >> 0xd != 1) ||
-         ((((&(dAngle._4_2_)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) == 0)) goto SCAN_LNextCheck;
-      dx = ((POINT *)rgptPlan + (((&(dAngle._4_2_)->u_THING_0x0006)->thp).wFlags & 0x3ff))
-           ->x - ptCur.x;
+      if ((((THING *)CONCAT22(lpThings._2_2_,pTVar11))->idFull >> 0xd != 1) ||
+         ((((&pTVar11->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) == 0)) goto SCAN_LNextCheck;
+      dx = ((POINT *)rgptPlan + (((&pTVar11->u_THING_0x0006)->thp).wFlags & 0x3ff))->x -
+           ptCur.x;
       dy = *(int *)((int)&rgptPlan[0].y +
-                   (((&(dAngle._4_2_)->u_THING_0x0006)->thp).wFlags & 0x3ff) * 4) - ptCur.y;
-      uVar4 = (((&(dAngle._4_2_)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4;
+                   (((&pTVar11->u_THING_0x0006)->thp).wFlags & 0x3ff) * 4) - ptCur.y;
+      uVar4 = (((&pTVar11->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4;
     }
-    lWarp2 = (long)uVar4;
     if ((dx == 0) && (dy == 0)) goto SCAN_LNextCheck;
-    uVar14 = __aFulmul((ulong)uVar4,5);
-    lWarp2 = __aFulmul(lWarp2,uVar14);
-    lpfl = (FLEET *)0x0;
+    uVar16 = __aFulmul((ulong)CONCAT62(0x50000,uVar4),5);
+    lWarp2 = __aFulmul((ulong)uVar4,uVar16);
   }
   else {
 SCAN_LNextCheck:
     if (sel.scan.grobj != grobjFleet) goto SCAN_LNoObjPath;
-                    /* WARNING: Load size is inaccurate */
-    pFVar1 = ((FLEET **)rglpfl)[sel.scan.ifl];
-    iVar6 = *(int *)((int)((FLEET **)rglpfl + sel.scan.ifl) + 2);
-    lpfl = (FLEET *)CONCAT22(iVar6,pFVar1);
-    ptCur.x = (&pFVar1->pt)->x;
-    ptCur.y = (pFVar1->pt).y;
-    if (((*(uint *)((int)&pFVar1->dirLong + 2) >> 4 & 1) == 0) ||
-       ((*(uint *)((int)&pFVar1->dirLong + 2) & 0xf) == 0)) goto SCAN_LNoObjPath;
-    dx = (*(uint *)&pFVar1->dirLong & 0xff) - 0x7f;
-    dy = (*(uint *)&pFVar1->dirLong >> 8) - 0x7f;
+    iVar1 = *(int *)((FLEET **)rglpfl + sel.scan.ifl);
+    iVar2 = *(int *)((int)((FLEET **)rglpfl + sel.scan.ifl) + 2);
+    ptCur.x = *(short *)(iVar1 + 8);
+    ptCur.y = *(short *)(iVar1 + 10);
+    if (((*(uint *)(iVar1 + 0x76) >> 4 & 1) == 0) || ((*(uint *)(iVar1 + 0x76) & 0xf) == 0))
+    goto SCAN_LNoObjPath;
+    dx = (*(uint *)(iVar1 + 0x74) & 0xff) - 0x7f;
+    dy = (*(uint *)(iVar1 + 0x74) >> 8) - 0x7f;
     if ((dx == 0) && (dy == 0)) goto SCAN_LNoObjPath;
-    lWarp2 = (long)((*(uint *)((int)&pFVar1->dirLong + 2) & 0xf) *
-                    (*(uint *)((int)&pFVar1->dirLong + 2) & 0xf) * 5);
+    lWarp2 = (long)((*(uint *)(iVar1 + 0x76) & 0xf) * (*(uint *)(iVar1 + 0x76) & 0xf) * 5);
   }
-  GetClientRect(hwndScanner,&rc);
+  GetClientRect(hwndScanner,(RECT *)CONCAT42(CONCAT22(hwndScanner,unaff_SS),&rc));
   ExcludeClipRect(hdc,rc.left,rc.bottom - dySBar,rc.right,rc.bottom);
-  hpenSav = SelectObject(hdc,hpenStarbase);
-  iRopSav = SetROP2(hdc,7);
+  HVar8 = SelectObject(hdc,hpenStarbase);
+  sVar9 = SetROP2(hdc,7);
   if (dx == 0) {
-    iVar6 = 0;
+    dx5 = 0;
     dy5 = (int)lWarp2;
     if (dy < 0) {
       dy5 = -(int)lWarp2;
     }
   }
   else {
-    lWarp2 = __aFulmul(lWarp2,lWarp2);
-    uVar11 = 1;
-    uVar17 = 0;
-    dVar2 = (double)lWarp2 /
-            (((double)(long)dy / (double)(long)dx) * ((double)(long)dy / (double)(long)dx) + 1.0);
-    _sqrt(SUB84(dVar2,0),
-                  (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)dVar2 >> 0x20))));
-    lVar13 = __ftol((double)CONCAT26(in_stack_0000fef6,
-                                             CONCAT24(uVar17,CONCAT22(uVar11,in_stack_0000fef0))));
-    iVar6 = (int)lVar13;
-    if (dx < 0) {
-      iVar6 = -iVar6;
-    }
-    iVar8 = dx >> 0xf;
+    uVar16 = __aFulmul((ulong)CONCAT62(CONCAT42(lWarp2,lWarp2._2_2_),(int)lWarp2),lWarp2);
+    local_10e = (long)dy;
     sVar5 = dx;
-    uVar14 = __aFulmul((long)iVar6,(long)dy);
-    lVar13 = __aFldiv(uVar14,CONCAT22(iVar8,sVar5));
-    dy5 = (short)lVar13;
+    _sqrt((double)(long)uVar16 /
+                  (((double)local_10e / (double)(long)dx) * ((double)local_10e / (double)(long)dx) +
+                  1.0));
+    lVar17 = __ftol((double)CONCAT26(sVar5,CONCAT24(in_stack_0000fee8,
+                                                            CONCAT22(unaff_SI,unaff_DI))));
+    dx5 = (short)lVar17;
+    if (dx < 0) {
+      dx5 = -dx5;
+    }
+    uVar18 = CONCAT62(CONCAT42((long)dx,dy >> 0xf),dy);
+    uVar16 = __aFulmul((long)dx5,(ulong)uVar18);
+    lVar17 = (long)((ulonglong)uVar18 >> 0x20);
+    lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar17,(int)(uVar16 >> 0x10)),(int)uVar16),
+                              lVar17);
+    dy5 = (short)lVar17;
   }
   LogicalToScan(&ptCur);
-  uVar4 = PtToScan(iVar6);
-  _dx5 = (double *)(ulong)uVar4;
-  sVar5 = PtToScan(dy5);
-  MoveTo(hdc,ptCur.x - uVar4,ptCur.y + sVar5);
-  LineTo(hdc,ptCur.x + uVar4,ptCur.y + -sVar5);
+  sVar5 = PtToScan(dx5);
+  sVar6 = PtToScan(dy5);
+  MoveTo(hdc,ptCur.x - sVar5,ptCur.y + sVar6);
+  LineTo(hdc,ptCur.x + sVar5,ptCur.y + -sVar6);
   if (dy == 0) {
-    uVar18 = 0;
+    ptTick.x = 0;
     if (dx < 0) {
-      local_fa = -4;
+      ptTick.y = -4;
     }
     else {
-      local_fa = 4;
+      ptTick.y = 4;
     }
   }
   else {
-    dVar2 = (double)(long)-dx / (double)(long)dy;
-    dVar3 = DOUBLE_24_0__1120_1ce2 / (dVar2 * dVar2 + 1.0);
-    _sqrt(SUB84(dVar3,0),
-                  (double)CONCAT26(1,CONCAT24(in_stack_0000fef0,(long)((qword)dVar3 >> 0x20))));
-    lVar13 = __ftol((double)CONCAT26(-sVar5,(int6)((qword)dVar2 >> 0x10)));
-    sVar5 = dy;
-    uVar18 = (ushort)lVar13;
-    if (uVar18 == 0) {
+    local_10e = (long)-dx;
+    sVar21 = dy;
+    _sqrt(DOUBLE_24_0__1120_1ce2 /
+                  (((double)local_10e / (double)(long)dy) * ((double)local_10e / (double)(long)dy) +
+                  1.0));
+    lVar17 = __ftol((double)CONCAT26(sVar21,CONCAT24(in_stack_0000fee8,
+                                                             CONCAT22(unaff_SI,unaff_DI))));
+    ptTick.x = (short)lVar17;
+    if (ptTick.x == 0) {
       if (dy < 0) {
-        local_fa = -4;
+        ptTick.y = -4;
       }
       else {
-        local_fa = 4;
+        ptTick.y = 4;
       }
     }
     else {
       if (0 < dx) {
-        uVar18 = -uVar18;
+        ptTick.x = -ptTick.x;
       }
-      uVar14 = __aFulmul((long)(int)uVar18,(long)dx);
-      in_stack_0000fef0 = 0x59b3;
-      lVar13 = __aFldiv(uVar14,(long)sVar5);
-      local_fa = (int)lVar13;
+      uVar18 = CONCAT62(CONCAT42((long)dy,dx >> 0xf),dx);
+      uVar16 = __aFulmul((long)ptTick.x,(ulong)uVar18);
+      lVar17 = (long)((ulonglong)uVar18 >> 0x20);
+      lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar17,(int)(uVar16 >> 0x10)),(int)uVar16),
+                                lVar17);
+      ptTick.y = (short)lVar17;
     }
   }
-  dVar2 = (double)(long)-dx;
-  iVar6 = -dy;
-  pdVar15 = _atan2(SUB84((double)(long)iVar6,0),
-                           (double)CONCAT26(iVar6,CONCAT24(SUB82(dVar2,0),
-                                                           (long)((qword)(double)(long)iVar6 >> 0x20
-                                                                 ))),
-                           (double)CONCAT26(-dx,CONCAT24(in_stack_0000fef0,
-                                                         CONCAT22((int)((qword)dVar2 >> 0x30),
-                                                                  iVar6 >> 0xf))));
-  dVar2 = *(double *)pdVar15 - DOUBLE_0_7853982__1120_1cea;
-  dAngle._0_2_ = SUB82(dVar2,0);
-  dAngle._2_2_ = (undefined2)((qword)dVar2 >> 0x10);
-  dAngle._4_2_ = (THING *)((qword)dVar2 >> 0x20);
-  dAngle._6_2_ = (int)((qword)dVar2 >> 0x30);
-  for (i = 0; uVar11 = 0x1118, i < 2; i = i + 1) {
-    _cos((double *)CONCAT22(dAngle._2_2_,dAngle._0_2_),
-                 (double)CONCAT26(local_fa,CONCAT24(uVar18,(THING *)CONCAT22(dAngle._6_2_,
-                                                                             dAngle._4_2_))));
-    iStack_f2 = 0x1118;
-    pTStack_f4 = (THING *)0x5a65;
-    lVar13 = __ftol((double)CONCAT26(dAngle._4_2_,
-                                             CONCAT24(dAngle._2_2_,CONCAT22(dAngle._0_2_,uStack_f0))
-                                            ));
-    (&rgptArrow)[i * 2] = (int)lVar13;
-    iStack_f2 = dAngle._6_2_;
-    pTStack_f4 = dAngle._4_2_;
-    _dx5 = (double *)CONCAT22(dAngle._2_2_,dAngle._0_2_);
-    local_fa = 0x1118;
-    uVar18 = 0x5aa2;
-    _sin(_dx5,(double)CONCAT26(dAngle._0_2_,
-                                       CONCAT24(uStack_f0,
-                                                (THING *)CONCAT22(dAngle._6_2_,dAngle._4_2_))));
-    rc.left = 0x1118;
-    dAngle._6_2_ = 0x5abe;
-    pTVar16 = (THING *)__ftol((double)CONCAT26(dx,CONCAT24(rc.bottom,
-                                                                   CONCAT22(rc.right,rc.top))));
-    (&pTStack_f4)[i * 2] = (THING *)pTVar16;
-    dVar2 = DOUBLE_1_5707964__1120_1cfa +
-            (double)CONCAT26(dAngle._6_2_,
-                             CONCAT24(dAngle._4_2_,(double *)CONCAT22(dAngle._2_2_,dAngle._0_2_)));
-    dAngle._0_2_ = SUB82(dVar2,0);
-    dAngle._2_2_ = (undefined2)((qword)dVar2 >> 0x10);
-    dAngle._4_2_ = (THING *)((qword)dVar2 >> 0x20);
-    dAngle._6_2_ = (int)((qword)dVar2 >> 0x30);
+  local_10e = (long)-dx;
+  pdVar7 = _atan2((double)(long)-dy,(double)local_10e);
+  local_ee = *pdVar7 - DOUBLE_0_7853982__1120_1cea;
+  for (i = 0; i < 2; i = i + 1) {
+    uVar14 = SUB102((longdouble)5,0);
+    uVar22 = (undefined2)((unkuint10)(longdouble)5 >> 0x10);
+    _cos(local_ee);
+    lVar17 = __ftol((double)CONCAT26(uVar22,CONCAT24(uVar14,CONCAT22(unaff_SI,unaff_DI))));
+    (rgptArrow + i)->x = (short)lVar17;
+    uVar14 = SUB102((longdouble)5,0);
+    uVar22 = (undefined2)((unkuint10)(longdouble)5 >> 0x10);
+    _sin(local_ee);
+    lVar17 = __ftol((double)CONCAT26(uVar22,CONCAT24(uVar14,CONCAT22(unaff_SI,unaff_DI))));
+    rgptArrow[i].y = (short)lVar17;
+    local_ee = DOUBLE_1_5707964__1120_1cfa + local_ee;
   }
   j = -5;
   for (i = -5; i < 6; i = i + 1) {
@@ -2570,59 +2541,63 @@ SCAN_LNextCheck:
       j = 5;
     }
     else {
-      __aFulmul((long)dx5,(long)i);
-      lVar13 = __aFlshl(10,uVar18);
-      lVar13 = __aFldiv(lVar13 + CONCAT22(dx5,uVar11),10);
-      pt.x = (int)lVar13 + ptCur.x;
-      uVar4 = 0x1118;
-      __aFulmul(0,(long)i);
-      lVar13 = __aFlshl(10,uVar18);
-      uVar11 = 0x1118;
-      lVar13 = __aFldiv(lVar13 + (ulong)uVar4,10);
-      pt.y = (int)lVar13 + ptCur.y;
+      uVar18 = CONCAT62(CONCAT42(10,i >> 0xf),i);
+      __aFulmul((long)sVar5,(ulong)uVar18);
+      lVar19 = (long)((ulonglong)uVar18 >> 0x20);
+      lVar17 = __aFlshl(lVar19,unaff_DI);
+      lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar19,(int)((ulong)(lVar17 + j) >> 0x10)),
+                                               (int)(lVar17 + j)),lVar19);
+      pt.x = (int)lVar17 + ptCur.x;
+      uVar18 = CONCAT62(CONCAT42(10,i >> 0xf),i);
+      __aFulmul((long)-sVar6,(ulong)uVar18);
+      lVar19 = (long)((ulonglong)uVar18 >> 0x20);
+      lVar17 = __aFlshl(lVar19,unaff_DI);
+      lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar19,(int)((ulong)(lVar17 + j) >> 0x10)),
+                                               (int)(lVar17 + j)),lVar19);
+      pt.y = (int)lVar17 + ptCur.y;
       if (i < 1) {
-        MoveTo(hdc,pt.x + uVar18,pt.y + local_fa);
-        LineTo(hdc,pt.x - uVar18,pt.y - local_fa);
-        uVar11 = 0x14f8;
-        LineTo(hdc,pt.x - uVar18,(pt.y - local_fa) + -1);
+        MoveTo(hdc,pt.x + ptTick.x,pt.y + ptTick.y);
+        LineTo(hdc,pt.x - ptTick.x,pt.y - ptTick.y);
+        LineTo(hdc,pt.x - ptTick.x,(pt.y - ptTick.y) + -1);
       }
       else {
         for (j = 0; j < 2; j = j + 1) {
-          MoveTo(hdc,pt.x + (&rgptArrow)[j * 2],pt.y - (int)(&pTStack_f4)[j * 2]);
-          uVar11 = 0x14f8;
+          MoveTo(hdc,pt.x + (rgptArrow + j)->x,pt.y - rgptArrow[j].y);
           LineTo(hdc,pt.x,pt.y);
         }
       }
     }
   }
-  SetROP2(hdc,iRopSav);
-  SelectObject(hdc,hpenSav);
+  SetROP2(hdc,sVar9);
+  SelectObject(hdc,HVar8);
 SCAN_LNoObjPath:
   if (sel.grobj == grobjPlanet) {
-    dAngle._4_2_ = (THING *)0x0;
+    bVar3 = false;
     if (((sel.pl.wFlags_0x4 >> 9 & 1) != 0) &&
        ((sel.pl.lStarbase._2_2_ & 0x3ff) != 0)) {
       hpenSav = SelectObject(hdc,hpenDkPurple);
-      dAngle._6_2_ = (sel.pl.lStarbase._2_2_ & 0x3ff) - 1;
+      bVar3 = false;
+      uVar4 = sel.pl.lStarbase._2_2_;
       goto SCAN_LDrawPath;
     }
-    while (((sel.pl.wRouting & 0x3ff) != 0 && (dAngle._4_2_ == (THING *)0x0))) {
-      dAngle._4_2_ = (THING *)0x1;
-      dAngle._6_2_ = (sel.pl.wRouting & 0x3ff) - 1;
+    while ((uVar4 = sel.pl.wRouting, (sel.pl.wRouting & 0x3ff) != 0 && (!bVar3))
+          ) {
+      bVar3 = true;
       hpenSav = SelectObject(hdc,hpenDkGreen);
 SCAN_LDrawPath:
-      iRopSav = SetROP2(hdc,7);
-      GetClientRect(hwndScanner,&rc);
+      local_ee._6_2_ = (uVar4 & 0x3ff) - 1;
+      sVar9 = SetROP2(hdc,7);
+      GetClientRect(hwndScanner,(RECT *)CONCAT42(CONCAT22(hwndScanner,unaff_SS),&rc));
       ExcludeClipRect(hdc,rc.left,rc.bottom - dySBar,rc.right,rc.bottom);
       pt.x = ((POINT *)rgptPlan + sel.pl.id)->x;
       pt.y = *(short *)((int)&rgptPlan[0].y + sel.pl.id * 4);
       LogicalToScan(&pt);
       MoveTo(hdc,pt.x,pt.y);
-      pt.x = ((POINT *)rgptPlan + dAngle._6_2_)->x;
-      pt.y = *(ushort *)((int)&rgptPlan[0].y + dAngle._6_2_ * 4);
+      pt.x = ((POINT *)rgptPlan + local_ee._6_2_)->x;
+      pt.y = *(short *)((int)&rgptPlan[0].y + local_ee._6_2_ * 4);
       LogicalToScan(&pt);
       LineTo(hdc,pt.x,pt.y);
-      SetROP2(hdc,iRopSav);
+      SetROP2(hdc,sVar9);
       SelectObject(hdc,hpenSav);
     }
   }
@@ -2631,75 +2606,75 @@ SCAN_LDrawPath:
     lpord1 = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,(PLORD *)sel.fl.lpplord + 1)
     ;
     pt.x = (lpord1->pt).x;
-    pt.y = *(ushort *)&((PLORD *)sel.fl.lpplord)[1].iordMax;
+    pt.y = *(short *)&((PLORD *)sel.fl.lpplord)[1].iordMax;
     for (i = 1; i < sel.fl.cord; i = i + 1) {
       lpord2 = (ORDER *)lpord1 + 1;
       pt2.x = (lpord2->pt).x;
       pt2.y = ((ORDER *)lpord1)[1].pt.y;
+      j = i;
       if (rgDup[i] == 0) {
-        for (j = i + 1; j < sel.fl.cord; j = j + 1) {
-          uVar11 = (undefined2)((ulong)lpord2 >> 0x10);
-          pOVar9 = (ORDER *)lpord2;
-          if (((((pt.x == (lpord2->pt).x) && (pt.y == (pOVar9->pt).y)) &&
-               (pt2.x == ((pOVar9 + 1)->pt).x)) && (pt2.y == pOVar9[1].pt.y)) ||
-             (((pt2.x == (lpord2->pt).x && (pt2.y == (pOVar9->pt).y)) &&
-              ((pt.x == ((pOVar9 + 1)->pt).x && (pt.y == pOVar9[1].pt.y)))))) {
+        while (j = j + 1, j < sel.fl.cord) {
+          uVar14 = (undefined2)((ulong)lpord2 >> 0x10);
+          pOVar12 = (ORDER *)lpord2;
+          if (((((pt.x == (lpord2->pt).x) && (pt.y == (pOVar12->pt).y)) &&
+               (pt2.x == ((pOVar12 + 1)->pt).x)) && (pt2.y == pOVar12[1].pt.y)) ||
+             (((pt2.x == (lpord2->pt).x && (pt2.y == (pOVar12->pt).y)) &&
+              ((pt.x == ((pOVar12 + 1)->pt).x && (pt.y == pOVar12[1].pt.y)))))) {
             rgDup[i] = 1;
             rgDup[j] = 2;
           }
-          lpord2 = (ORDER *)lpord2 + 1;
+          lpord2 = (ORDER *)CONCAT22(uVar14,pOVar12 + 1);
         }
       }
       pt.x = pt2.x;
       pt.y = pt2.y;
       lpord1 = (ORDER *)lpord1 + 1;
     }
-    GetClientRect(hwndScanner,&rc);
+    GetClientRect(hwndScanner,(RECT *)CONCAT42(CONCAT22(hwndScanner,unaff_SS),&rc));
     ExcludeClipRect(hdc,rc.left,rc.bottom - dySBar,rc.right,rc.bottom);
     if ((fShow != 0) && ((grbitScan & 0x80) != 0)) {
-      hpenSav = SelectObject(hdc,hpenStarbase);
-      uVar11 = (undefined2)((ulong)sel.fl.lpplord >> 0x10);
+      HVar8 = SelectObject(hdc,hpenStarbase);
+      uVar14 = (undefined2)((ulong)sel.fl.lpplord >> 0x10);
       pt.x = ((PLORD *)sel.fl.lpplord + 1)->wFlags;
       pt.y = *(short *)&((PLORD *)sel.fl.lpplord)[1].iordMax;
       LogicalToScan(&pt);
       MoveTo(hdc,pt.x,pt.y);
       for (i = 1; i < sel.fl.cord; i = i + 1) {
-        puVar10 = (ushort *)((int)(PLORD *)sel.fl.lpplord + i * 0x12 + 4);
-        pt2.x = *puVar10;
-        pt2.y = puVar10[1];
+        psVar13 = (short *)((int)(PLORD *)sel.fl.lpplord + i * 0x12 + 4);
+        pt2.x = *psVar13;
+        pt2.y = psVar13[1];
         LogicalToScan(&pt2);
         LineTo(hdc,pt2.x,pt2.y);
         pt.x = pt2.x;
         pt.y = pt2.y;
       }
-      SelectObject(hdc,hpenSav);
+      SelectObject(hdc,HVar8);
     }
-    hpenSav = SelectObject(hdc,hpenShip);
-    iRopSav = SetROP2(hdc,7);
-    uVar11 = (undefined2)((ulong)sel.fl.lpplord >> 0x10);
+    HVar8 = SelectObject(hdc,hpenShip);
+    sVar9 = SetROP2(hdc,7);
+    uVar14 = (undefined2)((ulong)sel.fl.lpplord >> 0x10);
     pt.x = ((PLORD *)sel.fl.lpplord + 1)->wFlags;
     pt.y = *(short *)&((PLORD *)sel.fl.lpplord)[1].iordMax;
-    dRad = 5;
     LogicalToScan(&pt);
-    ExcludeClipRect(hdc,pt.x - dRad,pt.y - dRad,pt.x + dRad + 1,pt.y + dRad + 1);
+    ExcludeClipRect(hdc,pt.x + -5,pt.y + -5,pt.x + 6,pt.y + 6);
     MoveTo(hdc,pt.x,pt.y);
     for (i = 1; i < sel.fl.cord; i = i + 1) {
-      puVar10 = (ushort *)((int)(PLORD *)sel.fl.lpplord + i * 0x12 + 4);
-      pt2.x = *puVar10;
-      pt2.y = puVar10[1];
-      dRad = 5;
+      psVar13 = (short *)((int)(PLORD *)sel.fl.lpplord + i * 0x12 + 4);
+      pt2.x = *psVar13;
+      pt2.y = psVar13[1];
       LogicalToScan(&pt2);
-      ExcludeClipRect(hdc,pt2.x - dRad,pt2.y - dRad,pt2.x + dRad + 1,pt2.y + dRad + 1);
+      ExcludeClipRect(hdc,pt2.x + -5,pt2.y + -5,pt2.x + 6,pt2.y + 6);
       if (rgDup[i] == 2) {
         MoveTo(hdc,pt2.x,pt2.y);
       }
       else {
         if (rgDup[i] == 1) {
-          HVar7 = hpenYellow;
+          HVar10 = hpenYellow;
+          HVar20 = hdc;
           if ((grbitScan & 0x80) == 0) {
-            HVar7 = GetStockObject(6);
+            HVar10 = GetStockObject(6);
           }
-          SelectObject(hdc,HVar7);
+          SelectObject(HVar20,HVar10);
         }
         LineTo(hdc,pt2.x,pt2.y);
         if (rgDup[i] == 1) {
@@ -2709,11 +2684,11 @@ SCAN_LDrawPath:
       pt.x = pt2.x;
       pt.y = pt2.y;
     }
-    SetROP2(hdc,iRopSav);
-    SelectObject(hdc,hpenSav);
+    SetROP2(hdc,sVar9);
+    SelectObject(hdc,HVar8);
     SelectClipRgn(hdc,hrgnHuge);
   }
-  if (fHdc != 0) {
+  if (bVar15) {
     ReleaseDC(hwndScanner,hdc);
   }
   return;
@@ -2731,25 +2706,33 @@ SCAN_LDrawPath:
 void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
 
 {
-  BOOL BVar1;
-  short sVar2;
-  char *pcVar3;
-  ushort uVar4;
-  int iVar5;
-  int iVar6;
+  bool bVar1;
+  BOOL BVar2;
+  HGDIOBJ HVar3;
+  short sVar4;
+  HGDIOBJ HVar5;
+  short sVar6;
+  GrobjClass GVar7;
+  char *pcVar8;
+  ushort uVar9;
+  int iVar10;
+  int iVar11;
   undefined2 unaff_SS;
-  DWORD DVar7;
-  undefined2 uVar8;
-  RECT *pRVar9;
-  undefined2 uVar10;
-  UINT UVar11;
-  UINT UVar12;
-  HDC HVar13;
+  bool bVar12;
+  COLORREF CVar13;
+  DWORD DVar14;
+  DWORD DVar15;
+  undefined2 uVar16;
+  RECT *pRVar17;
+  undefined2 uVar18;
+  UINT UVar19;
+  UINT UVar20;
+  HDC HVar21;
   char szBuf [100];
   RECT rc;
   RECT rcT;
   short grobj;
-  undefined4 l;
+  long l;
   short fDoName;
   HBRUSH hbrSav;
   char *psz;
@@ -2760,36 +2743,32 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
   short c;
   short iBkPrev;
   short grReal;
-  int pt;
-  short local_12;
+  POINT pt;
   short id;
-  int pt2;
-  short local_c;
+  POINT pt2;
   COLORREF crText;
   short fhdc;
   
-  fhdc = 0;
-  fDoName = 1;
+  bVar1 = true;
   GetClientRect(hwndScanner,&rc);
   rc.top = rc.bottom - dySBar;
-  if ((prc == (RECT *)0x0) || (BVar1 = IntersectRect(&rcT,prc,&rc), BVar1 != 0)) {
-    if (hdc == 0) {
-      fhdc = 1;
+  if ((prc == (RECT *)0x0) || (BVar2 = IntersectRect(&rcT,prc,&rc), BVar2 != 0)) {
+    bVar12 = hdc == 0;
+    if (bVar12) {
       hdc = GetDC(hwndScanner);
     }
-    hfontSav = SelectObject(hdc,rghfontArial8[1]);
+    HVar3 = SelectObject(hdc,rghfontArial8[1]);
     if (psbar == (SBAR *)0x0) {
       grobj = sel.scan.grobj;
     }
     else {
       grobj = psbar->grbit;
     }
-    iBkPrev = SetBkMode(hdc,1);
-    crBk = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
-    ;
-    crText = SetTextColor(hdc,CONCAT22(crButtonText._2_2_,
-                                       (undefined2)crButtonText));
-    hbrSav = SelectObject(hdc,hbrButtonFace);
+    sVar4 = SetBkMode(hdc,1);
+    CVar13 = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace
+                                    ));
+    SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
+    HVar5 = SelectObject(hdc,hbrButtonFace);
     if (fFullRedraw != 0) {
       PatBlt(hdc,rc.left,rc.top,rc.right - rc.left,dySBar,0xf00021);
       SelectObject(hdc,hbrButtonHilite);
@@ -2802,9 +2781,8 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
     rcT.bottom = rc.bottom + -4;
     rcT.left = rc.left + 4;
     if (0x167 < rc.right) {
-      l = GetTextExtent(hdc,(LPCSTR)0x112005a2,7);
-      dxHole = (int)l + 6;
-      rcT.right = dxHole + rcT.left;
+      DVar14 = GetTextExtent(hdc,(LPCSTR)0x112005a2,7);
+      rcT.right = (int)DVar14 + 6 + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
       if ((grobj & 1U) == 0) {
         if (grobj == 4) {
@@ -2814,8 +2792,8 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           else {
             id = psbar->id;
           }
-          c = _wsprintf(szWork,(char *)0x112005b1,id);
-          TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
+          sVar6 = _wsprintf(szWork,(char *)0x112005b1,id);
+          TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
         }
       }
       else {
@@ -2826,113 +2804,110 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           id = psbar->id;
         }
         if (id != -1) {
-          c = _wsprintf(szWork,(char *)0x112005aa,id + 1);
+          sVar6 = _wsprintf(szWork,(char *)0x112005aa,id + 1);
           SetBkMode(hdc,2);
-          TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
+          TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
         }
       }
-      DVar7 = GetTextExtent(hdc,(LPCSTR)0x112005b8,7);
-      rcT.left = rcT.left + dxHole + 4;
-      dxHole = (int)DVar7 + 6;
-      rcT.right = dxHole + rcT.left;
-      l = DVar7;
+      DVar15 = GetTextExtent(hdc,(LPCSTR)0x112005b8,7);
+      iVar10 = (int)DVar15;
+      rcT.left = rcT.left + (int)DVar14 + 10;
+      rcT.right = iVar10 + 6 + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
       if (psbar == (SBAR *)0x0) {
         if (grobj == 0) {
-          local_12 = 0;
-          pt = 0;
+          pt.y = 0;
+          pt.x = 0;
         }
         else {
-          pt = sel.scan.pt.x;
-          local_12 = sel.scan.pt.y;
+          pt.x = sel.scan.pt.x;
+          pt.y = sel.scan.pt.y;
         }
       }
       else {
-        pt = (&psbar->pt)->x;
-        local_12 = (psbar->pt).y;
+        pt.x = (&psbar->pt)->x;
+        pt.y = (psbar->pt).y;
       }
-      if (0 < pt) {
-        c = _wsprintf(szWork,(char *)0x112005c0,pt);
+      if (0 < pt.x) {
+        sVar6 = _wsprintf(szWork,(char *)0x112005c0,pt.x);
         SetBkMode(hdc,2);
-        TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
+        TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
       }
-      rcT.left = rcT.left + dxHole + 4;
-      dxHole = (int)l + 6;
-      rcT.right = dxHole + rcT.left;
+      rcT.left = rcT.left + iVar10 + 10;
+      rcT.right = iVar10 + 6 + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
-      if (0 < local_12) {
-        c = _wsprintf(szWork,(char *)0x112005c6,local_12);
+      if (0 < pt.y) {
+        sVar6 = _wsprintf(szWork,(char *)0x112005c6,pt.y);
         SetBkMode(hdc,2);
-        TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,c);
+        TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
       }
-      rcT.left = rcT.left + dxHole + 4;
+      rcT.left = rcT.left + iVar10 + 10;
     }
-    dxHole = (rc.right - rcT.left) + -4;
-    rcT.right = dxHole + rcT.left;
+    rcT.right = rc.right + -4;
     DrawLockLight(hdc,&rcT,fFullRedraw);
     rcClip.left = rcT.left;
     rcClip.top = rcT.top;
     rcClip.right = rcT.right;
     rcClip.bottom = rcT.bottom;
     ExpandRc(&rcClip,-2,-2);
-    grReal = sel.scan.grobjFull;
+    GVar7 = sel.scan.grobjFull;
     if (grobj != 4) {
-      grReal = grobj;
+      GVar7 = grobj;
     }
     if ((psbar == (SBAR *)0x0) || (psbar->psz == (char *)0x0)) {
-      if ((grReal & grobjPlanet) == grobjNone) {
-        if ((grReal & grobjFleet) == grobjNone) {
-          if ((grReal & grobjThing) == grobjNone) {
-            if ((grReal == grobjNone) && (grobj == 4)) {
+      if ((GVar7 & grobjPlanet) == grobjNone) {
+        if ((GVar7 & grobjFleet) == grobjNone) {
+          if ((GVar7 & grobjThing) == grobjNone) {
+            if ((GVar7 == grobjNone) && (grobj == 4)) {
               CchGetString(idsDeepSpaceWaypoint,(char *)szWork);
             }
             else {
-              fDoName = 0;
+              bVar1 = false;
             }
           }
           else {
             if (psbar == (SBAR *)0x0) {
-              uVar4 = ((THING *)lpThings + sel.scan.ith)->idFull;
+              uVar9 = ((THING *)lpThings + sel.scan.ith)->idFull;
             }
             else {
-              uVar4 = psbar->id;
+              uVar9 = psbar->id;
             }
-            PszGetThingName(uVar4);
+            PszGetThingName(uVar9);
           }
         }
         else {
           if (psbar == (SBAR *)0x0) {
-            sVar2 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
+            sVar6 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
           }
           else {
-            sVar2 = psbar->id;
+            sVar6 = psbar->id;
           }
-          PszGetFleetName(sVar2);
+          PszGetFleetName(sVar6);
         }
       }
       else {
-        sVar2 = sel.scan.idpl;
+        sVar6 = sel.scan.idpl;
         if (psbar != (SBAR *)0x0) {
-          sVar2 = psbar->id;
+          sVar6 = psbar->id;
         }
-        PszGetPlanetName(sVar2);
+        PszGetPlanetName(sVar6);
       }
     }
     else {
       _strcpy((char *)szWork,psbar->psz);
     }
-    if (fDoName != 0) {
-      iVar5 = rcT.left + 3;
-      iVar6 = rcT.top + 2;
-      UVar11 = 4;
-      pRVar9 = &rcClip;
-      uVar8 = 0x1120;
-      pcVar3 = (char *)szWork;
-      uVar10 = unaff_SS;
-      HVar13 = hdc;
-      UVar12 = lstrlen(szWork);
-      ExtTextOut(HVar13,iVar5,iVar6,UVar11,(RECT *)CONCAT22(uVar10,pRVar9),
-                 (LPCSTR)CONCAT22(uVar8,pcVar3),UVar12,(short *)0x0);
+    if (bVar1) {
+      iVar10 = rcT.left + 3;
+      iVar11 = rcT.top + 2;
+      UVar19 = 4;
+      pRVar17 = &rcClip;
+      uVar16 = 0x1120;
+      pcVar8 = (char *)szWork;
+      uVar18 = unaff_SS;
+      HVar21 = hdc;
+      UVar20 = lstrlen(szWork);
+      ExtTextOut(HVar21,iVar10,iVar11,UVar19,(RECT *)CONCAT22(uVar18,pRVar17),
+                 (LPCSTR)CONCAT22(uVar16,pcVar8),UVar20,(short *)0x0);
     }
     OffsetRc(&rc,0,dySBar >> 1);
     rcT.top = rc.top + 4;
@@ -2947,60 +2922,60 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
     ExpandRc(&rcClip,-2,-2);
     if (psbar == (SBAR *)0x0) {
       if (grobj == 0) {
-        local_12 = 0;
-        pt = 0;
+        pt.y = 0;
+        pt.x = 0;
       }
       else {
-        pt = sel.scan.pt.x;
-        local_12 = sel.scan.pt.y;
+        pt.x = sel.scan.pt.x;
+        pt.y = sel.scan.pt.y;
       }
     }
     else {
-      pt = (&psbar->pt)->x;
-      local_12 = (psbar->pt).y;
+      pt.x = (&psbar->pt)->x;
+      pt.y = (psbar->pt).y;
     }
     if ((psbar == (SBAR *)0x0) || (psbar->pscan == (SCAN *)0x0)) {
       if ((sel.grobj == grobjFleet) || (sel.grobj == grobjPlanet)) {
-        pt2 = sel.pt.x;
-        local_c = sel.pt.y;
+        pt2.x = sel.pt.x;
+        pt2.y = sel.pt.y;
       }
       else {
-        pt2 = -1;
+        pt2.x = -1;
       }
     }
     else {
-      pt2 = (psbar->pscan->pt).x;
-      local_c = (psbar->pscan->pt).y;
+      pt2.x = (psbar->pscan->pt).x;
+      pt2.y = (psbar->pscan->pt).y;
     }
-    if (((pt != -1) && (pt2 != -1)) && ((pt != pt2 || (local_12 != local_c)))) {
-      pcVar3 = PszGetDistance(pt,local_12,pt2,local_c);
-      _strcpy(szBuf,pcVar3);
+    if (((pt.x != -1) && (pt2.x != -1)) && ((pt.x != pt2.x || (pt.y != pt2.y)))) {
+      pcVar8 = PszGetDistance(pt.x,pt.y,pt2.x,pt2.y);
+      _strcpy(szBuf,pcVar8);
       for (psz = szBuf; *psz != ' '; psz = psz + 1) {
       }
       CchGetString((0x15d < rc.right) + idsLy,psz + 1);
       if ((psbar == (SBAR *)0x0) || (psbar->pscan == (SCAN *)0x0)) {
-        uVar4 = _strlen(psz);
-        CchGetString(idsFrom,psz + uVar4);
-        pcVar3 = PszGetLocName(sel.grobj,sel.id,pt2,local_c);
-        _strcat(psz + 8,pcVar3);
+        uVar9 = _strlen(psz);
+        CchGetString(idsFrom,psz + uVar9);
+        pcVar8 = PszGetLocName(sel.grobj,sel.id,pt2.x,pt2.y);
+        _strcat(psz + 8,pcVar8);
       }
-      iVar5 = rcT.left + 3;
-      iVar6 = rcT.top + 2;
-      UVar12 = 4;
-      pRVar9 = &rcClip;
-      pcVar3 = szBuf;
-      uVar10 = unaff_SS;
-      HVar13 = hdc;
-      uVar4 = _strlen(szBuf);
-      ExtTextOut(HVar13,iVar5,iVar6,UVar12,(RECT *)CONCAT22(uVar10,pRVar9),pcVar3,uVar4,(short *)0x0
-                );
+      iVar10 = rcT.left + 3;
+      iVar11 = rcT.top + 2;
+      UVar20 = 4;
+      pRVar17 = &rcClip;
+      pcVar8 = szBuf;
+      uVar18 = unaff_SS;
+      HVar21 = hdc;
+      uVar9 = _strlen(szBuf);
+      ExtTextOut(HVar21,iVar10,iVar11,UVar20,(RECT *)CONCAT22(uVar18,pRVar17),pcVar8,uVar9,
+                 (short *)0x0);
     }
-    SelectObject(hdc,hbrSav);
-    SetBkMode(hdc,iBkPrev);
+    SelectObject(hdc,HVar5);
+    SetBkMode(hdc,sVar4);
     SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
-    SetBkColor(hdc,crBk);
-    SelectObject(hdc,hfontSav);
-    if (fhdc != 0) {
+    SetBkColor(hdc,CVar13);
+    SelectObject(hdc,HVar3);
+    if (bVar12) {
       ReleaseDC(hwndScanner,hdc);
     }
   }
@@ -3019,13 +2994,15 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
 void DrawLockLight(HDC hdc,RECT *prc,short fFullRedraw)
 
 {
+  int iVar1;
+  int iVar2;
   undefined2 unaff_SS;
   RECT rc;
   short dx;
   short dy;
   
-  dx = prc->right - prc->left;
-  dy = prc->bottom - prc->top;
+  iVar1 = prc->right - prc->left;
+  iVar2 = prc->bottom - prc->top;
   if (fFullRedraw == 0) {
     rc.left = prc->left;
     rc.top = prc->top;
@@ -3036,11 +3013,11 @@ void DrawLockLight(HDC hdc,RECT *prc,short fFullRedraw)
   }
   else {
     SelectObject(hdc,hbrButtonShadow);
-    PatBlt(hdc,prc->left,prc->top,1,dy,0xf00021);
-    PatBlt(hdc,prc->left,prc->top,dx,1,0xf00021);
+    PatBlt(hdc,prc->left,prc->top,1,iVar2,0xf00021);
+    PatBlt(hdc,prc->left,prc->top,iVar1,1,0xf00021);
     SelectObject(hdc,hbrButtonHilite);
-    PatBlt(hdc,prc->right,prc->top,1,dy + 1,0xf00021);
-    PatBlt(hdc,prc->left,prc->bottom,dx,1,0xf00021);
+    PatBlt(hdc,prc->right,prc->top,1,iVar2 + 1,0xf00021);
+    PatBlt(hdc,prc->left,prc->bottom,iVar1,1,0xf00021);
   }
   return;
 }
@@ -3057,7 +3034,10 @@ void DrawLockLight(HDC hdc,RECT *prc,short fFullRedraw)
 void SetScanScrollBars(HWND hwnd)
 
 {
-  int iVar1;
+  short sVar1;
+  short sVar2;
+  int iVar3;
+  int iVar4;
   undefined2 unaff_SS;
   RECT rc;
   short dx;
@@ -3067,29 +3047,27 @@ void SetScanScrollBars(HWND hwnd)
   
   fInScrollSet = 1;
   GetClientRect(hwnd,&rc);
-  dx = ScanToPt(rc.right);
-  dy = ScanToPt(rc.bottom - dySBar);
-  if ((dGalInv + -1000) - dx < 1000) {
-    iVar1 = 1000;
+  sVar1 = ScanToPt(rc.right);
+  sVar2 = ScanToPt(rc.bottom - dySBar);
+  if ((dGalInv + -1000) - sVar1 < 1000) {
+    iVar3 = 1000;
   }
   else {
-    iVar1 = (dGalInv + -1000) - dx;
+    iVar3 = (dGalInv + -1000) - sVar1;
   }
-  xMax = iVar1 + 3U & 0xfffc;
-  if ((dGalInv + -1000) - dy < 1000) {
-    iVar1 = 1000;
+  if ((dGalInv + -1000) - sVar2 < 1000) {
+    iVar4 = 1000;
   }
   else {
-    iVar1 = (dGalInv + -1000) - dy;
+    iVar4 = (dGalInv + -1000) - sVar2;
   }
-  yMax = iVar1 + 3U & 0xfffc;
-  SetScrollRange(hwnd,0,1000,xMax,1);
-  if ((fInScrollSet != 0) && (SetScrollRange(hwnd,1,1000,yMax,1), fInScrollSet != 0))
-  {
-    if (dy <= dx) {
-      dx = dy;
+  SetScrollRange(hwnd,0,1000,iVar3 + 3U & 0xfffc,1);
+  if ((fInScrollSet != 0) &&
+     (SetScrollRange(hwnd,1,1000,iVar4 + 3U & 0xfffc,1), fInScrollSet != 0)) {
+    if (sVar2 <= sVar1) {
+      sVar1 = sVar2;
     }
-    dScanPage = dx / 3 & 0xfffc;
+    dScanPage = sVar1 / 3 & 0xfffc;
     dScanInc = dScanPage / 8 + 2U & 0xfffc;
     fInScrollSet = 0;
   }
@@ -3109,7 +3087,10 @@ void ScrollScanner(short dx,short dy)
 
 {
   BOOL BVar1;
+  HDC hdc_00;
   short sVar2;
+  undefined1 *puVar3;
+  undefined2 uVar4;
   undefined2 unaff_SS;
   RECT rc;
   RECT rcUpd2;
@@ -3118,12 +3099,14 @@ void ScrollScanner(short dx,short dy)
   
   if ((((dx != 0) || (dy != 0)) && (BVar1 = IsWindowVisible(hwndScanner), BVar1 != 0)) &&
      (((uint)gd.grBits2 & 1) == 0)) {
-    hdc = GetDC(hwndScanner);
+    hdc_00 = GetDC(hwndScanner);
     GetClientRect(hwndScanner,&rc);
     sVar2 = _abs(dx);
     if (((rc.right >> 1 < sVar2) || (sVar2 = _abs(dy), rc.bottom >> 1 < sVar2)) ||
        ((fDlgUp != 0 || (hwndBrowser != 0)))) {
-      DrawScanner(hdc,&rc);
+      uVar4 = 0x1058;
+      DrawScanner(hdc_00,&rc);
+      puVar3 = &stack0xffdc;
     }
     else {
       rc.bottom = rc.bottom - dySBar;
@@ -3152,21 +3135,48 @@ void ScrollScanner(short dx,short dy)
         SetRect(&rcUpd,0,rc.top,dx,rc.bottom);
         rc.right = rc.right - dx;
       }
+      puVar3 = &stack0xffdc;
       if (dx != 0) {
         ValidateRect(hwndScanner,&rcUpd);
+        puVar3 = &stack0xffe0;
       }
       if (dy != 0) {
-        ValidateRect(hwndScanner,&rcUpd2);
+        *(HWND *)(puVar3 + -2) = hwndScanner;
+        *(undefined2 *)(puVar3 + -4) = unaff_SS;
+        *(RECT **)(puVar3 + -6) = &rcUpd2;
+        *(undefined2 *)(puVar3 + -8) = 0x14f8;
+        *(undefined2 *)(puVar3 + -10) = 0x6ee5;
+        ValidateRect(*(HWND *)(puVar3 + -2),*(RECT **)(puVar3 + -6));
+        puVar3 = puVar3 + 4;
       }
+      uVar4 = 0x14f8;
       if (dx != 0) {
-        DrawScanner(hdc,&rcUpd);
+        *(RECT **)(puVar3 + -2) = &rcUpd;
+        *(HDC *)(puVar3 + -4) = hdc_00;
+        *(undefined2 *)(puVar3 + -6) = 0x14f8;
+        uVar4 = 0x1058;
+        *(undefined2 *)(puVar3 + -8) = 0x6efa;
+        DrawScanner(*(HDC *)(puVar3 + -4),*(RECT **)(puVar3 + -2));
       }
       if (dy != 0) {
-        DrawScanner(hdc,&rcUpd2);
+        *(RECT **)(puVar3 + -2) = &rcUpd2;
+        *(HDC *)(puVar3 + -4) = hdc_00;
+        *(undefined2 *)(puVar3 + -6) = uVar4;
+        uVar4 = 0x1058;
+        *(undefined2 *)(puVar3 + -8) = 0x6f12;
+        DrawScanner(*(HDC *)(puVar3 + -4),*(RECT **)(puVar3 + -2));
       }
-      UpdateWindow(hwndScanner);
+      *(HWND *)(puVar3 + -2) = hwndScanner;
+      *(undefined2 *)(puVar3 + -4) = uVar4;
+      uVar4 = 0x14f8;
+      *(undefined2 *)(puVar3 + -6) = 0x6f1e;
+      UpdateWindow(*(HWND *)(puVar3 + -2));
     }
-    ReleaseDC(hwndScanner,hdc);
+    *(HWND *)(puVar3 + -2) = hwndScanner;
+    *(HDC *)(puVar3 + -4) = hdc_00;
+    *(undefined2 *)(puVar3 + -6) = uVar4;
+    *(undefined2 *)(puVar3 + -8) = 0x6f2a;
+    ReleaseDC(*(HWND *)(puVar3 + -2),*(HDC *)(puVar3 + -4));
   }
   return;
 }
@@ -3183,20 +3193,21 @@ void ScrollScanner(short dx,short dy)
 void RedrawScanSel(HDC hdc,short fVis)
 
 {
-  int *piVar1;
-  int *piVar2;
+  short *psVar1;
+  SCAN *pSVar2;
   GrobjClass GVar3;
-  BOOL BVar4;
-  int iVar5;
-  int *piVar6;
-  int *piVar7;
+  GrobjClass GVar4;
+  short sVar5;
+  BOOL BVar6;
+  int iVar7;
+  short *psVar8;
+  SCAN *pSVar9;
   undefined2 unaff_SS;
-  bool bVar8;
+  bool bVar10;
+  bool bVar11;
   short sel_grobjFull;
   RECT rc;
-  int sel_scan;
-  int local_20;
-  int local_1e;
+  SCAN sel_scan;
   short fNoSelRedraw;
   short sel_id;
   POINT pt;
@@ -3204,27 +3215,25 @@ void RedrawScanSel(HDC hdc,short fVis)
   short fhdc;
   short sel_grobj;
   
-  GVar3 = sel.grobjFull;
-  fhdc = 0;
-  sel_id = sel.id;
-  sel_grobj = sel.grobj;
-  piVar6 = (int *)&sel.scan;
-  piVar7 = &sel_scan;
-  for (iVar5 = 8; iVar5 != 0; iVar5 = iVar5 + -1) {
-    piVar2 = piVar7;
-    piVar7 = piVar7 + 1;
-    piVar1 = piVar6;
-    piVar6 = piVar6 + 1;
-    *piVar2 = *piVar1;
+  sVar5 = sel.id;
+  GVar4 = sel.grobjFull;
+  GVar3 = sel.grobj;
+  psVar8 = (short *)&sel.scan;
+  pSVar9 = &sel_scan;
+  for (iVar7 = 8; iVar7 != 0; iVar7 = iVar7 + -1) {
+    pSVar2 = pSVar9;
+    pSVar9 = &(pSVar9->pt).y;
+    psVar1 = psVar8;
+    psVar8 = psVar8 + 1;
+    (pSVar2->pt).x = *psVar1;
   }
-  if ((hwndScanner != 0) && (BVar4 = IsWindowVisible(hwndScanner), BVar4 != 0)) {
-    bVar8 = fVis == -1;
-    if (bVar8) {
+  if ((hwndScanner != 0) && (BVar6 = IsWindowVisible(hwndScanner), BVar6 != 0)) {
+    bVar10 = fVis == -1;
+    if (bVar10) {
       fVis = 0;
     }
-    fNoSelRedraw = (short)bVar8;
-    if (hdc == 0) {
-      fhdc = 1;
+    bVar11 = hdc == 0;
+    if (bVar11) {
       hdc = GetDC(hwndScanner);
     }
     DrawShipScanPath(hdc,fVis);
@@ -3240,44 +3249,46 @@ void RedrawScanSel(HDC hdc,short fVis)
     }
     if ((iScanZoom < 3) || ((grbitScan & 0xf) != 4)) {
       if ((grbitScan & 0x1000) == 0) {
-        dOff = 0;
+        iVar7 = 0;
       }
       else {
-        dOff = 7;
+        iVar7 = 7;
       }
     }
     else {
-      dOff = 0xb;
+      iVar7 = 0xb;
     }
-    if ((sel_grobj != 0) && (fNoSelRedraw == 0)) {
+    if ((GVar3 != grobjNone) && (!bVar10)) {
       pt.x = sel.pt.x;
       pt.y = sel.pt.y;
       LogicalToScan(&pt);
-      SetRect(&rc,(pt.x + -0xb) - dOff,(pt.y + -0xb) - dOff,pt.x + 0xc + dOff,pt.y + 0x17 + dOff);
+      SetRect(&rc,(pt.x + -0xb) - iVar7,(pt.y + -0xb) - iVar7,pt.x + 0xc + iVar7,pt.y + 0x17 + iVar7
+             );
       DrawScanner(hdc,&rc);
     }
-    if ((local_1e != 0) && ((sel_scan != sel.pt.x || (local_20 != sel.pt.y)))) {
-      pt.x = sel_scan;
-      pt.y = local_20;
+    if ((sel_scan.grobj != grobjNone) &&
+       ((sel_scan.pt.x != sel.pt.x || (sel_scan.pt.y != sel.pt.y)))) {
+      pt.x = sel_scan.pt.x;
+      pt.y = sel_scan.pt.y;
       LogicalToScan(&pt);
-      SetRect(&rc,(pt.x + -6) - dOff,(pt.y + -6) - dOff,pt.x + 7 + dOff,pt.y + 0xf + dOff);
+      SetRect(&rc,(pt.x + -6) - iVar7,(pt.y + -6) - iVar7,pt.x + 7 + iVar7,pt.y + 0xf + iVar7);
       DrawScanner(hdc,&rc);
     }
     if (fVis == 0) {
-      sel.id = sel_id;
-      sel.grobj = sel_grobj;
-      piVar7 = &sel_scan;
-      piVar6 = (int *)&sel.scan;
-      sel.grobjFull = GVar3;
-      for (iVar5 = 8; iVar5 != 0; iVar5 = iVar5 + -1) {
-        piVar2 = piVar6;
-        piVar6 = piVar6 + 1;
-        piVar1 = piVar7;
-        piVar7 = piVar7 + 1;
-        *piVar2 = *piVar1;
+      pSVar9 = &sel_scan;
+      psVar8 = (short *)&sel.scan;
+      sel.grobj = GVar3;
+      sel.grobjFull = GVar4;
+      sel.id = sVar5;
+      for (iVar7 = 8; iVar7 != 0; iVar7 = iVar7 + -1) {
+        psVar1 = psVar8;
+        psVar8 = psVar8 + 1;
+        pSVar2 = pSVar9;
+        pSVar9 = &(pSVar9->pt).y;
+        *psVar1 = (pSVar2->pt).x;
       }
     }
-    if (fhdc != 0) {
+    if (bVar11) {
       ReleaseDC(hwndScanner,hdc);
     }
   }
@@ -3297,50 +3308,49 @@ short FEnsurePointOnScreen(POINT pt,short fScroll)
 
 {
   POINT pt_00;
-  BOOL BVar1;
+  short sVar1;
   short sVar2;
+  BOOL BVar3;
   undefined2 unaff_SS;
   RECT rc;
-  int ptCtr;
-  int local_c;
+  POINT ptCtr;
   short cx;
   short fFix;
   short cy;
   
-  fFix = 0;
   GetClientRect(hwndScanner,&rc);
   rc.bottom = rc.bottom - dySBar;
-  cx = ScanToPt(rc.right);
-  cy = ScanToPt(rc.bottom);
+  sVar1 = ScanToPt(rc.right);
+  sVar2 = ScanToPt(rc.bottom);
   rc.left = xScanTop + 10;
-  rc.right = xScanTop + cx + -0x14;
+  rc.right = xScanTop + sVar1 + -0x14;
   rc.bottom = (dGalInv - yScanTop) + -10;
-  rc.top = (rc.bottom - cy) + 0x14;
-  BVar1 = PtInRect(&rc,pt);
-  if (BVar1 == 0) {
-    ptCtr = (cx >> 1) + xScanTop;
-    local_c = (dGalInv - yScanTop) - (cy >> 1);
+  rc.top = (rc.bottom - sVar2) + 0x14;
+  BVar3 = PtInRect(&rc,pt);
+  if (BVar3 == 0) {
+    ptCtr.x = (sVar1 >> 1) + xScanTop;
+    ptCtr.y = (dGalInv - yScanTop) - (sVar2 >> 1);
     if (pt.x < rc.left) {
-      ptCtr = ptCtr - (rc.left - pt.x);
+      ptCtr.x = ptCtr.x - (rc.left - pt.x);
     }
     else if (rc.right < pt.x) {
-      ptCtr = ptCtr + (pt.x - rc.right);
+      ptCtr.x = ptCtr.x + (pt.x - rc.right);
     }
     if (pt.y < rc.top) {
-      local_c = local_c - (rc.top - pt.y);
+      ptCtr.y = ptCtr.y - (rc.top - pt.y);
     }
     else if (rc.bottom < pt.y) {
-      local_c = local_c + (pt.y - rc.bottom);
+      ptCtr.y = ptCtr.y + (pt.y - rc.bottom);
     }
-    pt_00.y = local_c;
-    pt_00.x = ptCtr;
+    pt_00.y = ptCtr.y;
+    pt_00.x = ptCtr.x;
     CtrPointScan(pt_00,fScroll);
-    sVar2 = 0;
+    sVar1 = 0;
   }
   else {
-    sVar2 = 1;
+    sVar1 = 1;
   }
-  return sVar2;
+  return sVar1;
 }
 
 
@@ -3355,11 +3365,16 @@ short FEnsurePointOnScreen(POINT pt,short fScroll)
 void CtrPointScan(POINT pt,short fScroll)
 
 {
-  int iVar1;
-  int iVar2;
-  short dy;
-  short dx;
+  short sVar1;
+  short sVar2;
+  int iVar3;
+  int iVar4;
+  uint uVar5;
+  uint uVar6;
+  short sVar7;
+  short sVar8;
   undefined2 unaff_SS;
+  ulong uVar9;
   RECT rc;
   short x;
   short dyCur;
@@ -3368,54 +3383,53 @@ void CtrPointScan(POINT pt,short fScroll)
   short cy;
   short dxCur;
   
-  x = pt.x;
-  y = pt.y;
   if (hwndScanner != 0) {
     GetClientRect(hwndScanner,&rc);
     rc.bottom = rc.bottom - dySBar;
-    cx = ScanToPt(rc.right);
-    cy = ScanToPt(rc.bottom);
-    if (x - (cx >> 1) < 0x3e9) {
-      iVar1 = 1000;
+    sVar1 = ScanToPt(rc.right);
+    sVar2 = ScanToPt(rc.bottom);
+    sVar8 = xScanTop;
+    sVar7 = yScanTop;
+    if (pt.x - (sVar1 >> 1) < 0x3e9) {
+      iVar3 = 1000;
     }
     else {
-      iVar1 = x - (cx >> 1);
+      iVar3 = pt.x - (sVar1 >> 1);
     }
-    if ((cy >> 1) + y < dGalInv + -1000) {
-      iVar2 = (cy >> 1) + y;
+    if ((sVar2 >> 1) + pt.y < dGalInv + -1000) {
+      iVar4 = (sVar2 >> 1) + pt.y;
     }
     else {
-      iVar2 = dGalInv + -1000;
+      iVar4 = dGalInv + -1000;
     }
-    if ((dGalInv + -1000) - cx <= iVar1) {
-      iVar1 = (dGalInv + -1000) - cx;
+    if ((dGalInv + -1000) - sVar1 <= iVar3) {
+      iVar3 = (dGalInv + -1000) - sVar1;
     }
-    if (iVar2 <= cy + 1000) {
-      iVar2 = cy + 1000;
+    if (iVar4 <= sVar2 + 1000) {
+      iVar4 = sVar2 + 1000;
     }
-    iVar2 = dGalInv - iVar2;
-    if (iVar1 < 0x3e9) {
-      iVar1 = 1000;
+    iVar4 = dGalInv - iVar4;
+    if (iVar3 < 0x3e9) {
+      iVar3 = 1000;
     }
-    if (iVar2 < 0x3e9) {
-      iVar2 = 1000;
+    if (iVar4 < 0x3e9) {
+      iVar4 = 1000;
     }
-    dxCur = xScanTop;
-    dyCur = yScanTop;
-    x = iVar1 + 2U & 0xfffc;
-    y = iVar2 + 2U & 0xfffc;
-    if ((xScanTop != x) || (yScanTop != y)) {
-      xScanTop = x;
-      SetScrollPos(hwndScanner,0,iVar1 + 2U & 0xfffc,1);
-      yScanTop = y;
-      SetScrollPos(hwndScanner,1,y,1);
+    uVar5 = iVar3 + 2U & 0xfffc;
+    uVar6 = iVar4 + 2U & 0xfffc;
+    if ((xScanTop != uVar5) || (yScanTop != uVar6)) {
+      xScanTop = uVar5;
+      SetScrollPos(hwndScanner,0,iVar3 + 2U & 0xfffc,1);
+      uVar9 = CONCAT22(1,iVar4 + 2U) & 0xfffffffc;
+      yScanTop = uVar6;
+      SetScrollPos(hwndScanner,(short)(uVar9 >> 0x10),(short)uVar9,1);
       if (fScroll == 0) {
         InvalidateRect(hwndScanner,(RECT *)0x0,0);
       }
       else {
-        dy = PtToScan(dyCur - y);
-        dx = PtToScan(dxCur - x);
-        ScrollScanner(dx,dy);
+        sVar7 = PtToScan(sVar7 - uVar6);
+        sVar8 = PtToScan(sVar8 - uVar5);
+        ScrollScanner(sVar8,sVar7);
       }
     }
   }
@@ -3491,23 +3505,22 @@ short FAddWayPoint(POINT ptIn,SCAN *pscan)
   GrobjClass GVar4;
   char *pcVar5;
   int iVar6;
-  uint uVar7;
+  int iVar7;
   short sVar8;
-  ORDER *pOVar9;
-  undefined2 *puVar10;
-  ORDER *pOVar11;
-  undefined2 uVar12;
+  HDC hdc_00;
+  uint uVar9;
+  ORDER *pOVar10;
+  short *psVar11;
+  ORDER *pOVar12;
   undefined2 unaff_SS;
   ulong uVar13;
   ulong uVar14;
+  undefined2 uVar15;
+  RECT rc;
   short ipt;
   short cpt;
   short dx;
-  POINT rgpt;
-  short local_18;
-  short local_16;
-  undefined2 local_14;
-  undefined2 local_12;
+  POINT rgpt [3];
   short lDist;
   ORDER *lpord;
   short dy;
@@ -3516,35 +3529,37 @@ short FAddWayPoint(POINT ptIn,SCAN *pscan)
   
   if (sel.fl.cord == 0x57) {
     MessageBeep(0x40);
-    uVar12 = 0x56;
+    uVar15 = 0x56;
     pcVar5 = PszGetCompressedString(idsCantHaveDWaypoints);
-    _wsprintf(szWork,pcVar5,uVar12);
+    _wsprintf(szWork,pcVar5,uVar15);
     AlertSz((char *)szWork,0x10);
     sVar8 = 0;
   }
   else {
     if ((grbitScan & 0x80) != 0) {
-      rgpt.x = ptIn.x;
-      rgpt.y = ptIn.y;
-      local_18 = (pscan->pt).x;
-      local_16 = (pscan->pt).y;
+      rgpt[0].x = ptIn.x;
+      rgpt[0].y = ptIn.y;
+      rgpt[1].x = (pscan->pt).x;
+      rgpt[1].y = (pscan->pt).y;
       if (sel.iwpAct < sel.fl.cord + -1) {
         cpt = 3;
-        puVar10 = (undefined2 *)
-                  ((int)(PLORD *)sel.fl.lpplord + (sel.iwpAct + 1) * 0x12 + 4);
-        local_14 = *puVar10;
-        local_12 = puVar10[1];
+        psVar11 = (short *)((int)(PLORD *)sel.fl.lpplord +
+                           (sel.iwpAct + 1) * 0x12 + 4);
+        rgpt[2].x = *psVar11;
+        rgpt[2].y = psVar11[1];
       }
       else {
         cpt = 2;
       }
     }
     iVar6 = ptIn.x - (pscan->pt).x;
-    dy = ptIn.y - (pscan->pt).y;
-    lDist = ScanToPt(0x14);
-    uVar13 = __aFulmul((long)dy,(long)dy);
+    iVar7 = ptIn.y - (pscan->pt).y;
+    sVar8 = ScanToPt(0x14);
+    uVar13 = __aFulmul((long)iVar7,(long)iVar7);
+    rc.bottom = (short)uVar13;
     uVar14 = __aFulmul((long)iVar6,(long)iVar6);
-    if ((long)(lDist * lDist) < (long)(uVar14 + uVar13)) {
+    rc._2_4_ = uVar14 + CONCAT22((int)(uVar13 >> 0x10),rc.bottom);
+    if ((long)(sVar8 * sVar8) < (long)rc._2_4_) {
       pscan->grobjFull = grobjOther;
       pscan->grobj = grobjOther;
       pscan->idpl = -1;
@@ -3553,39 +3568,41 @@ short FAddWayPoint(POINT ptIn,SCAN *pscan)
       (pscan->pt).x = ptIn.x;
       (pscan->pt).y = ptIn.y;
     }
-    pOVar9 = (ORDER *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
-    lpord = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,pOVar9);
-    if (((pscan->pt).x == (lpord->pt).x) && ((pscan->pt).y == (pOVar9->pt).y)) {
+    uVar15 = sel.fl.lpplord._2_2_;
+    rc.bottom = (short)((PLORD *)sel.fl.lpplord + 1);
+    pOVar10 = (ORDER *)(rc.bottom + sel.iwpAct * 0x12);
+    lpord = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,pOVar10);
+    if (((pscan->pt).x == (lpord->pt).x) && ((pscan->pt).y == (pOVar10->pt).y)) {
       sVar8 = 0;
     }
     else if ((sel.iwpAct < sel.fl.cord + -1) &&
-            (((pscan->pt).x == ((pOVar9 + 1)->pt).x && ((pscan->pt).y == pOVar9[1].pt.y)))) {
+            (((pscan->pt).x == ((pOVar10 + 1)->pt).x && ((pscan->pt).y == pOVar10[1].pt.y)))) {
       sVar8 = 0;
     }
     else {
-      hdc = GetDC(hwndScanner);
-      DrawShipScanPath(hdc,0);
+      hdc_00 = GetDC(hwndScanner);
+      DrawShipScanPath(hdc_00,0);
       if ((uint)((PLORD *)sel.fl.lpplord)->iordMax == sel.fl.cord) {
         sel.fl.lpplord =
              LpplReAlloc(sel.fl.lpplord,sel.fl.cord + 3);
+        rc.bottom = (short)((PL *)sel.fl.lpplord + 1);
         lpord = (ORDER *)CONCAT22((int)((ulong)sel.fl.lpplord >> 0x10),
-                                  (ORDER *)((int)(PL *)sel.fl.lpplord +
-                                           (sel.iwpAct + 1) * 0x12 + 4));
+                                  (ORDER *)(rc.bottom + (sel.iwpAct + 1) * 0x12));
       }
       else {
-        lpord = (ORDER *)lpord + 1;
+        lpord = (ORDER *)CONCAT22(uVar15,pOVar10 + 1);
       }
       if (sel.iwpAct != sel.fl.cord + -1) {
         __fmemmove((ORDER *)lpord + 1,lpord,
                            ((sel.fl.cord - sel.iwpAct) + -1) * 0x12);
       }
-      pOVar9 = (ORDER *)lpord + -1;
-      pOVar11 = (ORDER *)lpord;
+      pOVar10 = (ORDER *)lpord + -1;
+      pOVar12 = (ORDER *)lpord;
       for (iVar6 = 9; iVar6 != 0; iVar6 = iVar6 + -1) {
-        pOVar3 = pOVar11;
-        pOVar11 = &(pOVar11->pt).y;
-        pOVar2 = pOVar9;
-        pOVar9 = &(pOVar9->pt).y;
+        pOVar3 = pOVar12;
+        pOVar12 = &(pOVar12->pt).y;
+        pOVar2 = pOVar10;
+        pOVar10 = &(pOVar10->pt).y;
         (pOVar3->pt).x = (pOVar2->pt).x;
       }
       sVar8 = (pscan->pt).y;
@@ -3611,31 +3628,28 @@ short FAddWayPoint(POINT ptIn,SCAN *pscan)
       sel.fl.cord = sel.fl.cord + 1;
       pbVar1 = &((PLORD *)sel.fl.lpplord)->iordMac;
       *pbVar1 = *pbVar1 + 1;
-      uVar7 = IWarpBestForWaypoint(&sel.fl,lpord);
-      uVar12 = (undefined2)((ulong)lpord >> 0x10);
-      ((ORDER *)lpord)->wFlags_0x6 = ((ORDER *)lpord)->wFlags_0x6 & 0xff0f | (uVar7 & 0xf) << 4;
+      uVar9 = IWarpBestForWaypoint(&sel.fl,lpord);
+      ((ORDER *)lpord)->wFlags_0x6 = ((ORDER *)lpord)->wFlags_0x6 & 0xff0f | (uVar9 & 0xf) << 4;
       pscan->grobj = grobjOther;
       pscan->grobjFull = pscan->grobjFull | grobjOther;
       pscan->iwp = sel.iwpAct + 1;
       RedrawScanSel(0,0);
       FLookupFleet(-1,(FLEET *)&sel.fl);
-      uVar12 = (undefined2)((ulong)lpord >> 0x10);
-      pOVar9 = (ORDER *)lpord;
-      if (((pOVar9[-1].wFlags_0x6 & 0xf) == 6) && (((&pOVar9[-1].u_ORDER_0x0008)->tlm).cTime == 5))
-      {
-        __fmemset((u_ORDER_0x0008 *)CONCAT22(uVar12,&pOVar9[-1].u_ORDER_0x0008),0,10);
-        uVar12 = (undefined2)((ulong)lpord >> 0x10);
+      if (((((ORDER *)lpord)[-1].wFlags_0x6 & 0xf) == 6) &&
+         (((&((ORDER *)lpord)[-1].u_ORDER_0x0008)->tlm).cTime == 5)) {
+        __fmemset((u_ORDER_0x0008 *)
+                          CONCAT22(lpord._2_2_,&((ORDER *)lpord)[-1].u_ORDER_0x0008),0,10);
         ((ORDER *)lpord)[-1].wFlags_0x6 = ((ORDER *)lpord)[-1].wFlags_0x6 & 0xfff0;
         FLookupFleet(-1,(FLEET *)&sel.fl);
       }
       ChangeScanSel(pscan,1);
-      ReleaseDC(hwndScanner,hdc);
+      ReleaseDC(hwndScanner,hdc_00);
       if ((grbitScan & 0x80) != 0) {
         for (ipt = 0; ipt < cpt; ipt = ipt + 1) {
-          LogicalToScan(&rgpt + ipt);
+          LogicalToScan(rgpt + ipt);
         }
-        BoundPoints(&stack0xffd6,&rgpt,cpt);
-        InvalidateRect(hwndScanner,&stack0xffd6,0);
+        BoundPoints(&rc,rgpt,cpt);
+        InvalidateRect(hwndScanner,&rc,0);
       }
       sVar8 = 1;
     }
@@ -3663,37 +3677,32 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
   POINT pt;
   POINT ptSrc;
   POINT ptDst;
-  POINT PVar2;
-  POINT PVar3;
-  POINT PVar4;
-  bool bVar5;
-  bool bVar6;
-  uint uVar7;
-  int iVar8;
-  short sVar9;
-  ORDER *pOVar10;
-  FLEET *pFVar11;
-  int iVar12;
-  FLEET *unaff_SI;
-  undefined2 uVar13;
-  undefined2 uVar14;
-  POINT PVar15;
-  ulong uVar16;
-  HULDEF *pHVar17;
-  long lVar18;
-  long lVar19;
-  FLEET *pFVar20;
+  bool bVar2;
+  bool bVar3;
+  uint uVar4;
+  int iVar5;
+  short sVar6;
+  ORDER *pOVar7;
+  FLEET *pFVar8;
+  int iVar9;
+  undefined2 unaff_SI;
+  undefined2 unaff_DI;
+  undefined2 uVar10;
+  undefined2 uVar11;
+  ulong uVar12;
+  long lVar13;
+  HULDEF *pHVar14;
+  long lVar15;
+  long lVar16;
+  undefined2 uVar17;
+  undefined2 uVar18;
+  undefined2 uVar19;
+  undefined2 uVar20;
   undefined2 in_stack_0000ffcc;
-  undefined2 uVar22;
   undefined2 in_stack_0000ffce;
-  HullDef in_stack_0000ffd0;
-  GrobjClass in_stack_0000ffd4;
-  GrobjClass in_stack_0000ffd6;
-  GrobjClass GVar23;
-  short in_stack_0000ffd8;
-  long in_stack_0000ffda;
+  SCAN scan;
   short iWarpOld;
-  undefined4 i;
+  undefined4 local_1e;
   short iWarpSav;
   short iWarpAi;
   short fGoFlatOut;
@@ -3703,174 +3712,152 @@ short IWarpBestForWaypoint(FLEET *lpfl,ORDER *lpord)
   short iwp;
   short cTravel;
   short iWarp;
-  FLEET *pFVar21;
+  long lFuel;
   
-  uVar13 = (undefined2)((ulong)lpord >> 0x10);
-  pOVar10 = (ORDER *)lpord;
-  uVar1 = pOVar10->wFlags_0x6;
-  uVar7 = IFindIdealWarp((FLEET *)0x0,0);
+  uVar10 = (undefined2)((ulong)lpord >> 0x10);
+  pOVar7 = (ORDER *)lpord;
+  uVar1 = pOVar7->wFlags_0x6;
+  uVar4 = IFindIdealWarp((FLEET *)0x0,0);
   if (fAi != 0) {
     iWarpAi = IFindIdealWarp((FLEET *)0x0,1);
   }
-  pFVar20 = (FLEET *)CONCAT22(in_stack_0000ffcc,unaff_SI);
-  uVar14 = (undefined2)((ulong)lpfl >> 0x10);
-  pFVar11 = (FLEET *)lpfl;
-  iwp = pFVar11->cord;
+  lVar16 = CONCAT22(in_stack_0000ffce,in_stack_0000ffcc);
+  uVar11 = (undefined2)((ulong)lpfl >> 0x10);
+  pFVar8 = (FLEET *)lpfl;
+  iwp = pFVar8->cord;
   do {
     iwp = iwp + -1;
     if (iwp < 0) break;
-  } while (lpord != (ORDER *)CONCAT22(*(undefined2 *)((int)&pFVar11->lpplord + 2),
-                                      (ORDER *)(*(int *)&pFVar11->lpplord + 4 + iwp * 0x12)));
+  } while (lpord != (ORDER *)CONCAT22(*(undefined2 *)((int)&pFVar8->lpplord + 2),
+                                      (ORDER *)(*(int *)&pFVar8->lpplord + 4 + iwp * 0x12)));
   if (iwp < 1) {
-    return uVar7;
+    return uVar4;
   }
-  if (((pOVar10->wFlags_0x6 & 0xf) == 2) || ((pOVar10->wFlags_0x6 & 0xf) == 5)) {
-    bVar5 = true;
+  if (((pOVar7->wFlags_0x6 & 0xf) == 2) || ((pOVar7->wFlags_0x6 & 0xf) == 5)) {
+    bVar2 = true;
   }
   else {
-    bVar5 = false;
-    for (i._0_2_ = (PLANET *)0x0; i._2_2_ = 0, (int)(PLANET *)i < 0x10;
-        i._0_2_ = (PLANET *)((int)(PLANET *)i + 1)) {
-      if (0 < pFVar11->rgcsh[(int)(PLANET *)i]) {
-        for (; iVar12 = pFVar11->iPlayer * 4,
-            i._2_2_ < (int)(uint)*(byte *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 +
-                                          0x7a); i._2_2_ = i._2_2_ + 1) {
-          iVar12 = pFVar11->iPlayer * 4;
-          if ((*(int *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + 0x3a + i._2_2_ * 4)
-               == 0x1000) &&
-             ((iVar12 = pFVar11->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c
-                        ) & 0xff) == 0 ||
-              (iVar12 = pFVar11->iPlayer * 4,
-              (*(uint *)(*(int *)(iVar12 + rglpshdef) + (int)(PLANET *)i * 0x93 + i._2_2_ * 4 + 0x3c
-                        ) & 0xff) == 1)))) {
-            bVar5 = true;
+    bVar2 = false;
+    for (local_1e._0_2_ = (PLANET *)0x0; local_1e._2_2_ = 0, (int)(PLANET *)local_1e < 0x10;
+        local_1e._0_2_ = (PLANET *)((int)(PLANET *)local_1e + 1)) {
+      if (0 < pFVar8->rgcsh[(int)(PLANET *)local_1e]) {
+        for (; iVar9 = pFVar8->iPlayer * 4,
+            local_1e._2_2_ <
+            (int)(uint)*(byte *)(*(int *)(iVar9 + rglpshdef) + (int)(PLANET *)local_1e * 0x93 + 0x7a
+                                ); local_1e._2_2_ = local_1e._2_2_ + 1) {
+          iVar9 = pFVar8->iPlayer * 4;
+          if ((*(int *)(*(int *)(iVar9 + rglpshdef) + (int)(PLANET *)local_1e * 0x93 + 0x3a +
+                       local_1e._2_2_ * 4) == 0x1000) &&
+             ((iVar9 = pFVar8->iPlayer * 4,
+              (*(uint *)(*(int *)(iVar9 + rglpshdef) + (int)(PLANET *)local_1e * 0x93 +
+                         local_1e._2_2_ * 4 + 0x3c) & 0xff) == 0 ||
+              (iVar9 = pFVar8->iPlayer * 4,
+              (*(uint *)(*(int *)(iVar9 + rglpshdef) + (int)(PLANET *)local_1e * 0x93 +
+                         local_1e._2_2_ * 4 + 0x3c) & 0xff) == 1)))) {
+            bVar2 = true;
             break;
           }
         }
       }
     }
   }
-  if ((bVar5) || (fAi == 0)) {
-    bVar6 = false;
+  if ((bVar2) || (fAi == 0)) {
+    bVar3 = false;
   }
   else {
-    bVar6 = true;
-    bVar5 = true;
+    bVar3 = true;
+    bVar2 = true;
   }
-  iWarp = uVar7;
-  if ((int)uVar7 < 9) {
-    pt.y = (pOVar10->pt).y;
+  iWarp = uVar4;
+  if ((int)uVar4 < 9) {
+    pt.y = (pOVar7->pt).y;
     pt.x = (lpord->pt).x;
-    sVar9 = FFindNearestObject(pt,0x81,&stack0xffd0);
-    if (sVar9 == 0) {
-      i = (PLANET *)0x0;
+    sVar6 = FFindNearestObject(pt,0x81,&scan);
+    if (sVar6 == 0) {
+      local_1e = (PLANET *)0x0;
     }
     else {
-      i = LpplFromId(in_stack_0000ffd8);
+      local_1e = LpplFromId(scan.idpl);
     }
-    pFVar20 = (FLEET *)CONCAT22(in_stack_0000ffcc,unaff_SI);
-    if ((bVar5) ||
-       ((((PLANET *)i != (PLANET *)0x0 || (i._2_2_ != 0)) &&
-        ((((PLANET *)i)->iPlayer == -1 || (((PLANET *)i)->iPlayer == idPlayer)))))) {
-      if ((bVar6) &&
-         (((((PLANET *)i != (PLANET *)0x0 || (i._2_2_ != 0)) &&
-           (((PLANET *)i)->iPlayer == idPlayer)) &&
+    lVar16 = CONCAT22(in_stack_0000ffce,in_stack_0000ffcc);
+    if ((bVar2) ||
+       ((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) &&
+        ((((PLANET *)local_1e)->iPlayer == -1 || (((PLANET *)local_1e)->iPlayer == idPlayer))
+        )))) {
+      if ((bVar3) &&
+         (((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) &&
+           (((PLANET *)local_1e)->iPlayer == idPlayer)) &&
           (*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) +
-                   (*(uint *)&((PLANET *)i)->lStarbase & 0xf) * 0x93) != 0x20)))) {
-        bVar6 = false;
+                   (*(uint *)&((PLANET *)local_1e)->lStarbase & 0xf) * 0x93) != 0x20)))) {
+        bVar3 = false;
       }
       iWarp = 9;
     }
     else {
-      if (((1 < iwp) && (uVar7 < (pOVar10[-1].wFlags_0x6 >> 4 & 0xf))) &&
-         ((pOVar10[-1].wFlags_0x6 >> 4 & 0xf) < 0xb)) {
-        iWarp = pOVar10[-1].wFlags_0x6 >> 4 & 0xf;
+      if (((1 < iwp) && (uVar4 < (pOVar7[-1].wFlags_0x6 >> 4 & 0xf))) &&
+         ((pOVar7[-1].wFlags_0x6 >> 4 & 0xf) < 0xb)) {
+        iWarp = pOVar7[-1].wFlags_0x6 >> 4 & 0xf;
       }
-      LFuelUseToWaypoint(lpfl,iwp,1);
-      pFVar20 = lpfl;
-      PVar15 = (POINT)LGetFleetStat(lpfl,grStatFuel);
-      pFVar21 = (FLEET *)((ulong)pFVar20 >> 0x10);
-      in_stack_0000ffce = 0x1050;
-      uVar22 = 0x7d5a;
-      lVar19 = __aFldiv((long)PVar15,CONCAT22(in_stack_0000ffd6,in_stack_0000ffd4));
-      pFVar20 = (FLEET *)CONCAT22(uVar22,pFVar21);
-      if (lVar19 <= CONCAT22(in_stack_0000ffce,uVar22)) goto SCAN_LOptimizeSpeed;
-      GVar23 = grobjNone;
-      pFVar20 = lpfl;
-      uVar16 = LGetFleetStat(lpfl,grStatFuel);
-      in_stack_0000ffd0 = 0x1050;
-      in_stack_0000ffce = 0x7d9c;
-      uVar16 = __aFulmul(uVar16,CONCAT22(in_stack_0000ffd8,GVar23));
-      lVar19 = __aFldiv(uVar16,in_stack_0000ffda);
-      PVar2.y = 0;
-      PVar2.x = in_stack_0000ffd0;
-      PVar15.y = 0;
-      PVar15.x = in_stack_0000ffd0;
-      iVar8 = (int)((ulong)lVar19 >> 0x10);
-      iVar12 = *(int *)((int)pFVar11->rgwtMin + 0x12);
-      if ((iVar12 < iVar8) ||
-         ((iVar12 <= iVar8 && (PVar15 = PVar2, *(uint *)(pFVar11->rgwtMin + 4) < (uint)lVar19))))
+      lVar16 = LFuelUseToWaypoint(lpfl,iwp,1);
+      uVar19 = 0;
+      uVar17 = 10;
+      lVar13 = LGetFleetStat(lpfl,grStatFuel);
+      lVar13 = __aFldiv(lVar13,CONCAT22(uVar19,uVar17));
+      if (lVar13 <= lVar16) goto SCAN_LOptimizeSpeed;
+      uVar20 = 0;
+      uVar18 = 10;
+      uVar19 = 0;
+      uVar17 = 7;
+      uVar12 = LGetFleetStat(lpfl,grStatFuel);
+      uVar12 = __aFulmul(uVar12,CONCAT22(uVar19,uVar17));
+      lVar13 = __aFldiv(uVar12,CONCAT22(uVar20,uVar18));
+      iVar5 = (int)((ulong)lVar13 >> 0x10);
+      iVar9 = *(int *)((int)pFVar8->rgwtMin + 0x12);
+      if ((iVar9 < iVar5) || ((iVar9 <= iVar5 && (*(uint *)(pFVar8->rgwtMin + 4) < (uint)lVar13))))
       goto SCAN_LOptimizeSpeed;
       iWarp = iWarp + 1;
     }
-    for (; (int)uVar7 < iWarp; iWarp = iWarp + -1) {
-      pOVar10->wFlags_0x6 = pOVar10->wFlags_0x6 & 0xff0f | (iWarp & 0xfU) << 4;
-      lVar19 = LFuelUseToWaypoint(lpfl,iwp,1);
-      pFVar21 = (FLEET *)pFVar20;
-      if (lVar19 <= CONCAT22(*(undefined2 *)((int)pFVar11->rgwtMin + 0x12),(int)pFVar11->rgwtMin[4])
-         ) {
-        if (((((PLANET *)i != (PLANET *)0x0) || (i._2_2_ != 0)) &&
-            ((((PLANET *)i)->wFlags_0x4 >> 9 & 1) != 0)) &&
-           (((PLANET *)i)->iPlayer == idPlayer)) {
-          in_stack_0000ffd0 =
-               *(HullDef *)
-                (*(int *)(idPlayer * 4 + rglpshdefSB) +
-                (*(uint *)&((PLANET *)i)->lStarbase & 0xf) * 0x93);
-          in_stack_0000ffce = 0x1050;
-          uVar22 = 0x7eec;
-          pHVar17 = LphuldefFromId(in_stack_0000ffd0);
-          pFVar20 = (FLEET *)CONCAT22(uVar22,pFVar21);
-          if ((((HULDEF *)pHVar17)->hul).wtCargoMax != 0) break;
-        }
-        lVar18 = __aFldiv(CONCAT22(*(undefined2 *)((int)pFVar11->rgwtMin + 0x12),
-                                           (int)pFVar11->rgwtMin[4]),2);
-        if ((lVar19 <= lVar18) || (bVar5)) break;
-      }
+    for (; (int)uVar4 < iWarp; iWarp = iWarp + -1) {
+      pOVar7->wFlags_0x6 = pOVar7->wFlags_0x6 & 0xff0f | (iWarp & 0xfU) << 4;
+      lVar13 = LFuelUseToWaypoint(lpfl,iwp,1);
+      if ((lVar13 <= CONCAT22(*(undefined2 *)((int)pFVar8->rgwtMin + 0x12),(int)pFVar8->rgwtMin[4]))
+         && ((((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) &&
+               ((((PLANET *)local_1e)->wFlags_0x4 >> 9 & 1) != 0)) &&
+              ((((PLANET *)local_1e)->iPlayer == idPlayer &&
+               (pHVar14 = LphuldefFromId
+                                    (*(HullDef *)
+                                      (*(int *)(idPlayer * 4 + rglpshdefSB) +
+                                      (*(uint *)&((PLANET *)local_1e)->lStarbase & 0xf) * 0x93)),
+               (((HULDEF *)pHVar14)->hul).wtCargoMax != 0)))) ||
+             ((lVar15 = __aFldiv(CONCAT22(*(undefined2 *)((int)pFVar8->rgwtMin + 0x12),
+                                                  (int)pFVar8->rgwtMin[4]),2), lVar13 <= lVar15 ||
+              (bVar2)))))) break;
     }
-    pOVar10->wFlags_0x6 = pOVar10->wFlags_0x6 & 0xff0f | (uVar1 >> 4 & 0xf) << 4;
+    pOVar7->wFlags_0x6 = pOVar7->wFlags_0x6 & 0xff0f | (uVar1 >> 4 & 0xf) << 4;
   }
-  PVar4.y = 0;
-  PVar4.x = in_stack_0000ffd0;
-  PVar3.y = 0;
-  PVar3.x = in_stack_0000ffd0;
-  PVar15.y = 0;
-  PVar15.x = in_stack_0000ffd0;
-  if ((bVar6) && (PVar15 = PVar3, iWarpAi < iWarp)) {
+  if ((bVar3) && (iWarpAi < iWarp)) {
     iWarp = iWarpAi;
-    PVar15 = PVar4;
   }
 SCAN_LOptimizeSpeed:
-  if ((1 < iWarp) && ((pOVar10->wFlags_0x6 >> 8 & 0xf) != 2)) {
-    DGetDistance((double *)CONCAT22((pOVar10->pt).y,(double *)(lpord->pt).x),
-                       ((pOVar10 + -1)->pt).x,pOVar10[-1].pt.y,(short)(FLEET *)pFVar20,
-                       (short)((ulong)pFVar20 >> 0x10));
-    lVar19 = __ftol((double)CONCAT26(PVar15.x,CONCAT24(in_stack_0000ffce,pFVar20)));
-    iVar8 = iWarp * iWarp;
-    iVar12 = iWarp;
+  if ((1 < iWarp) && ((pOVar7->wFlags_0x6 >> 8 & 0xf) != 2)) {
+    DGetDistance((lpord->pt).x,(pOVar7->pt).y,((pOVar7 + -1)->pt).x,pOVar7[-1].pt.y);
+    lVar16 = __ftol((double)CONCAT26((int)((ulong)lVar16 >> 0x10),
+                                             CONCAT24((int)lVar16,CONCAT22(unaff_SI,unaff_DI))));
+    iVar5 = iWarp * iWarp;
+    iVar9 = iWarp;
     do {
-      iWarp = iVar12;
-      iVar12 = iWarp + -1;
-      if (iVar12 < 2) break;
-    } while ((iVar8 + (int)lVar19 + -1) / iVar8 ==
-             ((int)lVar19 + iVar12 * iVar12 + -1) / (iVar12 * iVar12));
+      iWarp = iVar9;
+      iVar9 = iWarp + -1;
+      if (iVar9 < 2) break;
+    } while ((iVar5 + (int)lVar16 + -1) / iVar5 ==
+             ((int)lVar16 + iVar9 * iVar9 + -1) / (iVar9 * iVar9));
   }
-  ptSrc.y = pOVar10[-1].pt.y;
-  ptSrc.x = ((pOVar10 + -1)->pt).x;
-  ptDst.y = (pOVar10->pt).y;
+  ptSrc.y = pOVar7[-1].pt.y;
+  ptSrc.x = ((pOVar7 + -1)->pt).x;
+  ptDst.y = (pOVar7->pt).y;
   ptDst.x = (lpord->pt).x;
-  sVar9 = FCanFleetUseStargates(lpfl,ptSrc,ptDst);
-  if (sVar9 == 1) {
+  sVar6 = FCanFleetUseStargates(lpfl,ptSrc,ptDst);
+  if (sVar6 == 1) {
     iWarp = 0xb;
   }
   if (0xb < iWarp) {
@@ -3941,38 +3928,33 @@ short FNearAWayPoint(POINT pt,short fLogical)
 short FHandleWayPointDrag(POINT pt)
 
 {
-  POINT pt_00;
-  POINT pt_01;
-  short sVar1;
-  uint uVar2;
-  int iVar3;
-  char *sz;
-  uint uVar4;
-  HDC hdc_00;
-  ORDER *pOVar5;
-  uint *puVar6;
-  short *psVar7;
-  undefined2 uVar8;
+  int iVar1;
+  bool bVar2;
+  HDC HVar3;
+  HCURSOR HVar4;
+  short sVar5;
+  short sVar6;
+  int iVar7;
+  int iVar8;
+  char *pcVar9;
+  HGDIOBJ HVar10;
+  uint uVar11;
+  ORDER *pOVar12;
+  int *piVar13;
+  short *psVar14;
+  HWND *pHVar15;
+  undefined2 uVar16;
   undefined2 unaff_SS;
-  char *mbType;
   HDC hdc;
   RECT rc;
   short fFirst;
   SCAN scan;
-  uint ptPrev;
-  uint local_6e;
+  POINT ptPrev;
   short cpt;
   POINT ptNew;
-  POINT rgpt;
-  uint local_62;
-  uint local_60;
-  uint local_5e;
-  uint local_5c;
-  short local_5a;
-  short local_58;
+  POINT rgpt [4];
   short fDel;
-  short ptNext;
-  short local_52;
+  POINT ptNext;
   POINT ptLogical;
   short i;
   ORDER *lpord;
@@ -3983,113 +3965,148 @@ short FHandleWayPointDrag(POINT pt)
   short fMarker;
   SBAR sbar;
   HPEN hpenSav;
-  HDC hdc__8;
   short fChg;
   
-  fFirst = 1;
-  fMarker = 0;
+  bVar2 = true;
   LogicalToScan(&pt);
   if (sel.iwpAct == 0) {
     lpord = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,
                               &((PLORD *)sel.fl.lpplord)[5].iordMax);
     for (i = 1; i < sel.fl.cord; i = i + 1) {
-      uVar8 = (undefined2)((ulong)lpord >> 0x10);
+      uVar16 = (undefined2)((ulong)lpord >> 0x10);
       if ((sel.fl.pt.x == (lpord->pt).x) &&
          (sel.fl.pt.y == (((ORDER *)lpord)->pt).y)) break;
-      lpord = (ORDER *)CONCAT22(uVar8,(ORDER *)lpord + 1);
+      lpord = (ORDER *)CONCAT22(uVar16,(ORDER *)lpord + 1);
     }
     SetScanWp(i);
   }
-  puVar6 = (uint *)((int)(PLORD *)sel.fl.lpplord + (sel.iwpAct + -1) * 0x12 + 4)
+  pHVar15 = &stack0xff6e;
+  piVar13 = (int *)((int)(PLORD *)sel.fl.lpplord + (sel.iwpAct + -1) * 0x12 + 4)
   ;
-  ptPrev = *puVar6;
-  local_6e = puVar6[1];
+  iVar8 = *piVar13;
+  iVar1 = piVar13[1];
   if (sel.iwpAct == sel.fl.cord + -1) {
     cpt = 3;
   }
   else {
     cpt = 4;
-    psVar7 = (short *)((int)(PLORD *)sel.fl.lpplord +
-                      (sel.iwpAct + 1) * 0x12 + 4);
-    local_5a = *psVar7;
-    local_58 = psVar7[1];
-    ptNext = local_5a;
-    local_52 = local_58;
+    psVar14 = (short *)((int)(PLORD *)sel.fl.lpplord +
+                       (sel.iwpAct + 1) * 0x12 + 4);
+    rgpt[3].x = *psVar14;
+    rgpt[3].y = psVar14[1];
   }
-  puVar6 = (uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
-  rgpt.x = *puVar6;
-  rgpt.y = puVar6[1];
-  local_62 = rgpt.x;
-  local_60 = rgpt.y;
-  local_5e = ptPrev;
-  local_5c = local_6e;
+  psVar14 = (short *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
+  rgpt[0].x = *psVar14;
+  rgpt[0].y = psVar14[1];
+  rgpt[1].x = rgpt[0].x;
+  rgpt[1].y = rgpt[0].y;
+  rgpt[2].x = iVar8;
+  rgpt[2].y = iVar1;
   for (i = 0; i < cpt; i = i + 1) {
-    LogicalToScan(&rgpt + i);
+    LogicalToScan(rgpt + i);
   }
   GetClientRect(hwndScanner,&rc);
   rc.bottom = rc.bottom - dySBar;
-  hdc__8 = GetDC(hwndScanner);
-  hcurSav = setcursor(hcurCloseGrab);
+  HVar3 = GetDC(hwndScanner);
+  HVar4 = setcursor(hcurCloseGrab);
+  uVar16 = 0x14f8;
   SetCapture(hwndScanner);
   ptNew.x = pt.x;
   ptNew.y = pt.y;
-  while (sVar1 = FGetMouseMove(&ptNew), sVar1 != 0) {
-    uVar4 = rc.right;
+  while( true ) {
+    pHVar15[-1] = (HWND)&ptNew;
+    pHVar15[-2] = uVar16;
+    uVar16 = 0x1040;
+    pHVar15[-3] = 0x833c;
+    sVar5 = FGetMouseMove((POINT *)pHVar15[-1]);
+    if (sVar5 == 0) break;
+    uVar11 = rc.right;
     if (ptNew.x <= rc.right) {
-      uVar4 = ptNew.x;
+      uVar11 = ptNew.x;
     }
-    if (uVar4 < 0x8000) {
-      uVar4 = rc.right;
+    if (uVar11 < 0x8000) {
+      sVar5 = rc.right;
       if (ptNew.x <= rc.right) {
-        uVar4 = ptNew.x;
+        sVar5 = ptNew.x;
       }
     }
     else {
-      uVar4 = 0;
+      sVar5 = 0;
     }
-    uVar2 = rc.bottom;
+    ptNew.x = sVar5;
+    uVar11 = rc.bottom;
     if (ptNew.y <= rc.bottom) {
-      uVar2 = ptNew.y;
+      uVar11 = ptNew.y;
     }
-    if (uVar2 < 0x8000) {
-      uVar2 = rc.bottom;
+    if (uVar11 < 0x8000) {
+      sVar6 = rc.bottom;
       if (ptNew.y <= rc.bottom) {
-        uVar2 = ptNew.y;
+        sVar6 = ptNew.y;
       }
     }
     else {
-      uVar2 = 0;
+      sVar6 = 0;
     }
-    ptNew.x = uVar4;
-    ptNew.y = uVar2;
-    if ((pt.x != uVar4) || (pt.y != uVar2)) {
-      if ((fFirst == 0) ||
-         (pt_01.y = uVar2, pt_01.x = uVar4, sVar1 = FNearAWayPoint(pt_01,0), sVar1 == 0)) {
-        fFirst = 0;
+    ptNew.y = sVar6;
+    if ((pt.x != sVar5) || (pt.y != sVar6)) {
+      if (bVar2) {
+        pHVar15[-1] = 0;
+        pHVar15[-2] = ptNew.y;
+        pHVar15[-3] = ptNew.x;
+        pHVar15[-4] = 0x1040;
+        uVar16 = 0x1058;
+        pHVar15[-5] = 0x83f3;
+        sVar5 = FNearAWayPoint(*(pHVar15 + -3),pHVar15[-1]);
+        if (sVar5 == 0) goto LAB_1058_8401;
+      }
+      else {
+LAB_1058_8401:
+        bVar2 = false;
         ptLogical.x = ptNew.x;
         ptLogical.y = ptNew.y;
-        ScanToLogical(&ptLogical);
-        uVar4 = GetAsyncKeyState(0x10);
-        if ((uVar4 & 0xfffe) == 0) {
-          grTypeIn = 0x4f;
+        pHVar15[-1] = (HWND)&ptLogical;
+        pHVar15[-2] = uVar16;
+        pHVar15[-3] = 0x841b;
+        ScanToLogical((POINT *)pHVar15[-1]);
+        pHVar15[-1] = 0x10;
+        pHVar15[-2] = 0x1058;
+        pHVar15[-3] = 0x8427;
+        uVar11 = GetAsyncKeyState(pHVar15[-1]);
+        if ((uVar11 & 0xfffe) == 0) {
+          uVar16 = 0x4f;
         }
         else {
-          grTypeIn = 0x8f;
+          uVar16 = 0x8f;
         }
-        pt_00.y = ptLogical.y;
-        pt_00.x = ptLogical.x;
-        FFindNearestObject(pt_00,grTypeIn,&scan);
-        DrawScanXorLines(hdc__8,&rgpt,cpt);
+        pHVar15[-2] = (HWND)&scan;
+        pHVar15[-3] = uVar16;
+        pHVar15[-4] = ptLogical.y;
+        pHVar15[-5] = ptLogical.x;
+        pHVar15[-6] = 0x14f8;
+        pHVar15[-7] = 0x8450;
+        FFindNearestObject(*(pHVar15 + -5),pHVar15[-3],(SCAN *)pHVar15[-2]);
+        pHVar15[-2] = cpt;
+        pHVar15[-3] = (HWND)rgpt;
+        pHVar15[-4] = HVar3;
+        pHVar15[-5] = 0x1038;
+        uVar16 = 0x1058;
+        pHVar15[-6] = 0x8462;
+        DrawScanXorLines(pHVar15[-4],(POINT *)pHVar15[-3],pHVar15[-2]);
         if (scan.grobj == grobjNone) {
-          rgpt.x = ptLogical.x;
-          rgpt.y = ptLogical.y;
-          sbar.id = 0xffff;
-          CchGetString(idsDeepSpace,szDeepSpace);
+          rgpt[0].x = ptLogical.x;
+          rgpt[0].y = ptLogical.y;
+          sbar.id = -1;
+          pHVar15[-2] = (HWND)szDeepSpace;
+          pHVar15[-3] = 0x362;
+          pHVar15[-4] = 0x1058;
+          uVar16 = 0x1040;
+          pHVar15[-5] = 0x848c;
+          CchGetString(pHVar15[-3],(char *)pHVar15[-2]);
           sbar.psz = szDeepSpace;
         }
         else {
-          rgpt.x = scan.pt.x;
-          rgpt.y = scan.pt.y;
+          rgpt[0].x = scan.pt.x;
+          rgpt[0].y = scan.pt.y;
           if (scan.grobj == grobjPlanet) {
             sbar.id = scan.idpl;
           }
@@ -4104,109 +4121,292 @@ short FHandleWayPointDrag(POINT pt)
           }
           sbar.psz = (char *)0x0;
         }
-        sbar.pt.x = rgpt.x;
-        sbar.pt.y = rgpt.y;
+        sbar.pt.x = rgpt[0].x;
+        sbar.pt.y = rgpt[0].y;
         sbar.grbit = scan.grobj;
-        LogicalToScan(&rgpt);
-        DrawScanXorLines(hdc__8,&rgpt,cpt);
+        pHVar15[-2] = (HWND)rgpt;
+        pHVar15[-3] = uVar16;
+        pHVar15[-4] = 0x8528;
+        LogicalToScan((POINT *)pHVar15[-2]);
+        pHVar15[-2] = cpt;
+        pHVar15[-3] = (HWND)rgpt;
+        pHVar15[-4] = HVar3;
+        pHVar15[-5] = 0x1058;
+        pHVar15[-6] = 0x853a;
+        DrawScanXorLines(pHVar15[-4],(POINT *)pHVar15[-3],pHVar15[-2]);
         sbar.pscan = (SCAN *)0x0;
-        DrawScannerSBar(hdc__8,(RECT *)0x0,&sbar,0);
+        pHVar15[-2] = 0;
+        pHVar15[-3] = (HWND)&sbar;
+        pHVar15[-4] = 0;
+        pHVar15[-5] = HVar3;
+        pHVar15[-6] = 0x1058;
+        pHVar15[-7] = 0x8556;
+        DrawScannerSBar(pHVar15[-5],(RECT *)pHVar15[-4],(SBAR *)pHVar15[-3],pHVar15[-2]);
+        pHVar15 = pHVar15 + -1;
       }
+      uVar16 = 0x1058;
       pt.y = ptNew.y;
       pt.x = ptNew.x;
     }
   }
-  if ((rgpt.x == local_62) && (rgpt.y == local_60)) {
-    fChg = 0;
+  if ((rgpt[0].x == rgpt[1].x) && (rgpt[0].y == rgpt[1].y)) {
+    iVar7 = 0;
   }
   else {
-    fChg = 1;
+    iVar7 = 1;
   }
-  if (fChg != 0) {
+  if (iVar7 != 0) {
     if (scan.grobj == grobjNone) {
       scan.pt.x = ptLogical.x;
       scan.pt.y = ptLogical.y;
       scan.grobj = grobjOther;
       scan.iwp = sel.iwpAct;
     }
-    if ((scan.pt.x == ptPrev) && (scan.pt.y == local_6e)) {
+    if ((scan.pt.x == iVar8) && (scan.pt.y == iVar1)) {
       fDup = 1;
     }
     else {
       fDup = 0;
     }
     if ((fDup == 0) && (sel.iwpAct < sel.fl.cord + -1)) {
-      puVar6 = (uint *)((int)(PLORD *)sel.fl.lpplord +
+      piVar13 = (int *)((int)(PLORD *)sel.fl.lpplord +
                        (sel.iwpAct + 1) * 0x12 + 4);
-      if ((scan.pt.x == *puVar6) && (scan.pt.y == puVar6[1])) {
-        iVar3 = 1;
+      if ((scan.pt.x == *piVar13) && (scan.pt.y == piVar13[1])) {
+        iVar8 = 1;
       }
       else {
-        iVar3 = 0;
+        iVar8 = 0;
       }
-      fDup = iVar3 << 1;
+      fDup = iVar8 << 1;
     }
-    GetClientRect(hwndScanner,&rc);
+    pHVar15[-1] = hwndScanner;
+    pHVar15[-2] = unaff_SS;
+    pHVar15[-3] = (HWND)&rc;
+    pHVar15[-4] = 0x1040;
+    pHVar15[-5] = 0x8647;
+    GetClientRect(pHVar15[-1],*(RECT **)(pHVar15 + -3));
     if (fDup != 0) {
-      mbType = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
-      sz = PszFormatIds(idsSureWantDeleteCurrentWaypoint,(short *)0x0);
-      sVar1 = AlertSz(sz,(short)mbType);
-      fDel = (short)(sVar1 == 6);
+      pHVar15[-1] = (HWND)((char *)s_M6102__MATH___floating_point_err_1120_2022 + 2);
+      pHVar15[-2] = 0;
+      pHVar15[-3] = 0;
+      pHVar15[-4] = 0x61;
+      pHVar15[-5] = 0x14f8;
+      pHVar15[-6] = 0x8665;
+      pcVar9 = PszFormatIds(pHVar15[-4],*(short **)(pHVar15 + -3));
+      pHVar15[-2] = (HWND)pcVar9;
+      pHVar15[-3] = 0x1030;
+      uVar16 = 0x1040;
+      pHVar15[-4] = 0x866e;
+      sVar5 = AlertSz((char *)pHVar15[-2],pHVar15[-1]);
       if ((grbitScan & 0x80) != 0) {
-        hpenSav = SelectObject(hdc__8,hpenStarbase);
-        MoveTo(hdc__8,local_5e,local_5c);
-        LineTo(hdc__8,rgpt.x,rgpt.y);
-        if (3 < cpt) {
-          ExcludeClipRect(hdc__8,0,rc.bottom - dySBar,rc.right,rc.bottom);
-          LineTo(hdc__8,local_5a,local_58);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = hpenStarbase;
+        pHVar15[-3] = 0x1040;
+        pHVar15[-4] = 0x869f;
+        HVar10 = SelectObject(pHVar15[-1],pHVar15[-2]);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[2].x;
+        pHVar15[-3] = rgpt[2].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x86b0;
+        MoveTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[0].x;
+        pHVar15[-3] = rgpt[0].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x86be;
+        LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+        if (3 < (uint)cpt) {
+          pHVar15[-1] = HVar3;
+          pHVar15[-2] = 0;
+          pHVar15[-3] = rc.bottom - dySBar;
+          pHVar15[-4] = rc.right;
+          pHVar15[-5] = rc.bottom;
+          pHVar15[-6] = 0x14f8;
+          pHVar15[-7] = 0x86e4;
+          ExcludeClipRect(pHVar15[-1],pHVar15[-2],pHVar15[-3],pHVar15[-4],pHVar15[-5]);
+          pHVar15[-1] = HVar3;
+          pHVar15[-2] = rgpt[3].x;
+          pHVar15[-3] = rgpt[3].y;
+          pHVar15[-4] = 0x14f8;
+          pHVar15[-5] = 0x86f2;
+          LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
         }
-        SelectObject(hdc__8,hpenSav);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = HVar10;
+        pHVar15[-3] = 0x14f8;
+        uVar16 = 0x14f8;
+        pHVar15[-4] = 0x86fd;
+        SelectObject(pHVar15[-1],pHVar15[-2]);
       }
-      DrawScanXorLines(hdc__8,&rgpt,cpt);
-      rgpt.x = local_62;
-      rgpt.y = local_60;
+      pHVar15[-1] = cpt;
+      pHVar15[-2] = (HWND)rgpt;
+      pHVar15[-3] = HVar3;
+      pHVar15[-4] = uVar16;
+      uVar16 = 0x1058;
+      pHVar15[-5] = 0x870c;
+      DrawScanXorLines(pHVar15[-3],(POINT *)pHVar15[-2],pHVar15[-1]);
+      rgpt[0].x = rgpt[1].x;
+      rgpt[0].y = rgpt[1].y;
       if ((grbitScan & 0x80) != 0) {
-        hpenSav = SelectObject(hdc__8,hpenStarbase);
-        MoveTo(hdc__8,local_5e,local_5c);
-        LineTo(hdc__8,rgpt.x,rgpt.y);
-        if (3 < cpt) {
-          ExcludeClipRect(hdc__8,0,rc.bottom - dySBar,rc.right,rc.bottom);
-          LineTo(hdc__8,local_5a,local_58);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = hpenStarbase;
+        pHVar15[-3] = 0x1058;
+        pHVar15[-4] = 0x8735;
+        HVar10 = SelectObject(pHVar15[-1],pHVar15[-2]);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[2].x;
+        pHVar15[-3] = rgpt[2].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x8746;
+        MoveTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[0].x;
+        pHVar15[-3] = rgpt[0].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x8754;
+        LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+        if (3 < (uint)cpt) {
+          pHVar15[-1] = HVar3;
+          pHVar15[-2] = 0;
+          pHVar15[-3] = rc.bottom - dySBar;
+          pHVar15[-4] = rc.right;
+          pHVar15[-5] = rc.bottom;
+          pHVar15[-6] = 0x14f8;
+          pHVar15[-7] = 0x877a;
+          ExcludeClipRect(pHVar15[-1],pHVar15[-2],pHVar15[-3],pHVar15[-4],pHVar15[-5]);
+          pHVar15[-1] = HVar3;
+          pHVar15[-2] = rgpt[3].x;
+          pHVar15[-3] = rgpt[3].y;
+          pHVar15[-4] = 0x14f8;
+          pHVar15[-5] = 0x8788;
+          LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
         }
-        SelectObject(hdc__8,hpenSav);
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = HVar10;
+        pHVar15[-3] = 0x14f8;
+        uVar16 = 0x14f8;
+        pHVar15[-4] = 0x8793;
+        SelectObject(pHVar15[-1],pHVar15[-2]);
       }
-      DrawScanXorLines(hdc__8,&rgpt,cpt);
-      if (fDel != 0) {
-        DeleteCurWayPoint((uint)(fDup == 1));
+      pHVar15[-1] = cpt;
+      pHVar15[-2] = (HWND)rgpt;
+      pHVar15[-3] = HVar3;
+      pHVar15[-4] = uVar16;
+      uVar16 = 0x1058;
+      pHVar15[-5] = 0x87a2;
+      DrawScanXorLines(pHVar15[-3],(POINT *)pHVar15[-2],pHVar15[-1]);
+      if (sVar5 == 6) {
+        pHVar15[-1] = (uint)(fDup == 1);
+        pHVar15[-2] = 0x1058;
+        uVar16 = 0x1050;
+        pHVar15[-3] = 0x87c6;
+        DeleteCurWayPoint(pHVar15[-1]);
       }
       goto SCAN_Done_5;
     }
     if ((grbitScan & 0x80) != 0) {
-      ExcludeClipRect(hdc__8,0,rc.bottom - dySBar,rc.right,rc.bottom);
-      hpenSav = SelectObject(hdc__8,hpenStarbase);
-      MoveTo(hdc__8,local_5e,local_5c);
-      LineTo(hdc__8,rgpt.x,rgpt.y);
-      if (3 < cpt) {
-        LineTo(hdc__8,local_5a,local_58);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = 0;
+      pHVar15[-3] = rc.bottom - dySBar;
+      pHVar15[-4] = rc.right;
+      pHVar15[-5] = rc.bottom;
+      pHVar15[-6] = 0x14f8;
+      pHVar15[-7] = 0x87f7;
+      ExcludeClipRect(pHVar15[-1],pHVar15[-2],pHVar15[-3],pHVar15[-4],pHVar15[-5]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = hpenStarbase;
+      pHVar15[-3] = 0x14f8;
+      pHVar15[-4] = 0x8803;
+      HVar10 = SelectObject(pHVar15[-1],pHVar15[-2]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = rgpt[2].x;
+      pHVar15[-3] = rgpt[2].y;
+      pHVar15[-4] = 0x14f8;
+      pHVar15[-5] = 0x8814;
+      MoveTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = rgpt[0].x;
+      pHVar15[-3] = rgpt[0].y;
+      pHVar15[-4] = 0x14f8;
+      pHVar15[-5] = 0x8822;
+      LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+      if (3 < (uint)cpt) {
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[3].x;
+        pHVar15[-3] = rgpt[3].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x8839;
+        LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
       }
-      SelectObject(hdc__8,hpenSav);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = HVar10;
+      pHVar15[-3] = 0x14f8;
+      pHVar15[-4] = 0x8844;
+      SelectObject(pHVar15[-1],pHVar15[-2]);
     }
-    DrawScanXorLines(hdc__8,&rgpt,cpt);
-    rgpt.x = local_62;
-    rgpt.y = local_60;
+    pHVar15[-1] = cpt;
+    pHVar15[-2] = (HWND)rgpt;
+    pHVar15[-3] = HVar3;
+    pHVar15[-4] = 0x14f8;
+    uVar16 = 0x1058;
+    pHVar15[-5] = 0x8853;
+    DrawScanXorLines(pHVar15[-3],(POINT *)pHVar15[-2],pHVar15[-1]);
+    rgpt[0].x = rgpt[1].x;
+    rgpt[0].y = rgpt[1].y;
     if ((grbitScan & 0x80) != 0) {
-      ExcludeClipRect(hdc__8,0,rc.bottom - dySBar,rc.right,rc.bottom);
-      hpenSav = SelectObject(hdc__8,hpenStarbase);
-      MoveTo(hdc__8,local_5e,local_5c);
-      LineTo(hdc__8,rgpt.x,rgpt.y);
-      if (3 < cpt) {
-        LineTo(hdc__8,local_5a,local_58);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = 0;
+      pHVar15[-3] = rc.bottom - dySBar;
+      pHVar15[-4] = rc.right;
+      pHVar15[-5] = rc.bottom;
+      pHVar15[-6] = 0x1058;
+      pHVar15[-7] = 0x888d;
+      ExcludeClipRect(pHVar15[-1],pHVar15[-2],pHVar15[-3],pHVar15[-4],pHVar15[-5]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = hpenStarbase;
+      pHVar15[-3] = 0x14f8;
+      pHVar15[-4] = 0x8899;
+      HVar10 = SelectObject(pHVar15[-1],pHVar15[-2]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = rgpt[2].x;
+      pHVar15[-3] = rgpt[2].y;
+      pHVar15[-4] = 0x14f8;
+      pHVar15[-5] = 0x88aa;
+      MoveTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = rgpt[0].x;
+      pHVar15[-3] = rgpt[0].y;
+      pHVar15[-4] = 0x14f8;
+      pHVar15[-5] = 35000;
+      LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
+      if (3 < (uint)cpt) {
+        pHVar15[-1] = HVar3;
+        pHVar15[-2] = rgpt[3].x;
+        pHVar15[-3] = rgpt[3].y;
+        pHVar15[-4] = 0x14f8;
+        pHVar15[-5] = 0x88cf;
+        LineTo(pHVar15[-1],pHVar15[-2],pHVar15[-3]);
       }
-      SelectObject(hdc__8,hpenSav);
+      pHVar15[-1] = HVar3;
+      pHVar15[-2] = HVar10;
+      pHVar15[-3] = 0x14f8;
+      uVar16 = 0x14f8;
+      pHVar15[-4] = 0x88da;
+      SelectObject(pHVar15[-1],pHVar15[-2]);
     }
-    DrawScanXorLines(hdc__8,&rgpt,cpt);
-    RedrawScanSel(0,0);
-    uVar8 = sel.fl.lpplord._2_2_;
+    pHVar15[-1] = cpt;
+    pHVar15[-2] = (HWND)rgpt;
+    pHVar15[-3] = HVar3;
+    pHVar15[-4] = uVar16;
+    pHVar15[-5] = 0x88e9;
+    DrawScanXorLines(pHVar15[-3],(POINT *)pHVar15[-2],pHVar15[-1]);
+    pHVar15[-1] = 0;
+    pHVar15[-2] = 0;
+    pHVar15[-3] = 0x1058;
+    pHVar15[-4] = 0x88f9;
+    RedrawScanSel(pHVar15[-2],pHVar15[-1]);
+    uVar16 = sel.fl.lpplord._2_2_;
     if (scan.grobj == grobjPlanet) {
       i = scan.idpl;
     }
@@ -4219,39 +4419,97 @@ short FHandleWayPointDrag(POINT pt)
     else {
       i = scan.iwp;
     }
-    pOVar5 = (ORDER *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
-    lpord = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,pOVar5);
-    pOVar5->wFlags_0x6 =
-         pOVar5->wFlags_0x6 & 0xf0ff |
+    pOVar12 = (ORDER *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
+    lpord = (ORDER *)CONCAT22(sel.fl.lpplord._2_2_,pOVar12);
+    pOVar12->wFlags_0x6 =
+         pOVar12->wFlags_0x6 & 0xf0ff |
          (scan.grobj & (grobjThing|grobjOther|grobjFleet|grobjPlanet)) << 8;
-    pOVar5->id = i;
+    pOVar12->id = i;
     (lpord->pt).x = scan.pt.x;
-    (pOVar5->pt).y = scan.pt.y;
-    uVar4 = IWarpBestForWaypoint(&sel.fl,(ORDER *)CONCAT22(uVar8,pOVar5));
-    uVar8 = (undefined2)((ulong)lpord >> 0x10);
-    ((ORDER *)lpord)->wFlags_0x6 = ((ORDER *)lpord)->wFlags_0x6 & 0xff0f | (uVar4 & 0xf) << 4;
-    FLookupFleet(-1,(FLEET *)&sel.fl);
+    (pOVar12->pt).y = scan.pt.y;
+    pHVar15[-1] = uVar16;
+    pHVar15[-2] = (HWND)pOVar12;
+    pHVar15[-3] = 0x1120;
+    pHVar15[-4] = 0x4972;
+    pHVar15[-5] = 0x1058;
+    pHVar15[-6] = 0x89de;
+    uVar11 = IWarpBestForWaypoint(*(FLEET **)(pHVar15 + -4),*(ORDER **)(pHVar15 + -2));
+    pOVar12->wFlags_0x6 = pOVar12->wFlags_0x6 & 0xff0f | (uVar11 & 0xf) << 4;
+    pHVar15[-1] = 0x4972;
+    pHVar15[-2] = 0xffff;
+    pHVar15[-3] = 0x1058;
+    pHVar15[-4] = 0x8a14;
+    FLookupFleet(pHVar15[-2],(FLEET *)pHVar15[-1]);
     scan.iwp = sel.iwpAct;
     scan.grobjFull = scan.grobjFull | grobjOther;
     sel.iwpAct = -2;
-    ChangeScanSel(&scan,1);
+    pHVar15[-1] = 1;
+    pHVar15[-2] = (HWND)&scan;
+    pHVar15[-3] = 0x1038;
+    uVar16 = 0x1058;
+    pHVar15[-4] = 0x8a34;
+    ChangeScanSel((SCAN *)pHVar15[-2],pHVar15[-1]);
   }
-  DrawScannerSBar(hdc__8,(RECT *)0x0,(SBAR *)0x0,0);
+  pHVar15[-1] = 0;
+  pHVar15[-2] = 0;
+  pHVar15[-3] = 0;
+  pHVar15[-4] = HVar3;
+  pHVar15[-5] = uVar16;
+  pHVar15[-6] = 0x8a4b;
+  DrawScannerSBar(pHVar15[-4],(RECT *)pHVar15[-3],(SBAR *)pHVar15[-2],pHVar15[-1]);
+  pHVar15[-1] = 0x1058;
+  pHVar15[-2] = 0x8a53;
   ReleaseCapture();
-  setcursor(hcurSav);
-  InvalidateRect(hwndMine,(RECT *)0x0,1);
-  SetMineralTitleBar(hwndMine);
+  pHVar15[-1] = HVar4;
+  pHVar15[-2] = 0x14f8;
+  pHVar15[-3] = 0x8a5b;
+  setcursor(pHVar15[-1]);
+  pHVar15[-1] = hwndMine;
+  pHVar15[-2] = 0;
+  pHVar15[-3] = 0;
+  pHVar15[-4] = 1;
+  pHVar15[-5] = 0x14f8;
+  pHVar15[-6] = 0x8a70;
+  InvalidateRect(pHVar15[-1],*(RECT **)(pHVar15 + -3),pHVar15[-4]);
+  *pHVar15 = hwndMine;
+  pHVar15[-1] = 0x14f8;
+  uVar16 = 0x1028;
+  pHVar15[-2] = 0x8a79;
+  SetMineralTitleBar(*pHVar15);
+  pHVar15 = pHVar15 + 1;
 SCAN_Done_5:
-  ReleaseDC(hwndScanner,hdc__8);
-  if ((fChg != 0) && ((grbitScan & 0x80) != 0)) {
-    local_62 = ptNew.x;
-    local_60 = ptNew.y;
-    BoundPoints(&rc,&rgpt,cpt);
-    hdc_00 = GetDC(hwndScanner);
-    DrawScanner(hdc_00,&rc);
-    ReleaseDC(hwndScanner,hdc_00);
+  *(HWND *)((int)pHVar15 + -2) = hwndScanner;
+  *(HDC *)((int)pHVar15 + -4) = HVar3;
+  *(undefined2 *)((int)pHVar15 + -6) = uVar16;
+  *(undefined2 *)((int)pHVar15 + -8) = 0x8a88;
+  ReleaseDC(*(HWND *)((int)pHVar15 + -2),*(HDC *)((int)pHVar15 + -4));
+  if ((iVar7 != 0) && ((grbitScan & 0x80) != 0)) {
+    rgpt[1].x = ptNew.x;
+    rgpt[1].y = ptNew.y;
+    *(short *)((int)pHVar15 + -2) = cpt;
+    *(int *)((int)pHVar15 + -4) = (int)rgpt;
+    *(int *)((int)pHVar15 + -6) = (int)&rc;
+    *(undefined2 *)((int)pHVar15 + -8) = 0x14f8;
+    *(undefined2 *)((int)pHVar15 + -10) = 0x8abc;
+    BoundPoints
+              ((RECT *)*(undefined2 *)((int)pHVar15 + -6),
+               (POINT *)*(undefined2 *)((int)pHVar15 + -4),*(short *)((int)pHVar15 + -2));
+    *(HWND *)((int)pHVar15 + -2) = hwndScanner;
+    *(undefined2 *)((int)pHVar15 + -4) = 0x1040;
+    *(undefined2 *)((int)pHVar15 + -6) = 0x8ac8;
+    HVar3 = GetDC(*(HWND *)((int)pHVar15 + -2));
+    *(int *)((int)pHVar15 + -2) = (int)&rc;
+    *(HDC *)((int)pHVar15 + -4) = HVar3;
+    *(undefined2 *)((int)pHVar15 + -6) = 0x14f8;
+    *(undefined2 *)((int)pHVar15 + -8) = 0x8ada;
+    DrawScanner(*(HDC *)((int)pHVar15 + -4),(RECT *)*(undefined2 *)((int)pHVar15 + -2));
+    *(HWND *)((int)pHVar15 + -2) = hwndScanner;
+    *(HDC *)((int)pHVar15 + -4) = HVar3;
+    *(undefined2 *)((int)pHVar15 + -6) = 0x1058;
+    *(undefined2 *)((int)pHVar15 + -8) = 0x8aea;
+    ReleaseDC(*(HWND *)((int)pHVar15 + -2),*(HDC *)((int)pHVar15 + -4));
   }
-  return fChg;
+  return iVar7;
 }
 
 
@@ -4266,6 +4524,8 @@ SCAN_Done_5:
 void DrawScanXorLines(HDC hdc,POINT *rgpt,short cpt)
 
 {
+  HGDIOBJ HVar1;
+  short sVar2;
   undefined2 unaff_SS;
   RECT rc;
   short i;
@@ -4284,15 +4544,15 @@ void DrawScanXorLines(HDC hdc,POINT *rgpt,short cpt)
   for (i = 1; i < cpt; i = i + 1) {
     ExcludeClipRect(hdc,(rgpt + i)->x + -5,rgpt[i].y + -5,(rgpt + i)->x + 6,rgpt[i].y + 6);
   }
-  hpenSav = SelectObject(hdc,hpenSav);
-  iRopSav = SetROP2(hdc,7);
+  HVar1 = SelectObject(hdc,hpenSav);
+  sVar2 = SetROP2(hdc,7);
   MoveTo(hdc,(rgpt + 2)->x,rgpt[2].y);
   LineTo(hdc,rgpt->x,rgpt->y);
   if (3 < cpt) {
     LineTo(hdc,(rgpt + 3)->x,rgpt[3].y);
   }
-  SetROP2(hdc,iRopSav);
-  SelectObject(hdc,hpenSav);
+  SetROP2(hdc,sVar2);
+  SelectObject(hdc,HVar1);
   SelectClipRgn(hdc,hrgnHuge);
   return;
 }
@@ -4333,68 +4593,68 @@ short SetScanWp(short iNew)
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: fMineFieldSel */
 /* WARNING: Variable defined which should be unmapped: fChgWp */
-/* WARNING: Variable defined which should be unmapped: iRad */
 
 void ChangeScanSel(SCAN *pscan,short fValidScan)
 
 {
   SCAN *pSVar1;
   short *psVar2;
-  double dVar3;
   POINT pt;
   POINT pt_00;
+  bool bVar3;
   short sVar4;
   int iVar5;
-  HDC HVar6;
+  int iVar6;
+  HDC hdc;
   int iVar7;
   undefined2 unaff_SI;
   SCAN *pSVar8;
   undefined2 unaff_DI;
   short *psVar9;
-  int iVar10;
-  int iVar11;
   undefined2 unaff_SS;
-  long lVar12;
-  undefined4 in_stack_00000008;
-  short iRad;
+  long lVar10;
+  HDC local_12;
   short fChgWp;
-  short in_stack_0000fff6;
-  int local_8;
+  RECT rcMine;
   short fMineFieldSel;
-  undefined2 in_stack_0000fffc;
   
   if (fValidScan == 0) {
     pt.y = (pscan->pt).y;
     pt.x = (pscan->pt).x;
     FFindNearestObject(pt,pscan->grobj,pscan);
   }
-  iVar10 = 0x1118;
   sVar4 = _memcmp(pscan,(void *)&sel.scan,0x10);
   if (sVar4 != 0) {
-    if ((sel.scan.grobj == grobjThing) &&
-       (((THING *)lpThings + sel.scan.ith)->idFull >> 0xd == 0)) {
-      iVar5 = 1;
-    }
-    else {
+    if ((pscan->iwp == -1) || (pscan->iwp == sel.iwpAct)) {
       iVar5 = 0;
     }
-    if (iVar5 != 0) {
-      dVar3 = (double)((&((THING *)lpThings)[sel.scan.ith].u_THING_0x0006)->thm).
-                      cMines;
-      _sqrt(SUB84(dVar3,0),
-                    (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)dVar3 >> 0x20))));
-      lVar12 = __ftol((double)CONCAT26(in_stack_0000fffc,
-                                               CONCAT24(iVar5,CONCAT22(local_8,in_stack_0000fff6))))
-      ;
-      local_8 = ((THING *)lpThings)[sel.scan.ith].pt.y - (int)lVar12;
-      LogicalToScan(&stack0xfff2);
-      LogicalToScan(&stack0xfff6);
-      iVar10 = 0x14f8;
-      InflateRect(&stack0xfff2,1,1);
+    else {
+      iVar5 = 1;
     }
-    iVar11 = 0x1058;
+    if ((sel.scan.grobj == grobjThing) &&
+       (((THING *)lpThings + sel.scan.ith)->idFull >> 0xd == 0)) {
+      bVar3 = true;
+    }
+    else {
+      bVar3 = false;
+    }
+    if (bVar3) {
+      _sqrt((double)((&((THING *)lpThings)[sel.scan.ith].u_THING_0x0006)->
+                            thm).cMines);
+      lVar10 = __ftol((double)CONCAT26(iVar5,CONCAT24(local_12,CONCAT22(unaff_SI,unaff_DI)))
+                             );
+      local_12 = (HDC)lVar10;
+      iVar7 = (&((THING *)lpThings)[sel.scan.ith].pt)->x;
+      iVar6 = ((THING *)lpThings)[sel.scan.ith].pt.y;
+      rcMine.right = iVar7 + local_12;
+      rcMine.bottom = iVar6 - local_12;
+      rcMine.left = iVar7 - local_12;
+      rcMine.top = iVar6 + local_12;
+      LogicalToScan(&rcMine);
+      LogicalToScan(&rcMine.right);
+      InflateRect(&rcMine,1,1);
+    }
     RedrawScanSel(0,-1);
     psVar9 = (short *)&sel.scan;
     pSVar8 = pscan;
@@ -4408,16 +4668,15 @@ void ChangeScanSel(SCAN *pscan,short fValidScan)
     if (((sel.scan.grobjFull & grobjPlanet) != grobjNone) && (fValidScan != 2)) {
       sel.scan.grobj = grobjPlanet;
     }
-    if (iVar10 != 0) {
+    if (iVar5 != 0) {
       sel.iwpAct = pscan->iwp;
       FillOrdersLB();
       SetOrdersLbSel(pscan->iwp);
       UpdateOrdersDDs(0);
-      iVar11 = 0x1048;
       DrawPlanShip(0,0x122);
     }
     RedrawScanSel(0,1);
-    if (iVar11 != 0) {
+    if (iVar5 != 0) {
       pt_00.y = (pscan->pt).y;
       pt_00.x = (pscan->pt).x;
       FEnsurePointOnScreen(pt_00,1);
@@ -4425,36 +4684,36 @@ void ChangeScanSel(SCAN *pscan,short fValidScan)
     DrawScannerSBar(0,(RECT *)0x0,(SBAR *)0x0,0);
     InvalidateRect(hwndMine,(RECT *)0x0,1);
     SetMineralTitleBar(hwndMine);
-    if (iVar5 != 0) {
-      HVar6 = GetDC(hwndScanner);
-      DrawScanner(HVar6,&stack0xfff2);
-      ReleaseDC(hwndScanner,HVar6);
+    if (bVar3) {
+      local_12 = GetDC(hwndScanner);
+      DrawScanner(local_12,&rcMine);
+      ReleaseDC(hwndScanner,local_12);
     }
     if ((sel.scan.grobj == grobjThing) &&
        (((THING *)lpThings + sel.scan.ith)->idFull >> 0xd == 0)) {
-      iVar10 = 1;
+      bVar3 = true;
     }
     else {
-      iVar10 = 0;
+      bVar3 = false;
     }
-    if (iVar10 == 0) {
-      fMineFieldSel = 0;
-    }
-    else {
-      dVar3 = (double)((&((THING *)lpThings)[sel.scan.ith].u_THING_0x0006)->thm).
-                      cMines;
-      _sqrt(SUB84(dVar3,0),
-                    (double)CONCAT26(iVar10,CONCAT24(local_8,(long)((qword)dVar3 >> 0x20))));
-      __ftol((double)CONCAT44(in_stack_00000008,(SCAN *)CONCAT22(fValidScan,pscan)));
-      LogicalToScan(&stack0xfff2);
-      LogicalToScan(&stack0xfff6);
-      fMineFieldSel = 0x1058;
-      InflateRect(&stack0xfff2,1,1);
-    }
-    if (fMineFieldSel != 0) {
-      HVar6 = GetDC(hwndScanner);
-      DrawScanner(HVar6,&stack0xfff2);
-      ReleaseDC(hwndScanner,HVar6);
+    if (bVar3) {
+      _sqrt((double)((&((THING *)lpThings)[sel.scan.ith].u_THING_0x0006)->
+                            thm).cMines);
+      lVar10 = __ftol((double)CONCAT26(rcMine.left,
+                                               CONCAT24(iVar5,CONCAT22(local_12,unaff_SI))));
+      iVar6 = (int)lVar10;
+      iVar5 = (&((THING *)lpThings)[sel.scan.ith].pt)->x;
+      iVar7 = ((THING *)lpThings)[sel.scan.ith].pt.y;
+      rcMine.right = iVar5 + iVar6;
+      rcMine.bottom = iVar7 - iVar6;
+      rcMine.left = iVar5 - iVar6;
+      rcMine.top = iVar7 + iVar6;
+      LogicalToScan(&rcMine);
+      LogicalToScan(&rcMine.right);
+      InflateRect(&rcMine,1,1);
+      hdc = GetDC(hwndScanner);
+      DrawScanner(hdc,&rcMine);
+      ReleaseDC(hwndScanner,hdc);
     }
     if (sel.pl.id != -1) {
       DrawPlanShip(0,0x4002);
@@ -4544,6 +4803,7 @@ short FGetNextObjHere(SCAN *pscan,short fOnlyOurs)
 // ======================================================================
 
 
+/* WARNING: Variable defined which should be unmapped: rc */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short FindDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
@@ -4556,16 +4816,16 @@ short FindDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
   undefined2 unaff_DI;
   undefined2 unaff_SS;
   ulong uVar3;
-  ushort in_stack_0000ffcc;
-  char szName [42];
+  RECT rc;
+  char szName [40];
   
   if (msg == WM_ERASEBKGND) {
-    GetClientRect(hwnd,&stack0xffcc);
-    FillRect(wParam,&stack0xffcc,hbrButtonFace);
+    GetClientRect(hwnd,&rc);
+    FillRect(wParam,&rc,hbrButtonFace);
     return 1;
   }
   if (msg == WM_CTLCOLOR) {
-    uVar3 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffcc);
+    uVar3 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),rc.left);
     if ((int)uVar3 == 6) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       return hbrButtonFace;
@@ -4660,15 +4920,15 @@ short FSelectSz(char *szName)
       pt.x = ((POINT *)rgptPlan + ipl)->x;
       FFindNearestObject(pt,grobjPlanet,&scan);
       ChangeScanSel(&scan,1);
-      pt_00.y = scan.pt.y;
-      pt_00.x = scan.pt.x;
-      FEnsurePointOnScreen(pt_00,1);
+      pt_01.y = scan.pt.y;
+      pt_01.x = scan.pt.x;
+      FEnsurePointOnScreen(pt_01,1);
       UpdateWindow(hwndScanner);
       SendMessage(hwndScanner,0x102,0x76,0);
       return 1;
     }
-    cch = CchGetString(idsFleet,szT);
-    sVar4 = __strnicmp(szName,szT,cch);
+    uVar3 = CchGetString(idsFleet,szT);
+    sVar4 = __strnicmp(szName,szT,uVar3);
     if (sVar4 == 0) {
       pch = szName + 6;
     }
@@ -4684,17 +4944,15 @@ short FSelectSz(char *szName)
     }
     if (('0' < *pch) && (*pch < ':')) {
       ifl = *pch + -0x30;
-      pch = pch + 1;
       do {
+        pch = pch + 1;
         if ((*(byte *)(*pch + 0x175f) & 4) == 0) {
-          ifl = ifl - 1U | idPlayer << 9;
-          lpfl = LpflFromId(ifl);
+          lpfl = LpflFromId(ifl - 1U | idPlayer << 9);
           if (((FLEET *)lpfl != (FLEET *)0x0) || ((int)((ulong)lpfl >> 0x10) != 0))
           goto SCAN_LFoundFleetId;
           break;
         }
         ifl = ifl * 10 + (int)*pch + -0x30;
-        pch = pch + 1;
       } while (ifl < 0x201);
     }
     for (ifl = 0; ifl < cFleet; ifl = ifl + 1) {
@@ -4709,9 +4967,9 @@ short FSelectSz(char *szName)
       if (sVar4 == 0) {
 SCAN_LFoundFleetId:
         uVar6 = (undefined2)((ulong)lpfl >> 0x10);
-        pt_01.y = (((FLEET *)lpfl)->pt).y;
-        pt_01.x = (&((FLEET *)lpfl)->pt)->x;
-        FFindNearestObject(pt_01,grobjFleet,&scan);
+        pt_00.y = (((FLEET *)lpfl)->pt).y;
+        pt_00.x = (&((FLEET *)lpfl)->pt)->x;
+        FFindNearestObject(pt_00,grobjFleet,&scan);
         scan.ifl = IflFromLpfl(lpfl);
         ChangeScanSel(&scan,2);
         pt_02.y = scan.pt.y;
@@ -4777,17 +5035,14 @@ LAB_1058_985e:
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: iBmp */
-
 void GetDxDyOrientation(short dx,short dy,POINT *ppt,POINT *pptD)
 
 {
   short sVar1;
+  int iVar2;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
-  double *pdVar2;
   long lVar3;
-  long local_1e;
   long local_16;
   short iBmp;
   double dbl;
@@ -4795,16 +5050,9 @@ void GetDxDyOrientation(short dx,short dy,POINT *ppt,POINT *pptD)
   iBmp = 0;
   if ((dx != 0) || (dy != 0)) {
     local_16 = (long)dx;
-    local_1e = (long)dy;
-    pdVar2 = _atan2(SUB84((double)local_1e,0),
-                            (double)CONCAT44(SUB84((double)local_16,0),
-                                             (long)((qword)(double)local_1e >> 0x20)),
-                            (double)CONCAT26(unaff_SI,CONCAT24(unaff_DI,(long)((qword)(double)
-                                                  local_16 >> 0x20))));
-    lVar3 = __ftol((double)((sqword)(DOUBLE_0_5__1120_1cf2 +
-                                            (DOUBLE_4_0__1120_1d12 *
-                                            (DOUBLE_3_1415927__1120_1d0a + *(double *)pdVar2)) /
-                                            DOUBLE_3_141592654__1120_1d1a) << 0x10));
+    iVar2 = dy >> 0xf;
+    _atan2((double)(long)dy,(double)local_16);
+    lVar3 = __ftol((double)CONCAT26(iVar2,CONCAT24(dy,CONCAT22(unaff_SI,unaff_DI))));
     iBmp = 9 - ((uint)lVar3 & 7) & 7;
   }
   if (iScanZoom < 0) {
@@ -4837,10 +5085,16 @@ void GetDxDyOrientation(short dx,short dy,POINT *ppt,POINT *pptD)
 short FHandleMeasuringTape(SCAN *pscan,POINT pt)
 
 {
-  short sVar1;
-  uint uVar2;
+  bool bVar1;
+  undefined1 *puVar2;
+  HDC HVar3;
+  HGDIOBJ HVar4;
+  short sVar5;
+  short sVar6;
+  uint uVar7;
+  undefined1 *puVar8;
+  undefined2 uVar9;
   undefined2 unaff_SS;
-  POINT pt_00;
   RECT rc;
   SCAN scan;
   short fVirgin;
@@ -4850,48 +5104,86 @@ short FHandleMeasuringTape(SCAN *pscan,POINT pt)
   POINT ptBase;
   POINT ptLogical;
   short grTypeIn;
-  uint ptLogLast;
-  uint local_16;
+  POINT ptLogLast;
   SBAR sbar;
   HPEN hpenSav;
   HDC hdc;
   
-  fVirgin = 1;
-  ptLogLast = (pscan->pt).x;
-  local_16 = (pscan->pt).y;
+  bVar1 = true;
+  ptLogLast.x = (pscan->pt).x;
+  ptLogLast.y = (pscan->pt).y;
   ptBase.x = (pscan->pt).x;
   ptBase.y = (pscan->pt).y;
   LogicalToScan(&ptBase);
   GetClientRect(hwndScanner,&rc);
   rc.bottom = rc.bottom - dySBar;
-  hdc = GetDC(hwndScanner);
+  HVar3 = GetDC(hwndScanner);
   SetCapture(hwndScanner);
   sbar.pscan = pscan;
-  hpenSav = SelectObject(hdc,hpenShip);
-  iropSav = SetROP2(hdc,7);
+  HVar4 = SelectObject(HVar3,hpenShip);
+  sVar5 = SetROP2(HVar3,7);
   ptNew.x = pt.x;
   ptNew.y = pt.y;
+  uVar9 = 0x1058;
   LogicalToScan(&ptNew);
+  puVar2 = &stack0xffa6;
 LAB_1058_9a11:
   do {
-    sVar1 = FGetRMouseMove(&ptNew);
-    if (sVar1 == 0) {
-      if (fVirgin == 0) {
-        MoveTo(hdc,ptBase.x,ptBase.y);
-        LineTo(hdc,pt.x,pt.y);
+    puVar8 = puVar2;
+    *(POINT **)(puVar8 + -2) = &ptNew;
+    *(undefined2 *)(puVar8 + -4) = uVar9;
+    uVar9 = 0x1040;
+    *(undefined2 *)(puVar8 + -6) = 0x9a1a;
+    sVar6 = FGetRMouseMove(*(POINT **)(puVar8 + -2));
+    if (sVar6 == 0) {
+      if (!bVar1) {
+        *(HDC *)(puVar8 + -2) = HVar3;
+        *(short *)(puVar8 + -4) = ptBase.x;
+        *(short *)(puVar8 + -6) = ptBase.y;
+        *(undefined2 *)(puVar8 + -8) = 0x1040;
+        *(undefined2 *)(puVar8 + -10) = 0x9c92;
+        MoveTo(*(HDC *)(puVar8 + -2),*(short *)(puVar8 + -4),*(short *)(puVar8 + -6));
+        *(HDC *)(puVar8 + -2) = HVar3;
+        *(short *)(puVar8 + -4) = pt.x;
+        *(short *)(puVar8 + -6) = pt.y;
+        *(undefined2 *)(puVar8 + -8) = 0x14f8;
+        uVar9 = 0x14f8;
+        *(undefined2 *)(puVar8 + -10) = 0x9ca0;
+        LineTo(*(HDC *)(puVar8 + -2),*(short *)(puVar8 + -4),*(short *)(puVar8 + -6));
       }
-      SetROP2(hdc,iropSav);
-      SelectObject(hdc,hpenSav);
-      DrawScannerSBar(hdc,(RECT *)0x0,(SBAR *)0x0,0);
+      *(HDC *)(puVar8 + -2) = HVar3;
+      *(short *)(puVar8 + -4) = sVar5;
+      *(undefined2 *)(puVar8 + -6) = uVar9;
+      *(undefined2 *)(puVar8 + -8) = 0x9cab;
+      SetROP2(*(HDC *)(puVar8 + -2),*(short *)(puVar8 + -4));
+      *(HDC *)(puVar8 + -2) = HVar3;
+      *(HGDIOBJ *)(puVar8 + -4) = HVar4;
+      *(undefined2 *)(puVar8 + -6) = 0x14f8;
+      *(undefined2 *)(puVar8 + -8) = 0x9cb6;
+      SelectObject(*(HDC *)(puVar8 + -2),*(HGDIOBJ *)(puVar8 + -4));
+      *(undefined2 *)(puVar8 + -2) = 0;
+      *(undefined2 *)(puVar8 + -4) = 0;
+      *(undefined2 *)(puVar8 + -6) = 0;
+      *(HDC *)(puVar8 + -8) = HVar3;
+      *(undefined2 *)(puVar8 + -10) = 0x14f8;
+      *(undefined2 *)(puVar8 + -0xc) = 0x9cca;
+      DrawScannerSBar(*(HDC *)(puVar8 + -8),*(RECT **)(puVar8 + -6),*(SBAR **)(puVar8 + -4),
+                      *(short *)(puVar8 + -2));
+      *(undefined2 *)(puVar8 + -2) = 0x1058;
+      *(undefined2 *)(puVar8 + -4) = 0x9cd2;
       ReleaseCapture();
-      ReleaseDC(hwndScanner,hdc);
-      return (uint)(fVirgin == 0);
+      *(HWND *)(puVar8 + -2) = hwndScanner;
+      *(HDC *)(puVar8 + -4) = HVar3;
+      *(undefined2 *)(puVar8 + -6) = 0x14f8;
+      *(undefined2 *)(puVar8 + -8) = 0x9cde;
+      ReleaseDC(*(HWND *)(puVar8 + -2),*(HDC *)(puVar8 + -4));
+      return (uint)!bVar1;
     }
-    uVar2 = rc.right;
+    uVar7 = rc.right;
     if (ptNew.x <= rc.right) {
-      uVar2 = ptNew.x;
+      uVar7 = ptNew.x;
     }
-    if (uVar2 < 0x8000) {
+    if (uVar7 < 0x8000) {
       ptLogical.x = rc.right;
       if (ptNew.x <= rc.right) {
         ptLogical.x = ptNew.x;
@@ -4900,11 +5192,12 @@ LAB_1058_9a11:
     else {
       ptLogical.x = 0;
     }
-    uVar2 = rc.bottom;
+    ptNew.x = ptLogical.x;
+    uVar7 = rc.bottom;
     if (ptNew.y <= rc.bottom) {
-      uVar2 = ptNew.y;
+      uVar7 = ptNew.y;
     }
-    if (uVar2 < 0x8000) {
+    if (uVar7 < 0x8000) {
       ptLogical.y = rc.bottom;
       if (ptNew.y <= rc.bottom) {
         ptLogical.y = ptNew.y;
@@ -4913,41 +5206,96 @@ LAB_1058_9a11:
     else {
       ptLogical.y = 0;
     }
-    ptNew.x = ptLogical.x;
     ptNew.y = ptLogical.y;
-    ScanToLogical(&ptLogical);
-    uVar2 = GetAsyncKeyState(0x10);
-    if ((uVar2 & 0xfffe) == 0) {
-      grTypeIn = 0x4f;
+    *(POINT **)(puVar8 + -2) = &ptLogical;
+    *(undefined2 *)(puVar8 + -4) = 0x1040;
+    *(undefined2 *)(puVar8 + -6) = 0x9ab0;
+    ScanToLogical(*(POINT **)(puVar8 + -2));
+    *(undefined2 *)(puVar8 + -2) = 0x10;
+    *(undefined2 *)(puVar8 + -4) = 0x1058;
+    *(undefined2 *)(puVar8 + -6) = 0x9abc;
+    uVar7 = GetAsyncKeyState(*(short *)(puVar8 + -2));
+    if ((uVar7 & 0xfffe) == 0) {
+      uVar9 = 0x4f;
     }
     else {
-      grTypeIn = 0x8f;
+      uVar9 = 0x8f;
     }
-    pt_00.y = ptLogical.y;
-    pt_00.x = ptLogical.x;
-    sVar1 = FFindNearestObject(pt_00,grTypeIn,&scan);
-    if (sVar1 != 0) {
+    *(SCAN **)(puVar8 + -4) = &scan;
+    *(undefined2 *)(puVar8 + -6) = uVar9;
+    *(short *)(puVar8 + -8) = ptLogical.y;
+    *(short *)(puVar8 + -10) = ptLogical.x;
+    *(undefined2 *)(puVar8 + -0xc) = 0x14f8;
+    uVar9 = 0x1038;
+    *(undefined2 *)(puVar8 + -0xe) = 0x9ae5;
+    sVar6 = FFindNearestObject
+                      (*(puVar8 + -10),*(GrobjClass *)(puVar8 + -6),*(SCAN **)(puVar8 + -4));
+    if (sVar6 != 0) {
       ptLogical.x = scan.pt.x;
       ptLogical.y = scan.pt.y;
     }
-  } while ((ptLogLast == ptLogical.x) && (local_16 == ptLogical.y));
+  } while ((ptLogLast.x == ptLogical.x) && (puVar2 = puVar8 + -2, ptLogLast.y == ptLogical.y));
   ptNew.x = ptLogical.x;
   ptNew.y = ptLogical.y;
-  LogicalToScan(&ptNew);
-  if (fVirgin != 0) goto LAB_1058_9b36;
-  MoveTo(hdc,ptBase.x,ptBase.y);
-  LineTo(hdc,pt.x,pt.y);
+  *(POINT **)(puVar8 + -4) = &ptNew;
+  *(undefined2 *)(puVar8 + -6) = 0x1038;
+  *(undefined2 *)(puVar8 + -8) = 0x9b2a;
+  LogicalToScan(*(POINT **)(puVar8 + -4));
+  if (bVar1) {
+    *(short *)(puVar8 + -4) = ptLogical.x - ptLogLast.x;
+    *(undefined2 *)(puVar8 + -6) = 0x1058;
+    *(undefined2 *)(puVar8 + -8) = 0x9b42;
+    sVar6 = _abs(*(short *)(puVar8 + -4));
+    if (sVar6 < 3) goto LAB_1058_9b4d;
+    goto LAB_1058_9b67;
+  }
+  *(HDC *)(puVar8 + -4) = HVar3;
+  *(short *)(puVar8 + -6) = ptBase.x;
+  *(short *)(puVar8 + -8) = ptBase.y;
+  *(undefined2 *)(puVar8 + -10) = 0x1058;
+  *(undefined2 *)(puVar8 + -0xc) = 0x9b7d;
+  MoveTo(*(HDC *)(puVar8 + -4),*(short *)(puVar8 + -6),*(short *)(puVar8 + -8));
+  *(HDC *)(puVar8 + -4) = HVar3;
+  *(short *)(puVar8 + -6) = pt.x;
+  *(short *)(puVar8 + -8) = pt.y;
+  *(undefined2 *)(puVar8 + -10) = 0x14f8;
+  uVar9 = 0x14f8;
+  *(undefined2 *)(puVar8 + -0xc) = 0x9b8b;
+  LineTo(*(HDC *)(puVar8 + -4),*(short *)(puVar8 + -6),*(short *)(puVar8 + -8));
   goto LAB_1058_9b8b;
-LAB_1058_9b36:
-  sVar1 = _abs(ptLogical.x - ptLogLast);
-  if ((2 < sVar1) || (sVar1 = _abs(ptLogical.y - local_16), 2 < sVar1)) {
-    fVirgin = 0;
+LAB_1058_9b4d:
+  *(short *)(puVar8 + -4) = ptLogical.y - ptLogLast.y;
+  *(undefined2 *)(puVar8 + -6) = 0x1118;
+  uVar9 = 0x1118;
+  *(undefined2 *)(puVar8 + -8) = 0x9b59;
+  sVar6 = _abs(*(short *)(puVar8 + -4));
+  puVar2 = puVar8 + -2;
+  if (2 < sVar6) {
+LAB_1058_9b67:
+    uVar9 = 0x1118;
+    bVar1 = false;
 LAB_1058_9b8b:
-    MoveTo(hdc,ptBase.x,ptBase.y);
-    LineTo(hdc,ptNew.x,ptNew.y);
+    *(HDC *)(puVar8 + -4) = HVar3;
+    *(short *)(puVar8 + -6) = ptBase.x;
+    *(short *)(puVar8 + -8) = ptBase.y;
+    *(undefined2 *)(puVar8 + -10) = uVar9;
+    *(undefined2 *)(puVar8 + -0xc) = 0x9b99;
+    MoveTo(*(HDC *)(puVar8 + -4),*(short *)(puVar8 + -6),*(short *)(puVar8 + -8));
+    *(HDC *)(puVar8 + -4) = HVar3;
+    *(short *)(puVar8 + -6) = ptNew.x;
+    *(short *)(puVar8 + -8) = ptNew.y;
+    *(undefined2 *)(puVar8 + -10) = 0x14f8;
+    uVar9 = 0x14f8;
+    *(undefined2 *)(puVar8 + -0xc) = 0x9ba7;
+    LineTo(*(HDC *)(puVar8 + -4),*(short *)(puVar8 + -6),*(short *)(puVar8 + -8));
     if (scan.grobj == grobjNone) {
-      sbar.id = 0xffff;
-      CchGetString(idsDeepSpace,szT);
+      sbar.id = -1;
+      *(char **)(puVar8 + -4) = szT;
+      *(undefined2 *)(puVar8 + -6) = 0x362;
+      *(undefined2 *)(puVar8 + -8) = 0x14f8;
+      uVar9 = 0x1040;
+      *(undefined2 *)(puVar8 + -10) = 0x9bc2;
+      CchGetString(*(StringId *)(puVar8 + -6),*(char **)(puVar8 + -4));
       sbar.psz = szT;
     }
     else {
@@ -4968,11 +5316,20 @@ LAB_1058_9b8b:
     sbar.pt.x = ptLogical.x;
     sbar.pt.y = ptLogical.y;
     sbar.grbit = scan.grobj;
-    DrawScannerSBar(hdc,(RECT *)0x0,&sbar,0);
+    *(undefined2 *)(puVar8 + -4) = 0;
+    *(SBAR **)(puVar8 + -6) = &sbar;
+    *(undefined2 *)(puVar8 + -8) = 0;
+    *(HDC *)(puVar8 + -10) = HVar3;
+    *(undefined2 *)(puVar8 + -0xc) = uVar9;
+    uVar9 = 0x1058;
+    *(undefined2 *)(puVar8 + -0xe) = 0x9c5d;
+    DrawScannerSBar(*(HDC *)(puVar8 + -10),*(RECT **)(puVar8 + -8),*(SBAR **)(puVar8 + -6),
+                    *(short *)(puVar8 + -4));
     pt.y = ptNew.y;
     pt.x = ptNew.x;
-    ptLogLast = ptLogical.x;
-    local_16 = ptLogical.y;
+    ptLogLast.x = ptLogical.x;
+    ptLogLast.y = ptLogical.y;
+    puVar2 = puVar8 + -2;
   }
   goto LAB_1058_9a11;
 }

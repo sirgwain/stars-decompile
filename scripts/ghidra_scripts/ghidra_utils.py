@@ -567,7 +567,7 @@ def wrapped_datatype(dt: DataType, decl_info: DeclInfo, is_far_ptr: bool) -> Dat
     else:
         # normal: pointers bind before arrays (array-of-pointers)
         if stars > 0:
-            wrapped_dt = wrap_pointers(wrapped_dt, stars, decl_info.array_of_far_ptrs)
+            wrapped_dt = wrap_pointers(wrapped_dt, stars, is_far_ptr or decl_info.array_of_far_ptrs)
         if dims:
             wrapped_dt = wrap_arrays(wrapped_dt, dims)
 
