@@ -19,35 +19,40 @@ ghidraRun
 1. File -> Import File
 2. Select: `target/stars.exe`
 3. Format: "New Executable (NE)"
-4. Language: "x86:LE:16:Real Mode" (16-bit real mode x86)
+4. Language: "x86:LE:16:Protected Mode" (16-bit protected mode x86)
 5. Click OK, then Analyze
+
+Or use the mise task: `mise run ghidra-import`
 
 ### 3. Apply Symbol Scripts
 
-Scripts must be run in order:
+The easiest way is to use the mise setup task which runs all scripts in order:
 
 ```bash
-# Copy scripts to Ghidra scripts directory or run from project
-cp scripts/ghidra_scripts/*.py ~/.ghidra/.ghidra_<version>/Extensions/Ghidra/ghidra_scripts/
+mise run ghidra-setup
 ```
 
-**Order of execution:**
+This runs:
 
-1. **ApplyNb09StructsFromJson.py**
-   - Creates DataTypes for all structs
-   - Input: `scripts/nb09_structmeta.json`
+1. `ghidra-import` - Import the binary
+2. `ghidra-create-enums` - Create enum types
+3. `ghidra-apply-structs` - Apply struct definitions
+4. `ghidra-apply-win16api` - Apply Win16 API signatures
+5. `ghidra-apply-names` - Apply function and global names
+6. `ghidra-apply-types` - Apply global variable types
+7. `ghidra-update-runtime-helpers` - Update runtime helper signatures
+8. `ghidra-analyze` - Run the analyzer
+9. `ghidra-retype-doubles` - Retype double variables
+10. `ghidra-delete-default-dat` - Delete default DAT\_ symbols
+11. `ghidra-apply-race-attributes` - Apply race attribute equates
+12. `ghidra-apply-funclocals` - Apply function local variables
 
-2. **ApplyNb09NamesFromJson.py**
-   - Renames all symbols (functions, globals)
-   - Input: `scripts/nb09_ghidra_globals.json`
+**Manual script execution (if needed):**
 
-3. **ApplyNb09TypesFromJson.py**
-   - Applies types to global variables
-   - Input: `scripts/nb09_ghidra_globals.json`
-
-4. **ApplyNb09FuncLocalsFromJson.py**
-   - Applies function signatures and local variables
-   - Input: `scripts/nb09_ghidra_globals.json`
+1. **ApplyNb09StructsFromJson.py** - Creates DataTypes for all structs
+2. **ApplyNb09NamesFromJson.py** - Renames all symbols (functions, globals)
+3. **ApplyNb09TypesFromJson.py** - Applies types to global variables
+4. **ApplyNb09FuncLocalsFromJson.py** - Applies function signatures and local variables
 
 ## Decompilation Process
 

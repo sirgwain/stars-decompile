@@ -11,21 +11,30 @@ Stars! is a turn-based 4X (eXplore, eXpand, eXploit, eXterminate) space strategy
 - `game-architecture.md` - High-level overview of game systems and data flow
 - `data-structures.md` - Detailed documentation of key data structures
 - `ship-components.md` - Ship parts, weapons, and their statistics
-- `game-mechanics.md` - Core game mechanics and formulas
 - `tech-tree.md` - Technology fields and requirements
 - `ai-systems.md` - Computer player behavior and strategies
-- `file-formats.md` - Save file and turn file formats
 - `interesting-findings.md` - Bugs, quirks, and notable discoveries
+- `ghidra-workflow.md` - Ghidra setup and decompilation workflow
+- `decompilation-priorities.md` - Priority order for function implementation
+- `translation-instructions.md` - Rules for translating decompiled code
+- `implementation.md` - Auto-generated implementation status (run `mise run track-implementation --update-docs`)
+- `implementation-plan.md` - Auto-generated implementation plan by depth
+- `prompts.md` - Prompt templates for Claude assistance
+- `todo.md` - Pending tasks
 
 ## Project Status
 
-- **Total Source Files**: 83 C/H file pairs
-- **Extracted Functions**: 1,029+ with full signatures
+- **Total Source Files**: 46 C source files
+- **Extracted Functions**: 846 with full signatures
 - **Extracted Globals**: 612 variables
-- **Functions Implemented**: ~5% (mostly data tables in parts.c)
+- **Functions Implemented**: ~18% (155 functions)
+
+Run `mise run track-implementation` for current status.
 
 ## Tools Used
 
-- **Ghidra** (Pascal-aware version) - Primary disassembler
-- **Python 3** - Symbol extraction scripts
+- **Ghidra** (custom win16 build) - Primary disassembler ([sirgwain/ghidra win16-stars branch](https://github.com/sirgwain/ghidra/tree/win16-stars))
+- **Python 3** - Symbol extraction and analysis scripts
+- **mise** - Task automation (`mise run ghidra-setup`, etc.)
+- **CMake** - Build system with presets for native and cross-compilation
 - **CodeView NB09** - Debug symbol format from the executable

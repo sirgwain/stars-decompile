@@ -713,6 +713,15 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript BuildCallGraph.py "$OUTPUT_FILE" "$JSON_GLOBALS" 2>&1
 '''
 
+[tasks.call-graph]
+description = "Call graph analysis tool (usage: mise run call-graph -- <command> [options])"
+run = '''
+#!/bin/bash
+set -e
+
+python3 "$PROJECT_DIR/scripts/call_graph.py" "$@"
+'''
+
 [tasks.dump-structmeta-json]
 description = "dump the nb09_structmeta.json"
 run = '''

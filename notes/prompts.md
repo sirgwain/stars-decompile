@@ -7,8 +7,10 @@ Use @project_index.json to locate related globals and functions, but treat @type
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.
 
 ## tips:
+
 - code like `lphs->grhst == hstBeam && lphs->iItem == 0x12`, the hull slot iItem should match with i<part> enums in @enums.h, i.e. hstBeam 0x12 is `ibeamMultiContainedMunition`
-- for windows api calls, swap hardcoded values for constants (i.e. WM_*, ODC_*) where possible
+- for windows api calls, swap hardcoded values for constants (i.e. WM*\*, ODC*\*) where possible
+- If locals are already renamed in the decompile (e.g., `pl`, `lMaxPop`, `pctDesire`, `ihuldef`), **preserve those names**. For ghidra autonamed vars (i.e. pcVar1), rename them to be clear.
 
 After implementing:
 
