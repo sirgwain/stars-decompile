@@ -8,7 +8,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 | Depth | Label | Total | Implemented | Unimplemented |
 |-------|-------|------:|------------:|--------------:|
-| 0 | Depth 0 — Leaf Functions | 192 | 72 | 120 |
+| 0 | Depth 0 — Leaf Functions | 192 | 74 | 118 |
 | 1 | Depth 1 — Calls Only Leaves | 73 | 19 | 54 |
 | 2 | Depth 2 | 76 | 10 | 66 |
 | 3 | Depth 3 | 59 | 6 | 53 |
@@ -28,16 +28,14 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
 | -1 | Depth -1 — Cyclic Functions | 107 | 2 | 105 |
-| | **Total** | **743** | **133** | **610** |
+| | **Total** | **743** | **135** | **608** |
 
 ## Depth 0 — Leaf Functions
 
-### Unimplemented (120)
+### Unimplemented (118)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
-| ⬜ | **DrawHostOptions** | 15 | `void DrawHostOptions(uint16_t, uint16_t, int16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
-| ⬜ | **InitNewGame3** | 15 | `void InitNewGame3(void)` |  | [create.c](../decompiled/all/create.c) |
 | ⬜ | **LpplrComp** | 15 | `PLAYER *32 LpplrComp(int16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **CancelMemRt** | 17 | `void CancelMemRt(int16_t)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **ExpandRc** | 19 | `void ExpandRc(RECT *, int16_t, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
@@ -157,9 +155,9 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InitMDIApp** | 192 | `int16_t InitMDIApp(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **AnimateAttack** | 462 | `void AnimateAttack(uint16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 
-### Implemented (72)
+### Implemented (74)
 
-<details><summary>Show 72 implemented functions</summary>
+<details><summary>Show 74 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
@@ -173,6 +171,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | ChopLastWord | 24 | [utilgen.c](../utilgen.c) |
 | ✅ | ChopTrailingSpaces | 18 | [utilgen.c](../utilgen.c) |
 | ✅ | DGetDistance | 30 | [util.c](../util.c) |
+| ✅ | DrawHostOptions | 15 | [mdi.c](../mdi.c) |
 | ✅ | DxyFromSpdRound | 29 | [battle.c](../battle.c) |
 | ✅ | DzFromBrcBrc | 25 | [battle.c](../battle.c) |
 | ✅ | FBadFileError | 27 | [file.c](../file.c) |
@@ -196,6 +195,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | IRaceChecksum | 24 | [race.c](../race.c) |
 | ✅ | IWarpMAFromLppl | 65 | [planet.c](../planet.c) |
 | ✅ | IflFromLpfl | 27 | [util.c](../util.c) |
+| ✅ | InitNewGame3 | 15 | [create.c](../create.c) |
 | ✅ | IshdefPrimaryFromLpfl | 39 | [util.c](../util.c) |
 | ✅ | LDistance2 | 22 | [utilgen.c](../utilgen.c) |
 | ✅ | LGetNextFileXor | 52 | [utilgen.c](../utilgen.c) |

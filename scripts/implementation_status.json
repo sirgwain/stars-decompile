@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 133,
-    "stub": 711,
-    "missing": 2,
-    "percent_implemented": 15.7
+    "implemented": 135,
+    "stub": 710,
+    "missing": 1,
+    "percent_implemented": 16.0
   },
   "by_file": {
     "ai.c": {
@@ -43,9 +43,9 @@
       "missing": 0
     },
     "create.c": {
-      "implemented": 1,
+      "implemented": 2,
       "stub": 20,
-      "missing": 1
+      "missing": 0
     },
     "file.c": {
       "implemented": 20,
@@ -63,8 +63,8 @@
       "missing": 0
     },
     "mdi.c": {
-      "implemented": 0,
-      "stub": 29,
+      "implemented": 1,
+      "stub": 28,
       "missing": 0
     },
     "memory.c": {
@@ -338,7 +338,7 @@
       "proto": "void BringUpHostDlg(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 473
+      "line": 476
     },
     "BrowserDlg": {
       "addr": "10d8:1ed8",
@@ -810,7 +810,7 @@
       "proto": "void CreateChildWindows(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 508
+      "line": 511
     },
     "CreateRandomRace": {
       "addr": "10e0:5b08",
@@ -850,7 +850,7 @@
       "proto": "void CreateTutorWorld(void)",
       "status": "stub",
       "file": "create.c",
-      "line": 61
+      "line": 66
     },
     "CshQueued": {
       "addr": "1050:c82c",
@@ -1272,7 +1272,7 @@
       "addr": "1020:7706",
       "segment": "MEMORY_MDI",
       "proto": "void DrawHostOptions(uint16_t, uint16_t, int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "mdi.c",
       "line": 357
     },
@@ -1314,7 +1314,7 @@
       "proto": "void DrawNewGame2(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 382
+      "line": 387
     },
     "DrawNewGame3": {
       "addr": "1078:9d5e",
@@ -1322,7 +1322,7 @@
       "proto": "void DrawNewGame3(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 360
+      "line": 365
     },
     "DrawPlanShip": {
       "addr": "1048:0d16",
@@ -2658,7 +2658,7 @@
       "proto": "int16_t FGetNewGameName(char *)",
       "status": "stub",
       "file": "create.c",
-      "line": 167
+      "line": 172
     },
     "FGetNextObjHere": {
       "addr": "1058:909c",
@@ -2962,7 +2962,7 @@
       "proto": "int16_t FOpenGame(uint16_t, int16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 406
+      "line": 409
     },
     "FOtherStuffAtScanSel": {
       "addr": "1028:4d6e",
@@ -3242,7 +3242,7 @@
       "proto": "int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 223
+      "line": 228
     },
     "FTrackRaceDlg2": {
       "addr": "10e0:2204",
@@ -3610,7 +3610,7 @@
       "proto": "int16_t GenNewGameFromFile(char *)",
       "status": "stub",
       "file": "create.c",
-      "line": 180
+      "line": 185
     },
     "GenerateWorld": {
       "addr": "1078:0136",
@@ -3618,7 +3618,7 @@
       "proto": "int16_t GenerateWorld(int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 79
+      "line": 84
     },
     "GetASubMenu": {
       "addr": "1020:589a",
@@ -3626,7 +3626,7 @@
       "proto": "uint16_t GetASubMenu(uint16_t, int16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 397
+      "line": 400
     },
     "GetCachedFleetScannerRange": {
       "addr": "1038:4e02",
@@ -3818,7 +3818,7 @@
       "proto": "int16_t GetVCVal(GAME *, int16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 45
+      "line": 50
     },
     "GetWindowRc": {
       "addr": "1020:79ac",
@@ -3866,7 +3866,7 @@
       "proto": "uint16_t HcrsFromFrameWindowPt(POINT, int16_t *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 435
+      "line": 438
     },
     "HdibLoadBigResource": {
       "addr": "1040:5220",
@@ -3914,7 +3914,7 @@
       "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 487
+      "line": 490
     },
     "HostTimerProc": {
       "addr": "1020:7716",
@@ -3922,7 +3922,7 @@
       "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 380
+      "line": 383
     },
     "HpalBlackReserved": {
       "addr": "1040:4c9c",
@@ -4258,15 +4258,15 @@
       "proto": "int16_t InitMDIApp(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 500
+      "line": 503
     },
     "InitNewGame3": {
       "addr": "1078:74f8",
       "segment": "MEMORY_CREATE",
       "proto": "void InitNewGame3(void)",
-      "status": "missing",
-      "file": null,
-      "line": null
+      "status": "implemented",
+      "file": "create.c",
+      "line": 36
     },
     "InitNewGamePlr": {
       "addr": "1078:6e44",
@@ -4274,7 +4274,7 @@
       "proto": "void InitNewGamePlr(int16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 36
+      "line": 41
     },
     "InitProduction": {
       "addr": "10d0:015e",
@@ -4322,7 +4322,7 @@
       "proto": "void InitializeMenu(uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 426
+      "line": 429
     },
     "InitializeProductionDlg": {
       "addr": "10d0:3430",
@@ -4370,7 +4370,7 @@
       "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 446
+      "line": 449
     },
     "IpctCanTerraformLppl": {
       "addr": "1048:7f56",
@@ -4834,7 +4834,7 @@
       "proto": "PLAYER *32 LpplrComp(int16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 160
+      "line": 165
     },
     "LpscannerFromId": {
       "addr": "1008:518a",
@@ -5066,7 +5066,7 @@
       "proto": "int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 322
+      "line": 327
     },
     "NewGameDlg2": {
       "addr": "1078:87d2",
@@ -5074,7 +5074,7 @@
       "proto": "int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 285
+      "line": 290
     },
     "NewGameDlg3": {
       "addr": "1078:99f4",
@@ -5082,7 +5082,7 @@
       "proto": "int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 268
+      "line": 273
     },
     "NewGameWizard": {
       "addr": "1078:6022",
@@ -5090,7 +5090,7 @@
       "proto": "void NewGameWizard(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 240
+      "line": 245
     },
     "NewPasswordDlg": {
       "addr": "1040:5cba",
@@ -5866,7 +5866,7 @@
       "proto": "void RefitFrameChildren(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 533
+      "line": 536
     },
     "ReflowColumn": {
       "addr": "1048:5b80",
@@ -5978,7 +5978,7 @@
       "proto": "void RestoreSelection(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 526
+      "line": 529
     },
     "RgFromStream": {
       "addr": "1070:53f4",
@@ -6186,7 +6186,7 @@
       "proto": "void SetNGWTitle(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 215
+      "line": 220
     },
     "SetOrdersLbSel": {
       "addr": "1050:9354",
@@ -6258,7 +6258,7 @@
       "proto": "void SetVCCheck(GAME *, int16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 55
+      "line": 60
     },
     "SetVCRBoard": {
       "addr": "10e8:08d8",
@@ -6274,7 +6274,7 @@
       "proto": "int16_t SetVCVal(GAME *, int16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 68
+      "line": 73
     },
     "SetVisPFFinish": {
       "addr": "1070:c41c",
@@ -6330,7 +6330,7 @@
       "proto": "void SetWindowIniString(char *, uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 518
+      "line": 521
     },
     "ShipBuilder": {
       "addr": "10c8:008c",
@@ -6386,7 +6386,7 @@
       "proto": "int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 340
+      "line": 345
     },
     "SlotDlg": {
       "addr": "10c8:0550",
@@ -6818,7 +6818,7 @@
       "proto": "void WriteIniSettings(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 363
+      "line": 366
     },
     "WriteMemRt": {
       "addr": "1048:a130",

@@ -357,7 +357,10 @@ void DrawHostDialog2(HWND hwnd, HDC hdcIn)
 void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)
 {
 
-    /* TODO: implement */
+    // Stars! original: trivial prologue/epilogue only (no-op).
+    (void)hwnd;
+    (void)hdc;
+    (void)iDraw;
 }
 
 void WriteIniSettings(void)

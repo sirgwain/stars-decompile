@@ -33,6 +33,11 @@ void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr)
     /* TODO: implement */
 }
 
+void InitNewGame3()
+{
+    // empty in decompile
+}
+
 void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi)
 {
     int16_t i;
