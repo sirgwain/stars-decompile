@@ -4,7 +4,7 @@
 # Apply NB09 (CodeView) *local stack variables* to Ghidra functions using
 # bp-relative offsets from nb09_ghidra_globals.json (PROC records only).
 #
-# Updated behavior (per Craig):
+# Updated behavior:
 #   - Only apply NB09 locals whose stack byte ranges do NOT overlap with any
 #     other NB09 local (i.e., the slot is stable / not re-used across scopes).
 #   - If a stable NB09 local is applied, delete any existing Ghidra stack vars

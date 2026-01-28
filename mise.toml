@@ -386,6 +386,41 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript CreateEnumsFromHeader.py "$ENUMS_H" 2>&1
 '''
 
+[tasks.build-native]
+description = "Build native (macOS/Linux) with CMake presets"
+run = '''
+#!/bin/bash
+set -e
+cmake --preset macos-linux
+cmake --build --preset build-macos-linux
+'''
+
+[tasks.build-cross]
+description = "Build CrossOver (mingw-w64) with CMake presets"
+run = '''
+#!/bin/bash
+set -e
+cmake --preset macos-crossover
+cmake --build --preset build-macos-crossover
+'''
+
+[tasks.build-test]
+description = "Build and run all tests"
+run = '''
+#!/bin/bash
+set -e
+cmake --preset macos-linux
+cmake --build --preset run-tests
+'''
+
+[tasks.build-all]
+description = "Build native + cross + run tests"
+run = [
+    { task = "build-native" },
+    { task = "build-cross" },
+    { task = "build-test" },
+]
+
 [tasks.extract-symbols]
 description = "Re-extract symbols from the NE executable (requires Python)"
 run = '''
@@ -630,6 +665,15 @@ run = '''
 set -e
 
 python3 "$PROJECT_DIR/scripts/track_implementation.py" "$@"
+'''
+
+[tasks.build-impl-plan]
+description = "Generate implementation plan (usage: mise run build-impl-plan [-- --exclude-ai])"
+run = '''
+#!/bin/bash
+set -e
+
+python3 "$PROJECT_DIR/scripts/build_implementation_plan.py" "$@"
 '''
 
 [tasks.build-call-graph]

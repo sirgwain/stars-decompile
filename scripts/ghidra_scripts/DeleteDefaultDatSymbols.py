@@ -1,4 +1,3 @@
-# @author Craig Stars Decomp
 # @category Stars
 
 """

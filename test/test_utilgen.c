@@ -7,6 +7,31 @@
 #include "types.h"
 #include "utilgen.h"
 
+static void test_ICompLong(void)
+{
+    int32_t a, b;
+
+    /* a < b => negative */
+    a = 10; b = 20;
+    TEST_CHECK(ICompLong(&a, &b) < 0);
+
+    /* a > b => positive */
+    a = 20; b = 10;
+    TEST_CHECK(ICompLong(&a, &b) > 0);
+
+    /* a == b => zero */
+    a = 42; b = 42;
+    TEST_CHECK(ICompLong(&a, &b) == 0);
+
+    /* negative values */
+    a = -100; b = 50;
+    TEST_CHECK(ICompLong(&a, &b) < 0);
+
+    /* zero vs positive */
+    a = 0; b = 1;
+    TEST_CHECK(ICompLong(&a, &b) < 0);
+}
+
 static void test_FCompressDecompressUserString(void)
 {
     typedef struct Case
@@ -92,5 +117,6 @@ static void test_FCompressDecompressUserString(void)
 }
 
 TEST_LIST = {
+    {"ICompLong", test_ICompLong},
     {"compress/decompress user string", test_FCompressDecompressUserString},
     {NULL, NULL}};

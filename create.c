@@ -24,9 +24,7 @@ int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_
 
 int16_t GetVCCheck(GAME *pgame, int16_t vc)
 {
-
-    /* TODO: implement */
-    return 0;
+    return (pgame->rgvc[vc] & 0x80) != 0;
 }
 
 void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr)

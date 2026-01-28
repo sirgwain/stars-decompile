@@ -715,9 +715,7 @@ void OffsetRc(RECT *prc, int16_t dx, int16_t dy)
 
 int16_t ICompLong(void *arg1, void *arg2)
 {
-
-    /* TODO: implement */
-    return 0;
+    return *(int32_t *)arg1 - *(int32_t *)arg2;
 }
 
 char *PszFromInt(int16_t i, int16_t *pcch)
