@@ -10,4 +10,4 @@ After implementing:
 2. For non-UI functions, add tests to the matching file in @test/ following existing test style.
 3. Run `mise run build-test` — all tests must pass.
 4. Run `mise run track-implementation` - update implementation
-5. run `mise run build-impl-plan` - update implementation plan
+5. run `mise run build-impl-plan --exclude-ai` - update implementation plan
