@@ -8,7 +8,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 | Depth | Label | Total | Implemented | Unimplemented |
 |-------|-------|------:|------------:|--------------:|
-| 0 | Depth 0 — Leaf Functions | 192 | 52 | 140 |
+| 0 | Depth 0 — Leaf Functions | 192 | 72 | 120 |
 | 1 | Depth 1 — Calls Only Leaves | 73 | 19 | 54 |
 | 2 | Depth 2 | 76 | 10 | 66 |
 | 3 | Depth 3 | 59 | 6 | 53 |
@@ -28,11 +28,11 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
 | -1 | Depth -1 — Cyclic Functions | 107 | 2 | 105 |
-| | **Total** | **743** | **113** | **630** |
+| | **Total** | **743** | **133** | **610** |
 
 ## Depth 0 — Leaf Functions
 
-### Unimplemented (140)
+### Unimplemented (120)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -40,51 +40,33 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InitNewGame3** | 15 | `void InitNewGame3(void)` |  | [create.c](../decompiled/all/create.c) |
 | ⬜ | **LpplrComp** | 15 | `PLAYER *32 LpplrComp(int16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **CancelMemRt** | 17 | `void CancelMemRt(int16_t)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **AddBackTrailingSpaces** | 18 | `void AddBackTrailingSpaces(char * *, char *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **ChopTrailingSpaces** | 18 | `void ChopTrailingSpaces(char *, char * *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **ExpandRc** | 19 | `void ExpandRc(RECT *, int16_t, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **HideProgressGauge** | 19 | `void HideProgressGauge(void)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **OffsetRc** | 19 | `void OffsetRc(RECT *, int16_t, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **FreeLpth** | 21 | `void FreeLpth(THING *32)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
-| ⬜ | **GetTrueHullCost** | 21 | `void GetTrueHullCost(int16_t, HUL *32, uint16_t *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **LDistance2** | 22 | `int32_t LDistance2(POINT, POINT)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **PszFromInt** | 22 | `char * PszFromInt(int16_t, int16_t *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **PszFromLong** | 22 | `char * PszFromLong(int32_t, int16_t *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **SetRaceStat** | 22 | `int16_t SetRaceStat(PLAYER *, int16_t, int16_t)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **CtrTextOut** | 23 | `void CtrTextOut(uint16_t, int16_t, int16_t, char *, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **HandleFocusState** | 23 | `void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **ChopLastWord** | 24 | `void ChopLastWord(char *, char * *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **EnableZipBtns** | 24 | `void EnableZipBtns(uint16_t, int16_t)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
-| ⬜ | **FFuelTanker** | 24 | `int16_t FFuelTanker(SHDEF *32)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **IRaceChecksum** | 24 | `uint16_t IRaceChecksum(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **SetVCCheck** | 24 | `void SetVCCheck(GAME *, int16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
-| ⬜ | **DzFromBrcBrc** | 25 | `int16_t DzFromBrcBrc(uint8_t, uint8_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **IEmptyBmpFromGrhst** | 25 | `int16_t IEmptyBmpFromGrhst(int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **DrawPlanetPrintDot** | 26 | `void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **DxStreamTextOut** | 26 | `int16_t DxStreamTextOut(uint16_t, int16_t *, int16_t, char *, int16_t, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **FCanSplit** | 26 | `int16_t FCanSplit(int32_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FCheckResearch** | 26 | `int16_t FCheckResearch(int16_t, int16_t, int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 | ⬜ | **FakeEditProc** | 26 | `int32_t FakeEditProc(uint16_t, uint16_t, uint16_t, int32_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **GetWindowRc** | 26 | `void GetWindowRc(uint16_t, RECT *)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
-| ⬜ | **IflFromLpfl** | 27 | `int16_t IflFromLpfl(FLEET *32)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **LongFromSerialCh** | 27 | `int32_t LongFromSerialCh(char)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **PctWormholeMoves** | 27 | `int16_t PctWormholeMoves(THING *32)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
 | ⬜ | **ShowTutor** | 27 | `void ShowTutor(int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 | ⬜ | **UnmarkMineFields** | 27 | `void UnmarkMineFields(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **FHandleChar** | 28 | `int16_t FHandleChar(uint16_t, uint16_t, int32_t)` | [stars.c](../stars.c) | [main.c](../decompiled/all/main.c) |
 | ⬜ | **ClearFile** | 29 | `void ClearFile(int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **DxyFromSpdRound** | 29 | `int16_t DxyFromSpdRound(uint16_t, int16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **EnableZipProdBtns** | 29 | `void EnableZipProdBtns(uint16_t, int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FFindPlayerMessage** | 30 | `int16_t FFindPlayerMessage(int16_t, int16_t, int16_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
 | ⬜ | **FCheckBtlPlan** | 31 | `int16_t FCheckBtlPlan(int16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t, uint16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
-| ⬜ | **FHullHasTeeth** | 31 | `int16_t FHullHasTeeth(HUL *32)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **FColonizer** | 32 | `int16_t FColonizer(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 | ⬜ | **FScout** | 32 | `int16_t FScout(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
-| ⬜ | **ICompFleetPoint2** | 32 | `int16_t ICompFleetPoint2(void *, void *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **DpOfLpflIshdef** | 33 | `int32_t DpOfLpflIshdef(FLEET *32, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **EnableVCRButtons** | 33 | `void EnableVCRButtons(void)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 | ⬜ | **EnumLogRts** | 33 | `void EnumLogRts(int16_t (*32)(void *32, int16_t, int16_t, void *32, int16_t), void *32, int16_t)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **FCanSplitAll** | 33 | `int16_t FCanSplitAll(int32_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FGetPrevLogRt** | 33 | `int16_t FGetPrevLogRt(HDR *, uint8_t *)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **FRemovePlayerMessage** | 33 | `int16_t FRemovePlayerMessage(int16_t, int16_t, int16_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
 | ⬜ | **FreeHbr** | 33 | `void FreeHbr(uint16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
@@ -93,10 +75,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InitBtnTrack** | 34 | `void InitBtnTrack(BTNT *, uint16_t, uint16_t, RECT *, int16_t, int16_t, int16_t, int16_t, char *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **IStargateFromLppl** | 35 | `int16_t IStargateFromLppl(PLANET *32)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **CreateShip** | 36 | `void CreateShip(int16_t, FLEET *32, int16_t, int16_t)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
-| ⬜ | **FHullHasBombs** | 36 | `int16_t FHullHasBombs(HUL *32)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **FProdIsTerra** | 36 | `int16_t FProdIsTerra(PROD *32)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **IrcRaceDlgHitTest** | 36 | `int16_t IrcRaceDlgHitTest(POINT)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
-| ⬜ | **LSaltFromSz** | 37 | `int32_t LSaltFromSz(char *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **MarkPlayersThatSentMsgs** | 37 | `void MarkPlayersThatSentMsgs(int16_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
 | ⬜ | **ReadBigBlock** | 37 | `int16_t ReadBigBlock(int16_t, char *32, uint32_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **WtFromLpfl** | 37 | `int32_t WtFromLpfl(FLEET *32)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
@@ -177,33 +157,50 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InitMDIApp** | 192 | `int16_t InitMDIApp(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **AnimateAttack** | 462 | `void AnimateAttack(uint16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 
-### Implemented (52)
+### Implemented (72)
 
-<details><summary>Show 52 implemented functions</summary>
+<details><summary>Show 72 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
+| ✅ | AddBackTrailingSpaces | 18 | [utilgen.c](../utilgen.c) |
 | ✅ | BoundPoints | 43 | [utilgen.c](../utilgen.c) |
 | ✅ | BtlDataGet | 54 | [vcr.c](../vcr.c) |
 | ✅ | CBattleKills | 54 | [vcr.c](../vcr.c) |
 | ✅ | CBattles | 49 | [vcr.c](../vcr.c) |
 | ✅ | CchTutorString | 64 | [tutor2.c](../tutor2.c) |
 | ✅ | ChFromNybble | 43 | [utilgen.c](../utilgen.c) |
+| ✅ | ChopLastWord | 24 | [utilgen.c](../utilgen.c) |
+| ✅ | ChopTrailingSpaces | 18 | [utilgen.c](../utilgen.c) |
 | ✅ | DGetDistance | 30 | [util.c](../util.c) |
+| ✅ | DxyFromSpdRound | 29 | [battle.c](../battle.c) |
+| ✅ | DzFromBrcBrc | 25 | [battle.c](../battle.c) |
 | ✅ | FBadFileError | 27 | [file.c](../file.c) |
 | ✅ | FBogusLong | 26 | [file.c](../file.c) |
+| ✅ | FCanSplit | 26 | [ship.c](../ship.c) |
+| ✅ | FCanSplitAll | 33 | [ship.c](../ship.c) |
+| ✅ | FFuelTanker | 24 | [battle.c](../battle.c) |
 | ✅ | FGetNMsgbig | 64 | [msg.c](../msg.c) |
+| ✅ | FHullHasBombs | 36 | [battle.c](../battle.c) |
+| ✅ | FHullHasTeeth | 31 | [battle.c](../battle.c) |
 | ✅ | FShouldPartBeHidden | 92 | [research.c](../research.c) |
 | ✅ | FreeHb | 33 | [memory.c](../memory.c) |
 | ✅ | GetFileSeeds | 23 | [utilgen.c](../utilgen.c) |
 | ✅ | GetMineFieldCounts | 35 | [mine.c](../mine.c) |
 | ✅ | GetRaceGrbit | 29 | [race.c](../race.c) |
 | ✅ | GetRaceStat | 15 | [race.c](../race.c) |
+| ✅ | GetTrueHullCost | 21 | [util.c](../util.c) |
 | ✅ | GetVCCheck | 15 | [create.c](../create.c) |
+| ✅ | ICompFleetPoint2 | 32 | [util.c](../util.c) |
 | ✅ | ICompLong | 15 | [utilgen.c](../utilgen.c) |
+| ✅ | IRaceChecksum | 24 | [race.c](../race.c) |
 | ✅ | IWarpMAFromLppl | 65 | [planet.c](../planet.c) |
+| ✅ | IflFromLpfl | 27 | [util.c](../util.c) |
 | ✅ | IshdefPrimaryFromLpfl | 39 | [util.c](../util.c) |
+| ✅ | LDistance2 | 22 | [utilgen.c](../utilgen.c) |
 | ✅ | LGetNextFileXor | 52 | [utilgen.c](../utilgen.c) |
+| ✅ | LSaltFromSz | 37 | [utilgen.c](../utilgen.c) |
+| ✅ | LongFromSerialCh | 27 | [util.c](../util.c) |
 | ✅ | LpengineFromId | 15 | [parts.c](../parts.c) |
 | ✅ | LpflFromId | 46 | [util.c](../util.c) |
 | ✅ | LphbFromLpHt | 40 | [memory.c](../memory.c) |
@@ -220,6 +217,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | PctPlanetDesirability | 124 | [planet.c](../planet.c) |
 | ✅ | PopRandom | 23 | [utilgen.c](../utilgen.c) |
 | ✅ | PszCalcGravity | 30 | [planet.c](../planet.c) |
+| ✅ | PszFromInt | 22 | [utilgen.c](../utilgen.c) |
+| ✅ | PszFromLong | 22 | [utilgen.c](../utilgen.c) |
 | ✅ | PszGetCompressedMessage | 60 | [msg.c](../msg.c) |
 | ✅ | PszGetCompressedPlanet | 75 | [utilgen.c](../utilgen.c) |
 | ✅ | PushRandom | 26 | [utilgen.c](../utilgen.c) |
@@ -230,6 +229,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | ResetMessages | 27 | [msg.c](../msg.c) |
 | ✅ | SetFileSeeds | 17 | [utilgen.c](../utilgen.c) |
 | ✅ | SetRaceGrbit | 36 | [race.c](../race.c) |
+| ✅ | SetRaceStat | 22 | [race.c](../race.c) |
 | ✅ | SetSzWorkFromDt | 53 | [save.c](../save.c) |
 | ✅ | StreamClose | 19 | [file.c](../file.c) |
 | ✅ | TechStatus | 52 | [parts.c](../parts.c) |

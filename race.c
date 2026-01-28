@@ -86,9 +86,16 @@ int16_t CAdvantagePoints(PLAYER *pplr)
 
 int16_t SetRaceStat(PLAYER *pplr, int16_t iStat, int16_t iVal)
 {
+    int16_t min = (int16_t)(int8_t)rgRaceStatMin[iStat];
+    int16_t max = (int16_t)(int8_t)rgRaceStatMax[iStat];
 
-    /* TODO: implement */
-    return 0;
+    if (iVal < min)
+        iVal = min;
+    if (iVal > max)
+        iVal = max;
+
+    pplr->rgAttr[iStat] = (int8_t)iVal;
+    return iVal;
 }
 
 int16_t PctTrueMaxGrowth(int16_t iplr)
@@ -119,13 +126,15 @@ int16_t GetRaceStat(PLAYER *pplr, int16_t iStat)
 
 uint16_t IRaceChecksum(PLAYER *pplr)
 {
-    uint16_t ick;
-    uint16_t *p;
-    int16_t i;
-    int16_t cs;
+    uint16_t ick = 0;
+    const uint16_t *p = (const uint16_t *)pplr;
 
-    /* TODO: implement */
-    return 0;
+#define PLAYER_CHECKSUM_BYTES 192
+
+    for (int i = 0; i < PLAYER_CHECKSUM_BYTES / 2; i++)
+        ick ^= p[i];
+
+    return ick;
 }
 
 void BoundsCheckPlayer(PLAYER *pplr)

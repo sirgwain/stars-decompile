@@ -81,7 +81,48 @@ static void test_LGetFleetStat_basic(void)
     rglpshdef[0] = old0;
 }
 
+static void test_FCanSplit(void)
+{
+    PLAYER plr_old = rgplr[idPlayer];
+
+    /* With < 2 boats, can't split */
+    rgplr[idPlayer].cFleet = 10;
+    TEST_CHECK(FCanSplit(0) == 0);
+    TEST_CHECK(FCanSplit(1) == 0);
+
+    /* With >= 2 boats and room, can split */
+    TEST_CHECK(FCanSplit(2) == 1);
+    TEST_CHECK(FCanSplit(100) == 1);
+
+    /* At max fleets, can't split */
+    rgplr[idPlayer].cFleet = 0x200;
+    TEST_CHECK(FCanSplit(5) == 0);
+
+    rgplr[idPlayer] = plr_old;
+}
+
+static void test_FCanSplitAll(void)
+{
+    PLAYER plr_old = rgplr[idPlayer];
+
+    /* With 2 boats and 10 fleets, can split all */
+    rgplr[idPlayer].cFleet = 10;
+    TEST_CHECK(FCanSplitAll(2) == 1);
+
+    /* Need at least 2 boats */
+    TEST_CHECK(FCanSplitAll(1) == 0);
+    TEST_CHECK(FCanSplitAll(0) == 0);
+
+    /* Would exceed 0x201 limit */
+    rgplr[idPlayer].cFleet = 0x200;
+    TEST_CHECK(FCanSplitAll(3) == 0);
+
+    rgplr[idPlayer] = plr_old;
+}
+
 TEST_LIST = {
     {"WtMaxShdefStat table", test_WtMaxShdefStat_table},
     {"LGetFleetStat basic", test_LGetFleetStat_basic},
+    {"FCanSplit", test_FCanSplit},
+    {"FCanSplitAll", test_FCanSplitAll},
     {NULL, NULL}};

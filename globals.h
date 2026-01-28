@@ -36,6 +36,7 @@
 #define BTLPLANMAX 16
 #define cPlanetAbsMax 999
 #define cThingAbsMax 4050
+#define cFleetAbsMax 512
 
 /* Stream helper: treat EOF like the Win16 macro. */
 static bool AtEOF(FILE *fp)

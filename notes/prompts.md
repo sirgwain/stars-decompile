@@ -4,6 +4,9 @@ Translate the next function in @notes/implementation-plan.md to modern C.
 Use @project_index.json to locate related globals and functions, but treat @types.h as the source of truth for all struct fields and types.
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.
 
+## tips:
+- code like `lphs->grhst == hstBeam && lphs->iItem == 0x12`, the hull slot iItem should match with i<part> enums in @enums.h, i.e. hstBeam 0x12 is `ibeamMultiContainedMunition`
+
 After implementing:
 
 1. Run `mise run build-native` and `mise run build-cross` — both must succeed.

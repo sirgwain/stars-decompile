@@ -152,6 +152,138 @@ static void test_SpdOfShip_table(void)
     rgplr[0] = plr0_old;
 }
 
+static void test_FFuelTanker(void)
+{
+    SHDEF sh;
+    memset(&sh, 0, sizeof(sh));
+
+    sh.hul.ihuldef = ihuldefFuelTransport;
+    TEST_CHECK(FFuelTanker(&sh) == 1);
+
+    sh.hul.ihuldef = ihuldefSuperFuelXport;
+    TEST_CHECK(FFuelTanker(&sh) == 1);
+
+    sh.hul.ihuldef = ihuldefSmallFreighter;
+    TEST_CHECK(FFuelTanker(&sh) == 0);
+
+    sh.hul.ihuldef = ihuldefDestroyer;
+    TEST_CHECK(FFuelTanker(&sh) == 0);
+}
+
+static void test_DzFromBrcBrc(void)
+{
+    /* Same square -> 0 */
+    TEST_CHECK(DzFromBrcBrc(0x44, 0x44) == 0);
+
+    /* Adjacent horizontally -> 1 */
+    TEST_CHECK(DzFromBrcBrc(0x44, 0x54) == 1);
+
+    /* Adjacent diagonally -> 1 (Chebyshev distance) */
+    TEST_CHECK(DzFromBrcBrc(0x44, 0x55) == 1);
+
+    /* dx=3, dy=2 -> 3 */
+    TEST_CHECK(DzFromBrcBrc(0x11, 0x43) == 3);
+
+    /* dx=2, dy=5 -> 5 */
+    TEST_CHECK(DzFromBrcBrc(0x11, 0x36) == 5);
+}
+
+static void test_DxyFromSpdRound(void)
+{
+    /* spd=0 => dxy = (0+2)/4 = 0, rem=0, even round adds 1 */
+    TEST_CHECK(DxyFromSpdRound(0, 0) == 1);
+    TEST_CHECK(DxyFromSpdRound(0, 1) == 0);
+
+    /* spd=4 => dxy = (4+2)/4 = 1, rem=0 */
+    TEST_CHECK(DxyFromSpdRound(4, 0) == 2); /* even round: +1 */
+    TEST_CHECK(DxyFromSpdRound(4, 1) == 1); /* odd round: +0 */
+
+    /* spd=5 => dxy = (5+2)/4 = 1, rem=1 */
+    TEST_CHECK(DxyFromSpdRound(5, 0) == 2); /* iRound&3 != 2 */
+    TEST_CHECK(DxyFromSpdRound(5, 2) == 1); /* iRound&3 == 2 */
+
+    /* spd=7 => dxy = (7+2)/4 = 2, rem=3 */
+    TEST_CHECK(DxyFromSpdRound(7, 0) == 3); /* iRound&3 == 0 */
+    TEST_CHECK(DxyFromSpdRound(7, 1) == 2); /* iRound&3 != 0 */
+
+    /* spd=6 => dxy = (6+2)/4 = 2, rem=2 => no adjustment */
+    TEST_CHECK(DxyFromSpdRound(6, 0) == 2);
+    TEST_CHECK(DxyFromSpdRound(6, 1) == 2);
+}
+
+static void test_FHullHasTeeth(void)
+{
+    HUL hul;
+    memset(&hul, 0, sizeof(hul));
+
+    /* No slots -> no teeth */
+    hul.chs = 0;
+    TEST_CHECK(FHullHasTeeth(&hul) == 0);
+
+    /* Beam with count > 0 -> teeth */
+    hul.chs = 1;
+    hul.rghs[0].grhst = hstBeam;
+    hul.rghs[0].cItem = 2;
+    TEST_CHECK(FHullHasTeeth(&hul) == 1);
+
+    /* Torpedo with count > 0 -> teeth */
+    hul.rghs[0].grhst = hstTorp;
+    hul.rghs[0].cItem = 1;
+    TEST_CHECK(FHullHasTeeth(&hul) == 1);
+
+    /* Beam with count 0 -> no teeth */
+    hul.rghs[0].grhst = hstBeam;
+    hul.rghs[0].cItem = 0;
+    TEST_CHECK(FHullHasTeeth(&hul) == 0);
+
+    /* Engine -> no teeth */
+    hul.rghs[0].grhst = hstEngine;
+    hul.rghs[0].cItem = 1;
+    TEST_CHECK(FHullHasTeeth(&hul) == 0);
+}
+
+static void test_FHullHasBombs(void)
+{
+    HUL hul;
+    memset(&hul, 0, sizeof(hul));
+
+    /* No slots -> no bombs */
+    hul.chs = 0;
+    TEST_CHECK(FHullHasBombs(&hul) == 0);
+
+    /* Bomb slot with count > 0 */
+    hul.chs = 1;
+    hul.rghs[0].grhst = hstBomb;
+    hul.rghs[0].cItem = 3;
+    TEST_CHECK(FHullHasBombs(&hul) == 1);
+
+    /* Bomb slot with count 0 */
+    hul.rghs[0].cItem = 0;
+    TEST_CHECK(FHullHasBombs(&hul) == 0);
+
+    /* Beam item 0x12 with count > 0 (beam as bomb) */
+    hul.rghs[0].grhst = hstBeam;
+    hul.rghs[0].iItem = 0x12;
+    hul.rghs[0].cItem = 1;
+    TEST_CHECK(FHullHasBombs(&hul) == 1);
+
+    /* SpecialM item 1 with count > 0 */
+    hul.rghs[0].grhst = hstSpecialM;
+    hul.rghs[0].iItem = 1;
+    hul.rghs[0].cItem = 2;
+    TEST_CHECK(FHullHasBombs(&hul) == 1);
+
+    /* Engine -> no bombs */
+    hul.rghs[0].grhst = hstEngine;
+    hul.rghs[0].cItem = 1;
+    TEST_CHECK(FHullHasBombs(&hul) == 0);
+}
+
 TEST_LIST = {
     {"SpdOfShip table", test_SpdOfShip_table},
+    {"FFuelTanker", test_FFuelTanker},
+    {"DzFromBrcBrc", test_DzFromBrcBrc},
+    {"DxyFromSpdRound", test_DxyFromSpdRound},
+    {"FHullHasTeeth", test_FHullHasTeeth},
+    {"FHullHasBombs", test_FHullHasBombs},
     {NULL, NULL}};

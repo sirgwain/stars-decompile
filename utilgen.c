@@ -437,10 +437,29 @@ int16_t CchGetString(StringId ids, char *psz)
 
 int32_t LSaltFromSz(char *psz)
 {
-    int32_t lSalt;
+    const int8_t *s = (const int8_t *)psz; /* preserve signed-char semantics */
+    uint32_t salt = 0;
 
-    /* TODO: implement */
-    return 0;
+    if (*s == 0)
+        return 0;
+
+    for (;;)
+    {
+        /* add first char */
+        salt += (int32_t)*s++;
+        if (*s == 0)
+            break;
+
+        /* multiply by second char (unsigned 32-bit wrap like __aFulmul) */
+        salt = (uint32_t)(salt * (uint32_t)(int32_t)*s++);
+        if (*s == 0)
+            break;
+    }
+
+    if (salt == 0)
+        salt = 1;
+
+    return (int32_t)salt;
 }
 
 void CopyStarsFile(char *szSrc, char *szDst)
@@ -535,8 +554,10 @@ void BoundPoints(RECT *prc, POINT *rgpt, int16_t cpt)
 
 void ChopTrailingSpaces(char *pBeg, char **ppEnd)
 {
-
-    /* TODO: implement */
+    while (pBeg < *ppEnd && (*ppEnd)[-1] == ' ')
+    {
+        *ppEnd = *ppEnd - 1;
+    }
 }
 
 void PopRandom(void)
@@ -690,8 +711,12 @@ char *PszFromLong(int32_t l, int16_t *pcch)
 {
     int16_t cch;
 
-    /* TODO: implement */
-    return NULL;
+    cch = (int16_t)sprintf(szFormatNumber, PCTLD, (long)l);
+    if (pcch != NULL)
+    {
+        *pcch = cch;
+    }
+    return szFormatNumber;
 }
 
 void PushRandom(int32_t lNew1, int32_t lNew2)
@@ -722,29 +747,47 @@ char *PszFromInt(int16_t i, int16_t *pcch)
 {
     int16_t cch;
 
-    /* TODO: implement */
-    return NULL;
+    cch = (int16_t)sprintf(szFormatNumber, PCTD, (int)i);
+    if (pcch != NULL)
+    {
+        *pcch = cch;
+    }
+    return szFormatNumber;
 }
 
 void AddBackTrailingSpaces(char **ppch, char *pchEnd)
 {
-
-    /* TODO: implement */
+    while (*ppch < pchEnd && **ppch == ' ')
+    {
+        *ppch = *ppch + 1;
+    }
 }
 
 int32_t LDistance2(POINT pt1, POINT pt2)
 {
-    int32_t dy;
-    int32_t dx;
+    int32_t dx = (int32_t)(int16_t)(pt1.x - pt2.x);
+    int32_t dy = (int32_t)(int16_t)(pt1.y - pt2.y);
 
-    /* TODO: implement */
-    return 0;
+    return dx * dx + dy * dy;
 }
 
 void ChopLastWord(char *pBeg, char **ppEnd)
 {
-
-    /* TODO: implement */
+    /* Strip trailing spaces */
+    while (pBeg < *ppEnd && (*ppEnd)[-1] == ' ')
+    {
+        *ppEnd = *ppEnd - 1;
+    }
+    /* Strip trailing non-space word */
+    while (pBeg < *ppEnd && (*ppEnd)[-1] != ' ')
+    {
+        *ppEnd = *ppEnd - 1;
+    }
+    /* Strip trailing spaces again */
+    while (pBeg < *ppEnd && (*ppEnd)[-1] == ' ')
+    {
+        *ppEnd = *ppEnd - 1;
+    }
 }
 
 void IntToRoman(int16_t i, char *pszOut)

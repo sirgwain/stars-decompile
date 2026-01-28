@@ -77,9 +77,15 @@ int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat)
 
 int16_t FCanSplitAll(int32_t cBoat)
 {
-
-    /* TODO: implement */
-    return 0;
+    if ((int32_t)(cBoat - 1 + (uint32_t)rgplr[idPlayer].cFleet) > cFleetAbsMax)
+    {
+        return 0;
+    }
+    if (cBoat < 2)
+    {
+        return 0;
+    }
+    return 1;
 }
 
 int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, int16_t fRangeOnly)
@@ -457,9 +463,17 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
 
 int16_t FCanSplit(int32_t cBoat)
 {
-
-    /* TODO: implement */
-    return 0;
+    /* If player already has max fleets (0x200 = 512), can't split */
+    if (rgplr[idPlayer].cFleet == cFleetAbsMax)
+    {
+        return 0;
+    }
+    /* Need at least 2 boats to split */
+    if (cBoat < 2)
+    {
+        return 0;
+    }
+    return 1;
 }
 
 int16_t FCanMerge(FLEET *pfl)

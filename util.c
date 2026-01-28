@@ -495,10 +495,19 @@ char *PszGetThingName(int16_t id)
 
 int32_t LongFromSerialCh(char ch)
 {
-    int32_t l;
+    int32_t v;
 
-    /* TODO: implement */
-    return 0;
+    /* Map char to symbol */
+    if (ch >= 'A' && ch <= 'Z')
+        v = ch - 'A'; // 0–25
+    else
+        v = ch - '0' + 26; // 26–35
+
+    /* Scramble base-32 symbols */
+    if (v < 32)
+        v ^= 0x15;
+
+    return v;
 }
 
 /*
@@ -528,14 +537,14 @@ uint16_t WPackLong(int32_t l)
     uint32_t u = (uint32_t)l;
     uint16_t exp = 0;
 
-    while (((u & 0xE000u) != 0) || ((u >> 16) != 0)) {
+    while (((u & 0xE000u) != 0) || ((u >> 16) != 0))
+    {
         u >>= 1;
         exp++;
     }
 
     return (uint16_t)((exp << 13) | u);
 }
-
 
 double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
@@ -798,10 +807,25 @@ int16_t FFleetMergeAll(FLEET *pfl)
 
 int16_t ICompFleetPoint2(void *arg1, void *arg2)
 {
-    int32_t l2;
-    int32_t l1;
+    const uint16_t *ptw = (const uint16_t *)arg1;  /* POINT: [x, y] */
+    const FLEET *fl = *(const FLEET *const *)arg2; /* element is a FLEET* */
 
-    /* TODO: implement */
+    int16_t y = (int16_t)ptw[1];
+    int16_t fy = fl->pt.y;
+
+    if (y < fy)
+        return -1;
+    if (y > fy)
+        return 1;
+
+    /* matches the packed-32bit compare semantics: low word is effectively unsigned */
+    uint16_t x = ptw[0];
+    uint16_t fx = (uint16_t)fl->pt.x;
+
+    if (x < fx)
+        return -1;
+    if (x > fx)
+        return 1;
     return 0;
 }
 
@@ -1147,8 +1171,14 @@ int16_t IflFromLpfl(FLEET *lpfl)
 {
     int16_t i;
 
-    /* TODO: implement */
-    return 0;
+    for (i = 0; i < cFleet; i++)
+    {
+        if (rglpfl[i] == lpfl)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)
@@ -1168,7 +1198,11 @@ void GetTrueHullCost(int16_t iPlayer, HUL *lphul, uint16_t *rgCost)
 {
     int16_t i;
 
-    /* TODO: implement */
+    for (i = 0; i < 3; i++)
+    {
+        rgCost[i] = lphul->rgwtOreCost[i];
+    }
+    rgCost[3] = lphul->resCost;
 }
 
 int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)

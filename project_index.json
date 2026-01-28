@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-28T02:34:06Z",
+  "generated_at_utc": "2026-01-28T04:30:47Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -13352,2037 +13352,2037 @@
     "btlplan": {
       "type": "BTLPLAN",
       "file": "globals.h",
-      "line": 79
+      "line": 80
     },
     "iLastGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 111
+      "line": 112
     },
     "iLastMsgGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 112
+      "line": 113
     },
     "iLastStrGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 113
+      "line": 114
     },
     "rgbCur": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 114
+      "line": 115
     },
     "rgszSpeed": {
       "type": "char",
       "file": "globals.h",
-      "line": 116
+      "line": 117
     },
     "szBackup": {
       "type": "char",
       "file": "globals.h",
-      "line": 117
+      "line": 118
     },
     "szBase": {
       "type": "char",
       "file": "globals.h",
-      "line": 118
+      "line": 119
     },
     "szBrowser": {
       "type": "char",
       "file": "globals.h",
-      "line": 119
+      "line": 120
     },
     "szCRLF": {
       "type": "char",
       "file": "globals.h",
-      "line": 120
+      "line": 121
     },
     "szDirName": {
       "type": "char",
       "file": "globals.h",
-      "line": 121
+      "line": 122
     },
     "szFormatNumber": {
       "type": "char",
       "file": "globals.h",
-      "line": 122
+      "line": 123
     },
     "szFrame": {
       "type": "char",
       "file": "globals.h",
-      "line": 123
+      "line": 124
     },
     "szLastGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 124
+      "line": 125
     },
     "szLastMsgGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 125
+      "line": 126
     },
     "szLastStrGet": {
       "type": "char",
       "file": "globals.h",
-      "line": 126
+      "line": 127
     },
     "szMessage": {
       "type": "char",
       "file": "globals.h",
-      "line": 127
+      "line": 128
     },
     "szMine": {
       "type": "char",
       "file": "globals.h",
-      "line": 128
+      "line": 129
     },
     "szMineralTitle": {
       "type": "char",
       "file": "globals.h",
-      "line": 129
+      "line": 130
     },
     "szMsgBuf": {
       "type": "char",
       "file": "globals.h",
-      "line": 130
+      "line": 131
     },
     "szMsgTitle": {
       "type": "char",
       "file": "globals.h",
-      "line": 131
+      "line": 132
     },
     "szPassLast": {
       "type": "char",
       "file": "globals.h",
-      "line": 132
+      "line": 133
     },
     "szPlanet": {
       "type": "char",
       "file": "globals.h",
-      "line": 133
+      "line": 134
     },
     "szPopup": {
       "type": "char",
       "file": "globals.h",
-      "line": 134
+      "line": 135
     },
     "szPopupBuffer": {
       "type": "char",
       "file": "globals.h",
-      "line": 135
+      "line": 136
     },
     "szRaceFile": {
       "type": "char",
       "file": "globals.h",
-      "line": 136
+      "line": 137
     },
     "szRacePass": {
       "type": "char",
       "file": "globals.h",
-      "line": 137
+      "line": 138
     },
     "szReport": {
       "type": "char",
       "file": "globals.h",
-      "line": 138
+      "line": 139
     },
     "szScan": {
       "type": "char",
       "file": "globals.h",
-      "line": 139
+      "line": 140
     },
     "szTb": {
       "type": "char",
       "file": "globals.h",
-      "line": 140
+      "line": 141
     },
     "szTitle": {
       "type": "char",
       "file": "globals.h",
-      "line": 141
+      "line": 142
     },
     "szTooltip": {
       "type": "char",
       "file": "globals.h",
-      "line": 142
+      "line": 143
     },
     "szWork": {
       "type": "char",
       "file": "globals.h",
-      "line": 143
+      "line": 144
     },
     "vszDefPass": {
       "type": "char",
       "file": "globals.h",
-      "line": 144
+      "line": 145
     },
     "vfs": {
       "type": "FRAMESTUFF",
       "file": "globals.h",
-      "line": 147
+      "line": 148
     },
     "game": {
       "type": "GAME",
       "file": "globals.h",
-      "line": 148
+      "line": 149
     },
     "gd": {
       "type": "GDATA",
       "file": "globals.h",
-      "line": 149
+      "line": 150
     },
     "hdrCur": {
       "type": "HDR",
       "file": "globals.h",
-      "line": 150
+      "line": 151
     },
     "hdrPrev": {
       "type": "HDR",
       "file": "globals.h",
-      "line": 151
+      "line": 152
     },
     "rghsFutureTech": {
       "type": "HS",
       "file": "globals.h",
-      "line": 152
+      "line": 153
     },
     "ini": {
       "type": "INI",
       "file": "globals.h",
-      "line": 153
+      "line": 154
     },
     "bitTbl": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 157
+      "line": 158
     },
     "cbbitfMsg": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 158
+      "line": 159
     },
     "cColDrop": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 159
+      "line": 160
     },
     "cFleet": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 160
+      "line": 161
     },
     "cFutureTech": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 161
+      "line": 162
     },
     "chbrCache": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 162
+      "line": 163
     },
     "cMinGrafMax": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 163
+      "line": 164
     },
     "cMsg": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 164
+      "line": 165
     },
     "cPlanet": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 165
+      "line": 166
     },
     "cProdGlob": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 166
+      "line": 167
     },
     "cRandStack": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 167
+      "line": 168
     },
     "crcRCW": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 168
+      "line": 169
     },
     "crgbtnXfer": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 169
+      "line": 170
     },
     "csh": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 170
+      "line": 171
     },
     "cThing": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 171
+      "line": 172
     },
     "cThingAlloc": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 172
+      "line": 173
     },
     "cXferFull": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 173
+      "line": 174
     },
     "cXferValidHulls": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 174
+      "line": 175
     },
     "dGal": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 175
+      "line": 176
     },
     "dGalInv": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 176
+      "line": 177
     },
     "dGalMinDist": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 177
+      "line": 178
     },
     "dScanInc": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 178
+      "line": 179
     },
     "dScanPage": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 179
+      "line": 180
     },
     "dxBattleDD": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 180
+      "line": 181
     },
     "dxFleetCompLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 181
+      "line": 182
     },
     "dxMaxMineralQuan": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 182
+      "line": 183
     },
     "dxOrderED": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 183
+      "line": 184
     },
     "dxPlanetProdLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 184
+      "line": 185
     },
     "dxResLeft": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 185
+      "line": 186
     },
     "dxResRadio": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 186
+      "line": 187
     },
     "dxResRight": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 187
+      "line": 188
     },
     "dxResStrRight": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 188
+      "line": 189
     },
     "dxShipDD": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 189
+      "line": 190
     },
     "dxShipLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 190
+      "line": 191
     },
     "dxTip": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 191
+      "line": 192
     },
     "dxWinFrame": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 192
+      "line": 193
     },
     "dxyVCRBoard": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 193
+      "line": 194
     },
     "dxyVCRSquare": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 194
+      "line": 195
     },
     "dyArial10": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 195
+      "line": 196
     },
     "dyArial6": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 196
+      "line": 197
     },
     "dyArial7": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 197
+      "line": 198
     },
     "dyArial8": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 198
+      "line": 199
     },
     "dyFleetCompLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 199
+      "line": 200
     },
     "dyPlanetProdLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 200
+      "line": 201
     },
     "dySBar": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 201
+      "line": 202
     },
     "dyShipDD": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 202
+      "line": 203
     },
     "dyShipLB": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 203
+      "line": 204
     },
     "dySysFont": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 204
+      "line": 205
     },
     "dyTitleBar": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 205
+      "line": 206
     },
     "dyWinFrame": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 206
+      "line": 207
     },
     "fAi": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 207
+      "line": 208
     },
     "fAnimate": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 208
+      "line": 209
     },
     "fBrowserValid": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 209
+      "line": 210
     },
     "fDirtyPlan": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 210
+      "line": 211
     },
     "fDlgUp": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 211
+      "line": 212
     },
     "fFileErrSilent": {
       "type": "bool",
       "file": "globals.h",
-      "line": 212
+      "line": 213
     },
     "fFreeingTitle": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 213
+      "line": 214
     },
     "fHullCopy": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 214
+      "line": 215
     },
     "fInEditUpdate": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 215
+      "line": 216
     },
     "fInScoreDialog": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 216
+      "line": 217
     },
     "fInScrollSet": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 217
+      "line": 218
     },
     "fLogOff": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 218
+      "line": 219
     },
     "fLogOut": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 219
+      "line": 220
     },
     "fMarkedPlanets": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 220
+      "line": 221
     },
     "fOrdersVis": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 221
+      "line": 222
     },
     "fProcessingTimer": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 222
+      "line": 223
     },
     "fRCWReadOnly": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 223
+      "line": 224
     },
     "fStarbaseDamaged": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 224
+      "line": 225
     },
     "fStarbaseDied": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 225
+      "line": 226
     },
     "fStarbaseMode": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 226
+      "line": 227
     },
     "fValidLx": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 227
+      "line": 228
     },
     "fValidLxf": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 228
+      "line": 229
     },
     "fViewFilteredMsg": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 229
+      "line": 230
     },
     "iAbout1st": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 230
+      "line": 231
     },
     "iAboutPartial": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 231
+      "line": 232
     },
     "idBattle": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 232
+      "line": 233
     },
     "idMsgObj": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 233
+      "line": 234
     },
     "idPlayer": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 234
+      "line": 235
     },
     "idsFileError": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 235
+      "line": 236
     },
     "iLastTutGet": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 236
+      "line": 237
     },
     "imemLogCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 237
+      "line": 238
     },
     "imemLogPrev": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 238
+      "line": 239
     },
     "imemMsgCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 239
+      "line": 240
     },
     "iMsgCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 240
+      "line": 241
     },
     "iMsgSendCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 241
+      "line": 242
     },
     "iPanelActive": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 242
+      "line": 243
     },
     "iPassCnt": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 243
+      "line": 244
     },
     "iPlanSelDlg": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 244
+      "line": 245
     },
     "iPopMenuSel": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 245
+      "line": 246
     },
     "iResTechNow": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 246
+      "line": 247
     },
     "irowEFleetCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 247
+      "line": 248
     },
     "iScanZoom": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 248
+      "line": 249
     },
     "iselProd": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 249
+      "line": 250
     },
     "iselSlot": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 250
+      "line": 251
     },
     "ishdefBuild": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 251
+      "line": 252
     },
     "iWindowLayout": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 252
+      "line": 253
     },
     "mdBuild": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 253
+      "line": 254
     },
     "mdMsgObj": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 254
+      "line": 255
     },
     "mdXferDlg": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 255
+      "line": 256
     },
     "pctResGlob": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 256
+      "line": 257
     },
     "rgcsxPlr": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 257
+      "line": 258
     },
     "rgdxOrderDD": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 258
+      "line": 259
     },
     "rgidPlan": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 259
+      "line": 260
     },
     "rgmapBuildBmps": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 260
+      "line": 261
     },
     "rgOut": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 261
+      "line": 262
     },
     "vcBackupDirs": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 262
+      "line": 263
     },
     "vcflMerge": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 263
+      "line": 264
     },
     "vclpplAi": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 264
+      "line": 265
     },
     "vcmsgplrIn": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 265
+      "line": 266
     },
     "vcmsgplrOut": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 266
+      "line": 267
     },
     "vcplrNew": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 267
+      "line": 268
     },
     "vcRound": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 268
+      "line": 269
     },
     "vcScreenColors": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 269
+      "line": 270
     },
     "vcStepVCR": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 270
+      "line": 271
     },
     "vctok": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 271
+      "line": 272
     },
     "vdxScoreX": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 272
+      "line": 273
     },
     "vfAscendingPrev": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 273
+      "line": 274
     },
     "vicolSortPrev": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 274
+      "line": 275
     },
     "vidsTooltip": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 275
+      "line": 276
     },
     "vidTimerTooltip": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 276
+      "line": 277
     },
     "viInRe": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 277
+      "line": 278
     },
     "viRound": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 278
+      "line": 279
     },
     "viSpeedVCR": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 279
+      "line": 280
     },
     "viStepVCRCur": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 280
+      "line": 281
     },
     "viStore": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 281
+      "line": 282
     },
     "viSubsortPrev": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 282
+      "line": 283
     },
     "viVCRFocus": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 283
+      "line": 284
     },
     "vpctProgressGauge": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 284
+      "line": 285
     },
     "vpctRadarView": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 285
+      "line": 286
     },
     "vretExitValue": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 286
+      "line": 287
     },
     "vrgcPrintMapPage": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 287
+      "line": 288
     },
     "vyZPDStatic": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 289
+      "line": 290
     },
     "xNewGameDiamond": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 290
+      "line": 291
     },
     "xScanTop": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 291
+      "line": 292
     },
     "yBuildInfoSum": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 292
+      "line": 293
     },
     "yScanTop": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 293
+      "line": 294
     },
     "yTopFutureTech": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 294
+      "line": 295
     },
     "yTopTechNote": {
       "type": "int16_t",
       "file": "globals.h",
-      "line": 295
+      "line": 296
     },
     "lFileSeed1": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 297
+      "line": 298
     },
     "lFileSeed2": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 298
+      "line": 299
     },
     "lRandSeed1": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 299
+      "line": 300
     },
     "lRandSeed2": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 300
+      "line": 301
     },
     "lResBudget": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 301
+      "line": 302
     },
     "lResTotal": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 302
+      "line": 303
     },
     "lSaltCur": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 303
+      "line": 304
     },
     "lSaltLast": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 304
+      "line": 305
     },
     "rglPopMac": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 305
+      "line": 306
     },
     "vSerialNumber": {
       "type": "int32_t",
       "file": "globals.h",
-      "line": 307
+      "line": 308
     },
     "lx": {
       "type": "LOGXFER",
       "file": "globals.h",
-      "line": 308
+      "line": 309
     },
     "lxf": {
       "type": "LOGXFERF",
       "file": "globals.h",
-      "line": 309
+      "line": 310
     },
     "vpartBrowser": {
       "type": "PART",
       "file": "globals.h",
-      "line": 312
+      "line": 313
     },
     "rgplr": {
       "type": "PLAYER",
       "file": "globals.h",
-      "line": 316
+      "line": 317
     },
     "vplr": {
       "type": "PLAYER",
       "file": "globals.h",
-      "line": 317
+      "line": 318
     },
     "vrgplrDef": {
       "type": "PLAYER",
       "file": "globals.h",
-      "line": 318
+      "line": 319
     },
     "ptPlaque": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 320
+      "line": 321
     },
     "ptslotGlob": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 321
+      "line": 322
     },
     "ptSpeedVCR": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 322
+      "line": 323
     },
     "ptStickyBattlePlansDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 323
+      "line": 324
     },
     "ptStickyBrowserDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 324
+      "line": 325
     },
     "ptStickyFindDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 325
+      "line": 326
     },
     "ptStickyHostModeDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 326
+      "line": 327
     },
     "ptStickyMergeFleetsDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 327
+      "line": 328
     },
     "ptStickyNewDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 328
+      "line": 329
     },
     "ptStickyPrintMapDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 329
+      "line": 330
     },
     "ptStickyProduceDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 330
+      "line": 331
     },
     "ptStickyRaceDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 331
+      "line": 332
     },
     "ptStickyRelationsDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 332
+      "line": 333
     },
     "ptStickyRenameDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 333
+      "line": 334
     },
     "ptStickyResDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 334
+      "line": 335
     },
     "ptStickyScoreXDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 335
+      "line": 336
     },
     "ptStickySlotDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 336
+      "line": 337
     },
     "ptStickyTransferDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 337
+      "line": 338
     },
     "ptStickyTutorDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 338
+      "line": 339
     },
     "ptStickyVCRDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 339
+      "line": 340
     },
     "ptStickyZipOrderDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 340
+      "line": 341
     },
     "ptStickyZipProdDlg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 341
+      "line": 342
     },
     "rgptArrow": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 342
+      "line": 343
     },
     "rgptPlan": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 343
+      "line": 344
     },
     "rgptTriangle": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 344
+      "line": 345
     },
     "vptMsg": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 345
+      "line": 346
     },
     "vptTbLast": {
       "type": "POINT",
       "file": "globals.h",
-      "line": 346
+      "line": 347
     },
     "GlobalPD": {
       "type": "POPUPDATA",
       "file": "globals.h",
-      "line": 347
+      "line": 348
     },
     "rcCargo": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 350
+      "line": 351
     },
     "rcMsgText": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 351
+      "line": 352
     },
     "rcMsgTitle": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 352
+      "line": 353
     },
     "rcProdDiamond": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 353
+      "line": 354
     },
     "rcSpinBot": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 354
+      "line": 355
     },
     "rcSpinTop": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 355
+      "line": 356
     },
     "rgrcBuildSpin": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 356
+      "line": 357
     },
     "rgrcRef": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 357
+      "line": 358
     },
     "vrcTooltip": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 358
+      "line": 359
     },
     "vrgrcSlot": {
       "type": "RECT",
       "file": "globals.h",
-      "line": 359
+      "line": 360
     },
     "vrptBattle": {
       "type": "RPT",
       "file": "globals.h",
-      "line": 361
+      "line": 362
     },
     "vrptEFleet": {
       "type": "RPT",
       "file": "globals.h",
-      "line": 362
+      "line": 363
     },
     "vrptFleet": {
       "type": "RPT",
       "file": "globals.h",
-      "line": 363
+      "line": 364
     },
     "vrptPlanet": {
       "type": "RPT",
       "file": "globals.h",
-      "line": 364
+      "line": 365
     },
     "sel": {
       "type": "SEL",
       "file": "globals.h",
-      "line": 367
+      "line": 368
     },
     "rgshdef": {
       "type": "SHDEF",
       "file": "globals.h",
-      "line": 371
+      "line": 372
     },
     "shdefBuild": {
       "type": "SHDEF",
       "file": "globals.h",
-      "line": 372
+      "line": 373
     },
     "rgtilePlanet": {
       "type": "TILE",
       "file": "globals.h",
-      "line": 375
+      "line": 376
     },
     "rgtileShip": {
       "type": "TILE",
       "file": "globals.h",
-      "line": 376
+      "line": 377
     },
     "vtimer": {
       "type": "TIMER",
       "file": "globals.h",
-      "line": 377
+      "line": 378
     },
     "tutor": {
       "type": "TUTOR",
       "file": "globals.h",
-      "line": 380
+      "line": 381
     },
     "grbitScan": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 388
+      "line": 389
     },
     "grbitScanEShip": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 389
+      "line": 390
     },
     "grbitScanMines": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 390
+      "line": 391
     },
     "grbitScanShip": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 391
+      "line": 392
     },
     "grfMissed": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 392
+      "line": 393
     },
     "rghbrCache": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 393
+      "line": 394
     },
     "rghbrMineral": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 394
+      "line": 395
     },
     "rghbrPat": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 396
+      "line": 397
     },
     "rghdibInventory": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 398
+      "line": 399
     },
     "rghdibShips": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 399
+      "line": 400
     },
     "rghdibShipsT": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 400
+      "line": 401
     },
     "rghfontArial10": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 401
+      "line": 402
     },
     "rghfontArial6": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 402
+      "line": 403
     },
     "rghfontArial7": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 403
+      "line": 404
     },
     "rghfontArial8": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 404
+      "line": 405
     },
     "rghiconVCR": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 405
+      "line": 406
     },
     "rghwndBtn": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 406
+      "line": 407
     },
     "rghwndBtnSplash": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 407
+      "line": 408
     },
     "rghwndMsgBtn": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 408
+      "line": 409
     },
     "rghwndOrderDD": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 409
+      "line": 410
     },
     "rgidRaceBtn": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 410
+      "line": 411
     },
     "uDateInstalled": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 411
+      "line": 412
     },
     "uTimerId": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 412
+      "line": 413
     },
     "uTimerType": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 413
+      "line": 414
     },
     "vcPasswordFailures": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 414
+      "line": 415
     },
     "vhdibTitle": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 415
+      "line": 416
     },
     "vhpal": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 416
+      "line": 417
     },
     "vhpalSplash": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 417
+      "line": 418
     },
     "wVersFile": {
       "type": "uint16_t",
       "file": "globals.h",
-      "line": 418
+      "line": 419
     },
     "crButtonFace": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 419
+      "line": 420
     },
     "crButtonHilite": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 420
+      "line": 421
     },
     "crButtonShadow": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 421
+      "line": 422
     },
     "crButtonText": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 422
+      "line": 423
     },
     "crWindow": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 423
+      "line": 424
     },
     "crWindowText": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 424
+      "line": 425
     },
     "ctickLast": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 425
+      "line": 426
     },
     "vtickTooltip1stVis": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 426
+      "line": 427
     },
     "vtickTooltipLast": {
       "type": "uint32_t",
       "file": "globals.h",
-      "line": 427
+      "line": 428
     },
     "bitfMsgFiltered": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 437
+      "line": 438
     },
     "bitfMsgSent": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 438
+      "line": 439
     },
     "ctype": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 439
+      "line": 440
     },
     "mpiTypeiItem": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 440
+      "line": 441
     },
     "rgcbtlplan": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 441
+      "line": 442
     },
     "rghbrCacheUse": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 442
+      "line": 443
     },
     "rgTechBattle": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 443
+      "line": 444
     },
     "rgTechTrader": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 444
+      "line": 445
     },
     "vbrcVCRFocus": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 445
+      "line": 446
     },
     "vrgAiArmadaPotency": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 446
+      "line": 447
     },
     "vrgAiCyberArmadaPotency": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 447
+      "line": 448
     },
     "vrgbEnvCur": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 448
+      "line": 449
     },
     "vrgbMachineConfig": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 449
+      "line": 450
     },
     "vrgcAiParts": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 450
+      "line": 451
     },
     "vrgplrTypeNew": {
       "type": "uint8_t",
       "file": "globals.h",
-      "line": 451
+      "line": 452
     },
     "vrgZip": {
       "type": "ZIPORDER",
       "file": "globals.h",
-      "line": 454
+      "line": 455
     },
     "vrgZipProd": {
       "type": "ZIPPRODQ",
       "file": "globals.h",
-      "line": 455
+      "line": 456
     },
     "rgcrCache": {
       "type": "COLORREF",
       "file": "globals.h",
-      "line": 460
+      "line": 461
     },
     "rgcrMinerals": {
       "type": "COLORREF",
       "file": "globals.h",
-      "line": 461
+      "line": 462
     },
     "rgcrPlrHistory": {
       "type": "COLORREF",
       "file": "globals.h",
-      "line": 462
+      "line": 463
     },
     "hInst": {
       "type": "HINSTANCE",
       "file": "globals.h",
-      "line": 463
+      "line": 464
     },
     "hpenDkBlue": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 464
+      "line": 465
     },
     "hpenDkGreen": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 465
+      "line": 466
     },
     "hpenDkPurple": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 466
+      "line": 467
     },
     "hpenDkYellow": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 467
+      "line": 468
     },
     "hpenEnemy": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 468
+      "line": 469
     },
     "hpenMassPath": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 469
+      "line": 470
     },
     "hpenRadar": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 470
+      "line": 471
     },
     "hpenRadarNear": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 471
+      "line": 472
     },
     "hpenShip": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 472
+      "line": 473
     },
     "hpenStarbase": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 473
+      "line": 474
     },
     "hpenYellow": {
       "type": "HPEN",
       "file": "globals.h",
-      "line": 474
+      "line": 475
     },
     "hrgnHuge": {
       "type": "HRGN",
       "file": "globals.h",
-      "line": 475
+      "line": 476
     },
     "hrgnScratch": {
       "type": "HRGN",
       "file": "globals.h",
-      "line": 476
+      "line": 477
     },
     "hwndActive": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 477
+      "line": 478
     },
     "hwndBattleDD": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 478
+      "line": 479
     },
     "hwndBrowser": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 479
+      "line": 480
     },
     "hwndBrowserChild": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 480
+      "line": 481
     },
     "hwndFleetCompLB": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 481
+      "line": 482
     },
     "hwndFrame": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 482
+      "line": 483
     },
     "hwndMain": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 483
+      "line": 484
     },
     "hwndMDIClient": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 484
+      "line": 485
     },
     "hwndMessage": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 485
+      "line": 486
     },
     "hwndMine": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 486
+      "line": 487
     },
     "hwndMineCB": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 487
+      "line": 488
     },
     "hwndMsgDrop": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 488
+      "line": 489
     },
     "hwndMsgEdit": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 489
+      "line": 490
     },
     "hwndMsgScroll": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 490
+      "line": 491
     },
     "hwndOrderED": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 491
+      "line": 492
     },
     "hwndPlanet": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 492
+      "line": 493
     },
     "hwndPlanetProdLB": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 493
+      "line": 494
     },
     "hwndPopup": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 494
+      "line": 495
     },
     "hwndProdDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 495
+      "line": 496
     },
     "hwndProgressGauge": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 496
+      "line": 497
     },
     "hwndRaceParent": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 497
+      "line": 498
     },
     "hwndRepCB": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 498
+      "line": 499
     },
     "hwndReportDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 499
+      "line": 500
     },
     "hwndScanner": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 500
+      "line": 501
     },
     "hwndScoreXDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 501
+      "line": 502
     },
     "hwndShipDD": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 502
+      "line": 503
     },
     "hwndShipLB": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 503
+      "line": 504
     },
     "hwndSlotDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 504
+      "line": 505
     },
     "hwndTb": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 505
+      "line": 506
     },
     "hwndTBRadar": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 506
+      "line": 507
     },
     "hwndTitle": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 507
+      "line": 508
     },
     "hwndTooltip": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 508
+      "line": 509
     },
     "hwndVCRDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 509
+      "line": 510
     },
     "hwndZipOrderDlg": {
       "type": "HWND",
       "file": "globals.h",
-      "line": 510
+      "line": 511
     },
     "hAccel": {
       "type": "HACCEL",
       "file": "globals.h",
-      "line": 511
+      "line": 512
     },
     "hAccelTitle": {
       "type": "HACCEL",
       "file": "globals.h",
-      "line": 512
+      "line": 513
     },
     "hbmpBackBld": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 513
+      "line": 514
     },
     "hbmpMono": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 514
+      "line": 515
     },
     "hbmpMsg": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 515
+      "line": 516
     },
     "hbmpNumbers": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 516
+      "line": 517
     },
     "hbmpScanner": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 517
+      "line": 518
     },
     "hbmpScanShip": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 518
+      "line": 519
     },
     "hbmpUnknownPlanet": {
       "type": "HBITMAP",
       "file": "globals.h",
-      "line": 519
+      "line": 520
     },
     "hbr50Screen": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 520
+      "line": 521
     },
     "hbrBBlue": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 521
+      "line": 522
     },
     "hbrBlue": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 522
+      "line": 523
     },
     "hbrButtonFace": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 523
+      "line": 524
     },
     "hbrButtonHilite": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 524
+      "line": 525
     },
     "hbrButtonShadow": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 525
+      "line": 526
     },
     "hbrButtonText": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 526
+      "line": 527
     },
     "hbrCargo": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 527
+      "line": 528
     },
     "hbrDesktop": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 528
+      "line": 529
     },
     "hbrDkYellow": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 529
+      "line": 530
     },
     "hbrDock": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 530
+      "line": 531
     },
     "hbrEnemy": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 531
+      "line": 532
     },
     "hbrGray": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 532
+      "line": 533
     },
     "hbrGreen": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 533
+      "line": 534
     },
     "hbrLightGray": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 534
+      "line": 535
     },
     "hbrPurple": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 535
+      "line": 536
     },
     "hbrRadar": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 536
+      "line": 537
     },
     "hbrRadarNear": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 537
+      "line": 538
     },
     "hbrRed": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 538
+      "line": 539
     },
     "hbrSelect": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 539
+      "line": 540
     },
     "hbrShip": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 540
+      "line": 541
     },
     "hbrStarbase": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 541
+      "line": 542
     },
     "hbrTooltip": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 542
+      "line": 543
     },
     "hbrWindow": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 543
+      "line": 544
     },
     "hbrWindowFrame": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 544
+      "line": 545
     },
     "hbrWindowText": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 545
+      "line": 546
     },
     "hbrYellow": {
       "type": "HBRUSH",
       "file": "globals.h",
-      "line": 546
+      "line": 547
     },
     "hcurArrowHelp": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 547
+      "line": 548
     },
     "hcurCloseGrab": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 548
+      "line": 549
     },
     "hcurHand": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 549
+      "line": 550
     },
     "hcurNoWay": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 550
+      "line": 551
     },
     "hcurOpenGrab": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 551
+      "line": 552
     },
     "hcurResize4Way": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 552
+      "line": 553
     },
     "hcurResizeNS": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 553
+      "line": 554
     },
     "hcurResizeWE": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 554
+      "line": 555
     },
     "hcurScanAdd": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 555
+      "line": 556
     },
     "hcurScanner": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 556
+      "line": 557
     },
     "hcurTrashCan": {
       "type": "HCURSOR",
       "file": "globals.h",
-      "line": 557
+      "line": 558
     },
     "hdibPlanets": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 558
+      "line": 559
     },
     "hdibPlaque": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 559
+      "line": 560
     },
     "hdibRaces": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 560
+      "line": 561
     },
     "hdibRacesT": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 561
+      "line": 562
     },
     "hdibRacesX": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 562
+      "line": 563
     },
     "hdibThings": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 563
+      "line": 564
     },
     "hdibToolbar": {
       "type": "HGLOBAL",
       "file": "globals.h",
-      "line": 564
+      "line": 565
     },
     "hiconHost": {
       "type": "HICON",
       "file": "globals.h",
-      "line": 565
+      "line": 566
     },
     "hiconStars": {
       "type": "HICON",
       "file": "globals.h",
-      "line": 566
+      "line": 567
     },
     "hiconWait": {
       "type": "HICON",
       "file": "globals.h",
-      "line": 567
+      "line": 568
     },
     "rgPalGray": {
       "type": "uint8_t",

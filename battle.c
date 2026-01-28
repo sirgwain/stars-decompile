@@ -395,7 +395,15 @@ int16_t FHullHasTeeth(HUL *lphul)
     HS *lphs;
     int16_t ihs;
 
-    /* TODO: implement */
+    lphs = lphul->rghs;
+    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++)
+    {
+        if ((lphs->grhst & (hstTorp | hstBeam)) != 0 && lphs->cItem != 0)
+        {
+            return 1;
+        }
+        lphs++;
+    }
     return 0;
 }
 
@@ -412,9 +420,25 @@ int16_t FFleetHasBombs(FLEET *lpfl)
 int16_t DxyFromSpdRound(uint16_t spd, int16_t iRound)
 {
     int16_t dxy;
+    uint16_t rem;
 
-    /* TODO: implement */
-    return 0;
+    dxy = (int16_t)((spd + 2) / 4);
+    rem = spd & 3;
+
+    if (rem == 0)
+    {
+        dxy = (int16_t)(dxy + (int16_t)((iRound & 1) == 0));
+    }
+    else if (rem == 1)
+    {
+        dxy = (int16_t)(dxy + (int16_t)((iRound & 3) != 2));
+    }
+    else if (rem == 3)
+    {
+        dxy = (int16_t)(dxy + (int16_t)((iRound & 3) == 0));
+    }
+
+    return dxy;
 }
 
 int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC)
@@ -692,8 +716,11 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc)
 
 int16_t FFuelTanker(SHDEF *lpshdef)
 {
-
-    /* TODO: implement */
+    if (lpshdef->hul.ihuldef == ihuldefFuelTransport ||
+        lpshdef->hul.ihuldef == ihuldefSuperFuelXport)
+    {
+        return 1;
+    }
     return 0;
 }
 
@@ -915,13 +942,30 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack)
     return 0;
 }
 
+/*
+ * DzFromBrcBrc - Chebyshev distance between two battle grid squares.
+ *
+ * A BRC (Battle Row/Column) packs an (x, y) coordinate into one byte:
+ *   low nibble  (bits 0-3) = x column (0-9)
+ *   high nibble (bits 4-7) = y row    (0-9)
+ *
+ * Returns the Chebyshev (chessboard) distance: max(|dx|, |dy|).
+ * This is the number of moves needed when diagonal movement costs 1,
+ * which matches the battle board's 8-directional movement rules.
+ */
 int16_t DzFromBrcBrc(uint8_t brc1, uint8_t brc2)
 {
-    int16_t dy;
     int16_t dx;
+    int16_t dy;
 
-    /* TODO: implement */
-    return 0;
+    dx = abs((int16_t)(brc1 & 0x0F) - (int16_t)(brc2 & 0x0F));
+    dy = abs((int16_t)(brc1 >> 4) - (int16_t)(brc2 >> 4));
+
+    if (dx <= dy)
+    {
+        return dy;
+    }
+    return dx;
 }
 
 int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *ptokTarget, int16_t fProximity)
@@ -994,7 +1038,23 @@ int16_t FHullHasBombs(HUL *lphul)
     HS *lphs;
     int16_t ihs;
 
-    /* TODO: implement */
+    lphs = lphul->rghs;
+    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++)
+    {
+        if (lphs->grhst == hstBomb && lphs->cItem != 0)
+        {
+            return 1;
+        }
+        if (lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition && lphs->cItem != 0)
+        {
+            return 1;
+        }
+        if (lphs->grhst == hstSpecialM && lphs->iItem == ispecialMOrbitalConstructionModule && lphs->cItem != 0)
+        {
+            return 1;
+        }
+        lphs++;
+    }
     return 0;
 }
 
