@@ -254,7 +254,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
-        if ((hAccel != NULL) && (hwndFrame != NULL) && TranslateAccelerator(hwndFrame, hAccel, &msg)) {
+        if ((hwndTitle != NULL) && (hAccelTitle != NULL) && TranslateAccelerator(hwndTitle, hAccelTitle, &msg))
+        {
+            continue;
+        }
+        if ((hAccel != NULL) && (hwndFrame != NULL) && TranslateAccelerator(hwndFrame, hAccel, &msg))
+        {
             continue;
         }
         TranslateMessage(&msg);

@@ -322,14 +322,102 @@ bool FCreateStuff(void)
 
 bool FCreateFonts(HDC hdc)
 {
-    int16_t i;
-    LOGFONT *plf;
-    uint16_t hfontSav;
+    LOGFONT lf;
     TEXTMETRIC tm;
-    int32_t l;
+    HFONT hfontSav;
+    SIZE sz;
 
-    /* TODO: implement */
-    return 0;
+    /* Ensure our Arial face-name strings are loaded (4 variants). */
+    for (int i = 0; i < 4; i++)
+    {
+        if (rgszArial[i][0] == '\0')
+        {
+            CchGetString((int16_t)(idsArial2 + i), rgszArial[i]);
+        }
+    }
+
+    memset(&lf, 0, sizeof(lf));
+    lf.lfCharSet = DEFAULT_CHARSET;
+    lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+    lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+    lf.lfQuality = DEFAULT_QUALITY;
+    lf.lfPitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+
+    /* Arial 10pt (two variants: rgszArial[0], rgszArial[1]) */
+    {
+        int16_t logPixY = (int16_t)GetDeviceCaps(hdc, LOGPIXELSY);
+        int16_t h = (int16_t)MulDiv(10, logPixY, 72);
+        lf.lfHeight = (int16_t)(-h);
+
+        for (int i = 0; i < 2; i++)
+        {
+            strcpy(lf.lfFaceName, rgszArial[i]);
+            rghfontArial10[i] = CreateFontIndirect(&lf);
+        }
+    }
+
+    /* Arial 6pt (rgszArial[0]) */
+    {
+        int16_t logPixY = (int16_t)GetDeviceCaps(hdc, LOGPIXELSY);
+        int16_t h = (int16_t)MulDiv(6, logPixY, 72);
+        lf.lfHeight = (int16_t)(-h);
+
+        strcpy(lf.lfFaceName, rgszArial[0]);
+        rghfontArial6[0] = CreateFontIndirect(&lf);
+    }
+
+    /* Arial 7pt (rgszArial[0]) */
+    {
+        int16_t logPixY = (int16_t)GetDeviceCaps(hdc, LOGPIXELSY);
+        int16_t h = (int16_t)MulDiv(7, logPixY, 72);
+        lf.lfHeight = (int16_t)(-h);
+
+        strcpy(lf.lfFaceName, rgszArial[0]);
+        rghfontArial7[0] = CreateFontIndirect(&lf);
+    }
+
+    /* Arial 8pt (four variants: rgszArial[0..3]) */
+    {
+        int16_t logPixY = (int16_t)GetDeviceCaps(hdc, LOGPIXELSY);
+        int16_t h = (int16_t)MulDiv(8, logPixY, 72);
+        lf.lfHeight = (int16_t)(-h);
+
+        for (int i = 0; i < 4; i++)
+        {
+            strcpy(lf.lfFaceName, rgszArial[i]);
+            rghfontArial8[i] = CreateFontIndirect(&lf);
+        }
+
+        /* Special rotated 8pt font: face = rgszArial[1], escapement = 0x0C4E */
+        strcpy(lf.lfFaceName, rgszArial[1]);
+        lf.lfEscapement = 0x0C4E;
+        rghfontArial8[4] = CreateFontIndirect(&lf);
+        lf.lfEscapement = 0;
+    }
+
+    /* Measure metrics (dyArial*) and dxMaxMineralQuan */
+    hfontSav = (HFONT)SelectObject(hdc, rghfontArial8[0]);
+    GetTextMetrics(hdc, &tm);
+    dyArial8 = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
+
+    /* "88888888kT" is the measuring string in the original (len=10) */
+    (void)GetTextExtentPoint32A(hdc, "88888888kT", 10, &sz);
+    dxMaxMineralQuan = (int16_t)sz.cx;
+
+    SelectObject(hdc, rghfontArial7[0]);
+    GetTextMetrics(hdc, &tm);
+    dyArial7 = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
+
+    SelectObject(hdc, rghfontArial6[0]);
+    GetTextMetrics(hdc, &tm);
+    dyArial6 = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
+
+    SelectObject(hdc, rghfontArial10[0]);
+    GetTextMetrics(hdc, &tm);
+    dyArial10 = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
+
+    SelectObject(hdc, hfontSav);
+    return 1;
 }
 
 /* ------------------------------------------------------------------

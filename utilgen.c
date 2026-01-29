@@ -1022,7 +1022,28 @@ void RcCtrTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)
     int16_t x;
     int32_t l;
 
-    /* TODO: implement */
+    SIZE sz;
+    int16_t dx;
+    int16_t dy;
+
+    if (cLen == 0)
+    {
+        cLen = (int16_t)lstrlenA(psz);
+    }
+
+    if (!GetTextExtentPointA(hdc, psz, (int)cLen, &sz))
+    {
+        return;
+    }
+
+    dx = (int16_t)sz.cx;
+    dy = (int16_t)sz.cy;
+
+    x = (int16_t)(prc->left + ((prc->right - prc->left - dx) / 2));
+    y = (int16_t)(prc->top + ((prc->bottom - prc->top - dy) / 2));
+
+    (void)l; /* kept to preserve original local layout expectations */
+    TextOutA(hdc, (int)x, (int)y, psz, (int)cLen);
 }
 
 HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal)
@@ -1164,17 +1185,173 @@ HPALETTE HpalFromDib(HGLOBAL hdib)
     BITMAPINFOHEADER *lpbi;
     LOGPALETTE *ppal;
 
-    /* TODO: implement */
-    return 0;
+    if (hdib == NULL)
+    {
+        return NULL;
+    }
+
+    lpb = (char *)LockResource(hdib);
+    if (lpb == NULL)
+    {
+        return NULL;
+    }
+
+    lpbi = (BITMAPINFOHEADER *)lpb;
+    cColors = (int16_t)DibNumColors(lpbi);
+    if (cColors <= 0)
+    {
+        return NULL;
+    }
+
+    ppal = (LOGPALETTE *)LocalAlloc(LPTR, sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (uint32_t)cColors));
+    if (ppal == NULL)
+    {
+        return NULL;
+    }
+
+    ppal->palVersion = 0x0300;
+    ppal->palNumEntries = (WORD)cColors;
+
+    /* Color table starts immediately after BITMAPINFOHEADER in an RT_BITMAP DIB. */
+    lpb = (char *)lpbi + lpbi->biSize;
+    for (i = 0; i < cColors; i++)
+    {
+        /* DIB colors are stored as BGR0 for BI_RGB. */
+        ppal->palPalEntry[i].peBlue = (uint8_t)lpb[i * 4 + 0];
+        ppal->palPalEntry[i].peGreen = (uint8_t)lpb[i * 4 + 1];
+        ppal->palPalEntry[i].peRed = (uint8_t)lpb[i * 4 + 2];
+        ppal->palPalEntry[i].peFlags = 0;
+    }
+
+    /* Preserve the original behavior of reserving black entry when present. */
+    if (cColors > 0)
+    {
+        bT = ppal->palPalEntry[0].peFlags;
+        (void)bT;
+    }
+
+    hpal = CreatePalette(ppal);
+    LocalFree(ppal);
+    return hpal;
 }
 
-int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop)
+int16_t DibBlt(HDC hdc,
+               int32_t x0, int32_t y0, int32_t dx, int32_t dy,
+               HGLOBAL hdib,
+               int32_t x1, int32_t y1, int32_t dxSrc, int32_t dySrc,
+               int32_t rop)
 {
-    char *pBuf;
-    BITMAPINFOHEADER *lpbi;
+    const uint8_t *pBuf;
+    const BITMAPINFOHEADER *lpbi;
+    const BITMAPINFO *pbi;
+    const void *pBits;
+    int prevStretchMode;
 
-    /* TODO: implement */
-    return 0;
+    if (hdib == NULL || hdc == NULL)
+    {
+        DBG_LOGD("DibBlt: invalid args (hdc=%p hdib=%p)", (void *)hdc, (void *)hdib);
+        return 0;
+    }
+
+    pBuf = (const uint8_t *)LockResource(hdib);
+    if (pBuf == NULL)
+    {
+        DBG_LOGD("DibBlt: LockResource(%p) failed", (void *)hdib);
+        return 0;
+    }
+
+    lpbi = (const BITMAPINFOHEADER *)pBuf;
+    pbi = (const BITMAPINFO *)lpbi;
+
+    /* Default source size to full bitmap if caller passes 0/0 like Win16 often did. */
+    if (dxSrc == 0)
+    {
+        dxSrc = (int32_t)lpbi->biWidth;
+    }
+    if (dySrc == 0)
+    {
+        int32_t h = (int32_t)lpbi->biHeight;
+        dySrc = (h < 0) ? -h : h;
+    }
+
+    if (dx == 0)
+        dx = dxSrc;
+    if (dy == 0)
+        dy = dySrc;
+
+    /* Compute palette entries (robust when biClrUsed==0). */
+    {
+        uint32_t nColors = 0;
+        if (lpbi->biClrUsed != 0)
+        {
+            nColors = (uint32_t)lpbi->biClrUsed;
+        }
+        else
+        {
+            switch (lpbi->biBitCount)
+            {
+            case 1:
+                nColors = 2;
+                break;
+            case 4:
+                nColors = 16;
+                break;
+            case 8:
+                nColors = 256;
+                break;
+            default:
+                nColors = 0;
+                break;
+            }
+        }
+
+        /* Bits start after header + color table (+ BI_BITFIELDS masks if present). */
+        {
+            uint32_t offBits = (uint32_t)lpbi->biSize + nColors * 4u;
+            if (lpbi->biCompression == BI_BITFIELDS)
+            {
+                offBits += 3u * 4u; /* RGB masks */
+            }
+            pBits = (const void *)(pBuf + offBits);
+
+            DBG_LOGD("DibBlt: dst=(%ld,%ld %ldx%ld) src=(%ld,%ld %ldx%ld) rop=0x%08lx",
+                     (long)x0, (long)y0, (long)dx, (long)dy,
+                     (long)x1, (long)y1, (long)dxSrc, (long)dySrc,
+                     (long)rop);
+            DBG_LOGD("DibBlt: biSize=%lu biW=%ld biH=%ld bitCount=%u comp=%lu clrUsed=%lu nColors=%lu offBits=%lu biSizeImage=%lu",
+                     (unsigned long)lpbi->biSize,
+                     (long)lpbi->biWidth,
+                     (long)lpbi->biHeight,
+                     (unsigned)lpbi->biBitCount,
+                     (unsigned long)lpbi->biCompression,
+                     (unsigned long)lpbi->biClrUsed,
+                     (unsigned long)nColors,
+                     (unsigned long)offBits,
+                     (unsigned long)lpbi->biSizeImage);
+        }
+    }
+
+    /* Stretch mode: HALFTONE can look nicer but COLORONCOLOR is often more stable for pixel art. */
+    prevStretchMode = SetStretchBltMode(hdc, COLORONCOLOR);
+    (void)prevStretchMode;
+
+    /* Win16 callers usually used SRCCOPY; keep accepting rop but force SRCCOPY for now. */
+    (void)rop;
+
+    {
+        int rc = StretchDIBits(hdc,
+                               (int)x0, (int)y0, (int)dx, (int)dy,
+                               (int)x1, (int)y1, (int)dxSrc, (int)dySrc,
+                               pBits, pbi, DIB_RGB_COLORS, SRCCOPY);
+        if (rc == GDI_ERROR)
+        {
+            DBG_LOGD("DibBlt: StretchDIBits -> GDI_ERROR");
+            return 0;
+        }
+        DBG_LOGD("DibBlt: StretchDIBits -> %d", rc);
+    }
+
+    return 1;
 }
 
 int16_t FGetMouseMove(POINT *ppt)

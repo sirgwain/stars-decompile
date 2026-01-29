@@ -166,7 +166,7 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     PLANET *lppl;
     int16_t c;
     PLANET *lpplMac;
-    uint16_t hfontSav;
+    HFONT hfontSav;
     char *psz;
     RECT rcWindow;
 
@@ -182,11 +182,11 @@ INT_PTR CALLBACK ResearchDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 INT_PTR CALLBACK BrowserDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     HDC hdc;
-    uint16_t hmenu;
+    HMENU hmenu;
     int16_t i;
     int16_t c;
     PAINTSTRUCT ps;
-    uint16_t hfontSav;
+    HFONT hfontSav;
     int16_t dx;
     RECT rc;
     HWND hwndDD;
@@ -256,7 +256,7 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw)
     int16_t grbitCur;
     COLORREF crBackSav;
     COLORREF crForeSav;
-    uint16_t hfontSav;
+    HFONT hfontSav;
     int16_t xNum;
     int16_t xCtr;
     int16_t dx;

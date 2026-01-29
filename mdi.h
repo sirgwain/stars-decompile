@@ -29,7 +29,7 @@ void WriteIniSettings(void);                                                    
 VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime); /* PASCAL */     /* MEMORY_MDI:0x7716 */
 uint16_t GetASubMenu(HWND hwnd, int16_t iMenu);                                                     /* MEMORY_MDI:0x589a */
 int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly);                                                    /* MEMORY_MDI:0x58f4 */
-void InitializeMenu(uint16_t hmenu);                                                                /* MEMORY_MDI:0x5376 */
+void InitializeMenu(HMENU hmenu);                                                                /* MEMORY_MDI:0x5376 */
 uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel);                                          /* MEMORY_MDI:0x24b0 */
 POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev);                         /* MEMORY_MDI:0x1e3c */
 void BringUpHostDlg(void);                                                                          /* MEMORY_MDI:0x5ffc */

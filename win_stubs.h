@@ -60,6 +60,32 @@ typedef const void *LPCVOID;
 #define MAKEINTRESOURCE(i) ((LPCSTR)(uintptr_t)(uint16_t)(i))
 #endif
 
+/* Win32 has ANSI/Unicode variants; in stubs mode treat them the same. */
+#ifndef MAKEINTRESOURCEA
+#define MAKEINTRESOURCEA(i) MAKEINTRESOURCE(i)
+#endif
+
+/* Common window class styles used by RegisterClass/RegisterClassEx. */
+#ifndef CS_HREDRAW
+#define CS_HREDRAW 0x0002
+#endif
+#ifndef CS_VREDRAW
+#define CS_VREDRAW 0x0001
+#endif
+#ifndef CS_DBLCLKS
+#define CS_DBLCLKS 0x0008
+#endif
+
+/* System cursor identifiers. */
+#ifndef IDC_ARROW
+#define IDC_ARROW MAKEINTRESOURCE(32512)
+#endif
+
+/* System colors (GetSysColor). */
+#ifndef COLOR_APPWORKSPACE
+#define COLOR_APPWORKSPACE 12
+#endif
+
 /* Common predefined resource types (subset). */
 #ifndef RT_BITMAP
 #define RT_CURSOR MAKEINTRESOURCE(1)
@@ -147,6 +173,7 @@ typedef enum MBFlags
     MB_ICONERROR = MB_ICONHAND,
     MB_ICONWARNING = MB_ICONEXCLAMATION,
     MB_ICONINFORMATION = MB_ICONASTERISK,
+    MB_ICONSTOP = MB_ICONHAND,
     MB_DEFBUTTON1 = 0x0000,
     MB_DEFBUTTON2 = 0x0100,
     MB_DEFBUTTON3 = 0x0200,
@@ -462,6 +489,10 @@ typedef struct tagTIMERINFO
  * Window Style Constants
  * ======================================================================== */
 #define WS_OVERLAPPED 0x00000000L
+#ifndef WS_OVERLAPPEDWINDOW
+/* Standard overlapped window (same as Windows SDK). */
+#define WS_OVERLAPPEDWINDOW (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX)
+#endif
 #define WS_POPUP 0x80000000L
 #define WS_CHILD 0x40000000L
 #define WS_VISIBLE 0x10000000L
@@ -469,6 +500,15 @@ typedef struct tagTIMERINFO
 #define WS_CAPTION 0x00C00000L
 #define WS_BORDER 0x00800000L
 #define WS_SYSMENU 0x00080000L
+#define WS_THICKFRAME 0x00040000L
+#define WS_MINIMIZEBOX 0x00020000L
+#define WS_MAXIMIZEBOX 0x00010000L
+
+/* Control/window styles */
+#define WS_TABSTOP 0x00010000L
+
+/* Button control styles */
+#define BS_PUSHBUTTON 0x00000000L
 
 /* GetWindow() constants */
 #define GW_HWNDFIRST 0
@@ -529,6 +569,8 @@ typedef struct tagTIMERINFO
 #define WM_KILLFOCUS 0x0008
 #define WM_ENABLE 0x000A
 #define WM_PAINT 0x000F
+#define WM_QUERYNEWPALETTE 0x030F
+#define WM_PALETTECHANGED 0x0311
 #define WM_CLOSE 0x0010
 #define WM_QUIT 0x0012
 #define WM_ERASEBKGND 0x0014
@@ -866,6 +908,11 @@ HMENU WINAPI CreatePopupMenu(void);
 HWND WINAPI CreateWindow(LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle,
                          int x, int y, int nWidth, int nHeight,
                          HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, void FAR *lpParam);
+
+/* ANSI/Unicode aliases (stubs only implement the undecorated entrypoints). */
+#ifndef CreateWindowA
+#define CreateWindowA CreateWindow
+#endif
 LRESULT WINAPI DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 BOOL WINAPI DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags);
 BOOL WINAPI DestroyCursor(HCURSOR hCursor);
@@ -920,6 +967,10 @@ BOOL WINAPI IsWindowVisible(HWND hWnd);
 BOOL WINAPI IsZoomed(HWND hWnd);
 BOOL WINAPI KillTimer(HWND hWnd, UINT uIDEvent);
 HACCEL WINAPI LoadAccelerators(HINSTANCE hInstance, LPCSTR lpTableName);
+
+#ifndef LoadAcceleratorsA
+#define LoadAcceleratorsA LoadAccelerators
+#endif
 HBITMAP WINAPI LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName);
 HCURSOR WINAPI LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName);
 HICON WINAPI LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName);

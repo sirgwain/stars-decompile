@@ -82,6 +82,9 @@
 
 #define IDDIB_NUM_DESIGNS_PLATE 450 // numdesignsplate.bmp
 
+/* Title splash (original Stars! used resource id 0x01C1). */
+#define IDDIB_SPLASH 0x01C1 // splash.bmp
+
 // ---------------- Accelerators (keep legacy IDs) ----
 #define IDA_MAIN 116
 #define IDA_TITLE 1080

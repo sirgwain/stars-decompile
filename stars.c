@@ -6,6 +6,7 @@
 #include "strings.h"
 #include "utilgen.h"
 #include "memory.h"
+#include "debuglog.h"
 
 /* functions */
 
@@ -192,6 +193,8 @@ int16_t FGetSystemColors(void)
             vcScreenColors = 0;
         }
     }
+
+    DBG_LOGD("FGetSystemColors vcScreenColors=%d", vcScreenColors);
 
     return 1;
 }

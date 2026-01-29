@@ -66,6 +66,7 @@ IDDIB_PLAYER_ICONS              BITMAP "bitmaps/playericons.bmp"
 IDDIB_PLAYER_ICONS_SMALL        BITMAP "bitmaps/playeroconssmall.bmp"
 IDDIB_PLAYER_ICONS_TINY         BITMAP "bitmaps/playericonstiny.bmp"
 IDDIB_NUM_DESIGNS_PLATE         BITMAP "bitmaps/numdesignsplate.bmp"
+IDDIB_SPLASH                    BITMAP "bitmaps/splash.bmp"
 
 // ------------ Menu ------------
 #include "menu/menu.rc"
