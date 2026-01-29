@@ -3,20 +3,12 @@
 
 #include <assert.h>
 #include "types.h"
-#ifdef _WIN32
-#include <windows.h>
-
-#endif /* _WIN32 */
 
 #ifdef NDEBUG
 #define Assert(expr) ((void)0)
 #else
 #define Assert(expr) assert(expr)
 #endif
-
-#define IDOK 1
-#define IDYES 6
-#define IDNO 7
 
 // guessed defines from the decompile
 #define MsgYesNo(ids) AlertSz(PszFormatIds((ids), NULL), MB_YESNO | MB_ICONQUESTION)
@@ -394,31 +386,11 @@ extern uint16_t grbitScanEShip;
 extern uint16_t grbitScanMines;
 extern uint16_t grbitScanShip;
 extern uint16_t grfMissed;
-extern uint16_t rghbrCache[32];
-extern uint16_t rghbrMineral[5];
-extern uint16_t rghbrMinSum[4][2];
-extern uint16_t rghbrPat[3];
-extern uint16_t rghbrPlanetAttr[3][2];
-extern uint16_t rghdibInventory[7];
-extern uint16_t rghdibShips[5];
-extern uint16_t rghdibShipsT[5];
-extern uint16_t rghfontArial10[2];
-extern uint16_t rghfontArial6[1];
-extern uint16_t rghfontArial7[1];
-extern uint16_t rghfontArial8[5];
-extern uint16_t rghiconVCR[7];
-extern uint16_t rghwndBtn[13];
-extern uint16_t rghwndBtnSplash[4];
-extern uint16_t rghwndMsgBtn[4];
-extern uint16_t rghwndOrderDD[3];
 extern uint16_t rgidRaceBtn[0];
 extern uint16_t uDateInstalled;
 extern uint16_t uTimerId;
 extern uint16_t uTimerType;
 extern uint16_t vcPasswordFailures;
-extern uint16_t vhdibTitle;
-extern uint16_t vhpal;
-extern uint16_t vhpalSplash;
 extern uint16_t wVersFile;
 extern uint32_t crButtonFace;
 extern uint32_t crButtonHilite;
@@ -443,7 +415,6 @@ extern uint8_t bitfMsgSent[49];
 extern uint8_t ctype[0];
 extern uint8_t mpiTypeiItem[3];
 extern uint8_t rgcbtlplan[16];
-extern uint8_t rghbrCacheUse[32];
 extern uint8_t rgTechBattle[6];
 extern uint8_t rgTechTrader[13];
 extern uint8_t vbrcVCRFocus;
@@ -569,6 +540,28 @@ extern HGLOBAL hdibToolbar;
 extern HICON hiconHost;
 extern HICON hiconStars;
 extern HICON hiconWait;
+extern HBRUSH rghbrCache[32];
+extern HBRUSH rghbrMineral[5];
+extern HBRUSH rghbrMinSum[4][2];
+extern HBRUSH rghbrPat[3];
+extern HBRUSH rghbrPlanetAttr[3][2];
+extern HGLOBAL rghdibInventory[7];
+extern HGLOBAL rghdibShips[5];
+extern HGLOBAL rghdibShipsT[5];
+extern HFONT rghfontArial10[2];
+extern HFONT rghfontArial6[1];
+extern HFONT rghfontArial7[1];
+extern HFONT rghfontArial8[5];
+extern HICON rghiconVCR[7];
+extern HWND rghwndBtn[13];
+extern HWND rghwndBtnSplash[4];
+extern HWND rghwndMsgBtn[4];
+extern HWND rghwndOrderDD[3];
+extern uint8_t rghbrCacheUse[32];
+extern HGLOBAL vhdibTitle;
+extern HPALETTE vhpal;
+extern HPALETTE vhpalSplash;
+
 /* Subclassing: real edit control proc (Win32 only) */
 extern WNDPROC lpfnRealEditProc;
 

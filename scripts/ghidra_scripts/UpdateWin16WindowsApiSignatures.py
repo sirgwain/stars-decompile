@@ -103,7 +103,7 @@ except Exception:
 WINDOWS_H_PROMPT = "Select WINDOWS.H (Win16 SDK header)"
 PREFERRED_CALLING_CONVENTION = "__pascal16far"
 # _WINDOWS_CAT_PATH = CategoryPath("/windows")
-_WINDOWS_CAT_PATH = CategoryPath("/stars")
+_CAT_PATH = CategoryPath("/stars")
 
 # Far pointer size (your project uses 32-bit pointers for Win16 far pointers)
 FAR_PTR_SIZE = 4
@@ -158,6 +158,13 @@ API_OVERRIDES = [
         "args": ["char *32 dst", "char *32 fmt", "..."],
         "varargs": True,
     },
+    {
+        "name": "MessageBox",
+        "ret": "short",
+        "cc": "__pascal16far",
+        "args": ["HWND hwnd", "LPCSTR text", "LPCSTR caption", "MessageBoxFlags uType"],
+    },
+
 ]
 
 
@@ -360,7 +367,7 @@ def _ensure_struct(dtm, cat, name, total_size, fields=None, min_align=2):
 def _build_win16_typedefs(program: Program):
     """Inject minimal Win16 typedefs so WINDOWS.H prototypes resolve in this program."""
     dtm = program.getDataTypeManager()
-    cat = _WINDOWS_CAT_PATH
+    cat = _CAT_PATH
 
     # primitives: prefer built-ins (stable across versions), else fall back to manager paths
     t_void = _BUILTIN_DT.get("void") or _dt_path(dtm, "/void")
@@ -470,6 +477,7 @@ def _build_win16_typedefs(program: Program):
     typedefs["BITMAPINFO"] = dtm.getDataType(cat, "BITMAPINFO")
     typedefs["LOGPALETTE"] = dtm.getDataType(cat, "LOGPALETTE")
     typedefs["OFSTRUCT"] = dtm.getDataType(cat, "OFSTRUCT")
+    typedefs["MessageBoxFlags"] = dtm.getDataType(cat, "MessageBoxFlags")
 
     # pointer typedefs (far)
     typedefs["LPSTR"] = _ensure_typedef(

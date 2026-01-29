@@ -10,7 +10,7 @@
 // ======================================================================
 
 
-short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCmdShow)
+short WinMain(HINSTANCE param_1,HINSTANCE param_2,LPSTR param_3,short param_4)
 
 {
   char cVar1;
@@ -40,13 +40,13 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
                            Preload
                            Impure (Non-shareable)
                         */
-  hInst = hInstance;
+  hInst = param_1;
   szBase[0] = '\0';
   ini.wFlags = 0;
   _memset((TUTOR *)&tutor,0,0x2c);
   _memset((TIMER *)&vtimer,0,10);
   vtimer.fAutoGenWhenIn = 1;
-  if ((hPrevInstance == 0) && (sVar4 = InitMDIApp(), sVar4 == 0)) {
+  if ((param_2 == 0) && (sVar4 = InitMDIApp(), sVar4 == 0)) {
     sVar4 = 0x10;
     pcVar5 = PszFormatIds(idsUnableInitializeStars,(short *)0x0);
     AlertSz(pcVar5,sVar4);
@@ -71,7 +71,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
         msg.wParam = 0;
       }
       else {
-        sVar4 = InitInstance(nCmdShow);
+        sVar4 = InitInstance(param_4);
         if (sVar4 == 0) {
           sVar4 = 0x10;
           pcVar5 = PszFormatIds(idsUnableInitializeStars,(short *)0x0);
@@ -80,7 +80,7 @@ short WinMain(HINSTANCE hInstance,ushort hPrevInstance,char *lpCmdLine,short nCm
           msg.wParam = 0;
         }
         else {
-          lpT = lpCmdLine;
+          lpT = param_3;
           while (*lpT != '\0') {
             while( true ) {
               if (*lpT != ' ') break;
@@ -229,7 +229,7 @@ LAB_1018_02cb:
             }
           }
           uVar8 = 0x14f8;
-          PostMessage(hwndFrame,0x464,0,0);
+          PostMessage(hwndFrame,WM_STARS_STARTUP,0,0);
           pHVar3 = &stack0xffdc;
 LAB_1018_058a:
           while( true ) {
@@ -303,7 +303,7 @@ LAB_1018_0618:
     pHVar7[-3] = 0x624;
     TranslateMessage(*(MSG **)(pHVar7 + -1));
     uVar2 = (undefined2)msg.lParam;
-    if ((msg.message == 0x100) || (msg.message == 0x101)) {
+    if ((msg.message == WM_KEYDOWN) || (msg.message == WM_KEYUP)) {
       *pHVar7 = msg.lParam._2_2_;
       pHVar7[-1] = uVar2;
       pHVar7[-2] = msg.wParam;
@@ -316,7 +316,7 @@ LAB_1018_0618:
       pHVar3 = pHVar7 + 1;
       if (sVar4 != 0) goto LAB_1018_058a;
     }
-    if (msg.message == 0x102) {
+    if (msg.message == WM_CHAR) {
       *pHVar7 = msg.lParam._2_2_;
       pHVar7[-1] = (undefined2)msg.lParam;
       pHVar7[-2] = msg.wParam;
@@ -779,7 +779,7 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_DI;
   undefined2 unaff_SS;
   ulong uVar4;
-  FARPROC pvVar5;
+  FARPROC lpDlgProc;
   HWND hwndCtl;
   short local_10;
   RECT rc;
@@ -816,13 +816,13 @@ short About(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0x76) {
-          pvVar5 = MakeProcInstance(OrderInfoDlg,hInst);
-          DialogBox(0,(LPCSTR)CONCAT22(0x61,hwnd),(HWND)((ulong)pvVar5 >> 0x10),(char)pvVar5);
-          FreeProcInstance(pvVar5);
+          lpDlgProc = MakeProcInstance(OrderInfoDlg,hInst);
+          DialogBox(0,IDD_DLG97_97,hwnd,lpDlgProc);
+          FreeProcInstance(lpDlgProc);
         }
       }
       else if (message == WM_TIMER) {
-        HVar1 = GetDlgItem(hwnd,0x41f);
+        HVar1 = GetDlgItem(hwnd,IDC_U16_0x041F);
         iAboutPartial = iAboutPartial + 2;
         if (dyArial8 <= iAboutPartial) {
           iAboutPartial = 0;
@@ -929,7 +929,7 @@ short FHandleChar(HWND hwnd,ushort ch,long lParam)
     sVar2 = 0;
   }
   else {
-    SendMessage(hwndScanner,0x102,ch,lParam);
+    SendMessage(hwndScanner,WM_CHAR,ch,lParam);
     sVar2 = 1;
   }
   return sVar2;
@@ -970,7 +970,7 @@ short FHandleKey(HWND hwnd,short iMsg,short iKey,ulong dw)
       }
     }
     if ((iKey == 0x1b) && (hwndPopup != 0)) {
-      SendMessage(hwndPopup,0x202,0,0);
+      SendMessage(hwndPopup,WM_LBUTTONUP,0,0);
       return 1;
     }
     if ((iKey == 0x1b) && (hwndReportDlg != 0)) {
@@ -1000,7 +1000,7 @@ LAB_1018_175f:
     puVar6 = &stack0xffea;
     if (HVar2 == hwndScanner) {
       uVar5 = 0x14f8;
-      SendMessage(HVar2,0x20,HVar2,0);
+      SendMessage(HVar2,WM_SETCURSOR,HVar2,0);
       puVar6 = &stack0xffea;
     }
   }
@@ -1057,7 +1057,7 @@ LAB_1018_175f:
       *(undefined2 *)(puVar6 + -4) = 0x10b;
       *(undefined2 *)(puVar6 + -6) = 0x14f8;
       *(undefined2 *)(puVar6 + -8) = 0x192b;
-      HVar2 = GetDlgItem(*(HWND *)(puVar6 + -2),*(short *)(puVar6 + -4));
+      HVar2 = GetDlgItem(*(HWND *)(puVar6 + -2),*(ControlId *)(puVar6 + -4));
       if (hwndF == HVar2) {
         return 0;
       }
@@ -1136,7 +1136,7 @@ LAB_1018_175f:
         *(undefined2 *)(puVar6 + -10) = (undefined2)dw;
         *(undefined2 *)(puVar6 + -0xc) = 0x14f8;
         *(undefined2 *)(puVar6 + -0xe) = 0x1a9e;
-        SendMessage(*(HWND *)(puVar6 + -2),*(UINT *)(puVar6 + -4),*(WPARAM *)(puVar6 + -6),
+        SendMessage(*(HWND *)(puVar6 + -2),*(WMType *)(puVar6 + -4),*(WPARAM *)(puVar6 + -6),
                     *(LPARAM *)(puVar6 + -10));
         return 1;
       }

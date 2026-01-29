@@ -516,9 +516,10 @@ typedef enum GrbitTrader
 
 typedef enum LookupResult
 {
-    LookupInvalid = 0,     // “out of range” / not a valid part id in group
-    LookupDisallowed = -1, // disallowed for race/trait/other rule
-    LookupOk = 1,          // meets tech reqs (original CheckTechRequirements == 1)
-    LookupNear = 2,        // “one level away in current research field”
-    LookupNeedMany = 99    // multiple tech deficits
+    LookupInvalid = 0,
+    LookupDisallowed = -1,
+    LookupOk = 1,
+    LookupNear = 2,
+    LookupNeedMany = 99
 } LookupResult;
+

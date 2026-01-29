@@ -276,7 +276,7 @@ void DrawShipOrders(HDC hdc,TILE *ptile,OBJ obj)
   }
   yTop = iVar8 + dyArial8;
 SHIP_DoCheckBox:
-  SendMessage(hwndRepCB,0x401,sel.fl.wFlags_0x4 >> 9 & 1,0);
+  SendMessage(hwndRepCB,WM_USER_0x0401,sel.fl.wFlags_0x4 >> 9 & 1,0);
   SetWindowPos(hwndRepCB,0,iVar7,yTop,0,0,0x15);
   ShowWindow(hwndRepCB,5);
   SetRect(rgrcRef + 0xc,x - (dyArial8 | 1U),yTop,x,
@@ -392,7 +392,7 @@ void DrawShipWayPtOrders(HDC hdc,TILE *ptile,OBJ obj)
                dyArial8 * 10 + dyShipDD,swp);
   ShowWindow(rghwndOrderDD[0],5);
   iVar5 = iVar5 + rc.top + dyShipDD + 3;
-  LVar16 = SendMessage(rghwndOrderDD[0],0x407,0,0);
+  LVar16 = SendMessage(rghwndOrderDD[0],WM_USER_0x0407,0,0);
   iVar7 = (int)LVar16;
   BVar8 = IsWindowVisible(rghwndOrderDD[1]);
   if (BVar8 == 0) {
@@ -719,8 +719,8 @@ void DrawShipWayPtOrders(HDC hdc,TILE *ptile,OBJ obj)
     *(undefined2 *)(puVar14 + -10) = 0;
     *(undefined2 *)(puVar14 + -0xc) = uVar15;
     *(undefined2 *)(puVar14 + -0xe) = 0xfdf;
-    LVar16 = SendMessage(*(HWND *)(puVar14 + -2),*(UINT *)(puVar14 + -4),*(WPARAM *)(puVar14 + -6),
-                         *(LPARAM *)(puVar14 + -10));
+    LVar16 = SendMessage(*(HWND *)(puVar14 + -2),*(WMType *)(puVar14 + -4),*(WPARAM *)(puVar14 + -6)
+                         ,*(LPARAM *)(puVar14 + -10));
     if ((int)LVar16 == 0) {
       i = 4;
     }
@@ -777,8 +777,8 @@ void DrawShipWayPtOrders(HDC hdc,TILE *ptile,OBJ obj)
     *(undefined2 *)(puVar14 + -10) = 0;
     *(undefined2 *)(puVar14 + -0xc) = 0x14f8;
     *(undefined2 *)(puVar14 + -0xe) = 0x1091;
-    LVar16 = SendMessage(*(HWND *)(puVar14 + -2),*(UINT *)(puVar14 + -4),*(WPARAM *)(puVar14 + -6),
-                         *(LPARAM *)(puVar14 + -10));
+    LVar16 = SendMessage(*(HWND *)(puVar14 + -2),*(WMType *)(puVar14 + -4),*(WPARAM *)(puVar14 + -6)
+                         ,*(LPARAM *)(puVar14 + -10));
     fActive = 1;
     if (((LVar16 == 0) || (LVar16 == 1)) || (LVar16 == 2)) {
 LAB_1050_10a5:
@@ -1024,7 +1024,7 @@ LAB_1050_15b7:
             *(int *)(puVar14 + -10) = lppl._2_2_;
             *(PLANET **)(puVar14 + -0xc) = (PLANET *)lppl;
             *(undefined2 *)(puVar14 + -0xe) = 0x14f8;
-            *(undefined2 *)(puVar14 + -0x10) = 0x161b;
+            *(char **)(puVar14 + -0x10) = (char *)s_s_dy_1120_161b;
             EstMineralsMined
                       (*(PLANET **)(puVar14 + -0xc),*(long **)(puVar14 + -8),*(long *)(puVar14 + -6)
                        ,*(short *)(puVar14 + -2));
@@ -1041,7 +1041,7 @@ LAB_1050_15b7:
             *(short *)(puVar14 + -0xc) = sVar3;
             *(undefined2 *)(puVar14 + -0xe) = 0x1040;
             uVar15 = 0x14f8;
-            *(undefined2 *)(puVar14 + -0x10) = 0x1649;
+            *(char **)(puVar14 + -0x10) = (char *)s_d_d_d_s_1120_1647 + 2;
             TextOut(*(HDC *)(puVar14 + -2),*(short *)(puVar14 + -4),*(short *)(puVar14 + -6),
                     *(LPCSTR *)(puVar14 + -10),*(short *)(puVar14 + -0xc));
             iVar5 = iVar5 + local_4c;
@@ -1051,7 +1051,7 @@ LAB_1050_15b7:
               *(undefined2 *)(puVar14 + -4) = *(undefined2 *)(i * 4 + rgcrMinerals_0x2);
               *(undefined2 *)(puVar14 + -6) = *(undefined2 *)(i * 4 + rgcrMinerals);
               *(undefined2 *)(puVar14 + -8) = uVar15;
-              *(undefined2 *)(puVar14 + -10) = 0x1674;
+              *(char **)(puVar14 + -10) = (char *)s_d_1120_1673 + 1;
               SetTextColor(*(HDC *)(puVar14 + -2),*(COLORREF *)(puVar14 + -6));
               *(undefined2 *)(puVar14 + -2) = *(undefined2 *)((int)rgl + i * 4 + 2);
               *(int *)(puVar14 + -4) = (int)rgl[i];
@@ -1456,8 +1456,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
     _strcpy((char *)szWork,pcVar6);
     StickyDlgPos(hwnd,(POINT *)&ptStickyRenameDlg,0);
     pvVar16 = MakeProcInstance(RenameDlg,hInst);
-    sVar21 = DialogBox(0,(LPCSTR)CONCAT22(0x7e3,hwndFrame),(HWND)((ulong)pvVar16 >> 0x10),
-                       (char)pvVar16);
+    sVar21 = DialogBox(0,IDD_DLG2019_2019,hwndFrame,pvVar16);
     if (sVar21 == 0) {
       FreeProcInstance(pvVar16);
     }
@@ -1500,14 +1499,14 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   else if ((HWND)lParam == hwndShipLB) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
     if ((int)uVar15 == 1) {
-      LVar19 = SendMessage(hwndShipLB,0x409,0,0);
+      LVar19 = SendMessage(hwndShipLB,WM_USER_0x0409,0,0);
       SetScanWp((short)LVar19);
     }
   }
   else if ((HWND)lParam == hwndFleetCompLB) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
     if (((int)uVar15 == 1) &&
-       (lVar20 = SendMessage(hwndFleetCompLB,0x409,0,0), -1 < lVar20)) {
+       (lVar20 = SendMessage(hwndFleetCompLB,WM_USER_0x0409,0,0), -1 < lVar20)) {
       local_b6 = 0;
       while( true ) {
         lSel._2_2_ = (int)((ulong)lVar20 >> 0x10);
@@ -1530,12 +1529,11 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if ((HWND)lParam == hwndBattleDD) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
-    if (((int)uVar15 == 1) && (LVar19 = SendMessage(hwndBattleDD,0x407,0,0), LVar19 != -1)
-       ) {
+    if (((int)uVar15 == 1) &&
+       (LVar19 = SendMessage(hwndBattleDD,WM_USER_0x0407,0,0), LVar19 != -1)) {
       if (LVar19 == 0) {
         pvVar16 = MakeProcInstance(BattlePlansDlg,hInst);
-        sVar21 = DialogBox(0,(LPCSTR)CONCAT22(0x7dd,hwndFrame),
-                           (HWND)((ulong)pvVar16 >> 0x10),(char)pvVar16);
+        sVar21 = DialogBox(0,IDD_DLG2013_2013,hwndFrame,pvVar16);
         FreeProcInstance(pvVar16);
         sel.fl.iplan = (byte)sVar21;
       }
@@ -1547,7 +1545,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if (((HWND)lParam == rghwndBtn[0]) &&
           (uVar15 = __aFulshr(uVar22,in_stack_0000fb44), (int)uVar15 == 0)) {
-    LVar19 = SendMessage(hwndShipDD,0x407,0,0);
+    LVar19 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
     if ((LVar19 != -1) &&
        (sVar21 = FLookupOrbitingXfer
                            (sel.pl.id,(short)LVar19,&xf,sel.fl.id), sVar21 != 0)
@@ -1557,7 +1555,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if (((HWND)lParam == rghwndBtn[1]) &&
           (uVar15 = __aFulshr(uVar22,in_stack_0000fb44), (int)uVar15 == 0)) {
-    LVar19 = SendMessage(hwndShipDD,0x407,0,0);
+    LVar19 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
     if ((LVar19 != -1) &&
        ((sVar21 = FLookupOrbitingXfer
                             (sel.pl.id,(short)LVar19,&xf,sel.fl.id), sVar21 != 0
@@ -1567,7 +1565,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if (((HWND)lParam == rghwndBtn[2]) &&
           (uVar15 = __aFulshr(uVar22,in_stack_0000fb44), (int)uVar15 == 0)) {
-    LVar19 = SendMessage(hwndShipDD,0x407,0,0);
+    LVar19 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
     if ((LVar19 != -1) &&
        ((sVar21 = FLookupOrbitingXfer
                             (sel.pl.id,(short)LVar19,&xf,sel.fl.id), sVar21 != 0
@@ -1623,8 +1621,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
     uStack_ba._0_2_ = (FLEET *)0x0;
     uStack_ba._2_2_ = (PLORD *)0x0;
     pvVar16 = MakeProcInstance(MergeFleetsDlg,hInst);
-    sVar21 = DialogBox(0,(LPCSTR)CONCAT22(0x52,hwndFrame),(HWND)((ulong)pvVar16 >> 0x10),
-                       (char)pvVar16);
+    sVar21 = DialogBox(0,IDD_DLG82_82,hwndFrame,pvVar16);
     pFVar17 = (FLEET *)CONCAT22(uStack_ba._2_2_,(FLEET *)uStack_ba);
     if (sVar21 != 0) {
       for (local_b6 = 0; pFVar17 = (FLEET *)CONCAT22(uStack_ba._2_2_,(FLEET *)uStack_ba),
@@ -1685,7 +1682,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if (((HWND)lParam == hwndRepCB) &&
           (uVar15 = __aFulshr(uVar22,in_stack_0000fb44), (int)uVar15 == 0)) {
-    LVar19 = SendMessage(hwndRepCB,0x400,0,0);
+    LVar19 = SendMessage(hwndRepCB,WM_USER,0,0);
     local_b6 = (uint)LVar19;
     sel.fl.wFlags_0x4 = sel.fl.wFlags_0x4 & 0xfdff | (local_b6 & 1) << 9;
     FLookupFleet(-1,(FLEET *)&sel.fl);
@@ -1693,7 +1690,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   else if ((HWND)lParam == rghwndOrderDD[0]) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
     if ((int)uVar15 == 1) {
-      LVar19 = SendMessage(rghwndOrderDD[0],0x407,0,0);
+      LVar19 = SendMessage(rghwndOrderDD[0],WM_USER_0x0407,0,0);
       uVar5 = (uint)LVar19;
       puVar12 = &stack0xfb40;
       if (uVar5 != (*(uint *)((int)(PLORD *)sel.fl.lpplord +
@@ -1808,7 +1805,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   else if ((HWND)lParam == rghwndOrderDD[1]) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
     if ((int)uVar15 == 1) {
-      LVar19 = SendMessage(rghwndOrderDD[1],0x407,0,0);
+      LVar19 = SendMessage(rghwndOrderDD[1],WM_USER_0x0407,0,0);
       local_b6 = (uint)LVar19;
       if ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) &
           0xf) == 7) {
@@ -1841,8 +1838,8 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   else if ((HWND)lParam == rghwndOrderDD[2]) {
     uVar15 = __aFulshr(uVar22,in_stack_0000fb44);
     if ((int)uVar15 == 1) {
-      LVar19 = SendMessage(rghwndOrderDD[2],0x407,0,0);
-      LVar18 = SendMessage(rghwndOrderDD[1],0x407,0,0);
+      LVar19 = SendMessage(rghwndOrderDD[2],WM_USER_0x0407,0,0);
+      LVar18 = SendMessage(rghwndOrderDD[1],WM_USER_0x0407,0,0);
       lSel._0_2_ = (int)LVar19;
       if (LVar18 == 0) {
         lMin._0_2_ = 4;
@@ -1871,7 +1868,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
   }
   else if (((HWND)lParam == hwndOrderED) &&
           (uVar15 = __aFulshr(uVar22,in_stack_0000fb44), (int)uVar15 == 0x300)) {
-    LVar19 = SendMessage(rghwndOrderDD[2],0x407,0,0);
+    LVar19 = SendMessage(rghwndOrderDD[2],WM_USER_0x0407,0,0);
     if ((LVar19 == 5) || (LVar19 == 6)) {
       bVar1 = true;
     }
@@ -1907,7 +1904,7 @@ void ShipCommandProc(HWND hwnd,ushort wParam,long lParam)
     *(undefined2 *)((int)plVar13 + -10) = 0;
     *(undefined2 *)(plVar13 + -3) = uVar14;
     *(undefined2 *)((int)plVar13 + -0xe) = 0x3c47;
-    LVar19 = SendMessage(*(HWND *)((int)plVar13 + -2),*(UINT *)(plVar13 + -1),
+    LVar19 = SendMessage(*(HWND *)((int)plVar13 + -2),*(WMType *)(plVar13 + -1),
                          *(WPARAM *)((int)plVar13 + -6),*(LPARAM *)((int)plVar13 + -10));
     iVar8 = sel.fl.lpplord._2_2_;
     pPVar2 = (PLORD *)sel.fl.lpplord;
@@ -2085,7 +2082,7 @@ void SetFleetDropDownSel(short id)
     }
     i = i + 1;
   }
-  SendMessage(hwndShipDD,0x40e,iOffset,0);
+  SendMessage(hwndShipDD,WM_USER_0x040E,iOffset,0);
   DrawPlanShip(0,0x4004);
   return;
 }
@@ -2529,7 +2526,7 @@ short TransferStuff(short id1,short grobj1,short id2,short grobj2,short mdXfer)
   undefined2 uVar9;
   undefined2 unaff_SS;
   FLEET *pFVar10;
-  FARPROC pvVar11;
+  FARPROC lpDlgProc;
   RECT rc;
   POINT pt;
   BTN rgbtn [32];
@@ -2607,11 +2604,10 @@ short TransferStuff(short id1,short grobj1,short id2,short grobj2,short mdXfer)
   if (((uint)gd.grBits >> 0xb & 1) != 0) {
     AdvanceTutor();
   }
-  pvVar11 = MakeProcInstance(TransferDlg,hInst);
-  sVar3 = DialogBox(0,(LPCSTR)CONCAT22(0x5b,hwndFrame),(HWND)((ulong)pvVar11 >> 0x10),
-                    (char)pvVar11);
+  lpDlgProc = MakeProcInstance(TransferDlg,hInst);
+  sVar3 = DialogBox(0,IDD_DLG91_91,hwndFrame,lpDlgProc);
   uVar9 = 0x14f8;
-  FreeProcInstance(pvVar11);
+  FreeProcInstance(lpDlgProc);
   if (sVar3 == 0) {
     if (mdXfer != 1) {
       mdXferDlg = -1;
@@ -2849,7 +2845,7 @@ short TransferDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         iVar2 = iVar2 - (sVar5 + 2);
         sVar5 = GetSystemMetrics(7);
         iVar3 = sVar5 + 4;
-        HVar4 = GetDlgItem(hwnd,1);
+        HVar4 = GetDlgItem(hwnd,IDOK);
         GetWindowRect(HVar4,&rcBtn);
         pt.x = rcBtn.left;
         pt.y = rcBtn.top;
@@ -2857,7 +2853,7 @@ short TransferDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         pt.y = pt.y + iVar2;
         pt.x = pt.x - iVar3;
         SetWindowPos(HVar4,0,pt.x,pt.y,0,0,1);
-        HVar4 = GetDlgItem(hwnd,0x76);
+        HVar4 = GetDlgItem(hwnd,IDC_HELP);
         GetWindowRect(HVar4,&rcBtn);
         pt.x = rcBtn.left;
         pt.y = rcBtn.top;
@@ -2865,7 +2861,7 @@ short TransferDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         pt.y = pt.y + iVar2;
         pt.x = pt.x - iVar3;
         SetWindowPos(HVar4,0,pt.x,pt.y,0,0,1);
-        HVar4 = GetDlgItem(hwnd,2);
+        HVar4 = GetDlgItem(hwnd,IDCANCEL);
         GetWindowRect(HVar4,&rcBtn);
         pt.x = rcBtn.left;
         pt.y = rcBtn.top;
@@ -4207,7 +4203,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
               HVar12 = hcurHand;
               lVar24 = sel.fl.rgwtMin[4];
               if (fCursor == 0) {
-                local_f4 = (THING *)SendMessage(hwndShipDD,0x407,0,0);
+                local_f4 = (THING *)SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
                 if (((int)local_f4 == -1) && ((int)((ulong)local_f4 >> 0x10) == -1)) {
                   HVar12 = 0;
                   lVar24 = sel.fl.rgwtMin[4];
@@ -4256,7 +4252,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
               iSkip = -1;
               idPlan = sel.pl.id;
             }
-            LVar22 = SendMessage(hwndShipDD,0x407,0,0);
+            LVar22 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
             FLookupOrbitingXfer(idPlan,(short)LVar22,&xf,iSkip);
             if ((xf.grobj != grobjFleet) || (xf.u_XFER_0x0004.fl.iPlayer != idPlayer)) {
               HVar12 = 0;
@@ -4470,8 +4466,7 @@ ushort ClickInShipOrders(POINT pt,short sks,short fCursor,short fRightBtn)
       if (local_f6 == local_f4._2_2_ - 1U) {
         _memcpy(local_16c,(ZIPORDER *)vrgZip,0x60);
         local_170 = MakeProcInstance(ZipOrderDlg,hInst);
-        local_172 = DialogBox(0,(LPCSTR)CONCAT22(0x59,hwndFrame),
-                              (HWND)((ulong)local_170 >> 0x10),(char)local_170);
+        local_172 = DialogBox(0,IDD_DLG89_89,hwndFrame,local_170);
         FreeProcInstance(local_170);
         if (local_172 == 0) {
           _memcpy((ZIPORDER *)vrgZip,local_16c,0x60);
@@ -4744,7 +4739,7 @@ void FillFleetCompLB(void)
   long pctDmg;
   short i;
   
-  SendMessage(hwndFleetCompLB,0x405,0,0);
+  SendMessage(hwndFleetCompLB,WM_USER_0x0405,0,0);
   for (i = 0; i < 0x10; i = i + 1) {
     if (0 < *(int *)((int)&sel.fl + 0xc + i * 2)) {
       lVar4 = 500;
@@ -4759,9 +4754,9 @@ void FillFleetCompLB(void)
         iVar1 = (int)(char)lVar4;
         uVar2 = 0x50;
       }
-      _wsprintf(szWork,(char *)0x1120098a,uVar2,iVar1,
+      _wsprintf(szWork,s_c_c_5d_s_1120_098a,uVar2,iVar1,
                 *(undefined2 *)((int)&sel.fl + 0xc + i * 2),i * 0x93 + 0x3f08);
-      SendMessage(hwndFleetCompLB,0x401,0,0x112057a4);
+      SendMessage(hwndFleetCompLB,WM_USER_0x0401,0,0x112057a4);
     }
   }
   return;
@@ -4790,7 +4785,7 @@ void FillOrdersLB(void)
   char *psz;
   short i;
   
-  SendMessage(hwndShipLB,0x405,0,0);
+  SendMessage(hwndShipLB,WM_USER_0x0405,0,0);
   for (i = 0; i < sel.fl.cord; i = i + 1) {
     psVar5 = (short *)((int)(PLORD *)sel.fl.lpplord + i * 0x12 + 4);
     pOVar6 = &ord;
@@ -4804,7 +4799,7 @@ void FillOrdersLB(void)
     pcVar3 = PszGetLocName(ord.wFlags_0x6 >> 8 &
                                  (grobjThing|grobjOther|grobjFleet|grobjPlanet),ord.id,ord.pt.x,
                                  ord.pt.y);
-    SendMessage(hwndShipLB,0x401,0,(LPARAM)pcVar3);
+    SendMessage(hwndShipLB,WM_USER_0x0401,0,(LPARAM)pcVar3);
   }
   SetOrdersLbSel(sel.iwpAct);
   if (sel.grobj == grobjFleet) {
@@ -4827,7 +4822,7 @@ void SetOrdersLbSel(short iSel)
 {
   int iVar1;
   
-  SendMessage(hwndShipLB,0x407,iSel,0);
+  SendMessage(hwndShipLB,WM_USER_0x0407,iSel,0);
   if ((gd.grBits._2_2_ >> 3 & 1) == 0) {
     iVar1 = 2;
   }
@@ -4841,7 +4836,7 @@ void SetOrdersLbSel(short iSel)
     else {
       iVar1 = 1;
     }
-    SendMessage(hwndShipLB,0x418,iSel - iVar1,0);
+    SendMessage(hwndShipLB,WM_USER_0x0418,iSel - iVar1,0);
   }
   UpdateWindow(hwndShipLB);
   UpdateOrdersDDs(0);
@@ -4867,7 +4862,7 @@ void UpdateOrdersDDs(short iLevel)
   long lVar4;
   LRESULT LVar5;
   WPARAM WVar6;
-  UINT UVar7;
+  WMType WVar7;
   ushort uVar8;
   undefined1 local_68;
   char local_67 [77];
@@ -4880,15 +4875,15 @@ void UpdateOrdersDDs(short iLevel)
   
   iSel = -1;
   if (iLevel == 0) {
-    rglSel[0] = SendMessage(rghwndOrderDD[0],0x40e,
+    rglSel[0] = SendMessage(rghwndOrderDD[0],WM_USER_0x040E,
                             *(uint *)((int)(PLORD *)sel.fl.lpplord +
                                      sel.iwpAct * 0x12 + 10) & 0xf,0);
   }
   else {
-    rglSel[0] = SendMessage(rghwndOrderDD[0],0x407,0,0);
+    rglSel[0] = SendMessage(rghwndOrderDD[0],WM_USER_0x0407,0,0);
   }
   if (1 < iLevel) {
-    rglSel[1] = SendMessage(rghwndOrderDD[1],0x407,0,0);
+    rglSel[1] = SendMessage(rghwndOrderDD[1],WM_USER_0x0407,0,0);
     if ((rglSel[0] != 1) || (3 < iLevel)) goto LAB_1050_987f;
     if ((int)rglSel[1] == 0) {
       iSel = 4;
@@ -4897,7 +4892,7 @@ void UpdateOrdersDDs(short iLevel)
       iSel = (int)rglSel[1] + -1;
     }
   }
-  SendMessage(rghwndOrderDD[1],0x40b,0,0);
+  SendMessage(rghwndOrderDD[1],WM_USER_0x040B,0,0);
   if (rglSel[0] == 1) {
     lVar4 = LGetFleetStat(&sel.fl,grStatCargo);
     if (lVar4 == 0) {
@@ -4925,7 +4920,7 @@ void UpdateOrdersDDs(short iLevel)
           iSel = iMin;
         }
       }
-      SendMessage(rghwndOrderDD[1],0x403,0,0x112057a4);
+      SendMessage(rghwndOrderDD[1],WM_USER_0x0403,0,0x112057a4);
     }
     if ((iSel == -1) || (iSel == 4)) {
       iSel = 0;
@@ -4933,19 +4928,19 @@ void UpdateOrdersDDs(short iLevel)
     else {
       iSel = iSel + 1;
     }
-    LVar5 = SendMessage(rghwndOrderDD[1],0x40e,iSel,0);
+    LVar5 = SendMessage(rghwndOrderDD[1],WM_USER_0x040E,iSel,0);
     rglSel[1] = LVar5;
   }
   else if (rglSel[0] == 7) {
     psz = PszGetCompressedString(idsWithinDLY);
     for (i = 0; i < 0xb; i = i + 1) {
       _wsprintf(szWork,psz,i * 0x32 + 0x32);
-      SendMessage(rghwndOrderDD[1],0x403,0,0x112057a4);
+      SendMessage(rghwndOrderDD[1],WM_USER_0x0403,0,0x112057a4);
     }
     psz = PszGetCompressedString(idsAnyEnemy);
-    SendMessage(rghwndOrderDD[1],0x403,0,(LPARAM)psz);
+    SendMessage(rghwndOrderDD[1],WM_USER_0x0403,0,(LPARAM)psz);
     iSel = *(WPARAM *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xe);
-    LVar5 = SendMessage(rghwndOrderDD[1],0x40e,iSel,0);
+    LVar5 = SendMessage(rghwndOrderDD[1],WM_USER_0x040E,iSel,0);
     rglSel[1] = LVar5;
   }
   else if (rglSel[0] == 9) {
@@ -4954,11 +4949,11 @@ void UpdateOrdersDDs(short iLevel)
       if (i != idPlayer) {
         psz = PszPlayerName(i,1,1,1,0,(PLAYER *)0x0);
         _strcpy(local_67,psz);
-        SendMessage(rghwndOrderDD[1],0x403,0,(LPARAM)&local_68);
+        SendMessage(rghwndOrderDD[1],WM_USER_0x0403,0,(LPARAM)&local_68);
       }
     }
     iSel = *(WPARAM *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
-    LVar5 = SendMessage(rghwndOrderDD[1],0x40e,iSel,0);
+    LVar5 = SendMessage(rghwndOrderDD[1],WM_USER_0x040E,iSel,0);
     rglSel[1] = LVar5;
   }
   else if (rglSel[0] == 6) {
@@ -4972,14 +4967,14 @@ void UpdateOrdersDDs(short iLevel)
       iVar2 = i + 1;
       pcVar3 = PszGetCompressedString(idsDYearC);
       _wsprintf(szWork,pcVar3,iVar2,uVar1);
-      SendMessage(rghwndOrderDD[1],0x403,0,0x112057a4);
+      SendMessage(rghwndOrderDD[1],WM_USER_0x0403,0,0x112057a4);
     }
-    UVar7 = 0x403;
+    WVar7 = WM_USER_0x0403;
     WVar6 = 0;
     uVar8 = rghwndOrderDD[1];
     pcVar3 = PszGetCompressedString(idsIindefinitely);
-    SendMessage(uVar8,UVar7,WVar6,(LPARAM)pcVar3);
-    LVar5 = SendMessage(rghwndOrderDD[1],0x40e,
+    SendMessage(uVar8,WVar7,WVar6,(LPARAM)pcVar3);
+    LVar5 = SendMessage(rghwndOrderDD[1],WM_USER_0x040E,
                         *(WPARAM *)
                          ((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc
                          ),0);
@@ -4987,7 +4982,7 @@ void UpdateOrdersDDs(short iLevel)
   }
 LAB_1050_987f:
   if (iLevel < 3) {
-    SendMessage(rghwndOrderDD[2],0x40b,0,0);
+    SendMessage(rghwndOrderDD[2],WM_USER_0x040B,0,0);
     if (rglSel[0] == 1) {
       for (i = 0x6d; i < 0x77; i = i + 1) {
         if ((i == 0x74) && (rglSel[1] == 0)) {
@@ -4996,7 +4991,7 @@ LAB_1050_987f:
         else {
           psz = PszGetCompressedString(i);
         }
-        SendMessage(rghwndOrderDD[2],0x403,0,(LPARAM)psz);
+        SendMessage(rghwndOrderDD[2],WM_USER_0x0403,0,(LPARAM)psz);
       }
       if ((int)rglSel[1] == 0) {
         iSel = 4;
@@ -5004,13 +4999,13 @@ LAB_1050_987f:
       else {
         iSel = (int)rglSel[1] + -1;
       }
-      rglSel[2] = SendMessage(rghwndOrderDD[2],0x40e,
+      rglSel[2] = SendMessage(rghwndOrderDD[2],WM_USER_0x040E,
                               *(uint *)((int)(PLORD *)sel.fl.lpplord +
                                        iSel * 2 + sel.iwpAct * 0x12 + 0xc) >> 0xc,0);
     }
   }
   else {
-    rglSel[2] = SendMessage(rghwndOrderDD[2],0x407,0,0);
+    rglSel[2] = SendMessage(rghwndOrderDD[2],WM_USER_0x0407,0,0);
   }
   if ((iLevel < 4) && (rglSel[0] == 1)) {
     if ((int)rglSel[1] == 0) {
@@ -5019,7 +5014,7 @@ LAB_1050_987f:
     else {
       iSel = (int)rglSel[1] + -1;
     }
-    _wsprintf(szWork,(char *)0x11200994,
+    _wsprintf(szWork,s_u_1120_0994,
               *(uint *)((int)(PLORD *)sel.fl.lpplord +
                        iSel * 2 + sel.iwpAct * 0x12 + 0xc) & 0xfff);
     SetWindowText(hwndOrderED,szWork);
@@ -5041,9 +5036,9 @@ void FillBattleDD(short iSel)
 {
   short i;
   
-  SendMessage(hwndBattleDD,0x40b,0,0);
+  SendMessage(hwndBattleDD,WM_USER_0x040B,0,0);
   CchGetString(idsBattlePlans,(char *)szWork);
-  SendMessage(hwndBattleDD,0x403,0,0x112057a4);
+  SendMessage(hwndBattleDD,WM_USER_0x0403,0,0x112057a4);
   for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
     __fstrcpy(szWork,
                       (char *)CONCAT22(*(undefined2 *)
@@ -5051,9 +5046,9 @@ void FillBattleDD(short iSel)
                                         idPlayer * 4 + 2),
                                        (char *)(*(int *)((BTLPLAN **)rglpbtlplan +
                                                         idPlayer) + i * 0x24 + 4)));
-    SendMessage(hwndBattleDD,0x403,0,0x112057a4);
+    SendMessage(hwndBattleDD,WM_USER_0x0403,0,0x112057a4);
   }
-  SendMessage(hwndBattleDD,0x40e,iSel,0);
+  SendMessage(hwndBattleDD,WM_USER_0x040E,iSel,0);
   return;
 }
 

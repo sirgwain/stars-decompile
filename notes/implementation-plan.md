@@ -8,17 +8,17 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 | Depth | Label | Total | Implemented | Unimplemented |
 |-------|-------|------:|------------:|--------------:|
-| 0 | Depth 0 — Leaf Functions | 192 | 94 | 98 |
-| 1 | Depth 1 — Calls Only Leaves | 73 | 19 | 54 |
-| 2 | Depth 2 | 76 | 10 | 66 |
-| 3 | Depth 3 | 59 | 6 | 53 |
+| 0 | Depth 0 — Leaf Functions | 192 | 97 | 95 |
+| 1 | Depth 1 — Calls Only Leaves | 73 | 20 | 53 |
+| 2 | Depth 2 | 76 | 11 | 65 |
+| 3 | Depth 3 | 59 | 7 | 52 |
 | 4 | Depth 4 | 46 | 4 | 42 |
 | 5 | Depth 5 | 19 | 1 | 18 |
 | 6 | Depth 6 | 10 | 1 | 9 |
 | 7 | Depth 7 | 15 | 3 | 12 |
 | 8 | Depth 8 | 15 | 3 | 12 |
-| 9 | Depth 9 | 26 | 3 | 23 |
-| 10 | Depth 10 | 14 | 4 | 10 |
+| 9 | Depth 9 | 26 | 5 | 21 |
+| 10 | Depth 10 | 14 | 5 | 9 |
 | 11 | Depth 11 | 14 | 2 | 12 |
 | 12 | Depth 12 | 20 | 0 | 20 |
 | 13 | Depth 13 | 14 | 1 | 13 |
@@ -27,12 +27,12 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 16 | Depth 16 | 8 | 2 | 6 |
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
-| -1 | Depth -1 — Cyclic Functions | 107 | 2 | 105 |
-| | **Total** | **743** | **155** | **588** |
+| -1 | Depth -1 — Cyclic Functions | 107 | 3 | 104 |
+| | **Total** | **743** | **165** | **578** |
 
 ## Depth 0 — Leaf Functions
 
-### Unimplemented (98)
+### Unimplemented (95)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -96,7 +96,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **PctTerraFromLpfl** | 51 | `int32_t PctTerraFromLpfl(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 | ⬜ | **Delay** | 52 | `void Delay(int16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 | ⬜ | **FCheckSummary** | 52 | `int16_t FCheckSummary(uint16_t, int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
-| ⬜ | **HbrGet** | 52 | `uint16_t HbrGet(uint32_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **IshFindSimilarDesign** | 52 | `int16_t IshFindSimilarDesign(HUL *32, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **FIsTargetOfMdTarget** | 53 | `int16_t FIsTargetOfMdTarget(TOK *32, int16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **FQueueColonistDrop** | 53 | `int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
@@ -106,7 +105,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **GetVCVal** | 59 | `int16_t GetVCVal(GAME *, int16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **MarkPlanet** | 59 | `void MarkPlanet(PLANET *32, int16_t, uint16_t)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
 | ⬜ | **NewPlanNameDlg** | 59 | `int16_t NewPlanNameDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **PszGetCompressedString** | 59 | `char * PszGetCompressedString(int16_t)` | [strings.c](../strings.c) | [strings.c](../decompiled/all/strings.c) |
 | ⬜ | **NoAutoTrackFleet** | 60 | `void NoAutoTrackFleet(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 | ⬜ | **FOtherStuffAtScanSel** | 62 | `int16_t FOtherStuffAtScanSel(void)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
 | ⬜ | **BoundsCheckPlayer** | 65 | `void BoundsCheckPlayer(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
@@ -132,12 +130,11 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **IValidateWormholePos** | 157 | `int16_t IValidateWormholePos(THING *32)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
 | ⬜ | **FIntersectCircleLine** | 171 | `int16_t FIntersectCircleLine(POINT, POINT, POINT, int32_t, int16_t, int16_t *, int16_t *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **DrawRadarCircle** | 182 | `void DrawRadarCircle(DRAWCIR *, RECT *)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
-| ⬜ | **InitMDIApp** | 192 | `int16_t InitMDIApp(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **AnimateAttack** | 462 | `void AnimateAttack(uint16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 
-### Implemented (94)
+### Implemented (97)
 
-<details><summary>Show 94 implemented functions</summary>
+<details><summary>Show 97 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
@@ -182,6 +179,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | GetVCCheck | 15 | [create.c](../create.c) |
 | ✅ | GetWindowRc | 26 | [mdi.c](../mdi.c) |
 | ✅ | HandleFocusState | 23 | [planet.c](../planet.c) |
+| ✅ | HbrGet | 52 | [utilgen.c](../utilgen.c) |
 | ✅ | HideProgressGauge | 19 | [utilgen.c](../utilgen.c) |
 | ✅ | ICompFleetPoint2 | 32 | [util.c](../util.c) |
 | ✅ | ICompLong | 15 | [utilgen.c](../utilgen.c) |
@@ -189,6 +187,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | IRaceChecksum | 24 | [race.c](../race.c) |
 | ✅ | IWarpMAFromLppl | 65 | [planet.c](../planet.c) |
 | ✅ | IflFromLpfl | 27 | [util.c](../util.c) |
+| ✅ | InitMDIApp | 192 | [mdi.c](../mdi.c) |
 | ✅ | InitNewGame3 | 15 | [create.c](../create.c) |
 | ✅ | IshdefPrimaryFromLpfl | 39 | [util.c](../util.c) |
 | ✅ | LDistance2 | 22 | [utilgen.c](../utilgen.c) |
@@ -218,6 +217,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | PszFromLong | 22 | [utilgen.c](../utilgen.c) |
 | ✅ | PszGetCompressedMessage | 60 | [msg.c](../msg.c) |
 | ✅ | PszGetCompressedPlanet | 75 | [utilgen.c](../utilgen.c) |
+| ✅ | PszGetCompressedString | 59 | [strings.c](../strings.c) |
 | ✅ | PushRandom | 26 | [utilgen.c](../utilgen.c) |
 | ✅ | Random | 75 | [utilgen.c](../utilgen.c) |
 | ✅ | Randomize | 32 | [utilgen.c](../utilgen.c) |
@@ -240,7 +240,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 1 — Calls Only Leaves
 
-### Unimplemented (54)
+### Unimplemented (53)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -287,7 +287,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **SetVisPFFinish** | 90 | `void SetVisPFFinish(int16_t)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
 | ⬜ | **CTorpHit** | 92 | `int32_t CTorpHit(int32_t, TOK *32, int16_t, int16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **FormatSerialAndEnv** | 97 | `void FormatSerialAndEnv(int32_t, uint8_t *, char *)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
-| ⬜ | **FGetSystemColors** | 99 | `int16_t FGetSystemColors(void)` | [stars.c](../stars.c) | [main.c](../decompiled/all/main.c) |
 | ⬜ | **FValidSerialNo** | 99 | `int16_t FValidSerialNo(char *, int32_t *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **SortReportCache** | 102 | `void SortReportCache(int16_t, int16_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **InitializeMenu** | 112 | `void InitializeMenu(uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
@@ -299,15 +298,16 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **LInnateRaceHabitability** | 277 | `int32_t LInnateRaceHabitability(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **_Draw3dFrame** | ? | `void _Draw3dFrame(uint16_t, RECT *, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 
-### Implemented (19)
+### Implemented (20)
 
-<details><summary>Show 19 implemented functions</summary>
+<details><summary>Show 20 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
 | ✅ | CchGetString | 27 | [utilgen.c](../utilgen.c) |
 | ✅ | FCompressUserString | 65 | [utilgen.c](../utilgen.c) |
 | ✅ | FDecompressUserString | 72 | [utilgen.c](../utilgen.c) |
+| ✅ | FGetSystemColors | 99 | [stars.c](../stars.c) |
 | ✅ | FLookupPart | 393 | [parts.c](../parts.c) |
 | ✅ | FValidSerialLong | 50 | [file.c](../file.c) |
 | ✅ | FreeLp | 34 | [memory.c](../memory.c) |
@@ -329,7 +329,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 2 — Calls up to depth 1
 
-### Unimplemented (66)
+### Unimplemented (65)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -360,8 +360,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InitFromHuldef** | 72 | `int16_t InitFromHuldef(HUL *32, int16_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **FGetNewGameName** | 75 | `int16_t FGetNewGameName(char *)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **DpShieldOfShdef** | 78 | `int32_t DpShieldOfShdef(SHDEF *32, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
+| ⬜ | **GetIniWinRc** | 79 | `void GetIniWinRc(char *, char *, int16_t, WN *)` | [init.c](../init.c) | [init.c](../decompiled/all/init.c) |
 | ⬜ | **DrawTutorText** | 80 | `void DrawTutorText(uint16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
-| ⬜ | **GetIniWinRc** | 80 | `void GetIniWinRc(char *, char *, int16_t, WN *)` | [init.c](../init.c) | [init.c](../decompiled/all/init.c) |
 | ⬜ | **PtDisplayResourceInfo** | 80 | `POINT PtDisplayResourceInfo(uint16_t, int16_t, int16_t)` | [popup.c](../popup.c) | [popup.c](../decompiled/all/popup.c) |
 | ⬜ | **DrawThingGauge** | 81 | `void DrawThingGauge(uint16_t, RECT *, THING *32, int16_t)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
 | ⬜ | **CMineSweepFromLphul** | 82 | `int32_t CMineSweepFromLphul(HUL *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
@@ -390,7 +390,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DpFromPtokBrcToBrc** | 184 | `int32_t DpFromPtokBrcToBrc(TOK *32, uint8_t, uint8_t, TOK *32, int16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **PszGetTaskName** | 200 | `char * PszGetTaskName(FLEET *32, int16_t *)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **FCanTerraformLppl** | 201 | `int16_t FCanTerraformLppl(PLANET *32, int16_t *, int16_t *, int16_t *, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **FreeStuff** | 201 | `void FreeStuff(void)` | [stars.c](../stars.c) | [main.c](../decompiled/all/main.c) |
 | ⬜ | **TooltipWndProc** | 223 | `int32_t TooltipWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **FCalcFleetBombDamage** | 238 | `int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **CplrBattle** | 300 | `int16_t CplrBattle(FLEET *32, uint16_t *, uint16_t *, uint16_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
@@ -400,15 +399,16 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DrawShipScanPath** | 370 | `void DrawShipScanPath(uint16_t, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **GetProductionCosts** | 414 | `void GetProductionCosts(PLANET *32, PROD *32, uint32_t *, int16_t, int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 
-### Implemented (10)
+### Implemented (11)
 
-<details><summary>Show 10 implemented functions</summary>
+<details><summary>Show 11 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
 | ✅ | CBattleUnits | 82 | [vcr.c](../vcr.c) |
 | ✅ | FLookupPartX | 21 | [parts.c](../parts.c) |
 | ✅ | FreePl | 17 | [memory.c](../memory.c) |
+| ✅ | FreeStuff | 201 | [stars.c](../stars.c) |
 | ✅ | IMsgNext | 39 | [msg.c](../msg.c) |
 | ✅ | IMsgPrev | 41 | [msg.c](../msg.c) |
 | ✅ | LookupBestPlanetaryScanner | 30 | [parts.c](../parts.c) |
@@ -421,13 +421,12 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 3 — Calls up to depth 2
 
-### Unimplemented (53)
+### Unimplemented (52)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
 | ⬜ | **DrawShipPlanet** | 9 | `void DrawShipPlanet(uint16_t, TILE *, OBJ)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **CheckInitiative** | 25 | `void CheckInitiative(TOK *32)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **AlertSz** | 36 | `int16_t AlertSz(char *, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **DrawMineralItem** | 36 | `void DrawMineralItem(uint16_t, int16_t, int16_t, int16_t, int32_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **IpctCanTerraformLppl** | 37 | `int16_t IpctCanTerraformLppl(PLANET *32)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **CMineSweepFromLpfl** | 38 | `int32_t CMineSweepFromLpfl(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
@@ -460,11 +459,11 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DrawNewGame3** | 139 | `void DrawNewGame3(uint16_t, uint16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **DrawHostDialog2** | 141 | `void DrawHostDialog2(uint16_t, uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **PctCloakFromLpfl** | 150 | `int16_t PctCloakFromLpfl(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
-| ⬜ | **DrawNewGame2** | 157 | `void DrawNewGame2(uint16_t, uint16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
+| ⬜ | **DrawNewGame2** | 156 | `void DrawNewGame2(uint16_t, uint16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **SpankTheCheaters** | 171 | `void SpankTheCheaters(void)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **ScoreGuessBattleDamage** | 172 | `int32_t ScoreGuessBattleDamage(TOK *32, uint8_t, int16_t, uint16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **DrawScoreReport** | 176 | `void DrawScoreReport(uint16_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
-| ⬜ | **FillBuildDD** | 185 | `void FillBuildDD(uint16_t, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
+| ⬜ | **FillBuildDD** | 186 | `void FillBuildDD(uint16_t, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **ShowTooltip** | 189 | `void ShowTooltip(int16_t, RECT *)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **DrawProductionItem** | 203 | `void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **CreateChildWindows** | 204 | `void CreateChildWindows(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
@@ -479,12 +478,13 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **CreateRandomRace** | 354 | `void CreateRandomRace(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **DrawResearchDlg** | 981 | `void DrawResearchDlg(uint16_t, uint16_t, RECT *, int16_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
 
-### Implemented (6)
+### Implemented (7)
 
-<details><summary>Show 6 implemented functions</summary>
+<details><summary>Show 7 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
+| ✅ | AlertSz | 38 | [utilgen.c](../utilgen.c) |
 | ✅ | EstFuelUse | 229 | [ship.c](../ship.c) |
 | ✅ | FReadShDef | 157 | [file.c](../file.c) |
 | ✅ | LGetFleetStat | 42 | [ship.c](../ship.c) |
@@ -630,7 +630,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **TutorError** | 35 | `void TutorError(int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 | ⬜ | **WriteMemRt** | 46 | `void WriteMemRt(int16_t, int16_t, void *)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **FEnsurePointOnScreen** | 58 | `int16_t FEnsurePointOnScreen(POINT, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
-| ⬜ | **TutorDlg** | 87 | `int16_t TutorDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
+| ⬜ | **TutorDlg** | 86 | `int16_t TutorDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 | ⬜ | **FDeleteBattlePlan** | 89 | `int16_t FDeleteBattlePlan(int16_t, int16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **PasswordDlg** | 90 | `int16_t PasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **MsgDlg** | 99 | `int16_t MsgDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
@@ -681,7 +681,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 9 — Calls up to depth 8
 
-### Unimplemented (23)
+### Unimplemented (21)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -706,29 +706,28 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **LogChangeFleet** | 188 | `void LogChangeFleet(FLEET *32, FLEET *)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **WriteBattles** | 244 | `void WriteBattles(int16_t)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
 | ⬜ | **FTutorialEnabledShipBuilder** | 250 | `int16_t FTutorialEnabledShipBuilder(int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
-| ⬜ | **FCreateStuff** | 283 | `int16_t FCreateStuff(void)` | [init.c](../init.c) | [init.c](../decompiled/all/init.c) |
-| ⬜ | **ReadIniSettings** | 513 | `void ReadIniSettings(void)` | [init.c](../init.c) | [init.c](../decompiled/all/init.c) |
 
-### Implemented (3)
+### Implemented (5)
 
-<details><summary>Show 3 implemented functions</summary>
+<details><summary>Show 5 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
+| ✅ | FCreateStuff | 283 | [init.c](../init.c) |
 | ✅ | LpReAlloc | 52 | [memory.c](../memory.c) |
 | ✅ | LpplAlloc | 26 | [memory.c](../memory.c) |
+| ✅ | ReadIniSettings | 511 | [init.c](../init.c) |
 | ✅ | ReadRt | 29 | [file.c](../file.c) |
 
 </details>
 
 ## Depth 10 — Calls up to depth 9
 
-### Unimplemented (10)
+### Unimplemented (9)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
 | ⬜ | **FCreateFile** | 36 | `int16_t FCreateFile(uint16_t, int16_t, char *)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
-| ⬜ | **InitInstance** | 58 | `int16_t InitInstance(int16_t)` | [init.c](../init.c) | [init.c](../decompiled/all/init.c) |
 | ⬜ | **LpthNew** | 85 | `THING *32 LpthNew(int16_t, int16_t)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
 | ⬜ | **LpflNew** | 103 | `FLEET *32 LpflNew(int16_t, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **FWasRaceFile** | 121 | `int16_t FWasRaceFile(char *, int16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
@@ -738,14 +737,15 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **FMarkFile** | 193 | `int16_t FMarkFile(uint16_t, int16_t, int16_t, int16_t)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
 | ⬜ | **FTutorTaskDone** | 3196 | `int16_t FTutorTaskDone(void)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 
-### Implemented (4)
+### Implemented (5)
 
-<details><summary>Show 4 implemented functions</summary>
+<details><summary>Show 5 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
 | ✅ | FOpenFile | 197 | [file.c](../file.c) |
 | ✅ | FReadFleet | 215 | [file.c](../file.c) |
+| ✅ | InitInstance | 58 | [init.c](../init.c) |
 | ✅ | LpplReAlloc | 19 | [memory.c](../memory.c) |
 | ✅ | ReadPlayerMessages | 98 | [msg.c](../msg.c) |
 
@@ -790,7 +790,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **RandomEvents** | 19 | `void RandomEvents(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **LogChangeBtlplan** | 20 | `void LogChangeBtlplan(BTLPLAN *)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **LogChangeRelations** | 28 | `void LogChangeRelations(void)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **PromptSaveGame** | 36 | `void PromptSaveGame(void)` | [file.c](../file.c) | [io.c](../decompiled/all/io.c) |
+| ⬜ | **PromptSaveGame** | 35 | `void PromptSaveGame(void)` | [file.c](../file.c) | [io.c](../decompiled/all/io.c) |
 | ⬜ | **LogChangeShDef** | 43 | `void LogChangeShDef(SHDEF *32)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **FLookupThing** | 60 | `int16_t FLookupThing(int16_t, THING *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **FDumpCargo** | 71 | `int16_t FDumpCargo(FLEET *32)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
@@ -799,14 +799,14 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **CFindTurnsOutstanding** | 96 | `int16_t CFindTurnsOutstanding(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **MergeFleetsDlg** | 98 | `int16_t MergeFleetsDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 | ⬜ | **FLookupPlanet** | 103 | `int16_t FLookupPlanet(int16_t, PLANET *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **BattleVCR** | 117 | `void BattleVCR(int16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
+| ⬜ | **BattleVCR** | 116 | `void BattleVCR(int16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 | ⬜ | **ScoreXDlg** | 140 | `int16_t ScoreXDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **CreateSalvage** | 143 | `void CreateSalvage(FLEET *, THING *32 *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **RaceCreationWizard** | 161 | `int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
+| ⬜ | **RaceCreationWizard** | 155 | `int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **IDropPart** | 235 | `int16_t IDropPart(POINT, HS, int16_t, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
-| ⬜ | **BrowserDlg** | 302 | `int16_t BrowserDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
-| ⬜ | **ZipProdDlg** | 316 | `int16_t ZipProdDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
-| ⬜ | **ZipOrderDlg** | 326 | `int16_t ZipOrderDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
+| ⬜ | **BrowserDlg** | 303 | `int16_t BrowserDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
+| ⬜ | **ZipProdDlg** | 314 | `int16_t ZipProdDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
+| ⬜ | **ZipOrderDlg** | 325 | `int16_t ZipOrderDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 
 ## Depth 13 — Calls up to depth 12
 
@@ -824,9 +824,9 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **RelationsDlg** | 132 | `int16_t RelationsDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **ChgCargo** | 162 | `int32_t ChgCargo(int16_t, int16_t, int16_t, int32_t, void *)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **InitializeBoard** | 194 | `void InitializeBoard(FLEET *32, int16_t, uint16_t, uint8_t *, int16_t *, int16_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **SimpleNewGameDlg** | 242 | `int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
+| ⬜ | **SimpleNewGameDlg** | 243 | `int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **FleetTransferCargoBalance** | 381 | `void FleetTransferCargoBalance(FLEET *, FLEET *)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
-| ⬜ | **BattlePlansDlg** | 484 | `int16_t BattlePlansDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
+| ⬜ | **BattlePlansDlg** | 483 | `int16_t BattlePlansDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 
 ### Implemented (1)
 
@@ -927,19 +927,18 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth -1 — Cyclic Functions
 
-### Unimplemented (105)
+### Unimplemented (104)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
 | ⬜ | **DrawPlanetProduction** | 9 | `void DrawPlanetProduction(uint16_t, TILE *, OBJ)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **GenerateWorld** | 9 | `int16_t GenerateWorld(int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **FakeCEProc** | 26 | `int32_t FakeCEProc(uint16_t, uint16_t, uint16_t, int32_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **FakeComboProc** | 27 | `int32_t FakeComboProc(uint16_t, uint16_t, uint16_t, int32_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **MineMinerals** | 27 | `void MineMinerals(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **SetScanWp** | 27 | `int16_t SetScanWp(int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **DestroyAllIshdefSB** | 32 | `void DestroyAllIshdefSB(int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FRunLogFile** | 39 | `int16_t FRunLogFile(void)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
-| ⬜ | **ShipBuilder** | 44 | `int16_t ShipBuilder(POINT)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
+| ⬜ | **ShipBuilder** | 43 | `int16_t ShipBuilder(POINT)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **FinishProduction** | 49 | `void FinishProduction(int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FNearAWayPoint** | 50 | `int16_t FNearAWayPoint(POINT, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **ProjectedResearchSpending** | 55 | `int32_t ProjectedResearchSpending(int32_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
@@ -950,8 +949,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **EnsureAis** | 66 | `void EnsureAis(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **FindDlg** | 71 | `int16_t FindDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **InitializeProductionDlg** | 72 | `void InitializeProductionDlg(uint16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
+| ⬜ | **ChangeProduction** | 75 | `int16_t ChangeProduction(int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FleetOrdersChangeTarget** | 75 | `void FleetOrdersChangeTarget(FLEET *32)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
-| ⬜ | **ChangeProduction** | 76 | `int16_t ChangeProduction(int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **KillQueuedMassPackets** | 80 | `void KillQueuedMassPackets(PLANET *32)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **SelectAdjPlanet** | 81 | `void SelectAdjPlanet(int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **CreateTutorWorld** | 82 | `void CreateTutorWorld(void)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
@@ -968,8 +967,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **VerifyTurns** | 119 | `void VerifyTurns(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **FSelectSz** | 122 | `int16_t FSelectSz(char *)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **CchGetETA** | 123 | `int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **FCheckQueuedShip** | 128 | `int16_t FCheckQueuedShip(uint16_t, SHDEF *32, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **FFleetMergeAll** | 129 | `int16_t FFleetMergeAll(FLEET *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
+| ⬜ | **FCheckQueuedShip** | 130 | `int16_t FCheckQueuedShip(uint16_t, SHDEF *32, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **FTrackResearchDlg** | 130 | `int16_t FTrackResearchDlg(uint16_t, int16_t, int16_t, int16_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
 | ⬜ | **ChangeMainObjSel** | 138 | `void ChangeMainObjSel(int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **ChangeScanSel** | 141 | `void ChangeScanSel(SCAN *, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
@@ -983,67 +982,68 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **InvertPaneBorder** | 160 | `POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **FAddWayPoint** | 173 | `int16_t FAddWayPoint(POINT, SCAN *)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **HostTimerProc** | 184 | `void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
-| ⬜ | **BringUpHostDlg** | 185 | `void BringUpHostDlg(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
-| ⬜ | **DrawProductionDlg** | 189 | `void DrawProductionDlg(uint16_t, uint16_t, RECT *, int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
+| ⬜ | **BringUpHostDlg** | 186 | `void BringUpHostDlg(void)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **DrawProductionDlg** | 190 | `void DrawProductionDlg(uint16_t, uint16_t, RECT *, int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **IWarpBestForWaypoint** | 209 | `int16_t IWarpBestForWaypoint(FLEET *32, ORDER *32)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **EstimateItemProdSched** | 223 | `void EstimateItemProdSched(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FOpenGame** | 233 | `int16_t FOpenGame(uint16_t, int16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **ProductionDlg** | 235 | `int16_t ProductionDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FFindNearestObject** | 236 | `int16_t FFindNearestObject(POINT, int16_t, SCAN *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **ProductionDlg** | 236 | `int16_t ProductionDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **PlanetClick** | 240 | `void PlanetClick(int16_t, int16_t, int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **EstMineralsMined** | 245 | `void EstMineralsMined(PLANET *32, int32_t *, int32_t, int16_t)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
 | ⬜ | **ClickInPlanetOrders** | 255 | `uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **FHandleMeasuringTape** | 260 | `int16_t FHandleMeasuringTape(SCAN *, POINT)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **FHandleKey** | 273 | `int16_t FHandleKey(uint16_t, int16_t, int16_t, uint32_t)` | [stars.c](../stars.c) | [main.c](../decompiled/all/main.c) |
-| ⬜ | **TransferStuff** | 278 | `int16_t TransferStuff(int16_t, int16_t, int16_t, int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
+| ⬜ | **TransferStuff** | 277 | `int16_t TransferStuff(int16_t, int16_t, int16_t, int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **ExecuteReportClick** | 282 | `void ExecuteReportClick(POINT, int16_t, int16_t, int16_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **DrawShipOrders** | 284 | `void DrawShipOrders(uint16_t, TILE *, OBJ)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FDamageTok** | 316 | `int16_t FDamageTok(TOK *32, int16_t, int32_t *, int32_t, uint16_t, int16_t, int32_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **DumpFleets** | 334 | `void DumpFleets(void)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **ExecuteButton** | 335 | `void ExecuteButton(int16_t, int16_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **TbWndProc** | 335 | `int32_t TbWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
-| ⬜ | **HostModeDialog** | 341 | `int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **HostModeDialog** | 343 | `int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **ReportDlg** | 354 | `int32_t ReportDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
-| ⬜ | **TitleWndProc** | 354 | `int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **TitleWndProc** | 355 | `int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **UpdateResearchStatus** | 357 | `void UpdateResearchStatus(int16_t)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
-| ⬜ | **DumpPlanets** | 363 | `void DumpPlanets(void)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
+| ⬜ | **DumpPlanets** | 362 | `void DumpPlanets(void)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **FDoCoolBattle** | 377 | `int16_t FDoCoolBattle(FLEET *32, int16_t, uint16_t *, uint16_t, uint16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **MineClick** | 428 | `void MineClick(int16_t, int16_t, int16_t, int16_t)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
+| ⬜ | **MineClick** | 431 | `void MineClick(int16_t, int16_t, int16_t, int16_t)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
 | ⬜ | **Produce** | 431 | `void Produce(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
-| ⬜ | **NewGameWizard** | 441 | `void NewGameWizard(uint16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
+| ⬜ | **NewGameWizard** | 438 | `void NewGameWizard(uint16_t, int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **NewGameDlg2** | 489 | `int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **GenNewGameFromFile** | 523 | `int16_t GenNewGameFromFile(char *)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **ResearchDlg** | 525 | `int16_t ResearchDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
 | ⬜ | **ScannerWndProc** | 532 | `int32_t ScannerWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
-| ⬜ | **ShipCommandProc** | 557 | `void ShipCommandProc(uint16_t, uint16_t, int32_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
+| ⬜ | **ShipCommandProc** | 554 | `void ShipCommandProc(uint16_t, uint16_t, int32_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FWriteDataFile** | 563 | `int16_t FWriteDataFile(char *, int16_t, int16_t)` | [save.c](../save.c) | [io.c](../decompiled/all/io.c) |
-| ⬜ | **DoThingInteractions** | 570 | `void DoThingInteractions(int16_t)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
+| ⬜ | **DoThingInteractions** | 571 | `void DoThingInteractions(int16_t)` | [thing.c](../thing.c) | [thing.c](../decompiled/all/thing.c) |
 | ⬜ | **FHandleWayPointDrag** | 596 | `int16_t FHandleWayPointDrag(POINT)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **FBuildObject** | 607 | `int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
-| ⬜ | **ClickInShipOrders** | 673 | `uint16_t ClickInShipOrders(POINT, int16_t, int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
+| ⬜ | **ClickInShipOrders** | 672 | `uint16_t ClickInShipOrders(POINT, int16_t, int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **FGenerateTurn** | 689 | `int16_t FGenerateTurn(void)` | [turn.c](../turn.c) | [turn.c](../decompiled/all/turn.c) |
-| ⬜ | **FrameWndProc** | 710 | `int32_t FrameWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **PlanetWndProc** | 706 | `int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **ProdCommandHandler** | 711 | `void ProdCommandHandler(uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
-| ⬜ | **PlanetWndProc** | 731 | `int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **FAttack** | 787 | `int16_t FAttack(int16_t, int16_t, BTLREC *32, uint16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 | ⬜ | **DrawReportItem** | 832 | `void DrawReportItem(uint16_t, RECT *, int16_t, int16_t, int16_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **ICompReport** | 864 | `int16_t ICompReport(void *, void *)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
-| ⬜ | **MessageWndProc** | 872 | `int32_t MessageWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
+| ⬜ | **MessageWndProc** | 870 | `int32_t MessageWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
 | ⬜ | **FRunLogRecord** | 927 | `int16_t FRunLogRecord(int16_t, int16_t, uint8_t *32)` | [log.c](../log.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **MoveFleets** | 943 | `void MoveFleets(void)` | [turn.c](../turn.c) | [turn.c](../decompiled/all/turn.c) |
 | ⬜ | **DrawShipWayPtOrders** | 957 | `void DrawShipWayPtOrders(uint16_t, TILE *, OBJ)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **DrawMineSurvey** | 1092 | `void DrawMineSurvey(uint16_t, RECT *)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
-| ⬜ | **CommandHandler** | 1268 | `void CommandHandler(uint16_t, uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
+| ⬜ | **CommandHandler** | 1260 | `void CommandHandler(uint16_t, uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **SlotDlg** | 1292 | `int16_t SlotDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
+| ⬜ | **GenerateWorld** | 1697 | `int16_t GenerateWorld(int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **SatisfyOrders** | 1893 | `void SatisfyOrders(int16_t)` | [turn3.c](../turn3.c) | [turn.c](../decompiled/all/turn.c) |
 
-### Implemented (2)
+### Implemented (3)
 
-<details><summary>Show 2 implemented functions</summary>
+<details><summary>Show 3 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
 | ✅ | FLoadGame | 1389 | [file.c](../file.c) |
+| ✅ | FrameWndProc | 708 | [mdi.c](../mdi.c) |
 | ✅ | WinMain | 338 | [winmain.c](../winmain.c) |
 
 </details>

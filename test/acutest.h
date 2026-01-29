@@ -347,7 +347,7 @@ void acutest_abort_(void) ACUTEST_ATTRIBUTE_(noreturn);
 #include <sys/stat.h>
 #endif
 
-#if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+#if (defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)) && !defined(STARS_USE_WIN_STUBS)
 #define ACUTEST_WIN_ 1
 #include <io.h>
 #include <windows.h>

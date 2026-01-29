@@ -1,0 +1,21 @@
+115 DIALOG LOADONCALL MOVEABLE DISCARDABLE 0, 0, 260, 220
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Stars! Host Mode"
+FONT 8, "MS Sans Serif"
+{
+ RTEXT "Game:", -1, 4, 4, 24, 8
+ LTEXT "", 1033, 30, 4, 120, 8
+ RTEXT "File:", -1, 4, 14, 24, 8
+ LTEXT "", 1034, 30, 14, 175, 8
+ CTEXT "Next year is:", -1, 190, 4, 64, 8
+ CTEXT "", 2016, 200, 14, 44, 8
+ ICON "HostIco", -1, 214, 28, 18, 20, SS_ICON | WS_GROUP
+ PUSHBUTTON "&Generate Now", 1031, 190, 54, 65, 14
+ PUSHBUTTON "&Auto Generate", 1032, 190, 74, 65, 14
+ PUSHBUTTON "&Password...", 2015, 190, 94, 65, 14
+ PUSHBUTTON "&Close", 2, 190, 114, 65, 14
+ PUSHBUTTON "&Help", 118, 190, 134, 65, 14
+ CTEXT "Time since", -1, 190, 160, 64, 8
+ CTEXT "last change:", -1, 190, 170, 64, 8
+ CTEXT "", 2017, 190, 180, 64, 8
+}

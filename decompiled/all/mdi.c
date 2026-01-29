@@ -418,6 +418,7 @@ long FrameWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   POINT dpt_00;
   uint uVar1;
   uint uVar2;
+  HWND hWndParent;
   char *pcVar3;
   short sVar4;
   HICON HVar5;
@@ -591,9 +592,8 @@ MDI_Default_5:
       ScreenToClient(hwndFrame,(POINT *)((int)&local_12 + 2));
       GetClientRect(hwnd,local_1a + 2);
       uVar12 = 0x14f8;
-      PVar14.y._0_1_ = (char)local_12._4_2_;
+      PVar14.y = local_12._4_2_;
       PVar14.x = local_12._2_2_;
-      PVar14.y._1_1_ = (char)(local_12._4_2_ >> 8);
       BVar6 = PtInRect(local_1a + 2,PVar14);
       if (BVar6 != 0) {
         uVar12 = 0x1020;
@@ -623,15 +623,15 @@ MDI_Default_5:
   }
   if (msg == WM_CHAR) {
     if ((hwndScanner != 0) && ((wParam == 0x2d || (wParam == 0x2b)))) {
-      SendMessage(hwndScanner,0x102,wParam,lParam);
+      SendMessage(hwndScanner,WM_CHAR,wParam,lParam);
       return 0;
     }
     if ((hwndMessage != 0) && (((wParam == 0x2d || (wParam == 0x2b)) || (wParam == 0xd)))) {
-      SendMessage(hwndMessage,0x102,wParam,lParam);
+      SendMessage(hwndMessage,WM_CHAR,wParam,lParam);
       return 0;
     }
     if ((hwndPlanet != 0) && ((wParam == 0x66 || (wParam == 0x46)))) {
-      SendMessage(hwndPlanet,0x102,wParam,lParam);
+      SendMessage(hwndPlanet,WM_CHAR,wParam,lParam);
       return 0;
     }
     if ((hwndPlanet != 0) &&
@@ -718,15 +718,15 @@ MDI_Default_5:
           }
           else if (local_12._4_2_ == 2) {
             if (local_12._2_2_ == 0) {
-              PostMessage(hwndFrame,0x112,0xf020,0);
+              PostMessage(hwndFrame,WM_SYSCOMMAND,0xf020,0);
             }
             else {
-              PostMessage(hwndFrame,0x111,0x6a,0);
+              PostMessage(hwndFrame,WM_COMMAND,0x6a,0);
             }
             return 1;
           }
           uVar12 = 0x14f8;
-          SendMessage(hwndFrame,0x111,0xfa1,0);
+          SendMessage(hwndFrame,WM_COMMAND,0xfa1,0);
           puVar11 = &stack0xff9a;
           goto MDI_Default_5;
         }
@@ -734,7 +734,7 @@ MDI_Default_5:
       if (local_12._2_2_ != 0) {
         if (uTimerType == 0xd) {
           uVar12 = 0x14f8;
-          PostMessage(hwnd,0x465,0,0);
+          PostMessage(hwnd,WM_STARS_HOST,0,0);
           puVar11 = &stack0xff9a;
           goto MDI_Default_5;
         }
@@ -760,12 +760,12 @@ MDI_Default_5:
             }
           }
           else if (local_12._4_2_ == 2) {
-            PostMessage(hwndFrame,0x111,0x6a,0);
+            PostMessage(hwndFrame,WM_COMMAND,0x6a,0);
             return 1;
           }
         }
         uVar12 = 0x14f8;
-        SendMessage(hwndFrame,0x111,0xfa1,0);
+        SendMessage(hwndFrame,WM_COMMAND,0xfa1,0);
         if ((1000 < sel.pt.x) && (1000 < sel.pt.y)) {
           uVar12 = 0x1058;
           pt_00.y = sel.pt.y;
@@ -823,7 +823,7 @@ MDI_Default_5:
         PVar14 = InvertPaneBorder(hdc,local_12._2_2_,dpt,local_2a + 4);
         local_12._4_2_ = local_16._2_2_;
         local_12._6_2_ = (ushort)(char *)local_12;
-        unique0x10001b43 = PVar14;
+        unique0x10001a6c = PVar14;
       }
     }
     dpt_00.y = local_1a._0_2_;
@@ -887,13 +887,13 @@ MDI_MapIt_2:
     }
     goto MDI_MapIt_2;
   }
-  if (msg != 0x464) {
-    if (msg == 0x465) {
+  if (msg != WM_STARS_STARTUP) {
+    if (msg == WM_STARS_HOST) {
       BringUpHostDlg();
       return 1;
     }
     puVar11 = &stack0xff9a;
-    if (msg == 0x466) {
+    if (msg == WM_STARS_CONTINUE) {
       ShowTutor(0);
       game.fDirty = 0;
       DestroyCurGame();
@@ -907,7 +907,7 @@ MDI_MapIt_2:
         idPlayer = 0;
         if (wParam == 0x9ca) {
           gd.grBits._0_2_ = (uint)gd.grBits & 0xfffd | 2;
-          _wsprintf(szWork,(char *)0x112003cb);
+          _wsprintf(szWork,s_s_x1_1120_03cb);
           sVar4 = FLoadLogFile((char *)szWork);
           if (sVar4 != 0) {
             FRunLogFile();
@@ -915,9 +915,9 @@ MDI_MapIt_2:
           gd.grBits._0_2_ = (uint)gd.grBits & 0xfffd;
         }
         CreateChildWindows();
-        SendMessage(hwndFrame,0x111,0xfa1,0);
+        SendMessage(hwndFrame,WM_COMMAND,0xfa1,0);
         if (wParam == 0x9ca) {
-          SendMessage(hwndMessage,0x100,0x23,0);
+          SendMessage(hwndMessage,WM_KEYDOWN,0x23,0);
         }
         tutor.idt = 0;
         local_12._4_2_ = (uint)(wParam == 0x9ca);
@@ -943,19 +943,18 @@ MDI_MapIt_2:
         VerifyTurns();
         DestroyCurGame();
         EnsureAis();
-        _wsprintf((char *)CONCAT13((char)((uint)unaff_SS >> 8),CONCAT12((char)unaff_SS,&stack0xff9e)
-                                  ),s___s__Year___d_1120_0392);
+        _wsprintf((char *)&stack0xff9e,s___s__Year___d_1120_0392);
         OutputSz(7,(char *)&stack0xff9e);
         for (i = 0; i < game.cPlayer; i = i + 1) {
           if (((short *)rgOut)[i] + 1 < 4) {
-            local_12._6_2_ = _wsprintf((char *)&stack0xff9e,(char *)0x112003ac);
+            local_12._6_2_ = _wsprintf((char *)&stack0xff9e,s_d_1120_03ac);
           }
           else {
             local_12._6_2_ = _wsprintf((char *)&stack0xff9e,s_Error___d__1120_03a0);
           }
           if ((gd.grBits2._2_2_ >> 6 & 1) == 0) {
             PszPlayerName(i,1,1,1,0,(PLAYER *)0x0);
-            sVar4 = _wsprintf((char *)(&stack0xff9e + local_12._6_2_),(char *)0x112003b1);
+            sVar4 = _wsprintf((char *)(&stack0xff9e + local_12._6_2_),s_s_1120_03b1);
             local_12._6_2_ = local_12._6_2_ + sVar4;
           }
           pcVar3 = PszGetCompressedString(((short *)rgOut)[i] + idsTurned);
@@ -1023,19 +1022,19 @@ LAB_1020_0b67:
          ((((ini.wFlags >> 0xc & 1) != 0 || ((ini.wFlags >> 0xb & 1) != 0)) ||
           ((ini.wFlags >> 0xd & 1) != 0)))) {
         if ((ini.wFlags >> 0xd & 1) != 0) {
-          PostMessage(hwndFrame,0x111,0x55,0);
+          PostMessage(hwndFrame,WM_COMMAND,0x55,0);
         }
         if ((ini.wFlags >> 0xc & 1) != 0) {
-          PostMessage(hwndFrame,0x111,0x54,0);
+          PostMessage(hwndFrame,WM_COMMAND,0x54,0);
         }
         if ((ini.wFlags >> 0xb & 1) != 0) {
-          PostMessage(hwndFrame,0x111,0x53,0);
+          PostMessage(hwndFrame,WM_COMMAND,0x53,0);
         }
         goto MDI_LExit;
       }
       ShowWindow(hwndFrame,5);
       InitializeMenu(0);
-      PostMessage(hwndFrame,0x111,0xfa1,0);
+      PostMessage(hwndFrame,WM_COMMAND,0xfa1,0);
       if ((ini.wFlags >> 2 & 1) != 0) {
         ini.wFlags = ini.wFlags & 0xfffb;
         CommandHandler(hwnd,0x6a);
@@ -1047,8 +1046,8 @@ LAB_1020_0b67:
     local_12._2_2_ = GetSystemMetrics(0);
     local_12._4_2_ = GetSystemMetrics(1);
     hwndTitle =
-         CreateWindow(szTitle,(LPCSTR)0x112003c1,0x90000000,0,0,local_12._2_2_,local_12._4_2_
-                      ,hwndFrame,0,hInst,(void *)0x0);
+         CreateWindow(szTitle,s_Stars_1120_03c1,0x90000000,0,0,local_12._2_2_,local_12._4_2_,
+                      hwndFrame,0,hInst,(void *)0x0);
     fFreeingTitle = 0;
   }
   ini.wFlags = ini.wFlags & 0xfffe;
@@ -1066,12 +1065,11 @@ MDI_LNop:
     szWork[200] = '\x01';
   }
   local_16 = (undefined1  [4])MakeProcInstance(MsgDlg,hInst);
-  pcVar3 = (char *)hwndTitle;
+  hWndParent = hwndTitle;
   if (hwndTitle == 0) {
-    pcVar3 = (char *)hwndFrame;
+    hWndParent = hwndFrame;
   }
-  local_1a._2_2_ =
-       DialogBox(0,(LPCSTR)CONCAT22(0x56,pcVar3),(HWND)((ulong)local_16 >> 0x10),SUB41(local_16,0));
+  local_1a._2_2_ = DialogBox(0,IDD_DLG86_86,hWndParent,(FARPROC)local_16);
   FreeProcInstance((FARPROC)local_16);
   if (local_1a._2_2_ == 0) {
     vSerialNumber._0_2_ = 0;
@@ -1737,6 +1735,7 @@ short FFindSomethingAndSelectIt(void)
 /* WARNING: Removing unreachable block (ram,0x102034e8) */
 /* WARNING: Removing unreachable block (ram,0x10203583) */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
 
 void CommandHandler(HWND hwnd,ushort wParam)
 
@@ -1771,10 +1770,8 @@ void CommandHandler(HWND hwnd,ushort wParam)
   ulong uVar27;
   long lVar28;
   FARPROC pvVar29;
-  undefined1 uVar30;
-  undefined1 uVar31;
-  HDC HVar32;
-  char *pcVar33;
+  HDC HVar30;
+  char *pcVar31;
   char local_124 [112];
   int local_b4;
   int local_b2;
@@ -1863,13 +1860,13 @@ void CommandHandler(HWND hwnd,ushort wParam)
       return;
     }
     pvVar29 = MakeProcInstance(ScoreXDlg,hInst);
-    DialogBox(0,(LPCSTR)CONCAT22(0x66,hwnd),(HWND)((ulong)pvVar29 >> 0x10),(char)pvVar29);
+    DialogBox(0,IDD_DLG102_102,hwnd,pvVar29);
     FreeProcInstance(pvVar29);
     return;
   }
   if (wParam == 99) {
     pvVar29 = MakeProcInstance(About,hInst);
-    DialogBox(0,(LPCSTR)CONCAT22(0x5a,hwnd),(HWND)((ulong)pvVar29 >> 0x10),(char)pvVar29);
+    DialogBox(0,IDD_DLG90_90,hwnd,pvVar29);
     FreeProcInstance(pvVar29);
     return;
   }
@@ -1884,9 +1881,9 @@ MDI_Default_4:
   }
   if (wParam == 0x69) {
     if ((game.wCrap >> 2 & 1) == 0) {
-      pcVar33 = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
+      pcVar31 = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
       pcVar10 = PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould,(short *)0x0);
-      sVar8 = AlertSz(pcVar10,(short)pcVar33);
+      sVar8 = AlertSz(pcVar10,(short)pcVar31);
       if (sVar8 != 6) {
         return;
       }
@@ -1909,7 +1906,8 @@ LAB_1020_3f6e:
       pcVar10 = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
       _wsprintf(szWork,pcVar10);
       HVar15 = GetFocus();
-      sVar8 = MessageBox(HVar15,szWork,(LPCSTR)0x112003de,0x2034);
+      sVar8 = MessageBox(HVar15,szWork,s_Stars_1120_03de,
+                         MB_TASKMODAL|MB_ICONEXCLAMATION|MB_YESNO);
       if (sVar8 != 6) {
         return;
       }
@@ -2079,7 +2077,7 @@ MDI_LTutorialFinishUp:
         *(undefined2 *)(puVar22 + -10) = 0;
         *(undefined2 *)(puVar22 + -0xc) = 0x1020;
         *(undefined2 *)(puVar22 + -0xe) = 0x43d1;
-        SendMessage(*(HWND *)(puVar22 + -2),*(UINT *)(puVar22 + -4),*(WPARAM *)(puVar22 + -6),
+        SendMessage(*(HWND *)(puVar22 + -2),*(WMType *)(puVar22 + -4),*(WPARAM *)(puVar22 + -6),
                     *(LPARAM *)(puVar22 + -10));
         *(PLANET **)(puVar22 + -2) = local_24;
         *(undefined2 *)(puVar22 + -4) = 0x14f8;
@@ -2101,9 +2099,9 @@ MDI_LTutorialFinishUp:
         AlertSz(pcVar10,sVar8);
         return;
       }
-      pcVar33 = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
+      pcVar31 = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
       pcVar10 = PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould,(short *)0x0);
-      sVar8 = AlertSz(pcVar10,(short)pcVar33);
+      sVar8 = AlertSz(pcVar10,(short)pcVar31);
       if (sVar8 != 6) {
         return;
       }
@@ -2123,7 +2121,7 @@ LAB_1020_4a53:
         }
         InitializeMenu(0);
         if (uTimerId == 0) {
-          PostMessage(hwnd,0x111,0xfa1,0);
+          PostMessage(hwnd,WM_COMMAND,0xfa1,0);
         }
         if ((game.wCrap >> 3 & 1) == 0) {
           return;
@@ -2159,7 +2157,7 @@ LAB_1020_3083:
           local_24 = (PLANET *)GetSystemMetrics(0);
           local_22 = (PLANET *)GetSystemMetrics(1);
           hwndTitle =
-               CreateWindow(szTitle,(LPCSTR)0x112003e9,0x90000000,0,0,(short)local_24,
+               CreateWindow(szTitle,s_Stars_1120_03e9,0x90000000,0,0,(short)local_24,
                             (short)local_22,hwndFrame,0,hInst,(void *)0x0);
           fFreeingTitle = 0;
           ShowWindow(hwndFrame,0);
@@ -2176,7 +2174,7 @@ LAB_1020_4df3:
           local_24 = (PLANET *)0x262;
           local_22 = (PLANET *)0x1c2;
           if (hwndPopup != 0) {
-            SendMessage(hwndPopup,0x205,0,0);
+            SendMessage(hwndPopup,WM_RBUTTONUP,0,0);
           }
           ptDlgSize.y = (short)local_22;
           ptDlgSize.x = (short)local_24;
@@ -2192,8 +2190,7 @@ LAB_1020_4be3:
             return;
           }
           pvVar29 = MakeProcInstance(ResearchDlg,hInst);
-          sVar8 = DialogBox(0,(LPCSTR)CONCAT22(0x7f,hwndFrame),
-                            (HWND)((ulong)pvVar29 >> 0x10),(char)pvVar29);
+          sVar8 = DialogBox(0,IDD_DLG127_127,hwndFrame,pvVar29);
           FreeProcInstance(pvVar29);
           if (sVar8 == 0) {
             return;
@@ -2250,7 +2247,7 @@ LAB_1020_440c:
             local_22 = (PLANET *)0x8;
             CreateDialog(0,(LPCSTR)CONCAT22(0x80,hwndFrame),
                          lpfnBrowserDlgProc._2_2_,
-                         (char)(fn_lpfnBrowserDlgProc *)lpfnBrowserDlgProc);
+                         (fn_lpfnBrowserDlgProc *)lpfnBrowserDlgProc);
           }
           else {
             local_22 = (PLANET *)0x0;
@@ -2316,8 +2313,7 @@ LAB_1020_47b3:
             return;
           }
           _local_2a = MakeProcInstance(PrintMapDlg,hInst);
-          local_66 = DialogBox(0,(LPCSTR)CONCAT22(0xd6,hwndFrame),
-                               (HWND)((ulong)_local_2a >> 0x10),(char)_local_2a);
+          local_66 = DialogBox(0,IDD_DLG128_128|IDD_DLG86_86,hwndFrame,_local_2a);
           FreeProcInstance(_local_2a);
           if (local_66 == 0) {
             return;
@@ -2402,23 +2398,21 @@ LAB_1020_47b3:
               TextOut(local_5a,local_84 + local_a4,local_74,szWork,local_92);
               iVar16 = local_74 + local_86;
               iVar7 = local_84 + local_a4;
-              uVar30 = 0x20;
-              uVar31 = 0x11;
-              uVar26 = 0x90;
-              HVar32 = local_5a;
+              uVar26 = 0x1120;
+              pcVar10 = (char *)game.szName;
+              HVar30 = local_5a;
               local_74 = iVar16;
               uVar11 = _strlen((char *)game.szName);
-              TextOut(HVar32,iVar7,iVar16,(LPCSTR)CONCAT13(uVar31,CONCAT12(uVar30,uVar26)),uVar11);
+              TextOut(HVar30,iVar7,iVar16,(LPCSTR)CONCAT22(uVar26,pcVar10),uVar11);
               local_74 = local_74 + local_86;
               pcVar10 = PszPlayerName(idPlayer,1,1,1,0,(PLAYER *)0x0);
               iVar16 = local_84 + local_a4;
-              uVar30 = 0x20;
-              uVar31 = 0x11;
+              uVar26 = 0x1120;
               sVar8 = local_74;
-              HVar32 = local_5a;
+              HVar30 = local_5a;
               local_8e = pcVar10;
               uVar11 = _strlen(pcVar10);
-              TextOut(HVar32,iVar16,sVar8,(LPCSTR)CONCAT13(uVar31,CONCAT12(uVar30,pcVar10)),uVar11);
+              TextOut(HVar30,iVar16,sVar8,(LPCSTR)CONCAT22(uVar26,pcVar10),uVar11);
               local_74 = local_74 + local_86;
               iVar16 = game.turn + 0x960;
               pcVar10 = PszGetCompressedString(idsYearD);
@@ -2587,7 +2581,7 @@ LAB_1020_47b3:
           if (hwndTitle == 0) {
             return;
           }
-          PostMessage(hwndTitle,0x111,wParam - 0xfa,0);
+          PostMessage(hwndTitle,WM_COMMAND,wParam - 0xfa,0);
           return;
         }
         if (wParam == 0x100) goto LAB_1020_440c;
@@ -2612,8 +2606,7 @@ LAB_1020_47b3:
             return;
           }
           pvVar29 = MakeProcInstance(NewPasswordDlg,hInst);
-          DialogBox(0,(LPCSTR)CONCAT22(0x8d,hwndFrame),(HWND)((ulong)pvVar29 >> 0x10),
-                    (char)pvVar29);
+          DialogBox(0,IDD_DLG141_141,hwndFrame,pvVar29);
           FreeProcInstance(pvVar29);
           return;
         }
@@ -2633,8 +2626,7 @@ LAB_1020_4cfb:
               return;
             }
             pvVar29 = MakeProcInstance(RelationsDlg,hInst);
-            DialogBox(0,(LPCSTR)CONCAT22(0x7d8,hwndFrame),(HWND)((ulong)pvVar29 >> 0x10),
-                      (char)pvVar29);
+            DialogBox(0,IDD_DLG2008_2008,hwndFrame,pvVar29);
             FreeProcInstance(pvVar29);
             return;
           }
@@ -2647,8 +2639,7 @@ LAB_1020_4cfb:
               return;
             }
             pvVar29 = MakeProcInstance(BattlePlansDlg,hInst);
-            DialogBox(0,(LPCSTR)CONCAT22(0x7dd,hwndFrame),(HWND)((ulong)pvVar29 >> 0x10),
-                      (char)pvVar29);
+            DialogBox(0,IDD_DLG2013_2013,hwndFrame,pvVar29);
             FreeProcInstance(pvVar29);
             return;
           }
@@ -2794,7 +2785,7 @@ LAB_1020_44cc:
           if (wParam == 0xed9) goto LAB_1020_4a53;
           if ((wParam != 0xeda) && (wParam != 0xedb)) {
             if (wParam == 0xee2) {
-              SendMessage(hwnd,0x10,0,0);
+              SendMessage(hwnd,WM_CLOSE,0,0);
               return;
             }
             if (((((wParam == 0xf3d) || (wParam == 0xf3e)) || (wParam == 0xf3f)) ||
@@ -2852,8 +2843,7 @@ LAB_1020_44cc:
                 return;
               }
               pvVar29 = MakeProcInstance(FindDlg,hInst);
-              DialogBox(0,(LPCSTR)CONCAT22(0x106a,hwnd),(HWND)((ulong)pvVar29 >> 0x10),(char)pvVar29
-                       );
+              DialogBox(0,IDD_DLG4202_4202,hwnd,pvVar29);
               FreeProcInstance(pvVar29);
               return;
             }
@@ -2894,7 +2884,7 @@ LAB_1020_44cc:
               InitializeMenu(0);
               CreateChildWindows();
               if (uTimerId == 0) {
-                PostMessage(hwnd,0x111,0xfa1,0);
+                PostMessage(hwnd,WM_COMMAND,0xfa1,0);
               }
               if ((game.wCrap >> 3 & 1) == 0) {
                 return;
@@ -2954,7 +2944,7 @@ MDI_LWaitForTurn:
     ShowWindow(hwndFrame,2);
     uTimerId =
          SetTimer(0xe,10000,lpfnHostTimerProc._2_2_,
-                  (char)(fn_lpfnHostTimerProc *)lpfnHostTimerProc);
+                  (fn_lpfnHostTimerProc *)lpfnHostTimerProc);
     uTimerType = 0xe;
     HostTimerProc(0,WM_NULL,uTimerId,0);
     return;
@@ -2985,7 +2975,7 @@ MDI_LNewTurnAvail:
   }
   else {
     CreateChildWindows();
-    SendMessage(hwndFrame,0x111,0xfa1,0);
+    SendMessage(hwndFrame,WM_COMMAND,0xfa1,0);
   }
   return;
 }
@@ -3401,7 +3391,7 @@ short FOpenGame(HWND hwnd,short fRaceOnly)
           *(undefined2 *)(puVar5 + -10) = 0;
           *(undefined2 *)(puVar5 + -0xc) = 0x1020;
           *(undefined2 *)(puVar5 + -0xe) = 0x5d00;
-          SendMessage(*(HWND *)(puVar5 + -2),*(UINT *)(puVar5 + -4),*(WPARAM *)(puVar5 + -6),
+          SendMessage(*(HWND *)(puVar5 + -2),*(WMType *)(puVar5 + -4),*(WPARAM *)(puVar5 + -6),
                       *(LPARAM *)(puVar5 + -10));
           if (((uVar4 & 0xf) == 0) || ((ini.wFlags >> 5 & 0xf) != 0)) {
             ini.wFlags = ini.wFlags & 0xfe1f;
@@ -3622,8 +3612,8 @@ void BringUpHostDlg(void)
       *(fn_lpProc **)(puVar4 + -0xc) = (fn_lpProc *)lpProc;
       *(undefined2 *)(puVar4 + -0xe) = 0x14f8;
       *(undefined2 *)(puVar4 + -0x10) = 0x60b5;
-      sVar1 = DialogBox(*(HINSTANCE *)(puVar4 + -4),*(LPCSTR *)(puVar4 + -8),*(HWND *)(puVar4 + -10)
-                        ,puVar4[-0xc]);
+      sVar1 = DialogBox(*(HINSTANCE *)(puVar4 + -4),*(DialogId *)(puVar4 + -6),
+                        *(HWND *)(puVar4 + -8),*(FARPROC *)(puVar4 + -0xc));
       *(undefined2 *)(puVar4 + -2) = lpProc._2_2_;
       *(fn_lpProc **)(puVar4 + -4) = (fn_lpProc *)lpProc;
       *(undefined2 *)(puVar4 + -6) = 0x14f8;
@@ -3742,7 +3732,8 @@ void BringUpHostDlg(void)
   *(undefined2 *)(puVar3 + -0xc) = 0x14f8;
   *(undefined2 *)(puVar3 + -0xe) = 0x60f2;
   uTimerId =
-       SetTimer(*(HWND *)(puVar3 + -4),*(UINT *)(puVar3 + -6),*(UINT *)(puVar3 + -8),puVar3[-10]);
+       SetTimer(*(HWND *)(puVar3 + -4),*(UINT *)(puVar3 + -6),*(UINT *)(puVar3 + -8),
+                *(undefined2 *)(puVar3 + -10));
   uTimerType = 0xd;
   *(undefined2 *)(puVar3 + -2) = 0;
   *(undefined2 *)(puVar3 + -4) = 0;
@@ -3840,7 +3831,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
       cch = _wsprintf(szWork,pcVar5,pcVar4,uVar14,pcVar2);
     }
     else {
-      cch = _wsprintf(szWork,(char *)0x112003ff,szStat);
+      cch = _wsprintf(szWork,s_s_1120_03ff,szStat);
     }
     if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1) != 0) {
       _strcat((char *)szWork,(char *)s___HACKER_1120_0403);
@@ -3852,7 +3843,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
     yCur = yCur + dyArial8 + 4;
   }
   _wsprintf(szWork,PCTD,game.turn + 0x961);
-  HVar6 = GetDlgItem(hwnd,0x7e0);
+  HVar6 = GetDlgItem(hwnd,IDC_U16_0x07E0);
   SetWindowText(HVar6,szWork);
   uVar15 = 0;
   uVar14 = 1000;
@@ -3887,7 +3878,7 @@ void DrawHostDialog2(HWND hwnd,HDC hdcIn)
       }
     }
   }
-  HVar6 = GetDlgItem(hwnd,0x7e1);
+  HVar6 = GetDlgItem(hwnd,IDC_U16_0x07E1);
   SetWindowText(HVar6,szWork);
   SetBkMode(hdc,sVar1);
   SetBkColor(hdc,CVar11);
@@ -3988,7 +3979,7 @@ void VerifyTurns(void)
 LAB_1020_678e:
       ctickLast = uVar4;
       if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0) {
-        _wsprintf(szWork,(char *)0x1120040d,(char *)szBase,0x1120,i + 1);
+        _wsprintf(szWork,s_s_x_d_1120_040d,(char *)szBase,0x1120,i + 1);
         idPlayer = i;
         sVar3 = FLoadLogFile((char *)szWork);
         if (sVar3 != 0) {
@@ -4155,6 +4146,7 @@ LAB_1020_6aae:
 
 /* WARNING: Type propagation algorithm not settling */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
 
 short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
 
@@ -4330,9 +4322,9 @@ LAB_1020_6db6:
       BVar3 = 0;
     }
     EnableWindow(HVar2,BVar3);
-    HVar2 = GetDlgItem(hwnd,0x407);
+    HVar2 = GetDlgItem(hwnd,IDC_U16_0x0406|IDOK);
     EnableWindow(HVar2,(uint)((gd.grBits._2_2_ >> 5 & 1) == 0));
-    HVar2 = GetDlgItem(hwnd,0x7df);
+    HVar2 = GetDlgItem(hwnd,IDC_U16_0x07DF);
     EnableWindow(HVar2,(uint)((gd.grBits._2_2_ >> 5 & 1) == 0));
     uVar8 = 0x14f8;
     uTimerId = SetTimer(0xd,10000,0,0);
@@ -4382,7 +4374,8 @@ LAB_1020_6db6:
             _wsprintf(szWork,pcVar5);
             HVar2 = GetFocus();
             uVar8 = 0x14f8;
-            sVar4 = MessageBox(HVar2,szWork,(LPCSTR)0x1120041a,0x2034);
+            sVar4 = MessageBox(HVar2,szWork,s_Stars_1120_041a,
+                               MB_TASKMODAL|MB_ICONEXCLAMATION|MB_YESNO);
             puVar7 = &stack0xffbc;
             if (sVar4 != 6) {
               iPassCnt = 0;
@@ -4430,7 +4423,7 @@ LAB_1020_6db6:
           return 0;
         }
         pvVar9 = MakeProcInstance(NewPasswordDlg,hInst);
-        sVar4 = DialogBox(0,(LPCSTR)CONCAT22(0x8d,hwnd),(HWND)((ulong)pvVar9 >> 0x10),(char)pvVar9);
+        sVar4 = DialogBox(0,IDD_DLG141_141,hwnd,pvVar9);
         FreeProcInstance(pvVar9);
         SetFocus(hwnd);
         return sVar4;
@@ -4443,7 +4436,7 @@ LAB_1020_6db6:
         return 1;
       }
       pvVar9 = MakeProcInstance(HostOptionsDialog,hInst);
-      sVar4 = DialogBox(0,(LPCSTR)CONCAT22(0x402,hwnd),(HWND)((ulong)pvVar9 >> 0x10),(char)pvVar9);
+      sVar4 = DialogBox(0,IDD_DLG1026_1026,hwnd,pvVar9);
       FreeProcInstance(pvVar9);
       SetFocus(hwnd);
       if (sVar4 == 0) {
@@ -4603,7 +4596,7 @@ void HostTimerProc(HWND hwnd,WMType msg,ushort idTimer,ulong dwTime)
           CreateChildWindows();
           uTimerId =
                SetTimer(0xf,1000,lpfnHostTimerProc._2_2_,
-                        (char)(fn_lpfnHostTimerProc *)lpfnHostTimerProc);
+                        (fn_lpfnHostTimerProc *)lpfnHostTimerProc);
           uTimerType = 0xf;
           FlashWindow(hwndFrame,1);
           HVar4 = hwndFrame;
@@ -4729,7 +4722,7 @@ MDI_RedrawText_2:
       *(undefined2 *)(puVar6 + -4) = 0x408;
       *(undefined2 *)(puVar6 + -6) = 0x1040;
       *(undefined2 *)(puVar6 + -8) = 0x7895;
-      HVar4 = GetDlgItem(*(HWND *)(puVar6 + -2),*(short *)(puVar6 + -4));
+      HVar4 = GetDlgItem(*(HWND *)(puVar6 + -2),*(ControlId *)(puVar6 + -4));
       *(HWND *)(puVar6 + -2) = HVar4;
       *(undefined2 *)(puVar6 + -4) = 0;
       *(undefined2 *)(puVar6 + -6) = 0x14f8;
@@ -4993,7 +4986,7 @@ void WriteIniSettings(void)
   _wsprintf(szWork,PCTD,iMsgCur);
   WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsGameid,szEntry);
-  _wsprintf(szWork,(char *)0x11200423,(undefined2)game.lid,game.lid._2_2_);
+  _wsprintf(szWork,s_lx_1120_0423,(undefined2)game.lid,game.lid._2_2_);
   WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   CchGetString(idsScanzoom,szEntry);
   szWork[0] = (char)iScanZoom + '5';
@@ -5031,8 +5024,8 @@ void WriteIniSettings(void)
       gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfeff;
     }
     CchGetString(idsFile1,szEntry);
-    _wsprintf(szWork,(char *)0x11200427,(char *)szBase,0x1120,
-              idPlayer + 1);
+    _wsprintf(szWork,s_s_m_d_1120_0427,(char *)szBase,0x1120,idPlayer + 1
+             );
     WritePrivateProfileString(szSection,szEntry,szWork,szIniFile);
   }
   CchGetString(idsMisc,szSection);
@@ -5324,7 +5317,7 @@ long TitleWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   HGDIOBJ HVar9;
   ushort uVar10;
   int iVar11;
-  UINT *pUVar12;
+  WMType *pWVar12;
   undefined1 *puVar13;
   undefined1 *puVar14;
   undefined2 uVar15;
@@ -5381,66 +5374,67 @@ long TitleWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
     else {
       local_14 = (dyArial8 * 5) / 2;
     }
-    pUVar12 = &stack0xffa8;
+    pWVar12 = &stack0xffa8;
     for (i = 0; i < 4; i = i + 1) {
-      pUVar12[-1] = i + 0x1df;
-      pUVar12[-2] = uVar15;
-      pUVar12[-3] = 0x920c;
-      local_32._22_2_ = PszGetCompressedString(pUVar12[-1]);
-      pUVar12[-1] = 0x1120;
-      pUVar12[-2] = 0x43a;
+      pWVar12[-1] = i + 0x1df;
+      pWVar12[-2] = uVar15;
+      pWVar12[-3] = 0x920c;
+      local_32._22_2_ = PszGetCompressedString(pWVar12[-1]);
+      pWVar12[-1] = 0x1120;
+      pWVar12[-2] = 0x43a;
       uVar15 = local_32._22_2_;
-      pUVar12[-3] = 0x1120;
-      pUVar12[-4] = uVar15;
-      pUVar12[-5] = 0x5000;
-      pUVar12[-6] = 0;
-      pUVar12[-7] = local_1a;
-      pUVar12[-8] = (rc.bottom - local_14) - (dyArial8 * 5) / 2;
-      pUVar12[-9] = local_18;
-      pUVar12[-10] = local_14;
-      pUVar12[-0xb] = hwnd;
-      pUVar12[-0xc] = i;
-      pUVar12[-0xd] = hInst;
-      pUVar12[-0xe] = 0;
-      pUVar12[-0xf] = 0;
-      pUVar12[-0x10] = 0x1010;
+      pWVar12[-3] = 0x1120;
+      pWVar12[-4] = uVar15;
+      pWVar12[-5] = 0x5000;
+      pWVar12[-6] = 0;
+      pWVar12[-7] = local_1a;
+      pWVar12[-8] = (rc.bottom - local_14) - (dyArial8 * 5) / 2;
+      pWVar12[-9] = local_18;
+      pWVar12[-10] = local_14;
+      pWVar12[-0xb] = hwnd;
+      pWVar12[-0xc] = i;
+      pWVar12[-0xd] = hInst;
+      pWVar12[-0xe] = 0;
+      pWVar12[-0xf] = 0;
+      pWVar12[-0x10] = 0x1010;
       uVar15 = 0x14f8;
-      pUVar12[-0x11] = 0x925f;
-      HVar1 = CreateWindow(*(LPCSTR *)(pUVar12 + -2),*(LPCSTR *)(pUVar12 + -4),
-                           *(DWORD *)(pUVar12 + -6),pUVar12[-7],pUVar12[-8],pUVar12[-9],pUVar12[-10]
-                           ,pUVar12[-0xb],pUVar12[-0xc],pUVar12[-0xd],*(void **)(pUVar12 + -0xf));
+      pWVar12[-0x11] = 0x925f;
+      HVar1 = CreateWindow(*(LPCSTR *)(pWVar12 + -2),*(LPCSTR *)(pWVar12 + -4),
+                           *(undefined4 *)(pWVar12 + -6),pWVar12[-7],pWVar12[-8],pWVar12[-9],
+                           pWVar12[-10],pWVar12[-0xb],pWVar12[-0xc],pWVar12[-0xd],
+                           *(void **)(pWVar12 + -0xf));
       *(HWND *)(i * 2 + rghwndBtnSplash) = HVar1;
       if (i == 2) {
         if (szBase[0] != '\0') {
-          pUVar12[1] = 0;
-          *pUVar12 = (UINT)(char *)szBase;
-          pUVar12[-1] = 0x14f8;
+          pWVar12[1] = 0;
+          *pWVar12 = (WMType)(char *)szBase;
+          pWVar12[-1] = 0x14f8;
           uVar15 = 0x1118;
-          pUVar12[-2] = 0x928a;
-          sVar2 = __access((char *)*pUVar12,pUVar12[1]);
+          pWVar12[-2] = 0x928a;
+          sVar2 = __access((char *)*pWVar12,pWVar12[1]);
           if (sVar2 != -1) goto LAB_1020_92a2;
         }
-        pUVar12[1] = rghwndBtnSplash[2];
-        *pUVar12 = 0;
-        pUVar12[-1] = uVar15;
+        pWVar12[1] = rghwndBtnSplash[2];
+        *pWVar12 = 0;
+        pWVar12[-1] = uVar15;
         uVar15 = 0x14f8;
-        pUVar12[-2] = 0x92a2;
-        EnableWindow(pUVar12[1],*pUVar12);
+        pWVar12[-2] = 0x92a2;
+        EnableWindow(pWVar12[1],*pWVar12);
       }
 LAB_1020_92a2:
       if (rc.bottom < 500) {
-        pUVar12[1] = *(undefined2 *)(i * 2 + rghwndBtnSplash);
-        *pUVar12 = 0x30;
-        pUVar12[-1] = rghfontArial8[1];
-        pUVar12[-2] = 0;
-        pUVar12[-3] = 0;
-        pUVar12[-4] = uVar15;
+        pWVar12[1] = *(undefined2 *)(i * 2 + rghwndBtnSplash);
+        *pWVar12 = 0x30;
+        pWVar12[-1] = rghfontArial8[1];
+        pWVar12[-2] = 0;
+        pWVar12[-3] = 0;
+        pWVar12[-4] = uVar15;
         uVar15 = 0x14f8;
-        pUVar12[-5] = 0x92ca;
-        SendMessage(pUVar12[1],*pUVar12,pUVar12[-1],*(LPARAM *)(pUVar12 + -3));
+        pWVar12[-5] = 0x92ca;
+        SendMessage(pWVar12[1],*pWVar12,pWVar12[-1],*(undefined4 *)(pWVar12 + -3));
       }
       local_1a = local_1a + local_18 + local_16;
-      pUVar12 = pUVar12 + 2;
+      pWVar12 = pWVar12 + 2;
     }
   }
   else {
@@ -5623,7 +5617,7 @@ MDI_Default_3:
             ShowWindow(hwndFrame,5);
           }
           InitializeMenu(0);
-          PostMessage(hwndFrame,0x111,0xfa1,0);
+          PostMessage(hwndFrame,WM_COMMAND,0xfa1,0);
           if (((game.wCrap >> 3 & 1) != 0) && (idPlayer == 0)) {
             StartTutor(0);
           }

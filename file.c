@@ -3,9 +3,10 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#if defined(_WIN32)
+/* io.h is Windows-specific; use unistd.h on other platforms or when using stubs */
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #include <io.h>
-#define stars_access access
+#define stars_access _access
 #define modeWrite 2 /* MSVCRT _access: 2 == write permission check */
 #else
 #include <unistd.h>

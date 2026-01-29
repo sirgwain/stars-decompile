@@ -60,7 +60,7 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     hwndMineCB =
          CreateWindow((LPCSTR)CONCAT22(uVar10,pcVar9),pcVar2,0x40000003,100,100,0x96,
                       dyArial8,hwnd,0,hInst,(void *)0x0);
-    SendMessage(hwndMineCB,0x30,rghfontArial8[1],0);
+    SendMessage(hwndMineCB,WM_SETFONT,rghfontArial8[1],0);
     SetMineralTitleBar(hwnd);
   }
   else if (message == WM_PAINT) {
@@ -137,7 +137,7 @@ MINE_Default_7:
       if (((HWND)lParam == hwndMineCB) &&
          (uVar7 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffbe), (int)uVar7 == 0)
          ) {
-        LVar8 = SendMessage(hwndMineCB,0x400,0,0);
+        LVar8 = SendMessage(hwndMineCB,WM_USER,0,0);
         local_32.x = (short)LVar8;
         local_34 = ((THING *)lpThings + sel.scan.ith)->idFull;
         local_32.y = local_32.x;
@@ -466,7 +466,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
       local_d4._0_2_ = iVar14;
       if (((pFVar6->wFlags_0x4 & 0xff) == 7) || ((pFVar6->wFlags_0x4 & 0xff) == 4)) {
         lVar32 = WtFromLpfl((FLEET *)CONCAT22(iVar18,pFVar6));
-        unique0x100044a5 = lVar32;
+        unique0x100044ad = lVar32;
         sStack_56 = CchGetString(idsFuel2,szT);
         DVar29 = GetTextExtent(hdc,szT,sStack_56);
         c2 = CchGetString(idsCargo,(char *)szWork);
@@ -701,7 +701,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
                 }
                 SetTextColor(hdc,(ulong)uVar16);
               }
-              sVar11 = _wsprintf(szWork,(char *)0x112004fa,local_1d0._2_2_);
+              sVar11 = _wsprintf(szWork,s_d_1120_04fa,local_1d0._2_2_);
               TextOut(hdc,local_d8 + dx,iVar18,szWork,sVar11);
             }
           }
@@ -1007,7 +1007,7 @@ void DrawMineSurvey(HDC hdc,RECT *prc)
               ((uint)cMinGrafMax < (HDC)local_1d0)))) {
             SetTextColor(hdc,CONCAT22(crButtonText._2_2_,
                                       (undefined2)crButtonText));
-            TextOut(hdc,iVar14,(int)&((THING *)local_e6)->idFull + yCur,(LPCSTR)0x11200507,1);
+            TextOut(hdc,iVar14,(int)&((THING *)local_e6)->idFull + yCur,s_str_1120_0507,1);
           }
           iVar20 = cMinGrafMax >> 0xf;
           iVar17 = *(int *)((int)pl.rgwtMin + i * 4 + 2);
@@ -1510,7 +1510,10 @@ void MineClick(short x,short y,short msg,short sks)
   char local_20a [382];
   char *local_8c [9];
   short local_7a;
-  int local_78 [7];
+  int local_78 [4];
+  char *local_70;
+  undefined2 local_6e;
+  undefined2 local_6c;
   char *local_6a;
   int local_68;
   undefined4 local_66;
@@ -1606,9 +1609,9 @@ void MineClick(short x,short y,short msg,short sks)
     local_78[1] = 500;
     local_78[2] = 1000;
     local_78[3] = 0x9c4;
-    local_78[4] = 5000;
-    local_78[5] = 0x1d4c;
-    local_78[6] = 10000;
+    local_70 = (char *)s_Stars_1120_1385 + 3;
+    local_6e = 0x1d4c;
+    local_6c = 10000;
     local_6a = (char *)rgbCur + 0x288;
     local_68 = 30000;
     for (local_66._0_2_ = 0; (short)local_66 < 9; local_66._0_2_ = (short)local_66 + 1) {
@@ -1973,7 +1976,7 @@ void SetMineralTitleBar(HWND hwnd)
     }
   }
   if (bVar1) {
-    SendMessage(hwndMineCB,0x401,
+    SendMessage(hwndMineCB,WM_USER_0x0401,
                 (uint)(*(char *)((int)&((THING *)lpThings)[sel.scan.ith].
                                        u_THING_0x0006 + 7) != '\0'),0);
   }

@@ -251,7 +251,7 @@ run = [
     { task = "ghidra-apply-types" },
     { task = "ghidra-update-runtime-helpers" },
     { task = "ghidra-analyze" },                # analyze again once we all our symbols in place
-    { task = "ghidra-retype-doubles" },
+    { task = "ghidra-retype-dat" },
     { task = "ghidra-delete-default-dat" },
     { task = "ghidra-apply-race-attributes" },  # VERY LONG
     { task = "ghidra-apply-funclocals" },
@@ -326,8 +326,8 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -postScript UpdateStarsRuntimeHelperSignatures.py  2>&1
 '''
 
-[tasks.ghidra-retype-doubles]
-description = "Update the unknown8 vars in 1120:* to be doubles"
+[tasks.ghidra-retype-dat]
+description = "Update the unknown vars in 1120:* to be strings/doubles/etc"
 run = '''
 #!/bin/bash
 set -e
@@ -343,7 +343,7 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -process stars.exe \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
-    -postScript RetypeUndefined8Doubles1120.py  2>&1
+    -postScript RetypeDAT.py  2>&1
 '''
 
 [tasks.ghidra-delete-default-dat]
@@ -420,6 +420,36 @@ run = [
     { task = "build-cross" },
     { task = "build-test" },
 ]
+
+[tasks.crossover]
+description = "Run crossover instance"
+run = '''
+#!/bin/bash
+set -e
+cmake --preset macos-crossover
+cmake --build --preset run-crossover
+'''
+
+[tasks.crossover-debug]
+description = "Run crossover instance with debug logging to stderr"
+run = '''
+#!/bin/bash
+set -e
+
+WINE_BIN="/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wine"
+BOTTLE_NAME="debugger"
+LOG_FILE="$PROJECT_DIR/debug.log"
+
+# Build and copy first
+cmake --preset macos-crossover
+cmake --build build-win --target copy_to_crossover
+
+echo "Running with debug output -> $LOG_FILE"
+echo "Tail the log with: tail -f $LOG_FILE"
+
+# Run with stderr redirected to log file
+"$WINE_BIN" --bottle "$BOTTLE_NAME" "c:\\stars\\stars_win32.exe" 2> "$LOG_FILE"
+'''
 
 [tasks.extract-symbols]
 description = "Re-extract symbols from the NE executable (requires Python)"

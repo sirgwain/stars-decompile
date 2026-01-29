@@ -1,0 +1,83 @@
+#include <winres.h>         // gives VK_* etc. (preferred for RC)
+#include "resource.h"   // or "../resource.h" if that’s where it is
+
+// ------------ Icons ------------
+IDI_STARS   ICON "icons/stars.ico"
+IDI_WAIT    ICON "icons/wait.ico"
+IDI_HOST    ICON "icons/host.ico"
+
+IDI_BANG1   ICON "icons/bang1.ico"
+IDI_BANG2   ICON "icons/bang2.ico"
+IDI_BANG3   ICON "icons/bang3.ico"
+
+IDI_TORP1   ICON "icons/torp1.ico"
+IDI_TORP2   ICON "icons/torp2.ico"
+IDI_TORP3   ICON "icons/torp3.ico"
+IDI_TORP4   ICON "icons/torp4.ico"
+
+// ------------ Cursors ------------
+IDC_SCANNER            CURSOR "cursors/scanner.cur"
+IDC_SCANNER_ADD        CURSOR "cursors/scanneradd.cur"
+IDC_OPEN_GRAB          CURSOR "cursors/opengrab.cur"
+IDC_CLOSE_GRAB         CURSOR "cursors/closegrab.cur"
+IDC_TRASH              CURSOR "cursors/trash.cur"
+IDC_INVALID            CURSOR "cursors/invalid.cur"
+IDC_HSPLIT             CURSOR "cursors/horizontalsplit.cur"
+IDC_VSPLIT             CURSOR "cursors/veriticalsplit.cur"
+IDC_MOVEARROWS         CURSOR "cursors/move-arrows.cur"
+IDC_TOOLTIP_QUESTION   CURSOR "cursors/tooltipquestion.cur"
+IDC_HAND_CUSTOM        CURSOR "cursors/pointerhand.cur"
+
+// ------------ Bitmaps ------------
+IDB_TOOLBAR                     BITMAP "bitmaps/toolbar.bmp"
+IDB_SCANNER                     BITMAP "bitmaps/scanner.bmp"
+IDB_UNKNOWNPLANET               BITMAP "bitmaps/unknownplanet.bmp"
+IDB_FONT_DIGITS                 BITMAP "bitmaps/fontdigits.bmp"
+IDB_SCREEN50                    BITMAP "bitmaps/screen50.bmp"
+IDB_CARGO                       BITMAP "bitmaps/cargo.bmp"
+IDB_DOCK                        BITMAP "bitmaps/dockbmp.bmp"
+IDB_EMPTY_HULL_SLOT             BITMAP "bitmaps/emptyhullsloticons.bmp"
+IDB_MSGFILTER_CHECKBOX          BITMAP "bitmaps/messageicons.bmp"
+IDB_FILTER_CHECKBOX_MONO        BITMAP "bitmaps/monochromeicons.bmp"
+IDB_MINESPAT_1                  BITMAP "bitmaps/scannerminespattern1.bmp"
+IDB_MINESPAT_2                  BITMAP "bitmaps/scannerminespattern2.bmp"
+IDB_MINESPAT_3                  BITMAP "bitmaps/scannerminespattern3.bmp"
+IDDIB_PLANET_ICONS              BITMAP "bitmaps/planeticons.bmp"
+IDDIB_THING_ICONS               BITMAP "bitmaps/thingicons.bmp"
+IDDIB_SCANNER_TOOLBAR           BITMAP "bitmaps/scannerfleets.bmp"
+IDDIB_HULL_ICONS_1              BITMAP "bitmaps/hullicons1.bmp"
+IDDIB_HULL_ICONS_2              BITMAP "bitmaps/hullicons2.bmp"
+IDDIB_HULL_ICONS_3              BITMAP "bitmaps/hullicons3.bmp"
+IDDIB_HULL_ICONS_4              BITMAP "bitmaps/hullicons4.bmp"
+IDDIB_HULL_ICONS_5              BITMAP "bitmaps/hullicons5.bmp"
+IDDIB_HULL_ICONS_SMALL_1        BITMAP "bitmaps/hulliconssmall1.bmp"
+IDDIB_HULL_ICONS_SMALL_2        BITMAP "bitmaps/hulliconssmall2.bmp"
+IDDIB_HULL_ICONS_SMALL_3        BITMAP "bitmaps/hulliconssmall3.bmp"
+IDDIB_HULL_ICONS_SMALL_4        BITMAP "bitmaps/hulliconssmall4.bmp"
+IDDIB_HULL_ICONS_SMALL_5        BITMAP "bitmaps/hulliconssmall5.bmp"
+IDDIB_TECH_ICONS_1              BITMAP "bitmaps/techicons1.bmp"
+IDDIB_TECH_ICONS_2              BITMAP "bitmaps/techicons2.bmp"
+IDDIB_TECH_ICONS_3              BITMAP "bitmaps/techicons3.bmp"
+IDDIB_TECH_ICONS_4              BITMAP "bitmaps/techicons4.bmp"
+IDDIB_TECH_ICONS_5              BITMAP "bitmaps/techicons5.bmp"
+IDDIB_TECH_ICONS_6              BITMAP "bitmaps/techicons6.bmp"
+IDDIB_TECH_ICONS_7              BITMAP "bitmaps/techicons7.bmp"
+IDDIB_PLAYER_ICONS              BITMAP "bitmaps/playericons.bmp"
+IDDIB_PLAYER_ICONS_SMALL        BITMAP "bitmaps/playeroconssmall.bmp"
+IDDIB_PLAYER_ICONS_TINY         BITMAP "bitmaps/playericonstiny.bmp"
+IDDIB_NUM_DESIGNS_PLATE         BITMAP "bitmaps/numdesignsplate.bmp"
+
+// ------------ Menu ------------
+#include "menu/menu.rc"
+
+// ------------ Dialogs ------------
+#include "dialogs/about.rc"
+
+// ------------ Accelerators ------------
+#include "accelerators/main.rc"
+#include "accelerators/title.rc"
+
+// ------------ Tutorial blobs ------------
+IDR_TUTORIAL_HST        RCDATA "tutorial/10001-tutorail.hst"
+IDR_TUTORIAL_M1         RCDATA "tutorial/10003-tutorail.m1"
+IDR_TUTORIAL_M2         RCDATA "tutorial/10005-tutorail.m2"

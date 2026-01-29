@@ -1,0 +1,91 @@
+// menu.rc (Win32-clean)
+STARSMENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New...\tCtrl+N",            IDM_FILE_NEW
+        MENUITEM "Custom &Race Wizard...",     IDM_RACE_WIZARD
+        MENUITEM "&Open...\tCtrl+O",           IDM_FILE_OPEN
+        MENUITEM "&Close",                     IDM_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",              IDM_FILE_SAVE
+        MENUITEM "Save &And Submit\tCtrl+A",   IDM_FILE_SAVE_SUBMIT
+        MENUITEM SEPARATOR
+        MENUITEM "&Print Map",                 IDM_FILE_PRINT_MAP
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                      IDM_FILE_EXIT
+    END
+
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                   IDM_VIEW_TOOLBAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Find...\tCtrl+F",           IDM_VIEW_FIND
+        POPUP "&Zoom"
+        BEGIN
+            MENUITEM "25%",  IDM_VIEW_ZOOM_25
+            MENUITEM "38%",  IDM_VIEW_ZOOM_38
+            MENUITEM "50%",  IDM_VIEW_ZOOM_50
+            MENUITEM "75%",  IDM_VIEW_ZOOM_75
+            MENUITEM "100%", IDM_VIEW_ZOOM_100
+            MENUITEM "125%", IDM_VIEW_ZOOM_125
+            MENUITEM "150%", IDM_VIEW_ZOOM_150
+            MENUITEM "200%", IDM_VIEW_ZOOM_200
+            MENUITEM "400%", IDM_VIEW_ZOOM_400
+        END
+        POPUP "&Window Layout"
+        BEGIN
+            MENUITEM "&Large Screen",  IDM_VIEW_LAYOUT_LARGE
+            MENUITEM "&Medium Screen", IDM_VIEW_LAYOUT_MEDIUM
+            MENUITEM "&Small Screen",  IDM_VIEW_LAYOUT_SMALL
+        END
+        MENUITEM "Player &Colors",            IDM_VIEW_PLAYER_COLORS
+        MENUITEM SEPARATOR
+        MENUITEM "&Race...\tF8",              IDM_VIEW_RACE
+        MENUITEM "&Game Parameters...",       IDM_VIEW_GAME_PARAMS
+    END
+
+    POPUP "&Turn"
+    BEGIN
+        MENUITEM "&Wait for New",             IDM_TURN_WAIT_NEW, GRAYED
+        MENUITEM "&Generate\tF9",             IDM_TURN_GENERATE, GRAYED
+    END
+
+    POPUP "&Commands"
+    BEGIN
+        MENUITEM "&Ship Design...\tF4",       IDM_CMD_SHIP_DESIGN
+        MENUITEM "&Research...\tF5",          IDM_CMD_RESEARCH
+        MENUITEM "&Battle Plans...\tF6",      IDM_CMD_BATTLE_PLANS
+        MENUITEM "&Player Relations...\tF7",  IDM_CMD_RELATIONS
+        MENUITEM SEPARATOR
+        MENUITEM "&Change Password...",       IDM_CMD_CHANGE_PASSWORD
+    END
+
+    POPUP "&Report"
+    BEGIN
+        MENUITEM "&Planets...\tF3",           IDM_RPT_PLANETS
+        MENUITEM "&Fleets...\tF3",            IDM_RPT_FLEETS
+        MENUITEM "&Others' Fleets...\tF3",    IDM_RPT_OTHERS_FLEETS
+        MENUITEM SEPARATOR
+        MENUITEM "&Battles...\tF3",           IDM_RPT_BATTLES
+        MENUITEM SEPARATOR
+        MENUITEM "&Score...\tF10",            IDM_RPT_SCORE
+        MENUITEM SEPARATOR
+        POPUP "&Dump to Text File"
+        BEGIN
+            MENUITEM "&Universe Definition",  IDM_RPT_DUMP_UNIVERSE
+            MENUITEM "&Planet Information",   IDM_RPT_DUMP_PLANETS
+            MENUITEM "&Fleet Information",    IDM_RPT_DUMP_FLEETS
+        END
+    END
+
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Introduction",             IDM_HELP_INTRO
+        MENUITEM "&Player's Guide\tF1",       IDM_HELP_PLAYERS_GUIDE
+        MENUITEM SEPARATOR
+        MENUITEM "Technology &Browser\tF2",   IDM_HELP_TECH_BROWSER
+        MENUITEM "&Tutorial",                 IDM_HELP_TUTORIAL
+        MENUITEM SEPARATOR
+        MENUITEM "&About Stars!...",          IDM_HELP_ABOUT
+    END
+END

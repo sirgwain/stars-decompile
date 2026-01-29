@@ -12,129 +12,15 @@
 #include <setjmp.h>
 #include "enums.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#else /* !_WIN32 */
-
-// TODO: remove this when we make the few non win32 methods requiring HDCs better
-typedef uint16_t HDC;
-typedef uint16_t HWND;
-
-/* MessageBox-style flags (Win16/Win32 compatible values) */
-typedef enum MBFlags
-{
-    MB_OK = 0x0000, /* default */
-    MB_YESNO = 0x0004,
-    MB_ICONHAND = 0x0010,     /* error / stop */
-    MB_ICONQUESTION = 0x0020, /* question */
-} MBFlags;
-
-/* typind 4120 (0x1018) size=4 */
-typedef struct tagPOINT
-{
-    int16_t x; /* +0x0000 */
-    int16_t y; /* +0x0002 */
-} POINT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(POINT) == 4, "sizeof(POINT)");
-_Static_assert(offsetof(POINT, x) == 0x0, "offsetof(POINT,x)");
-_Static_assert(offsetof(POINT, y) == 0x2, "offsetof(POINT,y)");
-#endif
-
-/* typind 4122 (0x101a) size=8 */
-typedef struct tagRECT
-{
-    int16_t left;   /* +0x0000 */
-    int16_t top;    /* +0x0002 */
-    int16_t right;  /* +0x0004 */
-    int16_t bottom; /* +0x0006 */
-} RECT;
-#ifdef STARS_LAYOUT_CHECKS
-_Static_assert(sizeof(RECT) == 8, "sizeof(RECT)");
-_Static_assert(offsetof(RECT, left) == 0x0, "offsetof(RECT,left)");
-_Static_assert(offsetof(RECT, top) == 0x2, "offsetof(RECT,top)");
-_Static_assert(offsetof(RECT, right) == 0x4, "offsetof(RECT,right)");
-_Static_assert(offsetof(RECT, bottom) == 0x6, "offsetof(RECT,bottom)");
-#endif
-
-/* Minimal “Windows SDK” stubs for non-Windows builds.
- * These exist only so code that declares locals/params compiles.
- * Do NOT rely on their layouts/fields on non-Windows.
+/*
+ * Windows API headers:
+ * - On actual Windows (without STARS_USE_WIN_STUBS): use real windows.h
+ * - Otherwise: use our stub implementations for cross-platform compilation
  */
-
-typedef struct tagLOGFONT
-{
-    int _unused;
-} LOGFONT;
-typedef struct tagTEXTMETRIC
-{
-    int _unused;
-} TEXTMETRIC;
-typedef struct tagPAINTSTRUCT
-{
-    int _unused;
-} PAINTSTRUCT;
-typedef struct tagDRAWITEMSTRUCT
-{
-    int _unused;
-} DRAWITEMSTRUCT;
-typedef struct tagMEASUREITEMSTRUCT
-{
-    int _unused;
-} MEASUREITEMSTRUCT;
-typedef struct tagWNDCLASS
-{
-    int _unused;
-} WNDCLASS;
-typedef struct tagWINDOWPLACEMENT
-{
-    int _unused;
-} WINDOWPLACEMENT;
-
-/* Windows message struct (careful: name is MSG). */
-typedef struct tagMSG
-{
-    int _unused;
-} MSG;
-
-/* If you used these abbreviated names in generated code: */
-typedef struct tagOPENFILENAME
-{
-    int _unused;
-} OFN;
-typedef struct tagTIMERINFO
-{
-    int _unused;
-} TIMERINFO;
-typedef struct tagPD
-{
-    int _unused;
-} PD;
-typedef struct tagBITMAP
-{
-    int _unused;
-} BITMAP;
-typedef struct tagBITMAPCOREHEADER
-{
-    int _unused;
-} BITMAPCOREHEADER;
-typedef struct tagBITMAPINFOHEADER
-{
-    int _unused;
-} BITMAPINFOHEADER;
-typedef struct tagBITMAPINFO
-{
-    int _unused;
-} BITMAPINFO;
-typedef struct tagLOGPALETTE
-{
-    int _unused;
-} LOGPALETTE;
-typedef struct tagOFSTRUCT
-{
-    int _unused;
-} OFSTRUCT;
-
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
+#include <windows.h>
+#else
+#include "win_stubs.h"
 #endif
 
 /* Match Win16/Stars! default struct packing (2-byte alignment). */

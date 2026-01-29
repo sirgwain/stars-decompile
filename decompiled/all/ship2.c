@@ -63,10 +63,10 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (message == WM_PAINT) {
     hdc_00 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    HVar7 = GetDlgItem(hwnd,0x431);
+    HVar7 = GetDlgItem(hwnd,IDC_FINISH|IDOK);
     GetWindowRect(HVar7,&local_38);
     ScreenToClient(hwnd,&local_38);
-    HVar7 = GetDlgItem(hwnd,0x434);
+    HVar7 = GetDlgItem(hwnd,IDC_U16_0x0434);
     GetWindowRect(HVar7,&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
     local_38._4_2_ = (char *)rc.right;
@@ -96,7 +96,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                           (((((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->
                             wFlags >> 0xc) + idsAction,(char *)szWork);
         if (*(char *)((int)(HCURSOR *)&hcurScanAdd + sVar8 + 1) == '.') {
-          _wsprintf((char *)szBase + 0xff + sVar8,(char *)0x112016ba);
+          _wsprintf((char *)szBase + 0xff + sVar8,s_dkT_1120_16ba);
         }
         iVar9 = (int)DVar15 + 0xe;
         uVar18 = 0x1120;
@@ -134,7 +134,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar7 = hwnd;
         pcVar17 = PszGetCompressedString(idsCustomizeZipOrders);
         SetWindowText(HVar7,pcVar17);
-        HVar7 = GetDlgItem(hwnd,0x417);
+        HVar7 = GetDlgItem(hwnd,IDC_U16_0x0417);
         ShowWindow(HVar7,0);
         hwndZipOrderDlg = hwnd;
         CheckRadioButton(hwnd,0x431,0x434,0x431);
@@ -183,7 +183,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(short *)(puVar11 + -4) = i;
           *(undefined2 *)(puVar11 + -6) = uVar18;
           *(undefined2 *)(puVar11 + -8) = 0x12f;
-          local_38._6_2_ = GetDlgItem(*(HWND *)(puVar11 + -2),*(short *)(puVar11 + -4));
+          local_38._6_2_ = GetDlgItem(*(HWND *)(puVar11 + -2),*(ControlId *)(puVar11 + -4));
           *(HWND *)(puVar11 + -2) = local_38._6_2_;
           pcVar17 = local_38._4_2_;
           *(undefined2 *)(puVar11 + -4) = 0x1120;
@@ -238,8 +238,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             }
             local_38._4_4_ = MakeProcInstance(RenameZipDlg,hInst);
             uVar18 = 0x14f8;
-            sVar8 = DialogBox(0,(LPCSTR)CONCAT22(0x7e3,hwndFrame),
-                              (HWND)((ulong)local_38._4_4_ >> 0x10),(char)local_38._4_4_);
+            sVar8 = DialogBox(0,IDD_DLG2019_2019,hwndFrame,local_38._4_4_);
             puVar12 = &stack0xffbe;
             pvVar6 = local_38._4_4_;
             if (sVar8 != 0) {
@@ -264,7 +263,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                 }
               }
               *(char *)local_38 = '\0';
-              HVar7 = GetDlgItem(hwnd,iResTechNow + 0x431);
+              HVar7 = GetDlgItem(hwnd,iResTechNow + (IDC_FINISH|IDOK));
               SetWindowText(HVar7,szWork + 0x40);
               puVar12 = &stack0xffb8;
               if (wParam == 0x816) {
@@ -310,7 +309,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             *(undefined1 *)((int)&vrgZip[0].fValid + iResTechNow * 0x18) = 0;
             pcVar17 = PszGetCompressedString(idsUnusedD);
             _wsprintf(szWork,pcVar17);
-            HVar7 = GetDlgItem(hwnd,iResTechNow + 0x431);
+            HVar7 = GetDlgItem(hwnd,iResTechNow + (IDC_FINISH|IDOK));
             SetWindowText(HVar7,szWork);
             InvalidateRect(hwnd,(RECT *)0x0,1);
             gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffef | 0x10;
@@ -344,9 +343,9 @@ void EnableZipBtns(HWND hwnd,short iSel)
   short fEnabled;
   
   uVar1 = (uint)*(byte *)((int)&vrgZip[0].fValid + iSel * 0x18);
-  HVar2 = GetDlgItem(hwnd,0x817);
+  HVar2 = GetDlgItem(hwnd,IDC_DELETE);
   EnableWindow(HVar2,uVar1);
-  HVar2 = GetDlgItem(hwnd,0x41b);
+  HVar2 = GetDlgItem(hwnd,IDC_RENAME);
   EnableWindow(HVar2,uVar1);
   return;
 }
@@ -402,7 +401,7 @@ short RenameZipDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       SetWindowPos(hwnd,0,ptStickyRenameDlg.x + 0x46,ptStickyRenameDlg.y + 0x46,0,0,
                    0x15);
       SendDlgItemMessage(hwnd,0x10c,0x415,0xc,0);
-      HVar2 = GetDlgItem(hwnd,0x10c);
+      HVar2 = GetDlgItem(hwnd,IDC_U16_0x010C);
       SetWindowText(HVar2,szWork);
       StickyDlgPos(hwnd,(POINT *)&ptStickyRenameDlg,1);
       return 1;
@@ -410,7 +409,7 @@ short RenameZipDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (message == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
-          GetDlgItemText(hwnd,0x10c,szWork,0xe);
+          GetDlgItemText(hwnd,IDC_U16_0x010C,szWork,0xe);
         }
         StickyDlgPos(hwnd,(POINT *)&ptStickyRenameDlg,0);
         EndDialog(hwnd,(uint)(wParam == 1));
@@ -479,7 +478,7 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         SetWindowPos(hwnd,0,ptStickyRenameDlg.x + 0x46,ptStickyRenameDlg.y + 0x46,0,0,
                      0x15);
         SendDlgItemMessage(hwnd,0x10c,0x415,0x1f,0);
-        HVar2 = GetDlgItem(hwnd,0x10c);
+        HVar2 = GetDlgItem(hwnd,IDC_U16_0x010C);
         SetWindowText(HVar2,szWork);
         StickyDlgPos(hwnd,(POINT *)&ptStickyRenameDlg,1);
         return 1;
@@ -487,7 +486,7 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_COMMAND) {
         if ((wParam == 1) || (wParam == 2)) {
           if (wParam == 1) {
-            GetDlgItemText(hwnd,0x10c,szWork,0x20);
+            GetDlgItemText(hwnd,IDC_U16_0x010C,szWork,0x20);
             FStringFitsScreen(szWork,0xa0);
           }
           StickyDlgPos(hwnd,(POINT *)&ptStickyRenameDlg,0);
@@ -499,11 +498,11 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             (int)uVar4 == 0x400)) && (fInEditUpdate == 0)) {
           fInEditUpdate = 1;
           GetWindowText((HWND)lParam,szWork,0xfa);
-          LVar5 = SendMessage((HWND)lParam,0x400,0,0);
+          LVar5 = SendMessage((HWND)lParam,WM_USER,0,0);
           sVar3 = FStringFitsScreen(szWork,0xa0);
           if (sVar3 == 0) {
             SetWindowText((HWND)lParam,szWork);
-            SendMessage((HWND)lParam,0x401,0,LVar5);
+            SendMessage((HWND)lParam,WM_USER_0x0401,0,LVar5);
           }
           fInEditUpdate = 0;
         }
@@ -1986,7 +1985,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
   if (msg == WM_CTLCOLOR) {
     szT[0x4e] = (char)lParam;
     szT[0x4f] = lParam._1_1_;
-    HVar3 = GetDlgItem(hwnd,0x51);
+    HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
     if (szT._78_2_ != HVar3) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       return hbrButtonFace;
@@ -2001,9 +2000,9 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         if (1 < ((FLEET *)((FLEET **)rglpfl)[vrgiflMerge[i]])->cord) {
           _strcat(szT,(char *)0x16c4);
         }
-        HVar3 = GetDlgItem(hwnd,0x51);
-        SendMessage(HVar3,0x401,0,(LPARAM)szT);
-        HVar3 = GetDlgItem(hwnd,0x51);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
+        SendMessage(HVar3,WM_USER_0x0401,0,(LPARAM)szT);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
         if ((vcflMerge == 2) ||
            (((FLEET **)rglpfl)[vrgiflMerge[i]]->id == sel.fl.id)) {
           WVar2 = 1;
@@ -2011,7 +2010,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         else {
           WVar2 = 0;
         }
-        SendMessage(HVar3,0x406,WVar2,(long)i);
+        SendMessage(HVar3,WM_USER_0x0406,WVar2,(long)i);
       }
       if (((uint)gd.grBits >> 0xb & 1) != 0) {
         AdvanceTutor();
@@ -2021,8 +2020,8 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
     if (msg == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         for (i = 0; i < vcflMerge; i = i + 1) {
-          HVar3 = GetDlgItem(hwnd,0x51);
-          LVar5 = SendMessage(HVar3,0x408,i,0);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
+          LVar5 = SendMessage(HVar3,WM_USER_0x0408,i,0);
           if (LVar5 == 0) {
             vrgiflMerge[i] = -1;
           }
@@ -2041,8 +2040,8 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
       }
       if ((wParam == 0x7f8) || (wParam == 0x7f9)) {
         for (i = 0; i < vcflMerge; i = i + 1) {
-          HVar3 = GetDlgItem(hwnd,0x51);
-          SendMessage(HVar3,0x406,(uint)(wParam == 0x7f8),(long)i);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
+          SendMessage(HVar3,WM_USER_0x0406,(uint)(wParam == 0x7f8),(long)i);
         }
         return 1;
       }

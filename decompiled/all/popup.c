@@ -166,7 +166,7 @@ void DrawPopup(HWND hwnd,HDC hdc)
       c = _strlen((char *)szWork);
     }
     else {
-      c = _wsprintf(szWork,(char *)0x11200bee,
+      c = _wsprintf(szWork,s_ldkT_1120_0bee,
                     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory,
                     GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fSummary);
     }
@@ -284,7 +284,7 @@ void DrawPopup(HWND hwnd,HDC hdc)
               if (dpT == 0) {
                 dpT = 1;
               }
-              sVar15 = _wsprintf(szWork,(char *)0x11200bf6,csh,dpT);
+              sVar15 = _wsprintf(szWork,s_d_d_1120_0bf6,csh,dpT);
               RightTextOut(hdc,rc.right + -4,yCur,(char *)szWork,sVar15,0);
             }
           }
@@ -404,7 +404,7 @@ void Popup(HWND hwnd,short x,short y)
   undefined1 *puVar7;
   undefined1 *puVar8;
   undefined1 *puVar9;
-  UINT *pUVar10;
+  WMType *pWVar10;
   undefined2 unaff_SS;
   DWORD DVar11;
   DWORD DVar12;
@@ -637,53 +637,53 @@ POPUP_SetDxDy:
     *(undefined2 *)(puVar9 + -4) = 0x14f8;
     *(undefined2 *)(puVar9 + -6) = 0x12e5;
     sVar5 = GetSystemMetrics(*(short *)(puVar9 + -2));
-    pUVar10 = puVar9 + -2;
+    pWVar10 = puVar9 + -2;
     if (sVar5 - dy <= pt.y) {
       *(undefined2 *)(puVar9 + -4) = 1;
       *(undefined2 *)(puVar9 + -6) = 0x14f8;
       *(char **)(puVar9 + -8) = (char *)s_>>_<<_1120_12fa + 5;
       sVar5 = GetSystemMetrics(*(short *)(puVar9 + -4));
       pt.y = sVar5 - dy;
-      pUVar10 = puVar9 + -4;
+      pWVar10 = puVar9 + -4;
     }
   }
   else {
     pt.y = 0;
-    pUVar10 = puVar9;
+    pWVar10 = puVar9;
   }
-  pUVar10[-1] = 0x1120;
-  pUVar10[-2] = 0x210;
-  pUVar10[-3] = 0;
-  pUVar10[-4] = 0;
-  pUVar10[-5] = 0x9080;
-  pUVar10[-6] = 0;
-  pUVar10[-7] = pt.x;
-  pUVar10[-8] = pt.y;
-  pUVar10[-9] = dx;
-  pUVar10[-10] = dy;
-  pUVar10[-0xb] = hwnd;
-  pUVar10[-0xc] = 0;
-  pUVar10[-0xd] = hInst;
-  pUVar10[-0xe] = 0;
-  pUVar10[-0xf] = 0;
-  pUVar10[-0x10] = 0x14f8;
-  pUVar10[-0x11] = 0x1340;
+  pWVar10[-1] = 0x1120;
+  pWVar10[-2] = 0x210;
+  pWVar10[-3] = 0;
+  pWVar10[-4] = 0;
+  pWVar10[-5] = 0x9080;
+  pWVar10[-6] = 0;
+  pWVar10[-7] = pt.x;
+  pWVar10[-8] = pt.y;
+  pWVar10[-9] = dx;
+  pWVar10[-10] = dy;
+  pWVar10[-0xb] = hwnd;
+  pWVar10[-0xc] = 0;
+  pWVar10[-0xd] = hInst;
+  pWVar10[-0xe] = 0;
+  pWVar10[-0xf] = 0;
+  pWVar10[-0x10] = 0x14f8;
+  pWVar10[-0x11] = 0x1340;
   hwndPopup =
-       CreateWindow(*(LPCSTR *)(pUVar10 + -2),*(LPCSTR *)(pUVar10 + -4),*(DWORD *)(pUVar10 + -6),
-                    pUVar10[-7],pUVar10[-8],pUVar10[-9],pUVar10[-10],pUVar10[-0xb],pUVar10[-0xc],
-                    pUVar10[-0xd],*(void **)(pUVar10 + -0xf));
-  pUVar10[1] = hwndPopup;
-  *pUVar10 = 0x30;
-  pUVar10[-1] = rghfontArial8[0];
-  pUVar10[-2] = 0;
-  pUVar10[-3] = 0;
-  pUVar10[-4] = 0x14f8;
-  pUVar10[-5] = 0x135c;
-  SendMessage(pUVar10[1],*pUVar10,pUVar10[-1],*(LPARAM *)(pUVar10 + -3));
-  pUVar10[1] = hwndPopup;
-  *pUVar10 = 0x14f8;
-  pUVar10[-1] = 0x1365;
-  SetCapture(pUVar10[1]);
+       CreateWindow(*(LPCSTR *)(pWVar10 + -2),*(LPCSTR *)(pWVar10 + -4),
+                    *(undefined4 *)(pWVar10 + -6),pWVar10[-7],pWVar10[-8],pWVar10[-9],pWVar10[-10],
+                    pWVar10[-0xb],pWVar10[-0xc],pWVar10[-0xd],*(void **)(pWVar10 + -0xf));
+  pWVar10[1] = hwndPopup;
+  *pWVar10 = 0x30;
+  pWVar10[-1] = rghfontArial8[0];
+  pWVar10[-2] = 0;
+  pWVar10[-3] = 0;
+  pWVar10[-4] = 0x14f8;
+  pWVar10[-5] = 0x135c;
+  SendMessage(pWVar10[1],*pWVar10,pWVar10[-1],*(undefined4 *)(pWVar10 + -3));
+  pWVar10[1] = hwndPopup;
+  *pWVar10 = 0x14f8;
+  pWVar10[-1] = (WMType)(char *)s_99999_1120_1365;
+  SetCapture(pWVar10[1]);
   return;
 }
 
@@ -1160,7 +1160,7 @@ POINT PtDisplayPlanetStateInfo(HDC hdc,short fPrint)
         WrapTextOut
                   (hdc,&x,&y,(char *)szWork,cch,4,xMax + -4,(short *)0x0,0,fPrint);
         SelectObject(hdc,rghfontArial8[1]);
-        cch = _wsprintf(szWork,(char *)0x11200c1c,local_1a);
+        cch = _wsprintf(szWork,s_d_1120_0c1c,local_1a);
         WrapTextOut
                   (hdc,&x,&y,(char *)szWork,cch,4,xMax + -4,(short *)0x0,0,fPrint);
       }
@@ -1307,7 +1307,7 @@ POINT PtDisplayPlanetPopInfo(HDC hdc,short fPrint)
       pcVar2 = PszGetCompressedString(idsApproximately);
       DxStreamTextOut(hdc,&x,y,pcVar2,sVar5,sVar6);
       SelectObject(hdc,rghfontArial8[1]);
-      _wsprintf(szWork,(char *)0x11200c26,(pl.uGuesses & 0xfff) << 2);
+      _wsprintf(szWork,s_d00_1120_0c26,(pl.uGuesses & 0xfff) << 2);
       if ((pl.uGuesses & 0xfff) == 0) {
         szWork[1] = '\0';
       }

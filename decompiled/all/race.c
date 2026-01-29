@@ -40,8 +40,7 @@ short RaceCreationWizard(HWND hwndParent,short fReadOnly,short fDontWrite)
 RACE_Step1:
   iPanelActive = 1;
   pvVar4 = MakeProcInstance(RaceWizardDlg1,hInst);
-  sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x92,hwndRaceParent),(HWND)((ulong)pvVar4 >> 0x10),
-                    (char)pvVar4);
+  sVar1 = DialogBox(0,IDD_DLG146_146,hwndRaceParent,pvVar4);
   FreeProcInstance(pvVar4);
   if (sVar1 == 0) {
     sVar1 = 0;
@@ -56,8 +55,7 @@ RACE_Step2:
   do {
     iPanelActive = 2;
     pvVar4 = MakeProcInstance(RaceWizardDlg4,hInst);
-    sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x95,hwndRaceParent),
-                      (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
+    sVar1 = DialogBox(0,IDD_DLG149_149,hwndRaceParent,pvVar4);
     FreeProcInstance(pvVar4);
     if (sVar1 == 0) {
       sVar1 = 0;
@@ -69,8 +67,7 @@ RACE_Step2:
 RACE_Step3:
     iPanelActive = 3;
     pvVar4 = MakeProcInstance(RaceWizardDlg5,hInst);
-    sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x96,hwndRaceParent),
-                      (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
+    sVar1 = DialogBox(0,IDD_DLG150_150,hwndRaceParent,pvVar4);
     FreeProcInstance(pvVar4);
     if (sVar1 == 0) {
       sVar1 = 0;
@@ -82,8 +79,7 @@ RACE_Step3:
 RACE_Step4:
       iPanelActive = 4;
       pvVar4 = MakeProcInstance((FARPROC)0x10e01060,hInst);
-      sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x93,hwndRaceParent),
-                        (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
+      sVar1 = DialogBox(0,IDD_DLG147_147,hwndRaceParent,pvVar4);
       FreeProcInstance(pvVar4);
       if (sVar1 == 0) {
         sVar1 = 0;
@@ -95,8 +91,7 @@ RACE_Step4:
 RACE_Step5:
         iPanelActive = 5;
         pvVar4 = MakeProcInstance(RaceWizardDlg3,hInst);
-        sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x94,hwndRaceParent),
-                          (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
+        sVar1 = DialogBox(0,IDD_DLG148_148,hwndRaceParent,pvVar4);
         FreeProcInstance(pvVar4);
         if (sVar1 == 0) {
           sVar1 = 0;
@@ -108,8 +103,7 @@ RACE_Step5:
           while( true ) {
             iPanelActive = 6;
             pvVar4 = MakeProcInstance(RaceWizardDlg6,hInst);
-            sVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x97,hwndRaceParent),
-                              (HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
+            sVar1 = DialogBox(0,IDD_DLG151_151,hwndRaceParent,pvVar4);
             FreeProcInstance(pvVar4);
             if (sVar1 == 0) {
               sVar1 = 0;
@@ -226,10 +220,10 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     GetClientRect(hwnd,&rc);
     DrawRaceAdvantagePoints(local_12,&rc,local_14);
-    HVar10 = GetDlgItem(hwnd,0x10f);
+    HVar10 = GetDlgItem(hwnd,IDC_U16_0x010F);
     GetWindowRect(HVar10,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
-    HVar10 = GetDlgItem(hwnd,0x116);
+    HVar10 = GetDlgItem(hwnd,IDC_U16_0x0116);
     GetWindowRect(HVar10,&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
     rcGBox.right = rc.right;
@@ -241,7 +235,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar11 = CchGetString(idsPredefinedRaces,(char *)szWork);
     TextOut(local_12,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar11)
     ;
-    HVar10 = GetDlgItem(hwnd,0x81a);
+    HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
     GetWindowRect(HVar10,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox.right);
     local_18 = rcGBox.right + 0x20;
@@ -304,7 +298,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     SetDlgItemText(hwnd,0x10c,vplr.szName);
     SetDlgItemText(hwnd,0x81b,vplr.szNames);
     if (vplr.szName[0] == '\0') {
-      GetDlgItemText(hwnd,0x10f,vplr.szName,0x10);
+      GetDlgItemText(hwnd,IDC_U16_0x010F,vplr.szName,0x10);
       SetDlgItemText(hwnd,0x10c,vplr.szName);
     }
     StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
@@ -325,13 +319,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     SendDlgItemMessage(hwnd,0x10c,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x81b,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x10d,0x415,0x10,0);
-    local_12 = GetDlgItem(hwnd,0x81a);
+    local_12 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
     for (i = 0x106; i < 0x10b; i = i + 1) {
       local_14 = PszGetCompressedString(i);
-      SendMessage(local_12,0x403,0,(LPARAM)local_14);
+      SendMessage(local_12,WM_USER_0x0403,0,(LPARAM)local_14);
     }
     WVar7 = GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
-    SendMessage(local_12,0x40e,WVar7,0);
+    SendMessage(local_12,WM_USER_0x040E,WVar7,0);
     if (vplr.lSalt != 0) {
       SetDlgItemText(hwnd,0x10d,&szRacePass);
     }
@@ -340,7 +334,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar10 = GetDlgItem(hwnd,i);
         EnableWindow(HVar10,0);
       }
-      HVar10 = GetDlgItem(hwnd,0x81b);
+      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
       EnableWindow(HVar10,0);
       for (i = 0x10f; i < 0x117; i = i + 1) {
         HVar10 = GetDlgItem(hwnd,i);
@@ -384,12 +378,12 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
             pPVar3->cShDef = (char)((uint)uVar2 >> 8);
           }
         }
-        GetDlgItemText(hwnd,0x10c,vplr.szName,0x20);
-        GetDlgItemText(hwnd,0x81b,vplr.szNames,0x20);
+        GetDlgItemText(hwnd,IDC_U16_0x010C,vplr.szName,0x20);
+        GetDlgItemText(hwnd,IDC_EDIT|IDCANCEL|IDOK,vplr.szNames,0x20);
         GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
-        GetDlgItemText(hwnd,0x10d,&szRacePass,0x10);
-        HVar10 = GetDlgItem(hwnd,0x81a);
-        LVar19 = SendMessage(HVar10,0x407,0,0);
+        GetDlgItemText(hwnd,IDC_U16_0x010D,&szRacePass,0x10);
+        HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+        LVar19 = SendMessage(HVar10,WM_USER_0x0407,0,0);
         local_12 = (HWND)LVar19;
         SetRaceStat((PLAYER *)&vplr,rsUseLeftover,local_12);
         lVar20 = LSaltFromSz((char *)&szRacePass);
@@ -405,9 +399,9 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     uVar18 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),in_stack_0000ffba);
     if ((((int)uVar18 == 0) && (0x10e < wParam)) && (wParam < 0x117)) {
       _memset((void *)vplr.szName,0,0x20);
-      GetDlgItemText(hwnd,0x10c,vplr.szName,0x20);
+      GetDlgItemText(hwnd,IDC_U16_0x010C,vplr.szName,0x20);
       _memset((void *)vplr.szNames,0,0x20);
-      GetDlgItemText(hwnd,0x81b,vplr.szNames,0x20);
+      GetDlgItemText(hwnd,IDC_EDIT|IDCANCEL|IDOK,vplr.szNames,0x20);
       GetDlgItemText(hwnd,wParam,(LPSTR)(local_38 + 8),0x20);
       for (i = 0; i < 7; i = i + 1) {
         pcVar13 = PszGetCompressedString(i + idsHumanoid);
@@ -433,13 +427,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
       InvalidateAdvPtsRect(hwnd);
       WVar7 = GetRaceStat(local_10,rsUseLeftover);
-      HVar10 = GetDlgItem(hwnd,0x81a);
-      SendMessage(HVar10,0x40e,WVar7,0);
-      HVar10 = GetDlgItem(hwnd,0x42f);
+      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+      SendMessage(HVar10,WM_USER_0x040E,WVar7,0);
+      HVar10 = GetDlgItem(hwnd,IDC_U16_0x042E|IDOK);
       EnableWindow(HVar10,(uint)(wParam != 0x115));
       local_38._6_2_ = local_10->wMdPlr >> 3 & 0x1f;
       vplr.wMdPlr = vplr.wMdPlr & 0xff07 | local_38._6_2_ << 3;
-      HVar10 = GetDlgItem(hwnd,0x81a);
+      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
       GetWindowRect(HVar10,&rc);
       ScreenToClient(hwnd,(POINT *)&rc.right);
       rc.left = rc.right + 0x20;
@@ -590,7 +584,7 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         local_30._22_2_ = CchGetString(idsTemperature,local_30 + 2);
         DVar7 = GetTextExtent(local_10,(LPCSTR)(local_30 + 2),local_30._22_2_);
         local_30._24_2_ = (int)DVar7 + 10;
-        DVar7 = GetTextExtent(local_10,(LPCSTR)0x11201331,5);
+        DVar7 = GetTextExtent(local_10,s_200mR_1120_1331,5);
         local_30._26_2_ = (rc.right - local_30._24_2_) - ((int)DVar7 + 10);
         local_30._28_2_ = (dyArial8 * 3) / 2;
         local_30._30_2_ = dyArial8 * 3;
@@ -624,7 +618,7 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
           OffsetRect(vrgrcRCW + i + 10,0,local_30._28_2_ * 6);
         }
         for (i = 0; i < 3; i = i + 1) {
-          HVar3 = GetDlgItem(hwnd,i + 0x123);
+          HVar3 = GetDlgItem(hwnd,i + IDC_U16_0x0123);
           SetWindowPos(HVar3,0,local_30._28_2_ * 3 + local_30._24_2_ + 6,
                        vrgrcRCW[i * 5 + 3].top,
                        local_30._26_2_ + local_30._28_2_ * -6 + -0xc,local_30._28_2_,4);
@@ -633,7 +627,7 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         local_30._22_2_ =
              CchGetString(idsMaximumColonistGrowthRatePerYear,(char *)szWork);
-        DVar7 = GetTextExtent(local_10,(LPCSTR)0x11201337,3);
+        DVar7 = GetTextExtent(local_10,s_15_1120_1337,3);
         iVar2 = (int)DVar7;
         DVar7 = GetTextExtent(local_10,szWork,local_30._22_2_);
         (vrgrcRCW + 0xf)->left = local_30._24_2_ + (int)DVar7 + iVar2 + 4;
@@ -678,7 +672,7 @@ short RaceWizardDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if ((0x122 < wParam) && (wParam < 0x126)) {
           HVar3 = GetDlgItem(hwnd,wParam);
-          LVar9 = SendMessage(HVar3,0x400,0,0);
+          LVar9 = SendMessage(HVar3,WM_USER,0,0);
           local_10 = wParam - 0x123;
           if ((int)LVar9 == 1) {
             ((char *)rgbCur + 0x2ef)[wParam] = -1;
@@ -875,7 +869,7 @@ void DrawRace2(HWND hwnd,HDC hdc,short iDraw)
       DrawBtn(hdc,vrgrcRCW + 0x10,uVar2 | 0xa1,0,(char *)0x0);
     }
     else {
-      DVar14 = GetTextExtent(hdc,(LPCSTR)0x1120134f,3);
+      DVar14 = GetTextExtent(hdc,s_15_1120_134f,3);
       SelectObject(hdc,hbrButtonFace);
       PatBlt(hdc,((vrgrcRCW + 0xf)->left + -4) - (int)DVar14,
              vrgrcRCW[0xf].top + 3,(int)DVar14,dyArial8,0xf00021);
@@ -1201,7 +1195,7 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_SS;
   ulong uVar4;
   LRESULT LVar5;
-  UINT UVar6;
+  WMType WVar6;
   ushort in_stack_0000ffd0;
   POINT local_12;
   RECT rc;
@@ -1222,7 +1216,7 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_CTLCOLOR) {
       local_12.y = (HWND)lParam;
-      HVar2 = GetDlgItem(hwnd,0x123);
+      HVar2 = GetDlgItem(hwnd,IDC_U16_0x0123);
       if ((local_12.y == HVar2) ||
          (uVar4 = __aFulshr(uVar4,in_stack_0000ffd0), (int)uVar4 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
@@ -1244,13 +1238,13 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
     else {
       if (message == WM_INITDIALOG) {
         SetRCWTitle(hwnd,iPanelActive);
-        HVar2 = GetDlgItem(hwnd,0x123);
-        UVar6 = 0x401;
+        HVar2 = GetDlgItem(hwnd,IDC_U16_0x0123);
+        WVar6 = WM_USER_0x0401;
         WVar1 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceCheapFact);
-        SendMessage(HVar2,UVar6,WVar1,0);
+        SendMessage(HVar2,WVar6,WVar1,0);
         if ((fRCWReadOnly != 0) ||
            (sVar3 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv), sVar3 == raMacintosh)) {
-          HVar2 = GetDlgItem(hwnd,0x123);
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x0123);
           EnableWindow(HVar2,0);
         }
         StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
@@ -1271,8 +1265,8 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0x123) {
-          HVar2 = GetDlgItem(hwnd,0x123);
-          LVar5 = SendMessage(HVar2,0x400,0,0);
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x0123);
+          LVar5 = SendMessage(HVar2,WM_USER,0,0);
           SetRaceGrbit((PLAYER *)&vplr,ibitRaceCheapFact,(short)LVar5);
           DrawRace3(hwnd,0,99);
         }
@@ -1354,8 +1348,8 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
   SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
   SelectObject(hdc,rghfontArial8[1]);
   yTop = dyArial8 * 3 + 6;
-  DVar10 = GetTextExtent(hdc,(LPCSTR)0x11201353,1);
-  DVar11 = GetTextExtent(hdc,(LPCSTR)0x11201355,2);
+  DVar10 = GetTextExtent(hdc,s_9_1120_1353,1);
+  DVar11 = GetTextExtent(hdc,s_kT_1120_1355,2);
   ids = 0xf6;
   irc = 0;
   for (i = 0; i < 7; i = i + 1) {
@@ -1366,7 +1360,7 @@ void DrawRace3(HWND hwnd,HDC hdc,short iDraw)
     }
     if (i == 4) {
       if (iDraw == -1) {
-        HVar3 = GetDlgItem(hwnd,0x123);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0123);
         SetWindowPos(HVar3,0,6,yTop,rc.right + -0xc,(dyArial8 * 3) / 2,4);
       }
       yTop = yTop + (dyArial8 * 5) / 2;
@@ -1637,10 +1631,10 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
     DrawRaceAdvantagePoints(hdc_00,&rc,(PLAYER *)0x0);
     SelectObject(hdc_00,rghfontArial8[1]);
     SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    HVar1 = GetDlgItem(hwnd,0x10f);
+    HVar1 = GetDlgItem(hwnd,IDC_U16_0x010F);
     GetWindowRect(HVar1,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
-    HVar1 = GetDlgItem(hwnd,0x118);
+    HVar1 = GetDlgItem(hwnd,IDC_U16_0x0118);
     GetWindowRect(HVar1,&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
     rcGBox.right = rc.right;
@@ -1654,7 +1648,7 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
     rc.top = rcGBox.bottom + 0xc;
     rc.left = rc.left + 0xc;
     rc.right = rc.right + -0xc;
-    HVar1 = GetDlgItem(hwnd,0x76);
+    HVar1 = GetDlgItem(hwnd,IDC_HELP);
     GetWindowRect(HVar1,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
     rc.bottom = rcGBox.top + -6;
@@ -1789,14 +1783,14 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
     DrawRaceAdvantagePoints(hdc,&rc,(PLAYER *)0x0);
     SelectObject(hdc,rghfontArial8[1]);
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-    HVar2 = GetDlgItem(hwnd,0x130);
+    HVar2 = GetDlgItem(hwnd,IDC_U16_0x0130);
     GetWindowRect(HVar2,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox.right);
     GetClientRect(hwnd,&rc);
     rc.top = rcGBox.bottom + 0xc;
     rc.left = rc.left + 0xc;
     rc.right = rc.right + -0xc;
-    HVar2 = GetDlgItem(hwnd,0x76);
+    HVar2 = GetDlgItem(hwnd,IDC_HELP);
     GetWindowRect(HVar2,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
     rc.bottom = rcGBox.top + -0xc;
@@ -1845,7 +1839,7 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(short *)(puVar4 + -4) = i + 0x123;
           *(undefined2 *)(puVar4 + -6) = uVar5;
           *(undefined2 *)(puVar4 + -8) = 0x37c9;
-          HVar2 = GetDlgItem(*(HWND *)(puVar4 + -2),*(short *)(puVar4 + -4));
+          HVar2 = GetDlgItem(*(HWND *)(puVar4 + -2),*(ControlId *)(puVar4 + -4));
           *(HWND *)(puVar4 + -2) = HVar2;
           *(short *)(puVar4 + -4) = i + 0x132;
           *(undefined2 *)(puVar4 + -6) = 0x14f8;
@@ -1868,7 +1862,7 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(undefined2 *)(puVar4 + -0x10) = 0;
           *(undefined2 *)(puVar4 + -0x12) = 0x10e0;
           *(undefined2 *)(puVar4 + -0x14) = 0x380b;
-          SendMessage(*(HWND *)(puVar4 + -8),*(UINT *)(puVar4 + -10),*(WPARAM *)(puVar4 + -0xc),
+          SendMessage(*(HWND *)(puVar4 + -8),*(WMType *)(puVar4 + -10),*(WPARAM *)(puVar4 + -0xc),
                       *(LPARAM *)(puVar4 + -0x10));
           if (fRCWReadOnly != 0) {
             *(HWND *)(puVar4 + -8) = HVar2;
@@ -1905,7 +1899,7 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if ((0x122 < wParam) && (wParam < 0x131)) {
           HVar2 = GetDlgItem(hwnd,wParam);
-          LVar7 = SendMessage(HVar2,0x400,0,0);
+          LVar7 = SendMessage(HVar2,WM_USER,0,0);
           cColDrop = wParam - 0x123;
           SetRaceGrbit((PLAYER *)&vplr,cColDrop,(short)LVar7);
           InvalidateAdvPtsRect(hwnd);
@@ -1946,7 +1940,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_SS;
   ulong uVar8;
   LRESULT LVar9;
-  UINT UVar10;
+  WMType WVar10;
   RECT rcGBox;
   short cch;
   PAINTSTRUCT ps;
@@ -1962,7 +1956,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
     SelectObject(hdc_00,rghfontArial8[1]);
     SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     for (i = 0; i < 6; i = i + 1) {
-      HVar5 = GetDlgItem(hwnd,i * 3 + 0x10f);
+      HVar5 = GetDlgItem(hwnd,i * 3 + IDC_U16_0x010F);
       GetWindowRect(HVar5,&rcGBox);
       ScreenToClient(hwnd,(POINT *)&rcGBox);
       HVar5 = GetDlgItem(hwnd,i * 3 + 0x111);
@@ -1991,7 +1985,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
       while ((i < 0x121 && (HVar5 = GetDlgItem(hwnd,i), (HWND)lParam != HVar5))) {
         i = i + 1;
       }
-      if (((i < 0x121) || (HVar5 = GetDlgItem(hwnd,0x123), (HWND)lParam == HVar5)) ||
+      if (((i < 0x121) || (HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123), (HWND)lParam == HVar5)) ||
          (uVar8 = __aFulshr(uVar8,rcGBox.left), (int)uVar8 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
@@ -2018,14 +2012,14 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
         iVar1 = (sVar6 == raNone) + 3;
         pcVar3 = PszGetCompressedString(idsCosts75ExtraResearchFieldsStartTech);
         _wsprintf(szWork,pcVar3,iVar1);
-        HVar5 = GetDlgItem(hwnd,0x123);
+        HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
         SetWindowText(HVar5,szWork);
-        HVar5 = GetDlgItem(hwnd,0x123);
-        UVar10 = 0x401;
+        HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
+        WVar10 = WM_USER_0x0401;
         WVar4 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3);
-        SendMessage(HVar5,UVar10,WVar4,0);
+        SendMessage(HVar5,WVar10,WVar4,0);
         if (fRCWReadOnly != 0) {
-          HVar5 = GetDlgItem(hwnd,0x123);
+          HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
           EnableWindow(HVar5,0);
         }
         StickyDlgPos(hwnd,(POINT *)&ptStickyRaceDlg,1);
@@ -2052,8 +2046,8 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
           InvalidateAdvPtsRect(hwnd);
         }
         else if (wParam == 0x123) {
-          HVar5 = GetDlgItem(hwnd,0x123);
-          LVar9 = SendMessage(HVar5,0x400,0,0);
+          HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
+          LVar9 = SendMessage(HVar5,WM_USER,0,0);
           SetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3,(short)LVar9);
           InvalidateAdvPtsRect(hwnd);
         }
@@ -2795,7 +2789,7 @@ void InvalidateAdvPtsRect(HWND hwnd)
   HVar3 = CreateFontIndirect(pLVar1);
   HVar4 = SelectObject(HVar2,HVar3);
   GetTextMetrics(HVar2,&tm);
-  DVar5 = GetTextExtent(HVar2,(LPCSTR)0x1120135e,6);
+  DVar5 = GetTextExtent(HVar2,s_99999_1120_135e,6);
   GetClientRect(hwnd,&rc);
   rc.left = rc.right - ((int)DVar5 + 8);
   rc.bottom = rc.top + tm.tmHeight + tm.tmExternalLeading + 4;
@@ -2851,7 +2845,7 @@ void DrawRaceAdvantagePoints(HDC hdc,RECT *prc,PLAYER *pplr)
   HVar2 = CreateFontIndirect(pLVar1);
   HVar3 = SelectObject(hdc,HVar2);
   GetTextMetrics(hdc,&tm);
-  DVar7 = GetTextExtent(hdc,(LPCSTR)0x11201365,6);
+  DVar7 = GetTextExtent(hdc,s_99999_1120_1365,6);
   rc.top = prc->top;
   rc.right = prc->right;
   rc.left = rc.right - ((int)DVar7 + 8);

@@ -168,10 +168,10 @@ short GenerateWorld(short fBatchMode)
   cKill = 0;
   *(short *)&dGal = *(int *)&game.mdSize * 400 + 400;
   *(short *)&dGalInv = *(int *)&dGal + 2000;
-  uVar40 = 0;
-  uVar39 = 5000;
+  uVar39 = 0;
+  pcVar19 = (char *)s_Stars_1120_1385 + 3;
   uVar30 = __aFulmul((long)*(int *)&dGal,(long)*(int *)&dGal);
-  lVar31 = __aFldiv(uVar30,CONCAT22(uVar40,uVar39));
+  lVar31 = __aFldiv(uVar30,(long)CONCAT22(uVar39,pcVar19));
   cPlanMax = (int)lVar31 + ((int)lVar31 / 4) * (*(int *)&game.mdDensity + -1);
   if (2 < *(int *)&game.mdDensity) {
     cPlanMax = cPlanMax + cPlanMax / 4;
@@ -1348,7 +1348,7 @@ CREATE_LConcentrations:
             }
             *(short *)&idPlayer = iplrSingle;
             CreateChildWindows();
-            SendMessage(*(HWND *)&hwndFrame,0x111,0xfa1,0);
+            SendMessage(*(HWND *)&hwndFrame,WM_COMMAND,0xfa1,0);
           }
           return 1;
         }
@@ -2221,7 +2221,7 @@ CREATE_LCantGetRace:
                               sVar7 = Random(0x18);
                               CchGetString(sVar7 + idsBerserker,pcVar9);
                               _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),
-                                        (char *)0x11200a2e,i * 0xc0 + 0x5a22,0x1120);
+                                        s_ss_1120_0a2e,i * 0xc0 + 0x5a22,0x1120);
                             }
                           }
                           for (i = 1; i < game.cPlayer; i = i + 1) {
@@ -2387,7 +2387,7 @@ void CreateTutorWorld(void)
     pPVar11->cShDef = (char)((uint)uVar3 >> 8);
   }
   CchGetString(idsHumanoid,(char *)rgplr[0].szName);
-  _wsprintf(rgplr[0].szNames,(char *)0x11200a34,0x5a22);
+  _wsprintf(rgplr[0].szNames,s_ss_1120_0a34,0x5a22);
   pPVar11 = LpplrComp(1,0);
   pPVar9 = (PLAYER *)pPVar11;
   pPVar10 = (PLAYER *)(rgplr + 1);
@@ -2508,16 +2508,14 @@ void NewGameWizard(HWND hwnd,short fReadOnly)
 CREATE_Step1_2:
     do {
       pvVar21 = MakeProcInstance(NewGameDlg,hInst);
-      sVar11 = DialogBox(0,(LPCSTR)CONCAT22(0x186,hwnd),(HWND)((ulong)pvVar21 >> 0x10),(char)pvVar21
-                        );
+      sVar11 = DialogBox(0,IDD_DLG390_390,hwnd,pvVar21);
       FreeProcInstance(pvVar21);
       if (sVar11 == 0) goto CREATE_Cancel;
       InitNewGamePlr(iStepMaxSoFar,lvlAi);
       if (sVar11 != 3) {
         do {
           pvVar21 = MakeProcInstance(NewGameDlg2,hInst);
-          sVar11 = DialogBox(0,(LPCSTR)CONCAT22(0x187,hwnd),(HWND)((ulong)pvVar21 >> 0x10),
-                             (char)pvVar21);
+          sVar11 = DialogBox(0,IDD_DLG391_391,hwnd,pvVar21);
           FreeProcInstance(pvVar21);
           if (sVar11 == 0) goto CREATE_Cancel;
           if (iStepMaxSoFar == 0) {
@@ -2527,8 +2525,7 @@ CREATE_Step1_2:
           if (sVar11 == 1) goto CREATE_Step1_2;
           if (sVar11 == 3) break;
           pvVar21 = MakeProcInstance(NewGameDlg3,hInst);
-          sVar11 = DialogBox(0,(LPCSTR)CONCAT22(0x188,hwnd),(HWND)((ulong)pvVar21 >> 0x10),
-                             (char)pvVar21);
+          sVar11 = DialogBox(0,IDD_DLG392_392,hwnd,pvVar21);
           FreeProcInstance(pvVar21);
           if (sVar11 == 0) goto CREATE_Cancel;
           if ((uint)iStepMaxSoFar < 2) {
@@ -2605,7 +2602,7 @@ CREATE_Finish_2:
             }
             CchGetString
                       (c + idsHumanoid,(char *)((int)rgplr[0].szName + i * 0xc0));
-            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),(char *)0x11200ab8,
+            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),s_ss_1120_0ab8,
                       i * 0xc0 + 0x5a22);
           }
           else if (bVar9 == 2) {
@@ -2675,7 +2672,7 @@ CREATE_Finish_2:
             CchGetString(sVar11 + idsBerserker,pcVar14);
           }
           if (*(char *)((int)rgplr[0].szNames + i * 0xc0) == '\0') {
-            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),(char *)0x11200abc,
+            _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0),s_ss_1120_0abc,
                       i * 0xc0 + 0x5a22);
           }
         }
@@ -2788,7 +2785,7 @@ LAB_1078_6a97:
   vrgplrTypeNew[2] = 0x27;
   vrgplrTypeNew[3] = 0x8b;
   pvVar21 = MakeProcInstance(SimpleNewGameDlg,hInst);
-  sVar11 = DialogBox(0,(LPCSTR)CONCAT22(0xd1,hwnd),(HWND)((ulong)pvVar21 >> 0x10),(char)pvVar21);
+  sVar11 = DialogBox(0,0xd1,hwnd,pvVar21);
   FreeProcInstance(pvVar21);
   game.rgvc[0] = 0x88;
   game.rgvc[1] = 0x8e;
@@ -3157,17 +3154,18 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   char *pcVar6;
   HWND HVar7;
   short sVar8;
-  int iVar9;
+  UINT UVar9;
+  int iVar10;
   undefined2 unaff_SI;
-  undefined2 *puVar10;
-  PLAYER *pPVar11;
-  undefined2 unaff_DI;
+  undefined2 *puVar11;
   PLAYER *pPVar12;
+  undefined2 unaff_DI;
+  PLAYER *pPVar13;
   undefined2 unaff_SS;
-  ulong uVar13;
-  LRESULT LVar14;
-  WPARAM WVar15;
-  UINT UVar16;
+  ulong uVar14;
+  LRESULT LVar15;
+  WPARAM WVar16;
+  WMType WVar17;
   PAINTSTRUCT ps;
   short c;
   short dy;
@@ -3176,13 +3174,13 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   RECT rc;
   short i;
   
-  uVar13 = CONCAT22(unaff_SI,unaff_DI);
+  uVar14 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_PAINT) {
     local_10 = BeginPaint(hwnd,&ps);
     HVar7 = GetDlgItem(hwnd,200);
     GetWindowRect(HVar7,&local_18);
     ScreenToClient(hwnd,(POINT *)&local_18);
-    HVar7 = GetDlgItem(hwnd,0xcb);
+    HVar7 = GetDlgItem(hwnd,IDC_U16_0x00CB);
     GetWindowRect(HVar7,&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
     local_18.right = rc.right;
@@ -3209,7 +3207,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     TextOut(local_10,local_18.left + 8,local_18.top - (dyArial8 >> 1),szWork,
             sVar8);
     local_18.top = local_18.bottom + 8;
-    HVar7 = GetDlgItem(hwnd,0x81a);
+    HVar7 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
     GetWindowRect(HVar7,&local_18);
     MapWindowPoints(0,hwnd,(POINT *)&local_18,2);
     ExpandRc(&local_18,dyArial8,dyArial8 >> 1);
@@ -3225,7 +3223,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar8 = CchGetString
                       (idsButtonAllowsConfigureMultiPlayerGamesCustom,(char *)szWork);
     sVar8 = DRAWTEXT(local_10,szWork,sVar8,&local_18,0x810);
-    HVar7 = GetDlgItem(hwnd,0xd3);
+    HVar7 = GetDlgItem(hwnd,IDC_U16_0x00D3);
     SetWindowPos(HVar7,0,local_18.left,local_18.top + sVar8 + dyArial8 / 2,0,0,5);
     local_18.bottom = local_18.top + sVar8 + dyArial8 * 2;
     ExpandRc(&local_18,dyArial8,dyArial8 >> 1);
@@ -3261,7 +3259,7 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           }
         }
       }
-      if ((i == -1) || (uVar13 = __aFulshr(uVar13,ps.hdc), (int)uVar13 == 6)) {
+      if ((i == -1) || (uVar14 = __aFulshr(uVar14,ps.hdc), (int)uVar14 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -3271,34 +3269,34 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         CheckRadioButton(hwnd,200,0xcb,0xc9);
         CheckRadioButton(hwnd,1000,0x3ec,0x3e9);
-        local_10 = GetDlgItem(hwnd,0x81a);
-        SendMessage(local_10,0x40b,0,0);
+        local_10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+        SendMessage(local_10,WM_USER_0x040B,0,0);
         for (i = 0; i < 7; i = i + 1) {
-          UVar16 = 0x403;
-          WVar15 = 0;
+          WVar17 = WM_USER_0x0403;
+          WVar16 = 0;
           HVar7 = local_10;
           pcVar6 = PszGetCompressedString(i + idsHumanoid);
-          SendMessage(HVar7,UVar16,WVar15,(LPARAM)pcVar6);
+          SendMessage(HVar7,WVar17,WVar16,(LPARAM)pcVar6);
         }
-        SendMessage(local_10,0x40e,0,0);
+        SendMessage(local_10,WM_USER_0x040E,0,0);
         StickyDlgPos(hwnd,(POINT *)&ptStickyNewDlg,1);
         return 1;
       }
       if (message == WM_COMMAND) {
         if (((wParam == 0x430) || (wParam == 2)) || (wParam == 0xd3)) {
           i = 200;
-          while ((i < 0xcc && (UVar16 = IsDlgButtonChecked(hwnd,i), UVar16 == 0))) {
+          while ((i < 0xcc && (UVar9 = IsDlgButtonChecked(hwnd,i), UVar9 == 0))) {
             i = i + 1;
           }
           game.mdDensity = i + -200;
           i = 1000;
-          while ((i < 0x3ed && (UVar16 = IsDlgButtonChecked(hwnd,i), UVar16 == 0))) {
+          while ((i < 0x3ed && (UVar9 = IsDlgButtonChecked(hwnd,i), UVar9 == 0))) {
             i = i + 1;
           }
           game.mdSize = i + -1000;
-          HVar7 = GetDlgItem(hwnd,0x81a);
-          LVar14 = SendMessage(HVar7,0x407,0,0);
-          game.turn = (ushort)LVar14;
+          HVar7 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+          LVar15 = SendMessage(HVar7,WM_USER_0x0407,0,0);
+          game.turn = (ushort)LVar15;
           StickyDlgPos(hwnd,(POINT *)&ptStickyNewDlg,0);
           EndDialog(hwnd,wParam);
           return 1;
@@ -3309,32 +3307,32 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0xd2) {
-          local_10 = GetDlgItem(hwnd,0x81a);
-          LVar14 = SendMessage(local_10,0x407,0,0);
-          game.turn = (ushort)LVar14;
+          local_10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+          LVar15 = SendMessage(local_10,WM_USER_0x0407,0,0);
+          game.turn = (ushort)LVar15;
           if (game.turn < 7) {
-            puVar10 = (undefined2 *)(game.turn * 0xc0 + vrgplrDef);
-            pPVar11 = (PLAYER *)&vplr;
-            for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
-              pPVar2 = pPVar11;
-              pPVar11 = &pPVar11->cPlanet;
-              puVar1 = puVar10;
-              puVar10 = puVar10 + 1;
+            puVar11 = (undefined2 *)(game.turn * 0xc0 + vrgplrDef);
+            pPVar12 = (PLAYER *)&vplr;
+            for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
+              pPVar2 = pPVar12;
+              pPVar12 = &pPVar12->cPlanet;
+              puVar1 = puVar11;
+              puVar11 = puVar11 + 1;
               uVar3 = *puVar1;
               pPVar2->iPlayer = (char)uVar3;
               pPVar2->cShDef = (char)((uint)uVar3 >> 8);
             }
             CchGetString(game.turn + idsHumanoid,(char *)vplr.szName);
-            _wsprintf(vplr.szNames,(char *)0x11200adc,0x501a,0x1120);
+            _wsprintf(vplr.szNames,s_ss_1120_0adc,0x501a,0x1120);
           }
           else {
-            pPVar12 = (PLAYER *)&vplr;
-            pPVar11 = vrgplrNew;
-            for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
-              pPVar4 = pPVar12;
+            pPVar13 = (PLAYER *)&vplr;
+            pPVar12 = vrgplrNew;
+            for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
+              pPVar4 = pPVar13;
+              pPVar13 = &pPVar13->cPlanet;
+              pPVar2 = pPVar12;
               pPVar12 = &pPVar12->cPlanet;
-              pPVar2 = pPVar11;
-              pPVar11 = &pPVar11->cPlanet;
               cVar5 = pPVar2->cShDef;
               pPVar4->iPlayer = pPVar2->iPlayer;
               pPVar4->cShDef = cVar5;
@@ -3343,19 +3341,19 @@ short SimpleNewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           local_18.bottom = (short)vrgrcRCW;
           sVar8 = RaceCreationWizard(hwnd,0,1);
           if (sVar8 != 0) {
-            LVar14 = SendMessage(local_10,0x406,0,0);
-            if (7 < LVar14) {
-              SendMessage(local_10,0x404,7,0);
+            LVar15 = SendMessage(local_10,WM_USER_0x0406,0,0);
+            if (7 < LVar15) {
+              SendMessage(local_10,WM_USER_0x0404,7,0);
             }
-            SendMessage(local_10,0x403,0,0x1120501a);
-            SendMessage(local_10,0x40e,7,0);
-            pPVar11 = (PLAYER *)&vplr;
-            pPVar12 = vrgplrNew;
-            for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
-              pPVar4 = pPVar12;
+            SendMessage(local_10,WM_USER_0x0403,0,0x1120501a);
+            SendMessage(local_10,WM_USER_0x040E,7,0);
+            pPVar12 = (PLAYER *)&vplr;
+            pPVar13 = vrgplrNew;
+            for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
+              pPVar4 = pPVar13;
+              pPVar13 = &pPVar13->cPlanet;
+              pPVar2 = pPVar12;
               pPVar12 = &pPVar12->cPlanet;
-              pPVar2 = pPVar11;
-              pPVar11 = &pPVar11->cPlanet;
               cVar5 = pPVar2->cShDef;
               pPVar4->iPlayer = pPVar2->iPlayer;
               pPVar4->cShDef = cVar5;
@@ -3469,7 +3467,7 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         i = i + 1;
       }
       if (((i < 0x3fe) || (uVar7 = __aFulshr(uVar7,ps.hdc), (int)uVar7 == 6)) ||
-         (HVar2 = GetDlgItem(hwnd,0x41a), (HWND)lParam == HVar2)) {
+         (HVar2 = GetDlgItem(hwnd,IDC_U16_0x041A), (HWND)lParam == HVar2)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -3481,30 +3479,30 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         CheckRadioButton(hwnd,1000,0x3ec,game.mdSize + 1000);
         CheckRadioButton(hwnd,0x3ed,0x3f0,game.mdDensity + 0x3ed);
         CheckRadioButton(hwnd,0x3f1,0x3f4,game.mdStartDist + 0x3f1);
-        HVar2 = GetDlgItem(hwnd,0x406);
+        HVar2 = GetDlgItem(hwnd,IDC_U16_0x0406);
         SetWindowText(HVar2,game.szName);
         SendDlgItemMessage(hwnd,0x406,0x415,0x1f,0);
         HVar2 = GetDlgItem(hwnd,0x3f8);
         uVar7 = CONCAT22(0x401,game.wCrap) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         HVar2 = GetDlgItem(hwnd,0x3f9);
         uVar7 = CONCAT22(0x401,game.wCrap >> 1) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         HVar2 = GetDlgItem(hwnd,0x3fa);
         uVar7 = CONCAT22(0x401,game.wCrap >> 5) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         HVar2 = GetDlgItem(hwnd,0x3fb);
         uVar7 = CONCAT22(0x401,game.wCrap >> 7) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         HVar2 = GetDlgItem(hwnd,0x3fc);
         uVar7 = CONCAT22(0x401,game.wCrap >> 4) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         HVar2 = GetDlgItem(hwnd,0x3fd);
         uVar7 = CONCAT22(0x401,game.wCrap >> 6) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
-        HVar2 = GetDlgItem(hwnd,0x41a);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        HVar2 = GetDlgItem(hwnd,IDC_U16_0x041A);
         uVar7 = CONCAT22(0x401,game.wCrap >> 8) & 0xffff0001;
-        SendMessage(HVar2,(UINT)(uVar7 >> 0x10),(WPARAM)uVar7,0);
+        SendMessage(HVar2,(WMType)(uVar7 >> 0x10),(WPARAM)uVar7,0);
         if (fRCWReadOnly != 0) {
           for (i = 1000; i < 0x3ed; i = i + 1) {
             HVar2 = GetDlgItem(hwnd,i);
@@ -3526,11 +3524,11 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           EnableWindow(HVar2,0);
           HVar2 = GetDlgItem(hwnd,0x3fb);
           EnableWindow(HVar2,0);
-          HVar2 = GetDlgItem(hwnd,0x41a);
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x041A);
           EnableWindow(HVar2,0);
           HVar2 = GetDlgItem(hwnd,0x3fc);
           EnableWindow(HVar2,0);
-          HVar2 = GetDlgItem(hwnd,0x406);
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x0406);
           EnableWindow(HVar2,0);
           HVar2 = GetDlgItem(hwnd,0x3fd);
           EnableWindow(HVar2,0);
@@ -3579,7 +3577,7 @@ short NewGameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
             game.wCrap = game.wCrap & 0xffbf | (rcGBox.bottom & 1U) << 6;
             rcGBox.bottom = IsDlgButtonChecked(hwnd,0x41a);
             game.wCrap = game.wCrap & 0xfeff | (rcGBox.bottom & 1U) << 8;
-            HVar2 = GetDlgItem(hwnd,0x406);
+            HVar2 = GetDlgItem(hwnd,IDC_U16_0x0406);
             uVar6 = 0x14f8;
             sVar3 = GetWindowText(HVar2,game.szName,0x20);
             puVar5 = &stack0xffba;
@@ -3722,7 +3720,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
     local_30._20_2_ = local_16._6_2_ - local_16._2_2_;
     if ((int)local_30._20_2_ < local_30._22_2_ + local_18 + 6) {
       for (i = 0; i < 5; i = i + 1) {
-        local_30._18_2_ = GetDlgItem(hwnd,*(short *)((ushort_0_ *)&rgidRaceBtn + i * 2));
+        local_30._18_2_ = GetDlgItem(hwnd,*(ControlId *)((ushort_0_ *)&rgidRaceBtn + i * 2));
         GetWindowRect(local_30._18_2_,&rc);
         MapWindowPoints(0,hwnd,(POINT *)&rc,2);
         OffsetRect(&rc,0,local_30._22_2_ - rc.top);
@@ -3940,7 +3938,7 @@ short NewGameDlg2(HWND hwnd,WMType message,ushort wParam,long lParam)
         pPVar2->cShDef = (char)((uint)uVar18 >> 8);
       }
       CchGetString(idsHumanoid,(char *)vplr.szName);
-      _wsprintf(vplr.szNames,(char *)0x11200ae0,0x501a,0x1120);
+      _wsprintf(vplr.szNames,s_ss_1120_0ae0,0x501a,0x1120);
       uVar18 = 0x10e0;
       sVar23 = RaceCreationWizard(hwnd,0,0);
       if (sVar23 == 0) goto LAB_1078_9035;
@@ -3998,7 +3996,7 @@ LAB_1078_9035:
             pPVar2->cShDef = (char)((uint)uVar18 >> 8);
           }
           CchGetString(iVar12 + idsHumanoid,(char *)vplr.szName);
-          _wsprintf(vplr.szNames,(char *)0x11200ae4,0x501a,0x1120);
+          _wsprintf(vplr.szNames,s_ss_1120_0ae4,0x501a,0x1120);
         }
         else {
           pPVar15 = vrgplrNew + iVar12;
@@ -4210,8 +4208,7 @@ void DrawNewGame2(HWND hwnd,HDC hdc,short iDraw)
           }
         }
         else {
-          _wsprintf(szWork,(char *)0x11200aee,vrgszFileNew + uVar7 * 0xd,0x1120)
-          ;
+          _wsprintf(szWork,s_s_1120_0aee,vrgszFileNew + uVar7 * 0xd,0x1120);
         }
       }
       else if (bVar1 == 3) {
@@ -4280,7 +4277,7 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_SS;
   ulong uVar4;
   LRESULT LVar5;
-  UINT UVar6;
+  WMType WVar6;
   ushort in_stack_0000ffd0;
   POINT local_12;
   RECT rc;
@@ -4326,12 +4323,12 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         SetNGWTitle(hwnd,3);
         for (i = 0; i < 7; i = i + 1) {
-          HVar2 = GetDlgItem(hwnd,i + 0x123);
-          UVar6 = 0x401;
+          HVar2 = GetDlgItem(hwnd,i + IDC_U16_0x0123);
+          WVar6 = WM_USER_0x0401;
           WVar1 = GetVCCheck((GAME *)&game,(uint)(1 < i) + i);
-          SendMessage(HVar2,UVar6,WVar1,0);
+          SendMessage(HVar2,WVar6,WVar1,0);
           if (fRCWReadOnly != 0) {
-            HVar2 = GetDlgItem(hwnd,i + 0x123);
+            HVar2 = GetDlgItem(hwnd,i + IDC_U16_0x0123);
             EnableWindow(HVar2,0);
           }
         }
@@ -4354,7 +4351,7 @@ short NewGameDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
         }
         if ((0x122 < wParam) && (wParam < 0x12a)) {
           HVar2 = GetDlgItem(hwnd,wParam);
-          LVar5 = SendMessage(HVar2,0x400,0,0);
+          LVar5 = SendMessage(HVar2,WM_USER,0,0);
           SetVCCheck((GAME *)&game,(wParam - 0x123) + (uint)(1 < wParam - 0x123),(short)LVar5
                     );
           DrawNewGame3(hwnd,0,8);
@@ -4430,7 +4427,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
   sVar2 = SetBkMode(hdc,2);
   CVar9 = SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[1]);
-  DVar10 = GetTextExtent(hdc,(LPCSTR)0x11200af2,1);
+  DVar10 = GetTextExtent(hdc,s_9_1120_0af2,1);
   ids = 0x3aa;
   irc = 0;
   vcCur = 0;
@@ -4446,7 +4443,7 @@ void DrawNewGame3(HWND hwnd,HDC hdc,short iDraw)
       return;
     }
     if (i < 7) {
-      HVar3 = GetDlgItem(hwnd,i + 0x123);
+      HVar3 = GetDlgItem(hwnd,i + IDC_U16_0x0123);
       GetWindowRect(HVar3,&rcCBox);
       MapWindowPoints(0,hwnd,(POINT *)&rcCBox,2);
       xLeft = rcCBox.right + 2;

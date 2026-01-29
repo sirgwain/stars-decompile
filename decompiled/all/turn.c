@@ -154,7 +154,7 @@ short FGenerateTurn(void)
       }
       for (i = 0; i < game.cPlayer; i = i + 1) {
         uVar21 = (uint)mpiplr2[i];
-        _wsprintf(szWork,(char *)0x112009c8,(char *)szBase,0x1120,uVar21 + 1);
+        _wsprintf(szWork,s_s_x_d_1120_09c8,(char *)szBase,0x1120,uVar21 + 1);
         uVar6 = vrgts._2_2_;
         pTVar24 = (TURNSERIAL *)vrgts + uVar21;
         idPlayer = uVar21;
@@ -596,7 +596,7 @@ LAB_10b0_09f2:
           _strcpy(pchBak,(char *)0x9d9);
         }
         else {
-          _wsprintf(pcVar22,(char *)0x112009cf,i + 1);
+          _wsprintf(pcVar22,s_x_d_1120_09cf,i + 1);
           _strcpy(pchBak,pcVar22);
           _remove(szT);
           sVar16 = __access((char *)szBase,0);

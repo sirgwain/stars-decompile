@@ -64,6 +64,8 @@ build/
 build-win/
 build-mac-debug/
 build-mac-release/
+build-stubs/
 ghidra_project/
 ghidra_project.*/
 decompiled/asm
+debug.log

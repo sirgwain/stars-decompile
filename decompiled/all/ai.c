@@ -418,8 +418,9 @@ LAB_1088_0bc9:
         }
         for (i = 0; i < 3; i = i + 1) {
           uVar8 = *(uint *)((int)(pPVar13->rgwtMin + i) + 2);
-          if (((int)uVar8 < 1) && (((int)uVar8 < 0 || (*(uint *)(pPVar13->rgwtMin + i) < 5000))))
-          break;
+          if (((int)uVar8 < 1) &&
+             (((int)uVar8 < 0 || (*(char **)(pPVar13->rgwtMin + i) <= (char *)s_Stars_1120_1385 + 2)
+              ))) break;
         }
         fTonsOfMinerals = (short)(i == 2);
         if (iLatestBomber != -1) {
@@ -569,7 +570,7 @@ AI_FinishProd_4:
            (ITEMACTION)((pFVar16->pt).y - ((PLORD *)pFVar16->lpplord + 6)->wFlags);
       uVar22 = __aFulmul((long)(int)local_98.txp.rgia[4].wFlags,
                                  (long)(int)local_98.txp.rgia[4].wFlags);
-      unique0x100018f9 = uVar22;
+      unique0x10001907 = uVar22;
       uVar22 = __aFulmul((long)(int)local_98.tlm.cTimeOld,(long)(int)local_98.tlm.cTimeOld);
       pbVar3 = (byte *)(uVar22 + stack0xff66);
       IVar11.wFlags = (ushort)pbVar3;

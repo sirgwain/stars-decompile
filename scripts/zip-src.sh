@@ -5,6 +5,7 @@ set -e
 # Parse args
 #
 INCLUDE_SCRIPTS=1
+INCLUDE_RES=1
 INCLUDE_NOTES=1
 INCLUDE_TEST=1
 INCLUDE_TOOLCHAINS=1
@@ -23,6 +24,9 @@ for arg in "$@"; do
             ;;
         --no-notes)
             INCLUDE_NOTES=0
+            ;;
+        --no-res)
+            INCLUDE_RES=0
             ;;
         --no-test)
             INCLUDE_TEST=0
@@ -87,6 +91,9 @@ fi
 if [ "$INCLUDE_NOTES" -eq 0 ]; then
     PRUNE_PATHS+=("./notes" "./notes/*")
 fi
+if [ "$INCLUDE_RES" -eq 0 ]; then
+    PRUNE_PATHS+=("./RES" "./res/*")
+fi
 if [ "$INCLUDE_TEST" -eq 0 ]; then
     PRUNE_PATHS+=("./test" "./test/*")
 fi
@@ -122,6 +129,9 @@ PRUNE_EXPR="$PRUNE_EXPR \\) -prune -o"
   if [ "$INCLUDE_NOTES" -eq 1 ]; then
       SEL_EXPR="$SEL_EXPR -o -path \"./notes/*\""
   fi
+  if [ "$INCLUDE_RES" -eq 1 ]; then
+      SEL_EXPR="$SEL_EXPR -o -path \"./res/*\""
+  fi
   if [ "$INCLUDE_TOOLCHAINS" -eq 1 ]; then
       SEL_EXPR="$SEL_EXPR -o -path \"./toolchains/*\""
   fi
@@ -138,7 +148,7 @@ PRUNE_EXPR="$PRUNE_EXPR \\) -prune -o"
            "**/*.o" "**/*.obj" \
            "**/*.a" "**/*.so" "**/*.dll" \
            "**/*.dSYM/**" \
-           decompiled/asm/**
+           "decompiled/asm/**"
 )
 
 echo "Wrote $OUT"

@@ -2,6 +2,8 @@
 #include "types.h"
 #include "globals.h"
 
+#include "resource.h"
+
 #include "mdi.h"
 
 /* globals */
@@ -297,32 +299,22 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     int16_t yOffset;
     char szTemp[80];
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x06eb */
-    /* block (block) @ MEMORY_MDI:0x07f7 */
-    /* block (block) @ MEMORY_MDI:0x082c */
-    /* block (block) @ MEMORY_MDI:0x0d97 */
-    /* block (block) @ MEMORY_MDI:0x0e10 */
-    /* block (block) @ MEMORY_MDI:0x0f7f */
-    /* block (block) @ MEMORY_MDI:0x10ee */
-    /* block (block) @ MEMORY_MDI:0x14c5 */
-    /* block (block) @ MEMORY_MDI:0x15f7 */
-    /* block (block) @ MEMORY_MDI:0x161b */
-    /* block (block) @ MEMORY_MDI:0x1632 */
-    /* block (block) @ MEMORY_MDI:0x1691 */
-    /* block (block) @ MEMORY_MDI:0x16fc */
-    /* block (block) @ MEMORY_MDI:0x1a1f */
-    /* block (block) @ MEMORY_MDI:0x1aaa */
-    /* label LTryNextBatch @ MEMORY_MDI:0x0a76 */
-    /* label LNop @ MEMORY_MDI:0x0d67 */
-    /* label LShowStartup @ MEMORY_MDI:0x0cee */
-    /* label MapIt @ MEMORY_MDI:0x074c */
-    /* label Default @ MEMORY_MDI:0x1d5a */
-    /* label LExit @ MEMORY_MDI:0x0af1 */
-    /* label LBatchNext @ MEMORY_MDI:0x0a14 */
+    /*
+     * TODO: full FrameWndProc implementation.
+     *
+     * For now, this minimal WndProc allows the window to be created and closed,
+     * which is enough to validate that WinMain + init can launch a basic app.
+     */
+    switch (msg)
+    {
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    default:
+        break;
+    }
 
-    /* TODO: implement */
-    return 0;
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 void GetWindowRc(HWND hwnd, RECT *prc)
@@ -493,7 +485,7 @@ void BringUpHostDlg(void)
     /* TODO: implement */
 }
 
-LRESULT CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     RECT rc;
     HDC hdc;
@@ -510,8 +502,51 @@ int16_t InitMDIApp(void)
 {
     WNDCLASS wc;
 
-    /* TODO: implement */
-    return 0;
+    /*
+     * Minimal class registration to get a frame window up.
+     *
+     * The original Stars! registers many more classes (scanner, message, etc.).
+     * Those are deferred until their respective WndProcs are implemented.
+     */
+
+    if (szFrame[0] == '\0')
+    {
+        strcpy(szFrame, "StarsFrame");
+    }
+
+    memset(&wc, 0, sizeof(wc));
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    wc.lpfnWndProc = FrameWndProc;
+    wc.hInstance = hInst;
+    wc.hIcon = NULL;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)(COLOR_APPWORKSPACE + 1);
+    wc.lpszMenuName = MAKEINTRESOURCEA(STARSMENU);
+    wc.lpszClassName = szFrame;
+
+    if (RegisterClass(&wc) == 0)
+    {
+        return 0;
+    }
+
+    /* A minimal Title class is helpful for later but optional today. */
+    if (szTitle[0] == '\0')
+    {
+        strcpy(szTitle, "StarsTitle");
+    }
+
+    memset(&wc, 0, sizeof(wc));
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    wc.lpfnWndProc = TitleWndProc;
+    wc.hInstance = hInst;
+    wc.hIcon = NULL;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+    wc.lpszMenuName = NULL;
+    wc.lpszClassName = szTitle;
+
+    (void)RegisterClass(&wc);
+    return 1;
 }
 
 void CreateChildWindows(void)

@@ -106,9 +106,18 @@ endif()
 # by using a Windows toolchain (e.g. mingw-w64) and setting CMAKE_SYSTEM_NAME=Windows.
 if (STARS_BUILD_WIN32)
   if (WIN32)
-    add_executable(stars_win32 WIN32 "${CMAKE_SOURCE_DIR}/winmain.c")
+    add_executable(stars_win32 WIN32
+      "${CMAKE_SOURCE_DIR}/winmain.c"
+      "${CMAKE_SOURCE_DIR}/res/stars.rc"
+    )
     target_link_libraries(stars_win32 PRIVATE stars_core)
     target_compile_definitions(stars_win32 PRIVATE STARS_WIN32=1)
+
+    # Tell windres where to find resource.h and res/ includes
+    target_include_directories(stars_win32 PRIVATE
+      "${CMAKE_SOURCE_DIR}"
+      "${CMAKE_SOURCE_DIR}/res"
+    )
 
     # Add Win32 libs when you start using them:
     # target_link_libraries(stars_win32 PRIVATE user32 gdi32 comdlg32 comctl32 shell32)

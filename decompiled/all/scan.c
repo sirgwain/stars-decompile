@@ -76,7 +76,7 @@ long ScannerWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   if (msg == WM_SIZE) {
     SetScanScrollBars(hwnd);
     uVar15 = 0x14f8;
-    PostMessage(hwndFrame,0x111,iScanZoom + 0xf41,0);
+    PostMessage(hwndFrame,WM_COMMAND,iScanZoom + 0xf41,0);
     puVar14 = &stack0xfdd6;
 SCAN_Default_2:
     *(HWND *)(puVar14 + -2) = hwnd;
@@ -145,7 +145,7 @@ SCAN_Default_2:
           }
         }
         if (local_6a.lpplprod._2_2_ != iScanZoom) {
-          SendMessage(hwndFrame,0x111,local_6a.lpplprod._2_2_ + 0xf41,0);
+          SendMessage(hwndFrame,WM_COMMAND,local_6a.lpplprod._2_2_ + 0xf41,0);
         }
       }
     }
@@ -2781,7 +2781,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
     rcT.bottom = rc.bottom + -4;
     rcT.left = rc.left + 4;
     if (0x167 < rc.right) {
-      DVar14 = GetTextExtent(hdc,(LPCSTR)0x112005a2,7);
+      DVar14 = GetTextExtent(hdc,s_ID_000_1120_05a2,7);
       rcT.right = (int)DVar14 + 6 + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
       if ((grobj & 1U) == 0) {
@@ -2792,7 +2792,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           else {
             id = psbar->id;
           }
-          sVar6 = _wsprintf(szWork,(char *)0x112005b1,id);
+          sVar6 = _wsprintf(szWork,s_WP_d_1120_05b1,id);
           TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
         }
       }
@@ -2804,12 +2804,12 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
           id = psbar->id;
         }
         if (id != -1) {
-          sVar6 = _wsprintf(szWork,(char *)0x112005aa,id + 1);
+          sVar6 = _wsprintf(szWork,s_ID_d_1120_05aa,id + 1);
           SetBkMode(hdc,2);
           TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
         }
       }
-      DVar15 = GetTextExtent(hdc,(LPCSTR)0x112005b8,7);
+      DVar15 = GetTextExtent(hdc,s_X_8888_1120_05b8,7);
       iVar10 = (int)DVar15;
       rcT.left = rcT.left + (int)DVar14 + 10;
       rcT.right = iVar10 + 6 + rcT.left;
@@ -2829,7 +2829,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
         pt.y = (psbar->pt).y;
       }
       if (0 < pt.x) {
-        sVar6 = _wsprintf(szWork,(char *)0x112005c0,pt.x);
+        sVar6 = _wsprintf(szWork,s_X_d_1120_05c0,pt.x);
         SetBkMode(hdc,2);
         TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
       }
@@ -2837,7 +2837,7 @@ void DrawScannerSBar(HDC hdc,RECT *prc,SBAR *psbar,short fFullRedraw)
       rcT.right = iVar10 + 6 + rcT.left;
       DrawLockLight(hdc,&rcT,fFullRedraw);
       if (0 < pt.y) {
-        sVar6 = _wsprintf(szWork,(char *)0x112005c6,pt.y);
+        sVar6 = _wsprintf(szWork,s_Y_d_1120_05c6,pt.y);
         SetBkMode(hdc,2);
         TextOut(hdc,rcT.left + 3,rcT.top + 2,szWork,sVar6);
       }
@@ -4840,13 +4840,13 @@ short FindDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
     if (msg == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
-          GetDlgItemText(hwnd,0x10c,szName,0x28);
+          GetDlgItemText(hwnd,IDC_U16_0x010C,szName,0x28);
           sVar1 = FSelectSz(szName);
           if (sVar1 == 0) {
             sVar1 = 0x10;
             sz = PszFormatIds(idsSorryCantFindPlanetFleetName,(short *)0x0);
             AlertSz(sz,sVar1);
-            HVar2 = GetDlgItem(hwnd,0x10c);
+            HVar2 = GetDlgItem(hwnd,IDC_U16_0x010C);
             SetFocus(HVar2);
             SendDlgItemMessage(hwnd,0x10c,0x401,0,-0x10000);
             return 0;
@@ -4924,7 +4924,7 @@ short FSelectSz(char *szName)
       pt_01.x = scan.pt.x;
       FEnsurePointOnScreen(pt_01,1);
       UpdateWindow(hwndScanner);
-      SendMessage(hwndScanner,0x102,0x76,0);
+      SendMessage(hwndScanner,WM_CHAR,0x76,0);
       return 1;
     }
     uVar3 = CchGetString(idsFleet,szT);
@@ -4976,7 +4976,7 @@ SCAN_LFoundFleetId:
         pt_02.x = scan.pt.x;
         FEnsurePointOnScreen(pt_02,1);
         UpdateWindow(hwndScanner);
-        SendMessage(hwndScanner,0x102,0x76,0);
+        SendMessage(hwndScanner,WM_CHAR,0x76,0);
         return 1;
       }
     }

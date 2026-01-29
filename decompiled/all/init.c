@@ -133,7 +133,7 @@ short FCreateStuff(void)
   HVar20 = LoadBitmap(hInst,s_CargoBmp_1120_05f2);
   hbrCargo = CreatePatternBrush(HVar20);
   DeleteObject(HVar20);
-  HVar20 = LoadBitmap(hInst,(LPCSTR)0x112005fb);
+  HVar20 = LoadBitmap(hInst,s_DockBmp_1120_05fb);
   hbrDock = CreatePatternBrush(HVar20);
   DeleteObject(HVar20);
   hcurScanner = LoadCursor(hInst,s_ScannerCur_1120_0603);
@@ -188,13 +188,13 @@ short FCreateStuff(void)
   hiconStars = LoadIcon(hInst,s_StarsIco_1120_064e);
   hiconHost = LoadIcon(hInst,s_HostIco_1120_0657);
   hiconWait = LoadIcon(hInst,s_WaitIco_1120_065f);
-  rghiconVCR[0] = LoadIcon(hInst,(LPCSTR)0x11200667);
-  rghiconVCR[1] = LoadIcon(hInst,(LPCSTR)0x11200670);
-  rghiconVCR[2] = LoadIcon(hInst,(LPCSTR)0x11200679);
-  rghiconVCR[3] = LoadIcon(hInst,(LPCSTR)0x11200682);
-  rghiconVCR[4] = LoadIcon(hInst,(LPCSTR)0x1120068b);
-  rghiconVCR[5] = LoadIcon(hInst,(LPCSTR)0x11200694);
-  rghiconVCR[6] = LoadIcon(hInst,(LPCSTR)0x1120069d);
+  rghiconVCR[0] = LoadIcon(hInst,s_Bang1Ico_1120_0667);
+  rghiconVCR[1] = LoadIcon(hInst,s_Bang2Ico_1120_0670);
+  rghiconVCR[2] = LoadIcon(hInst,s_Bang3Ico_1120_0679);
+  rghiconVCR[3] = LoadIcon(hInst,s_Torp1Ico_1120_0682);
+  rghiconVCR[4] = LoadIcon(hInst,s_Torp2Ico_1120_068b);
+  rghiconVCR[5] = LoadIcon(hInst,s_Torp3Ico_1120_0694);
+  rghiconVCR[6] = LoadIcon(hInst,s_Torp4Ico_1120_069d);
   lpLog = LpAlloc(32000,htLog);
   lpMsg = LpAlloc(0xffc8,htMsg);
   lpfnFakeComboProc = MakeProcInstance(FakeComboProc,hInst);
@@ -350,7 +350,7 @@ short FCreateFonts(HDC hdc)
   HVar4 = SelectObject(hdc,rghfontArial8[0]);
   GetTextMetrics(hdc,&tm);
   dyArial8 = tm.tmHeight + tm.tmExternalLeading;
-  DVar5 = GetTextExtent(hdc,(LPCSTR)0x11200726,10);
+  DVar5 = GetTextExtent(hdc,s_88888888kT_1120_0726,10);
   dxMaxMineralQuan = (short)DVar5;
   SelectObject(hdc,rghfontArial7[0]);
   GetTextMetrics(hdc,&tm);
@@ -386,7 +386,7 @@ short InitInstance(short nCmdShow)
   ini.idPlayer = -1;
   ReadIniSettings();
   hwndFrame =
-       CreateWindow(szFrame,(LPCSTR)0x11200731,0xcf0000,ini.wnFrame.rc.left,
+       CreateWindow(szFrame,s_Stars_1120_0731,0xcf0000,ini.wnFrame.rc.left,
                     ini.wnFrame.rc.top,ini.wnFrame.rc.right,
                     ini.wnFrame.rc.bottom,0,0,hInst,(void *)0x0);
   if (hwndFrame == 0) {
@@ -502,8 +502,7 @@ void GetIniWinRc(char *szSection,char *szIniFile,StringId ids,WN *pwn)
   short fInitalized;
   
   CchGetString(ids,szEntry);
-  sVar1 = GetPrivateProfileString
-                    (szSection,szEntry,(LPCSTR)0x11200738,szWork,0x14,szIniFile);
+  sVar1 = GetPrivateProfileString(szSection,szEntry,s_X_1120_0738,szWork,0x14,szIniFile);
   if ((sVar1 == 0x11) &&
      (((szWork[0] == 'M' || (szWork[0] == 'R')) || (szWork[0] == 'I'))
      )) {
@@ -743,7 +742,7 @@ void ReadIniSettings(void)
   gd.grBits._2_2_ = gd.grBits._2_2_ & 0x7fff | (uint)(UVar6 != 0) << 0xf;
   CchGetString(idsGlobalsettings,szEntry);
   sVar7 = GetPrivateProfileString
-                    (szSection,szEntry,(LPCSTR)0x1120073a,szWork,0x28,szIniFile);
+                    (szSection,szEntry,s_empty_1120_073a,szWork,0x28,szIniFile);
   if (sVar7 == 0x1c) {
     FSerialAndEnvFromSz
               ((long *)&vSerialNumber,(byte *)vrgbMachineConfig,
@@ -754,14 +753,13 @@ void ReadIniSettings(void)
     vSerialNumber._2_2_ = 0;
   }
   CchGetString(idsPlanettiles,szEntry);
-  GetPrivateProfileString(szSection,szEntry,(LPCSTR)0x1120073c,szWork,0x14,szIniFile);
+  GetPrivateProfileString(szSection,szEntry,s_X_1120_073c,szWork,0x14,szIniFile);
   ReadIniTileSettings((char *)szWork,(TILE *)&rgtilePlanet,6);
   CchGetString(idsShiptiles,szEntry);
-  GetPrivateProfileString(szSection,szEntry,(LPCSTR)0x1120073e,szWork,0x14,szIniFile);
+  GetPrivateProfileString(szSection,szEntry,s_X_1120_073e,szWork,0x14,szIniFile);
   ReadIniTileSettings((char *)szWork,(TILE *)&rgtileShip,7);
   CchGetString(idsSelection,szEntry);
-  sVar7 = GetPrivateProfileString
-                    (szSection,szEntry,(LPCSTR)0x11200740,szWork,0x14,szIniFile);
+  sVar7 = GetPrivateProfileString(szSection,szEntry,s_N_1120_0740,szWork,0x14,szIniFile);
   if (sVar7 < 3) {
     ini.wFlags = ini.wFlags & 0xfe1f;
     goto LAB_1000_1995;
@@ -793,8 +791,7 @@ LAB_1000_1995:
   CchGetString(idsMessage,szEntry);
   ini.iMsg = GetPrivateProfileInt(szSection,szEntry,0,szIniFile);
   CchGetString(idsGameid,szEntry);
-  sVar7 = GetPrivateProfileString
-                    (szSection,szEntry,(LPCSTR)0x11200742,szWork,10,szIniFile);
+  sVar7 = GetPrivateProfileString(szSection,szEntry,s_0_1120_0742,szWork,10,szIniFile);
   lVar13 = 0;
   for (i = 0; ini.lid = lVar13, i < sVar7; i = i + 1) {
     lVar13 = __aFlshl(lVar14,in_stack_0000ffb0);
@@ -834,7 +831,7 @@ LAB_1000_1995:
   CchGetString(idsMineralscale,szEntry);
   cMinGrafMax = GetPrivateProfileInt(szSection,szEntry,cMinGrafMax,szIniFile);
   if ((cMinGrafMax < 100) || (30000 < cMinGrafMax)) {
-    cMinGrafMax = 5000;
+    cMinGrafMax = (int)(char *)s_Stars_1120_1385 + 3;
   }
   CchGetString(idsFiles,szSection);
   CchGetString(idsLogging,szEntry);
@@ -845,7 +842,7 @@ LAB_1000_1995:
   ini.wFlags = ini.wFlags & 0xfffb | (UVar6 & 1) << 2;
   CchGetString(idsFile1,szEntry);
   sVar7 = GetPrivateProfileString
-                    (szSection,szEntry,(LPCSTR)0x11200744,szWork,0x100,szIniFile);
+                    (szSection,szEntry,s_str_1120_0744,szWork,0x100,szIniFile);
   if (sVar7 < 4) {
     ini.wFlags = ini.wFlags & 0xfffe;
   }
@@ -862,7 +859,7 @@ LAB_1000_1995:
   for (i = 0; i < 9; i = i + 1) {
     szEntry[uVar8 - 1] = (char)i + '1';
     sVar7 = GetPrivateProfileString
-                      (szSection,szEntry,(LPCSTR)0x11200746,
+                      (szSection,szEntry,s_str_1120_0746,
                        (LPSTR)CONCAT22(vrgszMRU._2_2_,(char *)vrgszMRU + i * 0x100),
                        0x100,szIniFile);
     if (sVar7 < 4) {

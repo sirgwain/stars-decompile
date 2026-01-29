@@ -1353,7 +1353,7 @@ IO_LError_2:
     local_4c._0_2_ = (PLANET *)sVar14;
     local_4c._2_2_ = GetSystemMetrics(1);
     hwndTitle =
-         CreateWindow(szTitle,(LPCSTR)0x11200752,0x90000000,0,0,(short)(PLANET *)local_4c,
+         CreateWindow(szTitle,s_Stars_1120_0752,0x90000000,0,0,(short)(PLANET *)local_4c,
                       local_4c._2_2_,hwndFrame,0,hInst,(void *)0x0);
     fFreeingTitle = 0;
     ShowWindow(hwndFrame,0);
@@ -1485,7 +1485,7 @@ LAB_1070_2cf9:
     }
     if ((gd.grBits._2_2_ >> 1 & 1) == 0) {
       lpPlanets = lppl;
-      _wsprintf(szWork,(char *)0x1120075d,pszFileName,0x1120,pszExt + 1,0x1120);
+      _wsprintf(szWork,s_s_x_s_1120_075d,pszFileName,0x1120,pszExt + 1,0x1120);
       sVar14 = FLoadLogFile((char *)szWork);
       if (sVar14 != 0) {
         sVar14 = FRunLogFile();
@@ -2215,24 +2215,23 @@ short AskSaveDialog(HWND hwnd,ushort message,ushort wParam,long lParam)
 void PromptSaveGame(void)
 
 {
-  undefined2 uVar1;
-  short sVar2;
-  FARPROC pvVar3;
+  DialogId lpTemplate;
+  short sVar1;
+  FARPROC lpDlgProc;
   short fRet;
   fn_lpProc *lpProc;
   
-  pvVar3 = MakeProcInstance(AskSaveDialog,hInst);
+  lpDlgProc = MakeProcInstance(AskSaveDialog,hInst);
   if ((game.wCrap >> 2 & 1) == 0) {
-    uVar1 = 0x42c;
+    lpTemplate = IDD_DLG1068_1068;
   }
   else {
-    uVar1 = 0x7e9;
+    lpTemplate = IDD_DLG2025_2025;
   }
-  sVar2 = DialogBox(0,(LPCSTR)CONCAT22(uVar1,hwndFrame),(HWND)((ulong)pvVar3 >> 0x10),
-                    (char)pvVar3);
-  FreeProcInstance(pvVar3);
-  if (sVar2 != 0) {
-    gd.grBits._0_2_ = (uint)gd.grBits & 0xffef | (uint)(sVar2 == -1) << 4;
+  sVar1 = DialogBox(0,lpTemplate,hwndFrame,lpDlgProc);
+  FreeProcInstance(lpDlgProc);
+  if (sVar1 != 0) {
+    gd.grBits._0_2_ = (uint)gd.grBits & 0xffef | (uint)(sVar1 == -1) << 4;
     FWriteLogFile((char *)szBase,idPlayer);
     FWriteHistFile(idPlayer);
   }
@@ -2939,12 +2938,12 @@ void StreamClose(void)
 void RgFromStream(void *rg,ushort cb)
 
 {
-  ushort uVar1;
+  UINT UVar1;
   
   if (cb != 0) {
     if (((byte *)vlpMemStream == (byte *)0x0) && (vlpMemStream._2_2_ == 0)) {
-      uVar1 = _lread(cb,rg,hf);
-      if (uVar1 != cb) {
+      UVar1 = _lread(hf,rg,cb);
+      if (UVar1 != cb) {
         FileError(idsGameFileAppearsCorruptUnableLoadFile);
         _longjmp(penvMem,-1);
       }
@@ -3481,10 +3480,10 @@ LAB_1070_618a:
   MarkPlayersThatSentMsgs(iPlayer);
   MarkPlanetsPlayerLost(iPlayer);
   if (iPlayer == -1) {
-    _wsprintf(szWork,(char *)0x112009fe,pszFileBase,0x1120);
+    _wsprintf(szWork,s_s_hst_1120_09fe,pszFileBase,0x1120);
   }
   else {
-    _wsprintf(szWork,(char *)0x11200a05,pszFileBase,0x1120,iPlayer + 1);
+    _wsprintf(szWork,s_s_m_d_1120_0a05,pszFileBase,0x1120,iPlayer + 1);
   }
   penvMemSav = penvMem;
   penvMem = &env;
@@ -4510,7 +4509,7 @@ void SetSzWorkFromDt(DtFileType dt,short iPlayer)
       (pcVar2 < pcVar1)))) {
     *pcVar1 = '\0';
   }
-  sVar3 = _wsprintf(szWork,(char *)0x11200a0c,(char *)szBase,0x1120);
+  sVar3 = _wsprintf(szWork,s_s_1120_0a0c,(char *)szBase,0x1120);
   if (dt == dtXY) {
 LAB_1070_8d76:
     _strcat((char *)szWork,(char *)0xa10);
@@ -4532,7 +4531,7 @@ LAB_1070_8d76:
     else {
       uVar4 = 0x6d;
     }
-    _wsprintf((char *)szWork + sVar3,(char *)0x11200a17,uVar4,iPlayer + 1);
+    _wsprintf((char *)szWork + sVar3,s_c_d_1120_0a17,uVar4,iPlayer + 1);
   }
   return;
 }
@@ -4852,11 +4851,11 @@ void WriteRt(short rt,short cb,void *rg)
 void RgToStream(void *rg,ushort cb)
 
 {
-  ushort uVar1;
+  UINT UVar1;
   char *sz;
   short mbType;
   
-  if ((cb != 0) && (uVar1 = _lwrite(cb,rg,hf), uVar1 != cb)) {
+  if ((cb != 0) && (UVar1 = _lwrite(hf,rg,cb), UVar1 != cb)) {
     mbType = 0x10;
     sz = PszFormatIds(idsErrorWritingFile,(short *)0x0);
     AlertSz(sz,mbType);

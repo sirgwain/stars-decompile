@@ -24,8 +24,8 @@ long PlanetWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
   BOOL BVar6;
   ushort uVar7;
   short sVar8;
-  DWORD *pDVar9;
-  DWORD *pDVar10;
+  WMType *pWVar9;
+  WMType *pWVar10;
   undefined1 *puVar11;
   undefined1 *puVar12;
   undefined2 unaff_SI;
@@ -66,365 +66,340 @@ long PlanetWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (message == WM_CREATE) {
     uVar13 = 0x1048;
     SetPlanetTitleBar(hwnd);
-    pDVar9 = &stack0xff36;
+    pWVar9 = &stack0xff36;
     for (i = 0; i < 3; i = i + 1) {
-      *(UINT *)((int)pDVar9 + -2) = 0x1120;
-      *(undefined2 *)(pDVar9 + -1) = _szCombobox;
-      *(UINT *)((int)pDVar9 + -6) = 0x1120;
-      *(undefined2 *)(pDVar9 + -2) = 0x876;
+      pWVar9[-1] = 0x1120;
+      pWVar9[-2] = _szCombobox;
+      pWVar9[-3] = 0x1120;
+      pWVar9[-4] = 0x876;
       if (i == 1) {
         uVar2 = 0x210;
       }
       else {
         uVar2 = 0;
       }
-      *(UINT *)((int)pDVar9 + -10) = 0x4020;
-      *(uint *)(pDVar9 + -3) = uVar2 | 3;
-      *(UINT *)((int)pDVar9 + -0xe) = 100;
-      *(undefined2 *)(pDVar9 + -4) = 100;
-      *(UINT *)((int)pDVar9 + -0x12) = 200;
+      pWVar9[-5] = 0x4020;
+      pWVar9[-6] = uVar2 | 3;
+      pWVar9[-7] = 100;
+      pWVar9[-8] = 100;
+      pWVar9[-9] = 200;
       if (i == 2) {
         uVar3 = 0xa0;
       }
       else {
         uVar3 = 0x50;
       }
-      *(undefined2 *)(pDVar9 + -5) = uVar3;
-      *(UINT *)((int)pDVar9 + -0x16) = hwnd;
-      *(undefined2 *)(pDVar9 + -6) = 0;
-      *(UINT *)((int)pDVar9 + -0x1a) = hInst;
-      *(undefined2 *)(pDVar9 + -7) = 0;
-      *(UINT *)((int)pDVar9 + -0x1e) = 0;
-      *(undefined2 *)(pDVar9 + -8) = uVar13;
-      *(UINT *)((int)pDVar9 + -0x22) = 0xa3;
-      HVar4 = CreateWindow((LPCSTR)pDVar9[-1],(LPCSTR)pDVar9[-2],pDVar9[-3],
-                           *(UINT *)((int)pDVar9 + -0xe),(UINT)pDVar9[-4],
-                           *(UINT *)((int)pDVar9 + -0x12),(UINT)pDVar9[-5],
-                           *(UINT *)((int)pDVar9 + -0x16),(HMENU)pDVar9[-6],
-                           *(UINT *)((int)pDVar9 + -0x1a),*(void **)(UINT *)((int)pDVar9 + -0x1e));
+      pWVar9[-10] = uVar3;
+      pWVar9[-0xb] = hwnd;
+      pWVar9[-0xc] = 0;
+      pWVar9[-0xd] = hInst;
+      pWVar9[-0xe] = 0;
+      pWVar9[-0xf] = 0;
+      pWVar9[-0x10] = uVar13;
+      pWVar9[-0x11] = 0xa3;
+      HVar4 = CreateWindow(*(LPCSTR *)(pWVar9 + -2),*(LPCSTR *)(pWVar9 + -4),
+                           *(undefined4 *)(pWVar9 + -6),pWVar9[-7],pWVar9[-8],pWVar9[-9],pWVar9[-10]
+                           ,pWVar9[-0xb],pWVar9[-0xc],pWVar9[-0xd],*(void **)(pWVar9 + -0xf));
       ((ushort *)rghwndOrderDD)[i] = HVar4;
-      *(UINT *)((int)pDVar9 + 2) = ((ushort *)rghwndOrderDD)[i];
-      *(undefined2 *)pDVar9 = 0x30;
-      *(UINT *)((int)pDVar9 + -2) = rghfontArial8[1];
-      *(undefined2 *)(pDVar9 + -1) = 0;
-      *(UINT *)((int)pDVar9 + -6) = 0;
-      *(undefined2 *)(pDVar9 + -2) = 0x14f8;
+      pWVar9[1] = ((ushort *)rghwndOrderDD)[i];
+      *pWVar9 = 0x30;
+      pWVar9[-1] = rghfontArial8[1];
+      pWVar9[-2] = 0;
+      pWVar9[-3] = 0;
+      pWVar9[-4] = 0x14f8;
       uVar13 = 0x14f8;
-      *(UINT *)((int)pDVar9 + -10) = 0xcc;
-      SendMessage(*(UINT *)((int)pDVar9 + 2),*(UINT *)pDVar9,*(UINT *)((int)pDVar9 + -2),
-                  *(LPARAM *)(UINT *)((int)pDVar9 + -6));
-      pDVar9 = pDVar9 + 1;
+      pWVar9[-5] = 0xcc;
+      SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
+      pWVar9 = pWVar9 + 2;
     }
     for (i = 99; i < 0x6d; i = i + 1) {
-      *(UINT *)((int)pDVar9 + -2) = i;
-      *(undefined2 *)(pDVar9 + -1) = uVar13;
-      *(UINT *)((int)pDVar9 + -6) = 0xed;
-      pcVar5 = PszGetCompressedString(*(StringId *)((int)pDVar9 + -2));
-      *(UINT *)((int)pDVar9 + -2) = rghwndOrderDD[0];
-      *(undefined2 *)(pDVar9 + -1) = 0x403;
-      *(UINT *)((int)pDVar9 + -6) = 0;
-      *(undefined2 *)(pDVar9 + -2) = 0x1120;
-      *(UINT *)((int)pDVar9 + -10) = (UINT)pcVar5;
-      *(undefined2 *)(pDVar9 + -3) = 0x1010;
+      pWVar9[-1] = i;
+      pWVar9[-2] = uVar13;
+      pWVar9[-3] = 0xed;
+      pcVar5 = PszGetCompressedString(pWVar9[-1]);
+      pWVar9[-1] = rghwndOrderDD[0];
+      pWVar9[-2] = 0x403;
+      pWVar9[-3] = 0;
+      pWVar9[-4] = 0x1120;
+      pWVar9[-5] = (WMType)pcVar5;
+      pWVar9[-6] = 0x1010;
       uVar13 = 0x14f8;
-      *(UINT *)((int)pDVar9 + -0xe) = 0x10d;
-      SendMessage(*(UINT *)((int)pDVar9 + -2),(UINT)pDVar9[-1],*(UINT *)((int)pDVar9 + -6),
-                  *(LPARAM *)(UINT *)((int)pDVar9 + -10));
+      pWVar9[-7] = 0x10d;
+      SendMessage(pWVar9[-1],pWVar9[-2],pWVar9[-3],*(undefined4 *)(pWVar9 + -5));
     }
-    *(UINT *)((int)pDVar9 + -2) = 0x1120;
-    *(undefined2 *)(pDVar9 + -1) = _szEdit;
-    *(UINT *)((int)pDVar9 + -6) = 0;
-    *(undefined2 *)(pDVar9 + -2) = 0;
-    *(UINT *)((int)pDVar9 + -10) = 0x4080;
-    *(undefined2 *)(pDVar9 + -3) = 2;
-    *(UINT *)((int)pDVar9 + -0xe) = 100;
-    *(undefined2 *)(pDVar9 + -4) = 100;
-    *(UINT *)((int)pDVar9 + -0x12) = 200;
-    *(undefined2 *)(pDVar9 + -5) = 0x32;
-    *(UINT *)((int)pDVar9 + -0x16) = hwnd;
-    *(undefined2 *)(pDVar9 + -6) = 0;
-    *(UINT *)((int)pDVar9 + -0x1a) = hInst;
-    *(undefined2 *)(pDVar9 + -7) = 0;
-    *(UINT *)((int)pDVar9 + -0x1e) = 0;
-    *(undefined2 *)(pDVar9 + -8) = uVar13;
-    *(UINT *)((int)pDVar9 + -0x22) = 0x15b;
+    pWVar9[-1] = 0x1120;
+    pWVar9[-2] = _szEdit;
+    pWVar9[-3] = 0;
+    pWVar9[-4] = 0;
+    pWVar9[-5] = 0x4080;
+    pWVar9[-6] = 2;
+    pWVar9[-7] = 100;
+    pWVar9[-8] = 100;
+    pWVar9[-9] = 200;
+    pWVar9[-10] = 0x32;
+    pWVar9[-0xb] = hwnd;
+    pWVar9[-0xc] = 0;
+    pWVar9[-0xd] = hInst;
+    pWVar9[-0xe] = 0;
+    pWVar9[-0xf] = 0;
+    pWVar9[-0x10] = uVar13;
+    pWVar9[-0x11] = 0x15b;
     hwndOrderED =
-         CreateWindow((LPCSTR)pDVar9[-1],(LPCSTR)pDVar9[-2],pDVar9[-3],*(UINT *)((int)pDVar9 + -0xe)
-                      ,(UINT)pDVar9[-4],*(UINT *)((int)pDVar9 + -0x12),(UINT)pDVar9[-5],
-                      *(HWND *)((int)pDVar9 + -0x16),(HMENU)pDVar9[-6],
-                      *(HINSTANCE *)((int)pDVar9 + -0x1a),*(void **)(UINT *)((int)pDVar9 + -0x1e));
-    *(UINT *)((int)pDVar9 + 2) = hwndOrderED;
-    *(undefined2 *)pDVar9 = 0x415;
-    *(UINT *)((int)pDVar9 + -2) = 4;
-    *(undefined2 *)(pDVar9 + -1) = 0;
-    *(UINT *)((int)pDVar9 + -6) = 0;
-    *(undefined2 *)(pDVar9 + -2) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -10) = 0x177;
-    SendMessage(*(HWND *)((int)pDVar9 + 2),*(UINT *)pDVar9,*(UINT *)((int)pDVar9 + -2),
-                *(LPARAM *)(UINT *)((int)pDVar9 + -6));
-    *(UINT *)((int)pDVar9 + 2) = hwndOrderED;
-    *(undefined2 *)pDVar9 = 0x30;
-    *(UINT *)((int)pDVar9 + -2) = rghfontArial8[1];
-    *(undefined2 *)(pDVar9 + -1) = 0;
-    *(UINT *)((int)pDVar9 + -6) = 0;
-    *(undefined2 *)(pDVar9 + -2) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -10) = 400;
-    SendMessage(*(UINT *)((int)pDVar9 + 2),*(UINT *)pDVar9,*(UINT *)((int)pDVar9 + -2),
-                *(LPARAM *)(UINT *)((int)pDVar9 + -6));
-    *(UINT *)((int)pDVar9 + 2) = hwndOrderED;
-    *(undefined2 *)pDVar9 = 0xfffc;
-    *(UINT *)((int)pDVar9 + -2) = 0x14f8;
-    *(undefined2 *)(pDVar9 + -1) = 0x19d;
-    pfVar14 = (fn_lpfnRealEditProc *)GetWindowLong(*(UINT *)((int)pDVar9 + 2),*(short *)pDVar9);
-    *(UINT *)((int)pDVar9 + 2) = hwndOrderED;
-    *(undefined2 *)pDVar9 = 0xfffc;
-    *(UINT *)((int)pDVar9 + -2) = lpfnFakeEditProc._2_2_;
-    *(fn_lpfnFakeEditProc **)(pDVar9 + -1) = (fn_lpfnFakeEditProc *)lpfnFakeEditProc;
-    *(UINT *)((int)pDVar9 + -6) = 0x14f8;
-    *(undefined2 *)(pDVar9 + -2) = 0x1ba;
+         CreateWindow(*(LPCSTR *)(pWVar9 + -2),*(LPCSTR *)(pWVar9 + -4),*(undefined4 *)(pWVar9 + -6)
+                      ,pWVar9[-7],pWVar9[-8],pWVar9[-9],pWVar9[-10],pWVar9[-0xb],pWVar9[-0xc],
+                      pWVar9[-0xd],*(void **)(pWVar9 + -0xf));
+    pWVar9[1] = hwndOrderED;
+    *pWVar9 = 0x415;
+    pWVar9[-1] = 4;
+    pWVar9[-2] = 0;
+    pWVar9[-3] = 0;
+    pWVar9[-4] = 0x14f8;
+    pWVar9[-5] = 0x177;
+    SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
+    pWVar9[1] = hwndOrderED;
+    *pWVar9 = 0x30;
+    pWVar9[-1] = rghfontArial8[1];
+    pWVar9[-2] = 0;
+    pWVar9[-3] = 0;
+    pWVar9[-4] = 0x14f8;
+    pWVar9[-5] = 400;
+    SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
+    pWVar9[1] = hwndOrderED;
+    *pWVar9 = 0xfffc;
+    pWVar9[-1] = 0x14f8;
+    pWVar9[-2] = 0x19d;
+    pfVar14 = (fn_lpfnRealEditProc *)GetWindowLong(pWVar9[1],*pWVar9);
+    pWVar9[1] = hwndOrderED;
+    *pWVar9 = 0xfffc;
+    pWVar9[-1] = lpfnFakeEditProc._2_2_;
+    pWVar9[-2] = (WMType)(fn_lpfnFakeEditProc *)lpfnFakeEditProc;
+    pWVar9[-3] = 0x14f8;
+    pWVar9[-4] = 0x1ba;
     lpfnRealEditProc = pfVar14;
-    SetWindowLong(*(UINT *)((int)pDVar9 + 2),*(short *)pDVar9,pDVar9[-1]);
-    *(UINT *)((int)pDVar9 + 2) = 0x1120;
-    *(undefined2 *)pDVar9 = _szCombobox;
-    *(UINT *)((int)pDVar9 + -2) = 0x1120;
-    *(undefined2 *)(pDVar9 + -1) = 0x87c;
-    *(UINT *)((int)pDVar9 + -6) = 0x4020;
-    *(undefined2 *)(pDVar9 + -2) = 3;
-    *(UINT *)((int)pDVar9 + -10) = 100;
-    *(undefined2 *)(pDVar9 + -3) = 100;
-    *(UINT *)((int)pDVar9 + -0xe) = 200;
-    *(undefined2 *)(pDVar9 + -4) = 0x50;
-    *(UINT *)((int)pDVar9 + -0x12) = hwnd;
-    *(undefined2 *)(pDVar9 + -5) = 0;
-    *(UINT *)((int)pDVar9 + -0x16) = hInst;
-    *(undefined2 *)(pDVar9 + -6) = 0;
-    *(UINT *)((int)pDVar9 + -0x1a) = 0;
-    *(undefined2 *)(pDVar9 + -7) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -0x1e) = 0x1f8;
+    SetWindowLong(pWVar9[1],*pWVar9,*(undefined4 *)(pWVar9 + -2));
+    pWVar9[1] = 0x1120;
+    *pWVar9 = _szCombobox;
+    pWVar9[-1] = 0x1120;
+    pWVar9[-2] = 0x87c;
+    pWVar9[-3] = 0x4020;
+    pWVar9[-4] = 3;
+    pWVar9[-5] = 100;
+    pWVar9[-6] = 100;
+    pWVar9[-7] = 200;
+    pWVar9[-8] = 0x50;
+    pWVar9[-9] = hwnd;
+    pWVar9[-10] = 0;
+    pWVar9[-0xb] = hInst;
+    pWVar9[-0xc] = 0;
+    pWVar9[-0xd] = 0;
+    pWVar9[-0xe] = 0x14f8;
+    pWVar9[-0xf] = 0x1f8;
     hwndBattleDD =
-         CreateWindow((LPCSTR)*pDVar9,(LPCSTR)pDVar9[-1],pDVar9[-2],*(UINT *)((int)pDVar9 + -10),
-                      (UINT)pDVar9[-3],*(UINT *)((int)pDVar9 + -0xe),(UINT)pDVar9[-4],
-                      *(UINT *)((int)pDVar9 + -0x12),(HMENU)pDVar9[-5],
-                      *(UINT *)((int)pDVar9 + -0x16),*(void **)(UINT *)((int)pDVar9 + -0x1a));
-    *(UINT *)((int)pDVar9 + 6) = hwndBattleDD;
-    *(undefined2 *)(pDVar9 + 1) = 0x30;
-    *(UINT *)((int)pDVar9 + 2) = rghfontArial8[1];
-    *(undefined2 *)pDVar9 = 0;
-    *(UINT *)((int)pDVar9 + -2) = 0;
-    *(undefined2 *)(pDVar9 + -1) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -6) = 0x214;
-    SendMessage(*(UINT *)((int)pDVar9 + 6),(UINT)pDVar9[1],*(UINT *)((int)pDVar9 + 2),
-                *(LPARAM *)(UINT *)((int)pDVar9 + -2));
-    *(UINT *)((int)pDVar9 + 6) = 0x1120;
-    *(undefined2 *)(pDVar9 + 1) = _szCombobox;
-    *(UINT *)((int)pDVar9 + 2) = 0x1120;
-    *(undefined2 *)pDVar9 = 0x885;
-    *(UINT *)((int)pDVar9 + -2) = 0x4020;
-    *(undefined2 *)(pDVar9 + -1) = 0x213;
-    *(UINT *)((int)pDVar9 + -6) = 100;
-    *(undefined2 *)(pDVar9 + -2) = 100;
-    *(UINT *)((int)pDVar9 + -10) = 200;
-    *(undefined2 *)(pDVar9 + -3) = 0x50;
-    *(UINT *)((int)pDVar9 + -0xe) = hwnd;
-    *(undefined2 *)(pDVar9 + -4) = 0;
-    *(UINT *)((int)pDVar9 + -0x12) = hInst;
-    *(undefined2 *)(pDVar9 + -5) = 0;
-    *(UINT *)((int)pDVar9 + -0x16) = 0;
-    *(undefined2 *)(pDVar9 + -6) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -0x1a) = 0x252;
+         CreateWindow(*(LPCSTR *)pWVar9,*(LPCSTR *)(pWVar9 + -2),*(undefined4 *)(pWVar9 + -4),
+                      pWVar9[-5],pWVar9[-6],pWVar9[-7],pWVar9[-8],pWVar9[-9],pWVar9[-10],
+                      pWVar9[-0xb],*(void **)(pWVar9 + -0xd));
+    pWVar9[3] = hwndBattleDD;
+    pWVar9[2] = 0x30;
+    pWVar9[1] = rghfontArial8[1];
+    *pWVar9 = 0;
+    pWVar9[-1] = 0;
+    pWVar9[-2] = 0x14f8;
+    pWVar9[-3] = 0x214;
+    SendMessage(pWVar9[3],pWVar9[2],pWVar9[1],*(undefined4 *)(pWVar9 + -1));
+    pWVar9[3] = 0x1120;
+    pWVar9[2] = _szCombobox;
+    pWVar9[1] = 0x1120;
+    *pWVar9 = 0x885;
+    pWVar9[-1] = 0x4020;
+    pWVar9[-2] = 0x213;
+    pWVar9[-3] = 100;
+    pWVar9[-4] = 100;
+    pWVar9[-5] = 200;
+    pWVar9[-6] = 0x50;
+    pWVar9[-7] = hwnd;
+    pWVar9[-8] = 0;
+    pWVar9[-9] = hInst;
+    pWVar9[-10] = 0;
+    pWVar9[-0xb] = 0;
+    pWVar9[-0xc] = 0x14f8;
+    pWVar9[-0xd] = 0x252;
     hwndShipDD =
-         CreateWindow((LPCSTR)pDVar9[1],(LPCSTR)*pDVar9,pDVar9[-1],*(UINT *)((int)pDVar9 + -6),
-                      (UINT)pDVar9[-2],*(UINT *)((int)pDVar9 + -10),(UINT)pDVar9[-3],
-                      *(UINT *)((int)pDVar9 + -0xe),(HMENU)pDVar9[-4],*(UINT *)((int)pDVar9 + -0x12)
-                      ,*(void **)(UINT *)((int)pDVar9 + -0x16));
-    *(UINT *)((int)pDVar9 + 10) = hwndShipDD;
-    *(undefined2 *)(pDVar9 + 2) = 0x30;
-    *(UINT *)((int)pDVar9 + 6) = rghfontArial8[1];
-    *(undefined2 *)(pDVar9 + 1) = 0;
-    *(UINT *)((int)pDVar9 + 2) = 0;
-    *(undefined2 *)pDVar9 = 0x14f8;
-    *(UINT *)((int)pDVar9 + -2) = 0x26e;
-    SendMessage(*(UINT *)((int)pDVar9 + 10),(UINT)pDVar9[2],*(UINT *)((int)pDVar9 + 6),
-                *(LPARAM *)(UINT *)((int)pDVar9 + 2));
-    *(UINT *)((int)pDVar9 + 10) = hwndShipDD;
-    *(undefined2 *)(pDVar9 + 2) = unaff_SS;
-    *(UINT *)((int)pDVar9 + 6) = (UINT)&rc;
-    *(undefined2 *)(pDVar9 + 1) = 0x14f8;
-    *(UINT *)((int)pDVar9 + 2) = 0x27f;
-    GetClientRect(*(UINT *)((int)pDVar9 + 10),*(RECT **)(UINT *)((int)pDVar9 + 6));
+         CreateWindow(*(LPCSTR *)(pWVar9 + 2),*(LPCSTR *)pWVar9,*(undefined4 *)(pWVar9 + -2),
+                      pWVar9[-3],pWVar9[-4],pWVar9[-5],pWVar9[-6],pWVar9[-7],pWVar9[-8],pWVar9[-9],
+                      *(void **)(pWVar9 + -0xb));
+    pWVar9[5] = hwndShipDD;
+    pWVar9[4] = 0x30;
+    pWVar9[3] = rghfontArial8[1];
+    pWVar9[2] = 0;
+    pWVar9[1] = 0;
+    *pWVar9 = 0x14f8;
+    pWVar9[-1] = 0x26e;
+    SendMessage(pWVar9[5],pWVar9[4],pWVar9[3],*(undefined4 *)(pWVar9 + 1));
+    pWVar9[5] = hwndShipDD;
+    pWVar9[4] = unaff_SS;
+    pWVar9[3] = (WMType)&rc;
+    pWVar9[2] = 0x14f8;
+    pWVar9[1] = 0x27f;
+    GetClientRect(pWVar9[5],*(RECT **)(pWVar9 + 3));
     dyShipDD = rc.bottom;
-    *(UINT *)((int)pDVar9 + 10) = 0x1120;
-    *(undefined2 *)(pDVar9 + 2) = _szListbox;
-    *(UINT *)((int)pDVar9 + 6) = 0x1120;
-    *(undefined2 *)(pDVar9 + 1) = 0x88c;
-    *(UINT *)((int)pDVar9 + 2) = 0x40a0;
-    *(undefined2 *)pDVar9 = 0x1001;
-    *(UINT *)((int)pDVar9 + -2) = 100;
-    *(undefined2 *)(pDVar9 + -1) = 100;
-    *(UINT *)((int)pDVar9 + -6) = 200;
-    *(undefined2 *)(pDVar9 + -2) = 0x50;
-    *(UINT *)((int)pDVar9 + -10) = hwnd;
-    *(undefined2 *)(pDVar9 + -3) = 0;
-    *(UINT *)((int)pDVar9 + -0xe) = hInst;
-    *(undefined2 *)(pDVar9 + -4) = 0;
-    *(UINT *)((int)pDVar9 + -0x12) = 0;
-    *(undefined2 *)(pDVar9 + -5) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -0x16) = 0x2c4;
+    pWVar9[5] = 0x1120;
+    pWVar9[4] = _szListbox;
+    pWVar9[3] = 0x1120;
+    pWVar9[2] = 0x88c;
+    pWVar9[1] = 0x40a0;
+    *pWVar9 = 0x1001;
+    pWVar9[-1] = 100;
+    pWVar9[-2] = 100;
+    pWVar9[-3] = 200;
+    pWVar9[-4] = 0x50;
+    pWVar9[-5] = hwnd;
+    pWVar9[-6] = 0;
+    pWVar9[-7] = hInst;
+    pWVar9[-8] = 0;
+    pWVar9[-9] = 0;
+    pWVar9[-10] = 0x14f8;
+    pWVar9[-0xb] = 0x2c4;
     hwndShipLB =
-         CreateWindow((LPCSTR)pDVar9[2],(LPCSTR)pDVar9[1],*pDVar9,*(UINT *)((int)pDVar9 + -2),
-                      (UINT)pDVar9[-1],*(UINT *)((int)pDVar9 + -6),(UINT)pDVar9[-2],
-                      *(UINT *)((int)pDVar9 + -10),(HMENU)pDVar9[-3],*(UINT *)((int)pDVar9 + -0xe),
-                      *(void **)(UINT *)((int)pDVar9 + -0x12));
-    *(UINT *)((int)pDVar9 + 0xe) = hwndShipLB;
-    *(undefined2 *)(pDVar9 + 3) = 0x30;
-    *(UINT *)((int)pDVar9 + 10) = rghfontArial8[1];
-    *(undefined2 *)(pDVar9 + 2) = 0;
-    *(UINT *)((int)pDVar9 + 6) = 0;
-    *(undefined2 *)(pDVar9 + 1) = 0x14f8;
-    *(UINT *)((int)pDVar9 + 2) = 0x2e0;
-    SendMessage(*(UINT *)((int)pDVar9 + 0xe),(UINT)pDVar9[3],*(UINT *)((int)pDVar9 + 10),
-                *(LPARAM *)(UINT *)((int)pDVar9 + 6));
-    *(UINT *)((int)pDVar9 + 0xe) = 0x1120;
-    *(undefined2 *)(pDVar9 + 3) = _szListbox;
-    *(UINT *)((int)pDVar9 + 10) = 0x1120;
-    *(undefined2 *)(pDVar9 + 2) = 0x893;
-    *(UINT *)((int)pDVar9 + 6) = 0x40a0;
-    *(undefined2 *)(pDVar9 + 1) = 0x51;
-    *(UINT *)((int)pDVar9 + 2) = 100;
-    *(undefined2 *)pDVar9 = 100;
-    *(UINT *)((int)pDVar9 + -2) = 200;
-    *(undefined2 *)(pDVar9 + -1) = 0x50;
-    *(UINT *)((int)pDVar9 + -6) = hwnd;
-    *(undefined2 *)(pDVar9 + -2) = 0;
-    *(UINT *)((int)pDVar9 + -10) = hInst;
-    *(undefined2 *)(pDVar9 + -3) = 0;
-    *(UINT *)((int)pDVar9 + -0xe) = 0;
-    *(undefined2 *)(pDVar9 + -4) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -0x12) = 0x31e;
+         CreateWindow(*(LPCSTR *)(pWVar9 + 4),*(LPCSTR *)(pWVar9 + 2),*(DWORD *)pWVar9,pWVar9[-1],
+                      pWVar9[-2],pWVar9[-3],pWVar9[-4],pWVar9[-5],pWVar9[-6],pWVar9[-7],
+                      *(void **)(pWVar9 + -9));
+    pWVar9[7] = hwndShipLB;
+    pWVar9[6] = 0x30;
+    pWVar9[5] = rghfontArial8[1];
+    pWVar9[4] = 0;
+    pWVar9[3] = 0;
+    pWVar9[2] = 0x14f8;
+    pWVar9[1] = 0x2e0;
+    SendMessage(pWVar9[7],pWVar9[6],pWVar9[5],*(undefined4 *)(pWVar9 + 3));
+    pWVar9[7] = 0x1120;
+    pWVar9[6] = _szListbox;
+    pWVar9[5] = 0x1120;
+    pWVar9[4] = 0x893;
+    pWVar9[3] = 0x40a0;
+    pWVar9[2] = 0x51;
+    pWVar9[1] = 100;
+    *pWVar9 = 100;
+    pWVar9[-1] = 200;
+    pWVar9[-2] = 0x50;
+    pWVar9[-3] = hwnd;
+    pWVar9[-4] = 0;
+    pWVar9[-5] = hInst;
+    pWVar9[-6] = 0;
+    pWVar9[-7] = 0;
+    pWVar9[-8] = 0x14f8;
+    pWVar9[-9] = 0x31e;
     hwndFleetCompLB =
-         CreateWindow((LPCSTR)pDVar9[3],(LPCSTR)pDVar9[2],pDVar9[1],*(UINT *)((int)pDVar9 + 2),
-                      *(short *)pDVar9,*(UINT *)((int)pDVar9 + -2),(UINT)pDVar9[-1],
-                      *(UINT *)((int)pDVar9 + -6),(HMENU)pDVar9[-2],*(UINT *)((int)pDVar9 + -10),
-                      *(void **)(UINT *)((int)pDVar9 + -0xe));
-    *(UINT *)((int)pDVar9 + 0x12) = hwndFleetCompLB;
-    *(undefined2 *)(pDVar9 + 4) = 0x30;
-    *(UINT *)((int)pDVar9 + 0xe) = rghfontArial8[0];
-    *(undefined2 *)(pDVar9 + 3) = 0;
-    *(UINT *)((int)pDVar9 + 10) = 0;
-    *(undefined2 *)(pDVar9 + 2) = 0x14f8;
-    *(UINT *)((int)pDVar9 + 6) = 0x33a;
-    SendMessage(*(UINT *)((int)pDVar9 + 0x12),(UINT)pDVar9[4],*(UINT *)((int)pDVar9 + 0xe),
-                *(LPARAM *)(UINT *)((int)pDVar9 + 10));
-    *(UINT *)((int)pDVar9 + 0x12) = 0x1120;
-    *(undefined2 *)(pDVar9 + 4) = _szListbox;
-    *(UINT *)((int)pDVar9 + 0xe) = 0x1120;
-    *(undefined2 *)(pDVar9 + 3) = 0x89f;
-    *(UINT *)((int)pDVar9 + 10) = 0x40a0;
-    *(undefined2 *)(pDVar9 + 2) = 0x51;
-    *(UINT *)((int)pDVar9 + 6) = 100;
-    *(undefined2 *)(pDVar9 + 1) = 100;
-    *(UINT *)((int)pDVar9 + 2) = 200;
-    *(undefined2 *)pDVar9 = 0x50;
-    *(UINT *)((int)pDVar9 + -2) = hwnd;
-    *(undefined2 *)(pDVar9 + -1) = 0;
-    *(UINT *)((int)pDVar9 + -6) = hInst;
-    *(undefined2 *)(pDVar9 + -2) = 0;
-    *(UINT *)((int)pDVar9 + -10) = 0;
-    *(undefined2 *)(pDVar9 + -3) = 0x14f8;
-    *(UINT *)((int)pDVar9 + -0xe) = 0x378;
+         CreateWindow(*(LPCSTR *)(pWVar9 + 6),*(LPCSTR *)(pWVar9 + 4),*(undefined4 *)(pWVar9 + 2),
+                      pWVar9[1],*pWVar9,pWVar9[-1],pWVar9[-2],pWVar9[-3],pWVar9[-4],pWVar9[-5],
+                      *(void **)(pWVar9 + -7));
+    pWVar9[9] = hwndFleetCompLB;
+    pWVar9[8] = 0x30;
+    pWVar9[7] = rghfontArial8[0];
+    pWVar9[6] = 0;
+    pWVar9[5] = 0;
+    pWVar9[4] = 0x14f8;
+    pWVar9[3] = 0x33a;
+    SendMessage(pWVar9[9],pWVar9[8],pWVar9[7],*(undefined4 *)(pWVar9 + 5));
+    pWVar9[9] = 0x1120;
+    pWVar9[8] = _szListbox;
+    pWVar9[7] = 0x1120;
+    pWVar9[6] = 0x89f;
+    pWVar9[5] = 0x40a0;
+    pWVar9[4] = 0x51;
+    pWVar9[3] = 100;
+    pWVar9[2] = 100;
+    pWVar9[1] = 200;
+    *pWVar9 = 0x50;
+    pWVar9[-1] = hwnd;
+    pWVar9[-2] = 0;
+    pWVar9[-3] = hInst;
+    pWVar9[-4] = 0;
+    pWVar9[-5] = 0;
+    pWVar9[-6] = 0x14f8;
+    pWVar9[-7] = 0x378;
     hwndPlanetProdLB =
-         CreateWindow((LPCSTR)pDVar9[4],(LPCSTR)pDVar9[3],pDVar9[2],*(UINT *)((int)pDVar9 + 6),
-                      (UINT)pDVar9[1],*(UINT *)((int)pDVar9 + 2),*(short *)pDVar9,
-                      *(UINT *)((int)pDVar9 + -2),(HMENU)pDVar9[-1],*(UINT *)((int)pDVar9 + -6),
-                      *(void **)(UINT *)((int)pDVar9 + -10));
-    *(UINT *)((int)pDVar9 + 0x16) = hwndPlanetProdLB;
-    *(undefined2 *)(pDVar9 + 5) = 0x30;
-    *(UINT *)((int)pDVar9 + 0x12) = rghfontArial8[0];
-    *(undefined2 *)(pDVar9 + 4) = 0;
-    *(UINT *)((int)pDVar9 + 0xe) = 0;
-    *(undefined2 *)(pDVar9 + 3) = 0x14f8;
-    *(UINT *)((int)pDVar9 + 10) = 0x394;
-    SendMessage(*(UINT *)((int)pDVar9 + 0x16),(UINT)pDVar9[5],*(UINT *)((int)pDVar9 + 0x12),
-                *(LPARAM *)(UINT *)((int)pDVar9 + 0xe));
-    pDVar10 = pDVar9 + 6;
+         CreateWindow(*(LPCSTR *)(pWVar9 + 8),*(LPCSTR *)(pWVar9 + 6),*(undefined4 *)(pWVar9 + 4),
+                      pWVar9[3],pWVar9[2],pWVar9[1],*pWVar9,pWVar9[-1],pWVar9[-2],pWVar9[-3],
+                      *(void **)(pWVar9 + -5));
+    pWVar9[0xb] = hwndPlanetProdLB;
+    pWVar9[10] = 0x30;
+    pWVar9[9] = rghfontArial8[0];
+    pWVar9[8] = 0;
+    pWVar9[7] = 0;
+    pWVar9[6] = 0x14f8;
+    pWVar9[5] = 0x394;
+    SendMessage(pWVar9[0xb],pWVar9[10],pWVar9[9],*(undefined4 *)(pWVar9 + 7));
+    pWVar10 = pWVar9 + 0xc;
     for (i = 0; i < 0xd; i = i + 1) {
-      *(UINT *)((int)pDVar10 + -2) = i + 0x19f;
-      *(UINT *)((int)pDVar10 + -4) = 0x14f8;
-      *(UINT *)((int)pDVar10 + -6) = 0x3aa;
-      pcVar5 = PszGetCompressedString(*(StringId *)((int)pDVar10 + -2));
-      *(UINT *)((int)pDVar10 + -2) = 0x1120;
-      *(UINT *)((int)pDVar10 + -4) = _szButton;
-      *(UINT *)((int)pDVar10 + -6) = 0x1120;
-      *(UINT *)((int)pDVar10 + -8) = (UINT)pcVar5;
-      *(UINT *)((int)pDVar10 + -10) = 0x4000;
-      *(UINT *)((int)pDVar10 + -0xc) = 0;
-      *(UINT *)((int)pDVar10 + -0xe) = 100;
-      *(UINT *)((int)pDVar10 + -0x10) = 100;
-      *(UINT *)((int)pDVar10 + -0x12) = 100;
-      *(UINT *)((int)pDVar10 + -0x14) = dyArial8 << 1;
-      *(UINT *)((int)pDVar10 + -0x16) = hwnd;
-      *(UINT *)((int)pDVar10 + -0x18) = 0;
-      *(UINT *)((int)pDVar10 + -0x1a) = hInst;
-      *(UINT *)((int)pDVar10 + -0x1c) = 0;
-      *(UINT *)((int)pDVar10 + -0x1e) = 0;
-      *(UINT *)((int)pDVar10 + -0x20) = 0x1010;
-      *(UINT *)((int)pDVar10 + -0x22) = 0x3f2;
-      HVar4 = CreateWindow(*(LPCSTR *)(UINT *)((int)pDVar10 + -4),
-                           *(LPCSTR *)(UINT *)((int)pDVar10 + -8),*(DWORD *)((int)pDVar10 + -0xc),
-                           *(UINT *)((int)pDVar10 + -0xe),*(UINT *)((int)pDVar10 + -0x10),
-                           *(UINT *)((int)pDVar10 + -0x12),*(UINT *)((int)pDVar10 + -0x14),
-                           *(UINT *)((int)pDVar10 + -0x16),*(UINT *)((int)pDVar10 + -0x18),
-                           *(UINT *)((int)pDVar10 + -0x1a),*(void **)(UINT *)((int)pDVar10 + -0x1e))
-      ;
+      pWVar10[-1] = i + 0x19f;
+      pWVar10[-2] = 0x14f8;
+      pWVar10[-3] = 0x3aa;
+      pcVar5 = PszGetCompressedString(pWVar10[-1]);
+      pWVar10[-1] = 0x1120;
+      pWVar10[-2] = _szButton;
+      pWVar10[-3] = 0x1120;
+      pWVar10[-4] = (WMType)pcVar5;
+      pWVar10[-5] = 0x4000;
+      pWVar10[-6] = 0;
+      pWVar10[-7] = 100;
+      pWVar10[-8] = 100;
+      pWVar10[-9] = 100;
+      pWVar10[-10] = dyArial8 << 1;
+      pWVar10[-0xb] = hwnd;
+      pWVar10[-0xc] = 0;
+      pWVar10[-0xd] = hInst;
+      pWVar10[-0xe] = 0;
+      pWVar10[-0xf] = 0;
+      pWVar10[-0x10] = 0x1010;
+      pWVar10[-0x11] = 0x3f2;
+      HVar4 = CreateWindow(*(LPCSTR *)(pWVar10 + -2),*(LPCSTR *)(pWVar10 + -4),
+                           *(undefined4 *)(pWVar10 + -6),pWVar10[-7],pWVar10[-8],pWVar10[-9],
+                           pWVar10[-10],pWVar10[-0xb],pWVar10[-0xc],pWVar10[-0xd],
+                           *(void **)(pWVar10 + -0xf));
       ((ushort *)rghwndBtn)[i] = HVar4;
-      *(UINT *)((int)pDVar10 + 2) = ((ushort *)rghwndBtn)[i];
-      *(undefined2 *)pDVar10 = 0x30;
-      *(UINT *)((int)pDVar10 + -2) = rghfontArial8[1];
-      *(UINT *)((int)pDVar10 + -4) = 0;
-      *(UINT *)((int)pDVar10 + -6) = 0;
-      *(UINT *)((int)pDVar10 + -8) = 0x14f8;
-      *(UINT *)((int)pDVar10 + -10) = 0x41b;
-      SendMessage(*(UINT *)((int)pDVar10 + 2),*(UINT *)pDVar10,*(UINT *)((int)pDVar10 + -2),
-                  *(LPARAM *)(UINT *)((int)pDVar10 + -6));
-      pDVar10 = (DWORD *)((int)pDVar10 + 4);
+      pWVar10[1] = ((ushort *)rghwndBtn)[i];
+      *pWVar10 = 0x30;
+      pWVar10[-1] = rghfontArial8[1];
+      pWVar10[-2] = 0;
+      pWVar10[-3] = 0;
+      pWVar10[-4] = 0x14f8;
+      pWVar10[-5] = 0x41b;
+      SendMessage(pWVar10[1],*pWVar10,pWVar10[-1],*(undefined4 *)(pWVar10 + -3));
+      pWVar10 = pWVar10 + 2;
     }
-    *(UINT *)((int)pDVar10 + -2) = 0x1120;
-    *(UINT *)((int)pDVar10 + -4) = _szButton;
-    *(UINT *)((int)pDVar10 + -6) = 799;
-    *(UINT *)((int)pDVar10 + -8) = 0x14f8;
-    *(UINT *)((int)pDVar10 + -10) = 0x43a;
-    pcVar5 = PszGetCompressedString(*(StringId *)((int)pDVar10 + -6));
-    *(UINT *)((int)pDVar10 + -6) = 0x1120;
-    *(UINT *)((int)pDVar10 + -8) = (UINT)pcVar5;
-    *(UINT *)((int)pDVar10 + -10) = 0x4000;
-    *(UINT *)((int)pDVar10 + -0xc) = 3;
-    *(UINT *)((int)pDVar10 + -0xe) = 100;
-    *(UINT *)((int)pDVar10 + -0x10) = 100;
-    *(UINT *)((int)pDVar10 + -0x12) = 0x96;
-    *(UINT *)((int)pDVar10 + -0x14) = dyArial8;
-    *(UINT *)((int)pDVar10 + -0x16) = hwnd;
-    *(UINT *)((int)pDVar10 + -0x18) = 0;
-    *(UINT *)((int)pDVar10 + -0x1a) = hInst;
-    *(UINT *)((int)pDVar10 + -0x1c) = 0;
-    *(UINT *)((int)pDVar10 + -0x1e) = 0;
-    *(UINT *)((int)pDVar10 + -0x20) = 0x1010;
-    *(UINT *)((int)pDVar10 + -0x22) = 0x471;
+    pWVar10[-1] = 0x1120;
+    pWVar10[-2] = _szButton;
+    pWVar10[-3] = 799;
+    pWVar10[-4] = 0x14f8;
+    pWVar10[-5] = 0x43a;
+    pcVar5 = PszGetCompressedString(pWVar10[-3]);
+    pWVar10[-3] = 0x1120;
+    pWVar10[-4] = (WMType)pcVar5;
+    pWVar10[-5] = 0x4000;
+    pWVar10[-6] = 3;
+    pWVar10[-7] = 100;
+    pWVar10[-8] = 100;
+    pWVar10[-9] = 0x96;
+    pWVar10[-10] = dyArial8;
+    pWVar10[-0xb] = hwnd;
+    pWVar10[-0xc] = 0;
+    pWVar10[-0xd] = hInst;
+    pWVar10[-0xe] = 0;
+    pWVar10[-0xf] = 0;
+    pWVar10[-0x10] = 0x1010;
+    pWVar10[-0x11] = 0x471;
     hwndRepCB =
-         CreateWindow(*(LPCSTR *)(UINT *)((int)pDVar10 + -4),*(LPCSTR *)(UINT *)((int)pDVar10 + -8),
-                      *(DWORD *)((int)pDVar10 + -0xc),*(UINT *)((int)pDVar10 + -0xe),
-                      *(UINT *)((int)pDVar10 + -0x10),*(UINT *)((int)pDVar10 + -0x12),
-                      *(UINT *)((int)pDVar10 + -0x14),*(HWND *)((int)pDVar10 + -0x16),
-                      *(HMENU *)((int)pDVar10 + -0x18),*(HINSTANCE *)((int)pDVar10 + -0x1a),
-                      *(void **)(UINT *)((int)pDVar10 + -0x1e));
-    *(UINT *)((int)pDVar10 + 2) = hwndRepCB;
-    *(undefined2 *)pDVar10 = 0x30;
-    *(UINT *)((int)pDVar10 + -2) = rghfontArial8[1];
-    *(UINT *)((int)pDVar10 + -4) = 0;
-    *(UINT *)((int)pDVar10 + -6) = 0;
-    *(UINT *)((int)pDVar10 + -8) = 0x14f8;
-    *(UINT *)((int)pDVar10 + -10) = 0x48d;
-    SendMessage(*(HWND *)((int)pDVar10 + 2),*(UINT *)pDVar10,*(UINT *)((int)pDVar10 + -2),
-                *(LPARAM *)(UINT *)((int)pDVar10 + -6));
+         CreateWindow(*(LPCSTR *)(pWVar10 + -2),*(LPCSTR *)(pWVar10 + -4),
+                      *(undefined4 *)(pWVar10 + -6),pWVar10[-7],pWVar10[-8],pWVar10[-9],pWVar10[-10]
+                      ,pWVar10[-0xb],pWVar10[-0xc],pWVar10[-0xd],*(void **)(pWVar10 + -0xf));
+    pWVar10[1] = hwndRepCB;
+    *pWVar10 = 0x30;
+    pWVar10[-1] = rghfontArial8[1];
+    pWVar10[-2] = 0;
+    pWVar10[-3] = 0;
+    pWVar10[-4] = 0x14f8;
+    pWVar10[-5] = 0x48d;
+    SendMessage(pWVar10[1],*pWVar10,pWVar10[-1],*(undefined4 *)(pWVar10 + -3));
   }
   else {
     if (message != WM_PAINT) {
@@ -575,7 +550,7 @@ LAB_1048_0950:
                   uVar13 = 0x1118;
                   uVar16 = __aFulshr(uVar17,in_stack_0000ff3a);
                   if ((int)uVar16 == 0) {
-                    LVar15 = SendMessage(hwndShipDD,0x407,0,0);
+                    LVar15 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
                     if (LVar15 != -1) {
                       sVar8 = FLookupOrbitingXfer(sel.pl.id,(short)LVar15,&xf,-1);
                       if (sVar8 != 0) {
@@ -593,7 +568,7 @@ LAB_1048_0950:
                   uVar16 = __aFulshr(uVar17,in_stack_0000ff3a);
                   if ((int)uVar16 == 0) {
                     uVar13 = 0x14f8;
-                    LVar15 = SendMessage(hwndShipDD,0x407,0,0);
+                    LVar15 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
                     puVar11 = &stack0xff36;
                     if (LVar15 != -1) {
                       uVar13 = 0x1038;
@@ -1809,7 +1784,7 @@ void ChangeMainObjSel(short grobjNew,short iObjSel)
       }
       if (fAi == 0) {
         FillPlanetProdLB(0,(PLPROD *)0x0,(PLANET *)0x0);
-        SendMessage(hwndPlanetProdLB,0x407,0,0);
+        SendMessage(hwndPlanetProdLB,WM_USER_0x0407,0,0);
       }
     }
     else {
@@ -1833,7 +1808,7 @@ void ChangeMainObjSel(short grobjNew,short iObjSel)
         FillFleetCompLB();
         FillBattleDD(sel.fl.iplan + 1);
         idSkip = iObjSel;
-        SendMessage(rghwndOrderDD[0],0x40e,
+        SendMessage(rghwndOrderDD[0],WM_USER_0x040E,
                     *(uint *)&((PLORD *)sel.fl.lpplord)[2].iordMax & 0xf,0);
       }
     }
@@ -1914,7 +1889,7 @@ void FillShipDD(short idSkip)
   short i;
   THING *lpthMac;
   
-  SendMessage(hwndShipDD,0x40b,0,0);
+  SendMessage(hwndShipDD,WM_USER_0x040B,0,0);
   if (sel.grobj == grobjPlanet) {
     ptSel.x = ((POINT *)rgptPlan + sel.id)->x;
     ptSel.y = *(short *)((int)&rgptPlan[0].y + sel.id * 4);
@@ -1940,7 +1915,7 @@ void FillShipDD(short idSkip)
       else {
         szWork[0] = 'x';
       }
-      SendMessage(hwndShipDD,0x403,0,0x112057a4);
+      SendMessage(hwndShipDD,WM_USER_0x0403,0,0x112057a4);
     }
   }
   pTVar3 = (THING *)lpThings + cThing;
@@ -1957,11 +1932,11 @@ void FillShipDD(short idSkip)
       else {
         szWork[0] = 'x';
       }
-      SendMessage(hwndShipDD,0x403,0,0x112057a4);
+      SendMessage(hwndShipDD,WM_USER_0x0403,0,0x112057a4);
     }
     lpth = (THING *)CONCAT22(uVar4,(THING *)lpth + 1);
   }
-  SendMessage(hwndShipDD,0x40e,0,0);
+  SendMessage(hwndShipDD,WM_USER_0x040E,0,0);
   return;
 }
 
@@ -2881,11 +2856,11 @@ LAB_1048_5fdb:
   }
   else {
     if (iEnv == 1) {
-      _wsprintf(szWork,(char *)0x112008b0,iVar * 4 + -200,0xba);
+      _wsprintf(szWork,s_d_cC_1120_08b0,iVar * 4 + -200,0xba);
     }
     else {
       if (iEnv != 2) goto LAB_1048_5fdb;
-      _wsprintf(szWork,(char *)0x112008b6,iVar);
+      _wsprintf(szWork,s_dmR_1120_08b6,iVar);
     }
     pcVar1 = (char *)szWork;
   }
@@ -2918,7 +2893,7 @@ char * PszCalcGravity(short iGravity)
   if (iGravity < 0x32) {
     iVal = (short)(10000 / (long)iVal);
   }
-  _wsprintf(szWork,(char *)0x112008bb,iVal / 100,iVal % 100);
+  _wsprintf(szWork,s_d_02dg_1120_08bb,iVal / 100,iVal % 100);
   return (char *)szWork;
 }
 
@@ -2959,7 +2934,7 @@ void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis,short inflate)
 {
   uint uVar1;
   int fListbox_00;
-  UINT UVar2;
+  WMType WVar2;
   DRAWITEMSTRUCT *pDVar3;
   undefined2 uVar4;
   RECT rc;
@@ -2984,12 +2959,12 @@ void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis,short inflate)
     inflate = -inflate;
   }
   if (fListbox_00 == 0) {
-    UVar2 = 0x408;
+    WVar2 = WM_USER_0x0408;
   }
   else {
-    UVar2 = 0x40a;
+    WVar2 = WM_USER_0x040A;
   }
-  SendMessage(pDVar3->hwndItem,UVar2,pDVar3->itemID,0x112057a4);
+  SendMessage(pDVar3->hwndItem,WVar2,pDVar3->itemID,0x112057a4);
   DrawProductionItem(pDVar3->hDC,&rc,(char *)szWork,inflate,uVar1 & 1,fListbox_00);
   HandleFocusState(lpdis,inflate + 2);
   return;
@@ -3251,7 +3226,7 @@ void FillPlanetProdLB(HWND hwnd,PLPROD *lpplprod,PLANET *lppl)
     if (hwnd == 0) {
       hwnd = hwndPlanetProdLB;
     }
-    SendMessage(hwnd,0x405,0,0);
+    SendMessage(hwnd,WM_USER_0x0405,0,0);
   }
   uVar2 = (undefined2)((ulong)lppl >> 0x10);
   if (((PLPROD *)lpplprod == (PLPROD *)0x0) && (lpplprod._2_2_ == 0)) {
@@ -3274,7 +3249,7 @@ void FillPlanetProdLB(HWND hwnd,PLPROD *lpplprod,PLANET *lppl)
     }
   }
   else {
-    SendMessage(hwnd,0x401,0,(LPARAM)psz);
+    SendMessage(hwnd,WM_USER_0x0401,0,(LPARAM)psz);
   }
 PLANET_NoMsg:
   if (((PLPROD *)lpplprod != (PLPROD *)0x0) || (lpplprod._2_2_ != 0)) {
@@ -3313,7 +3288,7 @@ PLANET_NoMsg:
           ch = ' ';
         }
 LAB_1048_693c:
-        _wsprintf(szTemp,(char *)0x112008c4,(int)ch,(uint)lpprod->dwFlags & 0x3ff,psz);
+        _wsprintf(szTemp,s_c_5d_s_1120_08c4,(int)ch,(uint)lpprod->dwFlags & 0x3ff,psz);
         uVar3 = __aFulshr(uVar4,etaFirst);
         if (((uint)uVar3 & 7) == 1) {
           uVar3 = __aFulshr(uVar4,etaFirst);
@@ -3335,7 +3310,7 @@ LAB_1048_693c:
           _strcpy((char *)szWork,szTemp);
           return;
         }
-        SendMessage(hwnd,0x401,0,(LPARAM)szTemp);
+        SendMessage(hwnd,WM_USER_0x0401,0,(LPARAM)szTemp);
       }
       lpprod = (PROD *)lpprod + 1;
     }

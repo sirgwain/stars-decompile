@@ -515,7 +515,7 @@ void SelectOursAtObject(POINT *ppt)
         pt_01.x = scan.pt.x;
         FEnsurePointOnScreen(pt_01,1);
         UpdateWindow(hwndScanner);
-        SendMessage(hwndScanner,0x102,0x76,0);
+        SendMessage(hwndScanner,WM_CHAR,0x76,0);
       }
       return;
     }
@@ -1648,7 +1648,7 @@ char * PszGetThingName(short id)
     }
     else {
       pcVar3 = PszPlayerName(pTVar5->idFull >> 9 & 0xf,0,0,0,0,(PLAYER *)0x0);
-      _wsprintf(szPlr,(char *)0x11200518,pcVar3,0x1120);
+      _wsprintf(szPlr,s_s_1120_0518,pcVar3,0x1120);
     }
     uVar7 = *(undefined2 *)((uint)*(byte *)((int)&pTVar1->u_THING_0x0006 + 6) * 2 + 0x4f2);
     uVar8 = 0x1120;
@@ -1666,7 +1666,7 @@ char * PszGetThingName(short id)
       }
       else {
         pcVar3 = PszPlayerName(pTVar5->idFull >> 9 & 0xf,0,0,0,0,(PLAYER *)0x0);
-        _wsprintf(szPlr,(char *)0x1120051c,pcVar3,0x1120);
+        _wsprintf(szPlr,s_s_1120_051c,pcVar3,0x1120);
       }
       pcVar3 = szPlr;
       pcVar2 = PszGetCompressedString(idsSmineralPacket);
@@ -1728,7 +1728,7 @@ char * PszGetFleetName(short id)
   }
   else {
     pcVar2 = PszPlayerName(iPlayer,0,0,0,0,(PLAYER *)0x0);
-    _wsprintf(szPlr,(char *)0x11200520,pcVar2,0x1120);
+    _wsprintf(szPlr,s_s_1120_0520,pcVar2,0x1120);
   }
   if (((pFVar1 == (FLEET *)0x0) && (iVar4 == 0)) ||
      ((*(int *)&pFVar1->lpszName == 0 && (*(int *)((int)&pFVar1->lpszName + 2) == 0)))) {
@@ -1757,7 +1757,7 @@ char * PszGetFleetName(short id)
     _wsprintf(szWork,s__s_s___d_1120_0529,szPlr);
   }
   else {
-    _wsprintf(szWork,(char *)0x11200524,szPlr);
+    _wsprintf(szWork,s_s_s_1120_0524,szPlr);
   }
   return (char *)szWork;
 }
@@ -1828,7 +1828,7 @@ char * PszFleetNameFromWord(ushort w)
     lpsz._0_2_ = PszGetCompressedString(idsFleet);
     lpsz._2_2_ = 0x1120;
   }
-  _wsprintf(szWork,(char *)0x11200532,(char *)lpsz,lpsz._2_2_,(w & 0x1ff) + 1);
+  _wsprintf(szWork,s_s_d_1120_0532,(char *)lpsz,lpsz._2_2_,(w & 0x1ff) + 1);
   return (char *)szWork;
 }
 
@@ -4856,8 +4856,8 @@ void OutputSz(short dt,char *sz)
   char szFile [256];
   char szTime [100];
   
-  _wsprintf(szFile,(char *)0x11200564,(char *)szBase,0x1120,
-            *(undefined2 *)(dt * 2 + mpdtsz),0x1120);
+  _wsprintf(szFile,s_s_s_1120_0564,(char *)szBase,0x1120,*(undefined2 *)(dt * 2 + mpdtsz),
+            0x1120);
   sVar1 = __access(szFile,0);
   if (sVar1 == -1) {
     pcVar2 = SzVersion();

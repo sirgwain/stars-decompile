@@ -32,7 +32,8 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchains/mingw-w64.cmake",
         "STARS_BUILD_CLI": "ON",
-        "STARS_BUILD_WIN32": "ON"
+        "STARS_BUILD_WIN32": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -44,7 +45,8 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchains/mingw-w64.cmake",
         "STARS_BUILD_CLI": "OFF",
-        "STARS_BUILD_WIN32": "ON"
+        "STARS_BUILD_WIN32": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -57,6 +59,19 @@
         "STARS_BUILD_CLI": "ON",
         "STARS_BUILD_WIN32": "OFF",
         "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "macos-linux-win32-stubs",
+      "displayName": "macOS / Linux with WIN32 stubs",
+      "description": "Build on macOS/Linux with _WIN32 defined to test Windows code paths using stubs",
+      "inherits": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-stubs",
+      "cacheVariables": {
+        "STARS_BUILD_CLI": "ON",
+        "STARS_BUILD_WIN32": "OFF",
+        "CMAKE_C_FLAGS": "-D_WIN32=1 -DSTARS_USE_WIN_STUBS=1"
       }
     }
   ],
@@ -102,6 +117,19 @@
       "name": "run-tests-debug",
       "displayName": "Run all tests (Debug)",
       "configurePreset": "macos-linux-debug",
+      "targets": [
+        "test_all"
+      ]
+    },
+    {
+      "name": "build-macos-linux-win32-stubs",
+      "displayName": "Build (macOS / Linux with WIN32 stubs)",
+      "configurePreset": "macos-linux-win32-stubs"
+    },
+    {
+      "name": "run-tests-win32-stubs",
+      "displayName": "Run all tests (WIN32 stubs)",
+      "configurePreset": "macos-linux-win32-stubs",
       "targets": [
         "test_all"
       ]

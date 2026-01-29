@@ -235,7 +235,7 @@ short RandomSeedDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     if ((message == WM_COMMAND) && ((wParam == 1 || (wParam == 2)))) {
       if (wParam == 1) {
-        GetDlgItemText(hwnd,0x10c,szValue,0x20);
+        GetDlgItemText(hwnd,IDC_U16_0x010C,szValue,0x20);
         pch = szValue;
         uVar3 = 0;
         while ((*(byte *)(*pch + 0x175f) & 4) != 0) {
@@ -526,8 +526,8 @@ char * PszGetCompressedPlanet(short id)
 // ======================================================================
 
 
-/* WARNING: Variable defined which should be unmapped: hf */
 /* WARNING: Variable defined which should be unmapped: w */
+/* WARNING: Variable defined which should be unmapped: hf */
 
 void OutputFileString(char *szFile,char *sz)
 
@@ -551,7 +551,7 @@ void OutputFileString(char *szFile,char *sz)
     __lseek(HVar2,0,2);
     pcStack_92 = sz;
     uVar3 = _strlen(sz);
-    _lwrite(uVar3,pcStack_92,HVar2);
+    _lwrite(HVar2,pcStack_92,uVar3);
     _lclose(0x1120);
   }
   return;
@@ -574,7 +574,7 @@ void CopyFile(char *szSrc,char *szDst)
   short (*pasVar1) [9];
   short sVar2;
   short sVar3;
-  ushort uVar4;
+  UINT UVar4;
   undefined2 unaff_SS;
   long lVar5;
   short (*penvSav) [9];
@@ -604,13 +604,13 @@ void CopyFile(char *szSrc,char *szDst)
       cb._0_2_ = (uint)lVar5;
       if (lVar5 < 0x801) break;
       RgFromStream(rgb,0x800);
-      uVar4 = _lwrite(0x800,rgb,hfDst);
-      if (uVar4 != 0x800) goto UTILGEN_LStreamError;
+      UVar4 = _lwrite(hfDst,rgb,0x800);
+      if (UVar4 != 0x800) goto UTILGEN_LStreamError;
       lVar5 = CONCAT22(cb._2_2_ - (uint)((uint)cb < 0x800),(uint)cb - 0x800);
     }
     if (lVar5 != 0) {
       RgFromStream(rgb,(uint)cb);
-      _lwrite((uint)cb,rgb,hfDst);
+      _lwrite(hfDst,rgb,(uint)cb);
     }
   }
 UTILGEN_LStreamError:
@@ -632,6 +632,8 @@ UTILGEN_LStreamError:
 // ======================================================================
 
 
+/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
+
 short AlertSz(char *sz,short mbType)
 
 {
@@ -643,7 +645,7 @@ short AlertSz(char *sz,short mbType)
   if (((ini.wFlags >> 0xe & 1) == 0) &&
      ((-1 < (int)ini.wFlags || ((ini.wFlags >> 3 & 1) == 0)))) {
     HVar2 = GetFocus();
-    sVar1 = MessageBox(HVar2,sz,(LPCSTR)0x11201385,mbType);
+    sVar1 = MessageBox(HVar2,sz,s_Stars_1120_1385,mbType);
   }
   else {
     _wsprintf(szT,s_Error___s_1120_137b,sz,0x1120);
@@ -1860,13 +1862,13 @@ short FGetMouseMove(POINT *ppt)
     if (BVar2 == 0) {
       return 1;
     }
-  } while ((msg.message != 0x200) && (puVar1 = puVar3 + 1, msg.message != 0x202));
+  } while ((msg.message != WM_MOUSEMOVE) && (puVar1 = puVar3 + 1, msg.message != WM_LBUTTONUP));
   ppt->x = (short)msg.lParam;
   *puVar3 = 0x14f8;
   puVar3[-1] = 0x419e;
   uVar5 = __aFulshr(*(ulong *)(puVar3 + 1),puVar3[3]);
   ppt->y = (short)uVar5;
-  return (uint)(msg.message != 0x202);
+  return (uint)(msg.message != WM_LBUTTONUP);
 }
 
 
@@ -1906,13 +1908,13 @@ short FGetRMouseMove(POINT *ppt)
     if (BVar2 == 0) {
       return 1;
     }
-  } while ((msg.message != 0x200) && (puVar1 = puVar3 + 1, msg.message != 0x205));
+  } while ((msg.message != WM_MOUSEMOVE) && (puVar1 = puVar3 + 1, msg.message != WM_RBUTTONUP));
   ppt->x = (short)msg.lParam;
   *puVar3 = 0x14f8;
   puVar3[-1] = 0x4238;
   uVar5 = __aFulshr(*(ulong *)(puVar3 + 1),puVar3[3]);
   ppt->y = (short)uVar5;
-  return (uint)(msg.message != 0x205);
+  return (uint)(msg.message != WM_RBUTTONUP);
 }
 
 
@@ -2693,7 +2695,7 @@ ushort HdibLoadBigResource(short idb)
 {
   HRSRC HVar1;
   HGLOBAL HVar2;
-  short hFile;
+  HFILE hFile;
   short sVar3;
   char *lpBuffer;
   DWORD dwSize;
@@ -2705,7 +2707,7 @@ ushort HdibLoadBigResource(short idb)
   HVar1 = FindResource(hInst,(LPCSTR)(ulong)(uint)idb,(LPCSTR)0x2);
   if ((HVar1 != 0) && (HVar2 = AllocResource(hInst,HVar1,0), HVar2 != 0)) {
     hFile = AccessResource(hInst,HVar1);
-    if (hFile != -1) {
+    if (hFile != 0xffff) {
       lpBuffer = LockResource(HVar2);
       if (lpBuffer != (char *)0x0) {
         dwSize = SizeofResource(hInst,HVar1);
@@ -2737,7 +2739,7 @@ short ReadBigBlock(short hFile,char *lpBuffer,ulong dwSize)
 
 {
   uint uVar1;
-  ushort uVar2;
+  UINT UVar2;
   char *lpInBuf;
   short nBytes;
   
@@ -2750,8 +2752,8 @@ short ReadBigBlock(short hFile,char *lpBuffer,ulong dwSize)
     if ((dwSize._2_2_ != 0) || (uVar1 = (uint)dwSize, 30000 < (uint)dwSize)) {
       uVar1 = 30000;
     }
-    uVar2 = _lread(uVar1,lpBuffer,hFile);
-    if (uVar2 != uVar1) break;
+    UVar2 = _lread(hFile,lpBuffer,uVar1);
+    if (UVar2 != uVar1) break;
     dwSize = CONCAT22((dwSize._2_2_ - ((int)uVar1 >> 0xf)) - (uint)((uint)dwSize < uVar1),
                       (uint)dwSize - uVar1);
     lpBuffer = (char *)CONCAT22(lpInBuf._2_2_,(char *)lpInBuf + uVar1);
@@ -2991,10 +2993,10 @@ void IntToRoman(short i,char *pszOut)
 short FCheckPassword(void)
 
 {
-  char *pcVar1;
-  short sVar2;
-  long lVar3;
-  FARPROC pvVar4;
+  HWND hWndParent;
+  short sVar1;
+  long lVar2;
+  FARPROC lpDlgProc;
   long lSaltDef;
   short fRet;
   fn_lpProc *lpProc;
@@ -3002,28 +3004,28 @@ short FCheckPassword(void)
   if (((((int)lSaltCur == 0) && (lSaltCur._2_2_ == 0)) ||
       (((int)lSaltLast == (int)lSaltCur &&
        (lSaltLast._2_2_ == lSaltCur._2_2_)))) || (fAi != 0)) {
-    sVar2 = 1;
+    sVar1 = 1;
   }
   else if ((vszDefPass[0] == '\0') ||
-          (lVar3 = LSaltFromSz((char *)vszDefPass),
-          lVar3 != CONCAT22(lSaltCur._2_2_,(int)lSaltCur))) {
+          (lVar2 = LSaltFromSz((char *)vszDefPass),
+          lVar2 != CONCAT22(lSaltCur._2_2_,(int)lSaltCur))) {
     if ((ini.wFlags >> 0xe & 1) == 0) {
-      pvVar4 = MakeProcInstance(PasswordDlg,hInst);
-      pcVar1 = (char *)hwndTitle;
+      lpDlgProc = MakeProcInstance(PasswordDlg,hInst);
+      hWndParent = hwndTitle;
       if (hwndTitle == 0) {
-        pcVar1 = (char *)hwndFrame;
+        hWndParent = hwndFrame;
       }
-      sVar2 = DialogBox(0,(LPCSTR)CONCAT22(0x8c,pcVar1),(HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4);
-      FreeProcInstance(pvVar4);
+      sVar1 = DialogBox(0,IDD_DLG140_140,hWndParent,lpDlgProc);
+      FreeProcInstance(lpDlgProc);
     }
     else {
-      sVar2 = 0;
+      sVar1 = 0;
     }
   }
   else {
-    sVar2 = 1;
+    sVar1 = 1;
   }
-  return sVar2;
+  return sVar1;
 }
 
 
@@ -3080,12 +3082,12 @@ short PasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
 {
   HWND HVar1;
   char *pcVar2;
-  short sVar3;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  ulong uVar4;
-  long lVar5;
+  ulong uVar3;
+  long lVar4;
+  short mbType;
   long lSalt;
   RECT rc;
   char szPass [60];
@@ -3096,8 +3098,8 @@ short PasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     return 1;
   }
   if (message == WM_CTLCOLOR) {
-    uVar4 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),(ushort)lSalt);
-    if ((int)uVar4 == 6) {
+    uVar3 = __aFulshr(CONCAT22(unaff_SI,unaff_DI),(ushort)lSalt);
+    if ((int)uVar3 == 6) {
       SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       return hbrButtonFace;
     }
@@ -3105,7 +3107,7 @@ short PasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_INITDIALOG) {
       SendDlgItemMessage(hwnd,0x10c,0x415,0xf,0);
-      HVar1 = GetDlgItem(hwnd,0x7e2);
+      HVar1 = GetDlgItem(hwnd,IDC_U16_0x07E2);
       pcVar2 = PszGetCompressedString(idsEnterPassword);
       SetWindowText(HVar1,pcVar2);
       return 1;
@@ -3113,24 +3115,24 @@ short PasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     if (message == WM_COMMAND) {
       if ((wParam == 1) || (wParam == 2)) {
         if (wParam == 1) {
-          GetDlgItemText(hwnd,0x10c,szPass,0x3c);
-          lVar5 = LSaltFromSz(szPass);
-          if (lVar5 != CONCAT22(lSaltCur._2_2_,(undefined2)lSaltCur)) {
+          GetDlgItemText(hwnd,IDC_U16_0x010C,szPass,0x3c);
+          lVar4 = LSaltFromSz(szPass);
+          if (lVar4 != CONCAT22(lSaltCur._2_2_,(undefined2)lSaltCur)) {
             vcPasswordFailures = vcPasswordFailures + 1;
             if (vcPasswordFailures < 10) {
-              sVar3 = 1000;
+              pcVar2 = (char *)0x3e8;
             }
             else if (vcPasswordFailures < 100) {
-              sVar3 = 5000;
+              pcVar2 = (char *)s_Stars_1120_1385 + 3;
             }
             else {
-              sVar3 = 10000;
+              pcVar2 = (char *)0x2710;
             }
-            Delay(sVar3);
-            sVar3 = 0x10;
+            Delay((short)pcVar2);
+            mbType = 0x10;
             pcVar2 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry,(short *)0x0);
-            AlertSz(pcVar2,sVar3);
-            HVar1 = GetDlgItem(hwnd,0x10c);
+            AlertSz(pcVar2,mbType);
+            HVar1 = GetDlgItem(hwnd,IDC_U16_0x010C);
             SetFocus(HVar1);
             SendDlgItemMessage(hwnd,0x10c,0x401,0,-0x10000);
             return 0;
@@ -3210,14 +3212,14 @@ short NewPasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       SendDlgItemMessage(hwnd,0x10c,0x415,0x10,0);
       SendDlgItemMessage(hwnd,0x10d,0x415,0x10,0);
       if (idPlayer == -1) {
-        HVar3 = GetDlgItem(hwnd,0x7e2);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x07E2);
         pcVar4 = PszGetCompressedString(idsNotePasswordEffectiveImmediately);
         SetWindowText(HVar3,pcVar4);
         pcVar4 = PszGetCompressedString(idsChangeHostPassword);
         SetWindowText(hwnd,pcVar4);
       }
       else {
-        HVar3 = GetDlgItem(hwnd,0x7e2);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x07E2);
         pcVar4 = PszGetCompressedString(idsNoteNewPasswordWillTakeEffectUntil);
         SetWindowText(HVar3,pcVar4);
       }
@@ -3230,17 +3232,17 @@ short NewPasswordDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       if ((wParam == 1) || (wParam == 2)) {
         lVar1 = lSaltLast;
         if (wParam == 1) {
-          HVar3 = GetDlgItem(hwnd,0x10c);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x010C);
           GetWindowText(HVar3,szPass,0x12);
           lSalt = LSaltFromSz(szPass);
-          HVar3 = GetDlgItem(hwnd,0x10d);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x010D);
           GetWindowText(HVar3,szPass,0x12);
           lSalt2 = LSaltFromSz(szPass);
           if (lSalt2 != lSalt) {
             sVar9 = 0x10;
             pcVar4 = PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter,(short *)0x0);
             AlertSz(pcVar4,sVar9);
-            HVar3 = GetDlgItem(hwnd,0x10c);
+            HVar3 = GetDlgItem(hwnd,IDC_U16_0x010C);
             SetFocus(HVar3);
             SendDlgItemMessage(hwnd,0x10c,0x401,0,-0x10000);
             goto LAB_1040_5fb1;
@@ -3428,7 +3430,7 @@ void ShowProgressGauge(void)
 {
   if (hwndProgressGauge == 0) {
     CreateDialog(0,(LPCSTR)CONCAT22(0x189,hwndFrame),lpfnGaugeDlgProc._2_2_,
-                 (char)(fn_lpfnGaugeDlgProc *)lpfnGaugeDlgProc);
+                 (fn_lpfnGaugeDlgProc *)lpfnGaugeDlgProc);
   }
   else {
     UpdateProgressGauge(0);
@@ -3541,7 +3543,7 @@ short ProgressGaugeDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar2 = GetSystemMetrics(1);
     pcVar3 = PszGetCompressedString(idsGeneratingDataYearD);
     _wsprintf(szWork,pcVar3,game.turn + 0x961);
-    HVar4 = GetDlgItem(hwnd,0x42f);
+    HVar4 = GetDlgItem(hwnd,IDC_U16_0x042E|IDOK);
     SetWindowText(HVar4,szWork);
     GetWindowRect(hwnd,&rc);
     rc.left = sVar1 - (rc.right - rc.left) >> 1;

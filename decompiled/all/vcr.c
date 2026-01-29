@@ -19,7 +19,7 @@ void BattleVCR(short iBattle)
   short sVar4;
   char *sz;
   undefined2 uVar5;
-  FARPROC pvVar6;
+  FARPROC lpDlgProc;
   HB *lphb;
   short env [9];
   short (*penvMemSav) [9];
@@ -37,7 +37,7 @@ void BattleVCR(short iBattle)
                            Impure (Non-shareable)
                         */
   pasVar3 = penvMem;
-  pvVar6 = (FARPROC)0x0;
+  lpDlgProc = (FARPROC)0x0;
   viStepVCRCur = -1;
   if ((uint)gd.grBits >> 0xe < 2) {
     dxyVCRBoard = 0x161;
@@ -72,9 +72,8 @@ void BattleVCR(short iBattle)
           if (((uint)gd.grBits >> 0xb & 1) != 0) {
             AdvanceTutor();
           }
-          pvVar6 = MakeProcInstance(VCRDlg,hInst);
-          DialogBox(0,(LPCSTR)CONCAT22(0xa0,hwndFrame),(HWND)((ulong)pvVar6 >> 0x10),
-                    (char)pvVar6);
+          lpDlgProc = MakeProcInstance(VCRDlg,hInst);
+          DialogBox(0,IDD_DLG160_160,hwndFrame,lpDlgProc);
         }
         else {
           sVar4 = 0x10;
@@ -82,8 +81,8 @@ void BattleVCR(short iBattle)
           sz = PszFormatIds(idsMemory,(short *)0x0);
           AlertSz(sz,sVar4);
         }
-        if (pvVar6 != (FARPROC)0x0) {
-          FreeProcInstance(pvVar6);
+        if (lpDlgProc != (FARPROC)0x0) {
+          FreeProcInstance(lpDlgProc);
         }
         if (vrgtok != (TOK *)0x0) {
           FreeLp(vrgtok,htMisc);
@@ -637,7 +636,7 @@ short VCRDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     GetWindowRect(hwnd,local_1c);
     GetClientRect(hwnd,&rc);
     local_14 = (local_1c._6_2_ - local_1c._2_2_) - rc.bottom;
-    HVar4 = GetDlgItem(hwnd,0xa1);
+    HVar4 = GetDlgItem(hwnd,IDC_U16_0x00A1);
     GetWindowRect(HVar4,&rc);
     SetWindowPos(hwnd,0,0,0,dxyVCRBoard + 0xfa,
                  local_14 + 0x18 + dxyVCRBoard + (rc.bottom - rc.top),6);
@@ -740,7 +739,7 @@ VCR_KillTime:
       uVar12 = 0x14f8;
       *(undefined2 *)(puVar11 + -0xe) = 0x1759;
       UVar9 = SetTimer(*(HWND *)(puVar11 + -4),*(UINT *)(puVar11 + -6),*(UINT *)(puVar11 + -8),
-                       puVar11[-10]);
+                       *(undefined2 *)(puVar11 + -10));
       local_1c._4_2_ = (uint)(UVar9 != 0);
       gd.grBits._0_2_ = (uint)gd.grBits & 0xdfff | (uint)(UVar9 != 0) << 0xd;
     }
@@ -1419,7 +1418,7 @@ void DrawVCR(HDC hdc,short iStart,short iEnd)
           c = _wsprintf(szWork,pcVar5,pcVar18,lpshdef._2_2_,uVar20);
         }
         if (local_1a0 != 0) {
-          sVar6 = _wsprintf((char *)szWork + c,(char *)0x11201429,local_1a0);
+          sVar6 = _wsprintf((char *)szWork + c,s_d_1120_1429,local_1a0);
           c = c + sVar6;
         }
         SetTextColor(hdc,0x7f0000);
@@ -2226,7 +2225,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
              (SHDEF *)(*(int *)(iVar4 + rglpshdef) +
                       (uint)*(byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) * 0x93);
       }
-      sVar3 = _wsprintf((char *)szWork + uVar2,(char *)0x11201432,
+      sVar3 = _wsprintf((char *)szWork + uVar2,s_s_d_1120_1432,
                         (((SHDEF *)lpshdef)->hul).szClass,lpshdef._2_2_,
                         ((TOK *)vrgtok)[i].csh);
       cch = uVar2 + sVar3;
@@ -2241,7 +2240,7 @@ short PopupVCRMenu(HWND hwnd,short x,short y,byte brc)
             }
           }
           if (0 < cKilled) {
-            sVar3 = _wsprintf((char *)szWork + cch,(char *)0x1120143b,cKilled);
+            sVar3 = _wsprintf((char *)szWork + cch,s_d_1120_143b,cKilled);
             cch = cch + sVar3;
           }
         }
@@ -2296,11 +2295,11 @@ void EnableVCRButtons(void)
     EnableWindow(HVar1,(uint)(viStepVCRCur < vcStepVCR));
   }
   if (viStepVCRCur == -1) {
-    HVar1 = GetDlgItem(hwndVCRDlg,0xa3);
+    HVar1 = GetDlgItem(hwndVCRDlg,IDC_U16_0x00A3);
     SetFocus(HVar1);
   }
   else if (viStepVCRCur == vcStepVCR) {
-    HVar1 = GetDlgItem(hwndVCRDlg,1);
+    HVar1 = GetDlgItem(hwndVCRDlg,IDOK);
     SetFocus(HVar1);
   }
   return;

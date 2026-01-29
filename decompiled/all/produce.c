@@ -16,7 +16,7 @@ short ChangeProduction(short fClear)
   short (*pasVar1) [9];
   short sVar2;
   char *sz;
-  FARPROC pvVar3;
+  FARPROC lpDlgProc;
   short fSuccess;
   PROD rgprod [64];
   fn_lpProcProd *lpProcProd;
@@ -41,10 +41,9 @@ short ChangeProduction(short fClear)
     if (fClear == 0) {
       InitProduction(rgprod);
       fDlgUp = 1;
-      pvVar3 = MakeProcInstance(ProductionDlg,hInst);
-      fSuccess = DialogBox(0,(LPCSTR)CONCAT22(0x5d,hwndFrame),
-                           (HWND)((ulong)pvVar3 >> 0x10),(char)pvVar3);
-      FreeProcInstance(pvVar3);
+      lpDlgProc = MakeProcInstance(ProductionDlg,hInst);
+      fSuccess = DialogBox(0,IDD_DLG93_93,hwndFrame,lpDlgProc);
+      FreeProcInstance(lpDlgProc);
       hwndProdDlg = 0;
       fDlgUp = 0;
     }
@@ -508,12 +507,12 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   undefined2 unaff_SS;
   bool bVar8;
   ulong uVar9;
-  FARPROC pvVar10;
+  FARPROC lpDlgProc;
   short fRet;
   fn_lpProc *lpProc;
   undefined1 local_e4 [140];
   int local_58;
-  short local_56 [9];
+  ControlId local_56 [9];
   char *local_44;
   int local_42;
   short local_40;
@@ -541,7 +540,7 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_CTLCOLOR) {
       local_32.y = (HWND)lParam;
-      HVar3 = GetDlgItem(hwnd,0x8b);
+      HVar3 = GetDlgItem(hwnd,IDC_U16_0x008B);
       if ((local_32.y == HVar3) || (uVar9 = __aFulshr(uVar9,fRet), (int)uVar9 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
@@ -577,7 +576,7 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         return 1;
       }
       if (message == WM_INITDIALOG) {
-        local_56[0] = 0x42e;
+        local_56[0] = IDC_U16_0x042E;
         local_56[1] = 0x42f;
         local_56[2] = 1;
         local_56[3] = 2;
@@ -589,9 +588,9 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         local_44 = (char *)&game.mdDensity;
         hwndProdDlg = hwnd;
         if (*(int *)((int)&rgplr[0].cPlanet + idPlayer * 0xc0) < 2) {
-          HVar3 = GetDlgItem(hwnd,0x42f);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x042E|IDOK);
           EnableWindow(HVar3,0);
-          HVar3 = GetDlgItem(hwnd,0x42e);
+          HVar3 = GetDlgItem(hwnd,IDC_U16_0x042E);
           EnableWindow(HVar3,0);
         }
         if ((uint)gd.grBits >> 0xe == 0) {
@@ -609,7 +608,7 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         rc.left = (rc.right * 0xb) / 0x14 + 0x10;
         local_32.y = (rc.right - rc.left) / 4;
         rc.bottom = rc.bottom - ((dyArial8 * 3) / 2 + 6);
-        HVar3 = GetDlgItem(hwnd,0x8b);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x008B);
         SetWindowPos(HVar3,0,6,rc.bottom,rc.left + -0xc,(dyArial8 * 3) / 2,4);
         for (local_3c = 0; local_3c < 4; local_3c = local_3c + 1) {
           HVar3 = GetDlgItem(hwnd,local_56[local_3c]);
@@ -631,11 +630,11 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           SetWindowPos(HVar3,0,rc.left,rc.top,local_32.y + -6,(dyArial8 * 3) / 2,4);
           rc.top = rc.top + local_32.x;
         }
-        HVar3 = GetDlgItem(hwnd,0x416);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0416);
         SetWindowPos(HVar3,0,6,6,rc.left + -0xc,local_42,4);
-        HVar3 = GetDlgItem(hwnd,0x416);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0416);
         GetWindowRect(HVar3,&local_3a);
-        HVar3 = GetDlgItem(hwnd,0x417);
+        HVar3 = GetDlgItem(hwnd,IDC_U16_0x0417);
         SetWindowPos(HVar3,0,rc.left + local_32.y,6,rc.left + -0xc,local_3a._6_2_ - local_3a._2_2_,4
                     );
         ScreenToClient(hwnd,(POINT *)((int)&local_3a + 4));
@@ -690,10 +689,9 @@ short ProductionDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                                   ,1);
             if (local_3a._2_2_ == local_3a._6_2_ + -1) {
               _memcpy(local_e4,(ZIPPRODQ *)vrgZipProd,0xa0);
-              pvVar10 = MakeProcInstance(ZipProdDlg,hInst);
-              sVar6 = DialogBox(0,(LPCSTR)CONCAT22(0x59,hwnd),(HWND)((ulong)pvVar10 >> 0x10),
-                                (char)pvVar10);
-              FreeProcInstance(pvVar10);
+              lpDlgProc = MakeProcInstance(ZipProdDlg,hInst);
+              sVar6 = DialogBox(0,IDD_DLG89_89,hwnd,lpDlgProc);
+              FreeProcInstance(lpDlgProc);
               if (sVar6 == 0) {
                 _memcpy((ZIPPRODQ *)vrgZipProd,local_e4,0xa0);
               }
@@ -801,7 +799,7 @@ void ProdCommandHandler(HWND hwnd,ushort wParam,long lParam)
   undefined2 uVar32;
   short sVar33;
   undefined2 uVar34;
-  UINT UVar35;
+  WMType WVar35;
   ushort uVar36;
   ushort in_stack_0000ffc2;
   PLPROD *lpplprodT;
@@ -831,18 +829,18 @@ void ProdCommandHandler(HWND hwnd,ushort wParam,long lParam)
     return;
   }
   if (wParam == 0x8b) {
-    HVar12 = GetDlgItem(hwnd,0x417);
-    HVar13 = GetDlgItem(hwnd,0x8b);
-    SendMessage(HVar13,0x400,0,0);
+    HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+    HVar13 = GetDlgItem(hwnd,IDC_U16_0x008B);
+    SendMessage(HVar13,WM_USER,0,0);
     lVar28 = __aFlshl(uVar24,in_stack_0000ffc2);
     sel.pl.rgbImp._4_2_ = sel.pl.rgbImp._4_2_ | (uint)lVar28;
     sel.pl.rgbImp._6_2_ =
          sel.pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar28 >> 0x10);
-    LVar29 = SendMessage(HVar12,0x409,0,0);
+    LVar29 = SendMessage(HVar12,WM_USER_0x0409,0,0);
     FillPlanetProdLB(HVar12,lpplProdGlob,(PLANET *)0x0);
     lSel._0_2_ = (uint)LVar29;
     uVar22 = 0x14f8;
-    SendMessage(HVar12,0x407,(uint)lSel,0);
+    SendMessage(HVar12,WM_USER_0x0407,(uint)lSel,0);
     psVar21 = &stack0xffbe;
     goto PRODUCE_RedrawText;
   }
@@ -861,8 +859,8 @@ void ProdCommandHandler(HWND hwnd,ushort wParam,long lParam)
     if (wParam == 0x418) {
 PRODUCE_AddItem:
       uVar36 = (ushort)uVar24;
-      HVar12 = GetDlgItem(hwnd,0x416);
-      lVar28 = SendMessage(HVar12,0x409,0,0);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0416);
+      lVar28 = SendMessage(HVar12,WM_USER_0x0409,0,0);
       if (((int)((ulong)lVar28 >> 0x10) < 1) && (lVar28 < 0)) {
         return;
       }
@@ -923,8 +921,8 @@ PRODUCE_AddItem:
         *puVar2 = *puVar2;
       }
       uVar9 = (uint)((PLPROD *)lpplProdGlob)->iprodMac;
-      HVar12 = GetDlgItem(hwnd,0x417);
-      LVar29 = SendMessage(HVar12,0x409,0,0);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+      LVar29 = SendMessage(HVar12,WM_USER_0x0409,0,0);
       if ((LVar29 < 0x10000) && (LVar29 < 0)) {
         iDst = uVar9 - 1;
         if (iDst < 0) {
@@ -1009,15 +1007,15 @@ LAB_10d0_2099:
       pPVar31 = (PLANET *)0x0;
       pPVar18 = (PLPROD *)lpplProdGlob;
       uVar22 = lpplProdGlob._2_2_;
-      HVar12 = GetDlgItem(hwnd,0x417);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
       FillPlanetProdLB
                 (HVar12,(PLPROD *)CONCAT22(uVar22,pPVar18),(PLANET *)CONCAT22(uVar34,pPVar31));
-      HVar12 = GetDlgItem(hwnd,0x417);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
       uVar22 = 0x14f8;
-      SendMessage(HVar12,0x407,iDst + 1,0);
+      SendMessage(HVar12,WM_USER_0x0407,iDst + 1,0);
       if (((pProdGlob + iSrc)->dwFlags & 0x3ff) == 0) {
         sVar33 = -1;
-        HVar12 = GetDlgItem(hwnd,0x416);
+        HVar12 = GetDlgItem(hwnd,IDC_U16_0x0416);
         uVar22 = 0x10d0;
         FillProdSrcLB(HVar12,sVar33);
         psVar21 = &stack0xffba;
@@ -1051,8 +1049,8 @@ LAB_10d0_2099:
           return;
         }
         if (wParam == 0x439) {
-          HVar12 = GetDlgItem(hwnd,0x417);
-          LVar29 = SendMessage(HVar12,0x409,0,0);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+          LVar29 = SendMessage(HVar12,WM_USER_0x0409,0,0);
           if (LVar29 < 2) {
             return;
           }
@@ -1084,18 +1082,18 @@ LAB_10d0_2099:
           pPVar31 = (PLANET *)0x0;
           pPVar18 = (PLPROD *)lpplProdGlob;
           uVar22 = lpplProdGlob._2_2_;
-          HVar12 = GetDlgItem(hwnd,0x417);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
           FillPlanetProdLB
                     (HVar12,(PLPROD *)CONCAT22(uVar22,pPVar18),(PLANET *)CONCAT22(uVar34,pPVar31));
-          HVar12 = GetDlgItem(hwnd,0x417);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
           uVar22 = 0x14f8;
-          SendMessage(HVar12,0x407,(int)LVar29 - 1,0);
+          SendMessage(HVar12,WM_USER_0x0407,(int)LVar29 - 1,0);
           psVar21 = &stack0xffbe;
           goto PRODUCE_RedrawText;
         }
         if (wParam == 0x43a) {
-          HVar12 = GetDlgItem(hwnd,0x417);
-          LVar29 = SendMessage(HVar12,0x409,0,0);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+          LVar29 = SendMessage(HVar12,WM_USER_0x0409,0,0);
           uVar22 = (undefined2)((ulong)lpplProdGlob >> 0x10);
           pPVar18 = (PLPROD *)lpplProdGlob;
           if (LVar29 < 1) {
@@ -1135,12 +1133,12 @@ LAB_10d0_2099:
           pPVar31 = (PLANET *)0x0;
           pPVar18 = (PLPROD *)lpplProdGlob;
           uVar22 = lpplProdGlob._2_2_;
-          HVar12 = GetDlgItem(hwnd,0x417);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
           FillPlanetProdLB
                     (HVar12,(PLPROD *)CONCAT22(uVar22,pPVar18),(PLANET *)CONCAT22(uVar34,pPVar31));
-          HVar12 = GetDlgItem(hwnd,0x417);
+          HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
           uVar22 = 0x14f8;
-          SendMessage(HVar12,0x407,(uint)LVar29 + 1,0);
+          SendMessage(HVar12,WM_USER_0x0407,(uint)LVar29 + 1,0);
           psVar21 = &stack0xffbe;
           goto PRODUCE_RedrawText;
         }
@@ -1240,10 +1238,10 @@ LAB_10d0_2099:
         sel.pl.rgbImp._4_2_ = sel.pl.rgbImp._4_2_ | (uint)lVar28;
         sel.pl.rgbImp._6_2_ =
              sel.pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar28 >> 0x10);
-        HVar12 = GetDlgItem(hwnd,0x8b);
-        UVar35 = 0x401;
+        HVar12 = GetDlgItem(hwnd,IDC_U16_0x008B);
+        WVar35 = WM_USER_0x0401;
         uVar24 = __aFulshr(CONCAT22(HVar12,0x401),uVar36);
-        SendMessage(HVar12,UVar35,(uint)uVar24 & 1,0);
+        SendMessage(HVar12,WVar35,(uint)uVar24 & 1,0);
       }
       else {
         ((PLPROD *)lpplProdGlob)->iprodMac = 0;
@@ -1252,23 +1250,23 @@ LAB_10d0_2099:
       pPVar31 = (PLANET *)0x0;
       pPVar18 = (PLPROD *)lpplProdGlob;
       uVar22 = lpplProdGlob._2_2_;
-      HVar12 = GetDlgItem(hwnd,0x417);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
       FillPlanetProdLB
                 (HVar12,(PLPROD *)CONCAT22(uVar22,pPVar18),(PLANET *)CONCAT22(uVar34,pPVar31));
-      HVar12 = GetDlgItem(hwnd,0x417);
-      SendMessage(HVar12,0x407,0,0);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+      SendMessage(HVar12,WM_USER_0x0407,0,0);
       sVar33 = -1;
-      HVar12 = GetDlgItem(hwnd,0x416);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0416);
       FillProdSrcLB(HVar12,sVar33);
-      HVar12 = GetDlgItem(hwnd,0x416);
+      HVar12 = GetDlgItem(hwnd,IDC_U16_0x0416);
       uVar22 = 0x14f8;
-      SendMessage(HVar12,0x407,0,0);
+      SendMessage(HVar12,WM_USER_0x0407,0,0);
       psVar21 = &stack0xffbe;
       goto PRODUCE_RedrawText;
     }
   }
-  HVar12 = GetDlgItem(hwnd,0x417);
-  LVar29 = SendMessage(HVar12,0x409,0,0);
+  HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
+  LVar29 = SendMessage(HVar12,WM_USER_0x0409,0,0);
   uVar9 = (uint)LVar29;
   if (LVar29 < 1) {
     return;
@@ -1385,18 +1383,18 @@ LAB_10d0_2099:
   pPVar31 = (PLANET *)0x0;
   pPVar18 = (PLPROD *)lpplProdGlob;
   uVar34 = lpplProdGlob._2_2_;
-  HVar12 = GetDlgItem(hwnd,0x417);
+  HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
   uVar22 = 0x1048;
   FillPlanetProdLB
             (HVar12,(PLPROD *)CONCAT22(uVar34,pPVar18),(PLANET *)CONCAT22(uVar32,pPVar31));
   if (-1 < lSel._2_2_) {
-    HVar12 = GetDlgItem(hwnd,0x417);
+    HVar12 = GetDlgItem(hwnd,IDC_U16_0x0417);
     uVar22 = 0x14f8;
-    SendMessage(HVar12,0x407,(uint)lSel + 1,0);
+    SendMessage(HVar12,WM_USER_0x0407,(uint)lSel + 1,0);
   }
   if ((uVar24 & 0x3ff) == 0) {
     sVar33 = -1;
-    HVar12 = GetDlgItem(hwnd,0x416);
+    HVar12 = GetDlgItem(hwnd,IDC_U16_0x0416);
     uVar22 = 0x10d0;
     FillProdSrcLB(HVar12,sVar33);
   }
@@ -1452,7 +1450,7 @@ void InitializeProductionDlg(HWND hwnd)
   undefined2 unaff_SS;
   ulong uVar6;
   PLANET *pPVar7;
-  UINT UVar8;
+  WMType WVar8;
   short mdFill;
   undefined2 uVar9;
   undefined2 uVar10;
@@ -1470,10 +1468,10 @@ void InitializeProductionDlg(HWND hwnd)
   HVar4 = hwnd;
   SetWindowText(hwnd,pcVar1);
   mdFill = -1;
-  HVar3 = GetDlgItem(hwnd,0x416);
+  HVar3 = GetDlgItem(hwnd,IDC_U16_0x0416);
   FillProdSrcLB(HVar3,mdFill);
-  HVar3 = GetDlgItem(hwnd,0x416);
-  SendMessage(HVar3,0x407,0,0);
+  HVar3 = GetDlgItem(hwnd,IDC_U16_0x0416);
+  SendMessage(HVar3,WM_USER_0x0407,0,0);
   i = 0;
   while( true ) {
     uVar10 = (undefined2)((ulong)lpplProdGlob >> 0x10);
@@ -1488,15 +1486,15 @@ void InitializeProductionDlg(HWND hwnd)
   }
   uVar9 = 0;
   pPVar7 = (PLANET *)0x0;
-  HVar4 = GetDlgItem(hwnd,0x417);
+  HVar4 = GetDlgItem(hwnd,IDC_U16_0x0417);
   FillPlanetProdLB(HVar4,(PLPROD *)CONCAT22(uVar10,pPVar5),(PLANET *)CONCAT22(uVar9,pPVar7))
   ;
-  HVar4 = GetDlgItem(hwnd,0x417);
-  SendMessage(HVar4,0x407,iSel + 1,0);
-  HVar4 = GetDlgItem(hwnd,0x8b);
-  UVar8 = 0x401;
+  HVar4 = GetDlgItem(hwnd,IDC_U16_0x0417);
+  SendMessage(HVar4,WM_USER_0x0407,iSel + 1,0);
+  HVar4 = GetDlgItem(hwnd,IDC_U16_0x008B);
+  WVar8 = WM_USER_0x0401;
   uVar6 = __aFulshr(CONCAT22(HVar4,0x401),(ushort)pcVar1);
-  SendMessage(HVar4,UVar8,(uint)uVar6 & 1,0);
+  SendMessage(HVar4,WVar8,(uint)uVar6 & 1,0);
   return;
 }
 
@@ -1519,24 +1517,25 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
   ulong uVar1;
   bool bVar2;
   char *pcVar3;
-  short sVar4;
+  ControlId CVar4;
   HWND HVar5;
   short sVar6;
-  int iVar7;
-  uint uVar8;
-  ushort uVar9;
-  uint *puVar10;
+  short sVar7;
+  int iVar8;
+  uint uVar9;
+  ushort uVar10;
+  uint *puVar11;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  bool bVar11;
-  DWORD DVar12;
-  ulong uVar13;
-  long lVar14;
-  undefined2 uVar15;
-  short sVar16;
-  HDC HVar17;
-  ulong uVar18;
+  bool bVar12;
+  DWORD DVar13;
+  ulong uVar14;
+  long lVar15;
+  undefined2 uVar16;
+  short sVar17;
+  HDC HVar18;
+  ulong uVar19;
   char szT [100];
   PROD prod;
   RECT rc;
@@ -1550,15 +1549,15 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
   short iSrc;
   long lSel;
   
-  uVar18 = CONCAT22(unaff_SI,unaff_DI);
-  bVar11 = hdc == 0;
-  if (bVar11) {
+  uVar19 = CONCAT22(unaff_SI,unaff_DI);
+  bVar12 = hdc == 0;
+  if (bVar12) {
     hdc = GetDC(hwnd);
   }
   SelectObject(hdc,rghfontArial8[0]);
-  HVar17 = hdc;
+  HVar18 = hdc;
   pcVar3 = PszGetCompressedString(idsKt);
-  DVar12 = GetTextExtent(HVar17,pcVar3,2);
+  DVar13 = GetTextExtent(HVar18,pcVar3,2);
   SelectObject(hdc,rghfontArial8[1]);
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   i = 0;
@@ -1575,38 +1574,38 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
       rcProdDiamond.right = rc.right;
       rcProdDiamond.bottom = rc.bottom;
       SelectObject(hdc,rghfontArial8[1]);
-      sVar4 = CchGetString(idsApplyDefineProductionTemplate,(char *)szWork);
-      TextOut(hdc,rc.right + 4,rc.top,szWork,sVar4);
-      if (bVar11) {
+      sVar6 = CchGetString(idsApplyDefineProductionTemplate,(char *)szWork);
+      TextOut(hdc,rc.right + 4,rc.top,szWork,sVar6);
+      if (bVar12) {
         ReleaseDC(hwnd,hdc);
       }
       return;
     }
     if (i == 0) {
-      sVar4 = 0x416;
+      CVar4 = IDC_U16_0x0416;
     }
     else {
-      sVar4 = 0x417;
+      CVar4 = IDC_U16_0x0417;
     }
-    HVar5 = GetDlgItem(hwnd,sVar4);
+    HVar5 = GetDlgItem(hwnd,CVar4);
     GetWindowRect(HVar5,&rc);
     ScreenToClient(hwnd,(POINT *)&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
-    HVar5 = GetDlgItem(hwnd,sVar4);
-    uVar13 = SendMessage(HVar5,0x409,0,0);
-    if ((-1 < (long)uVar13) && ((uVar13 != 0 || (i != 1)))) {
+    HVar5 = GetDlgItem(hwnd,CVar4);
+    uVar14 = SendMessage(HVar5,WM_USER_0x0409,0,0);
+    if ((-1 < (long)uVar14) && ((uVar14 != 0 || (i != 1)))) {
       if (i == 0) {
         iSrc = 0;
         while( true ) {
-          lSel._2_2_ = (int)(uVar13 >> 0x10);
-          lSel._0_2_ = (int)uVar13;
-          uVar1 = uVar13;
+          lSel._2_2_ = (int)(uVar14 >> 0x10);
+          lSel._0_2_ = (int)uVar14;
+          uVar1 = uVar14;
           if (cProdGlob <= iSrc) break;
           if (((pProdGlob + iSrc)->dwFlags & 0x3ff) != 0) {
-            iVar7 = lSel._2_2_ - (uint)((int)lSel == 0);
-            uVar1 = CONCAT22(iVar7,(int)lSel + -1);
-            bVar2 = uVar13 == 0;
-            uVar13 = CONCAT22(iVar7,(int)lSel + -1);
+            iVar8 = lSel._2_2_ - (uint)((int)lSel == 0);
+            uVar1 = CONCAT22(iVar8,(int)lSel + -1);
+            bVar2 = uVar14 == 0;
+            uVar14 = CONCAT22(iVar8,(int)lSel + -1);
             if (bVar2) break;
           }
           iSrc = iSrc + 1;
@@ -1618,70 +1617,70 @@ void DrawProductionDlg(HWND hwnd,HDC hdc,RECT *prc,short iDraw)
         szT._96_2_ = (PLPROD *)lpplProdGlob + 1;
         szT[0x62] = lpplProdGlob._2_1_;
         szT[99] = lpplProdGlob._3_1_;
-        lVar14 = __aFlshl(uVar18,szT._0_2_);
-        uVar1 = (ulong)((int)uVar13 - 1);
-        puVar10 = (uint *)(szT._96_2_ + (int)lVar14);
-        prod.dwFlags._0_2_ = *puVar10;
-        prod.dwFlags._2_2_ = puVar10[1];
+        lVar15 = __aFlshl(uVar19,szT._0_2_);
+        uVar1 = (ulong)((int)uVar14 - 1);
+        puVar11 = (uint *)(szT._96_2_ + (int)lVar15);
+        prod.dwFlags._0_2_ = *puVar11;
+        prod.dwFlags._2_2_ = puVar11[1];
       }
       GetProductionCosts(&sel.pl,&prod,rgCost,idPlayer,0);
       rc.bottom = yTopFutureTech + 4;
       SelectObject(hdc,rghfontArial8[1]);
-      sVar4 = CchGetString(idsRequiredMinerals,(char *)szWork);
-      TextOut(hdc,rc.left,rc.bottom,szWork,sVar4);
+      sVar6 = CchGetString(idsRequiredMinerals,(char *)szWork);
+      TextOut(hdc,rc.left,rc.bottom,szWork,sVar6);
       rc.left = rc.left + 0x14;
       rc.right = rc.right + -0x14;
       for (k = 0; k < 4; k = k + 1) {
-        iVar7 = k;
+        iVar8 = k;
         if (k == 3) {
-          iVar7 = 5;
+          iVar8 = 5;
         }
         rc.bottom = rc.bottom + dyArial8;
         SelectObject(hdc,rghfontArial8[1]);
-        SetTextColor(hdc,CONCAT22(*(undefined2 *)(iVar7 * 4 + rgcrMinerals_0x2),
-                                  *(undefined2 *)(iVar7 * 4 + rgcrMinerals)));
-        pcVar3 = (char *)*(undefined2 *)(iVar7 * 2 + rgszMinerals);
-        uVar15 = 0x1120;
-        sVar4 = rc.bottom;
-        sVar16 = rc.left;
-        HVar17 = hdc;
-        sVar6 = lstrlen((char *)*(undefined2 *)(iVar7 * 2 + rgszMinerals));
-        TextOut(HVar17,sVar16,sVar4,(LPCSTR)CONCAT22(uVar15,pcVar3),sVar6);
+        SetTextColor(hdc,CONCAT22(*(undefined2 *)(iVar8 * 4 + rgcrMinerals_0x2),
+                                  *(undefined2 *)(iVar8 * 4 + rgcrMinerals)));
+        pcVar3 = (char *)*(undefined2 *)(iVar8 * 2 + rgszMinerals);
+        uVar16 = 0x1120;
+        sVar6 = rc.bottom;
+        sVar17 = rc.left;
+        HVar18 = hdc;
+        sVar7 = lstrlen((char *)*(undefined2 *)(iVar8 * 2 + rgszMinerals));
+        TextOut(HVar18,sVar17,sVar6,(LPCSTR)CONCAT22(uVar16,pcVar3),sVar7);
         SelectObject(hdc,rghfontArial8[0]);
         SetTextColor(hdc,CONCAT22(crWindowText._2_2_,(undefined2)crWindowText));
-        sVar4 = _wsprintf(szWork,PCTLD,(int)rgCost[k],
+        sVar6 = _wsprintf(szWork,PCTLD,(int)rgCost[k],
                           *(undefined2 *)((int)rgCost + k * 4 + 2));
         RightTextOut
-                  (hdc,(rc.right - (int)DVar12) + -2,rc.bottom,(char *)szWork,sVar4,
+                  (hdc,(rc.right - (int)DVar13) + -2,rc.bottom,(char *)szWork,sVar6,
                    dxMaxMineralQuan);
         if (k < 3) {
-          iVar7 = rc.right - (int)DVar12;
-          sVar4 = rc.bottom;
-          HVar17 = hdc;
+          iVar8 = rc.right - (int)DVar13;
+          sVar6 = rc.bottom;
+          HVar18 = hdc;
           pcVar3 = PszGetCompressedString(idsKt);
-          TextOut(HVar17,iVar7,sVar4,pcVar3,2);
+          TextOut(HVar18,iVar8,sVar6,pcVar3,2);
         }
       }
       if (i != 0) {
         rc.bottom = rc.bottom + (dyArial8 * 3) / 2;
         SelectObject(hdc,rghfontArial8[1]);
-        uVar13 = __aFulshr(uVar18,szT._0_2_);
-        uVar8 = (uint)uVar13 & 0x7f;
+        uVar14 = __aFulshr(uVar19,szT._0_2_);
+        uVar9 = (uint)uVar14 & 0x7f;
         pcVar3 = PszGetCompressedString(idsDDoneCompletion);
-        sVar4 = _wsprintf(szT,pcVar3,uVar8);
+        sVar6 = _wsprintf(szT,pcVar3,uVar9);
         lSel._0_2_ = (int)uVar1;
         PszProductionETA
                   (&sel.pl,
                    (PLPROD *)CONCAT22(lpplProdGlob._2_2_,(PLPROD *)lpplProdGlob),
                    (int)lSel,(short *)0x0,(short *)0x0);
-        _strcpy(szT + sVar4,(char *)szWork);
-        iVar7 = rc.left + -0x14;
+        _strcpy(szT + sVar6,(char *)szWork);
+        iVar8 = rc.left + -0x14;
         pcVar3 = szT;
-        uVar15 = unaff_SS;
-        sVar4 = rc.bottom;
-        HVar17 = hdc;
-        uVar9 = _strlen(szT);
-        TextOut(HVar17,iVar7,sVar4,(LPCSTR)CONCAT22(uVar15,pcVar3),uVar9);
+        uVar16 = unaff_SS;
+        sVar6 = rc.bottom;
+        HVar18 = hdc;
+        uVar10 = _strlen(szT);
+        TextOut(HVar18,iVar8,sVar6,(LPCSTR)CONCAT22(uVar16,pcVar3),uVar10);
         SelectObject(hdc,rghfontArial8[0]);
       }
     }
@@ -1724,7 +1723,7 @@ void FillProdSrcLB(HWND hwndLB,short mdFill)
   for (i = 0; i < 6; i = i + 1) {
     szT[i] = ' ';
   }
-  SendMessage(hwndLB,0x405,0,0);
+  SendMessage(hwndLB,WM_USER_0x0405,0,0);
   for (i = 0; i < cProdGlob; i = i + 1) {
     if (((pProdGlob + i)->dwFlags & 0x3ff) != 0) {
       pcVar1 = PszNameProdItem(pProdGlob + i);
@@ -1749,7 +1748,7 @@ void FillProdSrcLB(HWND hwndLB,short mdFill)
           szT[0] = ' ';
         }
       }
-      SendMessage(hwndLB,0x401,0,(LPARAM)szT);
+      SendMessage(hwndLB,WM_USER_0x0401,0,(LPARAM)szT);
     }
   }
   return;
@@ -2534,10 +2533,10 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   if (message == WM_PAINT) {
     HVar5 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
-    HVar6 = GetDlgItem(hwnd,0x431);
+    HVar6 = GetDlgItem(hwnd,IDC_FINISH|IDOK);
     GetWindowRect(HVar6,local_3c + 2);
     ScreenToClient(hwnd,local_3c + 2);
-    HVar6 = GetDlgItem(hwnd,0x434);
+    HVar6 = GetDlgItem(hwnd,IDC_U16_0x0434);
     GetWindowRect(HVar6,&rc);
     ScreenToClient(hwnd,(POINT *)&rc.right);
     local_36._0_2_ = (void *)rc.right;
@@ -2585,10 +2584,9 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     GetWindowRect(hwnd,&rc);
     GetClientRect(hwnd,local_3c);
     local_36._2_2_ = (rc.bottom - rc.top) - (int)(void *)local_36;
-    HVar6 = GetDlgItem(hwnd,0x417);
+    HVar6 = GetDlgItem(hwnd,IDC_U16_0x0417);
     GetWindowRect(HVar6,local_3c);
-    MapWindowPoints(0,hwnd,(POINT *)CONCAT13((char)((uint)unaff_SS >> 8),
-                                             CONCAT12((char)unaff_SS,local_3c)),2);
+    MapWindowPoints(0,hwnd,local_3c,2);
     vyZPDStatic = (int)(void *)local_36 + 2;
     local_36._2_2_ = local_36._2_2_ + (int)(void *)local_36 + dyArial8 + 6;
     SetWindowPos(hwnd,0,0,0,rc.right - rc.left,local_36._2_2_,6);
@@ -2635,7 +2633,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       *(short *)(puVar8 + -4) = i;
       *(undefined2 *)(puVar8 + -6) = uVar10;
       *(undefined2 *)(puVar8 + -8) = 0x5647;
-      HVar6 = GetDlgItem(*(HWND *)(puVar8 + -2),*(short *)(puVar8 + -4));
+      HVar6 = GetDlgItem(*(HWND *)(puVar8 + -2),*(ControlId *)(puVar8 + -4));
       *(HWND *)(puVar8 + -2) = HVar6;
       *(undefined2 *)(puVar8 + -4) = 0x1120;
       *(char **)(puVar8 + -6) = (char *)szWork;
@@ -2682,7 +2680,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       *(undefined1 *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) = 0;
       pcVar4 = PszGetCompressedString(idsUnusedD);
       _wsprintf(szWork,pcVar4);
-      HVar6 = GetDlgItem(hwnd,iResTechNow + 0x431);
+      HVar6 = GetDlgItem(hwnd,iResTechNow + (IDC_FINISH|IDOK));
       SetWindowText(HVar6,szWork);
       FillZipProdLB(hwnd,(ZIPPRODQ *)vrgZipProd + iResTechNow);
       gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
@@ -2706,8 +2704,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   puVar9 = &stack0xffba;
   if (iResTechNow != 0) {
     uVar10 = 0x14f8;
-    sVar7 = DialogBox(0,(LPCSTR)CONCAT22(0x7e3,hwndFrame),(HWND)((ulong)local_36 >> 0x10),
-                      (char)local_36);
+    sVar7 = DialogBox(0,IDD_DLG2019_2019,hwndFrame,local_36);
     puVar9 = &stack0xffba;
     pvVar3 = local_36;
     if (sVar7 == 0) goto LAB_10d0_5ce2;
@@ -2732,7 +2729,7 @@ short ZipProdDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
     }
     *(char *)local_3c._2_2_ = '\0';
-    HVar6 = GetDlgItem(hwnd,iResTechNow + 0x431);
+    HVar6 = GetDlgItem(hwnd,iResTechNow + (IDC_FINISH|IDOK));
     SetWindowText(HVar6,szWork + 0x40);
     puVar9 = &stack0xffb4;
   }
@@ -2825,9 +2822,9 @@ void EnableZipProdBtns(HWND hwnd,short iSel)
   else {
     BVar1 = 1;
   }
-  HVar2 = GetDlgItem(hwnd,0x817);
+  HVar2 = GetDlgItem(hwnd,IDC_DELETE);
   EnableWindow(HVar2,BVar1);
-  HVar2 = GetDlgItem(hwnd,0x41b);
+  HVar2 = GetDlgItem(hwnd,IDC_RENAME);
   EnableWindow(HVar2,BVar1);
   return;
 }
@@ -2848,24 +2845,24 @@ void FillZipProdLB(HWND hwndDlg,ZIPPRODQ *pzpq)
   char *pcVar2;
   undefined2 unaff_SS;
   WPARAM WVar3;
-  UINT UVar4;
+  WMType WVar4;
   RECT rc;
   char szFormat [15];
   char szAuto [40];
   HWND hwndLB;
   short i;
   
-  HVar1 = GetDlgItem(hwndDlg,0x417);
+  HVar1 = GetDlgItem(hwndDlg,IDC_U16_0x0417);
   GetClientRect(hwndDlg,&rc);
   rc.top = vyZPDStatic;
   rc.bottom = vyZPDStatic + dyArial8;
   InvalidateRect(hwndDlg,&rc,1);
-  SendMessage(HVar1,0x405,0,0);
+  SendMessage(HVar1,WM_USER_0x0405,0,0);
   if ((pzpq->fValid == 0) || (*(char *)((int)&pzpq->u_ZIPPRODQ_0x000e + 1) == '\0')) {
-    UVar4 = 0x401;
+    WVar4 = WM_USER_0x0401;
     WVar3 = 0;
     pcVar2 = PszGetCompressedString(idsAutoBuildOrders);
-    SendMessage(HVar1,UVar4,WVar3,(LPARAM)pcVar2);
+    SendMessage(HVar1,WVar4,WVar3,(LPARAM)pcVar2);
   }
   else {
     CchGetString(idsSD2,szFormat);
@@ -2878,7 +2875,7 @@ void FillZipProdLB(HWND hwndDlg,ZIPPRODQ *pzpq)
       else {
         _wsprintf(szWork,szFormat,szAuto);
       }
-      SendMessage(HVar1,0x401,0,0x112057a4);
+      SendMessage(HVar1,WM_USER_0x0401,0,0x112057a4);
     }
   }
   return;

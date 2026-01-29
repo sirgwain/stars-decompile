@@ -1,0 +1,14 @@
+2504 DIALOG LOADONCALL MOVEABLE DISCARDABLE 0, 0, 174, 206
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Something's Really Gone Wrong!"
+FONT 8, "MS Sans Serif"
+{
+ PUSHBUTTON "&Redo Turn", 2505, 4, 14, 60, 14
+ LTEXT "This button wipes the slate and restarts the turn with none of your changes.", -1, 70, 8, 100, 36
+ PUSHBUTTON "&Complete Turn", 2506, 4, 60, 60, 14
+ LTEXT "This button restarts the turn and completes all the required tasks for you.  If you get stuck, this will do everything for you and allow you to view the results.", -1, 70, 46, 100, 60
+ PUSHBUTTON "&Help", 118, 4, 123, 60, 14
+ LTEXT "This button will bring up context sensitive help on the task you are stuck on.  This button does the same thing as the Tutor's help button.", -1, 70, 110, 100, 53
+ DEFPUSHBUTTON "&Never Mind", 2, 4, 173, 60, 14
+ LTEXT "This button dismisses this dialog without changing anything.", -1, 70, 168, 100, 38
+}

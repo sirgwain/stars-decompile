@@ -412,8 +412,9 @@ LAB_10a0_03c3:
                   for (i = j; i < j + 3; i = i + 1) {
                     uVar14 = *(uint *)((int)(((PLANET *)lppl)->rgwtMin + i % 3) + 2);
                     if ((-1 < (int)uVar14) &&
-                       ((0 < (int)uVar14 || (5000 < *(uint *)(((PLANET *)lppl)->rgwtMin + i % 3)))))
-                    break;
+                       ((0 < (int)uVar14 ||
+                        ((char *)s_Stars_1120_1385 + 4 <=
+                         *(char **)(((PLANET *)lppl)->rgwtMin + i % 3))))) break;
                   }
                   if (i != j + 3) {
                     i = i % 3;
@@ -491,7 +492,8 @@ AI3_LTryCargo:
 AI3_TryShip2:
             if (((iLatestMiner != -1) && (cFlMiners < 0x3c)) &&
                ((*(int *)((int)&rgshdef[0].cExist + 2 + iLatestMiner * 0x93) == 0 &&
-                (*(uint *)((int)&rgshdef[0].cExist + iLatestMiner * 0x93) < 5000)))) {
+                ((char *)*(uint *)((int)&rgshdef[0].cExist + iLatestMiner * 0x93) <=
+                 (char *)s_Stars_1120_1385 + 2)))) {
               sVar13 = Random(2);
               if (sVar13 == 0) {
                 local_be._6_2_ = lppl->id;
@@ -568,7 +570,9 @@ LAB_10a0_1419:
             for (i = 0; i < 3; i = i + 1) {
               uVar14 = *(uint *)((int)(((PLANET *)lppl)->rgwtMin + i) + 2);
               if (((int)uVar14 < 1) &&
-                 (((int)uVar14 < 0 || (*(uint *)(((PLANET *)lppl)->rgwtMin + i) < 5000)))) break;
+                 (((int)uVar14 < 0 ||
+                  (*(char **)(((PLANET *)lppl)->rgwtMin + i) <= (char *)s_Stars_1120_1385 + 2))))
+              break;
             }
             bVar24 = i == 2;
             pPVar27 = (PLANET *)local_be._8_4_;

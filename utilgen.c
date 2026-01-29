@@ -5,6 +5,7 @@
 #include "debuglog.h"
 #include "globals.h"
 #include "strings.h"
+#include "util.h"
 
 /* globals */
 char aPNCmpr[4099] = {0};
@@ -277,14 +278,6 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut)
 }
 
 /* functions */
-
-int16_t AlertSz(char *sz, int16_t mbType)
-{
-    char szT[256];
-
-    /* TODO: implement */
-    return 0;
-}
 
 void ShowProgressGauge(void)
 {
@@ -854,6 +847,37 @@ int16_t CommaFormatLong(char *psz, int32_t l)
 
 #ifdef _WIN32
 
+int AlertSz(const char *sz, UINT mbType)
+{
+    int idResult;
+    char szT[256];
+
+    /*
+     * Original logic (decoded):
+     * if (!fValidate && (wFlags >= 0 || !fGen)) then MessageBox
+     * else log via OutputSz and return IDYES
+     */
+    if ((ini.fValidate == 0) &&
+        ((ini.fLogging == 0) || (ini.fGen == 0)))
+    {
+        HWND hwnd = GetFocus();
+        idResult = MessageBoxA(hwnd, sz, "Stars!", mbType);
+    }
+    else
+    {
+        /* Win16 wsprintf -> safe Win32 replacement */
+        snprintf(szT, sizeof(szT), "Error: %s", sz);
+
+        idResult = ini.fValidate ? IDNO : IDYES;
+        OutputSz(idResult, szT);
+
+        /* Original function always returns IDYES after OutputSz */
+        idResult = IDYES;
+    }
+
+    return idResult;
+}
+
 INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     char szValue[33];
@@ -923,12 +947,48 @@ HGLOBAL HdibLoadBigResource(int idb)
 
 HBRUSH HbrGet(COLORREF cr)
 {
-    int16_t iFree;
-    int16_t i;
-    HBRUSH hbr;
+    int i;
+    int iFree = -1;
 
-    /* TODO: implement */
-    return 0;
+    for (i = 0;; ++i)
+    {
+        /* Reached end of active cache: create a new brush entry (or return directly). */
+        if (i >= chbrCache)
+        {
+            HBRUSH hbr = CreateSolidBrush(cr);
+            if (hbr == NULL)
+            {
+                return NULL;
+            }
+
+            if (iFree == -1)
+            {
+                /* No free slot found while scanning. Grow cache if possible; otherwise just return. */
+                if (chbrCache > 0x1F)
+                {
+                    return hbr;
+                }
+                iFree = chbrCache++;
+            }
+
+            rghbrCacheUse[iFree] = 1;
+            rghbrCache[iFree] = hbr;
+            rgcrCache[iFree] = cr;
+            return hbr;
+        }
+
+        /* Track last free slot seen while scanning. */
+        if (rghbrCacheUse[i] == 0)
+        {
+            iFree = i;
+        }
+        else if (rgcrCache[i] == cr)
+        {
+            /* Cache hit: bump use counter and return existing brush. */
+            ++rghbrCacheUse[i];
+            return rghbrCache[i];
+        }
+    }
 }
 
 void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen)
@@ -1290,6 +1350,13 @@ void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly)
     /* label LRelease @ MEMORY_UTILGEN:0x6841 */
 
     /* TODO: implement */
+}
+#else
+
+// special case because this is called everywhere, do nothing outside of win32
+int16_t AlertSz(const char *sz, uint16_t mbType)
+{
+    return 0;
 }
 
 #endif

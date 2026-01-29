@@ -20,7 +20,6 @@ int16_t NybbleFromCh(uint8_t ch);                                               
 char ChFromNybble(int16_t nyb);                                                                                              /* MEMORY_UTILGEN:0x49ea */
 int16_t FDecompressUserString(char *szIn, int16_t cIn, char *szOut, int16_t *pcOut);                                         /* MEMORY_UTILGEN:0x46e8 */
 int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut);                                                        /* MEMORY_UTILGEN:0x45a0 */
-int16_t AlertSz(char *sz, int16_t mbType);                                                                                   /* MEMORY_UTILGEN:0x2160 */
 void ShowProgressGauge(void);                                                                                                /* MEMORY_UTILGEN:0x636c */
 int16_t FCheckPassword(void);                                                                                                /* MEMORY_UTILGEN:0x58d8 */
 int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax);                                                                 /* MEMORY_UTILGEN:0x6986 */
@@ -64,6 +63,7 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* MEMORY_UTILGEN:0x647e */
 INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);   /* MEMORY_UTILGEN:0x5cba */
 
+int AlertSz(const char *sz, UINT mbType);
 HGLOBAL HdibLoadBigResource(int idb);
 HBRUSH HbrGet(COLORREF cr);                                                                                                                                     /* MEMORY_UTILGEN:0x4448 */
 void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen);                                                                                        /* MEMORY_UTILGEN:0x2534 */
@@ -92,7 +92,11 @@ void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int
 int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint);                                                              /* MEMORY_UTILGEN:0x2590 */
 int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot);                                                            /* MEMORY_UTILGEN:0x31a2 */
 void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen);                                                                                              /* MEMORY_UTILGEN:0x2afa */
-void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly);                                                        /* MEMORY_UTILGEN:0x65f6 */
+void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly);                                                                                           /* MEMORY_UTILGEN:0x65f6 */
 
+#else
+// special case because this is called everywhere, do nothing outside of win32
+// TODO: make this multiplatform since it's called all over
+int16_t AlertSz(const char *sz, uint16_t mbType);
 #endif /* _WIN32 */
 #endif /* UTILGEN_H_ */

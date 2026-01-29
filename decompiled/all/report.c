@@ -701,7 +701,7 @@ void InitScoreDlg(HWND hwnd,short fVictory)
   
   HVar1 = GetDC(hwnd);
   SelectObject(HVar1,rghfontArial8[1]);
-  DVar6 = GetTextExtent(HVar1,(LPCSTR)0x112015e8,1);
+  DVar6 = GetTextExtent(HVar1,s_9_1120_15e8,1);
   if (fVictory == 2) {
     dx = 600;
     dy = 400;
@@ -739,16 +739,16 @@ void InitScoreDlg(HWND hwnd,short fVictory)
   GetClientRect(hwnd,&rc);
   SetWindowPos(hwnd,0,0,0,((rcWindow.right - rcWindow.left) - rc.right) + dx,
                ((rcWindow.bottom - rcWindow.top) - rc.bottom) + dy,6);
-  HVar4 = GetDlgItem(hwnd,2);
+  HVar4 = GetDlgItem(hwnd,IDCANCEL);
   GetWindowRect(HVar4,&rc);
   MapWindowPoints(0,hwnd,(POINT *)&rc,2);
   OffsetRect(&rc,0,(dy + -4) - rc.bottom);
   iVar5 = (dx + (rc.right - rc.left) * -3) / 4;
-  HVar4 = GetDlgItem(hwnd,0xc6);
+  HVar4 = GetDlgItem(hwnd,IDC_U16_0x00C6);
   SetWindowPos(HVar4,0,iVar5,rc.top,0,0,5);
-  HVar4 = GetDlgItem(hwnd,2);
+  HVar4 = GetDlgItem(hwnd,IDCANCEL);
   SetWindowPos(HVar4,0,iVar5 * 2 + (rc.right - rc.left),rc.top,0,0,5);
-  HVar4 = GetDlgItem(hwnd,0x76);
+  HVar4 = GetDlgItem(hwnd,IDC_HELP);
   SetWindowPos(HVar4,0,iVar5 * 3 + (rc.right - rc.left) * 2,rc.top,0,0,5);
   pcVar2 = PszGetCompressedString(fVictory + idsPlayerScores);
   SetWindowText(hwnd,pcVar2);
@@ -834,7 +834,7 @@ void DrawVCReport(HDC hdc)
   }
   SelectObject(hdc,rghfontArial8[1]);
   SelectObject(hdc,hbrButtonShadow);
-  GetTextExtent(hdc,(LPCSTR)0x112015ea,1);
+  GetTextExtent(hdc,s_9_1120_15ea,1);
   ids = 0x3aa;
   cCur = 0;
   HVar3 = CreateCompatibleDC(hdc);
@@ -1011,7 +1011,7 @@ void DrawScoreReport(HDC hdc)
   yTop = 0x58;
   SetBkMode(hdc,1);
   SelectObject(hdc,rghfontArial8[1]);
-  DVar3 = GetTextExtent(hdc,(LPCSTR)0x112015ee,1);
+  DVar3 = GetTextExtent(hdc,s_9_1120_15ee,1);
   iVar1 = (int)DVar3;
   SelectObject(hdc,rghfontArial8[4]);
   xLeft = (iVar1 * 5 - (dyArial8 * 3) / 2) / 2 + vdxScoreX;
@@ -1839,7 +1839,7 @@ void DrawReportItem(HDC hdc,RECT *prc,short irpt,short irow,short icol)
         }
         SetTextColor(hdc,(ulong)uVar9);
       }
-      cch = _wsprintf(szT,(char *)0x112015f0,j);
+      cch = _wsprintf(szT,s_d_1120_15f0,j);
       RightTextOut(hdc,prc->right,prc->top,szT,cch,0);
       return;
     case 5:
@@ -2042,7 +2042,7 @@ REPORT_DrawPlusDef:
       return;
     case 1:
       psz = szT;
-      cch = _wsprintf(psz,(char *)0x112015f7,(lpfl->id & 0x1ffU) + 1);
+      cch = _wsprintf(psz,s_d_1120_15f7,(lpfl->id & 0x1ffU) + 1);
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
       return;
     case 2:
@@ -2213,7 +2213,7 @@ REPORT_DrawPlusDef:
       return;
     case 1:
       psz = szT;
-      cch = _wsprintf(psz,(char *)0x112015fa,(lpfl->id & 0x1ffU) + 1);
+      cch = _wsprintf(psz,s_d_1120_15fa,(lpfl->id & 0x1ffU) + 1);
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
       return;
     case 2:
@@ -2245,7 +2245,7 @@ REPORT_DrawPlusDef:
       }
       else {
         psz = szT;
-        cch = _wsprintf(psz,(char *)0x11201600,*(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf);
+        cch = _wsprintf(psz,s_d_1120_1600,*(uint *)((int)&((FLEET *)lpfl)->dirLong + 2) & 0xf);
       }
       RightTextOut(hdc,prc->right + -2,prc->top,psz,cch,0);
       return;
@@ -2908,7 +2908,7 @@ REPORT_LShowTask:
           uVar8 = _strlen(pcVar7);
           pcVar7[uVar8 - 3] = '\0';
           if (bVar4) {
-            _wsprintf(szWork,(char *)0x11201603,pcVar7,0x1120,
+            _wsprintf(szWork,s_s_d_1120_1603,pcVar7,0x1120,
                       *(uint *)((int)&ord.u_ORDER_0x0008 + icr * 2) & 0xfff);
           }
           else {
@@ -2937,7 +2937,7 @@ REPORT_LShowTask:
       if (ord.u_ORDER_0x0008.tlm.cTime < 5) {
         iVar10 = ord.u_ORDER_0x0008.tlm.cTime + 1;
         pcVar7 = PszGetCompressedString(ids_00);
-        _wsprintf(szWork,(char *)0x1120161b,pcVar7,0x1120,iVar10);
+        _wsprintf(szWork,s_s_dy_1120_161b,pcVar7,0x1120,iVar10);
       }
       else {
         CchGetString(ids_00,(char *)szWork);
@@ -4258,7 +4258,7 @@ void ExecuteReportClick(POINT pt,short irpt,short icol,short irow)
         case 5:
           sVar7 = FDestIsWP0((FLEET *)CONCAT22(uVar2,pFVar1));
           if (sVar7 == 0) {
-            SendMessage(hwndShipLB,0x407,1,0);
+            SendMessage(hwndShipLB,WM_USER_0x0407,1,0);
             SetScanWp(1);
           }
           break;
@@ -4524,12 +4524,12 @@ void DumpUniverse(void)
     sVar4 = __setjmp(env);
     if (sVar4 == 0) {
       fFileErrSilent = 1;
-      _wsprintf(szWork,(char *)0x11201633,(char *)szBase,0x1120);
+      _wsprintf(szWork,s_s_map_1120_1633,(char *)szBase,0x1120);
       StreamOpen((char *)szWork,0x1012);
-      RgToStream((void *)0x1120163a,0xc);
+      RgToStream(s_X_Y_Name_1120_163a,0xc);
       for (i = 0; i < game.cPlanMax; i = i + 1) {
         pcVar5 = PszGetCompressedPlanet(((short *)rgidPlan)[i]);
-        cb = _wsprintf(szWork,(char *)0x11201647,i + 1,
+        cb = _wsprintf(szWork,s_d_d_d_s_1120_1647,i + 1,
                        ((POINT *)rgptPlan + i)->x,
                        *(undefined2 *)((int)&rgptPlan[0].y + i * 4),pcVar5,0x1120);
         RgToStream(szWork,cb);
@@ -4627,7 +4627,7 @@ void DumpPlanets(void)
         _wsprintf(szFile,s__s_pla_1120_165c,(char *)szBase,0x1120);
       }
       else {
-        _wsprintf(szFile,(char *)0x11201655,(char *)szBase,0x1120,idPlayer + 1);
+        _wsprintf(szFile,s_s_p_d_1120_1655,(char *)szBase,0x1120,idPlayer + 1);
       }
       StreamOpen(szFile,0x1012);
       fOpen = 1;
@@ -4729,7 +4729,7 @@ void DumpPlanets(void)
           uVar3 = (ushort)lVar9;
           uVar10 = __aFulshr(CONCAT22(uVar4,uVar3),unaff_DI);
           uVar10 = __aFulshr((ulong)((uint)uVar10 & 0xfff),uVar3);
-          _wsprintf(szForm + 1,(char *)0x11201663,(uint)uVar10 & 0xfff,0);
+          _wsprintf(szForm + 1,s_ld_ld_d_d_1120_1663,(uint)uVar10 & 0xfff,0);
         }
         else {
           szForm[2] = '\t';
@@ -4737,8 +4737,7 @@ void DumpPlanets(void)
           szForm[3] = '\0';
           if (((gd.grBits2._2_2_ >> 5 & 1) != 0) && (((PLANET *)lppl)->uGuesses >> 0xc != 0))
           {
-            cch = _wsprintf(szForm + 3,(char *)0x11201673,
-                            (((PLANET *)lppl)->uGuesses >> 0xc) * 6 + 3);
+            cch = _wsprintf(szForm + 3,s_d_1120_1673,(((PLANET *)lppl)->uGuesses >> 0xc) * 6 + 3);
             szForm[cch + 3] = '\0';
           }
         }
@@ -4878,7 +4877,7 @@ void DumpPlanets(void)
               }
             }
             if (i == -1) {
-              RgToStream((void *)0x1120167a,4);
+              RgToStream(s_0_0_1120_167a,4);
             }
             if ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) == 0) {
               i = 0;
@@ -4990,10 +4989,10 @@ void DumpFleets(void)
     if (sVar4 == 0) {
       fFileErrSilent = 1;
       if ((gd.grBits2._2_2_ >> 5 & 1) == 0) {
-        _wsprintf(szFile,(char *)0x11201686,(char *)szBase,0x1120);
+        _wsprintf(szFile,s_s_fle_1120_1686,(char *)szBase,0x1120);
       }
       else {
-        _wsprintf(szFile,(char *)0x1120167f,(char *)szBase,0x1120,idPlayer + 1);
+        _wsprintf(szFile,s_s_f_d_1120_167f,(char *)szBase,0x1120,idPlayer + 1);
       }
       StreamOpen(szFile,0x1012);
       j = (gd.grBits2._2_2_ >> 5 & 1) + 2;
@@ -5309,7 +5308,7 @@ short PrintMapDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         *(short *)(puVar3 + -4) = i + 0x10c;
         *(undefined2 *)(puVar3 + -6) = uVar5;
         *(undefined2 *)(puVar3 + -8) = 0xa1e8;
-        HVar1 = GetDlgItem(*(HWND *)(puVar3 + -2),*(short *)(puVar3 + -4));
+        HVar1 = GetDlgItem(*(HWND *)(puVar3 + -2),*(ControlId *)(puVar3 + -4));
         *(HWND *)(puVar3 + -2) = HVar1;
         *(undefined2 *)(puVar3 + -4) = 0x415;
         *(undefined2 *)(puVar3 + -6) = 1;
@@ -5317,7 +5316,7 @@ short PrintMapDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         *(undefined2 *)(puVar3 + -10) = 0;
         *(undefined2 *)(puVar3 + -0xc) = 0x14f8;
         *(undefined2 *)(puVar3 + -0xe) = 0xa203;
-        SendMessage(*(HWND *)(puVar3 + -2),*(UINT *)(puVar3 + -4),*(WPARAM *)(puVar3 + -6),
+        SendMessage(*(HWND *)(puVar3 + -2),*(WMType *)(puVar3 + -4),*(WPARAM *)(puVar3 + -6),
                     *(LPARAM *)(puVar3 + -10));
         *(HWND *)(puVar3 + -2) = HVar1;
         *(undefined2 *)(puVar3 + -4) = 0x30;
@@ -5326,7 +5325,7 @@ short PrintMapDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         *(undefined2 *)(puVar3 + -10) = 0;
         *(undefined2 *)(puVar3 + -0xc) = 0x14f8;
         *(undefined2 *)(puVar3 + -0xe) = 0xa21b;
-        SendMessage(*(HWND *)(puVar3 + -2),*(UINT *)(puVar3 + -4),*(WPARAM *)(puVar3 + -6),
+        SendMessage(*(HWND *)(puVar3 + -2),*(WMType *)(puVar3 + -4),*(WPARAM *)(puVar3 + -6),
                     *(LPARAM *)(puVar3 + -10));
         szWork[0] = (char)((short *)vrgcPrintMapPage)[i] + '0';
         szWork[1] = '\0';
@@ -5357,7 +5356,7 @@ short PrintMapDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
             *(short *)(puVar4 + -4) = i + 0x10c;
             *(undefined2 *)(puVar4 + -6) = uVar5;
             *(undefined2 *)(puVar4 + -8) = 0xa2f3;
-            HVar1 = GetDlgItem(*(HWND *)(puVar4 + -2),*(short *)(puVar4 + -4));
+            HVar1 = GetDlgItem(*(HWND *)(puVar4 + -2),*(ControlId *)(puVar4 + -4));
             *(HWND *)(puVar4 + -2) = HVar1;
             *(undefined2 *)(puVar4 + -4) = 0x1120;
             *(char **)(puVar4 + -6) = (char *)szWork;

@@ -14,7 +14,7 @@ extern const char *const aSTRUncompressed[];
 /* functions */
 char *PszGetCompressedString(StringId ids)
 {
-    // TODO: implement actual decompression, but for now all the strings are uncompressed in string_uncompressed.c for simplicity
+    // TODO: do actual decompression I guess? For now all the strings are uncompressed in string_uncompressed.c for simplicity
     if (iLastStrGet == ids)
     {
         return szLastStrGet;

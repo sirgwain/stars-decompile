@@ -20,7 +20,7 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   ushort uVar2;
   short sVar3;
   undefined2 unaff_SS;
-  FARPROC pvVar4;
+  FARPROC lpDlgProc;
   short fRet;
   fn_lpProc *lpProc;
   RECT rc;
@@ -45,7 +45,7 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     sVar3 = 1;
   }
   else if (message == WM_CHAR) {
-    PostMessage(hwndFrame,0x102,wParam,lParam);
+    PostMessage(hwndFrame,WM_CHAR,wParam,lParam);
     sVar3 = 0;
   }
   else if (message == WM_INITDIALOG) {
@@ -57,13 +57,12 @@ short TutorDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   else {
     if (message == WM_COMMAND) {
       if (wParam == 0x9c7) {
-        pvVar4 = MakeProcInstance(PanicDlg,hInst);
-        WVar1 = DialogBox(0,(LPCSTR)CONCAT22(0x9c8,hwnd),(HWND)((ulong)pvVar4 >> 0x10),(char)pvVar4)
-        ;
-        FreeProcInstance(pvVar4);
+        lpDlgProc = MakeProcInstance(PanicDlg,hInst);
+        WVar1 = DialogBox(0,IDD_DLG2504_2504,hwnd,lpDlgProc);
+        FreeProcInstance(lpDlgProc);
         if (WVar1 != 0) {
           tutor.wFlags = tutor.wFlags & 0xfdffU | (uint)(WVar1 == 0x9ca) << 9;
-          PostMessage(hwndFrame,0x466,WVar1,0);
+          PostMessage(hwndFrame,WM_STARS_CONTINUE,WVar1,0);
         }
       }
       else {
@@ -197,7 +196,7 @@ void DrawTutorText(HWND hwnd)
   SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
   SelectObject(hdc,rghfontArial8[0]);
   GetWindowRect(hwnd,&rc);
-  HVar2 = GetDlgItem(hwnd,2);
+  HVar2 = GetDlgItem(hwnd,IDCANCEL);
   GetWindowRect(HVar2,&rcBtn);
   rc.bottom = rcBtn.top;
   ScreenToClient(hwnd,(POINT *)&rc);
@@ -338,7 +337,7 @@ void StartTutor(short fRestart)
         gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
       }
       InitializeMenu(0);
-      PostMessage(hwndFrame,0x111,0xfa1,0);
+      PostMessage(hwndFrame,WM_COMMAND,0xfa1,0);
       if (fFreeingTitle == 0) {
         fFreeingTitle = 1;
         DestroyWindow(hwndTitle);
@@ -365,7 +364,7 @@ void StartTutor(short fRestart)
     if (tutor.hwnd == 0) {
       uVar5 = 0x14f8;
       CreateDialog(0,(LPCSTR)CONCAT22(0x9c6,hwndFrame),lpfnTutorDlgProc._2_2_,
-                   (char)lpfnTutorDlgProc);
+                   (fn_lpfnTutorDlgProc *)lpfnTutorDlgProc);
     }
     if (tutor.idt != 0) {
       if (((uint)tutor.wFlags >> 3 & 1) == 0) {
@@ -1947,7 +1946,7 @@ short FTutorTaskDone(void)
               if (((sVar3 == 0) ||
                   ((*(uint *)((int)(PLORD *)sel.fl.lpplord +
                              sel.iwpAct * 0x12 + 10) & 0xf) != 1)) ||
-                 (LVar7 = SendMessage(rghwndOrderDD[1],0x407,0,0), LVar7 != 4)) {
+                 (LVar7 = SendMessage(rghwndOrderDD[1],WM_USER_0x0407,0,0), LVar7 != 4)) {
                 tutor.idtBold = 0x116;
               }
               else {
@@ -4981,8 +4980,8 @@ short FCheckShipBuilder(short iCategory,short iShip)
     sVar3 = 0;
   }
   else if ((iCategory == -1) || (iCategory == mdBuild)) {
-    HVar2 = GetDlgItem(hwndSlotDlg,0x81a);
-    LVar4 = SendMessage(HVar2,0x407,0,0);
+    HVar2 = GetDlgItem(hwndSlotDlg,IDC_EDIT|IDCANCEL);
+    LVar4 = SendMessage(HVar2,WM_USER_0x0407,0,0);
     if ((iShip == -1) || (iShip == (int)LVar4)) {
       sVar3 = 1;
       tutor.idh = sVar1;

@@ -2,7 +2,8 @@
 
 #include <time.h>
 
-#if defined(_WIN32)
+/* Use real Windows API only on actual Windows without stubs */
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
@@ -24,7 +25,7 @@ void PlatformSleepMs(uint32_t ms)
     Sleep((DWORD)ms);
 }
 
-#else /* !_WIN32 */
+#else /* !_WIN32 || STARS_USE_WIN_STUBS */
 
 int32_t PlatformWritePrivateProfileString(const char *section,
                                           const char *key,

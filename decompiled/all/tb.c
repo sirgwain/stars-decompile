@@ -24,8 +24,8 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   short sVar5;
   HCURSOR HVar6;
   HDC HVar7;
-  UINT *pUVar8;
-  UINT *pUVar9;
+  WMType *pWVar8;
+  WMType *pWVar9;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
@@ -53,135 +53,135 @@ long TbWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
   uVar12 = CONCAT22(unaff_SI,unaff_DI);
   if (msg == WM_CREATE) {
     x = 4;
-    pUVar9 = &stack0xffae;
+    pWVar9 = &stack0xffae;
     for (i = 0; i < 0x1d; i = i + 1) {
       iVar2 = (int)*(char *)i;
-      pUVar9[-1] = iVar2;
-      pUVar9[-2] = 0x1068;
-      pUVar9[-3] = 0x4e;
-      sVar3 = DxOfBtn(pUVar9[-1]);
-      pUVar8 = pUVar9;
+      pWVar9[-1] = iVar2;
+      pWVar9[-2] = 0x1068;
+      pWVar9[-3] = 0x4e;
+      sVar3 = DxOfBtn(pWVar9[-1]);
+      pWVar8 = pWVar9;
       if ((iVar2 < -2) && (iVar2 == -3)) {
-        pUVar9[-1] = 0x1120;
-        pUVar9[-2] = (UINT)(char *)s_COMBOBOX_1120_16ce;
-        pUVar9[-3] = 0;
-        pUVar9[-4] = 0;
-        pUVar9[-5] = 0x5020;
-        pUVar9[-6] = 0x42;
-        pUVar9[-7] = x;
-        pUVar9[-8] = (0x14 - dyArial8) / 2 + 4;
-        pUVar9[-9] = sVar3;
-        pUVar9[-10] = dyArial8 * 0xb + 0x1c;
-        pUVar9[-0xb] = hwnd;
-        pUVar9[-0xc] = 0;
-        pUVar9[-0xd] = hInst;
-        pUVar9[-0xe] = 0;
-        pUVar9[-0xf] = 0;
-        pUVar9[-0x10] = 0x1068;
-        pUVar9[-0x11] = 0xba;
+        pWVar9[-1] = 0x1120;
+        pWVar9[-2] = (WMType)(char *)s_COMBOBOX_1120_16ce;
+        pWVar9[-3] = 0;
+        pWVar9[-4] = 0;
+        pWVar9[-5] = 0x5020;
+        pWVar9[-6] = 0x42;
+        pWVar9[-7] = x;
+        pWVar9[-8] = (0x14 - dyArial8) / 2 + 4;
+        pWVar9[-9] = sVar3;
+        pWVar9[-10] = dyArial8 * 0xb + 0x1c;
+        pWVar9[-0xb] = hwnd;
+        pWVar9[-0xc] = 0;
+        pWVar9[-0xd] = hInst;
+        pWVar9[-0xe] = 0;
+        pWVar9[-0xf] = 0;
+        pWVar9[-0x10] = 0x1068;
+        pWVar9[-0x11] = 0xba;
         hwndTBRadar =
-             CreateWindow(*(LPCSTR *)(pUVar9 + -2),*(LPCSTR *)(pUVar9 + -4),*(DWORD *)(pUVar9 + -6),
-                          pUVar9[-7],pUVar9[-8],pUVar9[-9],pUVar9[-10],pUVar9[-0xb],pUVar9[-0xc],
-                          pUVar9[-0xd],*(void **)(pUVar9 + -0xf));
-        pUVar9[1] = hwndTBRadar;
-        *pUVar9 = 0x30;
-        pUVar9[-1] = rghfontArial8[1];
-        pUVar9[-2] = 0;
-        pUVar9[-3] = 0;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0xd6;
-        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
+             CreateWindow(*(LPCSTR *)(pWVar9 + -2),*(LPCSTR *)(pWVar9 + -4),
+                          *(undefined4 *)(pWVar9 + -6),pWVar9[-7],pWVar9[-8],pWVar9[-9],pWVar9[-10],
+                          pWVar9[-0xb],pWVar9[-0xc],pWVar9[-0xd],*(void **)(pWVar9 + -0xf));
+        pWVar9[1] = hwndTBRadar;
+        *pWVar9 = 0x30;
+        pWVar9[-1] = rghfontArial8[1];
+        pWVar9[-2] = 0;
+        pWVar9[-3] = 0;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0xd6;
+        SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
         iSel = -1;
         for (j = 0; j < 10; j = j + 1) {
           iVar2 = j * -10 + 100;
           if (iVar2 == vpctRadarView) {
             iSel = j;
           }
-          pUVar9[1] = iVar2;
-          *pUVar9 = 0x1120;
-          pUVar9[-1] = (UINT)PCTDPCTPCT;
-          pUVar9[-2] = 0x1120;
-          pUVar9[-3] = (UINT)(char *)szWork;
-          pUVar9[-4] = 0x14f8;
-          pUVar9[-5] = 0x118;
-          _wsprintf(*(char **)(pUVar9 + -3),*(char **)(pUVar9 + -1));
-          pUVar9[1] = hwndTBRadar;
-          *pUVar9 = 0x403;
-          pUVar9[-1] = 0;
-          pUVar9[-2] = 0x1120;
-          pUVar9[-3] = (UINT)(char *)szWork;
-          pUVar9[-4] = 0x14f8;
-          pUVar9[-5] = 0x133;
-          SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
+          pWVar9[1] = iVar2;
+          *pWVar9 = 0x1120;
+          pWVar9[-1] = (WMType)PCTDPCTPCT;
+          pWVar9[-2] = 0x1120;
+          pWVar9[-3] = (WMType)(char *)szWork;
+          pWVar9[-4] = 0x14f8;
+          pWVar9[-5] = 0x118;
+          _wsprintf(*(char **)(pWVar9 + -3),*(char **)(pWVar9 + -1));
+          pWVar9[1] = hwndTBRadar;
+          *pWVar9 = 0x403;
+          pWVar9[-1] = 0;
+          pWVar9[-2] = 0x1120;
+          pWVar9[-3] = (WMType)(char *)szWork;
+          pWVar9[-4] = 0x14f8;
+          pWVar9[-5] = 0x133;
+          SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
         }
-        pUVar9[1] = hwndTBRadar;
-        *pUVar9 = 0x415;
-        pUVar9[-1] = 4;
-        pUVar9[-2] = 0;
-        pUVar9[-3] = 0;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0x159;
-        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
-        pUVar9[1] = hwndTBRadar;
-        *pUVar9 = 0x40e;
-        pUVar9[-1] = iSel;
-        pUVar9[-2] = 0;
-        pUVar9[-3] = 0;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0x172;
-        SendMessage(pUVar9[1],*pUVar9,pUVar9[-1],*(LPARAM *)(pUVar9 + -3));
-        pUVar9[1] = vpctRadarView;
-        *pUVar9 = 0x1120;
-        pUVar9[-1] = (UINT)PCTDPCTPCT;
-        pUVar9[-2] = 0x1120;
-        pUVar9[-3] = (UINT)(char *)szWork;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0x189;
-        _wsprintf(*(char **)(pUVar9 + -3),*(char **)(pUVar9 + -1));
-        pUVar9[1] = hwndTBRadar;
-        *pUVar9 = 0x1120;
-        pUVar9[-1] = (UINT)(char *)szWork;
-        pUVar9[-2] = 0x14f8;
-        pUVar9[-3] = 0x19c;
-        SetWindowText(pUVar9[1],*(LPCSTR *)(pUVar9 + -1));
-        pUVar9[-2] = hwndTBRadar;
-        pUVar9[-3] = 0xfffc;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0x1a9;
-        pfVar10 = (fn_lpfnRealComboProc *)GetWindowLong(pUVar9[-2],pUVar9[-3]);
-        pUVar9[-2] = hwndTBRadar;
-        pUVar9[-3] = 0xfffc;
-        pUVar9[-4] = lpfnFakeComboProc._2_2_;
-        pUVar9[-5] = (UINT)(fn_lpfnFakeComboProc *)lpfnFakeComboProc;
-        pUVar9[-6] = 0x14f8;
-        pUVar9[-7] = 0x1c6;
+        pWVar9[1] = hwndTBRadar;
+        *pWVar9 = 0x415;
+        pWVar9[-1] = 4;
+        pWVar9[-2] = 0;
+        pWVar9[-3] = 0;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0x159;
+        SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
+        pWVar9[1] = hwndTBRadar;
+        *pWVar9 = 0x40e;
+        pWVar9[-1] = iSel;
+        pWVar9[-2] = 0;
+        pWVar9[-3] = 0;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0x172;
+        SendMessage(pWVar9[1],*pWVar9,pWVar9[-1],*(undefined4 *)(pWVar9 + -3));
+        pWVar9[1] = vpctRadarView;
+        *pWVar9 = 0x1120;
+        pWVar9[-1] = (WMType)PCTDPCTPCT;
+        pWVar9[-2] = 0x1120;
+        pWVar9[-3] = (WMType)(char *)szWork;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0x189;
+        _wsprintf(*(char **)(pWVar9 + -3),*(char **)(pWVar9 + -1));
+        pWVar9[1] = hwndTBRadar;
+        *pWVar9 = 0x1120;
+        pWVar9[-1] = (WMType)(char *)szWork;
+        pWVar9[-2] = 0x14f8;
+        pWVar9[-3] = 0x19c;
+        SetWindowText(pWVar9[1],*(LPCSTR *)(pWVar9 + -1));
+        pWVar9[-2] = hwndTBRadar;
+        pWVar9[-3] = 0xfffc;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0x1a9;
+        pfVar10 = (fn_lpfnRealComboProc *)GetWindowLong(pWVar9[-2],pWVar9[-3]);
+        pWVar9[-2] = hwndTBRadar;
+        pWVar9[-3] = 0xfffc;
+        pWVar9[-4] = lpfnFakeComboProc._2_2_;
+        pWVar9[-5] = (WMType)(fn_lpfnFakeComboProc *)lpfnFakeComboProc;
+        pWVar9[-6] = 0x14f8;
+        pWVar9[-7] = 0x1c6;
         lpfnRealComboProc = pfVar10;
-        SetWindowLong(pUVar9[-2],pUVar9[-3],*(long *)(pUVar9 + -5));
-        pUVar9[-2] = hwndTBRadar;
-        pUVar9[-3] = 5;
-        pUVar9[-4] = 0x14f8;
-        pUVar9[-5] = 0x1d3;
-        HVar4 = GetWindow(pUVar9[-2],pUVar9[-3]);
-        pUVar8 = pUVar9 + -1;
+        SetWindowLong(pWVar9[-2],pWVar9[-3],*(undefined4 *)(pWVar9 + -5));
+        pWVar9[-2] = hwndTBRadar;
+        pWVar9[-3] = 5;
+        pWVar9[-4] = 0x14f8;
+        pWVar9[-5] = 0x1d3;
+        HVar4 = GetWindow(pWVar9[-2],pWVar9[-3]);
+        pWVar8 = pWVar9 + -1;
         if (HVar4 != 0) {
-          pUVar9[-2] = HVar4;
-          pUVar9[-3] = 0xfffc;
-          pUVar9[-4] = 0x14f8;
-          pUVar9[-5] = 0x1eb;
-          pfVar11 = (fn_lpfnRealCEProc *)GetWindowLong(pUVar9[-2],pUVar9[-3]);
-          pUVar9[-2] = HVar4;
-          pUVar9[-3] = 0xfffc;
-          pUVar9[-4] = lpfnFakeCEProc._2_2_;
-          pUVar9[-5] = (UINT)(fn_lpfnFakeCEProc *)lpfnFakeCEProc;
-          pUVar9[-6] = 0x14f8;
-          pUVar9[-7] = 0x207;
+          pWVar9[-2] = HVar4;
+          pWVar9[-3] = 0xfffc;
+          pWVar9[-4] = 0x14f8;
+          pWVar9[-5] = 0x1eb;
+          pfVar11 = (fn_lpfnRealCEProc *)GetWindowLong(pWVar9[-2],pWVar9[-3]);
+          pWVar9[-2] = HVar4;
+          pWVar9[-3] = 0xfffc;
+          pWVar9[-4] = lpfnFakeCEProc._2_2_;
+          pWVar9[-5] = (WMType)(fn_lpfnFakeCEProc *)lpfnFakeCEProc;
+          pWVar9[-6] = 0x14f8;
+          pWVar9[-7] = 0x207;
           lpfnRealCEProc = pfVar11;
-          SetWindowLong(pUVar9[-2],pUVar9[-3],*(long *)(pUVar9 + -5));
-          pUVar8 = pUVar9 + -1;
+          SetWindowLong(pWVar9[-2],pWVar9[-3],*(undefined4 *)(pWVar9 + -5));
+          pWVar8 = pWVar9 + -1;
         }
       }
       x = x + sVar3;
-      pUVar9 = pUVar8;
+      pWVar9 = pWVar8;
     }
   }
   else if (msg == WM_PAINT) {
@@ -908,7 +908,7 @@ LAB_1068_1644:
   }
   if (((uint)gd.grBits >> 0xb & 1) != 0) {
     *(undefined2 *)(puVar6 + -2) = uVar7;
-    *(undefined2 *)(puVar6 + -4) = 0x167a;
+    *(char **)(puVar6 + -4) = (char *)s_0_0_1120_167a;
     AdvanceTutor();
   }
 switchD_1068_161b_default:
@@ -967,7 +967,7 @@ void TerminateToolbarFocus(short fCancel)
   *(undefined2 *)(puVar1 + -10) = 0;
   *(undefined2 *)(puVar1 + -0xc) = uVar4;
   *(undefined2 *)(puVar1 + -0xe) = 0x1764;
-  SendMessage(*(HWND *)(puVar1 + -2),*(UINT *)(puVar1 + -4),*(WPARAM *)(puVar1 + -6),
+  SendMessage(*(HWND *)(puVar1 + -2),*(WMType *)(puVar1 + -4),*(WPARAM *)(puVar1 + -6),
               *(LPARAM *)(puVar1 + -10));
   *(short *)(puVar1 + -2) = pct;
   *(undefined2 *)(puVar1 + -4) = 0x1120;
@@ -1390,7 +1390,7 @@ LAB_1068_1abb:
           *(undefined2 *)(puVar7 + -0x10) = 0x14f8;
           *(undefined2 *)(puVar7 + -0x12) = 0x1b8f;
           UVar5 = SetTimer(*(HWND *)(puVar7 + -8),*(UINT *)(puVar7 + -10),*(UINT *)(puVar7 + -0xc),
-                           puVar7[-0xe]);
+                           *(undefined2 *)(puVar7 + -0xe));
           if (UVar5 == 0) {
             vidTimerTooltip = -1;
           }

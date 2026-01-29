@@ -155,7 +155,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(short *)(puVar10 + -4) = i;
           *(undefined2 *)(puVar10 + -6) = 0x14f8;
           *(undefined2 *)(puVar10 + -8) = 0xe6;
-          local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(short *)(puVar10 + -4));
+          local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(ControlId *)(puVar10 + -4));
           *(short *)(puVar10 + -2) = local_38.x;
           *(undefined2 *)(puVar10 + -4) = 0x1120;
           *(char **)(puVar10 + -6) = (char *)szWork;
@@ -169,8 +169,8 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(undefined2 *)(puVar10 + -0x10) = 0;
           *(undefined2 *)(puVar10 + -0x12) = 0x14f8;
           *(undefined2 *)(puVar10 + -0x14) = 0x110;
-          SendMessage(*(HWND *)(puVar10 + -8),*(UINT *)(puVar10 + -10),*(WPARAM *)(puVar10 + -0xc),
-                      *(LPARAM *)(puVar10 + -0x10));
+          SendMessage(*(HWND *)(puVar10 + -8),*(WMType *)(puVar10 + -10),*(WPARAM *)(puVar10 + -0xc)
+                      ,*(LPARAM *)(puVar10 + -0x10));
           puVar10 = puVar10 + -6;
         }
         dxResRadio = dxResRadio + 0x40;
@@ -180,7 +180,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(short *)(puVar10 + -4) = i;
           *(undefined2 *)(puVar10 + -6) = 0x14f8;
           *(undefined2 *)(puVar10 + -8) = 0x14b;
-          local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(short *)(puVar10 + -4));
+          local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(ControlId *)(puVar10 + -4));
           *(short *)(puVar10 + -2) = local_38.x;
           *(undefined2 *)(puVar10 + -4) = 0;
           *(undefined2 *)(puVar10 + -6) = 0x10;
@@ -199,7 +199,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar10 + -4) = 0x43b;
         *(undefined2 *)(puVar10 + -6) = 0x14f8;
         *(undefined2 *)(puVar10 + -8) = 0x1a1;
-        local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(short *)(puVar10 + -4));
+        local_38.x = GetDlgItem(*(HWND *)(puVar10 + -2),*(ControlId *)(puVar10 + -4));
         for (i = 0; i < 8; i = i + 1) {
           *(short *)(puVar10 + -2) = i + 0x53;
           *(undefined2 *)(puVar10 + -4) = 0x14f8;
@@ -212,7 +212,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           *(char **)(puVar10 + -10) = pcVar4;
           *(undefined2 *)(puVar10 + -0xc) = 0x1010;
           *(undefined2 *)(puVar10 + -0xe) = 0x1d5;
-          SendMessage(*(HWND *)(puVar10 + -2),*(UINT *)(puVar10 + -4),*(WPARAM *)(puVar10 + -6),
+          SendMessage(*(HWND *)(puVar10 + -2),*(WMType *)(puVar10 + -4),*(WPARAM *)(puVar10 + -6),
                       *(LPARAM *)(puVar10 + -10));
         }
         i = (int)*(char *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) >> 4;
@@ -229,7 +229,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar10 + -10) = 0;
         *(undefined2 *)(puVar10 + -0xc) = 0x14f8;
         *(undefined2 *)(puVar10 + -0xe) = 0x233;
-        SendMessage(*(HWND *)(puVar10 + -2),*(UINT *)(puVar10 + -4),*(WPARAM *)(puVar10 + -6),
+        SendMessage(*(HWND *)(puVar10 + -2),*(WMType *)(puVar10 + -4),*(WPARAM *)(puVar10 + -6),
                     *(LPARAM *)(puVar10 + -10));
         dxResLeft = dxResRadio + (int)DVar15 + 0x28;
         dxResRight = 0;
@@ -272,7 +272,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar10 + -4) = 2;
         *(undefined2 *)(puVar10 + -6) = 0x14f8;
         *(undefined2 *)(puVar10 + -8) = 0x2d7;
-        HVar6 = GetDlgItem(*(HWND *)(puVar10 + -2),*(short *)(puVar10 + -4));
+        HVar6 = GetDlgItem(*(HWND *)(puVar10 + -2),*(ControlId *)(puVar10 + -4));
         *(HWND *)(puVar10 + -2) = HVar6;
         *(undefined2 *)(puVar10 + -4) = 0;
         *(short *)(puVar10 + -6) = dxResLeft + dxResRight + -0x98;
@@ -289,7 +289,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar10 + -4) = 0x76;
         *(undefined2 *)(puVar10 + -6) = 0x14f8;
         *(undefined2 *)(puVar10 + -8) = 0x324;
-        HVar6 = GetDlgItem(*(HWND *)(puVar10 + -2),*(short *)(puVar10 + -4));
+        HVar6 = GetDlgItem(*(HWND *)(puVar10 + -2),*(ControlId *)(puVar10 + -4));
         *(HWND *)(puVar10 + -2) = HVar6;
         *(undefined2 *)(puVar10 + -4) = 0;
         *(short *)(puVar10 + -6) = dxResLeft + dxResRight + -0x4c;
@@ -426,7 +426,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar11 + -1) = 0x43b;
         *(undefined2 *)((int)puVar11 + -6) = 0x1118;
         *(undefined2 *)(puVar11 + -2) = 0x6d5;
-        HVar6 = GetDlgItem(*(HWND *)((int)puVar11 + -2),(short)puVar11[-1]);
+        HVar6 = GetDlgItem(*(HWND *)((int)puVar11 + -2),*(ControlId *)(puVar11 + -1));
         *(HWND *)((int)puVar11 + -2) = HVar6;
         *(undefined2 *)(puVar11 + -1) = 0x407;
         *(undefined2 *)((int)puVar11 + -6) = 0;
@@ -435,7 +435,7 @@ short ResearchDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         *(undefined2 *)(puVar11 + -3) = 0x14f8;
         uVar13 = 0x14f8;
         *(undefined2 *)((int)puVar11 + -0xe) = 0x6eb;
-        LVar18 = SendMessage(*(HWND *)((int)puVar11 + -2),(UINT)puVar11[-1],
+        LVar18 = SendMessage(*(HWND *)((int)puVar11 + -2),*(WMType *)(puVar11 + -1),
                              *(WPARAM *)((int)puVar11 + -6),*(LPARAM *)((int)puVar11 + -10));
         local_38.y = (short)LVar18;
         if (local_38.y == 0) {
@@ -966,7 +966,7 @@ RESEARCH_TooManyToFinish:
           *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
           *(undefined2 *)(plVar15 + -1) = 0x34b;
           *(undefined2 *)((int)plVar15 + -6) = uVar23;
-          *(undefined2 *)(plVar15 + -2) = 0x1352;
+          *(char **)(plVar15 + -2) = (char *)s_15_1120_134f + 3;
           sVar5 = CchGetString
                             (*(StringId *)(plVar15 + -1),(char *)*(undefined2 *)((int)plVar15 + -2))
           ;
@@ -1028,7 +1028,7 @@ RESEARCH_TooManyToFinish:
       *(undefined2 *)(plVar15 + -3) = 0x1120;
       *(undefined2 *)((int)plVar15 + -0xe) = (char *)szWork;
       *(undefined2 *)(plVar15 + -4) = 0x1010;
-      *(undefined2 *)((int)plVar15 + -0x12) = 0x142b;
+      *(undefined2 *)((int)plVar15 + -0x12) = (char *)s_d_1120_1429 + 2;
       sVar5 = _wsprintf((char *)*(undefined4 *)((int)plVar15 + -0xe),
                         (char *)*(undefined4 *)((int)plVar15 + -10));
       *(HDC *)((int)plVar15 + -2) = hdc;
@@ -1063,7 +1063,7 @@ LAB_10d8_144a:
     *(undefined2 *)(plVar15 + -1) = 0x43b;
     *(undefined2 *)((int)plVar15 + -6) = 0x1040;
     *(undefined2 *)(plVar15 + -2) = 0x1489;
-    HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),(short)plVar15[-1]);
+    HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),*(ControlId *)(plVar15 + -1));
     *(HWND *)((int)plVar15 + -2) = HVar10;
     *(undefined2 *)(plVar15 + -1) = unaff_SS;
     *(int *)((int)plVar15 + -6) = (int)&rcT;
@@ -1074,7 +1074,7 @@ LAB_10d8_144a:
     *(undefined2 *)(plVar15 + -1) = 0x43b;
     *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
     *(undefined2 *)(plVar15 + -2) = 0x14a2;
-    HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),(short)plVar15[-1]);
+    HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),*(ControlId *)(plVar15 + -1));
     *(HWND *)((int)plVar15 + -2) = HVar10;
     *(HWND *)(plVar15 + -1) = hwnd;
     *(undefined2 *)((int)plVar15 + -6) = unaff_SS;
@@ -1089,7 +1089,7 @@ LAB_10d8_144a:
       *(undefined2 *)(plVar15 + -1) = 0x43b;
       *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
       *(undefined2 *)(plVar15 + -2) = 0x14d5;
-      HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),(short)plVar15[-1]);
+      HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2),*(ControlId *)(plVar15 + -1));
       *(HWND *)((int)plVar15 + -2) = HVar10;
       *(undefined2 *)(plVar15 + -1) = 0;
       *(int *)((int)plVar15 + -6) = iVar12 + -0x3c;
@@ -1166,7 +1166,7 @@ LAB_10d8_144a:
     *(HDC *)(plVar15 + -3) = hdc;
     *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
     uVar23 = 0x1040;
-    *(undefined2 *)(plVar15 + -4) = 0x1607;
+    *(char **)(plVar15 + -4) = (char *)s_s_d_1120_1603 + 4;
     RightTextOut
               (*(HDC *)(plVar15 + -3),*(short *)((int)plVar15 + -10),(short)plVar15[-2],
                (char *)*(undefined2 *)((int)plVar15 + -6),(short)plVar15[-1],
@@ -1178,14 +1178,14 @@ LAB_10d8_144a:
     *(undefined2 *)(plVar15 + -1) = 0;
     *(undefined2 *)((int)plVar15 + -6) = 0x4f;
     *(undefined2 *)(plVar15 + -2) = uVar23;
-    *(undefined2 *)((int)plVar15 + -10) = 0x163d;
+    *(undefined2 *)((int)plVar15 + -10) = (char *)s_X_Y_Name_1120_163a + 3;
     pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
     *(undefined2 *)((int)plVar15 + -6) = pcVar22;
     *(short *)(plVar15 + -2) = rc.top;
     *(int *)((int)plVar15 + -10) = iVar12;
     *(HDC *)(plVar15 + -3) = hdc;
     *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-    *(undefined2 *)(plVar15 + -4) = 0x1650;
+    *(char **)(plVar15 + -4) = (char *)s_d_d_d_s_1120_1647 + 9;
     RightTextOut
               (*(HDC *)(plVar15 + -3),*(short *)((int)plVar15 + -10),(short)plVar15[-2],
                (char *)*(undefined2 *)((int)plVar15 + -6),(short)plVar15[-1],
@@ -1716,20 +1716,21 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   HWND HVar9;
   ushort uVar10;
   uint uVar11;
-  uint uVar12;
+  UINT UVar12;
+  uint uVar13;
   undefined2 unaff_SI;
   undefined2 unaff_DI;
   undefined2 unaff_SS;
-  DWORD DVar13;
-  ulong uVar14;
+  DWORD DVar14;
   ulong uVar15;
-  long lVar16;
-  LRESULT LVar17;
-  short sVar18;
+  ulong uVar16;
+  long lVar17;
+  LRESULT LVar18;
   short sVar19;
-  HWND HVar20;
-  WPARAM WVar21;
-  UINT UVar22;
+  short sVar20;
+  HWND HVar21;
+  WPARAM WVar22;
+  WMType WVar23;
   ushort in_stack_0000ffb4;
   short iOff;
   short fShowAll;
@@ -1745,7 +1746,7 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   HMENU hmenu;
   HDC hdc;
   
-  uVar14 = CONCAT22(unaff_SI,unaff_DI);
+  uVar15 = CONCAT22(unaff_SI,unaff_DI);
   if (message == WM_DESTROY) {
     StickyDlgPos(hwnd,(POINT *)&ptStickyBrowserDlg,0);
     hwndBrowser = 0;
@@ -1769,7 +1770,7 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar9 = GetDlgItem(hwnd,i);
         if ((HWND)lParam == HVar9) break;
       }
-      if ((i < 0x10c) || (uVar14 = __aFulshr(uVar14,in_stack_0000ffb4), (int)uVar14 == 6)) {
+      if ((i < 0x10c) || (uVar15 = __aFulshr(uVar15,in_stack_0000ffb4), (int)uVar15 == 6)) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -1778,7 +1779,7 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     else {
       if (message == WM_INITDIALOG) {
         hwndBrowser = hwnd;
-        HVar20 = 0;
+        HVar21 = 0;
         HVar9 = 7;
         sVar2 = GetSystemMetrics(7);
         if (dyArial8 < 0xf) {
@@ -1788,55 +1789,55 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           iVar3 = 0x28;
         }
         iVar3 = iVar3 + 0x166 + sVar2 * 2;
-        sVar19 = 4;
+        sVar20 = 4;
         sVar2 = GetSystemMetrics(4);
-        sVar18 = 8;
+        sVar19 = 8;
         sVar4 = GetSystemMetrics(8);
-        SetWindowPos(HVar20,HVar9,iVar3,sVar19,sVar18,
+        SetWindowPos(HVar21,HVar9,iVar3,sVar20,sVar19,
                      dyArial10 + dyArial8 * 0xf + 0x67 + sVar4 * 2 + sVar2,6);
         StickyDlgPos(hwnd,(POINT *)&ptStickyBrowserDlg,1);
         HVar5 = GetDC(hwnd);
         HVar6 = SelectObject(HVar5,rghfontArial8[1]);
-        HVar9 = GetDlgItem(hwnd,0x10b);
-        sVar2 = GetDlgItemText(hwnd,0x42e,szWork,0x50);
-        DVar13 = GetTextExtent(HVar5,szWork,sVar2);
-        iVar3 = (int)DVar13 + 0xe;
-        HVar20 = GetDlgItem(hwnd,0x42e);
-        SetWindowPos(HVar20,0,6,6,iVar3,(dyArial8 * 3) / 2,4);
-        HVar20 = GetDlgItem(hwnd,0x42f);
+        HVar9 = GetDlgItem(hwnd,IDC_U16_0x010B);
+        sVar2 = GetDlgItemText(hwnd,IDC_U16_0x042E,szWork,0x50);
+        DVar14 = GetTextExtent(HVar5,szWork,sVar2);
+        iVar3 = (int)DVar14 + 0xe;
+        HVar21 = GetDlgItem(hwnd,IDC_U16_0x042E);
+        SetWindowPos(HVar21,0,6,6,iVar3,(dyArial8 * 3) / 2,4);
+        HVar21 = GetDlgItem(hwnd,IDC_U16_0x042E|IDOK);
         if (dyArial8 < 0xf) {
           iVar7 = 0;
         }
         else {
           iVar7 = 0x28;
         }
-        SetWindowPos(HVar20,0,(iVar7 + 0x15e) - iVar3,6,iVar3,(dyArial8 * 3) / 2,4);
+        SetWindowPos(HVar21,0,(iVar7 + 0x15e) - iVar3,6,iVar3,(dyArial8 * 3) / 2,4);
         if (dyArial8 < 0xf) {
           iVar7 = 0;
         }
         else {
           iVar7 = 0x28;
         }
-        SetWindowPos(HVar9,0,(int)DVar13 + 0x1a,6,iVar7 + iVar3 * -2 + 0x14c,
+        SetWindowPos(HVar9,0,(int)DVar14 + 0x1a,6,iVar7 + iVar3 * -2 + 0x14c,
                      dyArial8 * 0x12,4);
-        HVar20 = GetDlgItem(hwnd,2);
+        HVar21 = GetDlgItem(hwnd,IDCANCEL);
         if (dyArial8 < 0xf) {
           iVar7 = 0;
         }
         else {
           iVar7 = 0x28;
         }
-        SetWindowPos(HVar20,0,(iVar7 + 0x15e) - iVar3,
+        SetWindowPos(HVar21,0,(iVar7 + 0x15e) - iVar3,
                      dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 +
                      0x60,iVar3,(dyArial8 * 3) / 2,4);
-        HVar20 = GetDlgItem(hwnd,0x10a);
+        HVar21 = GetDlgItem(hwnd,0x10a);
         if (dyArial8 < 0xf) {
           iVar7 = 0;
         }
         else {
           iVar7 = 0x28;
         }
-        SetWindowPos(HVar20,0,6,
+        SetWindowPos(HVar21,0,6,
                      dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 +
                      0x60,(iVar7 + 0x158) - iVar3,(dyArial8 * 3) / 2,4);
         SelectObject(HVar5,HVar6);
@@ -1858,13 +1859,13 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                           dyArial10 + dyArial8 * 0xc + 0x4e,hwnd,0,
                           hInst,(void *)0x0);
         for (i = 0x43f; i < 0x450; i = i + 1) {
-          UVar22 = 0x403;
-          WVar21 = 0;
-          HVar20 = HVar9;
+          WVar23 = WM_USER_0x0403;
+          WVar22 = 0;
+          HVar21 = HVar9;
           pcVar8 = PszGetCompressedString(i);
-          SendMessage(HVar20,UVar22,WVar21,(LPARAM)pcVar8);
+          SendMessage(HVar21,WVar23,WVar22,(LPARAM)pcVar8);
         }
-        SendMessage(HVar9,0x40e,0,0);
+        SendMessage(HVar9,WM_USER_0x040E,0,0);
         if (((uint)gd.grBits >> 0xb & 1) != 0) {
           AdvanceTutor();
         }
@@ -1884,18 +1885,18 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           return 1;
         }
         if (wParam == 0x10b) {
-          uVar15 = __aFulshr(uVar14,in_stack_0000ffb4);
-          if ((int)uVar15 == 1) {
-            UVar22 = IsDlgButtonChecked(hwnd,0x10a);
-            HVar9 = GetDlgItem(hwnd,0x10b);
-            LVar17 = SendMessage(HVar9,0x407,0,0);
-            if ((0xffff < LVar17) || (-1 < LVar17)) {
-              lVar16 = __aFlshl(uVar14,in_stack_0000ffb4);
+          uVar16 = __aFulshr(uVar15,in_stack_0000ffb4);
+          if ((int)uVar16 == 1) {
+            UVar12 = IsDlgButtonChecked(hwnd,0x10a);
+            HVar9 = GetDlgItem(hwnd,IDC_U16_0x010B);
+            LVar18 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+            if ((0xffff < LVar18) || (-1 < LVar18)) {
+              lVar17 = __aFlshl(uVar15,in_stack_0000ffb4);
               vpartBrowser.hs.grhst =
-                   *(HullSlotType *)((int)(ushort *)rggrbitBrParts + (int)lVar16);
+                   *(HullSlotType *)((int)(ushort *)rggrbitBrParts + (int)lVar17);
               vpartBrowser.hs.wFlags_0x2 = vpartBrowser.hs.wFlags_0x2 & 0xff00;
               while (sVar2 = FLookupPart((PART *)&vpartBrowser), sVar2 != 0) {
-                if ((sVar2 == 1) || (UVar22 == 0)) goto LAB_10d8_2557;
+                if ((sVar2 == 1) || (UVar12 == 0)) goto LAB_10d8_2557;
                 vpartBrowser.hs.wFlags_0x2 =
                      vpartBrowser.hs.wFlags_0x2 & 0xff00 |
                      vpartBrowser.hs.wFlags_0x2 + 1 & 0xff;
@@ -1910,23 +1911,23 @@ LAB_10d8_2557:
         else if ((wParam == 0x42f) || (wParam == 0x42e)) {
           uVar11 = vpartBrowser.hs.wFlags_0x2 & 0xff;
           cIter = 0;
-          HVar9 = GetDlgItem(hwnd,0x10b);
-          LVar17 = SendMessage(HVar9,0x407,0,0);
-          bVar1 = LVar17 == 0;
+          HVar9 = GetDlgItem(hwnd,IDC_U16_0x010B);
+          LVar18 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+          bVar1 = LVar18 == 0;
           for (i = 0; (sVar2 = i, i < 0x11 &&
                       (vpartBrowser.hs.grhst != ((ushort *)rggrbitBrParts)[i])); i = i + 1
               ) {
           }
-          UVar22 = IsDlgButtonChecked(hwnd,0x10a);
+          UVar12 = IsDlgButtonChecked(hwnd,0x10a);
           if (wParam == 0x42f) {
             iVar3 = 1;
           }
           else {
             iVar3 = -1;
           }
-          while ((uVar12 = iVar3 + vpartBrowser.hs.wFlags_0x2 & 0xff,
+          while ((uVar13 = iVar3 + vpartBrowser.hs.wFlags_0x2 & 0xff,
                  vpartBrowser.hs.wFlags_0x2 =
-                      vpartBrowser.hs.wFlags_0x2 & 0xff00 | uVar12, uVar12 != uVar11 ||
+                      vpartBrowser.hs.wFlags_0x2 & 0xff00 | uVar13, uVar13 != uVar11 ||
                  (bVar1))) {
             while( true ) {
               iVar7 = cIter + 1;
@@ -1967,14 +1968,14 @@ LAB_10d8_2557:
               }
             }
             if ((md == 1) ||
-               (((md != 0 && (UVar22 == 0)) &&
+               (((md != 0 && (UVar12 == 0)) &&
                 ((md != -1 ||
                  (sVar4 = FShouldPartBeHidden((PART *)&vpartBrowser), sVar4 == 0))))))
             break;
           }
 LAB_10d8_27b3:
           if ((((vpartBrowser.hs.wFlags_0x2 & 0xff) != uVar11) || (sVar2 != i)) ||
-             ((md != 1 && (UVar22 != 0)))) {
+             ((md != 1 && (UVar12 != 0)))) {
             if (((vpartBrowser.hs.wFlags_0x2 & 0xff) == uVar11) && (sVar2 == i)) {
               sVar2 = FLookupPart((PART *)&vpartBrowser);
               if (sVar2 == 1) {
@@ -2280,7 +2281,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
     dxStr = sVar3;
   }
   dxStr = dxStr + 5;
-  DVar13 = GetTextExtent(hdc,(LPCSTR)0x11200d24,2);
+  DVar13 = GetTextExtent(hdc,s_99_1120_0d24,2);
   xNum = dxStr + (int)DVar13;
   fReq = 0;
   for (i = 0; i < 6; i = i + 1) {
@@ -2387,7 +2388,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
       RightTextOut
                 (hdc,dxStr + dxMaxMineralQuan,yCur,(char *)szWork,c,0);
       if (i < 5) {
-        TextOut(hdc,dxStr + dxMaxMineralQuan,yCur,(LPCSTR)0x11200d27,2);
+        TextOut(hdc,dxStr + dxMaxMineralQuan,yCur,s_kT_1120_0d27,2);
       }
       yCur = yCur + dyArial8;
     }
@@ -2465,7 +2466,7 @@ void DisplayComponentInfo(HDC hdc,short dx,short dy,PART *ppart)
     RightTextOut(hdc,local_4a,(short)local_3a,pcVar4,sVar3,sVar21);
     local_4a = local_4a + 6;
     local_38.left = (rcData.bottom - dyArial8) + -4;
-    DVar13 = GetTextExtent(hdc,(LPCSTR)0x11200d2a,1);
+    DVar13 = GetTextExtent(hdc,s_0_1120_0d2a,1);
     local_38.top = (uint)DVar13 >> 1;
     local_38.bottom = CONCAT11(local_38.bottom._1_1_,0x30);
     local_48 = 1;
@@ -3269,7 +3270,7 @@ RESEARCH_LArmDisp:
           RightTextOut(hdc,local_38.right,rcData.top,(char *)szWork,c,0);
           SelectObject(hdc,rghfontArial8[0]);
           if (i == 0) {
-            c = _wsprintf(szWork,(char *)0x11200d2c,
+            c = _wsprintf(szWork,s_dmg_1120_0d2c,
                           ((BEAM *)(&ppart->u_PART_0x0004)->pbeam)->dp);
           }
           else if (i == 1) {
@@ -3394,7 +3395,7 @@ RESEARCH_LArmDisp:
           cLen = _strlen(local_130);
           RightTextOut(hdc,iVar12,iVar8,local_130,cLen,sVar3);
           x = iVar12 + 6;
-          DVar13 = GetTextExtent(hdc,(LPCSTR)0x11200d31,1);
+          DVar13 = GetTextExtent(hdc,s_0_1120_0d31,1);
           iVar12 = (int)DVar13;
           for (i = 0; i < 6; i = i + 1) {
             sVar3 = _wsprintf(szWork,PCTD,i * 0x14);
