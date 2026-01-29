@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-29T05:04:02Z",
+  "generated_at_utc": "2026-01-29T15:14:55Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -7696,7 +7696,7 @@
       "kind": "prototype"
     },
     "InitializeMenu": {
-      "signature": "void InitializeMenu(uint16_t hmenu)",
+      "signature": "void InitializeMenu(HMENU hmenu)",
       "file": "mdi.h",
       "line": 32,
       "kind": "prototype"
@@ -11241,76 +11241,70 @@
       "line": 83,
       "kind": "prototype"
     },
-    "DibBlt": {
-      "signature": "int16_t DibBlt(HDC hdc, int16_t x0, int16_t y0, int16_t dx, int16_t dy, HGLOBAL hdib, int16_t x1, int16_t y1, int16_t dxSrc, int16_t dySrc, int32_t rop)",
-      "file": "utilgen.h",
-      "line": 84,
-      "kind": "prototype"
-    },
     "FGetMouseMove": {
       "signature": "int16_t FGetMouseMove(POINT *ppt)",
       "file": "utilgen.h",
-      "line": 85,
+      "line": 89,
       "kind": "prototype"
     },
     "StickyDlgPos": {
       "signature": "void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)",
       "file": "utilgen.h",
-      "line": 86,
+      "line": 90,
       "kind": "prototype"
     },
     "UpdateProgressGauge": {
       "signature": "void UpdateProgressGauge(int16_t pctX10)",
       "file": "utilgen.h",
-      "line": 87,
+      "line": 91,
       "kind": "prototype"
     },
     "PaletteSize": {
       "signature": "uint16_t PaletteSize(void *pv)",
       "file": "utilgen.h",
-      "line": 88,
+      "line": 92,
       "kind": "prototype"
     },
     "FreeHbr": {
       "signature": "void FreeHbr(HBRUSH hbr)",
       "file": "utilgen.h",
-      "line": 89,
+      "line": 93,
       "kind": "prototype"
     },
     "FTrackBtn": {
       "signature": "int16_t FTrackBtn(BTNT *pbtnt)",
       "file": "utilgen.h",
-      "line": 90,
+      "line": 94,
       "kind": "prototype"
     },
     "WrapTextOut": {
       "signature": "void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)",
       "file": "utilgen.h",
-      "line": 91,
+      "line": 95,
       "kind": "prototype"
     },
     "DxStreamTextOut": {
       "signature": "int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint)",
       "file": "utilgen.h",
-      "line": 92,
+      "line": 96,
       "kind": "prototype"
     },
     "LDrawGauge": {
       "signature": "int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot)",
       "file": "utilgen.h",
-      "line": 93,
+      "line": 97,
       "kind": "prototype"
     },
     "DiaganolTextOut": {
       "signature": "void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)",
       "file": "utilgen.h",
-      "line": 94,
+      "line": 98,
       "kind": "prototype"
     },
     "DrawProgressGauge": {
       "signature": "void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly)",
       "file": "utilgen.h",
-      "line": 95,
+      "line": 99,
       "kind": "prototype"
     },
     "LdpFromItokDv": {
@@ -11400,1147 +11394,1147 @@
     "GetOpenFileName": {
       "signature": "BOOL WINAPI GetOpenFileName(OPENFILENAME FAR *lpofn)",
       "file": "win_stubs.h",
-      "line": 699,
+      "line": 741,
       "kind": "prototype"
     },
     "GetSaveFileName": {
       "signature": "BOOL WINAPI GetSaveFileName(OPENFILENAME FAR *lpofn)",
       "file": "win_stubs.h",
-      "line": 700,
+      "line": 742,
       "kind": "prototype"
     },
     "PrintDlg": {
       "signature": "BOOL WINAPI PrintDlg(PRINTDLG FAR *lppd)",
       "file": "win_stubs.h",
-      "line": 701,
+      "line": 743,
       "kind": "prototype"
     },
     "BitBlt": {
       "signature": "BOOL WINAPI BitBlt(HDC hdcDest, int x, int y, int cx, int cy, HDC hdcSrc, int x1, int y1, DWORD rop)",
       "file": "win_stubs.h",
-      "line": 704,
+      "line": 746,
       "kind": "prototype"
     },
     "CreateCompatibleBitmap": {
       "signature": "HBITMAP WINAPI CreateCompatibleBitmap(HDC hdc, int cx, int cy)",
       "file": "win_stubs.h",
-      "line": 705,
+      "line": 747,
       "kind": "prototype"
     },
     "CreateCompatibleDC": {
       "signature": "HDC WINAPI CreateCompatibleDC(HDC hdc)",
       "file": "win_stubs.h",
-      "line": 706,
+      "line": 748,
       "kind": "prototype"
     },
     "CreateFontIndirect": {
       "signature": "HFONT WINAPI CreateFontIndirect(const LOGFONT FAR *lplf)",
       "file": "win_stubs.h",
-      "line": 707,
+      "line": 749,
       "kind": "prototype"
     },
     "CreatePalette": {
       "signature": "HPALETTE WINAPI CreatePalette(const LOGPALETTE FAR *lplgpl)",
       "file": "win_stubs.h",
-      "line": 708,
+      "line": 750,
       "kind": "prototype"
     },
     "CreatePatternBrush": {
       "signature": "HBRUSH WINAPI CreatePatternBrush(HBITMAP hbm)",
       "file": "win_stubs.h",
-      "line": 709,
+      "line": 751,
       "kind": "prototype"
     },
     "CreatePen": {
       "signature": "HPEN WINAPI CreatePen(int iStyle, int cWidth, COLORREF color)",
       "file": "win_stubs.h",
-      "line": 710,
+      "line": 752,
       "kind": "prototype"
     },
     "CreateRectRgn": {
       "signature": "HRGN WINAPI CreateRectRgn(int x1, int y1, int x2, int y2)",
       "file": "win_stubs.h",
-      "line": 711,
+      "line": 753,
       "kind": "prototype"
     },
     "CreateSolidBrush": {
       "signature": "HBRUSH WINAPI CreateSolidBrush(COLORREF color)",
       "file": "win_stubs.h",
-      "line": 712,
+      "line": 754,
       "kind": "prototype"
     },
     "DeleteDC": {
       "signature": "BOOL WINAPI DeleteDC(HDC hdc)",
       "file": "win_stubs.h",
-      "line": 713,
+      "line": 755,
       "kind": "prototype"
     },
     "DeleteObject": {
       "signature": "BOOL WINAPI DeleteObject(HGDIOBJ ho)",
       "file": "win_stubs.h",
-      "line": 714,
+      "line": 756,
       "kind": "prototype"
     },
     "Ellipse": {
       "signature": "BOOL WINAPI Ellipse(HDC hdc, int left, int top, int right, int bottom)",
       "file": "win_stubs.h",
-      "line": 715,
+      "line": 757,
       "kind": "prototype"
     },
     "Escape": {
       "signature": "int WINAPI Escape(HDC hdc, int iEscape, int cjIn, LPCSTR lpIn, void FAR *lpOut)",
       "file": "win_stubs.h",
-      "line": 716,
+      "line": 758,
       "kind": "prototype"
     },
     "ExcludeClipRect": {
       "signature": "int WINAPI ExcludeClipRect(HDC hdc, int left, int top, int right, int bottom)",
       "file": "win_stubs.h",
-      "line": 717,
+      "line": 759,
       "kind": "prototype"
     },
     "ExtTextOut": {
       "signature": "BOOL WINAPI ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT FAR *lprect, LPCSTR lpString, UINT c, int FAR *lpDx)",
       "file": "win_stubs.h",
-      "line": 718,
+      "line": 760,
       "kind": "prototype"
     },
     "GetBkColor": {
       "signature": "COLORREF WINAPI GetBkColor(HDC hdc)",
       "file": "win_stubs.h",
-      "line": 719,
+      "line": 761,
       "kind": "prototype"
     },
     "GetDeviceCaps": {
       "signature": "int WINAPI GetDeviceCaps(HDC hdc, int index)",
       "file": "win_stubs.h",
-      "line": 720,
+      "line": 762,
       "kind": "prototype"
     },
     "GetDIBits": {
       "signature": "int WINAPI GetDIBits(HDC hdc, HBITMAP hbm, UINT start, UINT cLines, void FAR *lpvBits, BITMAPINFO FAR *lpbmi, UINT usage)",
       "file": "win_stubs.h",
-      "line": 721,
+      "line": 763,
       "kind": "prototype"
     },
     "GetObject": {
       "signature": "int WINAPI GetObject(HGDIOBJ h, int c, void FAR *pv)",
       "file": "win_stubs.h",
-      "line": 722,
+      "line": 764,
       "kind": "prototype"
     },
     "GetROP2": {
       "signature": "int WINAPI GetROP2(HDC hdc)",
       "file": "win_stubs.h",
-      "line": 723,
+      "line": 765,
       "kind": "prototype"
     },
     "GetStockObject": {
       "signature": "HGDIOBJ WINAPI GetStockObject(int i)",
       "file": "win_stubs.h",
-      "line": 724,
+      "line": 766,
       "kind": "prototype"
     },
     "GetTextExtent": {
       "signature": "DWORD WINAPI GetTextExtent(HDC hdc, LPCSTR lpString, int c)",
       "file": "win_stubs.h",
-      "line": 725,
+      "line": 767,
       "kind": "prototype"
     },
     "GetTextExtentPoint32A": {
       "signature": "BOOL WINAPI GetTextExtentPoint32A(HDC hdc, LPCSTR lpString, int c, LPSIZE lpSize)",
       "file": "win_stubs.h",
-      "line": 727,
+      "line": 769,
       "kind": "prototype"
     },
     "GetTextExtentPointA": {
       "signature": "BOOL WINAPI GetTextExtentPointA(HDC hdc, LPCSTR lpString, int c, LPSIZE lpSize)",
       "file": "win_stubs.h",
-      "line": 729,
+      "line": 771,
       "kind": "prototype"
     },
     "GetTextMetrics": {
       "signature": "BOOL WINAPI GetTextMetrics(HDC hdc, TEXTMETRIC FAR *lptm)",
       "file": "win_stubs.h",
-      "line": 730,
+      "line": 772,
       "kind": "prototype"
     },
     "IntersectClipRect": {
       "signature": "int WINAPI IntersectClipRect(HDC hdc, int left, int top, int right, int bottom)",
       "file": "win_stubs.h",
-      "line": 731,
+      "line": 773,
       "kind": "prototype"
     },
     "LineTo": {
       "signature": "BOOL WINAPI LineTo(HDC hdc, int x, int y)",
       "file": "win_stubs.h",
-      "line": 732,
+      "line": 774,
       "kind": "prototype"
     },
     "MoveTo": {
       "signature": "DWORD WINAPI MoveTo(HDC hdc, int x, int y)",
       "file": "win_stubs.h",
-      "line": 733,
+      "line": 775,
       "kind": "prototype"
     },
     "MulDiv": {
       "signature": "int WINAPI MulDiv(int nNumber, int nNumerator, int nDenominator)",
       "file": "win_stubs.h",
-      "line": 734,
+      "line": 776,
       "kind": "prototype"
     },
     "PatBlt": {
       "signature": "BOOL WINAPI PatBlt(HDC hdc, int x, int y, int w, int h, DWORD rop)",
       "file": "win_stubs.h",
-      "line": 735,
+      "line": 777,
       "kind": "prototype"
     },
     "Rectangle": {
       "signature": "BOOL WINAPI Rectangle(HDC hdc, int left, int top, int right, int bottom)",
       "file": "win_stubs.h",
-      "line": 736,
+      "line": 778,
       "kind": "prototype"
     },
     "SelectClipRgn": {
       "signature": "int WINAPI SelectClipRgn(HDC hdc, HRGN hrgn)",
       "file": "win_stubs.h",
-      "line": 737,
+      "line": 779,
       "kind": "prototype"
     },
     "SelectObject": {
       "signature": "HGDIOBJ WINAPI SelectObject(HDC hdc, HGDIOBJ h)",
       "file": "win_stubs.h",
-      "line": 738,
+      "line": 780,
       "kind": "prototype"
     },
     "SetBkColor": {
       "signature": "COLORREF WINAPI SetBkColor(HDC hdc, COLORREF color)",
       "file": "win_stubs.h",
-      "line": 739,
+      "line": 781,
       "kind": "prototype"
     },
     "SetBkMode": {
       "signature": "int WINAPI SetBkMode(HDC hdc, int mode)",
       "file": "win_stubs.h",
-      "line": 740,
+      "line": 782,
       "kind": "prototype"
     },
     "SetBrushOrg": {
       "signature": "DWORD WINAPI SetBrushOrg(HDC hdc, int x, int y)",
       "file": "win_stubs.h",
-      "line": 741,
+      "line": 783,
       "kind": "prototype"
     },
     "SetPixel": {
       "signature": "COLORREF WINAPI SetPixel(HDC hdc, int x, int y, COLORREF color)",
       "file": "win_stubs.h",
-      "line": 742,
+      "line": 784,
       "kind": "prototype"
     },
     "SetROP2": {
       "signature": "int WINAPI SetROP2(HDC hdc, int rop2)",
       "file": "win_stubs.h",
-      "line": 743,
+      "line": 785,
       "kind": "prototype"
     },
     "SetTextColor": {
       "signature": "COLORREF WINAPI SetTextColor(HDC hdc, COLORREF color)",
       "file": "win_stubs.h",
-      "line": 744,
+      "line": 786,
       "kind": "prototype"
     },
     "SetWindowOrg": {
       "signature": "DWORD WINAPI SetWindowOrg(HDC hdc, int x, int y)",
       "file": "win_stubs.h",
-      "line": 745,
+      "line": 787,
       "kind": "prototype"
     },
     "TextOut": {
       "signature": "BOOL WINAPI TextOut(HDC hdc, int x, int y, LPCSTR lpString, int c)",
       "file": "win_stubs.h",
-      "line": 749,
+      "line": 791,
       "kind": "prototype"
     },
     "TextOutA": {
       "signature": "BOOL WINAPI TextOutA(HDC hdc, int x, int y, LPCSTR lpString, int c)",
       "file": "win_stubs.h",
-      "line": 750,
+      "line": 792,
       "kind": "prototype"
     },
     "UnrealizeObject": {
       "signature": "BOOL WINAPI UnrealizeObject(HGDIOBJ h)",
       "file": "win_stubs.h",
-      "line": 751,
+      "line": 793,
       "kind": "prototype"
     },
     "_lclose": {
       "signature": "HFILE WINAPI _lclose(HFILE hFile)",
       "file": "win_stubs.h",
-      "line": 754,
+      "line": 796,
       "kind": "prototype"
     },
     "_lread": {
       "signature": "UINT WINAPI _lread(HFILE hFile, void FAR *lpBuffer, UINT uBytes)",
       "file": "win_stubs.h",
-      "line": 755,
+      "line": 797,
       "kind": "prototype"
     },
     "_lwrite": {
       "signature": "UINT WINAPI _lwrite(HFILE hFile, const void FAR *lpBuffer, UINT uBytes)",
       "file": "win_stubs.h",
-      "line": 756,
+      "line": 798,
       "kind": "prototype"
     },
     "AccessResource": {
       "signature": "int WINAPI AccessResource(HINSTANCE hInstance, HRSRC hResInfo)",
       "file": "win_stubs.h",
-      "line": 757,
+      "line": 799,
       "kind": "prototype"
     },
     "AllocResource": {
       "signature": "HGLOBAL WINAPI AllocResource(HINSTANCE hInstance, HRSRC hResInfo, DWORD dwSize)",
       "file": "win_stubs.h",
-      "line": 758,
+      "line": 800,
       "kind": "prototype"
     },
     "FatalAppExit": {
       "signature": "void WINAPI FatalAppExit(UINT uAction, LPCSTR lpMessageText)",
       "file": "win_stubs.h",
-      "line": 759,
+      "line": 801,
       "kind": "prototype"
     },
     "FatalExit": {
       "signature": "void WINAPI FatalExit(int code)",
       "file": "win_stubs.h",
-      "line": 760,
+      "line": 802,
       "kind": "prototype"
     },
     "FindResource": {
       "signature": "HRSRC WINAPI FindResource(HINSTANCE hInstance, LPCSTR lpName, LPCSTR lpType)",
       "file": "win_stubs.h",
-      "line": 761,
+      "line": 803,
       "kind": "prototype"
     },
     "FreeProcInstance": {
       "signature": "void WINAPI FreeProcInstance(FARPROC lpProc)",
       "file": "win_stubs.h",
-      "line": 762,
+      "line": 804,
       "kind": "prototype"
     },
     "FreeResource": {
       "signature": "BOOL WINAPI FreeResource(HGLOBAL hResData)",
       "file": "win_stubs.h",
-      "line": 763,
+      "line": 805,
       "kind": "prototype"
     },
     "GetDOSEnvironment": {
       "signature": "LPSTR WINAPI GetDOSEnvironment(void)",
       "file": "win_stubs.h",
-      "line": 764,
+      "line": 806,
       "kind": "prototype"
     },
     "GetDriveType": {
       "signature": "UINT WINAPI GetDriveType(int nDrive)",
       "file": "win_stubs.h",
-      "line": 765,
+      "line": 807,
       "kind": "prototype"
     },
     "GetModuleFileName": {
       "signature": "int WINAPI GetModuleFileName(HINSTANCE hInstance, LPSTR lpFilename, int nSize)",
       "file": "win_stubs.h",
-      "line": 766,
+      "line": 808,
       "kind": "prototype"
     },
     "GetPrivateProfileInt": {
       "signature": "UINT WINAPI GetPrivateProfileInt(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault, LPCSTR lpFileName)",
       "file": "win_stubs.h",
-      "line": 767,
+      "line": 809,
       "kind": "prototype"
     },
     "GetPrivateProfileString": {
       "signature": "int WINAPI GetPrivateProfileString(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefault, LPSTR lpReturnedString, int nSize, LPCSTR lpFileName)",
       "file": "win_stubs.h",
-      "line": 768,
+      "line": 810,
       "kind": "prototype"
     },
     "GetVersion": {
       "signature": "DWORD WINAPI GetVersion(void)",
       "file": "win_stubs.h",
-      "line": 769,
+      "line": 811,
       "kind": "prototype"
     },
     "GlobalAlloc": {
       "signature": "HGLOBAL WINAPI GlobalAlloc(UINT uFlags, DWORD dwBytes)",
       "file": "win_stubs.h",
-      "line": 770,
+      "line": 812,
       "kind": "prototype"
     },
     "GlobalFree": {
       "signature": "HGLOBAL WINAPI GlobalFree(HGLOBAL hMem)",
       "file": "win_stubs.h",
-      "line": 771,
+      "line": 813,
       "kind": "prototype"
     },
     "GlobalLock": {
       "signature": "void FAR *WINAPI GlobalLock(HGLOBAL hMem)",
       "file": "win_stubs.h",
-      "line": 772,
+      "line": 814,
       "kind": "prototype"
     },
     "GlobalReAlloc": {
       "signature": "HGLOBAL WINAPI GlobalReAlloc(HGLOBAL hMem, DWORD dwBytes, UINT uFlags)",
       "file": "win_stubs.h",
-      "line": 773,
+      "line": 815,
       "kind": "prototype"
     },
     "GlobalSize": {
       "signature": "DWORD WINAPI GlobalSize(HGLOBAL hMem)",
       "file": "win_stubs.h",
-      "line": 774,
+      "line": 816,
       "kind": "prototype"
     },
     "GlobalUnlock": {
       "signature": "BOOL WINAPI GlobalUnlock(HGLOBAL hMem)",
       "file": "win_stubs.h",
-      "line": 775,
+      "line": 817,
       "kind": "prototype"
     },
     "LoadResource": {
       "signature": "HGLOBAL WINAPI LoadResource(HINSTANCE hInstance, HRSRC hResInfo)",
       "file": "win_stubs.h",
-      "line": 776,
+      "line": 818,
       "kind": "prototype"
     },
     "LocalAlloc": {
       "signature": "HLOCAL WINAPI LocalAlloc(UINT uFlags, UINT uBytes)",
       "file": "win_stubs.h",
-      "line": 777,
+      "line": 819,
       "kind": "prototype"
     },
     "LocalFree": {
       "signature": "HLOCAL WINAPI LocalFree(HLOCAL hMem)",
       "file": "win_stubs.h",
-      "line": 778,
+      "line": 820,
       "kind": "prototype"
     },
     "LocalReAlloc": {
       "signature": "HLOCAL WINAPI LocalReAlloc(HLOCAL hMem, UINT uBytes, UINT uFlags)",
       "file": "win_stubs.h",
-      "line": 779,
+      "line": 821,
       "kind": "prototype"
     },
     "LocalSize": {
       "signature": "UINT WINAPI LocalSize(HLOCAL hMem)",
       "file": "win_stubs.h",
-      "line": 780,
+      "line": 822,
       "kind": "prototype"
     },
     "LockResource": {
       "signature": "void FAR *WINAPI LockResource(HGLOBAL hResData)",
       "file": "win_stubs.h",
-      "line": 781,
+      "line": 823,
       "kind": "prototype"
     },
     "LockSegment": {
       "signature": "HGLOBAL WINAPI LockSegment(UINT wSegment)",
       "file": "win_stubs.h",
-      "line": 782,
+      "line": 824,
       "kind": "prototype"
     },
     "lstrcat": {
       "signature": "LPSTR WINAPI lstrcat(LPSTR lpString1, LPCSTR lpString2)",
       "file": "win_stubs.h",
-      "line": 783,
+      "line": 825,
       "kind": "prototype"
     },
     "lstrcpy": {
       "signature": "LPSTR WINAPI lstrcpy(LPSTR lpString1, LPCSTR lpString2)",
       "file": "win_stubs.h",
-      "line": 784,
+      "line": 826,
       "kind": "prototype"
     },
     "lstrlen": {
       "signature": "int WINAPI lstrlen(LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 785,
+      "line": 827,
       "kind": "prototype"
     },
     "lstrlenA": {
       "signature": "int WINAPI lstrlenA(LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 787,
+      "line": 829,
       "kind": "prototype"
     },
     "MakeProcInstance": {
       "signature": "FARPROC WINAPI MakeProcInstance(FARPROC lpProc, HINSTANCE hInstance)",
       "file": "win_stubs.h",
-      "line": 788,
+      "line": 830,
       "kind": "prototype"
     },
     "OpenFile": {
       "signature": "HFILE WINAPI OpenFile(LPCSTR lpFileName, OFSTRUCT FAR *lpReOpenBuff, UINT uStyle)",
       "file": "win_stubs.h",
-      "line": 789,
+      "line": 831,
       "kind": "prototype"
     },
     "SizeofResource": {
       "signature": "DWORD WINAPI SizeofResource(HINSTANCE hInstance, HRSRC hResInfo)",
       "file": "win_stubs.h",
-      "line": 790,
+      "line": 832,
       "kind": "prototype"
     },
     "UnlockSegment": {
       "signature": "void WINAPI UnlockSegment(UINT wSegment)",
       "file": "win_stubs.h",
-      "line": 791,
+      "line": 833,
       "kind": "prototype"
     },
     "WritePrivateProfileString": {
       "signature": "BOOL WINAPI WritePrivateProfileString(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpString, LPCSTR lpFileName)",
       "file": "win_stubs.h",
-      "line": 792,
+      "line": 834,
       "kind": "prototype"
     },
     "Yield": {
       "signature": "void WINAPI Yield(void)",
       "file": "win_stubs.h",
-      "line": 793,
+      "line": 835,
       "kind": "prototype"
     },
     "TimerCount": {
       "signature": "BOOL WINAPI TimerCount(TIMERINFO FAR *lpti)",
       "file": "win_stubs.h",
-      "line": 796,
+      "line": 838,
       "kind": "prototype"
     },
     "wsprintf": {
       "signature": "int FAR __cdecl wsprintf(LPSTR lpOut, LPCSTR lpFmt, ...)",
       "file": "win_stubs.h",
-      "line": 799,
+      "line": 841,
       "kind": "prototype"
     },
     "AppendMenu": {
       "signature": "BOOL WINAPI AppendMenu(HMENU hMenu, UINT uFlags, UINT uIDNewItem, LPCSTR lpNewItem)",
       "file": "win_stubs.h",
-      "line": 800,
+      "line": 842,
       "kind": "prototype"
     },
     "BeginPaint": {
       "signature": "HDC WINAPI BeginPaint(HWND hWnd, PAINTSTRUCT FAR *lpPaint)",
       "file": "win_stubs.h",
-      "line": 801,
+      "line": 843,
       "kind": "prototype"
     },
     "CallWindowProc": {
       "signature": "LRESULT WINAPI CallWindowProc(WNDPROC lpPrevWndFunc, HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)",
       "file": "win_stubs.h",
-      "line": 802,
+      "line": 844,
       "kind": "prototype"
     },
     "CheckDlgButton": {
       "signature": "void WINAPI CheckDlgButton(HWND hDlg, int nIDButton, UINT uCheck)",
       "file": "win_stubs.h",
-      "line": 803,
+      "line": 845,
       "kind": "prototype"
     },
     "CheckMenuItem": {
       "signature": "BOOL WINAPI CheckMenuItem(HMENU hMenu, UINT uIDCheckItem, UINT uCheck)",
       "file": "win_stubs.h",
-      "line": 804,
+      "line": 846,
       "kind": "prototype"
     },
     "CheckRadioButton": {
       "signature": "void WINAPI CheckRadioButton(HWND hDlg, int nIDFirstButton, int nIDLastButton, int nIDCheckButton)",
       "file": "win_stubs.h",
-      "line": 805,
+      "line": 847,
       "kind": "prototype"
     },
     "ClientToScreen": {
       "signature": "void WINAPI ClientToScreen(HWND hWnd, POINT FAR *lpPoint)",
       "file": "win_stubs.h",
-      "line": 806,
+      "line": 848,
       "kind": "prototype"
     },
     "CopyRect": {
       "signature": "void WINAPI CopyRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc)",
       "file": "win_stubs.h",
-      "line": 807,
+      "line": 849,
       "kind": "prototype"
     },
     "CreateDialog": {
       "signature": "HWND WINAPI CreateDialog(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc)",
       "file": "win_stubs.h",
-      "line": 808,
+      "line": 850,
       "kind": "prototype"
     },
     "CreatePopupMenu": {
       "signature": "HMENU WINAPI CreatePopupMenu(void)",
       "file": "win_stubs.h",
-      "line": 809,
+      "line": 851,
       "kind": "prototype"
     },
     "DefWindowProc": {
       "signature": "LRESULT WINAPI DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)",
       "file": "win_stubs.h",
-      "line": 813,
+      "line": 860,
       "kind": "prototype"
     },
     "DeleteMenu": {
       "signature": "BOOL WINAPI DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags)",
       "file": "win_stubs.h",
-      "line": 814,
+      "line": 861,
       "kind": "prototype"
     },
     "DestroyCursor": {
       "signature": "BOOL WINAPI DestroyCursor(HCURSOR hCursor)",
       "file": "win_stubs.h",
-      "line": 815,
+      "line": 862,
       "kind": "prototype"
     },
     "DestroyIcon": {
       "signature": "BOOL WINAPI DestroyIcon(HICON hIcon)",
       "file": "win_stubs.h",
-      "line": 816,
+      "line": 863,
       "kind": "prototype"
     },
     "DestroyMenu": {
       "signature": "BOOL WINAPI DestroyMenu(HMENU hMenu)",
       "file": "win_stubs.h",
-      "line": 817,
+      "line": 864,
       "kind": "prototype"
     },
     "DestroyWindow": {
       "signature": "BOOL WINAPI DestroyWindow(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 818,
+      "line": 865,
       "kind": "prototype"
     },
     "DialogBox": {
       "signature": "int WINAPI DialogBox(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc)",
       "file": "win_stubs.h",
-      "line": 819,
+      "line": 866,
       "kind": "prototype"
     },
     "DispatchMessage": {
       "signature": "LONG WINAPI DispatchMessage(const MSG FAR *lpMsg)",
       "file": "win_stubs.h",
-      "line": 820,
+      "line": 867,
       "kind": "prototype"
     },
     "DrawIcon": {
       "signature": "BOOL WINAPI DrawIcon(HDC hDC, int x, int y, HICON hIcon)",
       "file": "win_stubs.h",
-      "line": 821,
+      "line": 868,
       "kind": "prototype"
     },
     "DrawMenuBar": {
       "signature": "void WINAPI DrawMenuBar(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 822,
+      "line": 869,
       "kind": "prototype"
     },
     "DrawText": {
       "signature": "int WINAPI DrawText(HDC hdc, LPCSTR lpchText, int cchText, RECT FAR *lprc, UINT format)",
       "file": "win_stubs.h",
-      "line": 823,
+      "line": 870,
       "kind": "prototype"
     },
     "EnableMenuItem": {
       "signature": "BOOL WINAPI EnableMenuItem(HMENU hMenu, UINT uIDEnableItem, UINT uEnable)",
       "file": "win_stubs.h",
-      "line": 824,
+      "line": 871,
       "kind": "prototype"
     },
     "EnableWindow": {
       "signature": "BOOL WINAPI EnableWindow(HWND hWnd, BOOL bEnable)",
       "file": "win_stubs.h",
-      "line": 825,
+      "line": 872,
       "kind": "prototype"
     },
     "EndDialog": {
       "signature": "void WINAPI EndDialog(HWND hDlg, int nResult)",
       "file": "win_stubs.h",
-      "line": 826,
+      "line": 873,
       "kind": "prototype"
     },
     "EndPaint": {
       "signature": "void WINAPI EndPaint(HWND hWnd, const PAINTSTRUCT FAR *lpPaint)",
       "file": "win_stubs.h",
-      "line": 827,
+      "line": 874,
       "kind": "prototype"
     },
     "EqualRect": {
       "signature": "BOOL WINAPI EqualRect(const RECT FAR *lprc1, const RECT FAR *lprc2)",
       "file": "win_stubs.h",
-      "line": 828,
+      "line": 875,
       "kind": "prototype"
     },
     "ExitWindows": {
       "signature": "BOOL WINAPI ExitWindows(DWORD dwReserved, UINT uReserved)",
       "file": "win_stubs.h",
-      "line": 829,
+      "line": 876,
       "kind": "prototype"
     },
     "FillRect": {
       "signature": "int WINAPI FillRect(HDC hDC, const RECT FAR *lprc, HBRUSH hbr)",
       "file": "win_stubs.h",
-      "line": 830,
+      "line": 877,
       "kind": "prototype"
     },
     "FlashWindow": {
       "signature": "BOOL WINAPI FlashWindow(HWND hWnd, BOOL bInvert)",
       "file": "win_stubs.h",
-      "line": 831,
+      "line": 878,
       "kind": "prototype"
     },
     "FrameRect": {
       "signature": "int WINAPI FrameRect(HDC hDC, const RECT FAR *lprc, HBRUSH hbr)",
       "file": "win_stubs.h",
-      "line": 832,
+      "line": 879,
       "kind": "prototype"
     },
     "GetActiveWindow": {
       "signature": "HWND WINAPI GetActiveWindow(void)",
       "file": "win_stubs.h",
-      "line": 833,
+      "line": 880,
       "kind": "prototype"
     },
     "GetAsyncKeyState": {
       "signature": "int WINAPI GetAsyncKeyState(int vKey)",
       "file": "win_stubs.h",
-      "line": 834,
+      "line": 881,
       "kind": "prototype"
     },
     "GetClientRect": {
       "signature": "void WINAPI GetClientRect(HWND hWnd, RECT FAR *lpRect)",
       "file": "win_stubs.h",
-      "line": 835,
+      "line": 882,
       "kind": "prototype"
     },
     "GetCurrentTime": {
       "signature": "DWORD WINAPI GetCurrentTime(void)",
       "file": "win_stubs.h",
-      "line": 836,
+      "line": 883,
       "kind": "prototype"
     },
     "GetCursorPos": {
       "signature": "void WINAPI GetCursorPos(POINT FAR *lpPoint)",
       "file": "win_stubs.h",
-      "line": 837,
+      "line": 884,
       "kind": "prototype"
     },
     "GetDC": {
       "signature": "HDC WINAPI GetDC(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 838,
+      "line": 885,
       "kind": "prototype"
     },
     "GetDlgItem": {
       "signature": "HWND WINAPI GetDlgItem(HWND hDlg, int nIDDlgItem)",
       "file": "win_stubs.h",
-      "line": 839,
+      "line": 886,
       "kind": "prototype"
     },
     "GetDlgItemText": {
       "signature": "int WINAPI GetDlgItemText(HWND hDlg, int nIDDlgItem, LPSTR lpString, int cchMax)",
       "file": "win_stubs.h",
-      "line": 840,
+      "line": 887,
       "kind": "prototype"
     },
     "GetFocus": {
       "signature": "HWND WINAPI GetFocus(void)",
       "file": "win_stubs.h",
-      "line": 841,
+      "line": 888,
       "kind": "prototype"
     },
     "GetKeyState": {
       "signature": "int WINAPI GetKeyState(int nVirtKey)",
       "file": "win_stubs.h",
-      "line": 842,
+      "line": 889,
       "kind": "prototype"
     },
     "GetMenu": {
       "signature": "HMENU WINAPI GetMenu(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 843,
+      "line": 890,
       "kind": "prototype"
     },
     "GetMenuItemCount": {
       "signature": "int WINAPI GetMenuItemCount(HMENU hMenu)",
       "file": "win_stubs.h",
-      "line": 844,
+      "line": 891,
       "kind": "prototype"
     },
     "GetMessage": {
       "signature": "BOOL WINAPI GetMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)",
       "file": "win_stubs.h",
-      "line": 845,
+      "line": 892,
       "kind": "prototype"
     },
     "GetParent": {
       "signature": "HWND WINAPI GetParent(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 846,
+      "line": 893,
       "kind": "prototype"
     },
     "GetScrollPos": {
       "signature": "int WINAPI GetScrollPos(HWND hWnd, int nBar)",
       "file": "win_stubs.h",
-      "line": 847,
+      "line": 894,
       "kind": "prototype"
     },
     "GetSubMenu": {
       "signature": "HMENU WINAPI GetSubMenu(HMENU hMenu, int nPos)",
       "file": "win_stubs.h",
-      "line": 848,
+      "line": 895,
       "kind": "prototype"
     },
     "GetSysColor": {
       "signature": "COLORREF WINAPI GetSysColor(int nIndex)",
       "file": "win_stubs.h",
-      "line": 849,
+      "line": 896,
       "kind": "prototype"
     },
     "GetSystemMetrics": {
       "signature": "int WINAPI GetSystemMetrics(int nIndex)",
       "file": "win_stubs.h",
-      "line": 850,
+      "line": 897,
       "kind": "prototype"
     },
     "GetTickCount": {
       "signature": "DWORD WINAPI GetTickCount(void)",
       "file": "win_stubs.h",
-      "line": 851,
+      "line": 898,
       "kind": "prototype"
     },
     "GetWindow": {
       "signature": "HWND WINAPI GetWindow(HWND hWnd, UINT uCmd)",
       "file": "win_stubs.h",
-      "line": 852,
+      "line": 899,
       "kind": "prototype"
     },
     "GetWindowLong": {
       "signature": "LONG WINAPI GetWindowLong(HWND hWnd, int nIndex)",
       "file": "win_stubs.h",
-      "line": 853,
+      "line": 900,
       "kind": "prototype"
     },
     "GetWindowPlacement": {
       "signature": "BOOL WINAPI GetWindowPlacement(HWND hWnd, WINDOWPLACEMENT FAR *lpwndpl)",
       "file": "win_stubs.h",
-      "line": 854,
+      "line": 901,
       "kind": "prototype"
     },
     "GetWindowRect": {
       "signature": "void WINAPI GetWindowRect(HWND hWnd, RECT FAR *lpRect)",
       "file": "win_stubs.h",
-      "line": 855,
+      "line": 902,
       "kind": "prototype"
     },
     "GetWindowText": {
       "signature": "int WINAPI GetWindowText(HWND hWnd, LPSTR lpString, int nMaxCount)",
       "file": "win_stubs.h",
-      "line": 856,
+      "line": 903,
       "kind": "prototype"
     },
     "InflateRect": {
       "signature": "void WINAPI InflateRect(RECT FAR *lprc, int dx, int dy)",
       "file": "win_stubs.h",
-      "line": 857,
+      "line": 904,
       "kind": "prototype"
     },
     "InsertMenu": {
       "signature": "BOOL WINAPI InsertMenu(HMENU hMenu, UINT uPosition, UINT uFlags, UINT uIDNewItem, LPCSTR lpNewItem)",
       "file": "win_stubs.h",
-      "line": 858,
+      "line": 905,
       "kind": "prototype"
     },
     "IntersectRect": {
       "signature": "BOOL WINAPI IntersectRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc1, const RECT FAR *lprcSrc2)",
       "file": "win_stubs.h",
-      "line": 859,
+      "line": 906,
       "kind": "prototype"
     },
     "InvalidateRect": {
       "signature": "void WINAPI InvalidateRect(HWND hWnd, const RECT FAR *lpRect, BOOL bErase)",
       "file": "win_stubs.h",
-      "line": 860,
+      "line": 907,
       "kind": "prototype"
     },
     "IsDlgButtonChecked": {
       "signature": "UINT WINAPI IsDlgButtonChecked(HWND hDlg, int nIDButton)",
       "file": "win_stubs.h",
-      "line": 861,
+      "line": 908,
       "kind": "prototype"
     },
     "IsIconic": {
       "signature": "BOOL WINAPI IsIconic(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 862,
+      "line": 909,
       "kind": "prototype"
     },
     "IsWindowVisible": {
       "signature": "BOOL WINAPI IsWindowVisible(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 863,
+      "line": 910,
       "kind": "prototype"
     },
     "IsZoomed": {
       "signature": "BOOL WINAPI IsZoomed(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 864,
+      "line": 911,
       "kind": "prototype"
     },
     "KillTimer": {
       "signature": "BOOL WINAPI KillTimer(HWND hWnd, UINT uIDEvent)",
       "file": "win_stubs.h",
-      "line": 865,
+      "line": 912,
       "kind": "prototype"
     },
     "LoadAccelerators": {
       "signature": "HACCEL WINAPI LoadAccelerators(HINSTANCE hInstance, LPCSTR lpTableName)",
       "file": "win_stubs.h",
-      "line": 866,
+      "line": 913,
       "kind": "prototype"
     },
     "LoadBitmap": {
       "signature": "HBITMAP WINAPI LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName)",
       "file": "win_stubs.h",
-      "line": 867,
+      "line": 918,
       "kind": "prototype"
     },
     "LoadCursor": {
       "signature": "HCURSOR WINAPI LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName)",
       "file": "win_stubs.h",
-      "line": 868,
+      "line": 919,
       "kind": "prototype"
     },
     "LoadIcon": {
       "signature": "HICON WINAPI LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName)",
       "file": "win_stubs.h",
-      "line": 869,
+      "line": 920,
       "kind": "prototype"
     },
     "MapWindowPoints": {
       "signature": "void WINAPI MapWindowPoints(HWND hWndFrom, HWND hWndTo, POINT FAR *lpPoints, UINT cPoints)",
       "file": "win_stubs.h",
-      "line": 870,
+      "line": 921,
       "kind": "prototype"
     },
     "MessageBeep": {
       "signature": "void WINAPI MessageBeep(UINT uType)",
       "file": "win_stubs.h",
-      "line": 871,
+      "line": 922,
       "kind": "prototype"
     },
     "MessageBox": {
       "signature": "int WINAPI MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)",
       "file": "win_stubs.h",
-      "line": 872,
+      "line": 923,
       "kind": "prototype"
     },
     "MoveWindow": {
       "signature": "BOOL WINAPI MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, BOOL bRepaint)",
       "file": "win_stubs.h",
-      "line": 873,
+      "line": 924,
       "kind": "prototype"
     },
     "OffsetRect": {
       "signature": "void WINAPI OffsetRect(RECT FAR *lprc, int dx, int dy)",
       "file": "win_stubs.h",
-      "line": 874,
+      "line": 925,
       "kind": "prototype"
     },
     "PeekMessage": {
       "signature": "BOOL WINAPI PeekMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)",
       "file": "win_stubs.h",
-      "line": 875,
+      "line": 926,
       "kind": "prototype"
     },
     "PostMessage": {
       "signature": "BOOL WINAPI PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)",
       "file": "win_stubs.h",
-      "line": 876,
+      "line": 927,
       "kind": "prototype"
     },
     "PostQuitMessage": {
       "signature": "void WINAPI PostQuitMessage(int nExitCode)",
       "file": "win_stubs.h",
-      "line": 877,
+      "line": 928,
       "kind": "prototype"
     },
     "PtInRect": {
       "signature": "BOOL WINAPI PtInRect(const RECT FAR *lprc, POINT pt)",
       "file": "win_stubs.h",
-      "line": 878,
+      "line": 929,
       "kind": "prototype"
     },
     "RealizePalette": {
       "signature": "UINT WINAPI RealizePalette(HDC hdc)",
       "file": "win_stubs.h",
-      "line": 879,
+      "line": 930,
       "kind": "prototype"
     },
     "RegisterClass": {
       "signature": "ATOM WINAPI RegisterClass(const WNDCLASS FAR *lpWndClass)",
       "file": "win_stubs.h",
-      "line": 880,
+      "line": 931,
       "kind": "prototype"
     },
     "ReleaseCapture": {
       "signature": "void WINAPI ReleaseCapture(void)",
       "file": "win_stubs.h",
-      "line": 881,
+      "line": 932,
       "kind": "prototype"
     },
     "ReleaseDC": {
       "signature": "int WINAPI ReleaseDC(HWND hWnd, HDC hDC)",
       "file": "win_stubs.h",
-      "line": 882,
+      "line": 933,
       "kind": "prototype"
     },
     "ScreenToClient": {
       "signature": "void WINAPI ScreenToClient(HWND hWnd, POINT FAR *lpPoint)",
       "file": "win_stubs.h",
-      "line": 883,
+      "line": 934,
       "kind": "prototype"
     },
     "ScrollWindow": {
       "signature": "void WINAPI ScrollWindow(HWND hWnd, int dx, int dy, const RECT FAR *lpRect, const RECT FAR *lpClipRect)",
       "file": "win_stubs.h",
-      "line": 884,
+      "line": 935,
       "kind": "prototype"
     },
     "SelectPalette": {
       "signature": "HPALETTE WINAPI SelectPalette(HDC hdc, HPALETTE hPal, BOOL bForceBkgd)",
       "file": "win_stubs.h",
-      "line": 885,
+      "line": 936,
       "kind": "prototype"
     },
     "SendDlgItemMessage": {
       "signature": "LRESULT WINAPI SendDlgItemMessage(HWND hDlg, int nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam)",
       "file": "win_stubs.h",
-      "line": 886,
+      "line": 937,
       "kind": "prototype"
     },
     "SendMessage": {
       "signature": "LRESULT WINAPI SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)",
       "file": "win_stubs.h",
-      "line": 887,
+      "line": 938,
       "kind": "prototype"
     },
     "SetCapture": {
       "signature": "HWND WINAPI SetCapture(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 888,
+      "line": 939,
       "kind": "prototype"
     },
     "SetCursor": {
       "signature": "HCURSOR WINAPI SetCursor(HCURSOR hCursor)",
       "file": "win_stubs.h",
-      "line": 889,
+      "line": 940,
       "kind": "prototype"
     },
     "SetDlgItemText": {
       "signature": "void WINAPI SetDlgItemText(HWND hDlg, int nIDDlgItem, LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 890,
+      "line": 941,
       "kind": "prototype"
     },
     "SetFocus": {
       "signature": "HWND WINAPI SetFocus(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 891,
+      "line": 942,
       "kind": "prototype"
     },
     "SetRect": {
       "signature": "void WINAPI SetRect(RECT FAR *lprc, int xLeft, int yTop, int xRight, int yBottom)",
       "file": "win_stubs.h",
-      "line": 892,
+      "line": 943,
       "kind": "prototype"
     },
     "SetScrollPos": {
       "signature": "int WINAPI SetScrollPos(HWND hWnd, int nBar, int nPos, BOOL bRedraw)",
       "file": "win_stubs.h",
-      "line": 893,
+      "line": 944,
       "kind": "prototype"
     },
     "SetScrollRange": {
       "signature": "void WINAPI SetScrollRange(HWND hWnd, int nBar, int nMinPos, int nMaxPos, BOOL bRedraw)",
       "file": "win_stubs.h",
-      "line": 894,
+      "line": 945,
       "kind": "prototype"
     },
     "SetTimer": {
       "signature": "UINT WINAPI SetTimer(HWND hWnd, UINT nIDEvent, UINT uElapse, TIMERPROC lpTimerFunc)",
       "file": "win_stubs.h",
-      "line": 895,
+      "line": 946,
       "kind": "prototype"
     },
     "SetWindowLong": {
       "signature": "LONG WINAPI SetWindowLong(HWND hWnd, int nIndex, LONG dwNewLong)",
       "file": "win_stubs.h",
-      "line": 896,
+      "line": 947,
       "kind": "prototype"
     },
     "SetWindowPos": {
       "signature": "BOOL WINAPI SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, UINT uFlags)",
       "file": "win_stubs.h",
-      "line": 897,
+      "line": 948,
       "kind": "prototype"
     },
     "SetWindowText": {
       "signature": "void WINAPI SetWindowText(HWND hWnd, LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 898,
+      "line": 949,
       "kind": "prototype"
     },
     "ShowWindow": {
       "signature": "BOOL WINAPI ShowWindow(HWND hWnd, int nCmdShow)",
       "file": "win_stubs.h",
-      "line": 899,
+      "line": 950,
       "kind": "prototype"
     },
     "TrackPopupMenu": {
       "signature": "BOOL WINAPI TrackPopupMenu(HMENU hMenu, UINT uFlags, int x, int y, int nReserved, HWND hWnd, const RECT FAR *prcRect)",
       "file": "win_stubs.h",
-      "line": 900,
+      "line": 951,
       "kind": "prototype"
     },
     "TranslateAccelerator": {
       "signature": "int WINAPI TranslateAccelerator(HWND hWnd, HACCEL hAccTable, MSG FAR *lpMsg)",
       "file": "win_stubs.h",
-      "line": 901,
+      "line": 952,
       "kind": "prototype"
     },
     "TranslateMessage": {
       "signature": "BOOL WINAPI TranslateMessage(const MSG FAR *lpMsg)",
       "file": "win_stubs.h",
-      "line": 902,
+      "line": 953,
       "kind": "prototype"
     },
     "UpdateWindow": {
       "signature": "void WINAPI UpdateWindow(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 903,
+      "line": 954,
       "kind": "prototype"
     },
     "ValidateRect": {
       "signature": "void WINAPI ValidateRect(HWND hWnd, const RECT FAR *lpRect)",
       "file": "win_stubs.h",
-      "line": 904,
+      "line": 955,
       "kind": "prototype"
     },
     "WindowFromPoint": {
       "signature": "HWND WINAPI WindowFromPoint(POINT pt)",
       "file": "win_stubs.h",
-      "line": 905,
+      "line": 956,
       "kind": "prototype"
     },
     "WinHelp": {
       "signature": "BOOL WINAPI WinHelp(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD dwData)",
       "file": "win_stubs.h",
-      "line": 906,
+      "line": 957,
       "kind": "prototype"
     }
   }
