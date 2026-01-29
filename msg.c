@@ -21,13 +21,27 @@ char rgcMsgArgs[387] = {4, 5, 3, 4, 4, 2, 2, 4, 2, 3, 1, 1, 2, 1, 4, 3, 3, 3, 2,
 extern const char *const aMSGUncompressed[];
 
 /* functions */
-int16_t FFindPlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
+int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj)
 {
-    uint8_t *lpbMax;
-    uint8_t *lpb;
+    uint8_t *lpb = (uint8_t *)lpMsg;
+    uint8_t *lpbMax = (uint8_t *)lpMsg + (uint32_t)imemMsgCur * 2u;
 
-    /* TODO: implement */
-    return 0;
+    for (;;)
+    {
+        if (lpb >= lpbMax)
+        {
+            return 0;
+        }
+
+        if (((lpb[0] & 0x0F) == (uint8_t)iPlr) &&
+            (((*(uint16_t *)(lpb + 1)) & 0x01FFu) == (uint16_t)iMsg) &&
+            (*(int16_t *)(lpb + 3) == iObj))
+        {
+            return 1;
+        }
+
+        lpb += (lpb[0] >> 4) + 5u;
+    }
 }
 
 int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
@@ -301,7 +315,7 @@ void ReadPlayerMessages(void)
 
             vcmsgplrIn++;
         }
-        
+
         ReadRt();
     }
 

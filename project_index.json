@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-29T03:59:35Z",
+  "generated_at_utc": "2026-01-29T05:04:02Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -8491,7 +8491,7 @@
     ],
     "FFindPlayerMessage": [
       {
-        "signature": "int16_t FFindPlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)",
+        "signature": "int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj)",
         "file": "msg.h",
         "line": 15,
         "kind": "prototype"
@@ -12843,7 +12843,7 @@
       {
         "signature": "int16_t AlertSz(const char *sz, uint16_t mbType)",
         "file": "utilgen.h",
-        "line": 99,
+        "line": 100,
         "kind": "prototype"
       }
     ],

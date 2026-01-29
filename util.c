@@ -1096,8 +1096,10 @@ void UpdateShdefCost(SHDEF *lpshdef)
 
 int16_t FLookupSelPlanet(PLANET *ppl)
 {
-
-    /* TODO: implement */
+    if (sel.scan.grobj == grobjPlanet)
+    {
+        return FLookupPlanet(sel.scan.idpl, ppl);
+    }
     return 0;
 }
 

@@ -41,7 +41,6 @@
   "WtMaxShdefStat": { "grStat": "GrStat" },
 
   "FCheckMessages": { "imsg": "MessageId" },
-  "FFindPlayerMessage": { "iMsg": "MessageId" },
   "FGetNMsgbig": { "idm": "MessageId" },
   "FRemovePlayerMessage": { "iMsg": "MessageId" },
   "FSendPlrMsg": { "iMsg": "MessageId" },

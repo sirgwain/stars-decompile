@@ -420,8 +420,8 @@ extern uint8_t rgTechTrader[13];
 extern uint8_t vbrcVCRFocus;
 extern uint8_t vrgAiArmadaPotency[4];
 extern uint8_t vrgAiCyberArmadaPotency[4];
-extern uint8_t vrgbEnvCur[0];
-extern uint8_t vrgbMachineConfig[11];
+extern uint8_t vrgbEnvCur[11]; // current machine config, hardcoded for now
+extern uint8_t vrgbMachineConfig[11]; // machine config from last serial save
 extern uint8_t vrgcAiParts[45];
 extern uint8_t vrgplrTypeNew[16];
 extern XFER *pxfer;

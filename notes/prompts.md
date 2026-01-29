@@ -3,6 +3,12 @@
 I have attached a zip of my project source files.
 
 Translate the next function in @notes/implementation-plan.md to modern C.
+
+Translate these function to modern win32 C.
+    AlertSz
+    GetDiskSerialNumber
+    HbrGe
+    HpalFromDib
 Use @project_index.json to locate related globals and functions, but treat @types.h as the source of truth for all struct fields and types.
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.
 

@@ -12,7 +12,7 @@ extern char rgMSGLookupTable[72];   /* MEMORY_MSG:0x5ac6 */
 extern char rgcMsgArgs[387];        /* MEMORY_MSG:0x5b0e */
 
 /* functions */
-int16_t FFindPlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj);                                                                                            /* MEMORY_MSG:0x932a */
+int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj);                                                                                            /* MEMORY_MSG:0x932a */
 int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb);                                                                                                                    /* MEMORY_MSG:0x8444 */
 int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7); /* MEMORY_MSG:0x802a */
 char *PszGetMessageN(int16_t iMsg);                                                                                                                                /* MEMORY_MSG:0x8580 */

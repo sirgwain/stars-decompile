@@ -318,10 +318,7 @@ void ExpandRc(RECT *prc, int16_t dx, int16_t dy)
 
 int16_t ReadBigBlock(int16_t hFile, char *lpBuffer, uint32_t dwSize)
 {
-    int16_t nBytes;
-    char *lpInBuf;
-
-    /* TODO: implement */
+    // intentially left blank. Used to be called by HdibLoadBigResource, but we don't need to read it in chunks anymore
     return 0;
 }
 
@@ -337,22 +334,13 @@ char *PszFromLongK(int32_t l, int16_t *pcch)
 
 uint32_t GetDiskSerialNumber(void)
 {
-    int16_t j;
-    int16_t drive;
-    char fn[13];
-    // FIND_T fi; // dos dependency
-    int16_t i;
-    int16_t iWork;
-    uint8_t uDefault;
-    uint16_t uDate;
-    int32_t l;
-    DISKFREE_T df;
+    // we don't actually care about this and we certainly aren't replicating all the dos calls to get the original, so just
+    // make the disk the same for every instance
+    static const uint8_t fakeEnv[] = {
+        'S', 'T', 'A', 'R', 'S', 0x26, 0x00};
 
-    /* debug symbols */
-    /* label NoDrive @ MEMORY_UTILGEN:0x6180 */
-
-    /* TODO: implement */
-    return 0;
+    memcpy(vrgbEnvCur, fakeEnv, sizeof(fakeEnv));
+    return sizeof(fakeEnv);
 }
 
 int16_t FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd)
