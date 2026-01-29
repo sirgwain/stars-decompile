@@ -834,13 +834,35 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_QUERYNEWPALETTE:
-    case WM_PALETTECHANGED:
-        /* Forward palette juggling to the splash window when it exists. */
-        if ((hwndTitle != NULL) && (hwndTitle != hwnd) && (msg == WM_PALETTECHANGED ? (HWND)wParam != hwndTitle : 1))
+    {
+        if (hwndTitle)
         {
             return SendMessage(hwndTitle, msg, wParam, lParam);
         }
-        break;
+
+        HDC hdc = GetDC(hwnd);
+        HPALETTE hpalOld = SelectPalette(hdc, vhpal, FALSE);
+        int changed = RealizePalette(hdc);
+        SelectPalette(hdc, hpalOld, FALSE);
+        ReleaseDC(hwnd, hdc);
+
+        if (changed)
+        {
+            InvalidateRect(hwnd, NULL, TRUE);
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    case WM_PALETTECHANGED:
+    {
+        if ((HWND)wParam == hwnd)
+            return 0;
+
+        /* forward to same logic */
+        SendMessage(hwnd, WM_QUERYNEWPALETTE, 0, 0);
+        return 0;
+    }
 
     case WM_CLOSE:
         DestroyWindow(hwnd);

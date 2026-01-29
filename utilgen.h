@@ -70,26 +70,26 @@ void CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen);        
 void HideProgressGauge(void);                                                                                                                      /* MEMORY_UTILGEN:0x63b2 */
 void InitBtnTrack(BTNT *pbtnt, HWND hwnd, HDC hdc, RECT *prc, int16_t btf, int16_t dTimer, int16_t fInitDown, int16_t fNoEndRedraw, char *szText); /* MEMORY_UTILGEN:0x354c */
 void RcCtrTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen);                                                                                    /* MEMORY_UTILGEN:0x28fc */
-HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal);                                                             /* MEMORY_UTILGEN:0x4e90 */
-void DrawFuzzyBorder(HDC hdc, RECT *prc);                                                                                                          /* MEMORY_UTILGEN:0x427a */
-HPALETTE HpalBlackReserved(void);                                                                                                                  /* MEMORY_UTILGEN:0x4c9c */
-int16_t FGetRMouseMove(POINT *ppt);                                                                                                                /* MEMORY_UTILGEN:0x41e0 */
-HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont);                                                                                /* MEMORY_UTILGEN:0x6aa6 */
-int16_t FStringFitsScreen(char *lpsz, int16_t dxMax);                                                                                              /* MEMORY_UTILGEN:0x43aa */
-uint16_t DibNumColors(void *pv);                                                                                                                   /* MEMORY_UTILGEN:0x4a9a */
-void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase);                                                        /* MEMORY_UTILGEN:0x29d6 */
-void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText);                                                                         /* MEMORY_UTILGEN:0x38b8 */
-void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase);                                                                                             /* MEMORY_UTILGEN:0x336a */
-HPALETTE HpalFromDib(HGLOBAL hdib);                                                                                                                /* MEMORY_UTILGEN:0x4b50 */
+HGLOBAL DibFromBitmap(HBITMAP hbm, DWORD biCompression, WORD biBits, HPALETTE hpal);
+void DrawFuzzyBorder(HDC hdc, RECT *prc);                           /* MEMORY_UTILGEN:0x427a */
+HPALETTE HpalBlackReserved(void);                                   /* MEMORY_UTILGEN:0x4c9c */
+int16_t FGetRMouseMove(POINT *ppt);                                 /* MEMORY_UTILGEN:0x41e0 */
+HFONT HfontPrinterCreate(HDC hdc, int16_t iSize, int16_t *pdyFont); /* MEMORY_UTILGEN:0x6aa6 */
+int16_t FStringFitsScreen(char *lpsz, int16_t dxMax);               /* MEMORY_UTILGEN:0x43aa */
+uint32_t DibNumColors(const void *pv);
+void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase); /* MEMORY_UTILGEN:0x29d6 */
+void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText);                  /* MEMORY_UTILGEN:0x38b8 */
+void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase);                                      /* MEMORY_UTILGEN:0x336a */
+HPALETTE HpalFromDib(HGLOBAL hdib);                                                         /* MEMORY_UTILGEN:0x4b50 */
 int16_t DibBlt(HDC hdc,
                int32_t x0, int32_t y0, int32_t dx, int32_t dy,
                HGLOBAL hdib,
                int32_t x1, int32_t y1, int32_t dxSrc, int32_t dySrc,
                int32_t rop);
-int16_t FGetMouseMove(POINT *ppt);                                                                                                                              /* MEMORY_UTILGEN:0x4146 */
-void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit);                                                                                                        /* MEMORY_UTILGEN:0x3094 */
-void UpdateProgressGauge(int16_t pctX10);                                                                                                                       /* MEMORY_UTILGEN:0x63da */
-uint16_t PaletteSize(void *pv);                                                                                                                                 /* MEMORY_UTILGEN:0x4d60 */
+int16_t FGetMouseMove(POINT *ppt);                       /* MEMORY_UTILGEN:0x4146 */
+void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit); /* MEMORY_UTILGEN:0x3094 */
+void UpdateProgressGauge(int16_t pctX10);                /* MEMORY_UTILGEN:0x63da */
+uint32_t PaletteSize(const void *pv);
 void FreeHbr(HBRUSH hbr);                                                                                                                                       /* MEMORY_UTILGEN:0x4532 */
 int16_t FTrackBtn(BTNT *pbtnt);                                                                                                                                 /* MEMORY_UTILGEN:0x364a */
 void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint); /* MEMORY_UTILGEN:0x25fe */

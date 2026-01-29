@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 174,
-    "stub": 671,
+    "implemented": 179,
+    "stub": 666,
     "missing": 1,
-    "percent_implemented": 20.6
+    "percent_implemented": 21.2
   },
   "by_file": {
     "ai.c": {
@@ -188,8 +188,8 @@
       "missing": 0
     },
     "utilgen.c": {
-      "implemented": 39,
-      "stub": 33,
+      "implemented": 44,
+      "stub": 28,
       "missing": 1
     },
     "vcr.c": {
@@ -338,7 +338,7 @@
       "proto": "void BringUpHostDlg(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1014
+      "line": 1036
     },
     "BrowserDlg": {
       "addr": "10d8:1ed8",
@@ -810,7 +810,7 @@
       "proto": "void CreateChildWindows(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1092
+      "line": 1114
     },
     "CreateRandomRace": {
       "addr": "10e0:5b08",
@@ -954,7 +954,7 @@
       "proto": "void DiaganolTextOut(uint16_t, RECT *, char *, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1472
+      "line": 1625
     },
     "DibBlt": {
       "addr": "1040:4db8",
@@ -962,13 +962,13 @@
       "proto": "int16_t DibBlt(uint16_t, int16_t, int16_t, int16_t, int16_t, uint16_t, int16_t, int16_t, int16_t, int16_t, int32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1238
+      "line": 1344
     },
     "DibFromBitmap": {
       "addr": "1040:4e90",
       "segment": "MEMORY_UTILGEN",
       "proto": "uint16_t DibFromBitmap(uint16_t, uint32_t, uint16_t, uint16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "utilgen.c",
       "line": 1049
     },
@@ -976,9 +976,9 @@
       "addr": "1040:4a9a",
       "segment": "MEMORY_UTILGEN",
       "proto": "uint16_t DibNumColors(void *32)",
-      "status": "stub",
+      "status": "implemented",
       "file": "utilgen.c",
-      "line": 1118
+      "line": 1182
     },
     "DirtyGame": {
       "addr": "1048:a228",
@@ -1162,7 +1162,7 @@
       "proto": "void DrawBtn(uint16_t, RECT *, int16_t, int16_t, char *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1136
+      "line": 1247
     },
     "DrawBuildSelComp": {
       "addr": "10c8:3ab2",
@@ -1250,7 +1250,7 @@
       "proto": "void DrawFuzzyBorder(uint16_t, RECT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1063
+      "line": 1111
     },
     "DrawHistoryReport": {
       "addr": "1108:2494",
@@ -1266,7 +1266,7 @@
       "proto": "void DrawHostDialog2(uint16_t, uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 873
+      "line": 895
     },
     "DrawHostOptions": {
       "addr": "1020:7706",
@@ -1274,7 +1274,7 @@
       "proto": "void DrawHostOptions(uint16_t, uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 895
+      "line": 917
     },
     "DrawLockLight": {
       "addr": "1058:6b00",
@@ -1426,7 +1426,7 @@
       "proto": "void DrawProgressGauge(uint16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1502
+      "line": 1655
     },
     "DrawRace2": {
       "addr": "10e0:179a",
@@ -1698,7 +1698,7 @@
       "proto": "int16_t DxStreamTextOut(uint16_t, int16_t *, int16_t, char *, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1430
+      "line": 1583
     },
     "DxyFromSpdRound": {
       "addr": "10f0:8b28",
@@ -2642,7 +2642,7 @@
       "proto": "int16_t FGetMouseMove(POINT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1357
+      "line": 1463
     },
     "FGetNMsgbig": {
       "addr": "1030:8444",
@@ -2682,7 +2682,7 @@
       "proto": "int16_t FGetRMouseMove(POINT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1085
+      "line": 1149
     },
     "FGetSystemColors": {
       "addr": "1018:08d2",
@@ -2962,7 +2962,7 @@
       "proto": "int16_t FOpenGame(uint16_t, int16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 947
+      "line": 969
     },
     "FOtherStuffAtScanSel": {
       "addr": "1028:4d6e",
@@ -3226,7 +3226,7 @@
       "proto": "int16_t FStringFitsScreen(char *32, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1107
+      "line": 1171
     },
     "FTrackBtn": {
       "addr": "1040:364a",
@@ -3234,7 +3234,7 @@
       "proto": "int16_t FTrackBtn(BTNT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1402
+      "line": 1555
     },
     "FTrackNewGameDlg3": {
       "addr": "1078:a210",
@@ -3560,9 +3560,9 @@
       "addr": "1040:4532",
       "segment": "MEMORY_UTILGEN",
       "proto": "void FreeHbr(uint16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "utilgen.c",
-      "line": 1392
+      "line": 1518
     },
     "FreeLp": {
       "addr": "1060:07a8",
@@ -3626,7 +3626,7 @@
       "proto": "uint16_t GetASubMenu(uint16_t, int16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 938
+      "line": 960
     },
     "GetCachedFleetScannerRange": {
       "addr": "1038:4e02",
@@ -3826,7 +3826,7 @@
       "proto": "void GetWindowRc(uint16_t, RECT *)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 860
+      "line": 882
     },
     "GetXferLeftRightRcs": {
       "addr": "1050:6b46",
@@ -3866,7 +3866,7 @@
       "proto": "uint16_t HcrsFromFrameWindowPt(POINT, int16_t *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 976
+      "line": 998
     },
     "HdibLoadBigResource": {
       "addr": "1040:5220",
@@ -3890,7 +3890,7 @@
       "proto": "uint16_t HfontPrinterCreate(uint16_t, int16_t, int16_t *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1093
+      "line": 1157
     },
     "HideProgressGauge": {
       "addr": "1040:63b2",
@@ -3914,7 +3914,7 @@
       "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1028
+      "line": 1050
     },
     "HostTimerProc": {
       "addr": "1020:7716",
@@ -3922,15 +3922,15 @@
       "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 921
+      "line": 943
     },
     "HpalBlackReserved": {
       "addr": "1040:4c9c",
       "segment": "MEMORY_UTILGEN",
       "proto": "uint16_t HpalBlackReserved(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "utilgen.c",
-      "line": 1074
+      "line": 1122
     },
     "HpalFromDib": {
       "addr": "1040:4b50",
@@ -3938,7 +3938,7 @@
       "proto": "uint16_t HpalFromDib(uint16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1178
+      "line": 1289
     },
     "HtMineWindow": {
       "addr": "1028:37ac",
@@ -4258,7 +4258,7 @@
       "proto": "int16_t InitMDIApp(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 1041
+      "line": 1063
     },
     "InitNewGame3": {
       "addr": "1078:74f8",
@@ -4322,7 +4322,7 @@
       "proto": "void InitializeMenu(uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 967
+      "line": 989
     },
     "InitializeProductionDlg": {
       "addr": "10d0:3430",
@@ -4370,7 +4370,7 @@
       "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 987
+      "line": 1009
     },
     "IpctCanTerraformLppl": {
       "addr": "1048:7f56",
@@ -4506,7 +4506,7 @@
       "proto": "int32_t LDrawGauge(uint16_t, RECT *, int16_t, int32_t *, uint16_t *, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1457
+      "line": 1610
     },
     "LFetchScoreXVal": {
       "addr": "1108:2f94",
@@ -5184,9 +5184,9 @@
       "addr": "1040:4d60",
       "segment": "MEMORY_UTILGEN",
       "proto": "uint16_t PaletteSize(void *32)",
-      "status": "stub",
+      "status": "implemented",
       "file": "utilgen.c",
-      "line": 1383
+      "line": 1489
     },
     "PanicDlg": {
       "addr": "10f8:026a",
@@ -5866,7 +5866,7 @@
       "proto": "void RefitFrameChildren(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1117
+      "line": 1139
     },
     "ReflowColumn": {
       "addr": "1048:5b80",
@@ -5978,7 +5978,7 @@
       "proto": "void RestoreSelection(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1110
+      "line": 1132
     },
     "RgFromStream": {
       "addr": "1070:53f4",
@@ -6002,7 +6002,7 @@
       "proto": "void RightTextOut(uint16_t, int16_t, int16_t, char *, int16_t, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1128
+      "line": 1239
     },
     "SatisfyOrders": {
       "addr": "10b0:6798",
@@ -6330,7 +6330,7 @@
       "proto": "void SetWindowIniString(char *, uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1102
+      "line": 1124
     },
     "ShipBuilder": {
       "addr": "10c8:008c",
@@ -6450,7 +6450,7 @@
       "proto": "void StickyDlgPos(uint16_t, POINT *, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1365
+      "line": 1471
     },
     "StreamClose": {
       "addr": "1070:53cc",
@@ -6682,7 +6682,7 @@
       "proto": "void UpdateProgressGauge(int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1373
+      "line": 1479
     },
     "UpdateResearchStatus": {
       "addr": "10b8:80fe",
@@ -6778,7 +6778,7 @@
       "proto": "void WrapTextOut(uint16_t, int16_t *, int16_t *, char *, int16_t, int16_t, int16_t, int16_t *, int16_t, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1412
+      "line": 1565
     },
     "WriteBOF": {
       "addr": "1070:8ea4",
@@ -6818,7 +6818,7 @@
       "proto": "void WriteIniSettings(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 904
+      "line": 926
     },
     "WriteMemRt": {
       "addr": "1048:a130",
@@ -6954,7 +6954,7 @@
       "proto": "void _Draw3dFrame(uint16_t, RECT *, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1168
+      "line": 1279
     },
     "iAddAttackFleet": {
       "addr": "10a8:4eba",

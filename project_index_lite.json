@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-29T15:14:55Z",
+  "generated_at_utc": "2026-01-29T15:38:40Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -11176,7 +11176,7 @@
       "kind": "prototype"
     },
     "DibFromBitmap": {
-      "signature": "HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal)",
+      "signature": "HGLOBAL DibFromBitmap(HBITMAP hbm, DWORD biCompression, WORD biBits, HPALETTE hpal)",
       "file": "utilgen.h",
       "line": 73,
       "kind": "prototype"
@@ -11212,7 +11212,7 @@
       "kind": "prototype"
     },
     "DibNumColors": {
-      "signature": "uint16_t DibNumColors(void *pv)",
+      "signature": "uint32_t DibNumColors(const void *pv)",
       "file": "utilgen.h",
       "line": 79,
       "kind": "prototype"
@@ -11260,7 +11260,7 @@
       "kind": "prototype"
     },
     "PaletteSize": {
-      "signature": "uint16_t PaletteSize(void *pv)",
+      "signature": "uint32_t PaletteSize(const void *pv)",
       "file": "utilgen.h",
       "line": 92,
       "kind": "prototype"

@@ -1046,18 +1046,66 @@ void RcCtrTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)
     TextOutA(hdc, (int)x, (int)y, psz, (int)cLen);
 }
 
-HGLOBAL DibFromBitmap(uint16_t hbm, uint32_t biStyle, uint16_t biBits, HPALETTE hpal)
+HGLOBAL DibFromBitmap(HBITMAP hbm,
+                      DWORD biCompression,
+                      WORD biBits,
+                      HPALETTE hpal)
 {
-    HDC hdc;
-    uint16_t h;
-    uint32_t dwLen;
     BITMAP bm;
     BITMAPINFOHEADER bi;
+    BITMAPINFO *pbi;
     HGLOBAL hdib;
-    BITMAPINFOHEADER *lpbi;
+    HDC hdc;
+    DWORD imageSize;
 
-    /* TODO: implement */
-    return 0;
+    if (!hbm)
+        return NULL;
+
+    if (!GetObject(hbm, sizeof(bm), &bm))
+        return NULL;
+
+    if (biBits == 0)
+        biBits = (WORD)(bm.bmPlanes * bm.bmBitsPixel);
+
+    ZeroMemory(&bi, sizeof(bi));
+    bi.biSize = sizeof(BITMAPINFOHEADER);
+    bi.biWidth = bm.bmWidth;
+    bi.biHeight = bm.bmHeight;
+    bi.biPlanes = 1;
+    bi.biBitCount = biBits;
+    bi.biCompression = biCompression;
+
+    imageSize = ((bi.biWidth * biBits + 31) & ~31) / 8 * bi.biHeight;
+    bi.biSizeImage = imageSize;
+
+    hdib = GlobalAlloc(GMEM_MOVEABLE,
+                       bi.biSize + PaletteSize(&bi) + imageSize);
+    if (!hdib)
+        return NULL;
+
+    pbi = (BITMAPINFO *)GlobalLock(hdib);
+    pbi->bmiHeader = bi;
+
+    hdc = GetDC(NULL);
+    if (hpal)
+    {
+        SelectPalette(hdc, hpal, FALSE);
+        RealizePalette(hdc);
+    }
+
+    if (!GetDIBits(hdc, hbm, 0, bm.bmHeight,
+                   (uint8_t *)pbi + bi.biSize + PaletteSize(&bi),
+                   pbi, DIB_RGB_COLORS))
+    {
+        GlobalUnlock(hdib);
+        GlobalFree(hdib);
+        ReleaseDC(NULL, hdc);
+        return NULL;
+    }
+
+    ReleaseDC(NULL, hdc);
+    GlobalUnlock(hdib);
+    return hdib;
 }
 
 void DrawFuzzyBorder(HDC hdc, RECT *prc)
@@ -1073,13 +1121,29 @@ void DrawFuzzyBorder(HDC hdc, RECT *prc)
 
 HPALETTE HpalBlackReserved(void)
 {
+    LOGPALETTE *plp;
     HPALETTE hpal;
-    int16_t cColors;
-    int16_t i;
-    LOGPALETTE *ppal;
 
-    /* TODO: implement */
-    return 0;
+    plp = (LOGPALETTE *)LocalAlloc(LMEM_FIXED,
+                                   sizeof(LOGPALETTE) +
+                                       sizeof(PALETTEENTRY) * 256);
+    if (!plp)
+        return NULL;
+
+    plp->palVersion = 0x0300;
+    plp->palNumEntries = 256;
+
+    for (int i = 0; i < 256; i++)
+    {
+        plp->palPalEntry[i].peRed = 0;
+        plp->palPalEntry[i].peGreen = 0;
+        plp->palPalEntry[i].peBlue = 0;
+        plp->palPalEntry[i].peFlags = PC_RESERVED;
+    }
+
+    hpal = CreatePalette(plp);
+    LocalFree(plp);
+    return hpal;
 }
 
 int16_t FGetRMouseMove(POINT *ppt)
@@ -1115,14 +1179,61 @@ int16_t FStringFitsScreen(char *lpsz, int16_t dxMax)
     return 0;
 }
 
-uint16_t DibNumColors(void *pv)
+uint32_t DibNumColors(const void *pv)
 {
-    int16_t bits;
-    BITMAPCOREHEADER *lpbc;
-    BITMAPINFOHEADER *lpbi;
+    const uint8_t *p;
+    uint32_t bits;
+    uint32_t clrUsed;
 
-    /* TODO: implement */
-    return 0;
+    if (pv == NULL)
+    {
+        return 0;
+    }
+
+    p = (const uint8_t *)pv;
+
+    /*
+     * Win16 supported both BITMAPCOREHEADER (OS/2 1.x) and BITMAPINFOHEADER.
+     *
+     * BITMAPCOREHEADER:
+     *   bcSize      @ +0 (DWORD) == 12
+     *   bcBitCount  @ +10 (WORD)
+     *
+     * BITMAPINFOHEADER:
+     *   biClrUsed   @ +32 (DWORD)
+     *   biBitCount  @ +14 (WORD)
+     */
+    if (p[0] == 0x0c && p[1] == 0x00 && p[2] == 0x00 && p[3] == 0x00)
+    {
+        /* BITMAPCOREHEADER */
+        bits = (uint32_t)*(const uint16_t *)(p + 10);
+        clrUsed = 0;
+        DBG_LOGD("DibNumColors: COREHEADER bits=%lu", (unsigned long)bits);
+    }
+    else
+    {
+        /* BITMAPINFOHEADER (or later) */
+        clrUsed = *(const uint32_t *)(p + 32);
+        if (clrUsed != 0)
+        {
+            DBG_LOGD("DibNumColors: INFOHEADER biClrUsed=%lu (nonzero)", (unsigned long)clrUsed);
+            return clrUsed;
+        }
+        bits = (uint32_t)*(const uint16_t *)(p + 14);
+        DBG_LOGD("DibNumColors: INFOHEADER bits=%lu biClrUsed=0", (unsigned long)bits);
+    }
+
+    switch (bits)
+    {
+    case 1:
+        return 2;
+    case 4:
+        return 16;
+    case 8:
+        return 256;
+    default:
+        return 0;
+    }
 }
 
 void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase)
@@ -1177,61 +1288,56 @@ void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase)
 
 HPALETTE HpalFromDib(HGLOBAL hdib)
 {
+    const BITMAPINFOHEADER *lpbi;
+    const RGBQUAD *rgb;
+    LOGPALETTE *plp;
+    uint32_t nColors;
     HPALETTE hpal;
-    int16_t cColors;
-    int16_t i;
-    uint8_t bT;
-    char *lpb;
-    BITMAPINFOHEADER *lpbi;
-    LOGPALETTE *ppal;
+    LPVOID p;
 
     if (hdib == NULL)
+        return NULL;
+
+    p = GlobalLock(hdib);
+    if (!p)
+        return NULL;
+
+    lpbi = (const BITMAPINFOHEADER *)p;
+    nColors = DibNumColors(lpbi);
+
+    if (nColors == 0 || nColors > 256)
     {
+        GlobalUnlock(hdib);
         return NULL;
     }
 
-    lpb = (char *)LockResource(hdib);
-    if (lpb == NULL)
+    plp = (LOGPALETTE *)LocalAlloc(LMEM_FIXED,
+                                   sizeof(LOGPALETTE) +
+                                       sizeof(PALETTEENTRY) * nColors);
+    if (!plp)
     {
+        GlobalUnlock(hdib);
         return NULL;
     }
 
-    lpbi = (BITMAPINFOHEADER *)lpb;
-    cColors = (int16_t)DibNumColors(lpbi);
-    if (cColors <= 0)
+    plp->palVersion = 0x0300;
+    plp->palNumEntries = (WORD)nColors;
+
+    rgb = (const RGBQUAD *)(p + lpbi->biSize);
+
+    for (uint32_t i = 0; i < nColors; i++)
     {
-        return NULL;
+        plp->palPalEntry[i].peRed = rgb[i].rgbRed;
+        plp->palPalEntry[i].peGreen = rgb[i].rgbGreen;
+        plp->palPalEntry[i].peBlue = rgb[i].rgbBlue;
+        plp->palPalEntry[i].peFlags = 0;
     }
 
-    ppal = (LOGPALETTE *)LocalAlloc(LPTR, sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (uint32_t)cColors));
-    if (ppal == NULL)
-    {
-        return NULL;
-    }
+    hpal = CreatePalette(plp);
 
-    ppal->palVersion = 0x0300;
-    ppal->palNumEntries = (WORD)cColors;
+    LocalFree(plp);
+    GlobalUnlock(hdib);
 
-    /* Color table starts immediately after BITMAPINFOHEADER in an RT_BITMAP DIB. */
-    lpb = (char *)lpbi + lpbi->biSize;
-    for (i = 0; i < cColors; i++)
-    {
-        /* DIB colors are stored as BGR0 for BI_RGB. */
-        ppal->palPalEntry[i].peBlue = (uint8_t)lpb[i * 4 + 0];
-        ppal->palPalEntry[i].peGreen = (uint8_t)lpb[i * 4 + 1];
-        ppal->palPalEntry[i].peRed = (uint8_t)lpb[i * 4 + 2];
-        ppal->palPalEntry[i].peFlags = 0;
-    }
-
-    /* Preserve the original behavior of reserving black entry when present. */
-    if (cColors > 0)
-    {
-        bT = ppal->palPalEntry[0].peFlags;
-        (void)bT;
-    }
-
-    hpal = CreatePalette(ppal);
-    LocalFree(ppal);
     return hpal;
 }
 
@@ -1380,23 +1486,70 @@ void UpdateProgressGauge(int16_t pctX10)
     /* TODO: implement */
 }
 
-uint16_t PaletteSize(void *pv)
+uint32_t PaletteSize(const void *pv)
 {
-    uint16_t NumColors;
-    BITMAPINFOHEADER *lpbi;
+    uint32_t nColors;
 
-    /* TODO: implement */
-    return 0;
+    if (pv == NULL)
+    {
+        return 0;
+    }
+
+    nColors = DibNumColors(pv);
+
+    /* BITMAPCOREHEADER (OS/2 1.x) has an RGBTRIPLE (3 bytes) color table. */
+    {
+        const uint8_t *p = (const uint8_t *)pv;
+        const bool isCore =
+            (p[0] == 0x0c && p[1] == 0x00 && p[2] == 0x00 && p[3] == 0x00);
+
+        if (isCore)
+        {
+            return nColors * 3u;
+        }
+        else
+        {
+            /* BITMAPINFOHEADER+ uses RGBQUAD (4 bytes) color table. */
+            return nColors * 4u;
+        }
+    }
 }
 
 void FreeHbr(HBRUSH hbr)
 {
     int16_t i;
 
-    /* debug symbols */
-    /* label DeleteBrush @ MEMORY_UTILGEN:0x457d */
+    if (hbr == NULL)
+    {
+        return;
+    }
 
-    /* TODO: implement */
+    i = 0;
+    for (;;)
+    {
+        if (i >= chbrCache)
+        {
+            /* Not in cache: just delete it. */
+            DeleteObject(hbr);
+            return;
+        }
+
+        /* If cached and in-use, decrement refcount; delete on zero. */
+        if (rghbrCacheUse[i] != 0 && hbr == rghbrCache[i])
+        {
+            rghbrCacheUse[i]--;
+
+            if (rghbrCacheUse[i] != 0)
+            {
+                return;
+            }
+
+            DeleteObject(hbr);
+            return;
+        }
+
+        i++;
+    }
 }
 
 int16_t FTrackBtn(BTNT *pbtnt)
