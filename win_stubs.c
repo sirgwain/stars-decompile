@@ -48,14 +48,23 @@ BOOL WINAPI PrintDlg(PRINTDLG FAR *lppd)
 
 BOOL WINAPI BitBlt(HDC hdcDest, int x, int y, int cx, int cy, HDC hdcSrc, int x1, int y1, DWORD rop)
 {
-    (void)hdcDest; (void)x; (void)y; (void)cx; (void)cy;
-    (void)hdcSrc; (void)x1; (void)y1; (void)rop;
+    (void)hdcDest;
+    (void)x;
+    (void)y;
+    (void)cx;
+    (void)cy;
+    (void)hdcSrc;
+    (void)x1;
+    (void)y1;
+    (void)rop;
     return TRUE;
 }
 
 HBITMAP WINAPI CreateCompatibleBitmap(HDC hdc, int cx, int cy)
 {
-    (void)hdc; (void)cx; (void)cy;
+    (void)hdc;
+    (void)cx;
+    (void)cy;
     return (HBITMAP)(uintptr_t)1; /* Non-zero handle */
 }
 
@@ -85,13 +94,18 @@ HBRUSH WINAPI CreatePatternBrush(HBITMAP hbm)
 
 HPEN WINAPI CreatePen(int iStyle, int cWidth, COLORREF color)
 {
-    (void)iStyle; (void)cWidth; (void)color;
+    (void)iStyle;
+    (void)cWidth;
+    (void)color;
     return (HPEN)(uintptr_t)1;
 }
 
 HRGN WINAPI CreateRectRgn(int x1, int y1, int x2, int y2)
 {
-    (void)x1; (void)y1; (void)x2; (void)y2;
+    (void)x1;
+    (void)y1;
+    (void)x2;
+    (void)y2;
     return (HRGN)(uintptr_t)1;
 }
 
@@ -115,26 +129,44 @@ BOOL WINAPI DeleteObject(HGDIOBJ ho)
 
 BOOL WINAPI Ellipse(HDC hdc, int left, int top, int right, int bottom)
 {
-    (void)hdc; (void)left; (void)top; (void)right; (void)bottom;
+    (void)hdc;
+    (void)left;
+    (void)top;
+    (void)right;
+    (void)bottom;
     return TRUE;
 }
 
 int WINAPI Escape(HDC hdc, int iEscape, int cjIn, LPCSTR lpIn, void FAR *lpOut)
 {
-    (void)hdc; (void)iEscape; (void)cjIn; (void)lpIn; (void)lpOut;
+    (void)hdc;
+    (void)iEscape;
+    (void)cjIn;
+    (void)lpIn;
+    (void)lpOut;
     return 0;
 }
 
 int WINAPI ExcludeClipRect(HDC hdc, int left, int top, int right, int bottom)
 {
-    (void)hdc; (void)left; (void)top; (void)right; (void)bottom;
+    (void)hdc;
+    (void)left;
+    (void)top;
+    (void)right;
+    (void)bottom;
     return 1; /* SIMPLEREGION */
 }
 
 BOOL WINAPI ExtTextOut(HDC hdc, int x, int y, UINT options, const RECT FAR *lprect, LPCSTR lpString, UINT c, int FAR *lpDx)
 {
-    (void)hdc; (void)x; (void)y; (void)options; (void)lprect;
-    (void)lpString; (void)c; (void)lpDx;
+    (void)hdc;
+    (void)x;
+    (void)y;
+    (void)options;
+    (void)lprect;
+    (void)lpString;
+    (void)c;
+    (void)lpDx;
     return TRUE;
 }
 
@@ -149,27 +181,42 @@ int WINAPI GetDeviceCaps(HDC hdc, int index)
     (void)hdc;
     switch (index)
     {
-    case HORZRES: return 640;
-    case VERTRES: return 480;
-    case BITSPIXEL: return 8;
-    case PLANES: return 1;
-    case NUMCOLORS: return 256;
-    case LOGPIXELSX: return 96;
-    case LOGPIXELSY: return 96;
-    default: return 0;
+    case HORZRES:
+        return 640;
+    case VERTRES:
+        return 480;
+    case BITSPIXEL:
+        return 8;
+    case PLANES:
+        return 1;
+    case NUMCOLORS:
+        return 256;
+    case LOGPIXELSX:
+        return 96;
+    case LOGPIXELSY:
+        return 96;
+    default:
+        return 0;
     }
 }
 
 int WINAPI GetDIBits(HDC hdc, HBITMAP hbm, UINT start, UINT cLines, void FAR *lpvBits, BITMAPINFO FAR *lpbmi, UINT usage)
 {
-    (void)hdc; (void)hbm; (void)start; (void)cLines;
-    (void)lpvBits; (void)lpbmi; (void)usage;
+    (void)hdc;
+    (void)hbm;
+    (void)start;
+    (void)cLines;
+    (void)lpvBits;
+    (void)lpbmi;
+    (void)usage;
     return 0;
 }
 
 int WINAPI GetObject(HGDIOBJ h, int c, void FAR *pv)
 {
-    (void)h; (void)c; (void)pv;
+    (void)h;
+    (void)c;
+    (void)pv;
     return 0;
 }
 
@@ -187,7 +234,8 @@ HGDIOBJ WINAPI GetStockObject(int i)
 
 DWORD WINAPI GetTextExtent(HDC hdc, LPCSTR lpString, int c)
 {
-    (void)hdc; (void)lpString;
+    (void)hdc;
+    (void)lpString;
     /* Return width in low word, height in high word */
     /* Estimate: 8 pixels per character, 16 pixels high */
     return MAKELONG(c * 8, 16);
@@ -195,7 +243,8 @@ DWORD WINAPI GetTextExtent(HDC hdc, LPCSTR lpString, int c)
 
 BOOL WINAPI GetTextExtentPoint32A(HDC hdc, LPCSTR lpString, int c, LPSIZE lpSize)
 {
-    (void)hdc; (void)lpString;
+    (void)hdc;
+    (void)lpString;
     if (lpSize)
     {
         lpSize->cx = (LONG)(c * 8);
@@ -226,91 +275,122 @@ BOOL WINAPI GetTextMetrics(HDC hdc, TEXTMETRIC FAR *lptm)
 
 int WINAPI IntersectClipRect(HDC hdc, int left, int top, int right, int bottom)
 {
-    (void)hdc; (void)left; (void)top; (void)right; (void)bottom;
+    (void)hdc;
+    (void)left;
+    (void)top;
+    (void)right;
+    (void)bottom;
     return 1; /* SIMPLEREGION */
 }
 
 BOOL WINAPI LineTo(HDC hdc, int x, int y)
 {
-    (void)hdc; (void)x; (void)y;
+    (void)hdc;
+    (void)x;
+    (void)y;
     return TRUE;
 }
 
 DWORD WINAPI MoveTo(HDC hdc, int x, int y)
 {
-    (void)hdc; (void)x; (void)y;
+    (void)hdc;
+    (void)x;
+    (void)y;
     return 0;
 }
 
 int WINAPI MulDiv(int nNumber, int nNumerator, int nDenominator)
 {
-    if (nDenominator == 0) return -1;
+    if (nDenominator == 0)
+        return -1;
     return (int)(((long long)nNumber * nNumerator) / nDenominator);
 }
 
 BOOL WINAPI PatBlt(HDC hdc, int x, int y, int w, int h, DWORD rop)
 {
-    (void)hdc; (void)x; (void)y; (void)w; (void)h; (void)rop;
+    (void)hdc;
+    (void)x;
+    (void)y;
+    (void)w;
+    (void)h;
+    (void)rop;
     return TRUE;
 }
 
 BOOL WINAPI Rectangle(HDC hdc, int left, int top, int right, int bottom)
 {
-    (void)hdc; (void)left; (void)top; (void)right; (void)bottom;
+    (void)hdc;
+    (void)left;
+    (void)top;
+    (void)right;
+    (void)bottom;
     return TRUE;
 }
 
 int WINAPI SelectClipRgn(HDC hdc, HRGN hrgn)
 {
-    (void)hdc; (void)hrgn;
+    (void)hdc;
+    (void)hrgn;
     return 1; /* SIMPLEREGION */
 }
 
 HGDIOBJ WINAPI SelectObject(HDC hdc, HGDIOBJ h)
 {
-    (void)hdc; (void)h;
+    (void)hdc;
+    (void)h;
     return (HGDIOBJ)(uintptr_t)1; /* Previous object */
 }
 
 COLORREF WINAPI SetBkColor(HDC hdc, COLORREF color)
 {
-    (void)hdc; (void)color;
+    (void)hdc;
+    (void)color;
     return 0xFFFFFF;
 }
 
 int WINAPI SetBkMode(HDC hdc, int mode)
 {
-    (void)hdc; (void)mode;
+    (void)hdc;
+    (void)mode;
     return OPAQUE;
 }
 
 DWORD WINAPI SetBrushOrg(HDC hdc, int x, int y)
 {
-    (void)hdc; (void)x; (void)y;
+    (void)hdc;
+    (void)x;
+    (void)y;
     return 0;
 }
 
 COLORREF WINAPI SetPixel(HDC hdc, int x, int y, COLORREF color)
 {
-    (void)hdc; (void)x; (void)y; (void)color;
+    (void)hdc;
+    (void)x;
+    (void)y;
+    (void)color;
     return color;
 }
 
 int WINAPI SetROP2(HDC hdc, int rop2)
 {
-    (void)hdc; (void)rop2;
+    (void)hdc;
+    (void)rop2;
     return R2_COPYPEN;
 }
 
 COLORREF WINAPI SetTextColor(HDC hdc, COLORREF color)
 {
-    (void)hdc; (void)color;
+    (void)hdc;
+    (void)color;
     return 0;
 }
 
 DWORD WINAPI SetWindowOrg(HDC hdc, int x, int y)
 {
-    (void)hdc; (void)x; (void)y;
+    (void)hdc;
+    (void)x;
+    (void)y;
     return 0;
 }
 
@@ -318,15 +398,29 @@ int WINAPI StretchDIBits(HDC hdc, int xDest, int yDest, int DestWidth, int DestH
                          int xSrc, int ySrc, int SrcWidth, int SrcHeight,
                          const void FAR *lpBits, const BITMAPINFO FAR *lpbmi, UINT iUsage, DWORD rop)
 {
-    (void)hdc; (void)xDest; (void)yDest; (void)DestWidth; (void)DestHeight;
-    (void)xSrc; (void)ySrc; (void)SrcWidth; (void)SrcHeight;
-    (void)lpBits; (void)lpbmi; (void)iUsage; (void)rop;
+    (void)hdc;
+    (void)xDest;
+    (void)yDest;
+    (void)DestWidth;
+    (void)DestHeight;
+    (void)xSrc;
+    (void)ySrc;
+    (void)SrcWidth;
+    (void)SrcHeight;
+    (void)lpBits;
+    (void)lpbmi;
+    (void)iUsage;
+    (void)rop;
     return 0;
 }
 
 BOOL WINAPI TextOut(HDC hdc, int x, int y, LPCSTR lpString, int c)
 {
-    (void)hdc; (void)x; (void)y; (void)lpString; (void)c;
+    (void)hdc;
+    (void)x;
+    (void)y;
+    (void)lpString;
+    (void)c;
     return TRUE;
 }
 
@@ -353,25 +447,32 @@ HFILE WINAPI _lclose(HFILE hFile)
 
 UINT WINAPI _lread(HFILE hFile, void FAR *lpBuffer, UINT uBytes)
 {
-    (void)hFile; (void)lpBuffer; (void)uBytes;
+    (void)hFile;
+    (void)lpBuffer;
+    (void)uBytes;
     return 0;
 }
 
 UINT WINAPI _lwrite(HFILE hFile, const void FAR *lpBuffer, UINT uBytes)
 {
-    (void)hFile; (void)lpBuffer; (void)uBytes;
+    (void)hFile;
+    (void)lpBuffer;
+    (void)uBytes;
     return 0;
 }
 
 int WINAPI AccessResource(HINSTANCE hInstance, HRSRC hResInfo)
 {
-    (void)hInstance; (void)hResInfo;
+    (void)hInstance;
+    (void)hResInfo;
     return -1;
 }
 
 HGLOBAL WINAPI AllocResource(HINSTANCE hInstance, HRSRC hResInfo, DWORD dwSize)
 {
-    (void)hInstance; (void)hResInfo; (void)dwSize;
+    (void)hInstance;
+    (void)hResInfo;
+    (void)dwSize;
     return 0;
 }
 
@@ -390,7 +491,9 @@ void WINAPI FatalExit(int code)
 
 HRSRC WINAPI FindResource(HINSTANCE hInstance, LPCSTR lpName, LPCSTR lpType)
 {
-    (void)hInstance; (void)lpName; (void)lpType;
+    (void)hInstance;
+    (void)lpName;
+    (void)lpType;
     return 0;
 }
 
@@ -428,13 +531,17 @@ int WINAPI GetModuleFileName(HINSTANCE hInstance, LPSTR lpFilename, int nSize)
 
 UINT WINAPI GetPrivateProfileInt(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault, LPCSTR lpFileName)
 {
-    (void)lpAppName; (void)lpKeyName; (void)lpFileName;
+    (void)lpAppName;
+    (void)lpKeyName;
+    (void)lpFileName;
     return nDefault;
 }
 
 int WINAPI GetPrivateProfileString(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefault, LPSTR lpReturnedString, int nSize, LPCSTR lpFileName)
 {
-    (void)lpAppName; (void)lpKeyName; (void)lpFileName;
+    (void)lpAppName;
+    (void)lpKeyName;
+    (void)lpFileName;
     if (lpReturnedString && nSize > 0)
     {
         if (lpDefault)
@@ -491,7 +598,8 @@ BOOL WINAPI GlobalUnlock(HGLOBAL hMem)
 
 HGLOBAL WINAPI LoadResource(HINSTANCE hInstance, HRSRC hResInfo)
 {
-    (void)hInstance; (void)hResInfo;
+    (void)hInstance;
+    (void)hResInfo;
     return 0;
 }
 
@@ -558,13 +666,16 @@ FARPROC WINAPI MakeProcInstance(FARPROC lpProc, HINSTANCE hInstance)
 
 HFILE WINAPI OpenFile(LPCSTR lpFileName, OFSTRUCT FAR *lpReOpenBuff, UINT uStyle)
 {
-    (void)lpFileName; (void)lpReOpenBuff; (void)uStyle;
+    (void)lpFileName;
+    (void)lpReOpenBuff;
+    (void)uStyle;
     return HFILE_ERROR;
 }
 
 DWORD WINAPI SizeofResource(HINSTANCE hInstance, HRSRC hResInfo)
 {
-    (void)hInstance; (void)hResInfo;
+    (void)hInstance;
+    (void)hResInfo;
     return 0;
 }
 
@@ -575,7 +686,10 @@ void WINAPI UnlockSegment(UINT wSegment)
 
 BOOL WINAPI WritePrivateProfileString(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpString, LPCSTR lpFileName)
 {
-    (void)lpAppName; (void)lpKeyName; (void)lpString; (void)lpFileName;
+    (void)lpAppName;
+    (void)lpKeyName;
+    (void)lpString;
+    (void)lpFileName;
     return FALSE;
 }
 
@@ -615,7 +729,10 @@ int FAR __cdecl wsprintf(LPSTR lpOut, LPCSTR lpFmt, ...)
 
 BOOL WINAPI AppendMenu(HMENU hMenu, UINT uFlags, UINT uIDNewItem, LPCSTR lpNewItem)
 {
-    (void)hMenu; (void)uFlags; (void)uIDNewItem; (void)lpNewItem;
+    (void)hMenu;
+    (void)uFlags;
+    (void)uIDNewItem;
+    (void)lpNewItem;
     return TRUE;
 }
 
@@ -639,23 +756,31 @@ LRESULT WINAPI CallWindowProc(WNDPROC lpPrevWndFunc, HWND hWnd, UINT Msg, WPARAM
 
 void WINAPI CheckDlgButton(HWND hDlg, int nIDButton, UINT uCheck)
 {
-    (void)hDlg; (void)nIDButton; (void)uCheck;
+    (void)hDlg;
+    (void)nIDButton;
+    (void)uCheck;
 }
 
 BOOL WINAPI CheckMenuItem(HMENU hMenu, UINT uIDCheckItem, UINT uCheck)
 {
-    (void)hMenu; (void)uIDCheckItem; (void)uCheck;
+    (void)hMenu;
+    (void)uIDCheckItem;
+    (void)uCheck;
     return 0;
 }
 
 void WINAPI CheckRadioButton(HWND hDlg, int nIDFirstButton, int nIDLastButton, int nIDCheckButton)
 {
-    (void)hDlg; (void)nIDFirstButton; (void)nIDLastButton; (void)nIDCheckButton;
+    (void)hDlg;
+    (void)nIDFirstButton;
+    (void)nIDLastButton;
+    (void)nIDCheckButton;
 }
 
 void WINAPI ClientToScreen(HWND hWnd, POINT FAR *lpPoint)
 {
-    (void)hWnd; (void)lpPoint;
+    (void)hWnd;
+    (void)lpPoint;
 }
 
 void WINAPI CopyRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc)
@@ -666,7 +791,10 @@ void WINAPI CopyRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc)
 
 HWND WINAPI CreateDialog(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc)
 {
-    (void)hInstance; (void)lpTemplate; (void)hWndParent; (void)lpDialogFunc;
+    (void)hInstance;
+    (void)lpTemplate;
+    (void)hWndParent;
+    (void)lpDialogFunc;
     return 0;
 }
 
@@ -679,21 +807,34 @@ HWND WINAPI CreateWindow(LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle,
                          int x, int y, int nWidth, int nHeight,
                          HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, void FAR *lpParam)
 {
-    (void)lpClassName; (void)lpWindowName; (void)dwStyle;
-    (void)x; (void)y; (void)nWidth; (void)nHeight;
-    (void)hWndParent; (void)hMenu; (void)hInstance; (void)lpParam;
+    (void)lpClassName;
+    (void)lpWindowName;
+    (void)dwStyle;
+    (void)x;
+    (void)y;
+    (void)nWidth;
+    (void)nHeight;
+    (void)hWndParent;
+    (void)hMenu;
+    (void)hInstance;
+    (void)lpParam;
     return 0;
 }
 
 LRESULT WINAPI DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    (void)hWnd; (void)Msg; (void)wParam; (void)lParam;
+    (void)hWnd;
+    (void)Msg;
+    (void)wParam;
+    (void)lParam;
     return 0;
 }
 
 BOOL WINAPI DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags)
 {
-    (void)hMenu; (void)uPosition; (void)uFlags;
+    (void)hMenu;
+    (void)uPosition;
+    (void)uFlags;
     return TRUE;
 }
 
@@ -723,7 +864,10 @@ BOOL WINAPI DestroyWindow(HWND hWnd)
 
 int WINAPI DialogBox(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc)
 {
-    (void)hInstance; (void)lpTemplate; (void)hWndParent; (void)lpDialogFunc;
+    (void)hInstance;
+    (void)lpTemplate;
+    (void)hWndParent;
+    (void)lpDialogFunc;
     return -1;
 }
 
@@ -735,7 +879,10 @@ LONG WINAPI DispatchMessage(const MSG FAR *lpMsg)
 
 BOOL WINAPI DrawIcon(HDC hDC, int x, int y, HICON hIcon)
 {
-    (void)hDC; (void)x; (void)y; (void)hIcon;
+    (void)hDC;
+    (void)x;
+    (void)y;
+    (void)hIcon;
     return TRUE;
 }
 
@@ -746,61 +893,77 @@ void WINAPI DrawMenuBar(HWND hWnd)
 
 int WINAPI DrawText(HDC hdc, LPCSTR lpchText, int cchText, RECT FAR *lprc, UINT format)
 {
-    (void)hdc; (void)lpchText; (void)cchText; (void)lprc; (void)format;
+    (void)hdc;
+    (void)lpchText;
+    (void)cchText;
+    (void)lprc;
+    (void)format;
     return 0;
 }
 
 BOOL WINAPI EnableMenuItem(HMENU hMenu, UINT uIDEnableItem, UINT uEnable)
 {
-    (void)hMenu; (void)uIDEnableItem; (void)uEnable;
+    (void)hMenu;
+    (void)uIDEnableItem;
+    (void)uEnable;
     return FALSE;
 }
 
 BOOL WINAPI EnableWindow(HWND hWnd, BOOL bEnable)
 {
-    (void)hWnd; (void)bEnable;
+    (void)hWnd;
+    (void)bEnable;
     return FALSE;
 }
 
 void WINAPI EndDialog(HWND hDlg, int nResult)
 {
-    (void)hDlg; (void)nResult;
+    (void)hDlg;
+    (void)nResult;
 }
 
 void WINAPI EndPaint(HWND hWnd, const PAINTSTRUCT FAR *lpPaint)
 {
-    (void)hWnd; (void)lpPaint;
+    (void)hWnd;
+    (void)lpPaint;
 }
 
 BOOL WINAPI EqualRect(const RECT FAR *lprc1, const RECT FAR *lprc2)
 {
-    if (!lprc1 || !lprc2) return FALSE;
+    if (!lprc1 || !lprc2)
+        return FALSE;
     return (lprc1->left == lprc2->left && lprc1->top == lprc2->top &&
             lprc1->right == lprc2->right && lprc1->bottom == lprc2->bottom);
 }
 
 BOOL WINAPI ExitWindows(DWORD dwReserved, UINT uReserved)
 {
-    (void)dwReserved; (void)uReserved;
+    (void)dwReserved;
+    (void)uReserved;
     exit(0);
     return TRUE;
 }
 
 int WINAPI FillRect(HDC hDC, const RECT FAR *lprc, HBRUSH hbr)
 {
-    (void)hDC; (void)lprc; (void)hbr;
+    (void)hDC;
+    (void)lprc;
+    (void)hbr;
     return 1;
 }
 
 BOOL WINAPI FlashWindow(HWND hWnd, BOOL bInvert)
 {
-    (void)hWnd; (void)bInvert;
+    (void)hWnd;
+    (void)bInvert;
     return FALSE;
 }
 
 int WINAPI FrameRect(HDC hDC, const RECT FAR *lprc, HBRUSH hbr)
 {
-    (void)hDC; (void)lprc; (void)hbr;
+    (void)hDC;
+    (void)lprc;
+    (void)hbr;
     return 1;
 }
 
@@ -849,13 +1012,15 @@ HDC WINAPI GetDC(HWND hWnd)
 
 HWND WINAPI GetDlgItem(HWND hDlg, int nIDDlgItem)
 {
-    (void)hDlg; (void)nIDDlgItem;
+    (void)hDlg;
+    (void)nIDDlgItem;
     return 0;
 }
 
 int WINAPI GetDlgItemText(HWND hDlg, int nIDDlgItem, LPSTR lpString, int cchMax)
 {
-    (void)hDlg; (void)nIDDlgItem;
+    (void)hDlg;
+    (void)nIDDlgItem;
     if (lpString && cchMax > 0)
         lpString[0] = '\0';
     return 0;
@@ -886,7 +1051,10 @@ int WINAPI GetMenuItemCount(HMENU hMenu)
 
 BOOL WINAPI GetMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax)
 {
-    (void)lpMsg; (void)hWnd; (void)wMsgFilterMin; (void)wMsgFilterMax;
+    (void)lpMsg;
+    (void)hWnd;
+    (void)wMsgFilterMin;
+    (void)wMsgFilterMax;
     return FALSE; /* WM_QUIT */
 }
 
@@ -898,13 +1066,15 @@ HWND WINAPI GetParent(HWND hWnd)
 
 int WINAPI GetScrollPos(HWND hWnd, int nBar)
 {
-    (void)hWnd; (void)nBar;
+    (void)hWnd;
+    (void)nBar;
     return 0;
 }
 
 HMENU WINAPI GetSubMenu(HMENU hMenu, int nPos)
 {
-    (void)hMenu; (void)nPos;
+    (void)hMenu;
+    (void)nPos;
     return 0;
 }
 
@@ -918,15 +1088,24 @@ int WINAPI GetSystemMetrics(int nIndex)
 {
     switch (nIndex)
     {
-    case SM_CXSCREEN: return 640;
-    case SM_CYSCREEN: return 480;
-    case SM_CXVSCROLL: return 16;
-    case SM_CYHSCROLL: return 16;
-    case SM_CXBORDER: return 1;
-    case SM_CYBORDER: return 1;
-    case SM_CXICON: return 32;
-    case SM_CYICON: return 32;
-    default: return 0;
+    case SM_CXSCREEN:
+        return 640;
+    case SM_CYSCREEN:
+        return 480;
+    case SM_CXVSCROLL:
+        return 16;
+    case SM_CYHSCROLL:
+        return 16;
+    case SM_CXBORDER:
+        return 1;
+    case SM_CYBORDER:
+        return 1;
+    case SM_CXICON:
+        return 32;
+    case SM_CYICON:
+        return 32;
+    default:
+        return 0;
     }
 }
 
@@ -937,13 +1116,15 @@ DWORD WINAPI GetTickCount(void)
 
 HWND WINAPI GetWindow(HWND hWnd, UINT uCmd)
 {
-    (void)hWnd; (void)uCmd;
+    (void)hWnd;
+    (void)uCmd;
     return 0;
 }
 
 LONG WINAPI GetWindowLong(HWND hWnd, int nIndex)
 {
-    (void)hWnd; (void)nIndex;
+    (void)hWnd;
+    (void)nIndex;
     return 0;
 }
 
@@ -988,13 +1169,18 @@ void WINAPI InflateRect(RECT FAR *lprc, int dx, int dy)
 
 BOOL WINAPI InsertMenu(HMENU hMenu, UINT uPosition, UINT uFlags, UINT uIDNewItem, LPCSTR lpNewItem)
 {
-    (void)hMenu; (void)uPosition; (void)uFlags; (void)uIDNewItem; (void)lpNewItem;
+    (void)hMenu;
+    (void)uPosition;
+    (void)uFlags;
+    (void)uIDNewItem;
+    (void)lpNewItem;
     return TRUE;
 }
 
 BOOL WINAPI IntersectRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc1, const RECT FAR *lprcSrc2)
 {
-    if (!lprcDst || !lprcSrc1 || !lprcSrc2) return FALSE;
+    if (!lprcDst || !lprcSrc1 || !lprcSrc2)
+        return FALSE;
     lprcDst->left = (lprcSrc1->left > lprcSrc2->left) ? lprcSrc1->left : lprcSrc2->left;
     lprcDst->top = (lprcSrc1->top > lprcSrc2->top) ? lprcSrc1->top : lprcSrc2->top;
     lprcDst->right = (lprcSrc1->right < lprcSrc2->right) ? lprcSrc1->right : lprcSrc2->right;
@@ -1004,12 +1190,15 @@ BOOL WINAPI IntersectRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc1, const REC
 
 void WINAPI InvalidateRect(HWND hWnd, const RECT FAR *lpRect, BOOL bErase)
 {
-    (void)hWnd; (void)lpRect; (void)bErase;
+    (void)hWnd;
+    (void)lpRect;
+    (void)bErase;
 }
 
 UINT WINAPI IsDlgButtonChecked(HWND hDlg, int nIDButton)
 {
-    (void)hDlg; (void)nIDButton;
+    (void)hDlg;
+    (void)nIDButton;
     return 0;
 }
 
@@ -1033,37 +1222,45 @@ BOOL WINAPI IsZoomed(HWND hWnd)
 
 BOOL WINAPI KillTimer(HWND hWnd, UINT uIDEvent)
 {
-    (void)hWnd; (void)uIDEvent;
+    (void)hWnd;
+    (void)uIDEvent;
     return TRUE;
 }
 
 HACCEL WINAPI LoadAccelerators(HINSTANCE hInstance, LPCSTR lpTableName)
 {
-    (void)hInstance; (void)lpTableName;
+    (void)hInstance;
+    (void)lpTableName;
     return 0;
 }
 
 HBITMAP WINAPI LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName)
 {
-    (void)hInstance; (void)lpBitmapName;
+    (void)hInstance;
+    (void)lpBitmapName;
     return 0;
 }
 
 HCURSOR WINAPI LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName)
 {
-    (void)hInstance; (void)lpCursorName;
+    (void)hInstance;
+    (void)lpCursorName;
     return (HCURSOR)(uintptr_t)1;
 }
 
 HICON WINAPI LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName)
 {
-    (void)hInstance; (void)lpIconName;
+    (void)hInstance;
+    (void)lpIconName;
     return (HICON)(uintptr_t)1;
 }
 
 void WINAPI MapWindowPoints(HWND hWndFrom, HWND hWndTo, POINT FAR *lpPoints, UINT cPoints)
 {
-    (void)hWndFrom; (void)hWndTo; (void)lpPoints; (void)cPoints;
+    (void)hWndFrom;
+    (void)hWndTo;
+    (void)lpPoints;
+    (void)cPoints;
 }
 
 void WINAPI MessageBeep(UINT uType)
@@ -1073,7 +1270,8 @@ void WINAPI MessageBeep(UINT uType)
 
 int WINAPI MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
 {
-    (void)hWnd; (void)uType;
+    (void)hWnd;
+    (void)uType;
     fprintf(stderr, "MessageBox [%s]: %s\n",
             lpCaption ? lpCaption : "",
             lpText ? lpText : "");
@@ -1082,7 +1280,12 @@ int WINAPI MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
 
 BOOL WINAPI MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, BOOL bRepaint)
 {
-    (void)hWnd; (void)x; (void)y; (void)nWidth; (void)nHeight; (void)bRepaint;
+    (void)hWnd;
+    (void)x;
+    (void)y;
+    (void)nWidth;
+    (void)nHeight;
+    (void)bRepaint;
     return TRUE;
 }
 
@@ -1099,13 +1302,20 @@ void WINAPI OffsetRect(RECT FAR *lprc, int dx, int dy)
 
 BOOL WINAPI PeekMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg)
 {
-    (void)lpMsg; (void)hWnd; (void)wMsgFilterMin; (void)wMsgFilterMax; (void)wRemoveMsg;
+    (void)lpMsg;
+    (void)hWnd;
+    (void)wMsgFilterMin;
+    (void)wMsgFilterMax;
+    (void)wRemoveMsg;
     return FALSE;
 }
 
 BOOL WINAPI PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    (void)hWnd; (void)Msg; (void)wParam; (void)lParam;
+    (void)hWnd;
+    (void)Msg;
+    (void)wParam;
+    (void)lParam;
     return TRUE;
 }
 
@@ -1116,7 +1326,8 @@ void WINAPI PostQuitMessage(int nExitCode)
 
 BOOL WINAPI PtInRect(const RECT FAR *lprc, POINT pt)
 {
-    if (!lprc) return FALSE;
+    if (!lprc)
+        return FALSE;
     return (pt.x >= lprc->left && pt.x < lprc->right &&
             pt.y >= lprc->top && pt.y < lprc->bottom);
 }
@@ -1139,35 +1350,50 @@ void WINAPI ReleaseCapture(void)
 
 int WINAPI ReleaseDC(HWND hWnd, HDC hDC)
 {
-    (void)hWnd; (void)hDC;
+    (void)hWnd;
+    (void)hDC;
     return 1;
 }
 
 void WINAPI ScreenToClient(HWND hWnd, POINT FAR *lpPoint)
 {
-    (void)hWnd; (void)lpPoint;
+    (void)hWnd;
+    (void)lpPoint;
 }
 
 void WINAPI ScrollWindow(HWND hWnd, int dx, int dy, const RECT FAR *lpRect, const RECT FAR *lpClipRect)
 {
-    (void)hWnd; (void)dx; (void)dy; (void)lpRect; (void)lpClipRect;
+    (void)hWnd;
+    (void)dx;
+    (void)dy;
+    (void)lpRect;
+    (void)lpClipRect;
 }
 
 HPALETTE WINAPI SelectPalette(HDC hdc, HPALETTE hPal, BOOL bForceBkgd)
 {
-    (void)hdc; (void)hPal; (void)bForceBkgd;
+    (void)hdc;
+    (void)hPal;
+    (void)bForceBkgd;
     return 0;
 }
 
 LRESULT WINAPI SendDlgItemMessage(HWND hDlg, int nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    (void)hDlg; (void)nIDDlgItem; (void)Msg; (void)wParam; (void)lParam;
+    (void)hDlg;
+    (void)nIDDlgItem;
+    (void)Msg;
+    (void)wParam;
+    (void)lParam;
     return 0;
 }
 
 LRESULT WINAPI SendMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-    (void)hWnd; (void)Msg; (void)wParam; (void)lParam;
+    (void)hWnd;
+    (void)Msg;
+    (void)wParam;
+    (void)lParam;
     return 0;
 }
 
@@ -1185,7 +1411,9 @@ HCURSOR WINAPI SetCursor(HCURSOR hCursor)
 
 void WINAPI SetDlgItemText(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 {
-    (void)hDlg; (void)nIDDlgItem; (void)lpString;
+    (void)hDlg;
+    (void)nIDDlgItem;
+    (void)lpString;
 }
 
 HWND WINAPI SetFocus(HWND hWnd)
@@ -1207,53 +1435,80 @@ void WINAPI SetRect(RECT FAR *lprc, int xLeft, int yTop, int xRight, int yBottom
 
 int WINAPI SetScrollPos(HWND hWnd, int nBar, int nPos, BOOL bRedraw)
 {
-    (void)hWnd; (void)nBar; (void)nPos; (void)bRedraw;
+    (void)hWnd;
+    (void)nBar;
+    (void)nPos;
+    (void)bRedraw;
     return 0;
 }
 
 void WINAPI SetScrollRange(HWND hWnd, int nBar, int nMinPos, int nMaxPos, BOOL bRedraw)
 {
-    (void)hWnd; (void)nBar; (void)nMinPos; (void)nMaxPos; (void)bRedraw;
+    (void)hWnd;
+    (void)nBar;
+    (void)nMinPos;
+    (void)nMaxPos;
+    (void)bRedraw;
 }
 
 UINT WINAPI SetTimer(HWND hWnd, UINT nIDEvent, UINT uElapse, TIMERPROC lpTimerFunc)
 {
-    (void)hWnd; (void)uElapse; (void)lpTimerFunc;
+    (void)hWnd;
+    (void)uElapse;
+    (void)lpTimerFunc;
     return nIDEvent;
 }
 
 LONG WINAPI SetWindowLong(HWND hWnd, int nIndex, LONG dwNewLong)
 {
-    (void)hWnd; (void)nIndex; (void)dwNewLong;
+    (void)hWnd;
+    (void)nIndex;
+    (void)dwNewLong;
     return 0;
 }
 
 BOOL WINAPI SetWindowPos(HWND hWnd, HWND hWndInsertAfter, int x, int y, int cx, int cy, UINT uFlags)
 {
-    (void)hWnd; (void)hWndInsertAfter; (void)x; (void)y; (void)cx; (void)cy; (void)uFlags;
+    (void)hWnd;
+    (void)hWndInsertAfter;
+    (void)x;
+    (void)y;
+    (void)cx;
+    (void)cy;
+    (void)uFlags;
     return TRUE;
 }
 
 void WINAPI SetWindowText(HWND hWnd, LPCSTR lpString)
 {
-    (void)hWnd; (void)lpString;
+    (void)hWnd;
+    (void)lpString;
 }
 
 BOOL WINAPI ShowWindow(HWND hWnd, int nCmdShow)
 {
-    (void)hWnd; (void)nCmdShow;
+    (void)hWnd;
+    (void)nCmdShow;
     return FALSE;
 }
 
 BOOL WINAPI TrackPopupMenu(HMENU hMenu, UINT uFlags, int x, int y, int nReserved, HWND hWnd, const RECT FAR *prcRect)
 {
-    (void)hMenu; (void)uFlags; (void)x; (void)y; (void)nReserved; (void)hWnd; (void)prcRect;
+    (void)hMenu;
+    (void)uFlags;
+    (void)x;
+    (void)y;
+    (void)nReserved;
+    (void)hWnd;
+    (void)prcRect;
     return FALSE;
 }
 
 int WINAPI TranslateAccelerator(HWND hWnd, HACCEL hAccTable, MSG FAR *lpMsg)
 {
-    (void)hWnd; (void)hAccTable; (void)lpMsg;
+    (void)hWnd;
+    (void)hAccTable;
+    (void)lpMsg;
     return 0;
 }
 
@@ -1270,7 +1525,8 @@ void WINAPI UpdateWindow(HWND hWnd)
 
 void WINAPI ValidateRect(HWND hWnd, const RECT FAR *lpRect)
 {
-    (void)hWnd; (void)lpRect;
+    (void)hWnd;
+    (void)lpRect;
 }
 
 HWND WINAPI WindowFromPoint(POINT pt)
@@ -1281,8 +1537,45 @@ HWND WINAPI WindowFromPoint(POINT pt)
 
 BOOL WINAPI WinHelp(HWND hWndMain, LPCSTR lpszHelp, UINT uCommand, DWORD dwData)
 {
-    (void)hWndMain; (void)lpszHelp; (void)uCommand; (void)dwData;
+    (void)hWndMain;
+    (void)lpszHelp;
+    (void)uCommand;
+    (void)dwData;
     return FALSE;
+}
+
+/* ---- Added for ini/serial work (menu/string stubs) ---- */
+UINT WINAPI GetMenuItemID(HMENU hMenu, int nPos)
+{
+    (void)hMenu;
+    (void)nPos;
+    return (UINT)-1;
+}
+
+LPSTR WINAPI lstrcpynA(LPSTR dst, LPCSTR src, int maxLen)
+{
+    int i;
+    if (!dst || maxLen <= 0)
+        return dst;
+    if (!src)
+    {
+        dst[0] = '\0';
+        return dst;
+    }
+    for (i = 0; i < maxLen - 1 && src[i] != '\0'; i++)
+        dst[i] = src[i];
+    dst[i] = '\0';
+    return dst;
+}
+
+BOOL WINAPI CheckMenuRadioItem(HMENU hMenu, UINT idFirst, UINT idLast, UINT idCheck, UINT uFlags)
+{
+    (void)hMenu;
+    (void)idFirst;
+    (void)idLast;
+    (void)idCheck;
+    (void)uFlags;
+    return TRUE;
 }
 
 #endif /* !_WIN32 || STARS_USE_WIN_STUBS */

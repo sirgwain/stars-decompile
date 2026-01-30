@@ -550,7 +550,7 @@ LAB_1048_0950:
                   uVar13 = 0x1118;
                   uVar16 = __aFulshr(uVar17,in_stack_0000ff3a);
                   if ((int)uVar16 == 0) {
-                    LVar15 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
+                    LVar15 = SendMessage(hwndShipDD,CB_GETCURSEL,0,0);
                     if (LVar15 != -1) {
                       sVar8 = FLookupOrbitingXfer(sel.pl.id,(short)LVar15,&xf,-1);
                       if (sVar8 != 0) {
@@ -568,7 +568,7 @@ LAB_1048_0950:
                   uVar16 = __aFulshr(uVar17,in_stack_0000ff3a);
                   if ((int)uVar16 == 0) {
                     uVar13 = 0x14f8;
-                    LVar15 = SendMessage(hwndShipDD,WM_USER_0x0407,0,0);
+                    LVar15 = SendMessage(hwndShipDD,CB_GETCURSEL,0,0);
                     puVar11 = &stack0xff36;
                     if (LVar15 != -1) {
                       uVar13 = 0x1038;
@@ -837,7 +837,7 @@ short FDrawTileNC(HDC hdc,TILE *ptile,RECT *prc,char *pszTitle)
   prc->bottom = iVar1 + prc->top;
   if (((ptile->wFlags_0xa >> 0xc & 1) == 0) || ((ptile->wFlags_0xa >> 9 & 1) != 0)) {
     if ((ptile->wFlags_0xa >> 0xc & 1) == 0) {
-      _Draw3dFrame();
+      _Draw3dFrame(hdc,prc,0);
     }
     rcT.left = prc->left;
     rcT.top = prc->top;
@@ -849,7 +849,7 @@ short FDrawTileNC(HDC hdc,TILE *ptile,RECT *prc,char *pszTitle)
     SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
     SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     if ((ptile->wFlags_0xa >> 0xc & 1) == 0) {
-      _Draw3dFrame();
+      _Draw3dFrame(hdc,&rcT,0);
     }
     RcCtrTextOut(hdc,&rcT,pszTitle,-1);
     SetRect(&rcT,prc->right + -0x11,prc->top + 1,prc->right,rcT.bottom + 1);
@@ -1784,7 +1784,7 @@ void ChangeMainObjSel(short grobjNew,short iObjSel)
       }
       if (fAi == 0) {
         FillPlanetProdLB(0,(PLPROD *)0x0,(PLANET *)0x0);
-        SendMessage(hwndPlanetProdLB,WM_USER_0x0407,0,0);
+        SendMessage(hwndPlanetProdLB,CB_GETCURSEL,0,0);
       }
     }
     else {
@@ -1808,7 +1808,7 @@ void ChangeMainObjSel(short grobjNew,short iObjSel)
         FillFleetCompLB();
         FillBattleDD(sel.fl.iplan + 1);
         idSkip = iObjSel;
-        SendMessage(rghwndOrderDD[0],WM_USER_0x040E,
+        SendMessage(rghwndOrderDD[0],CB_SETCURSEL,
                     *(uint *)&((PLORD *)sel.fl.lpplord)[2].iordMax & 0xf,0);
       }
     }
@@ -1889,7 +1889,7 @@ void FillShipDD(short idSkip)
   short i;
   THING *lpthMac;
   
-  SendMessage(hwndShipDD,WM_USER_0x040B,0,0);
+  SendMessage(hwndShipDD,CB_RESETCONTENT,0,0);
   if (sel.grobj == grobjPlanet) {
     ptSel.x = ((POINT *)rgptPlan + sel.id)->x;
     ptSel.y = *(short *)((int)&rgptPlan[0].y + sel.id * 4);
@@ -1915,7 +1915,7 @@ void FillShipDD(short idSkip)
       else {
         szWork[0] = 'x';
       }
-      SendMessage(hwndShipDD,WM_USER_0x0403,0,0x112057a4);
+      SendMessage(hwndShipDD,CB_ADDSTRING,0,0x112057a4);
     }
   }
   pTVar3 = (THING *)lpThings + cThing;
@@ -1932,11 +1932,11 @@ void FillShipDD(short idSkip)
       else {
         szWork[0] = 'x';
       }
-      SendMessage(hwndShipDD,WM_USER_0x0403,0,0x112057a4);
+      SendMessage(hwndShipDD,CB_ADDSTRING,0,0x112057a4);
     }
     lpth = (THING *)CONCAT22(uVar4,(THING *)lpth + 1);
   }
-  SendMessage(hwndShipDD,WM_USER_0x040E,0,0);
+  SendMessage(hwndShipDD,CB_SETCURSEL,0,0);
   return;
 }
 
@@ -2959,10 +2959,10 @@ void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis,short inflate)
     inflate = -inflate;
   }
   if (fListbox_00 == 0) {
-    WVar2 = WM_USER_0x0408;
+    WVar2 = CB_GETLBTEXT;
   }
   else {
-    WVar2 = WM_USER_0x040A;
+    WVar2 = CB_INSERTSTRING;
   }
   SendMessage(pDVar3->hwndItem,WVar2,pDVar3->itemID,0x112057a4);
   DrawProductionItem(pDVar3->hDC,&rc,(char *)szWork,inflate,uVar1 & 1,fListbox_00);
@@ -3226,7 +3226,7 @@ void FillPlanetProdLB(HWND hwnd,PLPROD *lpplprod,PLANET *lppl)
     if (hwnd == 0) {
       hwnd = hwndPlanetProdLB;
     }
-    SendMessage(hwnd,WM_USER_0x0405,0,0);
+    SendMessage(hwnd,CB_DIR,0,0);
   }
   uVar2 = (undefined2)((ulong)lppl >> 0x10);
   if (((PLPROD *)lpplprod == (PLPROD *)0x0) && (lpplprod._2_2_ == 0)) {
@@ -3249,7 +3249,7 @@ void FillPlanetProdLB(HWND hwnd,PLPROD *lpplprod,PLANET *lppl)
     }
   }
   else {
-    SendMessage(hwnd,WM_USER_0x0401,0,(LPARAM)psz);
+    SendMessage(hwnd,CB_LIMITTEXT,0,(LPARAM)psz);
   }
 PLANET_NoMsg:
   if (((PLPROD *)lpplprod != (PLPROD *)0x0) || (lpplprod._2_2_ != 0)) {
@@ -3310,7 +3310,7 @@ LAB_1048_693c:
           _strcpy((char *)szWork,szTemp);
           return;
         }
-        SendMessage(hwnd,WM_USER_0x0401,0,(LPARAM)szTemp);
+        SendMessage(hwnd,CB_LIMITTEXT,0,(LPARAM)szTemp);
       }
       lpprod = (PROD *)lpprod + 1;
     }

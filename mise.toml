@@ -395,6 +395,15 @@ cmake --preset macos-linux
 cmake --build --preset build-macos-linux
 '''
 
+[tasks.build-stubs]
+description = "Build native with win32 stubs (macOS/Linux) with CMake presets"
+run = '''
+#!/bin/bash
+set -e
+cmake --preset macos-linux-win32-stubs
+cmake --build --preset build-macos-linux-win32-stubs
+'''
+
 [tasks.build-cross]
 description = "Build CrossOver (mingw-w64) with CMake presets"
 run = '''
@@ -715,7 +724,7 @@ run = '''
 set -e
 
 "$PROJECT_DIR/scripts/update_project_index.sh"
-python3 "$PROJECT_DIR/scripts/track_implementation.py"
+python3 "$PROJECT_DIR/scripts/track_implementation.py" --update-docs
 python3 "$PROJECT_DIR/scripts/build_implementation_plan.py" --exclude-ai
 '''
 [tasks.build-call-graph]

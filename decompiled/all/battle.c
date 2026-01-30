@@ -16,13 +16,13 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
 
 {
   char *pcVar1;
-  HDC HVar2;
-  HWND HVar3;
-  short sVar4;
+  HDC hdc;
+  HWND HVar2;
+  short sVar3;
   undefined2 unaff_SS;
-  LRESULT LVar5;
-  WPARAM WVar6;
-  WMType WVar7;
+  LRESULT LVar4;
+  WPARAM WVar5;
+  WMType WVar6;
   RECT rcGBox;
   PAINTSTRUCT ps;
   RECT rc;
@@ -36,22 +36,22 @@ short RelationsDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
   }
   else {
     if (message == WM_PAINT) {
-      HVar2 = BeginPaint(hwnd,&ps);
-      HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D5);
-      GetWindowRect(HVar3,&rcGBox);
+      hdc = BeginPaint(hwnd,&ps);
+      HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D5);
+      GetWindowRect(HVar2,&rcGBox);
       ScreenToClient(hwnd,(POINT *)&rcGBox);
-      HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D6);
-      GetWindowRect(HVar3,&rc);
+      HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D6);
+      GetWindowRect(HVar2,&rc);
       ScreenToClient(hwnd,(POINT *)&rc.right);
       rcGBox.right = rc.right;
       rcGBox.bottom = rc.bottom;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
-      _Draw3dFrame();
-      SetBkColor(HVar2,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
-      SelectObject(HVar2,rghfontArial8[1]);
-      sVar4 = CchGetString(idsRelation,(char *)szWork);
-      TextOut(HVar2,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar4);
-      SelectObject(HVar2,rghfontArial8[0]);
+      _Draw3dFrame(hdc,&rcGBox,-1);
+      SetBkColor(hdc,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
+      SelectObject(hdc,rghfontArial8[1]);
+      sVar3 = CchGetString(idsRelation,(char *)szWork);
+      TextOut(hdc,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar3);
+      SelectObject(hdc,rghfontArial8[0]);
       EndPaint(hwnd,&ps);
       return 1;
     }
@@ -62,8 +62,8 @@ LAB_10f0_0177:
       return 1;
     }
     if (message == WM_CTLCOLOR) {
-      HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-      if ((HWND)lParam != HVar3) {
+      HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+      if ((HWND)lParam != HVar2) {
         SetBkColor(wParam,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace))
         ;
         return hbrButtonFace;
@@ -77,24 +77,24 @@ LAB_10f0_0177:
                          0x7d4);
         for (i = 0; i < game.cPlayer; i = i + 1) {
           if (i != idPlayer) {
-            HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-            WVar7 = WM_USER_0x0401;
-            WVar6 = 0;
+            HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+            WVar6 = CB_LIMITTEXT;
+            WVar5 = 0;
             pcVar1 = PszPlayerName(i,0,0,0,0,(PLAYER *)0x0);
-            SendMessage(HVar3,WVar7,WVar6,(LPARAM)pcVar1);
+            SendMessage(HVar2,WVar6,WVar5,(LPARAM)pcVar1);
           }
         }
-        HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-        SendMessage(HVar3,WM_USER_0x0407,0,0);
+        HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+        SendMessage(HVar2,CB_GETCURSEL,0,0);
         fDirtyPlan = 0;
         goto LAB_10f0_0177;
       }
       if (message == WM_COMMAND) {
         if (wParam == 2) {
           StickyDlgPos(hwnd,(POINT *)&ptStickyRelationsDlg,0);
-          HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-          LVar5 = SendMessage(HVar3,WM_USER_0x0409,0,0);
-          i = (short)LVar5;
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+          LVar4 = SendMessage(HVar2,CB_GETLBTEXTLEN,0,0);
+          i = (short)LVar4;
           if (idPlayer <= i) {
             i = i + 1;
           }
@@ -103,9 +103,9 @@ LAB_10f0_0177:
         }
         if ((wParam < 0x7d4) || (0x7d6 < wParam)) {
           if (wParam == 0x7d3) {
-            HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-            LVar5 = SendMessage(HVar3,WM_USER_0x0409,0,0);
-            i = (short)LVar5;
+            HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+            LVar4 = SendMessage(HVar2,CB_GETLBTEXTLEN,0,0);
+            i = (short)LVar4;
             if (idPlayer <= i) {
               i = i + 1;
             }
@@ -118,9 +118,9 @@ LAB_10f0_0177:
           }
         }
         else {
-          HVar3 = GetDlgItem(hwnd,IDC_U16_0x07D3);
-          LVar5 = SendMessage(HVar3,WM_USER_0x0409,0,0);
-          i = (short)LVar5;
+          HVar2 = GetDlgItem(hwnd,IDC_U16_0x07D3);
+          LVar4 = SendMessage(HVar2,CB_GETLBTEXTLEN,0,0);
+          i = (short)LVar4;
           if (idPlayer <= i) {
             i = i + 1;
           }
@@ -272,40 +272,40 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x0403,0,
+      SendMessage(HVar6,CB_ADDSTRING,0,
                   CONCAT22(*(undefined2 *)
                             ((int)(BTLPLAN **)rglpbtlplan + idPlayer * 4 + 2),
                            *(int *)((BTLPLAN **)rglpbtlplan + idPlayer) + i * 0x24
                            + 4));
     }
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-    SendMessage(HVar6,WM_USER_0x040E,iPlanSelDlg,0);
+    SendMessage(HVar6,CB_SETCURSEL,iPlanSelDlg,0);
     HVar6 = GetDlgItem(hwnd,IDC_RENAME);
     EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
     HVar6 = GetDlgItem(hwnd,IDC_DELETE);
     EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
     for (i = 0x198; i < 0x19e; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0421);
-      WVar16 = WM_USER_0x0403;
+      WVar16 = CB_ADDSTRING;
       WVar15 = 0;
       pcVar5 = PszGetCompressedString(i);
       SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x0421);
-    SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags >> 8 & 0xf,0);
+    SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags >> 8 & 0xf,0);
     for (i = 400; i < 0x198; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041F);
-      WVar16 = WM_USER_0x0403;
+      WVar16 = CB_ADDSTRING;
       WVar15 = 0;
       pcVar5 = PszGetCompressedString(i);
       SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041F);
-    SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 & 0xf,0);
+    SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 & 0xf,0);
     if ((game.wCrap >> 2 & 1) == 0) {
       for (i = 0x78; i < 0x7c; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-        WVar16 = WM_USER_0x0403;
+        WVar16 = CB_ADDSTRING;
         WVar15 = 0;
         pcVar5 = PszGetCompressedString(i);
         SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
@@ -313,7 +313,7 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       for (i = 0; i < game.cPlayer; i = i + 1) {
         if (i != idPlayer) {
           HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-          WVar16 = WM_USER_0x0403;
+          WVar16 = CB_ADDSTRING;
           WVar15 = 0;
           pcVar5 = PszPlayerName(i,0,1,0,0,(PLAYER *)0x0);
           SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
@@ -324,30 +324,30 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
         i = i - 1;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      SendMessage(HVar6,WM_USER_0x040E,i,0);
+      SendMessage(HVar6,CB_SETCURSEL,i,0);
     }
     else {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      WVar16 = WM_USER_0x0403;
+      WVar16 = CB_ADDSTRING;
       WVar15 = 0;
       pcVar5 = PszGetCompressedString(idsEveryone);
       SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      SendMessage(HVar6,WM_USER_0x040E,0,0);
+      SendMessage(HVar6,CB_SETCURSEL,0,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
       EnableWindow(HVar6,0);
     }
     for (i = 400; i < 0x198; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0420);
-      WVar16 = WM_USER_0x0403;
+      WVar16 = CB_ADDSTRING;
       WVar15 = 0;
       pcVar5 = PszGetCompressedString(i);
       SendMessage(HVar6,WVar16,WVar15,(LPARAM)pcVar5);
     }
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x0420);
-    SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 >> 4 & 0xf,0);
+    SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 >> 4 & 0xf,0);
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041D);
-    SendMessage(HVar6,WM_USER_0x0401,btlplan.wFlags >> 0xf,0);
+    SendMessage(HVar6,CB_LIMITTEXT,btlplan.wFlags >> 0xf,0);
     fDirtyPlan = 0;
     if (((uint)gd.grBits >> 0xb & 1) != 0) {
       AdvanceTutor();
@@ -437,22 +437,22 @@ short BattlePlansDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     LogChangeBtlplan((BTLPLAN *)&btlplan);
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-    SendMessage(HVar6,WM_USER_0x040E,iPlanSelDlg - 1,0);
+    SendMessage(HVar6,CB_SETCURSEL,iPlanSelDlg - 1,0);
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-    SendMessage(HVar6,WM_USER_0x040B,0,0);
+    SendMessage(HVar6,CB_RESETCONTENT,0,0);
     for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x0403,0,
+      SendMessage(HVar6,CB_ADDSTRING,0,
                   CONCAT22(*(undefined2 *)
                             ((int)(BTLPLAN **)rglpbtlplan + idPlayer * 4 + 2),
                            *(int *)((BTLPLAN **)rglpbtlplan + idPlayer) + i * 0x24
                            + 4));
     }
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-    SendMessage(HVar6,WM_USER_0x040E,iPlanSelDlg - 1,0);
+    SendMessage(HVar6,CB_SETCURSEL,iPlanSelDlg - 1,0);
 BATTLE_LSelectName:
     HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-    LVar14 = SendMessage(HVar6,WM_USER_0x0407,0,0);
+    LVar14 = SendMessage(HVar6,CB_GETCURSEL,0,0);
     iVar9 = (int)LVar14;
     if (iVar9 != iPlanSelDlg) {
       if (fDirtyPlan != 0) {
@@ -484,36 +484,36 @@ BATTLE_LSelectName:
         pBVar3->wFlags = *puVar2;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041F);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0420);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 >> 4 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 >> 4 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041D);
-      SendMessage(HVar6,WM_USER_0x0401,btlplan.wFlags >> 0xf,0);
+      SendMessage(HVar6,CB_LIMITTEXT,btlplan.wFlags >> 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_RENAME);
       EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
       HVar6 = GetDlgItem(hwnd,IDC_DELETE);
       EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0421);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags >> 8 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags >> 8 & 0xf,0);
       i = btlplan.wFlags_0x2 >> 8 & 0x1f;
       if (idPlayer + 4 <= i) {
         i = i - 1;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      SendMessage(HVar6,WM_USER_0x040E,i,0);
+      SendMessage(HVar6,CB_SETCURSEL,i,0);
     }
   }
   else {
     if (wParam == 0x41f) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041F);
-      LVar14 = SendMessage(HVar6,WM_USER_0x0407,0,0);
+      LVar14 = SendMessage(HVar6,CB_GETCURSEL,0,0);
       fDirtyPlan = 1;
       btlplan.wFlags_0x2 = btlplan.wFlags_0x2 & 0xfff0 | (uint)LVar14 & 0xf;
       return 0;
     }
     if (wParam == 0x420) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0420);
-      LVar14 = SendMessage(HVar6,WM_USER_0x0407,0,0);
+      LVar14 = SendMessage(HVar6,CB_GETCURSEL,0,0);
       fDirtyPlan = 1;
       btlplan.wFlags_0x2 =
            btlplan.wFlags_0x2 & 0xff0f | ((uint)LVar14 & 0xf) << 4;
@@ -521,7 +521,7 @@ BATTLE_LSelectName:
     }
     if (wParam == 0x422) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      LVar14 = SendMessage(HVar6,WM_USER_0x0407,0,0);
+      LVar14 = SendMessage(HVar6,CB_GETCURSEL,0,0);
       i = (short)LVar14;
       if ((game.wCrap >> 2 & 1) == 0) {
         if (idPlayer + 4 <= i) {
@@ -537,7 +537,7 @@ BATTLE_LSelectName:
     }
     if (wParam == 0x421) {
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0421);
-      LVar14 = SendMessage(HVar6,WM_USER_0x0407,0,0);
+      LVar14 = SendMessage(HVar6,CB_GETCURSEL,0,0);
       fDirtyPlan = 1;
       btlplan.wFlags = btlplan.wFlags & 0xf0ff | ((uint)LVar14 & 0xf) << 8;
       return 0;
@@ -607,31 +607,31 @@ BATTLE_LSelectName:
         *puVar2 = pBVar3->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0421);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags >> 8 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags >> 8 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x040B,0,0);
+      SendMessage(HVar6,CB_RESETCONTENT,0,0);
       for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-        SendMessage(HVar6,WM_USER_0x0403,0,
+        SendMessage(HVar6,CB_ADDSTRING,0,
                     CONCAT22(*(undefined2 *)
                               ((int)(BTLPLAN **)rglpbtlplan + idPlayer * 4 + 2),
                              *(int *)((BTLPLAN **)rglpbtlplan + idPlayer) +
                              i * 0x24 + 4));
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x040E,iPlanSelDlg,0);
+      SendMessage(HVar6,CB_SETCURSEL,iPlanSelDlg,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041F);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0420);
-      SendMessage(HVar6,WM_USER_0x040E,btlplan.wFlags_0x2 >> 4 & 0xf,0);
+      SendMessage(HVar6,CB_SETCURSEL,btlplan.wFlags_0x2 >> 4 & 0xf,0);
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041D);
-      SendMessage(HVar6,WM_USER_0x0401,btlplan.wFlags >> 0xf,0);
+      SendMessage(HVar6,CB_LIMITTEXT,btlplan.wFlags >> 0xf,0);
       i = btlplan.wFlags_0x2 >> 8 & 0x1f;
       if (idPlayer + 4 <= i) {
         i = i - 1;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x0422);
-      SendMessage(HVar6,WM_USER_0x040E,i,0);
+      SendMessage(HVar6,CB_SETCURSEL,i,0);
       fDirtyPlan = 1;
       HVar6 = GetDlgItem(hwnd,IDC_RENAME);
       EnableWindow(HVar6,1);
@@ -655,17 +655,17 @@ BATTLE_LSelectName:
         *puVar2 = pBVar3->wFlags;
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x040B,0,0);
+      SendMessage(HVar6,CB_RESETCONTENT,0,0);
       for (i = 0; i < (int)(uint)((byte *)rgcbtlplan)[idPlayer]; i = i + 1) {
         HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-        SendMessage(HVar6,WM_USER_0x0403,0,
+        SendMessage(HVar6,CB_ADDSTRING,0,
                     CONCAT22(*(undefined2 *)
                               ((int)(BTLPLAN **)rglpbtlplan + idPlayer * 4 + 2),
                              *(int *)((BTLPLAN **)rglpbtlplan + idPlayer) +
                              i * 0x24 + 4));
       }
       HVar6 = GetDlgItem(hwnd,IDC_U16_0x041E);
-      SendMessage(HVar6,WM_USER_0x040E,iPlanSelDlg,0);
+      SendMessage(HVar6,CB_SETCURSEL,iPlanSelDlg,0);
     }
     HVar6 = GetDlgItem(hwnd,IDC_RENAME);
     EnableWindow(HVar6,(uint)(0 < iPlanSelDlg));

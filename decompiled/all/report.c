@@ -485,7 +485,7 @@ void DrawReport(HWND hwnd,HDC hdc,RECT *prc)
         else {
           CtrTextOut(hdc,(rc.right - rc.left) / 2 + rc.left,rc.top + 2,szTit,0);
         }
-        _Draw3dFrame();
+        _Draw3dFrame(hdc,&rc,0);
         xCol = xCol + sVar2;
       }
       ibit = ibit << 1;
@@ -4258,7 +4258,7 @@ void ExecuteReportClick(POINT pt,short irpt,short icol,short irow)
         case 5:
           sVar7 = FDestIsWP0((FLEET *)CONCAT22(uVar2,pFVar1));
           if (sVar7 == 0) {
-            SendMessage(hwndShipLB,WM_USER_0x0407,1,0);
+            SendMessage(hwndShipLB,CB_GETCURSEL,1,0);
             SetScanWp(1);
           }
           break;

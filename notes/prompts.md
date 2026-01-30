@@ -2,9 +2,11 @@
 
 I have attached a zip of my project source files.
 
-Translate the next function in @notes/implementation-plan.md to modern C.
+Translate the WriteIniSettings, FormatSerialAndEnv, SetWindowIniString, FSerialAndEnvFromSz, GetIniWinRc, and ReadIniTileSettings to modern win32 C.
 
 See @notes/implementation.md for locations of various functions and their decompiles
+
+Translate the WriteIniSettings to modern win32 C.
 
 Use @project_index.json to locate related globals and functions, but treat @types.h as the source of truth for all struct fields and types.
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.

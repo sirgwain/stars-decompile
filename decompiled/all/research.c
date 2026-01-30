@@ -602,7 +602,7 @@ void DrawResearchDlg(HWND hwnd,HDC hdc,RECT *prc,short grbitDraw)
     DVar19 = GetTextExtent(hdc,szWork,sVar5);
     SetRect(&rc,8,dyArial8,dxResLeft + -8,dyArial8 * 0xd);
     if ((grbitDraw & 3U) != 0) {
-      _Draw3dFrame();
+      _Draw3dFrame(hdc,&rc,-1);
       sVar5 = CchGetString(idsTechnologyStatus,(char *)szWork);
       TextOut(hdc,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,sVar5);
       rc.top = rc.top + (dyArial8 >> 1);
@@ -626,7 +626,7 @@ void DrawResearchDlg(HWND hwnd,HDC hdc,RECT *prc,short grbitDraw)
     SetRect(&rc,8,(dyArial8 * 3) / 2 + rc.bottom,dxResLeft + -8,prc->bottom + -8
            );
     if (((grbitDraw & 4U) == 0) || ((grbitDraw & 3U) != 0)) {
-      _Draw3dFrame();
+      _Draw3dFrame(hdc,&rc,-1);
       sVar5 = CchGetString(idsExpectedResearchBenefits,(char *)szWork);
       TextOut(hdc,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,sVar5);
       bVar2 = *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0);
@@ -793,7 +793,9 @@ RESEARCH_TooManyToFinish:
       *(HDC *)((int)plVar15 + -6) = hdc;
       *(undefined2 *)(plVar15 + -2) = uVar23;
       *(undefined2 *)((int)plVar15 + -10) = 0x1132;
-      _Draw3dFrame();
+      _Draw3dFrame
+                (*(HDC *)((int)plVar15 + -6),*(RECT **)(plVar15 + -1),*(short *)((int)plVar15 + -2))
+      ;
       *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
       *(undefined2 *)(plVar15 + -1) = 0x46;
       *(undefined2 *)((int)plVar15 + -6) = 0x1040;
@@ -1112,7 +1114,8 @@ LAB_10d8_144a:
     *(HDC *)((int)plVar15 + -6) = hdc;
     *(undefined2 *)(plVar15 + -2) = 0x14f8;
     *(undefined2 *)((int)plVar15 + -10) = 0x1551;
-    _Draw3dFrame();
+    _Draw3dFrame
+              (*(HDC *)((int)plVar15 + -6),*(RECT **)(plVar15 + -1),*(short *)((int)plVar15 + -2));
     *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
     *(undefined2 *)(plVar15 + -1) = 0x47;
     *(undefined2 *)((int)plVar15 + -6) = 0x1040;
@@ -1859,13 +1862,13 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
                           dyArial10 + dyArial8 * 0xc + 0x4e,hwnd,0,
                           hInst,(void *)0x0);
         for (i = 0x43f; i < 0x450; i = i + 1) {
-          WVar23 = WM_USER_0x0403;
+          WVar23 = CB_ADDSTRING;
           WVar22 = 0;
           HVar21 = HVar9;
           pcVar8 = PszGetCompressedString(i);
           SendMessage(HVar21,WVar23,WVar22,(LPARAM)pcVar8);
         }
-        SendMessage(HVar9,WM_USER_0x040E,0,0);
+        SendMessage(HVar9,CB_SETCURSEL,0,0);
         if (((uint)gd.grBits >> 0xb & 1) != 0) {
           AdvanceTutor();
         }
@@ -1889,7 +1892,7 @@ short BrowserDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           if ((int)uVar16 == 1) {
             UVar12 = IsDlgButtonChecked(hwnd,0x10a);
             HVar9 = GetDlgItem(hwnd,IDC_U16_0x010B);
-            LVar18 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+            LVar18 = SendMessage(HVar9,CB_GETCURSEL,0,0);
             if ((0xffff < LVar18) || (-1 < LVar18)) {
               lVar17 = __aFlshl(uVar15,in_stack_0000ffb4);
               vpartBrowser.hs.grhst =
@@ -1912,7 +1915,7 @@ LAB_10d8_2557:
           uVar11 = vpartBrowser.hs.wFlags_0x2 & 0xff;
           cIter = 0;
           HVar9 = GetDlgItem(hwnd,IDC_U16_0x010B);
-          LVar18 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+          LVar18 = SendMessage(HVar9,CB_GETCURSEL,0,0);
           bVar1 = LVar18 == 0;
           for (i = 0; (sVar2 = i, i < 0x11 &&
                       (vpartBrowser.hs.grhst != ((ushort *)rggrbitBrParts)[i])); i = i + 1

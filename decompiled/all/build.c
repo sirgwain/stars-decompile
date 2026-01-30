@@ -111,7 +111,6 @@ void ShowMainControls(HWND hwnd,short sw)
 /* WARNING: Removing unreachable block (ram,0x10c80310) */
 /* WARNING: Removing unreachable block (ram,0x10c802b7) */
 /* WARNING: Removing unreachable block (ram,0x10c804cc) */
-/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
 
 short FCheckQueuedShip(HWND hwnd,SHDEF *lpshdef,short fEdit)
 
@@ -314,7 +313,7 @@ short SlotDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       rcGBox.right = rc.right;
       rcGBox.bottom = rc.bottom;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
-      _Draw3dFrame();
+      _Draw3dFrame(hdc_00,&rcGBox,-1);
       SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       SelectObject(hdc_00,rghfontArial8[1]);
       sVar10 = CchGetString(idsDesign,(char *)szWork);
@@ -330,7 +329,7 @@ short SlotDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
       rcGBox.right = rc.right;
       rcGBox.bottom = rc.bottom;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
-      _Draw3dFrame();
+      _Draw3dFrame(hdc_00,&rcGBox,-1);
       SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
       SelectObject(hdc_00,rghfontArial8[1]);
       sVar10 = CchGetString(idsView,(char *)szWork);
@@ -440,7 +439,7 @@ short SlotDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     CheckRadioButton(hwnd,0x810,0x811,0x810);
     CheckRadioButton(hwnd,0x812,0x815,0x812);
     mdBuild = 0;
-    HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+    HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
     SetWindowPos(HVar9,0,ptslotGlob.x + -0x108,8,0xf0,100,4);
     FillBuildDD(HVar9,mdBuild);
     HVar9 = GetDlgItem(hwnd,IDOK);
@@ -496,10 +495,10 @@ short SlotDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     }
     HVar9 = GetDlgItem(hwnd,IDC_U16_0x080C);
     FillBuildPartsLB(HVar9,uVar13);
-    HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+    HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
     FillBuildDD(HVar9,mdBuild);
     uVar23 = 0x14f8;
-    SendMessage(HVar9,WM_USER_0x040E,0,0);
+    SendMessage(HVar9,CB_SETCURSEL,0,0);
     pCVar18 = &stack0xffa6;
 BUILD_FixupShip:
     *(HWND *)((int)pCVar18 + -2) = hwnd;
@@ -904,7 +903,7 @@ BUILD_LRestart:
       if (sVar10 == 0) {
         SetWindowText((HWND)lParam,szWork);
         uVar24 = 0x14f8;
-        SendMessage((HWND)lParam,WM_USER_0x0401,0,LVar29);
+        SendMessage((HWND)lParam,CB_LIMITTEXT,0,LVar29);
         puVar17 = &stack0xff96;
       }
       *(int *)(puVar17 + -2) = lpshdefBuild._2_2_;
@@ -949,8 +948,8 @@ BUILD_LRestart:
         if (((int)uVar28 == 0) &&
            ((local_50.x = 0, local_50.y = 0, ((uint)gd.grBits >> 0xb & 1) == 0 ||
             (sVar10 = FTutorialEnabledShipBuilder(0), sVar10 != 0)))) {
-          HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
-          LVar29 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+          HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
+          LVar29 = SendMessage(HVar9,CB_GETCURSEL,0,0);
           lSel._0_2_ = (int)LVar29;
           pSVar30 = NthValidShdef((int)lSel);
           iVar11 = (int)((ulong)pSVar30 >> 0x10);
@@ -1016,8 +1015,8 @@ BUILD_LRestart:
         if ((int)uVar28 == 0) {
           if ((((uint)gd.grBits >> 0xb & 1) == 0) ||
              (sVar10 = FTutorialEnabledShipBuilder(1), sVar10 != 0)) {
-            HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
-            lVar26 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+            HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
+            lVar26 = SendMessage(HVar9,CB_GETCURSEL,0,0);
             if ((0xffff < lVar26) || (-1 < lVar26)) {
               if (fStarbaseMode == 0) {
                 local_50 = (POINT)((ulong)local_50 & 0xffff);
@@ -1115,7 +1114,7 @@ LAB_10c8_1d0f:
                 }
                 LogChangeShDef(lpshdef);
                 FillBuildDD(HVar9,mdBuild);
-                SendMessage(HVar9,WM_USER_0x040E,local_50.y,0);
+                SendMessage(HVar9,CB_SETCURSEL,local_50.y,0);
                 HVar9 = GetDlgItem(hwndSlotDlg,IDC_EDIT);
                 EnableWindow(HVar9,1);
                     /* WARNING: Ignoring partial resolution of indirect */
@@ -1223,8 +1222,8 @@ BUILD_LStripDown:
             (((((SHDEF *)lpshdefBuild)->wFlags >> 10 & 0x1f) != 0x10 ||
              (sVar10 = GetRaceStat((PLAYER *)rgplr + idPlayer,rsMajorAdv),
              sVar10 != raMacintosh)))))) {
-          HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
-          LVar29 = SendMessage(HVar9,WM_USER_0x0407,0,0);
+          HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
+          LVar29 = SendMessage(HVar9,CB_GETCURSEL,0,0);
           pSVar30 = NthValidShdef((short)LVar29);
           if (((-1 < LVar29) &&
               (((SHDEF *)pSVar30 != (SHDEF *)0x0 || ((int)((ulong)pSVar30 >> 0x10) != 0)))) &&
@@ -1259,20 +1258,20 @@ BUILD_EditDesign:
               HVar9 = GetDlgItem(hwnd,IDC_U16_0x080C);
               FillBuildPartsLB(HVar9,sVar10);
               sVar10 = mdBuild;
-              HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+              HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
               FillBuildDD(HVar9,sVar10);
               ShowMainControls(hwnd,0);
               HVar9 = GetDlgItem(hwnd,IDC_U16_0x080C);
               SetWindowPos(HVar9,0,0x10,0x20,0,0,0x45);
-              HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+              HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX);
               SetWindowPos(HVar9,0,0x10,8,0,0,0x45);
-              HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
+              HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX|IDOK);
               SetWindowPos(HVar9,0,ptslotGlob.x + -0x108,8,0xf0,
                            dyArial8 * 3 >> 1,0x44);
-              HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
+              HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX|IDOK);
               SetWindowText(HVar9,shdefBuild.hul.szClass);
-              HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
-              SendMessage(HVar9,WM_USER_0x0415,0x1f,0);
+              HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX|IDOK);
+              SendMessage(HVar9,CB_SETEXTENDEDUI,0x1f,0);
               if (((uint)gd.grBits >> 0xb & 1) != 0) {
                 AdvanceTutor();
               }
@@ -1311,7 +1310,7 @@ BUILD_EditDesign:
             }
             if ((((uint)gd.grBits >> 0xb & 1) != 0) &&
                (sVar10 = FTutorialEnabledShipBuilder(3), sVar10 == 0)) goto LAB_10c8_2641;
-            HVar9 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
+            HVar9 = GetDlgItem(hwnd,IDC_COMBOBOX|IDOK);
             GetWindowText(HVar9,shdefBuild.hul.szClass,0x20);
             shdefBuild.cBuilt._0_2_ = 0;
             shdefBuild.cBuilt._2_2_ = 0;
@@ -1955,11 +1954,11 @@ short FTrackSlot(HWND hwnd,short x,short y,short fkb,short fListBox,short fRight
         rcStart.bottom = *(short *)((int)&vrgrcSlot[0].bottom + iVar9);
       }
       else {
-        LVar19 = SendMessage(hwnd,WM_USER_0x0409,0,0);
+        LVar19 = SendMessage(hwnd,CB_GETLBTEXTLEN,0,0);
         if ((WPARAM)LVar19 == 0xffff) {
           return 0;
         }
-        SendMessage(hwnd,WM_USER_0x040A,(WPARAM)LVar19,0x112057a4);
+        SendMessage(hwnd,CB_INSERTSTRING,(WPARAM)LVar19,0x112057a4);
         ibmp = szWork[2] + -0x41 + (szWork[3] + -0x41) * 0x1a;
         iSrc = -1;
         hs.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
@@ -2229,10 +2228,10 @@ void DrawBuildSelComp(HWND hwnd,HDC hdc,short iDraw)
   if (iselSlot == -2) goto BUILD_Restore;
   if (iselSlot == -1) {
     HVar1 = GetDlgItem(hwndSlotDlg,IDC_U16_0x080C);
-    LVar13 = SendMessage(HVar1,WM_USER_0x0409,0,0);
+    LVar13 = SendMessage(HVar1,CB_GETLBTEXTLEN,0,0);
     if ((WPARAM)LVar13 == 0xffff) goto BUILD_Restore;
     HVar1 = GetDlgItem(hwndSlotDlg,IDC_U16_0x080C);
-    SendMessage(HVar1,WM_USER_0x040A,(WPARAM)LVar13,0x112057a4);
+    SendMessage(HVar1,CB_INSERTSTRING,(WPARAM)LVar13,0x112057a4);
     hsShip.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
     hsShip.wFlags_0x2 = (int)szWork[1] - 0x41U & 0xff | 0x100;
   }
@@ -3236,7 +3235,7 @@ void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis,short inflate)
   HVar2 = GetStockObject(sVar1);
   FillRect(uVar11,(RECT *)CONCAT22(uVar9,pRVar10),HVar2);
   InflateRect(&rc,-2,-1);
-  SendMessage(((DRAWITEMSTRUCT *)lpdis)->hwndItem,WM_USER_0x040A,((DRAWITEMSTRUCT *)lpdis)->itemID,
+  SendMessage(((DRAWITEMSTRUCT *)lpdis)->hwndItem,CB_INSERTSTRING,((DRAWITEMSTRUCT *)lpdis)->itemID,
               0x112057a4);
   SelectPalette(((DRAWITEMSTRUCT *)lpdis)->hDC,vhpal,0);
   RealizePalette(((DRAWITEMSTRUCT *)lpdis)->hDC);
@@ -3403,7 +3402,7 @@ void FillBuildDD(HWND hwndDD,short md)
   short fProgress;
   short ishdefMac;
   
-  SendMessage(hwndDD,WM_USER_0x040B,0,0);
+  SendMessage(hwndDD,CB_RESETCONTENT,0,0);
   if (md != 0) {
     HVar2 = GetDlgItem(hwndSlotDlg,IDC_DELETE);
     EnableWindow(HVar2,0);
@@ -3446,7 +3445,7 @@ void FillBuildDD(HWND hwndDD,short md)
         part.hs.wFlags_0x2 = part.hs.wFlags_0x2 & 0xff00 | i & 0xffU;
         sVar5 = FLookupPart(&part);
         if (sVar5 == 1) {
-          SendMessage(hwndDD,WM_USER_0x0403,0,
+          SendMessage(hwndDD,CB_ADDSTRING,0,
                       (LPARAM)CONCAT22(part.u_PART_0x0004._2_2_,
                                        (part.u_PART_0x0004.parmor._0_2_)->szName));
         }
@@ -3475,7 +3474,7 @@ void FillBuildDD(HWND hwndDD,short md)
                 uVar4 = _strlen((char *)szWork);
                 _wsprintf((char *)szWork + uVar4,(char *)CONCAT22(uVar10,pcVar9),iVar6,
                           iVar13);
-                SendMessage(hwndDD,WM_USER_0x0403,0,0x112057a4);
+                SendMessage(hwndDD,CB_ADDSTRING,0,0x112057a4);
               }
             }
           }
@@ -3486,7 +3485,7 @@ void FillBuildDD(HWND hwndDD,short md)
     if ((md == 3) || (md == 4)) {
       if (fStarbaseMode == 0) {
         for (i = 0; i < 0xd; i = i + 1) {
-          WVar12 = WM_USER_0x0403;
+          WVar12 = CB_ADDSTRING;
           WVar11 = 0;
           HVar2 = hwndDD;
           pcVar9 = PszGetCompressedString(*(StringId *)(i * 2 + rgidsParts));
@@ -3495,7 +3494,7 @@ void FillBuildDD(HWND hwndDD,short md)
       }
       else {
         for (i = 0; i < 8; i = i + 1) {
-          WVar12 = WM_USER_0x0403;
+          WVar12 = CB_ADDSTRING;
           WVar11 = 0;
           HVar2 = hwndDD;
           pcVar9 = PszGetCompressedString(*(StringId *)(i * 2 + rgidsPartsSB));
@@ -3536,12 +3535,12 @@ void FillBuildDD(HWND hwndDD,short md)
         }
         fAdded = iVar3 + 1;
       }
-      SendMessage(hwndDD,WM_USER_0x0403,0,
+      SendMessage(hwndDD,CB_ADDSTRING,0,
                   (LPARAM)CONCAT22(lpshdef._2_2_,((SHDEF *)lpshdef)[i].hul.szClass));
     }
   }
 LAB_10c8_632a:
-  LVar8 = SendMessage(hwndDD,WM_USER_0x0406,0,0);
+  LVar8 = SendMessage(hwndDD,CB_GETCOUNT,0,0);
   i = (short)LVar8;
   if (0x20 < i) {
     i = 0x20;
@@ -3550,7 +3549,7 @@ LAB_10c8_632a:
   SetWindowPos(hwndDD,0,0,0,rc.right - rc.left,
                (i + 1) * (dyArial8 - (uint)(dyArial8 < 0xf)) + 8 +
                (uint)(0xe < dyArial8),6);
-  SendMessage(hwndDD,WM_USER_0x040E,0,0);
+  SendMessage(hwndDD,CB_SETCURSEL,0,0);
   return;
 }
 
@@ -3577,7 +3576,7 @@ void FillBuildPartsLB(HWND hwndLB,short grbit)
   
   grbitCur = 1;
   sz[0] = 'A';
-  SendMessage(hwndLB,WM_USER_0x0405,0,0);
+  SendMessage(hwndLB,CB_DIR,0,0);
   for (; grbitCur != 0; grbitCur = grbitCur << 1) {
     if ((grbitCur & grbit) != 0) {
       i = 0;
@@ -3597,7 +3596,7 @@ void FillBuildPartsLB(HWND hwndLB,short grbit)
           sz[2] = (char)(pAVar1->ibmp % 0x1a) + 'A';
           sz[3] = (char)(pAVar1->ibmp / 0x1a) + 'A';
           __fstrcpy(sz + 4,(char *)CONCAT22(uVar2,pAVar1->szName));
-          SendMessage(hwndLB,WM_USER_0x0401,0,(LPARAM)sz);
+          SendMessage(hwndLB,CB_LIMITTEXT,0,(LPARAM)sz);
         }
         i = i + 1;
       }
@@ -3745,9 +3744,9 @@ long FakeListProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
       FTrackSlot(hwnd,(uint)lParam,(short)uVar4,wParam,fListBox,fRightBtn);
       return 0;
     }
-    LVar5 = SendMessage(hwnd,WM_USER_0x0409,0,0);
+    LVar5 = SendMessage(hwnd,CB_GETLBTEXTLEN,0,0);
     if ((WPARAM)LVar5 != 0xffff) {
-      SendMessage(hwnd,WM_USER_0x040A,(WPARAM)LVar5,0x112057a4);
+      SendMessage(hwnd,CB_INSERTSTRING,(WPARAM)LVar5,0x112057a4);
       GlobalPD.u_POPUPDATA_0x0002.part.hs.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
       uVar1 = (int)szWork[1] - 0x41;
       GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 =

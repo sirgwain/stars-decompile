@@ -632,8 +632,6 @@ UTILGEN_LStreamError:
 // ======================================================================
 
 
-/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
-
 short AlertSz(char *sz,short mbType)
 
 {

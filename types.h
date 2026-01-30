@@ -19,6 +19,8 @@
  */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #include <windows.h>
+#include <shlobj.h>
+
 #else
 #include "win_stubs.h"
 #endif

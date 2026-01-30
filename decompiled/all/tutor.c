@@ -1946,7 +1946,7 @@ short FTutorTaskDone(void)
               if (((sVar3 == 0) ||
                   ((*(uint *)((int)(PLORD *)sel.fl.lpplord +
                              sel.iwpAct * 0x12 + 10) & 0xf) != 1)) ||
-                 (LVar7 = SendMessage(rghwndOrderDD[1],WM_USER_0x0407,0,0), LVar7 != 4)) {
+                 (LVar7 = SendMessage(rghwndOrderDD[1],CB_GETCURSEL,0,0), LVar7 != 4)) {
                 tutor.idtBold = 0x116;
               }
               else {
@@ -4980,8 +4980,8 @@ short FCheckShipBuilder(short iCategory,short iShip)
     sVar3 = 0;
   }
   else if ((iCategory == -1) || (iCategory == mdBuild)) {
-    HVar2 = GetDlgItem(hwndSlotDlg,IDC_EDIT|IDCANCEL);
-    LVar4 = SendMessage(HVar2,WM_USER_0x0407,0,0);
+    HVar2 = GetDlgItem(hwndSlotDlg,IDC_COMBOBOX);
+    LVar4 = SendMessage(HVar2,CB_GETCURSEL,0,0);
     if ((iShip == -1) || (iShip == (int)LVar4)) {
       sVar3 = 1;
       tutor.idh = sVar1;

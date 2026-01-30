@@ -12,6 +12,7 @@
 #include "tutor.h"
 #include "create.h"
 #include "planet.h"
+#include "file.h"
 
 /* file existence check used by TitleWndProc (matches file.c portability) */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
@@ -43,37 +44,230 @@ void VerifyTurns(void)
 
 int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
 {
-    uint8_t rgbRaw[21];
-    int16_t fSuccess;
-    int16_t j;
-    uint8_t bXor;
-    int16_t i;
-    int16_t cBits;
-    int16_t iRaw;
-    int16_t iPass;
-    int32_t lSerial;
-    int32_t lTank;
-    uint8_t rgbRaw2[21];
-    uint8_t b64;
+    bool bNibHi = false;
+    int16_t fSuccess = 0;
 
-    /* TODO: implement */
-    return 0;
+    uint8_t rgbRaw2[21];
+    uint8_t rgbRaw[21];
+
+    int16_t iRaw = 0;
+    int16_t cBits = 0;
+    uint32_t tank = 0;
+
+    *plSerial = 0;
+    memset(pbEnv, 0, 0x0B);
+
+    /* Decode 21 bytes from custom base64-ish stream */
+    for (int16_t i = 0; i < 0x15; i++)
+    {
+        while (cBits < 8)
+        {
+            uint8_t b64;
+            char ch = *pszIn++;
+
+            if (ch >= 'A' && ch <= 'Z')
+                b64 = (uint8_t)(ch - 'A');
+            else if (ch >= 'a' && ch <= 'z')
+                b64 = (uint8_t)(ch - 'a' + 26);
+            else if (ch >= '0' && ch <= '9')
+                b64 = (uint8_t)(ch - '0' + 52);
+            else if (ch == '-')
+                b64 = 62;
+            else
+                b64 = 63;
+
+            tank |= (uint32_t)b64 << (cBits & 0x1F);
+            cBits = (int16_t)(cBits + 6);
+        }
+
+        rgbRaw2[iRaw++] = (uint8_t)tank;
+        cBits = (int16_t)(cBits - 8);
+        tank >>= 8;
+    }
+
+    /* Unshuffle */
+    for (int16_t i = 0; i < 0x15; i++)
+        rgbRaw[(uint8_t)vrgbShuffleSerial[i]] = rgbRaw2[i];
+
+    /* Serial is first 4 bytes, little-endian (matches Win16 stores) */
+    {
+        uint32_t lSerial =
+            ((uint32_t)rgbRaw[0]) |
+            ((uint32_t)rgbRaw[1] << 8) |
+            ((uint32_t)rgbRaw[2] << 16) |
+            ((uint32_t)rgbRaw[3] << 24);
+
+        if (!FValidSerialLong(lSerial))
+            return 0;
+
+        fSuccess = 1;
+
+        /* prototypes: PushRandom(int32_t, int32_t), Randomize(uint32_t) */
+        PushRandom(0x11000B, (int32_t)lSerial);
+        Randomize(lSerial);
+
+        iRaw = 0x0F;
+        for (int16_t i = 0; i < 0x0B; i++)
+        {
+            for (int16_t j = (int16_t)rgbRaw[i + 4]; j > 0; j--)
+                (void)Random(0x10);
+
+            if (bNibHi)
+            {
+                uint16_t want = (uint16_t)(rgbRaw[iRaw] >> 4);
+                uint16_t got = (uint16_t)Random(0x10) & 0xFFu;
+                if (want != got)
+                    fSuccess = 0;
+                iRaw = (int16_t)(iRaw + 1);
+            }
+            else
+            {
+                uint16_t want = (uint16_t)(rgbRaw[iRaw] & 0x0Fu);
+                uint16_t got = (uint16_t)Random(0x10) & 0xFFu;
+                if (want != got)
+                    fSuccess = 0;
+            }
+
+            bNibHi = (bool)(((uint16_t)bNibHi + 1u) & 1u);
+        }
+
+        {
+            uint8_t bXor = 0;
+            for (int16_t i = 0; i < 0x0F; i++)
+                bXor ^= rgbRaw[i];
+
+            if ((uint16_t)(rgbRaw[iRaw] >> 4) != (uint16_t)(bXor & 0x0Fu))
+                fSuccess = 0;
+        }
+
+        PopRandom();
+
+        if (fSuccess != 0)
+        {
+            *plSerial = (int32_t)lSerial;
+            memcpy(pbEnv, rgbRaw + 4, 0x0B);
+        }
+    }
+
+    return fSuccess;
 }
 
-void FormatSerialAndEnv(int32_t lSerial, uint8_t *pbEnv, char *pszOut)
+/*
+ * FormatSerialAndEnv
+ * - Produces a 28-character ASCII encoding (plus NUL) from lSerial + 11-byte pbEnv.
+ * - Preserves original 16-bit-ish RNG flow and packing (nibbles, XOR check nibble, shuffle, 6-bit encoding).
+ */
+void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
 {
     uint8_t rgbRaw[21];
-    int16_t j;
-    uint8_t bXor;
-    int16_t i;
-    int16_t cBits;
-    int16_t iRaw;
-    int16_t iPass;
-    int32_t lTank;
     uint8_t rgbRaw2[21];
-    uint8_t b64;
+    uint8_t bXor;
+    int16_t iRaw;
+    int16_t i, j;
+    int packHighNibble = 0;
 
-    /* TODO: implement */
+    /* Win16 code passed caller SI:DI as an extra cookie; in Win32 we don't have that. */
+    PushRandom(0x0011000bU, 0);
+
+    Randomize(lSerial);
+
+    /* raw[0..3] = lSerial (little-endian) */
+    rgbRaw[0] = (uint8_t)((uint32_t)lSerial >> 0);
+    rgbRaw[1] = (uint8_t)((uint32_t)lSerial >> 8);
+    rgbRaw[2] = (uint8_t)((uint32_t)lSerial >> 16);
+    rgbRaw[3] = (uint8_t)((uint32_t)lSerial >> 24);
+
+    /* raw[4..14] = pbEnv[0..10] */
+    memcpy(&rgbRaw[4], pbEnv, 11);
+
+    /* Append 11 random nibbles, packed two per byte starting at raw[15]. */
+    iRaw = 0x0f;
+    for (i = 0; i < 11; i++)
+    {
+        for (j = (int16_t)pbEnv[i]; j > 0; j--)
+        {
+            (void)Random(0x10);
+        }
+
+        if (packHighNibble)
+        {
+            uint16_t r = Random(0x10);
+            rgbRaw[iRaw] = (uint8_t)(rgbRaw[iRaw] | (uint8_t)((r & 0x0fU) << 4));
+            iRaw++;
+        }
+        else
+        {
+            rgbRaw[iRaw] = (uint8_t)Random(0x10); /* low nibble only (0..15) */
+        }
+
+        packHighNibble ^= 1;
+    }
+
+    /* XOR of the first 15 bytes (0..14), stored as the high nibble of current byte. */
+    bXor = 0;
+    for (i = 0; i < 0x0f; i++)
+    {
+        bXor ^= rgbRaw[i];
+    }
+    rgbRaw[iRaw] = (uint8_t)(rgbRaw[iRaw] | (uint8_t)(bXor << 4));
+
+    PopRandom();
+
+    /* Permute into rgbRaw2 using vrgbShuffleSerial. */
+    for (i = 0; i < 21; i++)
+    {
+        rgbRaw2[i] = rgbRaw[vrgbShuffleSerial[i]];
+    }
+
+    /*
+     * Emit 28 chars from 21 bytes (168 bits) in 6-bit chunks (28 * 6 = 168).
+     * Bits are consumed LSB-first from a little-endian bit bucket.
+     */
+    {
+        int bits = 0;
+        int rawIndex = 0;
+        uint32_t tank = 0;
+
+        for (i = 0; i < 0x1c; i++)
+        {
+            while (bits < 6)
+            {
+                tank |= (uint32_t)rgbRaw2[rawIndex++] << (uint32_t)bits;
+                bits += 8;
+            }
+
+            {
+                uint8_t b64 = (uint8_t)(tank & 0x3fU);
+                tank >>= 6;
+                bits -= 6;
+
+                if (b64 < 0x1a)
+                {
+                    *pszOut = (char)('A' + b64);
+                }
+                else if (b64 < 0x34)
+                {
+                    *pszOut = (char)('a' + (b64 - 0x1a));
+                }
+                else if (b64 < 0x3e)
+                {
+                    *pszOut = (char)('0' + (b64 - 0x34));
+                }
+                else if (b64 == 0x3e)
+                {
+                    *pszOut = '-';
+                }
+                else
+                {
+                    *pszOut = '*';
+                }
+
+                pszOut++;
+            }
+        }
+    }
+
+    *pszOut = '\0';
 }
 
 int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
@@ -464,10 +658,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case 0:
-            DBG_LOGD("WM_COMMAND: NewGameWizard");
             NewGameWizard(hwnd, 0);
-            DBG_LOGD("WM_COMMAND: after NewGameWizard: lpPlanets=%p game.lid=%ld",
-                     (void *)lpPlanets, (long)game.lid);
 
             if (lpPlanets == NULL && game.lid == 0)
             {
@@ -807,6 +998,9 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         EnsureTileSize(iWindowLayout == 2);
         return 0;
     }
+    case WM_INITMENU:
+        InitializeMenu((HMENU)wParam);
+        return 0;
     case WM_STARS_STARTUP:
         /*
          * Win16 behavior: if no game is currently loaded, create the full-screen
@@ -925,19 +1119,438 @@ void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)
 
 void WriteIniSettings(void)
 {
-    int16_t ctile;
-    char szPd[3];
-    TILE *rgtile;
-    int16_t i;
-    int16_t iPass;
-    char szEntry[16];
-    char szIniFile[16];
-    char *psz;
     char szSection[16];
-    uint16_t iCol;
-    char ch;
+    char szIniFile[256];
+    char szEntry[16];
 
-    /* TODO: implement */
+    CchGetString(idsWindows, szSection);
+    CchGetString(idsStarsIni, szIniFile);
+
+    /* prepend user AppData path */
+    {
+        char szTmp[256];
+
+        lstrcpyA(szTmp, szStarsPath); /* "%APPDATA%\Stars\" */
+        lstrcatA(szTmp, szIniFile);   /* "Stars.ini" */
+        lstrcpyA(szIniFile, szTmp);
+    }
+
+    /* [Windows] GlobalSettings = "<serial/env>" */
+    CchGetString(idsGlobalsettings, szEntry);
+    FormatSerialAndEnv((uint32_t)vSerialNumber, (uint8_t *)vrgbMachineConfig, (char *)szWork);
+    WINBOOL result = WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    DBG_LOGD("Writing %s to %s-%s %s: result=%d", szWork, szSection, szEntry, szIniFile, result);
+
+    /* [Windows] Resolution = flags */
+    CchGetString(idsResolution, szEntry);
+    {
+        int16_t i = (int16_t)((vcScreenColors < 5) ? 1 : 0);
+        if (gd.mdScreenSize == 0)
+        {
+            i = (int16_t)(i | 2);
+        }
+        (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)i);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    /* [Windows] Main = window-state string */
+    CchGetString(idsMain, szEntry);
+    SetWindowIniString((char *)szWork, hwndFrame);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* report windows: idsC04d04d04d04d format */
+    {
+        const char *pszFmt = PszGetCompressedString(idsC04d04d04d04d);
+
+        CchGetString(idsReportfleetwin, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
+                       0x4d,
+                       (int)vrptFleet.ptDlg.x,
+                       (int)vrptFleet.ptDlg.y,
+                       (int)vrptFleet.ptDlg.x + (int)vrptFleet.ptSize.x,
+                       (int)vrptFleet.ptDlg.y + (int)vrptFleet.ptSize.y);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportefleetwin, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
+                       0x4d,
+                       (int)vrptEFleet.ptDlg.x,
+                       (int)vrptEFleet.ptDlg.y,
+                       (int)vrptEFleet.ptDlg.x + (int)vrptEFleet.ptSize.x,
+                       (int)vrptEFleet.ptDlg.y + (int)vrptEFleet.ptSize.y);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportbtlwin, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
+                       0x4d,
+                       (int)vrptBattle.ptDlg.x,
+                       (int)vrptBattle.ptDlg.y,
+                       (int)vrptBattle.ptDlg.x + (int)vrptBattle.ptSize.x,
+                       (int)vrptBattle.ptDlg.y + (int)vrptBattle.ptSize.y);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportplanwin, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
+                       0x4d,
+                       (int)vrptPlanet.ptDlg.x,
+                       (int)vrptPlanet.ptDlg.y,
+                       (int)vrptPlanet.ptDlg.x + (int)vrptPlanet.ptSize.x,
+                       (int)vrptPlanet.ptDlg.y + (int)vrptPlanet.ptSize.y);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    CchGetString(idsLayout, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)iWindowLayout);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle1width, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dxPlanWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle1height, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dyMsgWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle1height2, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dyMinWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle2width, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dx2PlanWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle2height, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dy2MsgWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsStyle2height2, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)vfs.dy2MinWant);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* toolbar visible */
+    CchGetString(idsToolbar, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)(gd.fToolbar != 0));
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* tile layout strings */
+    {
+        int16_t iPass = 2;
+        TILE *rgtile = (TILE *)&rgtilePlanet;
+        int16_t ctile = 6;
+
+        CchGetString(idsPlanettiles, szEntry);
+
+        while (iPass != 0)
+        {
+            char *psz = (char *)szWork;
+            uint16_t iCol = 0;
+
+            for (int16_t i = 0; i < ctile; i++)
+            {
+                while (iCol < (uint16_t)rgtile[i].iCol)
+                {
+                    iCol++;
+                    *psz++ = '*';
+                }
+
+                {
+                    char ch = (rgtile[i].fPopped == 0) ? 'a' : 'A';
+                    ch = (char)(ch + (char)rgtile[i].id);
+                    *psz++ = ch;
+                }
+            }
+
+            *psz = '\0';
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+            /* pass 2 writes PlanetTiles, pass 1 writes ShipTiles */
+            CchGetString(idsShiptiles, szEntry);
+            rgtile = (TILE *)&rgtileShip;
+            ctile = 7;
+            iPass--;
+        }
+    }
+
+    /* selection */
+    CchGetString(idsSelection, szEntry);
+    {
+        char ch;
+        if (sel.grobj == grobjNone)
+        {
+            ch = 'N';
+        }
+        else if (sel.grobj == grobjPlanet)
+        {
+            ch = 'P';
+        }
+        else if (sel.grobj == grobjFleet)
+        {
+            ch = 'S';
+        }
+        else if (sel.grobj == grobjOther)
+        {
+            ch = 'E';
+        }
+        else
+        {
+            ch = 'N';
+        }
+
+        (void)snprintf((char *)szWork, sizeof(szWork),
+                       PszGetCompressedString(idsCCD),
+                       (int)ch,
+                       (int)((char)idPlayer + 'B'),
+                       (int)sel.id);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    /* message cursor */
+    CchGetString(idsMessage, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)iMsgCur);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* game id (format is "%lx") */
+    CchGetString(idsGameid, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), "%lx", (uint32_t)game.lid);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* scan zoom */
+    CchGetString(idsScanzoom, szEntry);
+    ((char *)szWork)[0] = (char)(iScanZoom + '5');
+    ((char *)szWork)[1] = '\0';
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* v2.5 scanner options */
+    if (gd.fChgScanner != 0)
+    {
+        (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)grbitScan);
+        CchGetString(idsScanmodev25, szEntry);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)grbitScanShip);
+        CchGetString(idsScanfilterv25, szEntry);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)grbitScanEShip);
+        CchGetString(idsScanefilterv25, szEntry);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)grbitScanMines);
+        CchGetString(idsScanmines, szEntry);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)vpctRadarView);
+        CchGetString(idsScanradar, szEntry);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    /* mineral scale */
+    (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)cMinGrafMax);
+    CchGetString(idsMineralscale, szEntry);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* per-player file settings */
+    if (idPlayer != -1)
+    {
+        CchGetString(idsFiles, szSection);
+
+        CchGetString(idsWait2, szEntry);
+        ((char *)szWork)[0] = (char)(((uTimerId != 0) ? 1 : 0) + '0');
+        ((char *)szWork)[1] = '\0';
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        if (gd.fWriteTurnNum != 0)
+        {
+            (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)game.turn);
+            CchGetString(idsTurn, szEntry);
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+            /* matches: gd.grBits2 &= 0xfeff */
+            gd.fWriteTurnNum = 0;
+        }
+
+        CchGetString(idsFile1, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), "%s.m%d",
+                       (char *)szBase, 0x1120, (int)(idPlayer + 1));
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    /* misc report state */
+    CchGetString(idsMisc, szSection);
+
+    if (gd.fChgReports != 0)
+    {
+        CchGetString(idsReportplanfld, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)vrptPlanet.grbitVisible);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportplansort, szEntry);
+        {
+            int16_t i = vrptPlanet.icolSort;
+            if (vrptPlanet.fAscending != 0)
+            {
+                i = (int16_t)(i | 0x0100);
+            }
+            (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+
+        CchGetString(idsReportfleetfld, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)vrptFleet.grbitVisible);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportfleetsort, szEntry);
+        {
+            int16_t i = vrptFleet.icolSort;
+            if (vrptFleet.fAscending != 0)
+            {
+                i = (int16_t)(i | 0x0100);
+            }
+            (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+
+        CchGetString(idsReportefleetfld, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)vrptEFleet.grbitVisible);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportefltsort, szEntry);
+        {
+            int16_t i = vrptEFleet.icolSort;
+            if (vrptEFleet.fAscending != 0)
+            {
+                i = (int16_t)(i | 0x0100);
+            }
+            (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+
+        CchGetString(idsReportbtlfld, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)vrptBattle.grbitVisible);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+        CchGetString(idsReportbtlsort, szEntry);
+        {
+            int16_t i = vrptBattle.icolSort;
+            if (vrptBattle.fAscending != 0)
+            {
+                i = (int16_t)(i | 0x0100);
+            }
+            (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+
+        CchGetString(idsReportdefgraph, szEntry);
+        (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)gd.iCurGraph);
+        WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+    }
+
+    CchGetString(idsHistoryinfo, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)uDateInstalled);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    CchGetString(idsVcrspeed, szEntry);
+    (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)viSpeedVCR);
+    WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+
+    /* zip orders */
+    if (gd.fChgZipOrd != 0)
+    {
+        CchGetString(idsZiporders, szSection);
+
+        for (int16_t i = 0; i < 4; i++)
+        {
+            size_t cch;
+
+            strncpy(szEntry, szSection, sizeof(szEntry) - 1);
+            szEntry[sizeof(szEntry) - 1] = '\0';
+
+            cch = strlen(szEntry);
+            if (cch + 2 <= sizeof(szEntry))
+            {
+                szEntry[cch] = (char)('1' + i);
+                szEntry[cch + 1] = '\0';
+            }
+
+            if (vrgZip[i].fValid == 0)
+            {
+                ((char *)szWork)[0] = '\0';
+            }
+            else
+            {
+                char *psz = (char *)szWork;
+
+                for (int16_t j = 0; j < 5; j++)
+                {
+                    uint16_t cQuan = (uint16_t)vrgZip[i].txp.rgia[j].cQuan;
+                    uint16_t iAction = (uint16_t)vrgZip[i].txp.rgia[j].iAction;
+
+                    psz[0] = (char)((iAction & 0x000F) + 0x61);
+                    psz[1] = (char)(((cQuan >> 0) & 0x000F) + 0x61);
+                    psz[2] = (char)(((cQuan >> 4) & 0x000F) + 0x61);
+                    psz[3] = (char)(((cQuan >> 8) & 0x000F) + 0x61);
+                    psz += 4;
+                }
+
+                /* szName is fixed-width in the struct; copy bounded */
+                strncpy(psz, vrgZip[i].szName, sizeof(vrgZip[i].szName));
+                psz[sizeof(vrgZip[i].szName)] = '\0';
+            }
+
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+    }
+
+    /* zip production queues */
+    if (gd.fChgZipProd != 0)
+    {
+        for (int16_t i = 0; i < 5; i++)
+        {
+            size_t cch;
+
+            CchGetString(idsZiporders, szSection);
+
+            strncpy(szEntry, szSection, sizeof(szEntry) - 1);
+            szEntry[sizeof(szEntry) - 1] = '\0';
+
+            cch = strlen(szEntry);
+            if (cch + 3 <= sizeof(szEntry))
+            {
+                szEntry[cch] = 'P';
+                szEntry[cch + 1] = (char)('1' + i);
+                szEntry[cch + 2] = '\0';
+            }
+
+            if (vrgZipProd[i].fValid == 0)
+            {
+                ((char *)szWork)[0] = '\0';
+            }
+            else
+            {
+                char *psz;
+
+                ((char *)szWork)[0] = (char)(vrgZipProd[i].zpq1.fNoResearch + 'a');
+                ((char *)szWork)[1] = (char)(vrgZipProd[i].zpq1.cpq + 'a');
+
+                psz = (char *)szWork + 2;
+                for (int16_t j = 0; j < (int16_t)(uint8_t)vrgZipProd[i].zpq1.cpq; j++)
+                {
+                    uint16_t w = vrgZipProd[i].rgpq[j].w;
+
+                    psz[0] = (char)(((w >> 0) & 0x000F) + 0x61);
+                    psz[1] = (char)(((w >> 4) & 0x000F) + 0x61);
+                    psz[2] = (char)(((w >> 8) & 0x000F) + 0x61);
+                    psz[3] = (char)(((w >> 12) & 0x000F) + 0x61);
+                    psz += 4;
+                }
+
+                strncpy(psz, vrgZipProd[i].szName, sizeof(vrgZipProd[i].szName));
+                psz[sizeof(vrgZipProd[i].szName)] = '\0';
+            }
+
+            WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
+        }
+    }
 }
 
 VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
@@ -957,13 +1570,20 @@ VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
     /* TODO: implement */
 }
 
-uint16_t GetASubMenu(HWND hwnd, int16_t iMenu)
+HMENU GetASubMenu(HWND hwnd, int16_t iMenu)
 {
-    int16_t fChildMenu;
-    HMENU hmenu;
+    int16_t iOffset = 0;
 
-    /* TODO: implement */
-    return 0;
+    /* If an MDI child is active and maximized, the frame menu has an extra item. */
+    if (hwndActive != NULL && IsZoomed(hwndActive))
+    {
+        iOffset = 1;
+    }
+
+    {
+        HMENU hmenu = GetMenu(hwnd);
+        return GetSubMenu(hmenu, (int)(iMenu + iOffset));
+    }
 }
 
 int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly)
@@ -988,11 +1608,194 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly)
 
 void InitializeMenu(HMENU hmenu)
 {
-    int16_t cMenu;
+    HMENU hmenuFile;
+    HMENU hmenuView;
+    HMENU hmenuTurn;
+    HMENU hmenuFrame;
+    UINT uFlags;
     int16_t i;
-    HMENU hmenuSub;
 
-    /* TODO: implement */
+    if (hmenu == NULL)
+    {
+        hmenu = GetMenu(hwndFrame);
+    }
+
+    /* In your menu.rc: submenu order is File=0, View=1, Turn=2, Commands=3, Report=4, Help=5 */
+    hmenuFile = GetSubMenu(hmenu, 0);
+    hmenuView = GetSubMenu(hmenu, 1);
+    hmenuTurn = GetSubMenu(hmenu, 2);
+    hmenuFrame = hmenu;
+
+    /* ---------------- File menu: rebuild MRU block ----------------
+       Your Win32 menu has no MRU block yet; we insert it after "Save And Submit". */
+    {
+        const UINT idMruBase = 0x10cc; /* keep legacy command-id range for MRU dispatch */
+
+        /* Find insertion point: after IDM_FILE_SAVE_SUBMIT */
+        int posSubmit = -1;
+        int cItems = GetMenuItemCount(hmenuFile);
+        for (int pos = 0; pos < cItems; pos++)
+        {
+            UINT id = GetMenuItemID(hmenuFile, pos);
+            if (id == IDM_FILE_SAVE_SUBMIT)
+            {
+                posSubmit = pos;
+                break;
+            }
+        }
+
+        /* Insert right after submit; if not found, insert near top */
+        int posInsert = (posSubmit >= 0) ? (posSubmit + 1) : 0;
+
+        /* First delete any existing MRU items (0x10cc..0x10d4) */
+        for (UINT id = idMruBase; id < idMruBase + (UINT)cMaxMru; id++)
+        {
+            DeleteMenu(hmenuFile, id, MF_BYCOMMAND);
+        }
+
+        /* Also remove any extra separator we might have inserted previously (by position near insertion). */
+        /* (Optional) You can make this smarter later; safe enough if you don't spam separators. */
+
+        /* Insert MRUs */
+        /* MRU list layout: 9 entries * 0x100 bytes each */
+
+        i = 0;
+        while (i < cMaxMru)
+        {
+            const char *pszMru = vrgszMRU + (i * cbMruEntry);
+
+            if (pszMru[0] == '\0')
+            {
+                break;
+            }
+
+            szWork[0] = '&';
+            szWork[1] = (char)('1' + i);
+            szWork[2] = ' ';
+            /* Copy at most 0xFF chars from the slot, and force NUL */
+            lstrcpynA(szWork + 3, pszMru, 0x100); /* copies up to 0xFF + NUL */
+
+            InsertMenuA(hmenuFile,
+                        (UINT)(posInsert + i),
+                        MF_BYPOSITION | MF_STRING,
+                        (UINT)(idMruBase + (UINT)i),
+                        szWork);
+            i++;
+        }
+    }
+
+    /* ---------------- Enable/disable items using your IDM_* ----------------
+       Win16 used "3" for disabled; Win32 uses MF_GRAYED|MF_DISABLED. */
+
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
+                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
+                 : (MF_BYCOMMAND | MF_ENABLED);
+
+    /* Close */
+    EnableMenuItem(hmenuFrame, IDM_FILE_CLOSE, uFlags);
+
+    /* Open is disabled if no base (matches original 0x0069 logic) */
+    uFlags = (szBase[0] == '\0')
+                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
+                 : (MF_BYCOMMAND | MF_ENABLED);
+    EnableMenuItem(hmenuFrame, IDM_FILE_OPEN, uFlags);
+
+    /* Turn items (these are under the Turn popup in menu.rc, but EnableMenuItem works with BYCOMMAND on the frame menu) */
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
+                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
+                 : (MF_BYCOMMAND | MF_ENABLED);
+    EnableMenuItem(hmenuFrame, IDM_TURN_WAIT_NEW, uFlags);
+
+    uFlags = (szBase[0] == '\0' || (game.fSinglePlr && (lSaltCur <= 0)))
+                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
+                 : (MF_BYCOMMAND | MF_ENABLED);
+    EnableMenuItem(hmenuFrame, IDM_TURN_GENERATE, uFlags);
+
+    /* Submit (Save And Submit) */
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
+                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
+                 : (MF_BYCOMMAND | MF_ENABLED);
+    EnableMenuItem(hmenuFrame, IDM_FILE_SAVE_SUBMIT, uFlags);
+
+    /* ---------------- View checks using your IDM_* ---------------- */
+
+    CheckMenuItem(hmenuFrame, IDM_VIEW_TOOLBAR,
+                  gd.fToolbar ? (MF_BYCOMMAND | MF_CHECKED)
+                              : (MF_BYCOMMAND | MF_UNCHECKED));
+
+    CheckMenuItem(hmenuFrame, IDM_VIEW_FIND,
+                  ((grbitScan & 0x2000) != 0) ? (MF_BYCOMMAND | MF_CHECKED)
+                                              : (MF_BYCOMMAND | MF_UNCHECKED));
+
+    /* ---------------- Zoom/layout checks using your command IDs ---------------- */
+    {
+        UINT idZoom = 0;
+        switch (iScanZoom)
+        {
+        case 0:
+            idZoom = IDM_VIEW_ZOOM_25;
+            break;
+        case 1:
+            idZoom = IDM_VIEW_ZOOM_38;
+            break;
+        case 2:
+            idZoom = IDM_VIEW_ZOOM_50;
+            break;
+        case 3:
+            idZoom = IDM_VIEW_ZOOM_75;
+            break;
+        case 4:
+            idZoom = IDM_VIEW_ZOOM_100;
+            break;
+        case 5:
+            idZoom = IDM_VIEW_ZOOM_125;
+            break;
+        case 6:
+            idZoom = IDM_VIEW_ZOOM_150;
+            break;
+        case 7:
+            idZoom = IDM_VIEW_ZOOM_200;
+            break;
+        case 8:
+            idZoom = IDM_VIEW_ZOOM_400;
+            break;
+        default:
+            idZoom = IDM_VIEW_ZOOM_100;
+            break;
+        }
+
+        /* Radio-check the whole zoom range */
+        CheckMenuRadioItem(hmenuView,
+                           IDM_VIEW_ZOOM_25, IDM_VIEW_ZOOM_400,
+                           idZoom,
+                           MF_BYCOMMAND);
+    }
+
+    {
+        UINT idLayout = IDM_VIEW_LAYOUT_LARGE;
+        switch (iWindowLayout)
+        {
+        case 0:
+            idLayout = IDM_VIEW_LAYOUT_LARGE;
+            break;
+        case 1:
+            idLayout = IDM_VIEW_LAYOUT_MEDIUM;
+            break;
+        case 2:
+            idLayout = IDM_VIEW_LAYOUT_SMALL;
+            break;
+        default:
+            idLayout = IDM_VIEW_LAYOUT_LARGE;
+            break;
+        }
+
+        CheckMenuRadioItem(hmenuView,
+                           IDM_VIEW_LAYOUT_LARGE, IDM_VIEW_LAYOUT_SMALL,
+                           idLayout,
+                           MF_BYCOMMAND);
+    }
+
+    DrawMenuBar(hwndFrame);
 }
 
 uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel)
@@ -1121,12 +1924,42 @@ void CreateChildWindows(void)
     /* TODO: implement */
 }
 
-void SetWindowIniString(char *sz, HWND hwnd)
+/*
+ * SetWindowIniString
+ *
+ * Builds an INI value string representing a window's placement:
+ *   ch = 'M' (maximized), 'I' (iconic/minimized), 'R' (restored)
+ *   plus rc.left/top/right/bottom
+ *
+ *
+ * NOTE: The provided decompile shows the arguments for _wsprintf were pushed but not visible.
+ * This function assumes the format string expects: (char state, int left, int top, int right, int bottom)
+ * which matches the data marshaling in the decompile.
+ */
+void SetWindowIniString(const char *sz /*unused in the snippet*/, HWND hwnd)
 {
-    char ch;
-    RECT rc;
+    (void)sz; /* appears unused in the provided decompile */
 
-    /* TODO: implement */
+    RECT rc;
+    char ch;
+
+    if (IsZoomed(hwnd))
+    {
+        ch = 'M';
+    }
+    else if (IsIconic(hwnd))
+    {
+        ch = 'I';
+    }
+    else
+    {
+        ch = 'R';
+    }
+
+    GetWindowRc(hwnd, &rc);
+
+    const char *pszFmt = PszGetCompressedString(idsC04d04d04d04d);
+    snprintf(szWork, sizeof(szWork), pszFmt, ch, rc.left, rc.top, rc.right, rc.bottom);
 }
 
 void RestoreSelection(void)

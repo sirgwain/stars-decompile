@@ -229,13 +229,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     rcGBox.right = rc.right;
     rcGBox.bottom = rc.bottom;
     ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
-    _Draw3dFrame();
+    _Draw3dFrame(local_12,&rcGBox,-1);
     SelectObject(local_12,rghfontArial8[1]);
     SetBkColor(local_12,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     sVar11 = CchGetString(idsPredefinedRaces,(char *)szWork);
     TextOut(local_12,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar11)
     ;
-    HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+    HVar10 = GetDlgItem(hwnd,IDC_COMBOBOX);
     GetWindowRect(HVar10,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox.right);
     local_18 = rcGBox.right + 0x20;
@@ -319,13 +319,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
     SendDlgItemMessage(hwnd,0x10c,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x81b,0x415,0xf,0);
     SendDlgItemMessage(hwnd,0x10d,0x415,0x10,0);
-    local_12 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+    local_12 = GetDlgItem(hwnd,IDC_COMBOBOX);
     for (i = 0x106; i < 0x10b; i = i + 1) {
       local_14 = PszGetCompressedString(i);
-      SendMessage(local_12,WM_USER_0x0403,0,(LPARAM)local_14);
+      SendMessage(local_12,CB_ADDSTRING,0,(LPARAM)local_14);
     }
     WVar7 = GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
-    SendMessage(local_12,WM_USER_0x040E,WVar7,0);
+    SendMessage(local_12,CB_SETCURSEL,WVar7,0);
     if (vplr.lSalt != 0) {
       SetDlgItemText(hwnd,0x10d,&szRacePass);
     }
@@ -334,7 +334,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar10 = GetDlgItem(hwnd,i);
         EnableWindow(HVar10,0);
       }
-      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL|IDOK);
+      HVar10 = GetDlgItem(hwnd,IDC_COMBOBOX|IDOK);
       EnableWindow(HVar10,0);
       for (i = 0x10f; i < 0x117; i = i + 1) {
         HVar10 = GetDlgItem(hwnd,i);
@@ -379,11 +379,11 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
           }
         }
         GetDlgItemText(hwnd,IDC_U16_0x010C,vplr.szName,0x20);
-        GetDlgItemText(hwnd,IDC_EDIT|IDCANCEL|IDOK,vplr.szNames,0x20);
+        GetDlgItemText(hwnd,IDC_COMBOBOX|IDOK,vplr.szNames,0x20);
         GetRaceStat((PLAYER *)&vplr,rsUseLeftover);
         GetDlgItemText(hwnd,IDC_U16_0x010D,&szRacePass,0x10);
-        HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
-        LVar19 = SendMessage(HVar10,WM_USER_0x0407,0,0);
+        HVar10 = GetDlgItem(hwnd,IDC_COMBOBOX);
+        LVar19 = SendMessage(HVar10,CB_GETCURSEL,0,0);
         local_12 = (HWND)LVar19;
         SetRaceStat((PLAYER *)&vplr,rsUseLeftover,local_12);
         lVar20 = LSaltFromSz((char *)&szRacePass);
@@ -401,7 +401,7 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       _memset((void *)vplr.szName,0,0x20);
       GetDlgItemText(hwnd,IDC_U16_0x010C,vplr.szName,0x20);
       _memset((void *)vplr.szNames,0,0x20);
-      GetDlgItemText(hwnd,IDC_EDIT|IDCANCEL|IDOK,vplr.szNames,0x20);
+      GetDlgItemText(hwnd,IDC_COMBOBOX|IDOK,vplr.szNames,0x20);
       GetDlgItemText(hwnd,wParam,(LPSTR)(local_38 + 8),0x20);
       for (i = 0; i < 7; i = i + 1) {
         pcVar13 = PszGetCompressedString(i + idsHumanoid);
@@ -427,13 +427,13 @@ short RaceWizardDlg1(HWND hwnd,WMType message,ushort wParam,long lParam)
       }
       InvalidateAdvPtsRect(hwnd);
       WVar7 = GetRaceStat(local_10,rsUseLeftover);
-      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
-      SendMessage(HVar10,WM_USER_0x040E,WVar7,0);
+      HVar10 = GetDlgItem(hwnd,IDC_COMBOBOX);
+      SendMessage(HVar10,CB_SETCURSEL,WVar7,0);
       HVar10 = GetDlgItem(hwnd,IDC_U16_0x042E|IDOK);
       EnableWindow(HVar10,(uint)(wParam != 0x115));
       local_38._6_2_ = local_10->wMdPlr >> 3 & 0x1f;
       vplr.wMdPlr = vplr.wMdPlr & 0xff07 | local_38._6_2_ << 3;
-      HVar10 = GetDlgItem(hwnd,IDC_EDIT|IDCANCEL);
+      HVar10 = GetDlgItem(hwnd,IDC_COMBOBOX);
       GetWindowRect(HVar10,&rc);
       ScreenToClient(hwnd,(POINT *)&rc.right);
       rc.left = rc.right + 0x20;
@@ -1239,7 +1239,7 @@ short RaceWizardDlg3(HWND hwnd,WMType message,ushort wParam,long lParam)
       if (message == WM_INITDIALOG) {
         SetRCWTitle(hwnd,iPanelActive);
         HVar2 = GetDlgItem(hwnd,IDC_U16_0x0123);
-        WVar6 = WM_USER_0x0401;
+        WVar6 = CB_LIMITTEXT;
         WVar1 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceCheapFact);
         SendMessage(HVar2,WVar6,WVar1,0);
         if ((fRCWReadOnly != 0) ||
@@ -1641,7 +1641,7 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
     rcGBox.bottom = rc.bottom;
     ExpandRc(&rcGBox,dyArial8 + 2,dyArial8 >> 1);
     rcGBox.top = rcGBox.top + -4;
-    _Draw3dFrame();
+    _Draw3dFrame(hdc_00,&rcGBox,-1);
     sVar2 = CchGetString(idsPrimaryRacialTrait,(char *)szWork);
     TextOut(hdc_00,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,sVar2);
     GetClientRect(hwnd,&rc);
@@ -1652,7 +1652,7 @@ short RaceWizardDlg4(HWND hwnd,WMType message,ushort wParam,long lParam)
     GetWindowRect(HVar1,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
     rc.bottom = rcGBox.top + -6;
-    _Draw3dFrame();
+    _Draw3dFrame(hdc_00,&rc,-1);
     sVar2 = CchGetString(idsDescriptionTrait,(char *)szWork);
     TextOut(hdc_00,rc.left + 8,rc.top - (dyArial8 >> 1),szWork,sVar2);
     sVar2 = GetRaceStat((PLAYER *)&vplr,rsMajorAdv);
@@ -1794,7 +1794,7 @@ short RaceWizardDlg5(HWND hwnd,WMType message,ushort wParam,long lParam)
     GetWindowRect(HVar2,&rcGBox);
     ScreenToClient(hwnd,(POINT *)&rcGBox);
     rc.bottom = rcGBox.top + -0xc;
-    _Draw3dFrame();
+    _Draw3dFrame(hdc,&rc,-1);
     rcCargo.left = rc.left;
     rcCargo.right = rc.right;
     rcCargo.bottom = rc.bottom;
@@ -1965,7 +1965,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
       rcGBox.right = rc.right;
       rcGBox.bottom = rc.bottom;
       ExpandRc(&rcGBox,dyArial8,dyArial8 >> 1);
-      _Draw3dFrame();
+      _Draw3dFrame(hdc_00,&rcGBox,-1);
       sVar6 = CchGetString(i + idsEnergy,(char *)szWork);
       sVar7 = CchGetString(idsResearch,(char *)szWork + sVar6);
       TextOut(hdc_00,rcGBox.left + 8,rcGBox.top - (dyArial8 >> 1),szWork,
@@ -2015,7 +2015,7 @@ short RaceWizardDlg6(HWND hwnd,WMType message,ushort wParam,long lParam)
         HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
         SetWindowText(HVar5,szWork);
         HVar5 = GetDlgItem(hwnd,IDC_U16_0x0123);
-        WVar10 = WM_USER_0x0401;
+        WVar10 = CB_LIMITTEXT;
         WVar4 = GetRaceGrbit((PLAYER *)&vplr,ibitRaceTech3);
         SendMessage(HVar5,WVar10,WVar4,0);
         if (fRCWReadOnly != 0) {

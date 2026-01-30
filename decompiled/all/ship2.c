@@ -72,7 +72,7 @@ short ZipOrderDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
     local_38._4_2_ = (char *)rc.right;
     local_38._6_2_ = rc.bottom;
     ExpandRc(&local_38,dyArial8,dyArial8 >> 1);
-    _Draw3dFrame();
+    _Draw3dFrame(hdc_00,&local_38,-1);
     SelectObject(hdc_00,rghfontArial8[1]);
     SetBkColor(hdc_00,CONCAT22(crButtonFace._2_2_,(undefined2)crButtonFace));
     sVar8 = CchGetString(idsCustomOrders,(char *)szWork);
@@ -502,7 +502,7 @@ short RenameDlg(HWND hwnd,WMType message,ushort wParam,long lParam)
           sVar3 = FStringFitsScreen(szWork,0xa0);
           if (sVar3 == 0) {
             SetWindowText((HWND)lParam,szWork);
-            SendMessage((HWND)lParam,WM_USER_0x0401,0,LVar5);
+            SendMessage((HWND)lParam,CB_LIMITTEXT,0,LVar5);
           }
           fInEditUpdate = 0;
         }
@@ -2001,7 +2001,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
           _strcat(szT,(char *)0x16c4);
         }
         HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
-        SendMessage(HVar3,WM_USER_0x0401,0,(LPARAM)szT);
+        SendMessage(HVar3,CB_LIMITTEXT,0,(LPARAM)szT);
         HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
         if ((vcflMerge == 2) ||
            (((FLEET **)rglpfl)[vrgiflMerge[i]]->id == sel.fl.id)) {
@@ -2010,7 +2010,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
         else {
           WVar2 = 0;
         }
-        SendMessage(HVar3,WM_USER_0x0406,WVar2,(long)i);
+        SendMessage(HVar3,CB_GETCOUNT,WVar2,(long)i);
       }
       if (((uint)gd.grBits >> 0xb & 1) != 0) {
         AdvanceTutor();
@@ -2021,7 +2021,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
       if ((wParam == 1) || (wParam == 2)) {
         for (i = 0; i < vcflMerge; i = i + 1) {
           HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
-          LVar5 = SendMessage(HVar3,WM_USER_0x0408,i,0);
+          LVar5 = SendMessage(HVar3,CB_GETLBTEXT,i,0);
           if (LVar5 == 0) {
             vrgiflMerge[i] = -1;
           }
@@ -2041,7 +2041,7 @@ short MergeFleetsDlg(HWND hwnd,WMType msg,ushort wParam,long lParam)
       if ((wParam == 0x7f8) || (wParam == 0x7f9)) {
         for (i = 0; i < vcflMerge; i = i + 1) {
           HVar3 = GetDlgItem(hwnd,IDC_U16_0x0051);
-          SendMessage(HVar3,WM_USER_0x0406,(uint)(wParam == 0x7f8),(long)i);
+          SendMessage(HVar3,CB_GETCOUNT,(uint)(wParam == 0x7f8),(long)i);
         }
         return 1;
       }

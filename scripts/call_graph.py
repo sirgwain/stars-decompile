@@ -69,6 +69,13 @@ def get_func_status(impl_status: dict, func_name: str) -> str:
     return info.get("status", STATUS_MISSING)
 
 
+def parse_csv_set(s: Optional[str]) -> Set[str]:
+    """Parse a comma-separated list into a set of non-empty strings."""
+    if not s:
+        return set()
+    return {item.strip() for item in s.split(",") if item.strip()}
+
+
 def status_tag(status: str) -> str:
     if status == STATUS_IMPLEMENTED:
         return "OK"
@@ -333,24 +340,66 @@ def todo_frontiers(
     *,
     include_externals: bool = False,
     include_missing: bool = False,
+    max_depth: Optional[int] = None,
+    exclude_branches: Optional[Set[str]] = None,
 ) -> None:
-    """Print only implementation frontiers: implemented paths that hit first unimplemented.
+    """Show the next implementation work under a root.
 
-    - STUB nodes are frontiers (printed), and not expanded (except the root).
-    - MISSING nodes are skipped by default (treated as external).
+    Behavior:
+    - From implemented code, we show the *first* unimplemented function(s) reached.
+    - When we hit an unimplemented function (STUB/MISSING), we also recurse into it
+      to show additional unimplemented work underneath it (walking through any
+      implemented helpers as needed).
+    - To avoid noisy repetition, each unimplemented function subtree is expanded
+      at most once, even if multiple paths reach it.
     """
-    visited: Set[str] = set()
 
-    def dfs(fn: str, indent: str, *, is_root: bool = False) -> None:
+    visited: Set[str] = set()
+    expanded_unimpl: Set[str] = set()
+
+    exclude_branches = exclude_branches or set()
+
+    def print_line(indent: str, fn: str) -> None:
+        print(f"{indent}{format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+
+    def print_arrow(indent: str, fn: str) -> None:
+        print(f"{indent}└─→ {format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+
+    def dfs_node(
+        fn: str,
+        indent: str,
+        *,
+        printed: bool,
+        in_unimpl_expand: bool,
+        is_root: bool,
+        depth: int,
+    ) -> None:
         if fn in visited:
             return
         visited.add(fn)
 
         st = get_func_status(impl_status, fn)
-        print(f"{indent}{format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+        if not printed:
+            print_line(indent, fn)
 
-        # If the root is stub/missing, still traverse to children.
-        if st != STATUS_IMPLEMENTED and not is_root:
+        # Branch pruning: if this node is explicitly excluded, stop here.
+        # (We still print the node itself, but we do not traverse its callees.)
+        if (not is_root) and (fn in exclude_branches):
+            return
+
+        # If we encounter an unimplemented function, decide whether to expand it.
+        if st != STATUS_IMPLEMENTED:
+            # Always expand the root (when user runs todo -f <stub>).
+            if is_root:
+                in_unimpl_expand = True
+            else:
+                # Expand each unimplemented subtree at most once.
+                if fn in expanded_unimpl:
+                    return
+                expanded_unimpl.add(fn)
+                in_unimpl_expand = True
+
+        if max_depth is not None and depth >= max_depth:
             return
 
         for callee in sorted(functions.get(fn, {}).get("calls", [])):
@@ -364,14 +413,30 @@ def todo_frontiers(
 
             cst = get_func_status(impl_status, callee)
             if cst == STATUS_IMPLEMENTED:
-                dfs(callee, indent + "  ")
-            elif cst == STATUS_STUB:
-                print(f"{indent}  └─→ {format_name(impl_status, callee)} {format_status(impl_status, callee)}")
+                # In normal mode, implemented nodes expand so we can reach the
+                # frontier(s). In unimplemented-expansion mode, implemented
+                # nodes also expand so we can find deeper stubs.
+                dfs_node(
+                    callee,
+                    indent + "  ",
+                    printed=False,
+                    in_unimpl_expand=in_unimpl_expand,
+                    is_root=False,
+                    depth=depth + 1,
+                )
             else:
-                # missing: only reachable if include_missing=True
-                print(f"{indent}  └─→ {format_name(impl_status, callee)} {format_status(impl_status, callee)}")
+                # Unimplemented child: print as an arrow from this node.
+                print_arrow(indent + "  ", callee)
+                dfs_node(
+                    callee,
+                    indent + "  " + "  ",
+                    printed=True,
+                    in_unimpl_expand=True,
+                    is_root=False,
+                    depth=depth + 1,
+                )
 
-    dfs(root, "", is_root=True)
+    dfs_node(root, "", printed=False, in_unimpl_expand=False, is_root=True, depth=0)
 
 
 def cmd_unimplemented(args) -> None:
@@ -431,6 +496,8 @@ def cmd_todo(args) -> None:
         impl_status,
         include_externals=args.include_externals,
         include_missing=args.include_missing,
+        max_depth=args.max_depth,
+        exclude_branches=parse_csv_set(args.exclude_branches),
     )
 
 
@@ -471,6 +538,18 @@ def main() -> None:
         help="Show implementation frontiers (implemented -> first unimplemented)",
     )
     todo_parser.add_argument("--function", "-f", required=True, help="Name of the function to analyze")
+    todo_parser.add_argument(
+        "--max-depth",
+        type=int,
+        default=None,
+        help="Stop expanding the todo graph past this call depth from the root (root=0).",
+    )
+    todo_parser.add_argument(
+        "--exclude-branches",
+        "-x",
+        default=None,
+        help="Comma-separated list of function names whose call subtrees should be pruned (excluded) during traversal.",
+    )
     add_common_flags(todo_parser)
     todo_parser.set_defaults(func=cmd_todo)
 
@@ -479,7 +558,14 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    args.func(args)
+    try:
+        args.func(args)
+    except BrokenPipeError:
+        # Common when piping to tools like `head`. Exit cleanly.
+        try:
+            sys.stdout.close()
+        finally:
+            sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -51,6 +51,7 @@ char szBackup[0]; // TODO: wut?
 char szBase[256];
 char szBrowser[13];
 char szCRLF[3];
+char szStarsPath[256];
 char szDirName[256];
 char szFormatNumber[12];
 char szFrame[11];

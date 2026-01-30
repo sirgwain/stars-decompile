@@ -407,6 +407,7 @@ void CreateChildWindows(void)
 
 
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long FrameWndProc(HWND hwnd,WMType msg,ushort wParam,long lParam)
 
@@ -1014,7 +1015,7 @@ MDI_LTryNextBatch:
       goto MDI_LExit;
     }
 LAB_1020_0b67:
-    CommandHandler(hwnd,0xed9);
+    CommandHandler(hwnd,IDM_TOOL_OPEN_GAME);
     if ((ini.wFlags >> 4 & 1) != 0) goto MDI_LExit;
     if ((ini.wFlags >> 3 & 1) != 0) goto MDI_LNop;
     if (((int)game.lid != 0) || (game.lid._2_2_ != 0)) {
@@ -1037,7 +1038,7 @@ LAB_1020_0b67:
       PostMessage(hwndFrame,WM_COMMAND,0xfa1,0);
       if ((ini.wFlags >> 2 & 1) != 0) {
         ini.wFlags = ini.wFlags & 0xfffb;
-        CommandHandler(hwnd,0x6a);
+        CommandHandler(hwnd,WMX_UNKNOWN_006A);
       }
       goto MDI_LNop;
     }
@@ -1735,9 +1736,9 @@ short FFindSomethingAndSelectIt(void)
 /* WARNING: Removing unreachable block (ram,0x102034e8) */
 /* WARNING: Removing unreachable block (ram,0x10203583) */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
-void CommandHandler(HWND hwnd,ushort wParam)
+void CommandHandler(HWND hwnd,WParamMessageId wParam)
 
 {
   undefined2 *puVar1;
@@ -1843,19 +1844,19 @@ void CommandHandler(HWND hwnd,ushort wParam)
     iPopMenuSel = wParam + 0xc568;
     return;
   }
-  if (wParam == 0x53) {
+  if (wParam == IDM_DEBUG_DUMP_FLEETS) {
     DumpFleets();
     return;
   }
-  if (wParam == 0x54) {
+  if (wParam == IDM_DEBUG_DUMP_PLANETS) {
     DumpPlanets();
     return;
   }
-  if (wParam == 0x55) {
+  if (wParam == IDM_DEBUG_DUMP_UNIVERSE) {
     DumpUniverse();
     return;
   }
-  if ((wParam == 0x5f) || (wParam == 0x60)) {
+  if ((wParam == IDM_GAME_SCORE) || (wParam == IDM_GAME_SCORE2)) {
     if (idPlayer == -1) {
       return;
     }
@@ -1864,22 +1865,22 @@ void CommandHandler(HWND hwnd,ushort wParam)
     FreeProcInstance(pvVar29);
     return;
   }
-  if (wParam == 99) {
+  if (wParam == IDM_HELP_ABOUT) {
     pvVar29 = MakeProcInstance(About,hInst);
     DialogBox(0,IDD_DLG90_90,hwnd,pvVar29);
     FreeProcInstance(pvVar29);
     return;
   }
-  if ((wParam == 0x67) || (wParam == 0x68)) {
+  if ((wParam == IDM_FLEET_DELETE_WAYPOINT) || (wParam == IDM_FLEET_INSERT_WAYPOINT)) {
     if ((sel.grobj == grobjFleet) && (HVar15 = GetFocus(), HVar15 != hwndOrderED))
     {
-      DeleteCurWayPoint((uint)(wParam == 0x67));
+      DeleteCurWayPoint((uint)(wParam == IDM_FLEET_DELETE_WAYPOINT));
     }
 MDI_Default_4:
     DefWindowProc(hwnd,0x111,wParam,0);
     return;
   }
-  if (wParam == 0x69) {
+  if (wParam == IDM_FILE_HOST_GAME) {
     if ((game.wCrap >> 2 & 1) == 0) {
       pcVar31 = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
       pcVar10 = PszFormatIds(idsGameAlreadyHostedAnotherInstanceStarsWould,(short *)0x0);
@@ -1890,13 +1891,13 @@ MDI_Default_4:
     }
 LAB_1020_3f6e:
     local_22 = (PLANET *)idPlayer;
-    if (wParam == 0x5209) {
+    if (wParam == IDM_DEBUG_GEN_100_TURNS) {
       iPassCnt = 100;
     }
     else if ((HBRUSH *)wParam == (HBRUSH *)&hbrCargo) {
       iPassCnt = 1000;
     }
-    else if (wParam == 21000) {
+    else if (wParam == IDM_DEBUG_GEN_10_TURNS) {
       iPassCnt = 10;
     }
     else {
@@ -1999,7 +2000,7 @@ LAB_1020_3f6e:
           uVar26 = 0x10b0;
           *(undefined2 *)(puVar21 + -4) = 0x42df;
           FGenerateTurn();
-          if ((((wParam != 21000) && (wParam != 0x5209)) &&
+          if ((((wParam != IDM_DEBUG_GEN_10_TURNS) && (wParam != IDM_DEBUG_GEN_100_TURNS)) &&
               ((HBRUSH *)wParam != (HBRUSH *)&hbrCargo)) ||
              (iPassCnt = iPassCnt + -1, iPassCnt < 1)) break;
           *(undefined2 *)(puVar21 + -2) = 0x10b0;
@@ -2107,9 +2108,9 @@ MDI_LTutorialFinishUp:
       }
     }
   }
-  else if (wParam != 0x6a) {
-    if (wParam != 0x6c) {
-      if (wParam == 0x6d) {
+  else if (wParam != WMX_UNKNOWN_006A) {
+    if (wParam != WMX_UNKNOWN_006C) {
+      if (wParam == IDM_FILE_OPEN_GAME) {
 LAB_1020_4a53:
         if ((((uint)gd.grBits >> 0xb & 1) != 0) &&
            (sVar8 = FAskKillTutor(), sVar8 == 0)) {
@@ -2132,7 +2133,7 @@ LAB_1020_4a53:
         StartTutor(0);
         return;
       }
-      if (wParam == 0x6e) {
+      if (wParam == IDM_FILE_NEW_GAME) {
 LAB_1020_3083:
         if ((((uint)gd.grBits >> 0xb & 1) != 0) &&
            (sVar8 = FAskKillTutor(), sVar8 == 0)) {
@@ -2141,8 +2142,8 @@ LAB_1020_3083:
         NewGameWizard(hwnd,0);
         return;
       }
-      if (wParam != 0x6f) {
-        if (wParam == 0x71) {
+      if (wParam != WMX_UNKNOWN_006F) {
+        if (wParam == IDM_FILE_RETURN_TO_TITLE) {
           if ((((uint)gd.grBits >> 0xb & 1) != 0) &&
              (sVar8 = FAskKillTutor(), sVar8 == 0)) {
             return;
@@ -2163,7 +2164,7 @@ LAB_1020_3083:
           ShowWindow(hwndFrame,0);
           return;
         }
-        if (wParam == 0x7d) {
+        if (wParam == IDM_GAME_SHIP_BUILDER) {
 LAB_1020_4df3:
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
@@ -2181,7 +2182,7 @@ LAB_1020_4df3:
           ShipBuilder(ptDlgSize);
           return;
         }
-        if (wParam == 0x7e) {
+        if (wParam == IDM_GAME_RESEARCH) {
 LAB_1020_4be3:
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
@@ -2209,7 +2210,7 @@ LAB_1020_4be3:
           DrawPlanShip(0,0x48);
           return;
         }
-        if (wParam == 0x81) {
+        if (wParam == IDM_RACE_CREATE) {
           puVar23 = (undefined2 *)&vrgplrDef;
           pPVar24 = (PLAYER *)&vplr;
           for (iVar16 = 0x60; iVar16 != 0; iVar16 = iVar16 + -1) {
@@ -2224,18 +2225,19 @@ LAB_1020_4be3:
           RaceCreationWizard(hwnd,0,0);
           return;
         }
-        if (((wParam == 0x82) || (wParam == 0x83)) || (wParam == 0x84)) {
+        if (((wParam == IDM_VIEW_LAYOUT_0) || (wParam == IDM_VIEW_LAYOUT_1)) ||
+           (wParam == IDM_VIEW_LAYOUT_2)) {
           if (idPlayer == -1) {
             return;
           }
-          iWindowLayout = wParam - 0x82;
+          iWindowLayout = wParam - IDM_VIEW_LAYOUT_0;
           InvalidateRect(hwndFrame,(RECT *)0x0,1);
           EnsureTileSize((uint)(iWindowLayout == 2));
           RefitFrameChildren();
           return;
         }
-        if (wParam == 0x87) goto LAB_1020_4be3;
-        if (wParam == 0x88) {
+        if (wParam == IDC_UNKNOWN_0087) goto LAB_1020_4be3;
+        if (wParam == IDM_VIEW_BROWSER_TOGGLE) {
 LAB_1020_440c:
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
@@ -2257,13 +2259,13 @@ LAB_1020_440c:
           CheckMenuItem(uVar11,0x100,(UINT)local_22);
           return;
         }
-        if (wParam == 0x89) goto LAB_1020_4df3;
-        if (wParam == 0x8a) {
+        if (wParam == IDC_UNKNOWN_0089) goto LAB_1020_4df3;
+        if (wParam == IDM_HELP_CONTENTS) {
 LAB_1020_47b3:
           WinHelp(hwnd,_szHelpFile,3,0);
           return;
         }
-        if ((wParam == 0x9c) || (wParam == 0x9d)) {
+        if ((wParam == IDM_RACE_EDIT1) || (wParam == IDM_RACE_EDIT2)) {
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
           }
@@ -2284,7 +2286,7 @@ LAB_1020_47b3:
           RaceCreationWizard(hwnd,1,0);
           return;
         }
-        if ((wParam == 0x9e) || (wParam == 0x9f)) {
+        if ((wParam == IDC_UNKNOWN_009E) || (wParam == IDC_UNKNOWN_009F)) {
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
           }
@@ -2294,7 +2296,7 @@ LAB_1020_47b3:
           NewGameWizard(hwnd,1);
           return;
         }
-        if (wParam == 0xb3) {
+        if (wParam == IDC_UNKNOWN_00B3) {
           uVar11 = GetASubMenu(hwnd,1);
           local_22 = (PLANET *)(uint)(-1 < (int)gd.grBits._2_2_);
           gd.grBits._2_2_ = gd.grBits._2_2_ & 0x7fff | (int)local_22 << 0xf;
@@ -2308,7 +2310,7 @@ LAB_1020_47b3:
           RefitFrameChildren();
           return;
         }
-        if (wParam == 0xd5) {
+        if (wParam == IDC_UNKNOWN_00D5) {
           if (idPlayer == -1) {
             return;
           }
@@ -2577,16 +2579,17 @@ LAB_1020_47b3:
           GlobalFree(local_5c);
           return;
         }
-        if ((((wParam == 0xfa) || (wParam == 0xfb)) || (wParam == 0xfc)) || (wParam == 0xfd)) {
+        if ((((wParam == IDC_UNKNOWN_00FA) || (wParam == IDC_UNKNOWN_00FB)) ||
+            (wParam == IDC_UNKNOWN_00FC)) || (wParam == IDC_UNKNOWN_00FD)) {
           if (hwndTitle == 0) {
             return;
           }
-          PostMessage(hwndTitle,WM_COMMAND,wParam - 0xfa,0);
+          PostMessage(hwndTitle,WM_COMMAND,wParam - IDC_UNKNOWN_00FA,0);
           return;
         }
-        if (wParam == 0x100) goto LAB_1020_440c;
-        if (wParam == 0x101) goto LAB_1020_47b3;
-        if (wParam == 0x10e) {
+        if (wParam == IDM_VIEW_BROWSER_TOGGLE2) goto LAB_1020_440c;
+        if (wParam == IDM_HELP_CONTENTS2) goto LAB_1020_47b3;
+        if (wParam == IDC_UNKNOWN_010E) {
           if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             return;
           }
@@ -2610,11 +2613,11 @@ LAB_1020_47b3:
           FreeProcInstance(pvVar29);
           return;
         }
-        if (wParam == 0x428) {
-          wParam = 0xedb;
+        if (wParam == IDC_UNKNOWN_0428) {
+          wParam = IDM_TURN_END_B;
         }
         else {
-          if (wParam == 0x7d9) {
+          if (wParam == IDM_GAME_RELATIONS) {
 LAB_1020_4cfb:
             if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
               return;
@@ -2630,8 +2633,8 @@ LAB_1020_4cfb:
             FreeProcInstance(pvVar29);
             return;
           }
-          if (wParam == 0x7da) goto MDI_LWaitForTurn;
-          if ((wParam == 0x7db) || (wParam == 0x7dc)) {
+          if (wParam == IDM_GAME_WAIT_FOR_TURN) goto MDI_LWaitForTurn;
+          if ((wParam == IDM_GAME_BATTLE_PLANS1) || (wParam == IDM_GAME_BATTLE_PLANS2)) {
             if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
               return;
             }
@@ -2643,8 +2646,8 @@ LAB_1020_4cfb:
             FreeProcInstance(pvVar29);
             return;
           }
-          if (wParam == 0x7de) goto LAB_1020_4cfb;
-          if (wParam == 0x8fd) {
+          if (wParam == IDM_GAME_RELATIONS2) goto LAB_1020_4cfb;
+          if (wParam == IDM_REPORT_PLANET) {
 LAB_1020_44cc:
             local_26 = (PLANET *)0x0;
             if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
@@ -2655,7 +2658,7 @@ LAB_1020_44cc:
             }
             uVar11 = GetASubMenu(hwnd,4);
             while (hwndReportDlg != 0) {
-              if ((wParam == 0x901) && (vprptCur == (RPT *)&vrptBattle)) {
+              if ((wParam == IDM_REPORT_BATTLE) && (vprptCur == (RPT *)&vrptBattle)) {
                 local_24 = (PLANET *)0x0;
               }
               else {
@@ -2663,7 +2666,7 @@ LAB_1020_44cc:
               }
               local_22 = (PLANET *)0x0;
               DestroyWindow(hwndReportDlg);
-              if (wParam == 0x8ff) {
+              if (wParam == IDM_REPORT_FLEET) {
                 UVar6 = 0x8ff;
               }
               else {
@@ -2675,7 +2678,7 @@ LAB_1020_44cc:
               }
             }
             local_22 = (PLANET *)0x8;
-            if (wParam == 0x8ff) {
+            if (wParam == IDM_REPORT_FLEET) {
               local_24 = (PLANET *)0x49a;
               vprptCur = (RPT *)&vrptFleet;
               for (local_2a = (PLANET *)0x0; (int)local_2a < cFleet;
@@ -2688,7 +2691,7 @@ LAB_1020_44cc:
                 }
               }
             }
-            else if (wParam == 0x900) {
+            else if (wParam == IDM_REPORT_ENEMY_FLEET) {
               local_24 = (PLANET *)0x49b;
               vprptCur = (RPT *)&vrptEFleet;
               for (local_2a = (PLANET *)0x0; (int)local_2a < cFleet;
@@ -2701,7 +2704,7 @@ LAB_1020_44cc:
                 }
               }
             }
-            else if (wParam == 0x901) {
+            else if (wParam == IDM_REPORT_BATTLE) {
               vprptCur = (RPT *)&vrptBattle;
               local_24 = (PLANET *)0x49c;
               local_26 = (PLANET *)CBattles();
@@ -2730,23 +2733,24 @@ LAB_1020_44cc:
             CheckMenuItem(uVar11,wParam,(UINT)local_22);
             return;
           }
-          if (wParam == 0x8fe) {
+          if (wParam == IDM_REPORT_CYCLE) {
             if (hwndReportDlg == 0) {
-              wParam = 0x8fd;
+              wParam = IDM_REPORT_PLANET;
             }
             else if (vprptCur == (RPT *)&vrptPlanet) {
-              wParam = 0x8ff;
+              wParam = IDM_REPORT_FLEET;
             }
             else if (vprptCur == (RPT *)&vrptFleet) {
-              wParam = 0x900;
+              wParam = IDM_REPORT_ENEMY_FLEET;
             }
             else {
-              wParam = 0x901;
+              wParam = IDM_REPORT_BATTLE;
             }
             goto LAB_1020_44cc;
           }
-          if (((wParam == 0x8ff) || (wParam == 0x900)) || (wParam == 0x901)) goto LAB_1020_44cc;
-          if (wParam == 0x98d) {
+          if (((wParam == IDM_REPORT_FLEET) || (wParam == IDM_REPORT_ENEMY_FLEET)) ||
+             (wParam == IDM_REPORT_BATTLE)) goto LAB_1020_44cc;
+          if (wParam == IDM_UNKNOWN_098D) {
             uVar11 = GetASubMenu(hwnd,1);
             grbitScan = grbitScan ^ 0x2000;
             if ((grbitScan & 0x2000) == 0) {
@@ -2763,8 +2767,8 @@ LAB_1020_44cc:
             InvalidateRect(hwndScanner,(RECT *)0x0,0);
             return;
           }
-          if ((wParam == 0x9c1) || (wParam == 0x9c2)) {
-            if (wParam == 0x9c2) {
+          if ((wParam == IDM_UNKNOWN_09C1) || (wParam == IDM_UNKNOWN_09C2)) {
+            if (wParam == IDM_UNKNOWN_09C2) {
               uVar12 = 0x1195;
             }
             else {
@@ -2773,7 +2777,7 @@ LAB_1020_44cc:
             WinHelp(hwnd,_szHelpFile,1,(ulong)uVar12);
             return;
           }
-          if ((wParam == 0x9c4) || (wParam == 0x9c5)) {
+          if ((wParam == IDM_UNKNOWN_09C4) || (wParam == IDM_UNKNOWN_09C5)) {
             if (((uint)gd.grBits >> 0xb & 1) == 0) {
               StartTutor(0);
               return;
@@ -2781,17 +2785,19 @@ LAB_1020_44cc:
             ShowTutor(1);
             return;
           }
-          if (wParam == 0xed8) goto LAB_1020_3083;
-          if (wParam == 0xed9) goto LAB_1020_4a53;
-          if ((wParam != 0xeda) && (wParam != 0xedb)) {
-            if (wParam == 0xee2) {
+          if (wParam == IDM_TOOL_NEW_GAME) goto LAB_1020_3083;
+          if (wParam == IDM_TOOL_OPEN_GAME) goto LAB_1020_4a53;
+          if ((wParam != IDM_TURN_END_A) && (wParam != IDM_TURN_END_B)) {
+            if (wParam == IDM_UNKNOWN_0EE2) {
               SendMessage(hwnd,WM_CLOSE,0,0);
               return;
             }
-            if (((((wParam == 0xf3d) || (wParam == 0xf3e)) || (wParam == 0xf3f)) ||
-                (((wParam == 0xf40 || (wParam == 0xf41)) ||
-                 ((wParam == 0xf42 || ((wParam == 0xf43 || (wParam == 0xf44)))))))) ||
-               (wParam == 0xf45)) {
+            if (((((wParam == IDM_SCAN_ZOOM_0) || (wParam == IDM_SCAN_ZOOM_1)) ||
+                 (wParam == IDM_SCAN_ZOOM_2)) ||
+                (((wParam == IDM_SCAN_ZOOM_3 || (wParam == IDM_SCAN_ZOOM_4)) ||
+                 ((wParam == IDM_SCAN_ZOOM_5 ||
+                  ((wParam == IDM_SCAN_ZOOM_6 || (wParam == IDM_SCAN_ZOOM_7)))))))) ||
+               (wParam == IDM_SCAN_ZOOM_8)) {
               if (hwndScanner != 0) {
                 uVar11 = GetASubMenu(hwnd,1);
                 HVar13 = GetSubMenu(uVar11,3);
@@ -2803,8 +2809,8 @@ LAB_1020_44cc:
                 sVar8 = xScanTop;
                 rc.bottom = sVar14 >> 1;
                 iVar16 = dGalInv - yScanTop;
-                iScanZoom = wParam - 0xf41;
-                CheckMenuItem(HVar13,wParam - 0xf3d,0x408);
+                iScanZoom = wParam - IDM_SCAN_ZOOM_4;
+                CheckMenuItem(HVar13,wParam - IDM_SCAN_ZOOM_0,0x408);
                 DrawMenuBar(hwnd);
                 SetScanScrollBars(hwndScanner);
                 InvalidateRect(hwndScanner,(RECT *)0x0,1);
@@ -2826,7 +2832,7 @@ LAB_1020_44cc:
               AlertSz(pcVar10,sVar8);
               return;
             }
-            if (wParam == 0xfa1) {
+            if (wParam == IDM_UNKNOWN_0FA1) {
               if (hwndScanner == 0) {
                 return;
               }
@@ -2838,7 +2844,7 @@ LAB_1020_44cc:
               UpdateWindow(hwndScanner);
               return;
             }
-            if ((wParam == 0x1068) || (wParam == 0x1069)) {
+            if ((wParam == IDM_UNKNOWN_1068) || (wParam == IDM_UNKNOWN_1069)) {
               if (idPlayer == -1) {
                 return;
               }
@@ -2847,9 +2853,12 @@ LAB_1020_44cc:
               FreeProcInstance(pvVar29);
               return;
             }
-            if ((((((wParam == 0x10cc) || (wParam == 0x10cd)) || (wParam == 0x10ce)) ||
-                 ((wParam == 0x10cf || (wParam == 0x10d0)))) || (wParam == 0x10d1)) ||
-               (((wParam == 0x10d2 || (wParam == 0x10d3)) || (wParam == 0x10d4)))) {
+            if ((((((wParam == IDM_FILE_MRU1) || (wParam == IDM_FILE_MRU2)) ||
+                  (wParam == IDM_FILE_MRU3)) ||
+                 ((wParam == IDM_FILE_MRU4 || (wParam == IDM_FILE_MRU5)))) ||
+                (wParam == IDM_FILE_MRU6)) ||
+               (((wParam == IDM_FILE_MRU7 || (wParam == IDM_FILE_MRU8)) || (wParam == IDM_FILE_MRU9)
+                ))) {
               if ((((uint)gd.grBits >> 0xb & 1) != 0) &&
                  (sVar8 = FAskKillTutor(), sVar8 == 0)) {
                 return;
@@ -2895,7 +2904,7 @@ LAB_1020_44cc:
               StartTutor(0);
               return;
             }
-            if (((wParam != 21000) && (wParam != 0x5209)) &&
+            if (((wParam != IDM_DEBUG_GEN_10_TURNS) && (wParam != IDM_DEBUG_GEN_100_TURNS)) &&
                ((HBRUSH *)wParam != (HBRUSH *)&hbrCargo)) goto MDI_Default_4;
             goto LAB_1020_3f6e;
           }
@@ -2913,7 +2922,7 @@ LAB_1020_44cc:
       }
       sVar8 = FNewTurnAvail(idPlayer);
       if (sVar8 == 0) {
-        local_22 = (PLANET *)(uint)(wParam == 0xedb);
+        local_22 = (PLANET *)(uint)(wParam == IDM_TURN_END_B);
         gd.grBits._0_2_ = (uint)gd.grBits & 0xffef | (int)local_22 << 4;
         FWriteLogFile((char *)szBase,idPlayer);
         FWriteHistFile(idPlayer);
@@ -4146,7 +4155,6 @@ LAB_1020_6aae:
 
 /* WARNING: Type propagation algorithm not settling */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-/* WARNING: Enum "MessageBoxFlags": Some values do not have unique names */
 
 short HostModeDialog(HWND hwnd,WMType message,ushort wParam,long lParam)
 

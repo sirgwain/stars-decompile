@@ -452,23 +452,79 @@ static void StrDate_MMDDYY(char *dst /* >= 9 bytes */)
 
 void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)
 {
-    TILE tile;
-    int16_t fPopped;
-    int16_t i;
-    int16_t iTile;
-    uint16_t iCol;
-    uint16_t iBit;
+    uint16_t iCol = 0;
+    int16_t iTile = 0;
 
-    /* debug symbols */
-    /* label DoNext @ MEMORY_INIT:0x2d7a */
+    for (; *pszFormat != '\0'; pszFormat++)
+    {
+        char ch = *pszFormat;
 
-    /* TODO: implement */
+        /* '*' bumps column from 0 -> 1 (once) */
+        if (ch == '*')
+        {
+            if (iCol == 0)
+                iCol = 1;
+            continue;
+        }
+
+        /* Decode tile id and “popped” flag from character */
+        uint16_t id;
+        uint16_t fPopped;
+
+        if (ch >= 'A' && ch <= 'P')
+        {
+            id = (uint16_t)(ch - 'A');
+            fPopped = 1;
+        }
+        else if (ch >= 'a' && ch <= 'p')
+        {
+            id = (uint16_t)(ch - 'a');
+            fPopped = 0;
+        }
+        else
+        {
+            continue;
+        }
+
+        /* Find matching tile by id, starting at iTile */
+        int16_t i = iTile;
+        while (i < ctile)
+        {
+            if ((uint16_t)rgtile[i].id == id)
+                break;
+            i++;
+        }
+
+        if (i == ctile)
+            continue;
+
+        /* Update flags via bitfields */
+        rgtile[i].iCol = iCol;
+        rgtile[i].fPopped = fPopped;
+
+        /* Bring tile forward if needed */
+        if (i != iTile)
+        {
+            TILE tmp = rgtile[i];
+            rgtile[i] = rgtile[iTile];
+            rgtile[iTile] = tmp;
+        }
+
+        iTile++;
+    }
+
+    /* Clamp remaining tiles to at least current column */
+    for (int16_t i = iTile; i < ctile; i++)
+    {
+        if ((uint16_t)rgtile[i].iCol < iCol)
+            rgtile[i].iCol = iCol;
+    }
 }
 
 void ReadIniSettings(void)
 {
     char szSection[16];
-    char szIniFile[16];
+    char szIniFile[256];
     char szEntry[16];
     WN wnT;
 
@@ -483,6 +539,15 @@ void ReadIniSettings(void)
 
     CchGetString(idsWindows, szSection);
     CchGetString(idsStarsIni, szIniFile);
+
+    /* prepend user AppData path */
+    {
+        char szTmp[256];
+
+        lstrcpyA(szTmp, szStarsPath); /* "%APPDATA%\Stars\" */
+        lstrcatA(szTmp, szIniFile);   /* "Stars.ini" */
+        lstrcpyA(szIniFile, szTmp);
+    }
 
     /* main frame position/state */
     GetIniWinRc(szSection, szIniFile, idsMain, &ini.wnFrame);
@@ -1027,12 +1092,21 @@ void ReadIniSettings(void)
     vrgZipProd[0].fValid = 1;
 }
 
+void InitStarsPath()
+{
+    szStarsPath[0] = '\0';
+    GetCurrentDirectoryA(sizeof(szStarsPath), szStarsPath);
+    lstrcatA(szStarsPath, "\\");
+}
+
 int16_t InitInstance(int16_t nCmdShow)
 {
     int16_t sw;
     RECT rc;
 
     (void)rc;
+
+    InitStarsPath();
 
     /* decompile: ini.wFlags = ini.wFlags & 0xfe1a; */
     ini.wFlags &= 0xFE1Au;
@@ -1098,23 +1172,86 @@ int16_t InitInstance(int16_t nCmdShow)
 
 void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)
 {
-    int16_t fInitalized;
-    int16_t fMinimized;
-    int16_t fMaximized;
+    /* INI value format (17 chars total): [M|R|I] then 4 fixed-width signed fields (4 chars each). */
     char szEntry[16];
-    int16_t cch;
     RECT rc;
-    int16_t j;
-    char *pch;
-    int16_t i;
-    int16_t fNeg;
-    int16_t rg[4];
+    bool fOk = false;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_INIT:0x10cc */
-    /* label NoRc @ MEMORY_INIT:0x1094 */
+    bool fMaximized = false;
+    bool fMinimized = false;
+    bool fInitalized = false;
 
-    /* TODO: implement */
+    CchGetString(ids, szEntry);
+
+    /* Default value is "X" (i.e., not present / invalid). */
+    {
+        uint32_t cch = GetPrivateProfileStringA(
+            szSection, szEntry, "X", szWork, 0x14, szIniFile);
+
+        if (cch == 0x11 && (szWork[0] == 'M' || szWork[0] == 'R' || szWork[0] == 'I'))
+        {
+            const char *pch = szWork + 1;
+            int16_t rg[4];
+            int i;
+
+            for (i = 0; i < 4; i++)
+            {
+                int16_t val = 0;
+                bool fNeg = false;
+                int j;
+
+                for (j = 0; j < 4; j++)
+                {
+                    char ch = *pch++;
+                    if (ch == '-')
+                    {
+                        /* Win16 quirk: any '-' in the 4-char field makes it negative. */
+                        fNeg = true;
+                        continue;
+                    }
+                    if (ch < '0' || ch > '9')
+                    {
+                        goto INIT_NoRc;
+                    }
+                    val = (int16_t)(val * 10 + (int16_t)(ch - '0'));
+                }
+
+                if (fNeg)
+                    val = (int16_t)-val;
+
+                rg[i] = val;
+            }
+
+            rc.left = rg[0];
+            rc.top = rg[1];
+            rc.right = rg[2];
+            rc.bottom = rg[3];
+
+            fMaximized = (szWork[0] == 'M');
+            fMinimized = (szWork[0] == 'I');
+            fInitalized = true;
+            fOk = true;
+        }
+    }
+
+INIT_NoRc:
+    if (!fOk)
+    {
+        rc.left = (int16_t)-0x8000;
+        rc.right = (int16_t)-0x8000;
+        rc.top = 0;
+        rc.bottom = 0;
+
+        /* Default for main window only: maximized. */
+        fMaximized = (ids == idsMain);
+        fMinimized = false;
+        fInitalized = false;
+    }
+
+    pwn->rc = rc;
+    pwn->fMaximized = (uint16_t)(fMaximized ? 1 : 0);
+    pwn->fMinimized = (uint16_t)(fMinimized ? 1 : 0);
+    pwn->fInitalized = (uint16_t)(fInitalized ? 1 : 0);
 }
 
 void InitTiles(void)

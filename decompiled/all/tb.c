@@ -589,6 +589,8 @@ short FIsButtonDown(short itb)
 // ======================================================================
 
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void ExecuteButton(short itb,short fDown)
 
 {
@@ -879,7 +881,7 @@ joined_r0x1068150e:
     if (local_46 == -1) {
       return;
     }
-    CommandHandler(hwndFrame,local_46 + 0xf3d);
+    CommandHandler(hwndFrame,local_46 + IDM_SCAN_ZOOM_0);
     return;
   case 0x11:
     grbitNew = 0x1000;

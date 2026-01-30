@@ -2778,19 +2778,21 @@ typedef enum WMType
 
     WM_USER = 0x0400,
 
-    WM_USER_0x0401 = 0x0401,
-    WM_USER_0x0403 = 0x0403,
-    WM_USER_0x0404 = 0x0404,
-    WM_USER_0x0405 = 0x0405,
-    WM_USER_0x0406 = 0x0406,
-    WM_USER_0x0407 = 0x0407,
-    WM_USER_0x0408 = 0x0408,
-    WM_USER_0x0409 = 0x0409,
-    WM_USER_0x040A = 0x040A,
-    WM_USER_0x040B = 0x040B,
-    WM_USER_0x040E = 0x040E,
-    WM_USER_0x0415 = 0x0415,
-    WM_USER_0x0418 = 0x0418,
+    // combo box messages
+    CB_LIMITTEXT = 0x0401,
+    CB_ADDSTRING = 0x0403,
+    CB_DELETESTRING = 0x0404,
+    CB_DIR = 0x0405,
+    CB_GETCOUNT = 0x0406,
+    CB_GETCURSEL = 0x0407,
+    CB_GETLBTEXT = 0x0408,
+    CB_GETLBTEXTLEN = 0x0409,
+    CB_INSERTSTRING = 0x040A,
+    CB_RESETCONTENT = 0x040B,
+    CB_SETCURSEL = 0x040E,
+    CB_SETEXTENDEDUI = 0x0415,
+    CB_FINDSTRINGEXACT = 0x0418,
+
     WM_STARS_STARTUP = 0x0464,
     WM_STARS_HOST = 0x0465,
     WM_STARS_CONTINUE = 0x0466,
@@ -2813,12 +2815,12 @@ typedef enum MessageBoxFlags
     MB_ICONASTERISK = 0x0040,
 
     /* default button */
-    MB_DEFBUTTON1 = 0x0000,
+    // MB_DEFBUTTON1 = 0x0000,
     MB_DEFBUTTON2 = 0x0100,
     MB_DEFBUTTON3 = 0x0200,
 
     /* modality */
-    MB_APPLMODAL = 0x0000,
+    // MB_APPLMODAL = 0x0000,
     MB_SYSTEMMODAL = 0x1000,
     MB_TASKMODAL = 0x2000,
 
@@ -3429,4 +3431,130 @@ typedef enum ControlId
 
     IDC_U16_0x080C = 0x080C, /* 2060 */
 
+    IDC_COMBOBOX = 0x081A,
+
 } ControlId;
+
+typedef enum WParamMessageId
+{
+    IDM_DEBUG_DUMP_FLEETS = 0x0053,   // DumpFleets()
+    IDM_DEBUG_DUMP_PLANETS = 0x0054,  // DumpPlanets()
+    IDM_DEBUG_DUMP_UNIVERSE = 0x0055, // DumpUniverse()
+
+    // ---- About / score dialogs -------------------------------------------
+    IDM_GAME_SCORE = 0x005F,  // Score dialog (one entry point)
+    IDM_GAME_SCORE2 = 0x0060, // Score dialog (alternate entry point)
+    IDM_HELP_ABOUT = 0x0063,  // About dialog
+
+    // ---- Fleet waypoint editing ------------------------------------------
+    IDM_FLEET_DELETE_WAYPOINT = 0x0067, // Delete current waypoint (confirm)
+    IDM_FLEET_INSERT_WAYPOINT = 0x0068, // Waypoint insert/delete sibling command
+
+    // ---- File / game lifecycle -------------------------------------------
+    IDM_FILE_HOST_GAME = 0x0069,       // Host game ?
+    IDM_FILE_OPEN_GAME = 0x006D,       // Open game
+    IDM_FILE_NEW_GAME = 0x006E,        // New game wizard
+    IDM_FILE_RETURN_TO_TITLE = 0x0071, // Close game, return to title screen
+
+    // Toolbar/accelerator aliases that jump to the same paths
+    IDM_TOOL_NEW_GAME = 0x0ED8,  // Alias: New game
+    IDM_TOOL_OPEN_GAME = 0x0ED9, // Alias: Open game
+
+    // ---- Commands (ship design / research / diplomacy) --------------------
+    IDM_GAME_SHIP_BUILDER = 0x007D, // ShipBuilder
+    IDM_GAME_RESEARCH = 0x007E,     // Research dialog
+
+    // Diplomacy / battle plans / turn control cluster
+    IDM_GAME_RELATIONS = 0x07D9,     // Relations dialog
+    IDM_GAME_WAIT_FOR_TURN = 0x07DA, // Wait-for-turn dialog/command
+    IDM_GAME_BATTLE_PLANS1 = 0x07DB, // Battle plans dialog
+    IDM_GAME_BATTLE_PLANS2 = 0x07DC, // Battle plans dialog (alias)
+    IDM_GAME_RELATIONS2 = 0x07DE,    // Relations dialog (alias)
+
+    // ---- View / window layout --------------------------------------------
+    IDM_VIEW_LAYOUT_0 = 0x0082, // Window layout 0
+    IDM_VIEW_LAYOUT_1 = 0x0083, // Window layout 1
+    IDM_VIEW_LAYOUT_2 = 0x0084, // Window layout 2 ("small" layout)
+
+    // Browser toggle (menu vs alias ID)
+    IDM_VIEW_BROWSER_TOGGLE = 0x0088,  // Toggle tech browser window
+    IDM_VIEW_BROWSER_TOGGLE2 = 0x0100, // Alias: browser toggle
+
+    // Help index (menu vs alias ID)
+    IDM_HELP_CONTENTS = 0x008A,  // Help index/contents
+    IDM_HELP_CONTENTS2 = 0x0101, // Alias: help index/contents
+
+    // ---- Race wizards -----------------------------------------------------
+    IDM_RACE_CREATE = 0x0081, // Race creation wizard (default players)
+    IDM_RACE_EDIT1 = 0x009C,  // Race edit wizard (existing player)
+    IDM_RACE_EDIT2 = 0x009D,  // Race edit wizard (alias)
+
+    // ---- Reports ----------------------------------------------------------
+    IDM_REPORT_PLANET = 0x08FD,      // Planet report
+    IDM_REPORT_CYCLE = 0x08FE,       // Cycle report type
+    IDM_REPORT_FLEET = 0x08FF,       // Fleet report
+    IDM_REPORT_ENEMY_FLEET = 0x0900, // Enemy fleets report
+    IDM_REPORT_BATTLE = 0x0901,      // Battles report
+
+    // ---- MRU (Most Recently Used) slots ----------------------------------
+    IDM_FILE_MRU1 = 0x10CC, // MRU slot 1
+    IDM_FILE_MRU2 = 0x10CD, // MRU slot 2
+    IDM_FILE_MRU3 = 0x10CE, // MRU slot 3
+    IDM_FILE_MRU4 = 0x10CF, // MRU slot 4
+    IDM_FILE_MRU5 = 0x10D0, // MRU slot 5
+    IDM_FILE_MRU6 = 0x10D1, // MRU slot 6
+    IDM_FILE_MRU7 = 0x10D2, // MRU slot 7
+    IDM_FILE_MRU8 = 0x10D3, // MRU slot 8
+    IDM_FILE_MRU9 = 0x10D4, // MRU slot 9
+
+    // ---- Scanner zoom factors (radio group) -------------------------------
+    IDM_SCAN_ZOOM_0 = 0x0F3D, // scanner zoom (entry 0)
+    IDM_SCAN_ZOOM_1 = 0x0F3E, // scanner zoom (entry 1)
+    IDM_SCAN_ZOOM_2 = 0x0F3F, // scanner zoom (entry 2)
+    IDM_SCAN_ZOOM_3 = 0x0F40, // scanner zoom (entry 3)
+    IDM_SCAN_ZOOM_4 = 0x0F41, // scanner zoom (entry 4) (baseline in code)
+    IDM_SCAN_ZOOM_5 = 0x0F42, // scanner zoom (entry 5)
+    IDM_SCAN_ZOOM_6 = 0x0F43, // scanner zoom (entry 6)
+    IDM_SCAN_ZOOM_7 = 0x0F44, // scanner zoom (entry 7)
+    IDM_SCAN_ZOOM_8 = 0x0F45, // scanner zoom (entry 8)
+
+    // ---- Turn ending / host/generate variants ------------------------------
+    IDM_TURN_END_A = 0x0EDA, // end turn variant A
+    IDM_TURN_END_B = 0x0EDB, // end turn variant B (toggles an internal bit)
+
+    // ---- Dynamic popup range ----------------------------------------------
+    IDM_POPUP_BASE = 15000, // Dynamic popup items start here (inferred)
+
+    // ---- Debug: force-generate turns (decompiler had type confusion) -------
+    IDM_DEBUG_GEN_10_TURNS = 21000,  // generate 10 turns (inferred)
+    IDM_DEBUG_GEN_100_TURNS = 21001, // generate 100 turns (0x5209)
+    IDM_DEBUG_GEN_1000_TURNS = 21002,
+    IDM_UNKNOWN_098D = 0x098D,
+    IDM_UNKNOWN_09C1 = 0x09C1,
+    IDM_UNKNOWN_09C2 = 0x09C2,
+    IDM_UNKNOWN_09C4 = 0x09C4,
+    IDM_UNKNOWN_09C5 = 0x09C5,
+    IDM_UNKNOWN_0EE2 = 0x0EE2,
+    IDM_UNKNOWN_0FA1 = 0x0FA1,
+    IDM_UNKNOWN_1068 = 0x1068,
+    IDM_UNKNOWN_1069 = 0x1069,
+
+    IDC_UNKNOWN_0087 = 0x0087,
+    IDC_UNKNOWN_0089 = 0x0089,
+    IDC_UNKNOWN_009E = 0x009E,
+    IDC_UNKNOWN_009F = 0x009F,
+    IDC_UNKNOWN_00B3 = 0x00B3,
+    IDC_UNKNOWN_00D5 = 0x00D5,
+    IDC_UNKNOWN_00FA = 0x00FA,
+    IDC_UNKNOWN_00FB = 0x00FB,
+    IDC_UNKNOWN_00FC = 0x00FC,
+    IDC_UNKNOWN_00FD = 0x00FD,
+    IDC_UNKNOWN_010E = 0x010E,
+    IDC_UNKNOWN_0428 = 0x0428,
+
+    WMX_UNKNOWN_0069 = 0x0069,
+    WMX_UNKNOWN_006A = 0x006A,
+    WMX_UNKNOWN_006C = 0x006C,
+    WMX_UNKNOWN_006F = 0x006F,
+
+} WParamMessageId;

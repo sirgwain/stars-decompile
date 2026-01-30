@@ -710,7 +710,7 @@ LAB_1030_626c:
     return 0;
   }
   hdc = BeginPaint(hwnd,&ps);
-  _Draw3dFrame();
+  _Draw3dFrame(hdc,(RECT *)&rcMsgTitle,0);
   auStack_36._2_4_ =
        SetTextColor(hdc,CONCAT22(crButtonText._2_2_,(undefined2)crButtonText));
   local_3e._2_4_ =
@@ -966,12 +966,12 @@ void SetMsgTitle(HWND hwnd)
     }
     if (((MSGPLR *)lpmp == (MSGPLR *)0x0) && (lpmp._2_2_ == 0)) {
       i = iVar1;
-      SendMessage(hwndMsgDrop,WM_USER_0x040E,viInRe,0);
+      SendMessage(hwndMsgDrop,CB_SETCURSEL,viInRe,0);
       SetWindowText(hwndMsgEdit,(LPCSTR)0x11200b34);
     }
     else {
       i = iVar1;
-      SendMessage(hwndMsgDrop,WM_USER_0x040E,((MSGPLR *)lpmp)->iPlrTo,0);
+      SendMessage(hwndMsgDrop,CB_SETCURSEL,((MSGPLR *)lpmp)->iPlrTo,0);
       if (((MSGPLR *)lpmp)->cLen < 0) {
         SetWindowText(hwndMsgEdit,(LPCSTR)((MSGPLR *)lpmp + 1));
       }
@@ -2173,7 +2173,7 @@ short FRemovePlayerMessage(short iPlr,MessageId iMsg,short iObj)
 // ======================================================================
 
 
-short FFindPlayerMessage(short iPlr,MessageId iMsg,short iObj)
+short FFindPlayerMessage(short iPlr,short iMsg,short iObj)
 
 {
   byte *lpb;
@@ -2184,10 +2184,7 @@ short FFindPlayerMessage(short iPlr,MessageId iMsg,short iObj)
     if ((byte *)((int)(short *)lpMsg + imemMsgCur) <= (byte *)lpb) {
       return 0;
     }
-    if ((((*lpb & 0xf) == iPlr) &&
-        ((*(MessageId *)((byte *)lpb + 1) &
-         (idmDueExcessiveFleetManeuveringBattleAreaFleets|
-         idmTipCanHideUnimportantMessagesClickingCheckmark)) == iMsg)) &&
+    if ((((*lpb & 0xf) == iPlr) && ((*(uint *)((byte *)lpb + 1) & 0x1ff) == iMsg)) &&
        (*(int *)((byte *)lpb + 3) == iObj)) break;
     lpb = (byte *)CONCAT22(lpb._2_2_,(byte *)lpb + ((int)(uint)*lpb >> 4) + 5);
   }

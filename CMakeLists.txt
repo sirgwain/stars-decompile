@@ -169,9 +169,11 @@ if (CROSSOVER_ENABLE AND HOST_IS_MAC)
   set(WINE_BIN "${CROSSOVER_BIN}/wine")
   if (EXISTS "${WINE_BIN}")
     add_custom_target(run_in_crossover
-      COMMAND "${WINE_BIN}" --bottle "${CROSSOVER_BOTTLE_NAME}" "c:\\\\stars\\\\${CROSSOVER_EXE}"
+      # Use cmd.exe so we can force the working directory to C:\stars (affects relative INI paths).
+      # Use forward slashes to avoid POSIX shell backslash-escaping (which can turn c:\stars\foo.exe into c:starsfoo.exe).
+      COMMAND "${WINE_BIN}" --bottle "${CROSSOVER_BOTTLE_NAME}" --workdir "C:\\stars" "${CROSSOVER_EXE}"
       DEPENDS copy_to_crossover
-      COMMENT "Launching ${CROSSOVER_EXE} inside CrossOver bottle '${CROSSOVER_BOTTLE_NAME}'"
+      COMMENT "Launching ${CROSSOVER_EXE} inside CrossOver bottle '${CROSSOVER_BOTTLE_NAME}' (CWD=C:\\stars)"
     )
   else()
     add_custom_target(run_in_crossover

@@ -31,6 +31,9 @@
 #define cThingAbsMax 4050
 #define cFleetAbsMax 512
 
+#define cMaxMru 9
+#define cbMruEntry 0x100
+
 /* Stream helper: treat EOF like the Win16 macro. */
 static bool AtEOF(FILE *fp)
 {
@@ -114,6 +117,7 @@ extern char szBackup[0];
 extern char szBase[256];
 extern char szBrowser[13];
 extern char szCRLF[3];
+extern char szStarsPath[256];
 extern char szDirName[256];
 extern char szFormatNumber[12];
 extern char szFrame[11];
@@ -420,7 +424,7 @@ extern uint8_t rgTechTrader[13];
 extern uint8_t vbrcVCRFocus;
 extern uint8_t vrgAiArmadaPotency[4];
 extern uint8_t vrgAiCyberArmadaPotency[4];
-extern uint8_t vrgbEnvCur[11]; // current machine config, hardcoded for now
+extern uint8_t vrgbEnvCur[11];        // current machine config, hardcoded for now
 extern uint8_t vrgbMachineConfig[11]; // machine config from last serial save
 extern uint8_t vrgcAiParts[45];
 extern uint8_t vrgplrTypeNew[16];

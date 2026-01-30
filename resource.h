@@ -149,11 +149,129 @@
 #define IDM_HELP_TUTORIAL 763
 #define IDM_HELP_ABOUT 764
 
+// ---------------------------------------------------------------------
+// Original Stars! (Win16) WM_COMMAND IDs inferred from CommandHandler()
+//
+// These are the legacy command IDs observed in the Win16 decompile.
+// They intentionally do NOT reuse the modern (700+) IDs above, so there
+// are no collisions. Use these when translating CommandHandler/FrameWndProc
+// logic that still keys off the original values.
+//
+// Naming convention here: IDM_* for legacy (Win16) command IDs.
+
+// ---- Debug / developer commands --------------------------------------
+#define IDM_DEBUG_DUMP_FLEETS 0x0053   // DumpFleets()
+#define IDM_DEBUG_DUMP_PLANETS 0x0054  // DumpPlanets()
+#define IDM_DEBUG_DUMP_UNIVERSE 0x0055 // DumpUniverse()
+
+// ---- About / score dialogs -------------------------------------------
+#define IDM_GAME_SCORE 0x005F  // Score dialog (one entry point)
+#define IDM_GAME_SCORE2 0x0060 // Score dialog (alternate entry point)
+#define IDM_HELP_ABOUT 0x0063  // About dialog
+
+// ---- Fleet waypoint editing ------------------------------------------
+#define IDM_FLEET_DELETE_WAYPOINT 0x0067 // Delete current waypoint (confirm)
+#define IDM_FLEET_INSERT_WAYPOINT 0x0068 // Waypoint insert/delete sibling command
+
+// ---- File / game lifecycle -------------------------------------------
+#define IDM_FILE_HOST_GAME 0x0069
+#define IDM_FILE_OPEN_GAME 0x006D       // Open game
+#define IDM_FILE_NEW_GAME 0x006E        // New game wizard
+#define IDM_FILE_RETURN_TO_TITLE 0x0071 // Close game, return to title screen
+
+// Toolbar/accelerator aliases that jump to the same paths
+#define IDM_TOOL_NEW_GAME 0x0ED8  // Alias: New game
+#define IDM_TOOL_OPEN_GAME 0x0ED9 // Alias: Open game
+
+// ---- Commands (ship design / research / diplomacy) --------------------
+#define IDM_GAME_SHIP_BUILDER 0x007D // ShipBuilder
+#define IDM_GAME_RESEARCH 0x007E     // Research dialog
+
+// Diplomacy / battle plans / turn control cluster
+#define IDM_GAME_RELATIONS 0x07D9     // Relations dialog
+#define IDM_GAME_WAIT_FOR_TURN 0x07DA // Wait-for-turn dialog/command
+#define IDM_GAME_BATTLE_PLANS1 0x07DB // Battle plans dialog
+#define IDM_GAME_BATTLE_PLANS2 0x07DC // Battle plans dialog (alias)
+#define IDM_GAME_RELATIONS2 0x07DE    // Relations dialog (alias)
+
+// ---- View / window layout --------------------------------------------
+#define IDM_VIEW_LAYOUT_0 0x0082 // Window layout 0
+#define IDM_VIEW_LAYOUT_1 0x0083 // Window layout 1
+#define IDM_VIEW_LAYOUT_2 0x0084 // Window layout 2 ("small" layout)
+
+// Browser toggle (menu vs alias ID)
+#define IDM_VIEW_BROWSER_TOGGLE 0x0088  // Toggle tech browser window
+#define IDM_VIEW_BROWSER_TOGGLE2 0x0100 // Alias: browser toggle
+
+// Help index (menu vs alias ID)
+#define IDM_HELP_CONTENTS 0x008A  // Help index/contents
+#define IDM_HELP_CONTENTS2 0x0101 // Alias: help index/contents
+
+// ---- Race wizards -----------------------------------------------------
+#define IDM_RACE_CREATE 0x0081 // Race creation wizard (default players)
+#define IDM_RACE_EDIT1 0x009C  // Race edit wizard (existing player)
+#define IDM_RACE_EDIT2 0x009D  // Race edit wizard (alias)
+
+// ---- Reports ----------------------------------------------------------
+#define IDM_REPORT_PLANET 0x08FD      // Planet report
+#define IDM_REPORT_CYCLE 0x08FE       // Cycle report type
+#define IDM_REPORT_FLEET 0x08FF       // Fleet report
+#define IDM_REPORT_ENEMY_FLEET 0x0900 // Enemy fleets report
+#define IDM_REPORT_BATTLE 0x0901      // Battles report
+
+// ---- MRU (Most Recently Used) slots ----------------------------------
+#define IDM_FILE_MRU1 0x10CC // MRU slot 1
+#define IDM_FILE_MRU2 0x10CD // MRU slot 2
+#define IDM_FILE_MRU3 0x10CE // MRU slot 3
+#define IDM_FILE_MRU4 0x10CF // MRU slot 4
+#define IDM_FILE_MRU5 0x10D0 // MRU slot 5
+#define IDM_FILE_MRU6 0x10D1 // MRU slot 6
+#define IDM_FILE_MRU7 0x10D2 // MRU slot 7
+#define IDM_FILE_MRU8 0x10D3 // MRU slot 8
+#define IDM_FILE_MRU9 0x10D4 // MRU slot 9
+
+// ---- Scanner zoom factors (radio group) -------------------------------
+#define IDM_SCAN_ZOOM_0 0x0F3D // scanner zoom (entry 0)
+#define IDM_SCAN_ZOOM_1 0x0F3E // scanner zoom (entry 1)
+#define IDM_SCAN_ZOOM_2 0x0F3F // scanner zoom (entry 2)
+#define IDM_SCAN_ZOOM_3 0x0F40 // scanner zoom (entry 3)
+#define IDM_SCAN_ZOOM_4 0x0F41 // scanner zoom (entry 4) (baseline in code)
+#define IDM_SCAN_ZOOM_5 0x0F42 // scanner zoom (entry 5)
+#define IDM_SCAN_ZOOM_6 0x0F43 // scanner zoom (entry 6)
+#define IDM_SCAN_ZOOM_7 0x0F44 // scanner zoom (entry 7)
+#define IDM_SCAN_ZOOM_8 0x0F45 // scanner zoom (entry 8)
+
+// ---- Turn ending / host/generate variants ------------------------------
+#define IDM_TURN_END_A 0x0EDA // end turn variant A
+#define IDM_TURN_END_B 0x0EDB // end turn variant B (toggles an internal bit)
+
+// ---- Dynamic popup range ----------------------------------------------
+#define IDM_POPUP_BASE 15000 // Dynamic popup items start here (inferred)
+
+// ---- Debug: force-generate turns (decompiler had type confusion) -------
+#define IDM_DEBUG_GEN_10_TURNS 21000   // generate 10 turns (inferred)
+#define IDM_DEBUG_GEN_100_TURNS 21001  // generate 100 turns (0x5209)
+#define IDM_DEBUG_GEN_1000_TURNS 21002 // generate 1000 turns (likely; decompile mis-typed)
+
+/* CommandHandler-only menu IDs (names TBD) */
+#define IDM_UNKNOWN_098D 0x098D
+#define IDM_UNKNOWN_09C1 0x09C1
+#define IDM_UNKNOWN_09C2 0x09C2
+#define IDM_UNKNOWN_09C4 0x09C4
+#define IDM_UNKNOWN_09C5 0x09C5
+#define IDM_UNKNOWN_0EE2 0x0EE2
+#define IDM_UNKNOWN_0FA1 0x0FA1
+#define IDM_UNKNOWN_1068 0x1068
+#define IDM_UNKNOWN_1069 0x1069
+
 // ---------------- Dialog IDs (800-899) --------------
 #define IDD_ABOUTBOX 800
 #define IDC_VERSION 801
 #define IDC_CREDITS 802
 #define IDC_ORDERINFO 803
+
+#define IDD_BROWSER 801
+#define IDD_SIMPLE_NEW_GAME 209
 
 // ---------------- Tutorial blocks (RCDATA) ----------
 #define IDR_TUTORIAL_HST 10001 // res/tutorial/10001-tutorail.hst
@@ -168,9 +286,6 @@
 
 // ---------------- Auto generated, could be dupes ----------
 
-#define IDOK 1
-#define IDCANCEL 2
-#define IDHELP 9
 #define IDC_HELP 118
 #define IDC_IMMUNE_TO_TEMPERATURE 292
 #define IDC_IMMUNE_TO_RADIATION 293

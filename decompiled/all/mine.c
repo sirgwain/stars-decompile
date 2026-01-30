@@ -67,7 +67,7 @@ long MineWndProc(HWND hwnd,WMType message,ushort wParam,long lParam)
     hdc_00 = BeginPaint(hwnd,&ps);
     GetClientRect(hwnd,&rc);
     SetRect(&stack0xffbe,4,4,rc.right + -4,dyArial8 * 2 + -4);
-    _Draw3dFrame();
+    _Draw3dFrame(hdc_00,&stack0xffbe,0);
     local_32 = (POINT)SetTextColor(hdc_00,CONCAT22(crButtonText._2_2_,
                                                    (undefined2)crButtonText));
     local_3c._4_4_ =
@@ -1976,7 +1976,7 @@ void SetMineralTitleBar(HWND hwnd)
     }
   }
   if (bVar1) {
-    SendMessage(hwndMineCB,WM_USER_0x0401,
+    SendMessage(hwndMineCB,CB_LIMITTEXT,
                 (uint)(*(char *)((int)&((THING *)lpThings)[sel.scan.ith].
                                        u_THING_0x0006 + 7) != '\0'),0);
   }
