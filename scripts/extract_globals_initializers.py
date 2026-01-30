@@ -125,6 +125,21 @@ class SegRange:
     file_base: int
     name: str
 
+
+@dataclass(frozen=True)
+class NeSegInfo:
+    """NE segment table info.
+
+    In NE executables, each segment has an *allocated* size (what the loader
+    reserves/zeros) and an *initialized* size (bytes actually present in the
+    file). Reading beyond init_len must yield zeros, not bytes from whatever
+    happens to be stored after the segment in the file.
+    """
+
+    file_off: int
+    init_len: int
+    alloc_len: int
+
 def parse_seg_off(s: str) -> Tuple[int, int]:
     seg_s, off_s = s.split(":")
     return int(seg_s, 16), int(off_s, 16)
@@ -153,6 +168,82 @@ def load_seg_ranges(segments_csv: str) -> Dict[int, List[SegRange]]:
     for seg in by_seg:
         by_seg[seg].sort(key=lambda x: x.start_off)
     return by_seg
+
+
+def load_ne_segment_table(exe_path: str) -> Dict[int, NeSegInfo]:
+    """Parse the NE segment table to get (file_off, init_len, alloc_len) per selector.
+
+    Returns a dict keyed by selector (like 0x1120) matching how segments are named in your
+    Stars! Ghidra projects/exports.
+    """
+    with open(exe_path, "rb") as f:
+        mz = f.read(0x40)
+        if len(mz) < 0x40 or mz[:2] != b"MZ":
+            return {}
+        e_lfanew = struct.unpack_from("<I", mz, 0x3C)[0]
+        f.seek(e_lfanew)
+        ne = f.read(0x40)
+        if len(ne) < 0x40 or ne[:2] != b"NE":
+            return {}
+
+        # NE header fields.
+        cseg = struct.unpack_from("<H", ne, 0x1C)[0]
+        seg_table_off = struct.unpack_from("<H", ne, 0x22)[0]
+        shift = struct.unpack_from("<H", ne, 0x32)[0]
+
+        f.seek(e_lfanew + seg_table_off)
+        raw = f.read(cseg * 8)
+        if len(raw) < cseg * 8:
+            return {}
+
+        out: Dict[int, NeSegInfo] = {}
+        for i in range(cseg):
+            off_units, length, _flags, alloc = struct.unpack_from("<HHHH", raw, i * 8)
+            file_off = int(off_units) << shift
+            init_len = 0x10000 if length == 0 else int(length)
+            alloc_len = 0x10000 if alloc == 0 else int(alloc)
+            sel = 0x1000 + (i * 8)
+            out[sel] = NeSegInfo(file_off=file_off, init_len=init_len, alloc_len=alloc_len)
+        return out
+
+
+def read_bytes_at_seg_off(
+    exef,
+    seg_ranges_by_seg: Dict[int, List[SegRange]],
+    ne_segs: Dict[int, NeSegInfo],
+    seg: int,
+    off: int,
+    size: int,
+) -> Tuple[bytes, bool]:
+    """Read `size` bytes from seg:off, honoring NE initialized length.
+
+    Returns (bytes, fully_uninitialized).
+
+    fully_uninitialized is True if the entire read is beyond the initialized bytes (i.e.
+    would have been zero-filled by the loader, and should generally *not* become an explicit
+    initializer in generated C).
+    """
+    sr = find_seg_range(seg_ranges_by_seg, seg, off)
+    if sr is None:
+        return b"", True
+
+    delta = off - sr.start_off
+    ne = ne_segs.get(seg)
+    init_len = ne.init_len if ne else (sr.end_off - sr.start_off + 1)
+
+    if delta >= init_len:
+        return (b"\x00" * size), True
+
+    file_off = sr.file_base + delta
+    avail = max(0, init_len - delta)
+    to_read = min(size, avail)
+    exef.seek(file_off)
+    chunk = exef.read(to_read)
+    if len(chunk) < to_read:
+        chunk = chunk + (b"\x00" * (to_read - len(chunk)))
+    if to_read < size:
+        chunk = chunk + (b"\x00" * (size - to_read))
+    return chunk, False
 
 def find_file_offset(seg_ranges_by_seg: Dict[int, List[SegRange]], seg: int, off: int) -> Optional[int]:
     ranges = seg_ranges_by_seg.get(seg)
@@ -217,18 +308,33 @@ def c_escape_bytes_as_string(bs: bytes) -> str:
 
 
 def read_c_string_at_seg_off(
-    exef, seg_ranges_by_seg: Dict[int, List[SegRange]], seg: int, off: int, *, max_len: int = 1024
+    exef,
+    seg_ranges_by_seg: Dict[int, List[SegRange]],
+    ne_segs: Dict[int, NeSegInfo],
+    seg: int,
+    off: int,
+    *,
+    max_len: int = 1024,
 ) -> Optional[str]:
     """Read a NUL-terminated string from the EXE at seg:off.
 
     Returns the *escaped contents* for a C string literal (without surrounding quotes),
     or None if it can't be mapped or doesn't look like text.
     """
-    file_off = find_file_offset(seg_ranges_by_seg, seg, off)
-    if file_off is None:
+    sr = find_seg_range(seg_ranges_by_seg, seg, off)
+    if sr is None:
         return None
+
+    delta = off - sr.start_off
+    ne = ne_segs.get(seg)
+    init_len = ne.init_len if ne else (sr.end_off - sr.start_off + 1)
+    if delta >= init_len:
+        return None
+
+    file_off = sr.file_base + delta
+    cap = min(max_len, init_len - delta)
     exef.seek(file_off)
-    bs = exef.read(max_len)
+    bs = exef.read(cap)
     if not bs:
         return None
     try:
@@ -336,7 +442,25 @@ def format_char_array_as_c_string(bs: bytes) -> Optional[str]:
 
 def format_struct_initializer(sd: StructDef, bs: bytes, structs: Dict[str, StructDef], _depth: int = 0) -> str:
     parts: List[str] = []
-    for f in sd.fields:
+    fields = list(sd.fields)
+    for idx, f in enumerate(fields):
+        # Prefer computing the field size from its declared type. This is important
+        # because our simple types.h parser intentionally skips bitfields and some
+        # union members, which would otherwise cause the "next field" heuristic to
+        # include unrelated bytes.
+        type_size = sizeof_decl(f.c_type, structs)
+        if type_size is not None:
+            field_size = type_size
+        else:
+            next_off = fields[idx + 1].offset if idx + 1 < len(fields) else sd.size
+            field_size = max(0, next_off - f.offset)
+        field_region = bs[f.offset:f.offset + field_size]
+
+        # If the entire field region is zero, omit it from the designated initializer.
+        # (Unspecified fields in a designated initializer are zero-initialized.)
+        if field_size > 0 and all(b == 0 for b in field_region):
+            continue
+
         field_bs = bs[f.offset:]
         base, dims = parse_array_dims(f.c_type)
 
@@ -360,6 +484,8 @@ def format_struct_initializer(sd: StructDef, bs: bytes, structs: Dict[str, Struc
             parts.append(f"/* .{f.name} unsupported: {f.c_type} */")
         else:
             parts.append(f".{f.name} = {v}")
+    if not parts:
+        return "{0}"
     # Match common C designated-init style used in this project: `{.a = 1, .b = 2}`
     return "{" + ", ".join(parts) + "}"
 
@@ -451,6 +577,7 @@ def main() -> int:
     args = ap.parse_args()
 
     seg_ranges_by_seg = load_seg_ranges(args.segments)
+    ne_segs = load_ne_segment_table(args.exe)
 
     with open(args.globals, "r", encoding="utf-8") as f:
         db = json.load(f)
@@ -527,8 +654,8 @@ def main() -> int:
             seg_s, off_s = addr.split(":")
             seg, off = int(seg_s, 16), int(off_s, 16)
 
-            file_off = find_file_offset(seg_ranges_by_seg, seg, off)
-            if file_off is None:
+            sr = find_seg_range(seg_ranges_by_seg, seg, off)
+            if sr is None:
                 skipped.append(f"{name} @ {addr}: no segment mapping")
                 continue
 
@@ -539,9 +666,8 @@ def main() -> int:
                 # Stars! stores these tables in _DATA as near pointers (uint16 offsets).
                 # If NB09 says `[1]`, scan forward until offsets stop looking like strings.
                 max_scan = 256 if declared_n == 1 else declared_n
-                exef.seek(file_off)
                 offs: List[int] = []
-                raw = exef.read(max_scan * 2)
+                raw, _fully_uninit = read_bytes_at_seg_off(exef, seg_ranges_by_seg, ne_segs, seg, off, max_scan * 2)
                 for i in range(0, len(raw), 2):
                     w = int.from_bytes(raw[i:i+2], "little")
                     if declared_n != 1 and len(offs) >= declared_n:
@@ -550,7 +676,7 @@ def main() -> int:
                     if declared_n == 1 and w == 0:
                         break
                     # Only accept if it decodes as a printable string.
-                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, seg, w)
+                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, ne_segs, seg, w)
                     if s is None:
                         if declared_n == 1 and len(offs) >= 1:
                             break
@@ -569,7 +695,7 @@ def main() -> int:
                     if w == 0:
                         elems.append("NULL")
                         continue
-                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, seg, w)
+                    s = read_c_string_at_seg_off(exef, seg_ranges_by_seg, ne_segs, seg, w)
                     if s is not None:
                         elems.append(f"\"{s}\"")
                     else:
@@ -593,8 +719,7 @@ def main() -> int:
                 skipped.append(f"{name} @ {addr}: unsupported type {c_type!r}")
                 continue
 
-            exef.seek(file_off)
-            bs = exef.read(size)
+            bs, fully_uninit = read_bytes_at_seg_off(exef, seg_ranges_by_seg, ne_segs, seg, off, size)
             if len(bs) != size:
                 skipped.append(f"{name} @ {addr}: short read")
                 continue
@@ -605,12 +730,18 @@ def main() -> int:
                 continue
 
             c_decl = t.get("c_decl") or f"{c_type} {name}"
-            line = f"{c_decl} = {init}; /* {addr} */"
+
+            # If the bytes come entirely from the NE segment's uninitialized tail
+            # (i.e. the loader zero-fills them), prefer emitting a plain declaration
+            # rather than a redundant explicit zero initializer.
+            if fully_uninit and all(b == 0 for b in bs):
+                line = f"{c_decl}; /* {addr} (bss) */"
+            else:
+                line = f"{c_decl} = {init}; /* {addr} */"
 
             # Segment grouping/sorting: use the NB09 logical segname when available.
             seg_name = logical_segname(g)
-            sr = find_seg_range(seg_ranges_by_seg, seg, off)
-            range_start = sr.start_off if sr else 0
+            range_start = sr.start_off
 
             emitted.append(Emitted(seg_name=seg_name, seg=seg, range_start=range_start, name=name, line=line))
             handled += 1
