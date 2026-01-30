@@ -4,6 +4,9 @@
 
 #include "planet.h"
 #include "race.h"
+#include "util.h"
+
+#include <math.h>
 
 /* functions */
 
@@ -348,22 +351,53 @@ char *PszCalcEnvVar(int16_t iEnv, int16_t iVar)
 int16_t CMaxOperableFactories(PLANET *lppl, int16_t iplr, int16_t fNextYear)
 {
     int16_t cMax;
-    int32_t cCur;
     int32_t lPop;
-    int16_t iEff;
+    int16_t iEffOperate;
+    int16_t cMaxByRule;
 
-    /* TODO: implement */
-    return 0;
+    cMaxByRule = CMaxFactories(lppl, iplr);
+    iEffOperate = GetRaceStat(&rgplr[iplr], rsFactOperate);
+
+    lPop = PopFromLppl(lppl);
+    if (fNextYear)
+        lPop += ChgPopFromPlanet(lppl, 0);
+
+    /* floor(lPop * iEffOperate / 100) */
+    cMax = (int16_t)((lPop * (int32_t)iEffOperate) / 100);
+
+    if (cMaxByRule < cMax)
+        cMax = cMaxByRule;
+
+    if (cMax < 1)
+        cMax = 1;
+
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+        cMax = 0;
+
+    return cMax;
 }
 
 int16_t CMaxFactories(PLANET *lppl, int16_t iplr)
 {
-    int32_t cMax;
     int32_t lPopMax;
-    int16_t iEff;
+    int32_t cMax;
 
-    /* TODO: implement */
-    return 0;
+    /* base max population */
+    lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
+
+    /* factories operable per 100 population */
+    int16_t eff = GetRaceStat(&rgplr[iplr], rsFactOperate);
+    cMax = (lPopMax * eff) / 100;
+
+    /* minimum of 10 */
+    if (cMax < 10)
+        cMax = 10;
+
+    /* Macintosh major advantage: no factories */
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+        cMax = 0;
+
+    return (int16_t)cMax;
 }
 
 /*
@@ -405,12 +439,27 @@ char *PszCalcGravity(int16_t iGravity)
 
 int16_t CMaxMines(PLANET *lppl, int16_t iplr)
 {
-    int32_t cMax;
     int32_t lPopMax;
-    int16_t iEff;
+    int32_t cMax;
 
-    /* TODO: implement */
-    return 0;
+    /* base max population */
+    lPopMax = CalcPlanetMaxPop(lppl->id, iplr);
+
+    /* mines operable per 100 population */
+    {
+        int16_t eff = GetRaceStat(&rgplr[iplr], rsMineOperate);
+        cMax = (lPopMax * eff) / 100;
+    }
+
+    /* minimum of 10 */
+    if (cMax < 10)
+        cMax = 10;
+
+    /* Macintosh major advantage: no mines */
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+        cMax = 0;
+
+    return (int16_t)cMax;
 }
 
 int16_t FProdIsTerra(PROD *lpprod)
@@ -464,14 +513,51 @@ int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr)
 {
     PLANET pl;
     int32_t lMaxPop;
-    int32_t pctDesire;
-    int16_t ihuldef;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x70ce */
+    FLookupPlanet(idpl, &pl);
 
-    /* TODO: implement */
-    return 0;
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+    {
+        /* Macintosh: max pop is driven by SB hull class; only if owned and has SB */
+        if (pl.iPlayer != iplr || !pl.fStarbase)
+            return 0;
+
+        SHDEF *tab = rglpshdefSB[iplr];
+        SHDEF *sb = &tab[pl.isb];
+
+        /* rglPopMac is indexed by starbase hulldef, starting at huldef 0x20 (32). */
+        int16_t ihuldef = sb->hul.ihuldef;
+        int16_t i = (int16_t)(ihuldef - ihuldefCount);
+        if (i < 0)
+            return 0;
+        lMaxPop = rglPopMac[i];
+    }
+    else
+    {
+        int16_t pctDesire = PctPlanetDesirability(&pl, iplr);
+
+        if (pctDesire < 5)
+            lMaxPop = 500;
+        else
+            lMaxPop = (int32_t)pctDesire * 100;
+
+        {
+            int16_t ra = GetRaceStat(&rgplr[iplr], rsMajorAdv);
+            if (ra == raCheapCol)
+            {
+                lMaxPop -= lMaxPop / 2;
+            }
+            else if (ra == raNone)
+            {
+                lMaxPop += lMaxPop / 5;
+            }
+        }
+    }
+
+    if (GetRaceGrbit(&rgplr[iplr], ibitRaceOBRM))
+        lMaxPop += lMaxPop / 10;
+
+    return lMaxPop;
 }
 
 void UninhabitPlanet(PLANET *lppl)
@@ -500,22 +586,52 @@ int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish)
 int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear)
 {
     int16_t cMax;
-    int32_t cCur;
     int32_t lPop;
-    int16_t iEff;
+    int16_t iEffOperate;
+    int16_t cMaxByRule;
 
-    /* TODO: implement */
-    return 0;
+    cMaxByRule = CMaxMines(lppl, iplr);
+    iEffOperate = GetRaceStat(&rgplr[iplr], rsMineOperate);
+
+    lPop = PopFromLppl(lppl);
+    if (fNextYear)
+        lPop += ChgPopFromPlanet(lppl, 0);
+
+    cMax = (int16_t)((lPop * (int32_t)iEffOperate) / 100);
+
+    if (cMaxByRule < cMax)
+        cMax = cMaxByRule;
+
+    if (cMax < 1)
+        cMax = 1;
+
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+        cMax = 0;
+
+    return cMax;
 }
 
 int16_t CMinesOperating(PLANET *lppl)
 {
-    int16_t iplr;
-    int16_t cMinesOp;
-    int16_t cMines;
+    if (!lppl || lppl->iPlayer == -1)
+        return 0;
 
-    /* TODO: implement */
-    return 0;
+    int16_t iplr = lppl->iPlayer;
+
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+    {
+        /* Macintosh: operating mines = floor(sqrt(population)) */
+        int32_t lPop = PopFromLppl(lppl);
+        if (lPop <= 0)
+            return 0;
+        return (int16_t)(sqrt((double)lPop));
+    }
+
+    {
+        int16_t cMines = (int16_t)lppl->cMines;
+        int16_t cMinesOp = CMaxOperableMines(lppl, iplr, 0);
+        return (cMines <= cMinesOp) ? cMines : cMinesOp;
+    }
 }
 
 int16_t PctPlanetCapacity(PLANET *lppl)

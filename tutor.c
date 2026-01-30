@@ -13,6 +13,21 @@ ZIPPRODQ1 rgzpqTut[2];          /* MEMORY_TUTOR:0x663a */
 
 char mpishdefishTutor[6] = {3, 4, 9, 6, 7, 14};
 
+void AdvanceTutor(void)
+{
+    char szTitle[50];
+    int16_t fRedraw;
+    int16_t idtT;
+    int16_t fTaskDone;
+    RECT rc;
+
+    /* debug symbols */
+    /* label LUpdatePage @ MEMORY_TUTOR:0x0b55 */
+    /* label SkipToNext @ MEMORY_TUTOR:0x0a9e */
+
+    /* TODO: implement */
+}
+
 #ifdef _WIN32
 
 INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -385,21 +400,6 @@ int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip)
 
 void TutorError(int16_t idsError)
 {
-
-    /* TODO: implement */
-}
-
-void AdvanceTutor(void)
-{
-    char szTitle[50];
-    int16_t fRedraw;
-    int16_t idtT;
-    int16_t fTaskDone;
-    RECT rc;
-
-    /* debug symbols */
-    /* label LUpdatePage @ MEMORY_TUTOR:0x0b55 */
-    /* label SkipToNext @ MEMORY_TUTOR:0x0a9e */
 
     /* TODO: implement */
 }

@@ -6,12 +6,13 @@
 /* globals */
 extern uint16_t mpicolgrbitBU[12]; /* MEMORY_REPORT:0x0000 */
 
-void DumpUniverse(void);                                      /* MEMORY_REPORT:0x851e */
-void DumpFleets(void);                                        /* MEMORY_REPORT:0x9530 */
-void DumpPlanets(void);                                       /* MEMORY_REPORT:0x86e4 */
+void DumpUniverse(void);                                 /* MEMORY_REPORT:0x851e */
+void DumpFleets(void);                                   /* MEMORY_REPORT:0x9530 */
+void DumpPlanets(void);                                  /* MEMORY_REPORT:0x86e4 */
 char *PszGetETA(HDC hdc, FLEET *lpfl, int16_t *pcYears); /* MEMORY_REPORT:0x51a8 */
-char *PszGetTaskName(FLEET *lpfl, int16_t *picr);             /* MEMORY_REPORT:0x53b8 */
+char *PszGetTaskName(FLEET *lpfl, int16_t *picr);        /* MEMORY_REPORT:0x53b8 */
 char *PszGetDestName(FLEET *lpfl, HDC hdc);              /* MEMORY_REPORT:0x4f60 */
+void InvalidateReport(int16_t irpt, int16_t fReload);    /* MEMORY_REPORT:0x7af6 */
 
 #ifdef _WIN32
 
@@ -24,16 +25,15 @@ void InitScoreDlg(HWND hwnd, int16_t fVictory);                                 
 void ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn);                            /* MEMORY_REPORT:0x74d4 */
 int16_t FDestIsWP0(FLEET *lpfl);                                                              /* MEMORY_REPORT:0x50b4 */
 int16_t ICompReport(void *arg1, void *arg2);                                                  /* MEMORY_REPORT:0x5bb8 */
-void DrawReport(HWND hwnd, HDC hdc, RECT *prc);                                          /* MEMORY_REPORT:0x0bae */
-void InvalidateReport(int16_t irpt, int16_t fReload);                                         /* MEMORY_REPORT:0x7af6 */
-int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, HDC hdc);                  /* MEMORY_REPORT:0x305e */
+void DrawReport(HWND hwnd, HDC hdc, RECT *prc);                                               /* MEMORY_REPORT:0x0bae */
+int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, HDC hdc);                       /* MEMORY_REPORT:0x305e */
 int32_t LFetchScoreXVal(SCOREX *lpsx, int16_t iVal);                                          /* MEMORY_REPORT:0x2f94 */
 void ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow);                  /* MEMORY_REPORT:0x7cd6 */
-void DrawVCReport(HDC hdc);                                                              /* MEMORY_REPORT:0x168e */
-void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol);       /* MEMORY_REPORT:0x3398 */
-void DrawMineralItem(HDC hdc, int16_t x, int16_t y, int16_t iMineral, int32_t l);        /* MEMORY_REPORT:0x4ebe */
-void DrawHistoryReport(HDC hdc);                                                         /* MEMORY_REPORT:0x2494 */
-void DrawScoreReport(HDC hdc);                                                           /* MEMORY_REPORT:0x1e0c */
+void DrawVCReport(HDC hdc);                                                                   /* MEMORY_REPORT:0x168e */
+void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol);            /* MEMORY_REPORT:0x3398 */
+void DrawMineralItem(HDC hdc, int16_t x, int16_t y, int16_t iMineral, int32_t l);             /* MEMORY_REPORT:0x4ebe */
+void DrawHistoryReport(HDC hdc);                                                              /* MEMORY_REPORT:0x2494 */
+void DrawScoreReport(HDC hdc);                                                                /* MEMORY_REPORT:0x1e0c */
 
 #endif /* _WIN32 */
 

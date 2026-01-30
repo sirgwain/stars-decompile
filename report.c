@@ -129,6 +129,17 @@ char *PszGetDestName(FLEET *lpfl, HDC hdc)
     return NULL;
 }
 
+void InvalidateReport(int16_t irpt, int16_t fReload)
+{
+    int16_t fResetRpt;
+    int16_t fClearRpt;
+    RPT *prptSav;
+    uint16_t *lprgidSav;
+    RECT rc;
+
+    /* TODO: implement */
+}
+
 #ifdef _WIN32
 
 /* functions */
@@ -342,17 +353,6 @@ void DrawReport(HWND hwnd, HDC hdc, RECT *prc)
 
     /* debug symbols */
     /* label NoHdrDraw @ MEMORY_REPORT:0x0d4e */
-
-    /* TODO: implement */
-}
-
-void InvalidateReport(int16_t irpt, int16_t fReload)
-{
-    int16_t fResetRpt;
-    int16_t fClearRpt;
-    RPT *prptSav;
-    uint16_t *lprgidSav;
-    RECT rc;
 
     /* TODO: implement */
 }

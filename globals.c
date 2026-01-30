@@ -250,8 +250,15 @@ PLANET *lpPlanets;
 PLAYER *vrgplrNew;
 PLAYER rgplr[16] = {0};
 PLAYER vplr = {0};
-PLAYER vrgplrDef[0];
-PLPROD *lpplProdGlob;
+PLAYER vrgplrDef[7] = {
+    {.iPlayer = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {15, 15, 15}, .rgEnvVarMax = {85, 85, 85}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 1, 1, 9, 0}},
+    {.iPlayer = -1, .rgEnvVar = {33, 58, 33}, .rgEnvVarMin = {10, 35, 13}, .rgEnvVarMax = {56, 81, 53}, .pctIdealGrowth = 20, .pctResearch = 15, .rgAttr = {10, 10, 9, 17, 10, 9, 10, 4, 0, 0, 2, 1, 1, 2, 7, 0}, .grbitAttr = 0x80000503},
+    {.iPlayer = -1, .rgEnvVar = {-1, 50, 85}, .rgEnvVarMin = {-1, 0, 70}, .rgEnvVarMax = {-1, 100, 100}, .pctIdealGrowth = 10, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 9, 10, 6, 1, 2, 2, 2, 2, 1, 0, 2, 0}, .grbitAttr = 0x00002108},
+    {.iPlayer = -1, .rgEnvVar = {-1, 50, 50}, .rgEnvVarMin = {-1, 12, 0}, .rgEnvVarMax = {-1, 88, 100}, .pctIdealGrowth = 10, .pctResearch = 15, .rgAttr = {9, 10, 10, 10, 10, 15, 5, 3, 0, 0, 0, 0, 0, 0, 1, 0}, .grbitAttr = 0x2000000c},
+    {.iPlayer = -1, .rgEnvVar = {-1, -1, -1}, .rgEnvVarMin = {-1, -1, -1}, .rgEnvVarMax = {-1, -1, -1}, .pctIdealGrowth = 6, .pctResearch = 15, .rgAttr = {8, 12, 12, 15, 10, 9, 10, 3, 1, 1, 2, 2, 1, 0, 0, 0}, .grbitAttr = 0x00001221},
+    {.iPlayer = -1, .rgEnvVar = {15, 50, 85}, .rgEnvVarMin = {0, 0, 70}, .rgEnvVarMax = {30, 100, 100}, .pctIdealGrowth = 7, .pctResearch = 15, .rgAttr = {7, 11, 10, 18, 10, 10, 10, 0, 2, 0, 2, 2, 2, 2, 5, 0}, .grbitAttr = 0x000005c4},
+    {.iPlayer = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {17, 17, 17}, .rgEnvVarMax = {83, 83, 83}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 3, 10, 0, 1, 1, 1, 1, 1, 1, 0, 0}, .grbitAttr = 0x40000000},
+};
 POINT ptPlaque = {0};
 POINT ptslotGlob = {0};
 POINT ptSpeedVCR = {0};

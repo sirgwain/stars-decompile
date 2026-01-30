@@ -1305,16 +1305,93 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore)
     return 0;
 }
 
-int16_t FLookupPlanet(int16_t iPlanet, PLANET *ppl)
+short FLookupPlanet(int16_t iPlanet, PLANET *ppl)
 {
-    PLANET *lpPl;
-    int16_t fWrite;
+    bool fWrite = false;
 
-    /* debug symbols */
-    /* label FinishCopy @ MEMORY_UTIL:0x06af */
+    if (cPlanet < 1)
+        return 0;
 
-    /* TODO: implement */
-    return 0;
+    /* negative iPlanet means: use ppl->id, and (usually) write ppl back to master list */
+    if (iPlanet < 0)
+    {
+        iPlanet = ppl ? ppl->id : (int16_t)-1;
+        if (iPlanet == -1)
+        {
+            LogChangePlanet(NULL, ppl);
+            return 1;
+        }
+        fWrite = true;
+    }
+
+    PLANET *lpPl = LpplFromId(iPlanet);
+    if (lpPl == NULL || ppl == NULL)
+        return 0;
+
+    if (!fWrite)
+    {
+        /* read/lookup: copy master planet -> *ppl */
+        if (ppl == (PLANET *)&sel.pl)
+        {
+            FDupPlanet(lpPl, (PLANET *)&sel.pl);
+        }
+        else
+        {
+            memcpy(ppl, lpPl, sizeof(*ppl));
+        }
+        return 1;
+    }
+
+    /* write/update: copy *ppl -> master planet (with special handling for lpplprod) */
+    InvalidateReport(0, 0);
+    LogChangePlanet(lpPl, ppl);
+
+    if (lpPl->lpplprod != ppl->lpplprod)
+    {
+        PLPROD *dstProd = (PLPROD *)lpPl->lpplprod;
+        PLPROD *srcProd = (PLPROD *)ppl->lpplprod;
+
+        if (dstProd == NULL)
+        {
+            if (srcProd != NULL)
+            {
+                PL *p = LpplAlloc(4, (uint16_t)srcProd->iprodMac, htOrd);
+                lpPl->lpplprod = (PLPROD *)p;
+                dstProd = (PLPROD *)p;
+            }
+        }
+        else if (srcProd == NULL)
+        {
+            FreePl((PL *)dstProd);
+            lpPl->lpplprod = NULL;
+            goto UTIL_FinishCopy;
+        }
+
+        if (srcProd != NULL && dstProd != NULL)
+        {
+            if (dstProd->iprodMax < srcProd->iprodMac)
+            {
+                PL *p = LpplReAlloc((PL *)dstProd, (uint16_t)(srcProd->iprodMac + 2));
+                lpPl->lpplprod = (PLPROD *)p;
+                dstProd = (PLPROD *)p;
+            }
+
+            memcpy((uint8_t *)dstProd + 4,
+                   (const uint8_t *)srcProd + 4,
+                   (uint32_t)srcProd->iprodMac * 4u);
+
+            dstProd->iprodMac = srcProd->iprodMac;
+        }
+    }
+
+UTIL_FinishCopy:
+    /* copy everything up through turn; do NOT overwrite lpplprod pointer itself */
+    memcpy(lpPl, ppl, 0x34);
+
+    if ((((uint32_t)gd.grBits >> 11) & 1u) && (idPlayer == 0))
+        AdvanceTutor();
+
+    return 1;
 }
 
 FLEET *LpflNewSplit(FLEET *pfl)

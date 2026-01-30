@@ -9822,8 +9822,8 @@
       },
       "types": {
         "typind": 4117,
-        "c_type": "PLAYER[0]",
-        "c_decl": "PLAYER vrgplrDef[0]",
+        "c_type": "PLAYER[7]",
+        "c_decl": "PLAYER vrgplrDef[7]",
         "kind": "array",
         "is_far_ptr": false
       },

@@ -52,23 +52,8 @@ bool FCreateStuff(void)
     gd.fNoIdleChecks = 0;
     gd.fAisDone = 0;
 
-    /*
-     * Unpack default bytes into vplr as the original did:
-     * it effectively walks through the struct 2 bytes at a time and writes low/high bytes of each word.
-     *
-     * NOTE: vrgplrDef is typed as PLAYER[0] in types.h (binary blob). Treat it as a uint16_t stream here.
-     */
-    {
-        uint8_t *dst = (uint8_t *)&vplr;
-        const uint16_t *src = (const uint16_t *)(const void *)vrgplrDef;
-
-        for (i = 0; i < 0x60; i++)
-        {
-            uint16_t w = src[i];
-            dst[(uint16_t)(i * 2 + 0)] = (uint8_t)w;
-            dst[(uint16_t)(i * 2 + 1)] = (uint8_t)(w >> 8);
-        }
-    }
+    // copy the default player def into vplr. This was using MOVSW.REP 0x60 which really threw off ghidra...
+    memcpy(&vplr, vrgplrDef, sizeof(PLAYER));
 
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);

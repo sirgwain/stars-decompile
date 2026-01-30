@@ -315,7 +315,7 @@ extern PLANET *lpPlanets;
 extern PLAYER *vrgplrNew;
 extern PLAYER rgplr[16];
 extern PLAYER vplr;
-extern PLAYER vrgplrDef[0];
+extern PLAYER vrgplrDef[6];
 extern PLPROD *lpplProdGlob;
 extern POINT ptPlaque;
 extern POINT ptslotGlob;

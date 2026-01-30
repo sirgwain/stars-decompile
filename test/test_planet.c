@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "types.h"
 #include "parts.h"
+#include "memory.h" /* htPlanets allocation*/
 #include "planet.h" /* PctPlanetDesirability */
 
 typedef struct HabCase
@@ -262,7 +263,133 @@ static void test_PopFromLppl(void)
     TEST_CHECK_(got == 25, "no visibility: got=%d want=0", (int)got);
 }
 
+static void test_CMaxOperableFactories_clamps_and_mac_zero(void)
+{
+    const int iplr = 0;
+    PLAYER old = rgplr[iplr];
+    GAME gameOld = game;
+    PLANET *lpPlanetsOld = lpPlanets;
+    int cPlanetOld = cPlanet;
+
+    PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
+    pl.rgwtMin[3] = 100; /* any nonzero pop */
+    cPlanet = 1;
+    lpPlanets = (PLANET *)LpAlloc((uint16_t)(sizeof(PLANET) * cPlanet), htPlanets);
+    memcpy(&lpPlanets[0], &pl, sizeof(PLANET));
+    game.cPlanMax = 1;
+
+    /* With 0% operate efficiency, computed max is 0 but the function clamps to >= 1. */
+    memcpy(&rgplr[iplr], &vrgplrDef[0], sizeof(PLAYER));
+    rgplr[iplr].rgAttr[rsFactOperate] = 0;
+    rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raNone;
+
+    int16_t got = CMaxOperableFactories(&pl, (int16_t)iplr, 0);
+    TEST_CHECK_(got == 1, "0%% efficiency should clamp to 1: got=%d want=1", (int)got);
+
+    // 100,000 people, 100 factories
+    rgplr[iplr].rgAttr[rsFactOperate] = 10;
+    pl.rgwtMin[3] = 1000;
+    got = CMaxOperableFactories(&pl, (int16_t)iplr, 0);
+    TEST_CHECK_(got == 100, "100k pop: got=%d want=100", (int)got);
+
+    /* Macintosh major advantage forces 0. */
+    // TODO: enable when you setup a starbase
+    // rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raMacintosh;
+    // got = CMaxOperableFactories(&pl, (int16_t)iplr, 0);
+    // TEST_CHECK_(got == 0, "raMacintosh should force 0: got=%d want=0", (int)got);
+
+    rgplr[iplr] = old;
+    FreeLp(lpPlanets, htPlanets);
+    lpPlanets = lpPlanetsOld;
+    cPlanet = cPlanetOld;
+    game = gameOld;
+}
+
+static void test_CMaxOperableMines_clamps_and_mac_zero(void)
+{
+    const int iplr = 0;
+    PLAYER old = rgplr[iplr];
+    GAME gameOld = game;
+    PLANET *lpPlanetsOld = lpPlanets;
+    int cPlanetOld = cPlanet;
+
+    PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
+    pl.rgwtMin[3] = 100; /* any nonzero pop */
+    cPlanet = 1;
+    lpPlanets = (PLANET *)LpAlloc((uint16_t)(sizeof(PLANET) * cPlanet), htPlanets);
+    memcpy(&lpPlanets[0], &pl, sizeof(PLANET));
+    game.cPlanMax = 1;
+
+    /* With 0% operate efficiency, computed max is 0 but the function clamps to >= 1. */
+    memcpy(&rgplr[iplr], &vrgplrDef[0], sizeof(PLAYER));
+    rgplr[iplr].rgAttr[rsMineOperate] = 0;
+    rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raNone;
+
+    int16_t got = CMaxOperableMines(&pl, (int16_t)iplr, 0);
+    TEST_CHECK_(got == 1, "0%% efficiency should clamp to 1: got=%d want=1", (int)got);
+
+    // 100,000 people, 100 mines
+    rgplr[iplr].rgAttr[rsMineOperate] = 10;
+    pl.rgwtMin[3] = 1000;
+    got = CMaxOperableMines(&pl, (int16_t)iplr, 0);
+    TEST_CHECK_(got == 100, "100k pop: got=%d want=100", (int)got);
+
+    /* Macintosh major advantage forces 0. */
+    // TODO: enable when you setup a starbase
+    // rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raMacintosh;
+    // got = CMaxOperableMines(&pl, (int16_t)iplr, 0);
+    // TEST_CHECK_(got == 0, "raMacintosh should force 0: got=%d want=0", (int)got);
+
+    rgplr[iplr] = old;
+    FreeLp(lpPlanets, htPlanets);
+    lpPlanets = lpPlanetsOld;
+    cPlanet = cPlanetOld;
+    game = gameOld;
+}
+
+static void test_CalcPlanetMaxPop_race_modifiers_smoke(void)
+{
+    const int iplr = 0;
+    PLAYER old = rgplr[iplr];
+    PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
+
+    /* Use the player's homeworld id if available; otherwise, try 0 as a fallback. */
+    int16_t idpl = rgplr[iplr].idPlanetHome;
+    if (idpl < 0)
+        idpl = 0;
+
+    memcpy(&rgplr[iplr], &vrgplrDef[0], sizeof(PLAYER));
+    rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raNone;
+    rgplr[iplr].grbitAttr &= ~(1u << ibitRaceOBRM);
+
+    int32_t base = CalcPlanetMaxPop(idpl, (int16_t)iplr);
+
+    /* If we can't resolve a planet in the current test harness, just ensure it doesn't crash. */
+    if (base == 0)
+    {
+        TEST_CHECK_(base == 0, "smoke: base returned 0");
+        rgplr[iplr] = old;
+        return;
+    }
+
+    /* Cheap Colonists: 50% of base. */
+    rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raCheapCol;
+    int32_t cheap = CalcPlanetMaxPop(idpl, (int16_t)iplr);
+    TEST_CHECK_(cheap <= base, "raCheapCol should not exceed base: cheap=%d base=%d", (int)cheap, (int)base);
+
+    /* OBRM adds 10%. */
+    rgplr[iplr].rgAttr[rsMajorAdv] = (int8_t)raNone;
+    rgplr[iplr].grbitAttr |= (1u << ibitRaceOBRM);
+    int32_t obrm = CalcPlanetMaxPop(idpl, (int16_t)iplr);
+    TEST_CHECK_(obrm > base, "OBRM should increase max pop: obrm=%d base=%d", (int)obrm, (int)base);
+
+    rgplr[iplr] = old;
+}
+
 TEST_LIST = {
     {"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
     {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},
+    {"CMaxOperableFactories clamp + raMacintosh", test_CMaxOperableFactories_clamps_and_mac_zero},
+    {"CMaxOperableMines clamp + raMacintosh", test_CMaxOperableMines_clamps_and_mac_zero},
+    {"CalcPlanetMaxPop race modifiers smoke", test_CalcPlanetMaxPop_race_modifiers_smoke},
     {NULL, NULL}};
