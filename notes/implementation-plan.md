@@ -27,8 +27,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 16 | Depth 16 | 8 | 3 | 5 |
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
-| -1 | Depth -1 — Cyclic Functions | 107 | 4 | 103 |
-| | **Total** | **743** | **212** | **531** |
+| -1 | Depth -1 — Cyclic Functions | 107 | 5 | 102 |
+| | **Total** | **743** | **213** | **530** |
 
 ## Depth 0 — Leaf Functions
 
@@ -954,7 +954,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth -1 — Cyclic Functions
 
-### Unimplemented (103)
+### Unimplemented (102)
 
 | | Function | Lines | Prototype | Source | Decompiled |
 |---|----------|------:|-----------|--------|------------|
@@ -1013,7 +1013,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DrawProductionDlg** | 190 | `void DrawProductionDlg(uint16_t, uint16_t, RECT *, int16_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **IWarpBestForWaypoint** | 209 | `int16_t IWarpBestForWaypoint(FLEET *32, ORDER *32)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **EstimateItemProdSched** | 223 | `void EstimateItemProdSched(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
-| ⬜ | **FOpenGame** | 233 | `int16_t FOpenGame(uint16_t, int16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **ProductionDlg** | 235 | `int16_t ProductionDlg(uint16_t, uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FFindNearestObject** | 236 | `int16_t FFindNearestObject(POINT, int16_t, SCAN *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **PlanetClick** | 240 | `void PlanetClick(int16_t, int16_t, int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
@@ -1062,13 +1061,14 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **GenerateWorld** | 1697 | `int16_t GenerateWorld(int16_t)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **SatisfyOrders** | 1893 | `void SatisfyOrders(int16_t)` | [turn3.c](../turn3.c) | [turn.c](../decompiled/all/turn.c) |
 
-### Implemented (4)
+### Implemented (5)
 
-<details><summary>Show 4 implemented functions</summary>
+<details><summary>Show 5 implemented functions</summary>
 
 | | Function | Lines | Source |
 |---|----------|------:|--------|
 | ✅ | FLoadGame | 1389 | [file.c](../file.c) |
+| ✅ | FOpenGame | 233 | [mdi.c](../mdi.c) |
 | ✅ | FrameWndProc | 709 | [mdi.c](../mdi.c) |
 | ✅ | TitleWndProc | 355 | [mdi.c](../mdi.c) |
 | ✅ | WinMain | 338 | [winmain.c](../winmain.c) |

@@ -13,6 +13,11 @@
 #define WIN_STUBS_H
 
 #include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+
+/* MSVC-style secure CRT compatibility used by a few ported call sites. */
+int localtime_s(struct tm *result, const time_t *timep);
 
 /* ========================================================================
  * Basic Windows Types
@@ -82,6 +87,18 @@ typedef const void *LPCVOID;
 #endif
 
 /* System colors (GetSysColor). */
+#ifndef COLOR_SCROLLBAR
+#define COLOR_SCROLLBAR 0
+#define COLOR_BACKGROUND 1
+#define COLOR_WINDOWFRAME 6
+#define COLOR_WINDOW 5
+#define COLOR_WINDOWTEXT 8
+#define COLOR_BTNFACE 15
+#define COLOR_BTNSHADOW 16
+#define COLOR_BTNTEXT 18
+#define COLOR_BTNHIGHLIGHT 20
+#define COLOR_DESKTOP COLOR_BACKGROUND
+#endif
 #ifndef COLOR_APPWORKSPACE
 #define COLOR_APPWORKSPACE 12
 #endif
@@ -99,6 +116,7 @@ typedef const void *LPCVOID;
 
 /* Integer types */
 typedef int           BOOL;
+typedef int           WINBOOL;
 typedef unsigned char BYTE;
 typedef uint16_t      WORD;
 typedef uint32_t      DWORD;
@@ -125,9 +143,114 @@ typedef DWORD    COLORREF;
 
 /* Function pointer types */
 typedef LRESULT (*WNDPROC)(HWND, UINT, WPARAM, LPARAM);
-typedef INT (*DLGPROC)(HWND, UINT, WPARAM, LPARAM);
+/* On Win32/Win64, dialog procedures return INT_PTR. */
+typedef INT_PTR (*DLGPROC)(HWND, UINT, WPARAM, LPARAM);
+
+/* ========================================================================
+ * Win32-ish constants frequently referenced by the Win32 UI code paths
+ * ======================================================================== */
+
+/* LOGFONT defaults */
+#ifndef DEFAULT_CHARSET
+#define DEFAULT_CHARSET 1
+#endif
+#ifndef OUT_DEFAULT_PRECIS
+#define OUT_DEFAULT_PRECIS 0
+#endif
+#ifndef CLIP_DEFAULT_PRECIS
+#define CLIP_DEFAULT_PRECIS 0
+#endif
+#ifndef DEFAULT_QUALITY
+#define DEFAULT_QUALITY 0
+#endif
+#ifndef DEFAULT_PITCH
+#define DEFAULT_PITCH 0
+#endif
+#ifndef FF_DONTCARE
+#define FF_DONTCARE 0
+#endif
+
+/* Common file dialog flags */
+#ifndef OFN_HIDEREADONLY
+#define OFN_HIDEREADONLY 0x00000004u
+#endif
+#ifndef OFN_PATHMUSTEXIST
+#define OFN_PATHMUSTEXIST 0x00000800u
+#endif
+#ifndef OFN_FILEMUSTEXIST
+#define OFN_FILEMUSTEXIST 0x00001000u
+#endif
+
+/* Menu flags */
+#ifndef MF_UNCHECKED
+#define MF_UNCHECKED 0x00000000u
+#endif
+
+/* ========================================================================
+ * ANSI "A" aliases (our code uses the A-suffixed forms heavily)
+ * ======================================================================== */
+
+#ifndef CreateDialogA
+#define CreateDialogA CreateDialog
+#endif
+#ifndef DialogBoxA
+#define DialogBoxA DialogBox
+#endif
+#ifndef GetOpenFileNameA
+#define GetOpenFileNameA GetOpenFileName
+#endif
+#ifndef GetSaveFileNameA
+#define GetSaveFileNameA GetSaveFileName
+#endif
+#ifndef SendMessageA
+#define SendMessageA SendMessage
+#endif
+#ifndef InsertMenuA
+#define InsertMenuA InsertMenu
+#endif
+#ifndef SetWindowTextA
+#define SetWindowTextA SetWindowText
+#endif
+#ifndef wsprintfA
+#define wsprintfA wsprintf
+#endif
+#ifndef lstrcpyA
+#define lstrcpyA lstrcpy
+#endif
+#ifndef lstrcatA
+#define lstrcatA lstrcat
+#endif
+#if defined(lstrcpynA)
+#undef lstrcpynA
+#endif
+#ifndef GetCurrentDirectoryA
+#define GetCurrentDirectoryA GetCurrentDirectory
+#endif
+#ifndef GetPrivateProfileStringA
+#define GetPrivateProfileStringA GetPrivateProfileString
+#endif
+#ifndef WritePrivateProfileStringA
+#define WritePrivateProfileStringA WritePrivateProfileString
+#endif
+#ifndef GetDlgItemTextA
+#define GetDlgItemTextA GetDlgItemText
+#endif
+#ifndef MessageBoxA
+#define MessageBoxA MessageBox
+#endif
+#ifndef FindResourceA
+#define FindResourceA FindResource
+#endif
+
+/* Memory helper macros */
+#ifndef ZeroMemory
+#define ZeroMemory(ptr, cb) memset((ptr), 0, (cb))
+#endif
 typedef void (*TIMERPROC)(HWND, UINT, UINT, DWORD);
 typedef int (*FARPROC)(void);
+
+/* Some code paths treat MAKELPARAM as a function (not a macro). */
+LPARAM MAKELPARAM(WORD lo, WORD hi);
 
 /* FAR/NEAR pointer modifiers (no-op on modern systems) */
 #define FAR
@@ -358,6 +481,27 @@ typedef struct tagOPENFILENAME {
 } OPENFILENAME;
 typedef OPENFILENAME OFN;
 
+/* Win32 names the ANSI variant OPENFILENAMEA. In stubs mode treat them as identical. */
+typedef OPENFILENAME OPENFILENAMEA;
+
+/* Monitor / work-area stubs (used for window positioning logic). */
+typedef HANDLE HMONITOR;
+typedef struct tagMONITORINFO {
+    DWORD cbSize;
+    RECT  rcMonitor;
+    RECT  rcWork;
+    DWORD dwFlags;
+} MONITORINFO;
+
+#ifndef MONITOR_DEFAULTTOPRIMARY
+#define MONITOR_DEFAULTTOPRIMARY 0x00000001u
+#define MONITOR_DEFAULTTONEAREST 0x00000002u
+#endif
+
+#ifndef SPI_GETWORKAREA
+#define SPI_GETWORKAREA 0x0030u
+#endif
+
 /* PRINTDLG - print dialog */
 typedef struct tagPD {
     DWORD     lStructSize;
@@ -408,6 +552,10 @@ typedef struct tagBITMAPINFOHEADER {
     DWORD biClrImportant;
 } BITMAPINFOHEADER;
 
+/* BITMAPINFOHEADER.biCompression values */
+#define BI_RGB       0
+#define BI_BITFIELDS 3
+
 /* RGBQUAD */
 typedef struct tagRGBQUAD {
     BYTE rgbBlue;
@@ -444,6 +592,9 @@ typedef struct tagLOGPALETTE {
     WORD         palNumEntries;
     PALETTEENTRY palPalEntry[1];
 } LOGPALETTE;
+
+/* Palette entry flags */
+#define PC_RESERVED 0x01
 
 /* OFSTRUCT - OpenFile structure */
 typedef struct tagOFSTRUCT {
@@ -557,6 +708,11 @@ typedef struct tagTIMERINFO {
 #define WM_KEYUP           0x0101
 #define WM_CHAR            0x0102
 #define WM_COMMAND         0x0111
+#define WM_INITDIALOG      0x0110
+#define WM_INITMENU        0x0116
+#define WM_CTLCOLOREDIT    0x0133
+#define WM_CTLCOLORDLG     0x0136
+#define WM_CTLCOLORSTATIC  0x0138
 #define WM_TIMER           0x0113
 #define WM_HSCROLL         0x0114
 #define WM_VSCROLL         0x0115
@@ -569,9 +725,28 @@ typedef struct tagTIMERINFO {
 #define WM_RBUTTONDBLCLK   0x0206
 #define WM_USER            0x0400
 
+/* Combo box messages / notifications */
+#define CB_GETCURSEL       0x0147
+#define CB_ADDSTRING       0x0143
+#define CB_SETCURSEL       0x014E
+#define CBN_SELCHANGE      1
+
+/* Button states */
+#define BST_CHECKED        1
+
+/* Font selection for controls */
+#define WM_SETFONT         0x0030
+#define WM_GETFONT         0x0031
+
 /* ========================================================================
  * GDI Constants
  * ======================================================================== */
+
+/* StretchBlt / SetStretchBltMode modes (subset). */
+#define COLORONCOLOR 3
+
+/* Return value used by a few GDI calls on failure. */
+#define GDI_ERROR ((DWORD)0xFFFFFFFFu)
 
 /* Stock objects */
 #define WHITE_BRUSH       0
@@ -735,6 +910,9 @@ typedef struct tagTIMERINFO {
 #define SM_CYBORDER  6
 #define SM_CXICON    11
 #define SM_CYICON    12
+#define SM_CYCAPTION 4
+#define SM_CXFRAME   32
+#define SM_CYFRAME   33
 
 /* ========================================================================
  * WinHelp Commands
@@ -773,6 +951,18 @@ typedef struct tagTIMERINFO {
 /* ----- COMMDLG ----- */
 BOOL WINAPI GetOpenFileName(OPENFILENAME FAR *lpofn);
 BOOL WINAPI GetSaveFileName(OPENFILENAME FAR *lpofn);
+
+/* Misc C runtime / kernel-ish helpers used by the Win32 code paths. */
+DWORD WINAPI    GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
+LPSTR WINAPI    CharLowerA(LPSTR lpsz);
+int             localtime_s(struct tm *out_tm, const time_t *timep);
+
+HMONITOR WINAPI MonitorFromWindow(HWND hwnd, DWORD dwFlags);
+BOOL WINAPI     GetMonitorInfoA(HMONITOR hMonitor, MONITORINFO *lpmi);
+BOOL WINAPI     SystemParametersInfoA(UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni);
+
+int WINAPI      SetStretchBltMode(HDC hdc, int mode);
+int WINAPI      GetDlgCtrlID(HWND hwnd);
 BOOL WINAPI PrintDlg(PRINTDLG FAR *lppd);
 
 /* ----- GDI ----- */
@@ -838,6 +1028,7 @@ BOOL WINAPI      FreeResource(HGLOBAL hResData);
 LPSTR WINAPI     GetDOSEnvironment(void);
 UINT WINAPI      GetDriveType(int nDrive);
 int WINAPI       GetModuleFileName(HINSTANCE hInstance, LPSTR lpFilename, int nSize);
+UINT WINAPI      GetCurrentDirectory(UINT nBufferLength, LPSTR lpBuffer);
 UINT WINAPI      GetPrivateProfileInt(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault, LPCSTR lpFileName);
 int WINAPI       GetPrivateProfileString(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefault, LPSTR lpReturnedString, int nSize, LPCSTR lpFileName);
 DWORD WINAPI     GetVersion(void);
@@ -856,6 +1047,9 @@ void FAR *WINAPI LockResource(HGLOBAL hResData);
 HGLOBAL WINAPI   LockSegment(UINT wSegment);
 LPSTR WINAPI     lstrcat(LPSTR lpString1, LPCSTR lpString2);
 LPSTR WINAPI     lstrcpy(LPSTR lpString1, LPCSTR lpString2);
+LPSTR WINAPI     lstrcpyn(LPSTR lpString1, LPCSTR lpString2, int iMaxLength);
+LPSTR WINAPI     lstrcpynA(LPSTR lpString1, LPCSTR lpString2, int iMaxLength);
+LPSTR WINAPI     CharLowerA(LPSTR lpsz);
 int WINAPI       lstrlen(LPCSTR lpString);
 /* Win32 ANSI-suffixed variants sometimes appear in ported codepaths. */
 int WINAPI     lstrlenA(LPCSTR lpString);
@@ -876,6 +1070,7 @@ HDC WINAPI      BeginPaint(HWND hWnd, PAINTSTRUCT FAR *lpPaint);
 LRESULT WINAPI  CallWindowProc(WNDPROC lpPrevWndFunc, HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 void WINAPI     CheckDlgButton(HWND hDlg, int nIDButton, UINT uCheck);
 BOOL WINAPI     CheckMenuItem(HMENU hMenu, UINT uIDCheckItem, UINT uCheck);
+BOOL WINAPI     CheckMenuRadioItem(HMENU hMenu, UINT idFirst, UINT idLast, UINT idCheck, UINT uFlags);
 void WINAPI     CheckRadioButton(HWND hDlg, int nIDFirstButton, int nIDLastButton, int nIDCheckButton);
 void WINAPI     ClientToScreen(HWND hWnd, POINT FAR *lpPoint);
 void WINAPI     CopyRect(RECT FAR *lprcDst, const RECT FAR *lprcSrc);
@@ -920,12 +1115,16 @@ HWND WINAPI     GetFocus(void);
 int WINAPI      GetKeyState(int nVirtKey);
 HMENU WINAPI    GetMenu(HWND hWnd);
 int WINAPI      GetMenuItemCount(HMENU hMenu);
+UINT WINAPI     GetMenuItemID(HMENU hMenu, int nPos);
 BOOL WINAPI     GetMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax);
 HWND WINAPI     GetParent(HWND hWnd);
 int WINAPI      GetScrollPos(HWND hWnd, int nBar);
 HMENU WINAPI    GetSubMenu(HMENU hMenu, int nPos);
 COLORREF WINAPI GetSysColor(int nIndex);
 int WINAPI      GetSystemMetrics(int nIndex);
+HMONITOR WINAPI MonitorFromWindow(HWND hwnd, DWORD dwFlags);
+BOOL WINAPI     GetMonitorInfoA(HMONITOR hMonitor, MONITORINFO *lpmi);
+BOOL WINAPI     SystemParametersInfoA(UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni);
 DWORD WINAPI    GetTickCount(void);
 HWND WINAPI     GetWindow(HWND hWnd, UINT uCmd);
 LONG WINAPI     GetWindowLong(HWND hWnd, int nIndex);

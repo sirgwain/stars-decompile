@@ -13,12 +13,15 @@
 
 #if !defined(_WIN32) || defined(STARS_USE_WIN_STUBS)
 
-#include "win_stubs.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+#include <unistd.h>
+
+#include "win_stubs.h"
 
 /* ========================================================================
  * COMMDLG Stubs
@@ -54,6 +57,12 @@ BOOL WINAPI BitBlt(HDC hdcDest, int x, int y, int cx, int cy, HDC hdcSrc, int x1
     (void)y1;
     (void)rop;
     return TRUE;
+}
+
+int WINAPI SetStretchBltMode(HDC hdc, int mode) {
+    (void)hdc;
+    (void)mode;
+    return 0;
 }
 
 HBITMAP WINAPI CreateCompatibleBitmap(HDC hdc, int cx, int cy) {
@@ -456,6 +465,20 @@ int WINAPI GetModuleFileName(HINSTANCE hInstance, LPSTR lpFilename, int nSize) {
     return 0;
 }
 
+UINT WINAPI GetCurrentDirectory(UINT nBufferLength, LPSTR lpBuffer) {
+    /* Best-effort: map to POSIX getcwd(). Return length excluding NUL like Win32. */
+    if (lpBuffer == NULL || nBufferLength == 0) {
+        return 0;
+    }
+
+    if (getcwd(lpBuffer, (size_t)nBufferLength) == NULL) {
+        lpBuffer[0] = '\0';
+        return 0;
+    }
+
+    return (UINT)strlen(lpBuffer);
+}
+
 UINT WINAPI GetPrivateProfileInt(LPCSTR lpAppName, LPCSTR lpKeyName, int nDefault, LPCSTR lpFileName) {
     (void)lpAppName;
     (void)lpKeyName;
@@ -546,6 +569,33 @@ HGLOBAL WINAPI LockSegment(UINT wSegment) {
 LPSTR WINAPI lstrcat(LPSTR lpString1, LPCSTR lpString2) { return strcat(lpString1, lpString2); }
 
 LPSTR WINAPI lstrcpy(LPSTR lpString1, LPCSTR lpString2) { return strcpy(lpString1, lpString2); }
+
+LPSTR WINAPI lstrcpyn(LPSTR lpString1, LPCSTR lpString2, int iMaxLength) {
+    if (iMaxLength <= 0) {
+        return lpString1;
+    }
+    if (lpString1 == NULL) {
+        return NULL;
+    }
+    /* Windows behavior: copies up to iMaxLength-1 chars and always NUL terminates. */
+    if (lpString2 == NULL) {
+        lpString1[0] = '\0';
+        return lpString1;
+    }
+    strncpy(lpString1, lpString2, (size_t)(iMaxLength - 1));
+    lpString1[iMaxLength - 1] = '\0';
+    return lpString1;
+}
+
+LPSTR WINAPI CharLowerA(LPSTR lpsz) {
+    if (!lpsz) {
+        return NULL;
+    }
+    for (char *p = lpsz; *p; ++p) {
+        *p = (char)tolower((unsigned char)*p);
+    }
+    return lpsz;
+}
 
 int WINAPI lstrlen(LPCSTR lpString) { return lpString ? (int)strlen(lpString) : 0; }
 
@@ -854,6 +904,12 @@ int WINAPI GetDlgItemText(HWND hDlg, int nIDDlgItem, LPSTR lpString, int cchMax)
     return 0;
 }
 
+int WINAPI GetDlgCtrlID(HWND hwnd) {
+    (void)hwnd;
+    /* Without a real UI backend there is no control ID. */
+    return 0;
+}
+
 HWND WINAPI GetFocus(void) { return 0; }
 
 int WINAPI GetKeyState(int nVirtKey) {
@@ -922,6 +978,41 @@ int WINAPI GetSystemMetrics(int nIndex) {
     default:
         return 0;
     }
+}
+
+HMONITOR WINAPI MonitorFromWindow(HWND hwnd, DWORD dwFlags) {
+    (void)hwnd;
+    (void)dwFlags;
+    return 0;
+}
+
+BOOL WINAPI GetMonitorInfoA(HMONITOR hMonitor, MONITORINFO *lpmi) {
+    (void)hMonitor;
+    if (lpmi) {
+        memset(lpmi, 0, sizeof(*lpmi));
+        lpmi->cbSize = (DWORD)sizeof(*lpmi);
+        /* Provide a plausible default work area. */
+        lpmi->rcMonitor.left = 0;
+        lpmi->rcMonitor.top = 0;
+        lpmi->rcMonitor.right = 640;
+        lpmi->rcMonitor.bottom = 480;
+        lpmi->rcWork = lpmi->rcMonitor;
+    }
+    return TRUE;
+}
+
+BOOL WINAPI SystemParametersInfoA(UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni) {
+    (void)uiParam;
+    (void)fWinIni;
+    if (uiAction == SPI_GETWORKAREA && pvParam) {
+        RECT *prc = (RECT *)pvParam;
+        prc->left = 0;
+        prc->top = 0;
+        prc->right = 640;
+        prc->bottom = 480;
+        return TRUE;
+    }
+    return FALSE;
 }
 
 DWORD WINAPI GetTickCount(void) { return (DWORD)(clock() * 1000 / CLOCKS_PER_SEC); }
@@ -1315,6 +1406,22 @@ BOOL WINAPI CheckMenuRadioItem(HMENU hMenu, UINT idFirst, UINT idLast, UINT idCh
     (void)idCheck;
     (void)uFlags;
     return TRUE;
+}
+
+int localtime_s(struct tm *result, const time_t *timep) {
+    if (!result || !timep) {
+        return 1;
+    }
+    /* localtime_r is the POSIX thread-safe equivalent. */
+    if (localtime_r(timep, result) == NULL) {
+        memset(result, 0, sizeof(*result));
+        return 1;
+    }
+    return 0;
+}
+
+LPARAM MAKELPARAM(WORD lo, WORD hi) {
+    return (LPARAM)(((DWORD)lo) | (((DWORD)hi) << 16));
 }
 
 #endif /* !_WIN32 || STARS_USE_WIN_STUBS */
