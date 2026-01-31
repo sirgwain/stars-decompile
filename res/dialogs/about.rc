@@ -1,20 +1,16 @@
-// Icon is already defined in main stars.rc as IDI_STARS
-
-// ---- Dialog ----
-IDD_ABOUTBOX DIALOG 17, 15, 192, 175
-STYLE DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG LOADONCALL MOVEABLE DISCARDABLE 17, 15, 192, 175
+STYLE DS_MODALFRAME | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU
 CAPTION "About Stars!"
-FONT 9, "Segoe UI" 
-// FONT 8, "MS Shell Dlg" - old style
-BEGIN
-    ICON        IDI_STARS,            IDC_STATIC,    8,   8,  18, 20
-    CTEXT       "Stars! for Microsoft Windows",    IDC_STATIC, 36,  8, 156,  8
-    CTEXT       "The Advanced Interstellar Strategy Game", IDC_STATIC, 36, 18, 156, 17
-    CTEXT       "Demo Version",                      IDC_VERSION,  4,  32, 184,  8
-    CTEXT       "Copyright \251 1995-1999  Jeff Johnson && Jeff McBride", IDC_STATIC, 4, 48, 184, 8
-    CTEXT       "Published by empire Interactive",   IDC_STATIC, 4,  60, 184,  8
-    CTEXT       "",                                  IDC_CREDITS,  4,  70, 184,  8
-    CTEXT       "http://www.webmap.com/stars!",      IDC_STATIC, 4, 140, 184,  8
-    PUSHBUTTON  "&Order Info...",                    IDC_ORDERINFO, 32, 156,  48, 14
-    DEFPUSHBUTTON "OK",                              IDOK,     112, 156,  48, 14
-END
+FONT 8, "MS Sans Serif"
+{
+ ICON "StarsIco", -1, 8, 8, 18, 20, SS_ICON | WS_GROUP
+ CTEXT "Stars! for Microsoft Windows", -1, 36, 8, 156, 8
+ CTEXT "The Advanced Interstellar Strategy Game", -1, 36, 18, 156, 17
+ CTEXT "Demo Version", 1025, 4, 32, 184, 8
+ CTEXT "Copyright \xA9 1995-1999  Jeff Johnson && Jeff McBride", -1, 4, 48, 184, 8
+ CTEXT "Published by empire Interactive", -1, 4, 60, 184, 66
+ CTEXT "", 1055, 4, 70, 184, 66
+ CTEXT "http://www.webmap.com/stars!", -1, 4, 140, 184, 8
+ PUSHBUTTON "&Order Info...", 118, 32, 156, 48, 14, WS_GROUP | WS_TABSTOP
+ DEFPUSHBUTTON "OK", 1, 112, 156, 48, 14, BS_DEFPUSHBUTTON | WS_GROUP | WS_TABSTOP
+}

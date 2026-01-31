@@ -1065,10 +1065,28 @@ int16_t FStringFitsScreen(char *lpsz, int16_t dxMax) {
     HDC     hdc;
     int16_t c;
     int16_t fFit;
-    HFONT   hfontSav;
+    HGDIOBJ hfontSav;
 
-    /* TODO: implement */
-    return 0;
+    fFit = 1;
+    hdc = GetDC(hwndFrame);
+    c = (int16_t)strlen(lpsz);
+    hfontSav = SelectObject(hdc, rghfontArial8[0]);
+
+    while (c > 0) {
+        SIZE sz;
+        GetTextExtentPoint32A(hdc, lpsz, c, &sz);
+
+        if ((uint16_t)dxMax >= (uint16_t)sz.cx)
+            break;
+
+        fFit = 0;
+        c--;
+        lpsz[c] = '\0';
+    }
+
+    SelectObject(hdc, hfontSav);
+    ReleaseDC(hwndFrame, hdc);
+    return fFit;
 }
 
 uint32_t DibNumColors(const void *pv) {

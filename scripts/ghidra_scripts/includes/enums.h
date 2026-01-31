@@ -1,22 +1,6 @@
-typedef enum HeapType
-{
-    htOrd = 0,
-    htString,
-    htMsg,
-    htPlanets,
-    htLog,
-    htFleets,
-    htMisc,
-    htShips,
-    htPlrMsg,
-    htPerm,
-    htThings,
-    htBattle,
-    htCount
-} HeapType;
+typedef enum HeapType { htOrd = 0, htString, htMsg, htPlanets, htLog, htFleets, htMisc, htShips, htPlrMsg, htPerm, htThings, htBattle, htCount } HeapType;
 
-typedef enum DtFileType
-{
+typedef enum DtFileType {
     dtXY = 0,
     dtLog = 1,
     dtHost = 2,
@@ -24,8 +8,7 @@ typedef enum DtFileType
     dtHist = 4,
 } DtFileType;
 
-typedef enum RaceGrbit
-{
+typedef enum RaceGrbit {
     ibitRaceIFE = 0x00,
     ibitRaceTT = 0x01,
     ibitRaceARM = 0x02,
@@ -45,8 +28,7 @@ typedef enum RaceGrbit
     ibitRaceLast = 32,
 } RaceGrbit;
 
-typedef enum RaceStat
-{
+typedef enum RaceStat {
     rsResGen = 0,
     rsFactProd = 1,
     rsFactBuild = 2,
@@ -64,8 +46,7 @@ typedef enum RaceStat
     rsMajorAdv = 14,
 } RaceStat;
 
-typedef enum RaceAttribute
-{
+typedef enum RaceAttribute {
     raCheapCol = 0,
     raStealth = 1,
     raAttack = 2,
@@ -79,8 +60,7 @@ typedef enum RaceAttribute
     raMax = 10,
 } RaceAttribute;
 
-typedef enum GrobjClass
-{
+typedef enum GrobjClass {
     grobjNone = 0x0,
     grobjPlanet = 0x1,
     grobjFleet = 0x2,
@@ -88,8 +68,7 @@ typedef enum GrobjClass
     grobjThing = 0x8,
 } GrobjClass;
 
-typedef enum HullSlotType
-{
+typedef enum HullSlotType {
     hstEngine = 0x0001,
     hstScanner = 0x0002,
     hstShield = 0x0004,
@@ -108,8 +87,7 @@ typedef enum HullSlotType
     hstPlanetary = 0x8000,
 } HullSlotType;
 
-typedef enum HullDef
-{
+typedef enum HullDef {
     ihuldefSmallFreighter = 0,
     ihuldefMediumFreighter = 1,
     ihuldefLargeFreighter = 2,
@@ -145,16 +123,14 @@ typedef enum HullDef
     ihuldefCount = 32,
 } HullDef;
 
-typedef enum StartingStarbase
-{
+typedef enum StartingStarbase {
     Starbase = 0,
     AcceleratorPlatform = 1,
     PortholetoBeyond = 2,
     StarterColony = 3,
 } StartingStarbase;
 
-typedef enum StartingShip
-{
+typedef enum StartingShip {
     LilliputianFreighter = 0,
     ShadowTransport = 1,
     SmaugarianPeepingTom = 2,
@@ -179,16 +155,14 @@ typedef enum StartingShip
     MTProbe = 21,
 } StartingShip;
 
-typedef enum ThingType
-{
+typedef enum ThingType {
     ithMinefield = 0,
     ithMineralPacket = 1,
     ithWormhole = 2,
     ithMysteryTrader = 3,
 } ThingType;
 
-typedef enum StringId
-{
+typedef enum StringId {
     idsUniverseDefinitionFileSeemsMissingCorrupt = 0x0000,
     idsPlayerLogFileAppearsCorruptUnableLoad = 0x0001,
     idsHistoryFileAppearsCorruptHistoricalDataWill = 0x0002,
@@ -1604,8 +1578,7 @@ typedef enum StringId
     idsNee = 0x0584,
     idsKurkonian = 0x0585,
 } StringId;
-typedef enum MessageId
-{
+typedef enum MessageId {
     idmColonistsDroppedMassacredGroundTroops = 0x0000,
     idmColonistsDroppedDestroyedPlanetaryDefensesRestMa = 0x0001,
     idmColonistsForcedTransportDiedBecauseDidColonize = 0x0002,
@@ -1994,8 +1967,7 @@ typedef enum MessageId
     idmBombardedKtMineralPacketFortunatelyOneHome = 0x0181,
     idmHackedRaceDiscoveredRaceStatisticsHaveAltered = 0x0182,
 } MessageId;
-typedef enum TutorId
-{
+typedef enum TutorId {
     idtWelcomeStarsTutorialWillGuideThrough36 = 0x1000,
     idtHomePlanetCoupleScoutsDestroyerFreighterColony = 0x1001,
     idtThereFiveMessagesMessagesPaneEachYear = 0x1002,
@@ -2639,8 +2611,7 @@ typedef enum TutorId
 } TutorId;
 
 // Windows enums for easier debugging
-typedef enum WMType
-{
+typedef enum WMType {
     WM_NULL = 0x0000,
     WM_CREATE = 0x0001,
     WM_DESTROY = 0x0002,
@@ -2798,8 +2769,7 @@ typedef enum WMType
     WM_STARS_CONTINUE = 0x0466,
 } WMType;
 
-typedef enum MessageBoxFlags
-{
+typedef enum MessageBoxFlags {
     /* buttons */
     MB_OK = 0x0000,
     MB_OKCANCEL = 0x0001,
@@ -2828,15 +2798,13 @@ typedef enum MessageBoxFlags
     MB_NOFOCUS = 0x8000
 } MessageBoxFlags;
 
-typedef enum GrStat
-{
+typedef enum GrStat {
     grStatFuel = 1,
     grStatCargo = 2,
 
 } GrStat;
 
-typedef enum iengine
-{
+typedef enum iengine {
     iengineSettlersDelight = 0,
     iengineQuickJump5 = 1,
     iengineFuelMizer = 2,
@@ -2856,8 +2824,7 @@ typedef enum iengine
     iengineCount = 16,
 } iengine;
 
-typedef enum iarmor
-{
+typedef enum iarmor {
     iarmorTritanium = 0,
     iarmorCrobmnium = 1,
     iarmorCarbonicArmor = 2,
@@ -2873,8 +2840,7 @@ typedef enum iarmor
     iarmorCount = 12,
 } iarmor;
 
-typedef enum iscanner
-{
+typedef enum iscanner {
     iscannerBatScanner = 0,
     iscannerRhinoScanner = 1,
     iscannerMoleScanner = 2,
@@ -2894,8 +2860,7 @@ typedef enum iscanner
     iscannerCount = 16,
 } iscanner;
 
-typedef enum ishield
-{
+typedef enum ishield {
     ishieldMoleSkinShield = 0,
     ishieldCowHideShield = 1,
     ishieldWolverineDiffuseShield = 2,
@@ -2909,8 +2874,7 @@ typedef enum ishield
     ishieldCount = 10,
 } ishield;
 
-typedef enum ispecialE
-{
+typedef enum ispecialE {
     ispecialETransportCloaking = 0,
     ispecialEStealthCloak = 1,
     ispecialESuperStealthCloak = 2,
@@ -2931,8 +2895,7 @@ typedef enum ispecialE
     ispecialECount = 17,
 } ispecialE;
 
-typedef enum ispecialM
-{
+typedef enum ispecialM {
     ispecialMColonizationModule = 0,
     ispecialMOrbitalConstructionModule = 1,
     ispecialMCargoPod = 2,
@@ -2947,8 +2910,7 @@ typedef enum ispecialM
     ispecialMCount = 11,
 } ispecialM;
 
-typedef enum imines
-{
+typedef enum imines {
     iminesMineDispenser40 = 0,
     iminesMineDispenser50 = 1,
     iminesMineDispenser80 = 2,
@@ -2962,8 +2924,7 @@ typedef enum imines
     iminesCount = 10,
 } imines;
 
-typedef enum imining
-{
+typedef enum imining {
     iminingRoboMidgetMiner = 0,
     iminingRoboMiniMiner = 1,
     iminingRoboMiner = 2,
@@ -2975,8 +2936,7 @@ typedef enum imining
     iminingCount = 8,
 } imining;
 
-typedef enum iplanetary
-{
+typedef enum iplanetary {
     iplanetaryViewer50 = 0,
     iplanetaryViewer90 = 1,
     iplanetaryScoper150 = 2,
@@ -2995,8 +2955,7 @@ typedef enum iplanetary
     iplanetaryCount = 15,
 } iplanetary;
 
-typedef enum iterra
-{
+typedef enum iterra {
     iterraTotalTerraform3 = 0,
     iterraTotalTerraform5 = 1,
     iterraTotalTerraform7 = 2,
@@ -3020,8 +2979,7 @@ typedef enum iterra
     iterraCount = 20,
 } iterra;
 
-typedef enum ibomb
-{
+typedef enum ibomb {
     ibombLadyFingerBomb = 0,
     ibombBlackCatBomb = 1,
     ibombM70Bomb = 2,
@@ -3040,8 +2998,7 @@ typedef enum ibomb
     ibombCount = 15,
 } ibomb;
 
-typedef enum itorp
-{
+typedef enum itorp {
     itorpAlphaTorpedo = 0,
     itorpBetaTorpedo = 1,
     itorpDeltaTorpedo = 2,
@@ -3057,8 +3014,7 @@ typedef enum itorp
     itorpCount = 12,
 } itorp;
 
-typedef enum ibeam
-{
+typedef enum ibeam {
     ibeamLaser = 0,
     ibeamXRayLaser = 1,
     ibeamMiniGun = 2,
@@ -3086,8 +3042,7 @@ typedef enum ibeam
     ibeamCount = 24,
 } ibeam;
 
-typedef enum ispecialSB
-{
+typedef enum ispecialSB {
     ispecialSBStargate100250 = 0,
     ispecialSBStargateAny300 = 1,
     ispecialSBStargate150600 = 2,
@@ -3107,8 +3062,7 @@ typedef enum ispecialSB
     ispecialSBCount = 16,
 } ispecialSB;
 
-typedef enum GrbitTrader
-{
+typedef enum GrbitTrader {
     grbitTraderNone = 0x0000,
     grbitTraderCargo = 0x0001,
     grbitTraderSpecial = 0x0002,
@@ -3126,8 +3080,7 @@ typedef enum GrbitTrader
     grbitTraderAll = 0x1fff,
 } GrbitTrader;
 
-typedef enum LookupResult
-{
+typedef enum LookupResult {
     LookupInvalid = 0,     // “out of range” / not a valid part id in group
     LookupDisallowed = -1, // disallowed for race/trait/other rule
     LookupOk = 1,          // meets tech reqs (original CheckTechRequirements == 1)
@@ -3135,8 +3088,7 @@ typedef enum LookupResult
     LookupNeedMany = 99    // multiple tech deficits
 } LookupResult;
 
-typedef enum cbStructSize
-{
+typedef enum cbStructSize {
     cbABC = 6,
     cbAIHIST = 1284,
     cbAIPART = 2,
@@ -3324,46 +3276,67 @@ typedef enum cbStructSize
     cbcomplex = 16,
 } cbStructSize;
 
-typedef enum DialogId
-{
-    IDD_DLG82_82 = 82,
-    IDD_DLG86_86 = 86,
-    IDD_DLG89_89 = 89,
-    IDD_DLG90_90 = 90,
-    IDD_DLG91_91 = 91,
-    IDD_DLG92_92 = 92,
-    IDD_DLG93_93 = 93,
-    IDD_DLG97_97 = 97,
-    IDD_DLG102_102 = 102,
-    IDD_DLG115_115 = 115,
-    IDD_DLG127_127 = 127,
-    IDD_BROWSER = 128,
-    IDD_PASSWORD = 140,
-    IDD_DLG141_141 = 141,
-    IDD_DLG146_146 = 146,
-    IDD_DLG147_147 = 147,
-    IDD_DLG148_148 = 148,
-    IDD_DLG149_149 = 149,
-    IDD_DLG150_150 = 150,
-    IDD_DLG151_151 = 151,
-    IDD_DLG160_160 = 160,
-    IDD_DLG390_390 = 390,
-    IDD_DLG391_391 = 391,
-    IDD_DLG392_392 = 392,
-    IDD_DLG393_393 = 393,
-    IDD_DLG1026_1026 = 1026,
-    IDD_DLG1068_1068 = 1068,
-    IDD_DLG2008_2008 = 2008,
-    IDD_DLG2013_2013 = 2013,
-    IDD_DLG2019_2019 = 2019,
-    IDD_DLG2025_2025 = 2025,
-    IDD_DLG2502_2502 = 2502,
-    IDD_DLG2504_2504 = 2504,
-    IDD_DLG4202_4202 = 4202,
+typedef enum DialogId {
+    /* ship / fleet */
+    IDD_MERGE_FLEETS = 82, /* MergeFleetsDlg */
+    IDD_TRANSFER = 91,     /* TransferDlg */
+    IDD_SLOT = 92,         /* SlotDlg */
+    IDD_PRODUCTION = 93,   /* ProductionDlg */
+    IDD_ORDER_INFO = 97,   /* OrderInfoDlg */
+
+    /* common / utility */
+    IDD_GENERIC_SMALL = 86, /* reused generic dialog (PrintMap, msg, browser host) */
+    IDD_ZIP_PROD = 89,      /* ZipProdDlg / ZipOrderDlg */
+    IDD_ABOUT = 90,         /* About */
+    IDD_HOST_MODE = 115,    /* HostOptionsDialog */
+    IDD_PASSWORD = 140,     /* PASSWORD dialog */
+    IDD_NEW_PASSWORD = 141, /* NewPasswordDlg */
+
+    /* research / browser */
+    IDD_RESEARCH = 127, /* ResearchDlg */
+    IDD_BROWSER = 128,  /* Browser child dialog */
+
+    /* race wizard */
+    IDD_RACE_WIZARD_1 = 146, /* RaceWizardDlg1 */
+    IDD_RACE_WIZARD_2 = 147, /* unnamed proc (slot between 1 and 3) */
+    IDD_RACE_WIZARD_3 = 148, /* RaceWizardDlg3 */
+    IDD_RACE_WIZARD_4 = 149, /* RaceWizardDlg4 */
+    IDD_RACE_WIZARD_5 = 150, /* RaceWizardDlg5 */
+    IDD_RACE_WIZARD_6 = 151, /* RaceWizardDlg6 */
+
+    /* VCR */
+    IDD_VCR = 160, /* VCRDlg */
+
+    /* new game */
+    IDD_SIMPLE_NEW_GAME = 209, /* SimpleNewGameDlg */
+    IDD_NEW_GAME_1 = 390,      /* NewGameDlg */
+    IDD_NEW_GAME_2 = 391,      /* NewGameDlg2 */
+    IDD_NEW_GAME_3 = 392,      /* NewGameDlg3 */
+
+    IDD_Gauge = 393, /* never seen invoked */
+
+    /* host / options */
+    IDD_HOST_OPTIONS = 1026, /* HostOptionsDialog */
+    IDD_SCORE = 102,         /* ScoreXDlg */
+
+    /* battle / plans */
+    IDD_BATTLE_PLANS = 2013, /* BattlePlansDlg */
+    IDD_RENAME = 2019,       /* RenameDlg / NewPlanNameDlg (shared template) */
+
+    /* relations / diplomacy */
+    IDD_RELATIONS = 2008, /* RelationsDlg */
+
+    IDD_SAVE_TURN = 2025, /* Save  */
+
+    /* tutorial / panic */
+    IDD_PANIC = 2504, /* PanicDlg */
+    IDD_TUTOR = 2502, /* never referenced */
+
+    /* find */
+    IDD_FIND = 4202, /* FindDlg */
 } DialogId;
 
-typedef enum ControlId
-{
+typedef enum ControlId {
     IDOK = 1,
     IDCANCEL = 2,
     IDHELP = 9,
@@ -3435,8 +3408,7 @@ typedef enum ControlId
 
 } ControlId;
 
-typedef enum WParamMessageId
-{
+typedef enum WParamMessageId {
     IDM_DEBUG_DUMP_FLEETS = 0x0053,   // DumpFleets()
     IDM_DEBUG_DUMP_PLANETS = 0x0054,  // DumpPlanets()
     IDM_DEBUG_DUMP_UNIVERSE = 0x0055, // DumpUniverse()
@@ -3535,7 +3507,7 @@ typedef enum WParamMessageId
     IDM_UNKNOWN_09C4 = 0x09C4,
     IDM_UNKNOWN_09C5 = 0x09C5,
     IDM_UNKNOWN_0EE2 = 0x0EE2,
-    IDM_UNKNOWN_0FA1 = 0x0FA1,
+    IDM_FRAME_POST_OPEN = 0x0FA1,
     IDM_UNKNOWN_1068 = 0x1068,
     IDM_UNKNOWN_1069 = 0x1069,
 

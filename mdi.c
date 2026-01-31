@@ -8,12 +8,22 @@
 #include "create.h"
 #include "file.h"
 #include "init.h"
+#include "log.h"
 #include "mdi.h"
+#include "mine.h"
+#include "msg.h"
 #include "planet.h"
+#include "popup.h"
+#include "produce.h"
 #include "race.h"
+#include "report.h"
 #include "research.h"
 #include "save.h"
 #include "scan.h"
+#include "ship.h"
+#include "stars.h"
+#include "tb.h"
+#include "turn.h"
 #include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
@@ -33,6 +43,18 @@
 char    rgTOWidth[2][2] = {{-3, 0}, {2, 1}}; /* 1020:7702 */
 uint8_t vrgbShuffleSerial[21] = {0x0b, 0x04, 0x05, 0x10, 0x11, 0x0c, 0x13, 0x0f, 0x0a, 0x01, 0x0e,
                                  0x0d, 0x03, 0x12, 0x02, 0x14, 0x09, 0x07, 0x00, 0x08, 0x06}; /* 1020:2870 */
+
+const char szBrowser[] = "starsbrowser";
+const char szFrame[] = "starsframe";
+const char szMessage[] = "starsmessage";
+const char szMine[] = "starsmine";
+const char szPlanet[] = "starsplanet";
+const char szPopup[] = "starspopup";
+const char szScan[] = "starsscan";
+const char szTb[] = "starstb";
+const char szTitle[] = "starstitle";
+const char szTooltip[] = "starstt";
+const char szReport[] = "starsreport";
 
 /* functions */
 void VerifyTurns(void) {
@@ -283,27 +305,290 @@ int16_t CTurnsOutSafe(void) {
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    int16_t (*lpProc)(void);
-    int16_t     fRet;
-    RECT        rc;
-    int16_t     mf;
-    HDC         hdc;
-    POINT       pt;
-    int16_t     tpm;
-    int16_t     i;
-    int16_t     iRet;
-    int16_t     iSel;
-    int16_t     iDiamond;
-    HMENU       hmenuPopup;
+INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    UINT    menuFlags;
+    HWND    hwndCtrl;
+    BOOL    fEnable;
+    short   result;
+    char   *psz;
+    FARPROC dlgProc;
+
+    HDC   hdcPaint;
+    HMENU hmenuPopup;
+    int   iPlayer;
+    int   iCurrentMode;
+    int   iNewMode;
+    int   iMenu;
+    UINT  popupFlags;
+    POINT ptClient;
+    RECT  rcClient;
+
     PAINTSTRUCT ps;
+    MSG         msg;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x6db6 */
-    /* block (block) @ MEMORY_MDI:0x71b9 */
-    /* label Done @ MEMORY_MDI:0x6d62 */
+    (void)lParam;
 
-    /* TODO: implement */
+    switch (message) {
+    case WM_DESTROY:
+        KillTimer(hwnd, uTimerId);
+        uTimerId = 0;
+        return 0;
+
+    case WM_PAINT:
+        hdcPaint = BeginPaint(hwnd, &ps);
+
+        if ((int)ctickLast == 0 && (int)((UINT_PTR)ctickLast >> 16) == 0) {
+            CFindTurnsOutstanding();
+        }
+
+        if (gd.fReadOnly == 0) {
+            hwndCtrl = GetDlgItem(hwnd, IDC_HOST_AUTO_GENERATE);
+            if ((gd.fAllAis == 0) && ((vtimer.fAutoGenWhenIn != 0) || (vtimer.mdForce != 0))) {
+                fEnable = TRUE;
+            } else {
+                fEnable = FALSE;
+            }
+            EnableWindow(hwndCtrl, fEnable);
+        }
+
+        DrawHostDialog2(hwnd, hdcPaint);
+        EndPaint(hwnd, &ps);
+        return 1;
+
+    case WM_ERASEBKGND:
+        GetClientRect(hwnd, &rcClient);
+        FillRect((HDC)wParam, &rcClient, hbrButtonFace);
+        return 1;
+
+    case WM_CTLCOLORSTATIC:
+        SetBkColor((HDC)wParam, RGB((BYTE)crButtonFace, (BYTE)((UINT)crButtonFace >> 8), (BYTE)((UINT)crButtonFace >> 16)));
+        return (INT_PTR)hbrButtonFace;
+
+    case WM_SETCURSOR:
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    LAB_1020_6db6:
+        GetCursorPos(&ptClient);
+        ScreenToClient(hwnd, &ptClient);
+
+        if (((5 < ptClient.x) && (ptClient.x < dyArial8 + 7)) && (0x2f < ptClient.y) &&
+            ((iPlayer = (ptClient.y - 0x30) / (dyArial8 + 4), iPlayer < game.cPlayer) && (((ptClient.y - 0x30) % (dyArial8 + 4)) < dyArial8 + 1))) {
+            PLAYER *pl = &rgplr[iPlayer];
+
+            if (message == WM_SETCURSOR) {
+                SetCursor(hcurHand);
+                return 1;
+            }
+
+            /* determine current player mode */
+            if (pl->fAi == 0)
+                iCurrentMode = 0;
+            else if (pl->idAi == 7)
+                iCurrentMode = 2;
+            else
+                iCurrentMode = 1;
+
+            hmenuPopup = CreatePopupMenu();
+            iPopMenuSel = -1;
+
+            for (iMenu = 0; iMenu < 3; iMenu++) {
+                CchGetString(iMenu + idsHumanControlled, szWork);
+
+                if (iMenu == 1) {
+                    if ((pl->fAi == 0) || (pl->idAi == 7))
+                        menuFlags = MF_GRAYED;
+                    else
+                        menuFlags = 0;
+                } else if ((pl->fAi == 0) || (pl->idAi == 7)) {
+                    menuFlags = 0;
+                } else {
+                    menuFlags = MF_GRAYED;
+                }
+
+                if (iMenu == iCurrentMode)
+                    menuFlags |= MF_CHECKED;
+
+                AppendMenu(hmenuPopup, menuFlags, IDM_POPUP_BASE + (UINT)iMenu, szWork);
+            }
+
+            ClientToScreen(hwnd, &ptClient);
+
+            popupFlags = (message == WM_LBUTTONDOWN) ? TPM_LEFTBUTTON : TPM_RIGHTBUTTON;
+
+            TrackPopupMenu(hmenuPopup, popupFlags | TPM_LEFTALIGN, ptClient.x, ptClient.y, 0, hwnd, NULL);
+
+            DestroyMenu(hmenuPopup);
+
+            iNewMode = -1;
+            fEnable = PeekMessage(&msg, hwnd, WM_COMMAND, WM_COMMAND, PM_REMOVE);
+
+            if ((fEnable != 0) && (msg.wParam >= IDM_POPUP_BASE) && (msg.wParam < (IDM_POPUP_BASE + 3))) {
+                iNewMode = (int)(msg.wParam - IDM_POPUP_BASE);
+            }
+
+            if ((iNewMode != -1) && (iCurrentMode != iNewMode)) {
+                pl->fAi = (iNewMode != 0);
+                if (iNewMode == 2)
+                    pl->idAi = 7;
+
+                /* salt flip (swap halves while inverting) */
+                {
+                    UINT tmp = *(UINT *)((BYTE *)&rgplr[0].lSalt + 2 + iPlayer * 0xc0);
+                    *(UINT *)((BYTE *)&rgplr[0].lSalt + iPlayer * 0xc0) = ~*(UINT *)((BYTE *)&rgplr[0].lSalt + iPlayer * 0xc0);
+                    *(UINT *)((BYTE *)&rgplr[0].lSalt + 2 + iPlayer * 0xc0) = ~tmp;
+                }
+
+                FMarkFile(dtTurn, (short)iPlayer, 8, (UINT)(iNewMode != 0));
+                FMarkFile(dtHost, (short)iPlayer, 8, (UINT)(iNewMode != 0));
+
+                gd.fAisDone = 0;
+
+                fProcessingTimer = 1;
+                CFindTurnsOutstanding();
+
+                hwndCtrl = GetDlgItem(hwnd, IDC_HOST_AUTO_GENERATE);
+                if ((gd.fAllAis == 0) && ((vtimer.fAutoGenWhenIn != 0) || (vtimer.mdForce != 0)))
+                    fEnable = TRUE;
+                else
+                    fEnable = FALSE;
+
+                EnableWindow(hwndCtrl, fEnable);
+                DrawHostDialog2(hwnd, NULL);
+                fProcessingTimer = 0;
+            }
+        }
+        return 0;
+
+    case WM_INITDIALOG:
+        StickyDlgPos(hwnd, (POINT *)&ptStickyHostModeDlg, 1);
+
+        hwndCtrl = GetDlgItem(hwnd, IDC_HOST_GAME_NAME_TEXT);
+        SetWindowText(hwndCtrl, game.szName);
+
+        hwndCtrl = GetDlgItem(hwnd, IDC_HOST_FILE_TEXT);
+        SetWindowText(hwndCtrl, szBase);
+
+        hwndCtrl = GetDlgItem(hwnd, IDC_HOST_AUTO_GENERATE);
+        fEnable = ((gd.fReadOnly == 0) && ((vtimer.fAutoGenWhenIn != 0) || (vtimer.mdForce != 0)));
+        EnableWindow(hwndCtrl, fEnable);
+
+        hwndCtrl = GetDlgItem(hwnd, IDC_HOST_GENERATE_NOW);
+        EnableWindow(hwndCtrl, (gd.fReadOnly == 0));
+
+        hwndCtrl = GetDlgItem(hwnd, IDC_HOST_PASSWORD);
+        EnableWindow(hwndCtrl, (gd.fReadOnly == 0));
+
+        /* Win32: attach timer to this dialog, not a magic HWND literal */
+        uTimerId = SetTimer(hwnd, 0, 10000, NULL);
+        return 1;
+
+    case WM_COMMAND:
+        if ((wParam == (WPARAM)IDC_HOST_GENERATE_NOW) || (wParam == (WPARAM)IDC_HOST_CLOSE) || (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE)) {
+            if (wParam == (WPARAM)IDC_HOST_GENERATE_NOW) {
+                /* Shift/Ctrl affect iPassCnt exactly as in the decompile */
+                if (GetAsyncKeyState(VK_SHIFT) < 0) {
+                    if (GetAsyncKeyState(VK_CONTROL) < 0)
+                        iPassCnt = 999;
+                    else
+                        iPassCnt = 9;
+                } else {
+                    if (GetAsyncKeyState(VK_CONTROL) < 0)
+                        iPassCnt = 99;
+                    else
+                        iPassCnt = 0;
+                }
+
+                if (iPassCnt == 0) {
+                    result = CFindTurnsOutstanding();
+                    if (result != 0) {
+                        psz = PszFormatIds(idsSureWishGenerateOptionDoesGuaranteePlayers, NULL);
+                        result = AlertSz(psz, 0x1024);
+                        if (result != IDYES)
+                            return 1;
+                    }
+                } else {
+                    psz = PszGetCompressedString(idsSureWantForceGenerateDTurnsRow);
+                    snprintf(szWork, sizeof(szWork), psz);
+
+                    hwndCtrl = GetFocus();
+                    result = (short)MessageBox(hwndCtrl, szWork, "Stars!", MB_TASKMODAL | MB_ICONEXCLAMATION | MB_YESNO);
+                    if (result != IDYES) {
+                        iPassCnt = 0;
+                        return 1;
+                    }
+                }
+            }
+
+            /* persist dialog position on exit (fInit=0) */
+            StickyDlgPos(hwnd, (POINT *)&ptStickyHostModeDlg, 0);
+
+            if (wParam == (WPARAM)IDC_HOST_CLOSE)
+                EndDialog(hwnd, 0);
+            else if (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE)
+                EndDialog(hwnd, (INT_PTR)-1);
+            else
+                EndDialog(hwnd, 1);
+
+            if (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE) {
+                EnsureAis();
+            } else if ((wParam == (WPARAM)IDC_HOST_CLOSE) && (((gd.grBits2 >> 2) & 1) != 0)) {
+                PostQuitMessage(vretExitValue);
+            }
+
+            return 1;
+        }
+
+        if (wParam == (WPARAM)IDC_HOST_PASSWORD) {
+            result = FCheckPassword();
+            if (result == 0)
+                return 0;
+
+            dlgProc = MakeProcInstance(NewPasswordDlg, hInst);
+            result = (short)DialogBox(hInst, MAKEINTRESOURCE(IDD_NEW_PASSWORD), hwnd, (DLGPROC)dlgProc);
+            FreeProcInstance(dlgProc);
+            SetFocus(hwnd);
+            return result;
+        }
+
+        if (wParam == (WPARAM)IDC_HOST_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, 0x440);
+            return 1;
+        }
+
+        if (wParam == (WPARAM)IDC_HOST_OPTIONS) {
+            dlgProc = MakeProcInstance(HostOptionsDialog, hInst);
+            result = (short)DialogBox(hInst, MAKEINTRESOURCE(IDD_HOST_OPTIONS), hwnd, (DLGPROC)dlgProc);
+            FreeProcInstance(dlgProc);
+            SetFocus(hwnd);
+
+            if (result == 0)
+                return 0;
+
+            /* decompile refresh: may re-enable Auto Generate after options */
+            if (gd.fReadOnly == 0) {
+                hwndCtrl = GetDlgItem(hwnd, IDC_HOST_AUTO_GENERATE);
+                if ((gd.fAllAis == 0) && ((vtimer.fAutoGenWhenIn != 0) || (vtimer.mdForce != 0)))
+                    fEnable = TRUE;
+                else
+                    fEnable = FALSE;
+                EnableWindow(hwndCtrl, fEnable);
+            }
+
+            return result;
+        }
+
+        return 0;
+
+    case WM_TIMER:
+        if (fProcessingTimer == 0) {
+            fProcessingTimer = 1;
+            CFindTurnsOutstanding();
+            DrawHostDialog2(hwnd, NULL);
+            fProcessingTimer = 0;
+        }
+        return 0;
+    }
+
     return 0;
 }
 
@@ -567,85 +852,76 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_COMMAND: {
-        DBG_LOGD("WM_COMMAND: wParam=0x%lx lParam=0x%lx (id=%lu) fFreeingTitle=%d", (unsigned long)wParam, (unsigned long)lParam, (unsigned long)wParam,
-                 (int)fFreeingTitle);
+        DBG_LOGD("WM_COMMAND: wParam=0x%lx lParam=0x%lx (id=%lu) fFreeingTitle=%d", (unsigned long)wParam, (unsigned long)lParam,
+                 (unsigned long)(uint16_t)wParam, (int)fFreeingTitle);
 
-        switch (wParam) {
-        case 0:
+        switch ((uint16_t)wParam) {
+        case IDM_TITLE_NEW_GAME:
             NewGameWizard(hwnd, 0);
 
+            /* Original: if lpPlanets==NULL AND game.lid==0, keep title focus. */
             if (lpPlanets == NULL && game.lid == 0) {
                 DBG_LOGD("WM_COMMAND: new game failed -> SetFocus(title)");
                 SetFocus(hwnd);
-                break;
-            }
+            } else {
+                if (!fFreeingTitle) {
+                    DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p hwndFrame=%p", (void *)hwndTitle, (void *)hwndFrame);
+                    fFreeingTitle = 1;
+                    DestroyWindow(hwndTitle);
+                    hwndTitle = NULL;
+                }
 
-            if (!fFreeingTitle) {
-                DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p hwndFrame=%p", (void *)hwndTitle, (void *)hwndFrame);
-                fFreeingTitle = 1;
-                DestroyWindow(hwndTitle);
-                hwndTitle = NULL;
+                DBG_LOGD("WM_COMMAND: ShowWindow(hwndFrame, SW_SHOW)");
+                ShowWindow(hwndFrame, SW_SHOW);
             }
-
-            DBG_LOGD("WM_COMMAND: ShowWindow(hwndFrame, SW_SHOW)");
-            ShowWindow(hwndFrame, SW_SHOW);
             break;
 
-        case 1:
-        case 2: {
-            bool fStartup = ((uint16_t)wParam == 2);
-            DBG_LOGD("WM_COMMAND: %s (fStartup=%d)", (wParam == 1) ? "Load" : "Continue", (int)fStartup);
+        case IDM_TITLE_OPEN_GAME:
+        case IDM_TITLE_CONTINUE: {
+            ini.fStartupFile = (wParam == IDM_TITLE_CONTINUE) ? 1 : 0;
 
-            {
-                int og = FOpenGame(hwnd, 0);
-                DBG_LOGD("WM_COMMAND: FOpenGame -> %d (idPlayer=%d)", (int)og, (int)idPlayer);
-
-                if (og > 0) {
-                    if (!fFreeingTitle) {
-                        DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p", (void *)hwndTitle);
-                        fFreeingTitle = 1;
-                        DestroyWindow(hwndTitle);
-                        hwndTitle = NULL;
-                    }
-
-                    if (idPlayer != -1) {
-                        DBG_LOGD("WM_COMMAND: ShowWindow(hwndFrame, SW_SHOW)");
-                        ShowWindow(hwndFrame, SW_SHOW);
-                    }
-
-                    DBG_LOGD("WM_COMMAND: InitializeMenu(NULL)");
-                    InitializeMenu(NULL);
-
-                    DBG_LOGD("WM_COMMAND: PostMessage(hwndFrame, WM_COMMAND, 0x0fa1)");
-                    PostMessage(hwndFrame, WM_COMMAND, (WPARAM)0x0fa1, 0);
-
-                    DBG_LOGD("WM_COMMAND: tutorial? game.fTutorial=%d idPlayer=%d", (int)game.fTutorial, (int)idPlayer);
-
-                    if (game.fTutorial && idPlayer == 0) {
-                        DBG_LOGD("WM_COMMAND: StartTutor(0)");
-                        StartTutor(0);
-                    }
-                } else {
-                    DBG_LOGD("WM_COMMAND: open failed -> SetFocus(title)");
-                    SetFocus(hwnd);
+            if (FOpenGame(hwnd, 0)) {
+                if (!fFreeingTitle) {
+                    DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p", (void *)hwndTitle);
+                    fFreeingTitle = 1;
+                    DestroyWindow(hwndTitle);
+                    hwndTitle = NULL;
                 }
+
+                if (idPlayer != -1) {
+                    DBG_LOGD("WM_COMMAND: ShowWindow(hwndFrame, SW_SHOW)");
+                    ShowWindow(hwndFrame, SW_SHOW);
+                }
+
+                InitializeMenu(NULL);
+
+                PostMessage(hwndFrame, WM_COMMAND, (WPARAM)IDM_FRAME_POST_OPEN, 0);
+
+                if (game.fTutorial && idPlayer == 0) {
+                    StartTutor(0);
+                }
+            } else {
+                DBG_LOGD("WM_COMMAND: open failed -> SetFocus(title)");
+                SetFocus(hwnd);
             }
 
-            ini.fStartupFile = (uint16_t)(fStartup ? 1 : 0);
-            DBG_LOGD("WM_COMMAND: ini.fStartupFile=%u", (unsigned)ini.fStartupFile);
+            ini.fStartupFile = 0;
             break;
         }
 
-        case 3:
-        default:
+        case IDM_TITLE_EXIT:
             DBG_LOGD("WM_COMMAND: Exit path gd.fExitWindows=%d vretExitValue=%d", (int)gd.fExitWindows, (int)vretExitValue);
-            if (gd.fExitWindows)
+
+            if (gd.fExitWindows) {
                 ExitWindows((DWORD)(uint16_t)vretExitValue, 0);
-            else {
+            } else {
                 WriteIniSettings();
                 PostQuitMessage(vretExitValue);
             }
             break;
+
+        default:
+            return 0;
         }
 
         return 0;
@@ -735,7 +1011,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-void CommandHandler(HWND hwnd, uint16_t wParam) {
+void CommandHandler(HWND hwnd, WPARAM wParam) {
     POINT pt;
     HMENU hmenu;
     int16_t (*lpProc)(void);
@@ -794,6 +1070,22 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
         return;
     }
     switch (wParam) {
+
+    case IDM_FRAME_POST_OPEN:
+        if (hwndScanner == NULL) {
+            return;
+        }
+
+        /* Temporarily suppress scanner drawing while we rebuild selection/layout. */
+        gd.fNoScannerDraw = 1;
+        RestoreSelection();
+        RefitFrameChildren();
+        gd.fNoScannerDraw = 0;
+
+        InvalidateRect(hwndScanner, NULL, TRUE);
+        UpdateWindow(hwndScanner);
+        return;
+
     /* =======================
      * File
      * ======================= */
@@ -1017,60 +1309,47 @@ void CommandHandler(HWND hwnd, uint16_t wParam) {
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC      hdc;
     int16_t  i;
-    uint16_t hpalSav;
-    int16_t  ich;
+    HPALETTE hpalSav;
+    int      ich;
     int16_t  fErrSav;
     int16_t  idCur;
     int16_t  iOffset;
-    uint16_t hcs;
+    HCURSOR  hcs;
     int16_t  id;
     int16_t  idPlanet;
     POINT    ptOld;
     POINT    pt;
-    uint16_t uTimerIdOld;
+    UINT_PTR uTimerIdOld;
     int16_t  grSel;
     char    *pch;
     RECT     rc;
-    char     szExt[4];
+    char     szExt[8];
     int16_t (*lpProc)(void);
     int16_t     fRet;
     POINT       ptAct;
     RECT        rc2;
     int32_t     lSerial;
     POINT       ptD;
-    uint16_t    hbrSav;
+    HBRUSH      hbrSav;
     POINT       ptStart;
     POINT       ptChg;
     TEXTMETRIC  tm;
     PAINTSTRUCT ps;
     int16_t     yOffset;
-    char        szTemp[80];
+    char        szTemp[256];
+    MINMAXINFO *pmmi;
+    HWND        hWndParent;
 
-    /*
-     * TODO: full FrameWndProc implementation.
-     *
-     * For now, this minimal WndProc allows the window to be created and closed,
-     * which is enough to validate that WinMain + init can launch a basic app.
-     */
     switch (msg) {
-    case WM_CREATE: {
-        HDC        hdc;
-        TEXTMETRIC tm;
-
+    case WM_CREATE:
         hdc = GetDC(hwnd);
         if (hdc != NULL) {
             (void)FCreateFonts(hdc);
-
-            /* System font height (including external leading), Win32 style */
             GetTextMetrics(hdc, &tm);
             dySysFont = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
-
-            /* Original: dySBar = (dyArial8 + 0x0c) * 2; */
             dySBar = (int16_t)((int32_t)(dyArial8 + 0x0c) * 2);
-
             ReleaseDC(hwnd, hdc);
         } else {
-            /* Defensive fallbacks if DC acquisition fails */
             dySysFont = 0;
             dySBar = (int16_t)((int32_t)(dyArial8 + 0x0c) * 2);
         }
@@ -1078,10 +1357,537 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         InitTiles();
         EnsureTileSize(iWindowLayout == 2);
         return 0;
+
+    case WM_SIZE:
+        if ((wParam == SIZE_MAXIMIZED) || (wParam == SIZE_RESTORED)) {
+            /* match Win16: take low/high 16 bits */
+            vfs.dx = (int16_t)(uint16_t)LOWORD(lParam);
+            vfs.dy = (int16_t)(uint16_t)HIWORD(lParam);
+            RefitFrameChildren();
+        }
+        return 0;
+
+    case WM_ACTIVATE:
+        /* decompile returns 0 */
+        return 0;
+
+    case WM_CLOSE:
+        /* from decompile */
+        DestroyWindow(hwnd);
+        return 0;
+
+    case WM_ERASEBKGND: {
+        /* from decompile */
+        RECT rcClient;
+        HDC  hdcErase = (HDC)wParam;
+
+        GetClientRect(hwnd, &rcClient);
+
+        if (IsIconic(hwnd) != 0) {
+            FillRect(hdcErase, &rcClient, hbrDesktop);
+            return 0; /* iconic case returns 0 */
+        }
+
+        if (hwndScanner != NULL) {
+            RECT  rcScan;
+            POINT pts[2];
+
+            GetClientRect(hwndScanner, &rcScan);
+            pts[0].x = rcScan.left;
+            pts[0].y = rcScan.top;
+            pts[1].x = rcScan.right;
+            pts[1].y = rcScan.bottom;
+
+            MapWindowPoints(hwndScanner, hwnd, pts, 2);
+            ExcludeClipRect(hdcErase, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
+        }
+
+        FillRect(hdcErase, &rcClient, hbrButtonFace);
+        return 1;
     }
+
+    case WM_SYSCOLORCHANGE:
+    case WM_WININICHANGE:
+        /* from decompile */
+        FGetSystemColors();
+        return 0;
+
+    case WM_PAINT: {
+        /* from decompile */
+        PAINTSTRUCT psLocal;
+        HDC         hdcPaint;
+        HGDIOBJ     hOld;
+
+        if (IsIconic(hwnd) == 0) {
+            hdcPaint = BeginPaint(hwnd, &psLocal);
+
+            hOld = SelectObject(hdcPaint, hbrButtonShadow);
+
+            if (iWindowLayout == 0 || (iWindowLayout != 1 && iWindowLayout != 2)) {
+                PatBlt(hdcPaint, vfs.xTop + 5, 0, 2, vfs.dy, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y1 + 5, vfs.xTop + 2, 2, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y2 + 5, vfs.xTop + 2, 2, PATCOPY);
+
+                SelectObject(hdcPaint, hbrButtonHilite);
+                PatBlt(hdcPaint, vfs.xTop + 1, 0, 1, vfs.y1 + 2, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y1 + 1, vfs.xTop + 1, 1, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 1, vfs.y1 + 6, 1, (vfs.y2 - vfs.y1) - 4, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y2 + 1, vfs.xTop + 1, 1, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 1, vfs.y2 + 6, 1, (vfs.dy - vfs.y2) - 6, PATCOPY);
+            } else {
+                /* decompile uses sign of gd.grBits2 upper word to decide toolbar offset */
+                int yTop = ((int16_t)gd.grBits2 < 0) ? 0x24 : 0;
+
+                PatBlt(hdcPaint, vfs.xTop + 5, yTop, 2, (vfs.y2 + 2) - yTop, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y1 + 5, vfs.xTop + 2, 2, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 5, vfs.y2 + 5, (vfs.dx - vfs.xTop) - 5, 2, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 5, vfs.y2 + 6, 2, (vfs.dy - vfs.y2) - 5, PATCOPY);
+
+                SelectObject(hdcPaint, hbrButtonHilite);
+                PatBlt(hdcPaint, vfs.xTop + 1, yTop, 1, (vfs.y1 + 2) - yTop, PATCOPY);
+                PatBlt(hdcPaint, 0, vfs.y1 + 1, vfs.xTop + 1, 1, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 1, vfs.y1 + 6, 1, (vfs.dy - vfs.y1) - 6, PATCOPY);
+                PatBlt(hdcPaint, vfs.xTop + 6, vfs.y2 + 1, (vfs.dx - vfs.xTop) - 6, 1, PATCOPY);
+            }
+
+            SelectObject(hdcPaint, hOld);
+            EndPaint(hwnd, &psLocal);
+            return 0;
+        }
+
+        hdcPaint = BeginPaint(hwnd, &psLocal);
+        {
+            HICON hico = hiconHost;
+
+            /* decompile:
+               if (idPlayer != -1 || game.lid != 0) -> stars, and if timer -> wait */
+            if ((idPlayer != -1) || (game.lid != 0))
+                hico = hiconStars;
+            if (uTimerId != 0)
+                hico = hiconWait;
+
+            DrawIcon(hdcPaint, 2, 2, hico);
+        }
+        EndPaint(hwnd, &psLocal);
+        return 0;
+    }
+
+    case WM_SETCURSOR:
+        /* from decompile: pass NULL out-param here */
+        if (IsIconic(hwnd) == 0) {
+            POINT ptCur;
+            RECT  rcClient;
+
+            GetCursorPos(&ptCur);
+            ScreenToClient(hwndFrame, &ptCur);
+            GetClientRect(hwnd, &rcClient);
+
+            if (PtInRect(&rcClient, ptCur)) {
+                HCURSOR hcsLocal = (HCURSOR)(uintptr_t)HcrsFromFrameWindowPt(ptCur, NULL);
+                if (hcsLocal != NULL) {
+                    SetCursor(hcsLocal);
+                    return 1;
+                }
+            }
+        }
+        break;
+
+    case WM_GETMINMAXINFO:
+        pmmi = (MINMAXINFO *)lParam;
+        pmmi->ptMinTrackSize.x = 0x208;
+        pmmi->ptMinTrackSize.y = 0x17c;
+        return 0;
+
+    case WM_QUERYDRAGICON: {
+        /* from decompile */
+        HICON hico = hiconHost;
+
+        if (idPlayer != -1) {
+            hico = hiconStars;
+            if (uTimerId != 0)
+                hico = hiconWait;
+        }
+
+        return (LRESULT)(intptr_t)hico;
+    }
+
+    case WM_SYSCOMMAND: {
+        /* from decompile (maximize/restore path) */
+        const uint16_t sc = (uint16_t)(wParam & 0xFFF0u);
+
+        if (sc == SC_MAXIMIZE || sc == SC_RESTORE) {
+            int16_t  idPlayerSav = idPlayer;
+            UINT_PTR uTimerSav = uTimerId;
+
+            if (uTimerId != 0) {
+                KillTimer(NULL, uTimerId);
+                uTimerId = 0;
+                CreateChildWindows();
+            }
+
+            if (idPlayerSav != -1) {
+                int16_t fNew = FNewTurnAvail(idPlayerSav);
+                if (fNew != 0) {
+                    int16_t idAns;
+
+                    if (uTimerSav == 0) {
+                        char *psz = PszFormatIds(idsNewTurnAvailableWouldLikeLoad, NULL);
+                        idAns = AlertSz(psz, MB_ICONQUESTION | MB_YESNOCANCEL);
+                    } else {
+                        char *psz = PszFormatIds(idsNewTurnAvailable, NULL);
+                        (void)AlertSz(psz, MB_ICONASTERISK);
+                        idAns = IDYES;
+                    }
+
+                    if (idAns == IDYES) {
+                        char szExtLocal[8];
+
+                        snprintf(szExtLocal, sizeof(szExtLocal), "m%d", (int)(idPlayerSav + 1));
+                        DestroyCurGame();
+
+                        if (FLoadGame(szBase, szExtLocal) == 0) {
+                            char *psz = PszFormatIds(idsUnableOpenNewTurnFile, NULL);
+                            AlertSz(psz, MB_ICONHAND);
+                        } else {
+                            CreateChildWindows();
+                        }
+                    } else if (idAns == IDCANCEL) {
+                        if (uTimerSav == 0)
+                            PostMessage(hwndFrame, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+                        else
+                            PostMessage(hwndFrame, WM_COMMAND, WMX_UNKNOWN_006A, 0);
+                        return 1;
+                    }
+
+                    SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+                    break; /* fall through to DefWindowProc */
+                }
+            }
+
+            if (uTimerSav != 0) {
+                if (uTimerType == 0x0d) {
+                    PostMessage(hwnd, WM_STARS_HOST, 0, 0);
+                    break;
+                }
+
+                if (uTimerType == 0x0e) {
+                    char   *psz = PszFormatIds(idsTurnHasSubmittedChangesMadeAfterTurn, NULL);
+                    int16_t idAns = AlertSz(psz, MB_ICONQUESTION | MB_YESNOCANCEL);
+
+                    if (idAns == IDYES) {
+                        if (FMarkFile(dtLog, idPlayerSav, 2, 0) == 0) {
+                            char *psz2 = PszFormatIds(idsNewTurnCurrentlyGeneratedHostNewTurn, NULL);
+                            AlertSz(psz2, MB_ICONHAND);
+
+                            {
+                                char szExtLocal[8];
+                                snprintf(szExtLocal, sizeof(szExtLocal), "m%d", (int)(idPlayerSav + 1));
+                                DestroyCurGame();
+
+                                if (FLoadGame(szBase, szExtLocal) == 0) {
+                                    char *psz3 = PszFormatIds(idsUnableOpenNewTurnFile, NULL);
+                                    AlertSz(psz3, MB_ICONHAND);
+                                } else {
+                                    CreateChildWindows();
+                                }
+                            }
+                        }
+                    } else if (idAns == IDCANCEL) {
+                        PostMessage(hwndFrame, WM_COMMAND, WMX_UNKNOWN_006A, 0);
+                        return 1;
+                    }
+                }
+
+                SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+
+                if (sel.pt.x > 1000 && sel.pt.y > 1000) {
+                    CtrPointScan(sel.pt, 1);
+                }
+            }
+        }
+
+        break; /* default handling */
+    }
+
+    case WM_TIMER:
+        if (uTimerId != 0) {
+            uTimerIdOld = uTimerId;
+            if (uTimerType == 1) {
+                ich = 0;
+                while (ich < 3) {
+                    snprintf(szExt, sizeof(szExt), "m%d", (int)(idPlayer + 1));
+                    if (FLoadGame(szBase, szExt) != 0) {
+                        KillTimer(NULL, uTimerIdOld);
+                        uTimerId = 0;
+                        CreateChildWindows();
+                        break;
+                    }
+                    ich++;
+                }
+                if (ich == 3) {
+                    KillTimer(NULL, uTimerIdOld);
+                    uTimerId = 0;
+                    AlertSz(PszGetCompressedString(idsCantFindHostFile), MB_ICONHAND);
+                }
+            } else {
+                if (uTimerType == 2) {
+                    if (FLoadGame(szBase, mpdtsz[dtHist]) != 0) {
+                        KillTimer(NULL, uTimerIdOld);
+                        uTimerId = 0;
+                        EnsureAis();
+                        FGenerateTurn();
+                        CreateChildWindows();
+                    }
+                }
+            }
+        }
+        return 0;
+
+    case WM_CHAR: {
+        /* from decompile */
+        if (hwndScanner != NULL && (wParam == (WPARAM)'-' || wParam == (WPARAM)'+')) {
+            SendMessage(hwndScanner, WM_CHAR, wParam, lParam);
+            return 0;
+        }
+
+        if (hwndMessage != NULL && ((wParam == (WPARAM)'-' || wParam == (WPARAM)'+') || (wParam == (WPARAM)'\r'))) {
+            SendMessage(hwndMessage, WM_CHAR, wParam, lParam);
+            return 0;
+        }
+
+        if (hwndPlanet != NULL && (wParam == (WPARAM)'f' || wParam == (WPARAM)'F')) {
+            SendMessage(hwndPlanet, WM_CHAR, wParam, lParam);
+            return 0;
+        }
+
+        if (hwndPlanet != NULL && sel.grobj == grobjPlanet && (wParam == (WPARAM)'q' || wParam == (WPARAM)'Q')) {
+            ChangeProduction(0);
+            return 0;
+        }
+
+        if ((sel.grobj & (grobjFleet | grobjPlanet)) == grobjNone)
+            return 0;
+
+        int16_t dir = 0;
+        int16_t idAdj = 0;
+
+        if (wParam == (WPARAM)'n') {
+            dir = 1;
+        } else if (wParam == (WPARAM)'p') {
+            dir = -1;
+        } else if (wParam == (WPARAM)'N' || wParam == (WPARAM)'P') {
+            if (sel.grobj == grobjPlanet) {
+                idAdj = IdFindAdjStarbase(sel.pl.id, (wParam == (WPARAM)'N') ? 1 : 0);
+            } else if (wParam == (WPARAM)'N') {
+                dir = 1;
+            } else {
+                dir = -1;
+            }
+        } else if ((wParam == (WPARAM)'r' || wParam == (WPARAM)'R') && sel.grobj == grobjFleet) {
+            ShipCommandProc(hwndPlanet, 0, (uintptr_t)rghwndBtn[6]);
+        }
+
+        if (dir == 0 && idAdj == 0)
+            return 0;
+
+        if (sel.grobj != grobjFleet) {
+            SelectAdjPlanet(dir, idAdj);
+            return 0;
+        }
+
+        SelectAdjFleet(dir, idAdj);
+        return 0;
+    }
+
+    case WM_COMMAND:
+        if (hwndTitle != NULL) {
+            if (wParam == IDM_GAME_QUIT) {
+                DestroyWindow(hwndFrame);
+                return 0;
+            }
+            if (wParam == IDM_GAME_START) {
+                DestroyWindow(hwndTitle);
+                return 0;
+            }
+            if (wParam == IDM_GAME_HOST) {
+                PostMessage(hwndFrame, WM_STARS_HOST, 0, 0);
+                return 0;
+            }
+            if (wParam == IDM_GAME_CONTINUE) {
+                PostMessage(hwndFrame, WM_STARS_CONTINUE, 0, 0);
+                return 0;
+            }
+        }
+        CommandHandler(hwnd, wParam);
+        return 0;
+
+    case WM_DESTROY:
+        if (uTimerId != 0) {
+            KillTimer(NULL, uTimerId);
+            uTimerId = 0;
+        }
+
+        WriteIniSettings();
+
+        if (gd.fHostMode != 0) {
+            (void)FMarkFile(dtHost, -1, 1, 0);
+        }
+
+        DestroyCurGame();
+
+        if (gd.fExitWindows == 0) {
+            PostQuitMessage(vretExitValue);
+        } else {
+            ExitWindows((DWORD)(uint16_t)vretExitValue, 0);
+        }
+        return 0;
+
     case WM_INITMENU:
         InitializeMenu((HMENU)wParam);
         return 0;
+
+    case WM_ENTERIDLE:
+        if ((gd.fTutorial != 0) && (tutor.fTurnDone != 0)) {
+            AdvanceTutor();
+        }
+        return 0;
+
+    case WM_LBUTTONDOWN:
+        pt.x = (int16_t)(int32_t)(int16_t)LOWORD(lParam);
+        pt.y = (int16_t)(int32_t)(int16_t)HIWORD(lParam);
+
+        grSel = 0;
+        hcs = (HCURSOR)(uintptr_t)HcrsFromFrameWindowPt(pt, &grSel);
+        if (hcs == NULL) {
+            return 0;
+        }
+
+        hdc = GetDC(hwnd);
+        hbrSav = (HBRUSH)SelectObject(hdc, hbr50Screen);
+
+        ptChg.x = 0;
+        ptChg.y = 0;
+        InvertPaneBorder(hdc, grSel, (POINT){0, 0}, NULL);
+
+        ptStart = pt;
+        SetCapture(hwnd);
+
+        ptOld = pt;
+        while (FGetMouseMove(&ptAct) != 0) {
+            if ((ptAct.x != ptOld.x) || (ptAct.y != ptOld.y)) {
+                ptD.x = (int16_t)(ptAct.x - ptStart.x);
+                ptD.y = (int16_t)(ptAct.y - ptStart.y);
+
+                ptChg.x = (int16_t)(ptAct.x - ptOld.x);
+                ptChg.y = (int16_t)(ptAct.y - ptOld.y);
+
+                InvertPaneBorder(hdc, grSel, ptD, &ptChg);
+                ptOld = ptAct;
+            }
+        }
+
+        InvertPaneBorder(hdc, grSel, ptD, NULL);
+
+        ReleaseCapture();
+        SelectObject(hdc, hbrSav);
+        ReleaseDC(hwnd, hdc);
+
+        if ((ptD.x == 0) && (ptD.y == 0)) {
+            return 0;
+        }
+
+        if ((grSel & 1) != 0) {
+            if (iWindowLayout == 0)
+                vfs.dxPlanWant = (int16_t)(vfs.xTop + ptD.x);
+            else
+                vfs.dx2PlanWant = (int16_t)(vfs.xTop + ptD.x);
+        }
+
+        if ((grSel & 2) != 0) {
+            if (iWindowLayout == 0)
+                vfs.dyMsgWant = (int16_t)(((vfs.y2 - vfs.y1) - 8) - ptD.y);
+            else
+                vfs.dy2MsgWant = (int16_t)(((vfs.dy - vfs.y1) - 8) - ptD.y);
+        }
+
+        if ((grSel & 4) != 0) {
+            if (iWindowLayout == 0) {
+                vfs.dyMsgWant = (int16_t)((vfs.y2 - vfs.y1) - 8 + ptD.y);
+                vfs.dyMinWant = (int16_t)(((vfs.dy - vfs.y2) - 8) - ptD.y);
+            } else {
+                vfs.dy2MinWant = (int16_t)(((vfs.dy - vfs.y2) - 8) - ptD.y);
+            }
+        }
+
+        InvalidateRect(hwnd, NULL, TRUE);
+        RefitFrameChildren();
+        return 0;
+
+    case WM_QUERYNEWPALETTE:
+        if (hwndTitle != NULL) {
+            return SendMessage(hwndTitle, msg, wParam, lParam);
+        }
+        hdc = GetDC(hwnd);
+        hpalSav = SelectPalette(hdc, vhpal, FALSE);
+        i = (int16_t)RealizePalette(hdc);
+        SelectPalette(hdc, hpalSav, FALSE);
+        ReleaseDC(hwnd, hdc);
+        if (i != 0) {
+            InvalidateRect(hwnd, NULL, TRUE);
+            return 1;
+        }
+        return 0;
+
+    case WM_PALETTECHANGED:
+        if ((HWND)wParam == hwnd) {
+            return 0;
+        }
+        return SendMessage(hwnd, WM_QUERYNEWPALETTE, 0, 0);
+
+    case WM_STARS_HOST:
+        BringUpHostDlg();
+        return 1;
+
+    case WM_STARS_CONTINUE:
+        ShowTutor(0);
+        game.fDirty = 0;
+        DestroyCurGame();
+
+        fErrSav = fFileErrSilent;
+        fFileErrSilent = 1;
+
+        gd.fDontDoLogFiles = 1;
+        fRet = (int16_t)FLoadGame(szBase, mpdtsz[dtHost]);
+        if (fRet != 0) {
+            gd.fDontDoLogFiles = 0;
+            fFileErrSilent = fErrSav;
+            idPlayer = 0;
+
+            if (wParam == 0x09ca) {
+                gd.fGeneratingTurn = 1;
+                snprintf(szWork, sizeof(szWork), "%s.x1", szBase);
+                if (FLoadLogFile(szWork) != 0) {
+                    FRunLogFile();
+                }
+                gd.fGeneratingTurn = 0;
+            }
+
+            CreateChildWindows();
+            SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+            if (wParam == 0x09ca) {
+                SendMessage(hwndMessage, WM_KEYDOWN, VK_END, 0);
+            }
+
+            tutor.idt = 0;
+            tutor.fAutoComplete = (wParam == 0x09ca) ? 1 : 0;
+            AdvanceTutor();
+            return 0;
+        }
+
+        fFileErrSilent = fErrSav;
+        gd.fDontDoLogFiles = 0;
+        return 0;
+
     case WM_STARS_STARTUP:
         /*
          * Win16 behavior: if no game is currently loaded, create the full-screen
@@ -1095,44 +1901,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             fFreeingTitle = 0;
         }
         return 0;
-
-    case WM_QUERYNEWPALETTE: {
-        if (hwndTitle) {
-            return SendMessage(hwndTitle, msg, wParam, lParam);
-        }
-
-        HDC      hdc = GetDC(hwnd);
-        HPALETTE hpalOld = SelectPalette(hdc, vhpal, FALSE);
-        int      changed = RealizePalette(hdc);
-        SelectPalette(hdc, hpalOld, FALSE);
-        ReleaseDC(hwnd, hdc);
-
-        if (changed) {
-            InvalidateRect(hwnd, NULL, TRUE);
-            return TRUE;
-        }
-        return FALSE;
-    }
-
-    case WM_PALETTECHANGED: {
-        if ((HWND)wParam == hwnd)
-            return 0;
-
-        /* forward to same logic */
-        SendMessage(hwnd, WM_QUERYNEWPALETTE, 0, 0);
-        return 0;
-    }
-
-    case WM_CLOSE:
-        DestroyWindow(hwnd);
-        return 0;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-
-    default:
-        break;
     }
 
     return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -1600,10 +2368,10 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
 
     OPENFILENAMEA ofn;
 
-    if (ini.fStartupFile == 0) {
+    if (!ini.fStartupFile) {
         szFile[0] = '\0';
 
-        ids = (fRaceOnly == 0) ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles;
+        ids = (!fRaceOnly) ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles;
         CchGetString(ids, szFilter);
 
         /* resource filter uses '|' separators; Win32 wants embedded NULs */
@@ -1652,10 +2420,10 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
     /* common tail */
     szDirName[0] = '\0';
 
-    fRet = FWasRaceFile(szFile + ofn.nFileOffset, (int16_t)(fRaceOnly == 0));
+    fRet = FWasRaceFile(szFile + ofn.nFileOffset, (int16_t)(!fRaceOnly));
 
-    if (fRaceOnly == 0) {
-        if (fRet == 0) {
+    if (!fRaceOnly) {
+        if (!fRet) {
             if (ofn.nFileExtension != 0)
                 szFile[ofn.nFileExtension - 1] = '\0';
 
@@ -1665,7 +2433,7 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
             lstrcpyA(szBase, szFile);
 
             if (!FLoadGame(szFile, szFile + ofn.nFileExtension)) {
-                if (ini.fStartupFile != 0) {
+                if (ini.fStartupFile) {
                     ini.wFlags = 0;
                     fFileErrSilent = 0;
                 }
@@ -1990,51 +2758,158 @@ INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
     return 0;
 }
 
-int16_t InitMDIApp(void) {
-    WNDCLASS wc;
+short InitMDIApp(void) {
+    ATOM      atom;
+    short     fOk;
+    WNDCLASSA wc;
 
-    /*
-     * Minimal class registration to get a frame window up.
-     *
-     * The original Stars! registers many more classes (scanner, message, etc.).
-     * Those are deferred until their respective WndProcs are implemented.
-     */
-
-    if (szFrame[0] == '\0') {
-        strcpy(szFrame, "StarsFrame");
-    }
-
-    memset(&wc, 0, sizeof(wc));
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+    /* Frame window class */
+    wc.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS; /* 0x000B */
     wc.lpfnWndProc = FrameWndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
     wc.hInstance = hInst;
     wc.hIcon = NULL;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)(COLOR_APPWORKSPACE + 1);
-    wc.lpszMenuName = MAKEINTRESOURCEA(STARSMENU);
+    wc.hCursor = LoadCursorA(NULL, IDC_ARROW);           /* 0x7F00 */
+    wc.hbrBackground = (HBRUSH)(COLOR_APPWORKSPACE + 1); /* 0x000D */
+    wc.lpszMenuName = "StarsMenu";
     wc.lpszClassName = szFrame;
 
-    if (RegisterClass(&wc) == 0) {
-        return 0;
+    atom = RegisterClassA(&wc);
+    if (atom == 0) {
+        fOk = 0;
+    } else {
+        /* Message window class */
+        wc.style = CS_NOCLOSE | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS; /* 0x020B */
+        wc.lpfnWndProc = MessageWndProc;
+        wc.hIcon = NULL;
+        wc.lpszMenuName = NULL;
+        wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+        wc.lpszClassName = szMessage;
+
+        atom = RegisterClassA(&wc);
+        if (atom == 0) {
+            fOk = 0;
+        } else {
+            /* Scan window class */
+            wc.style = CS_NOCLOSE | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS; /* 0x020B */
+            wc.lpfnWndProc = ScannerWndProc;
+            wc.hbrBackground = GetStockObject(BLACK_BRUSH); /* GetStockObject(4) */
+            wc.lpszClassName = szScan;
+
+            atom = RegisterClassA(&wc);
+            if (atom == 0) {
+                fOk = 0;
+            } else {
+                /* Mine window class */
+                wc.style = CS_NOCLOSE | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS; /* 0x020B */
+                wc.lpfnWndProc = MineWndProc;
+                wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+                wc.lpszClassName = szMine;
+
+                atom = RegisterClassA(&wc);
+                if (atom == 0) {
+                    fOk = 0;
+                } else {
+                    /* Toolbar window class */
+                    wc.style = CS_NOCLOSE | CS_DBLCLKS; /* 0x0208 */
+                    wc.lpfnWndProc = TbWndProc;
+                    wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+                    wc.lpszClassName = szTb;
+
+                    atom = RegisterClassA(&wc);
+                    if (atom == 0) {
+                        fOk = 0;
+                    } else {
+                        /* Planet window class */
+                        wc.style = CS_NOCLOSE; /* 0x0200 */
+                        wc.lpfnWndProc = PlanetWndProc;
+                        wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+                        wc.hIcon = NULL;
+                        wc.lpszClassName = szPlanet;
+
+                        atom = RegisterClassA(&wc);
+                        if (atom == 0) {
+                            fOk = 0;
+                        } else {
+                            /* Popup window class */
+                            wc.style = CS_NOCLOSE | CS_SAVEBITS; /* 0x0A00 */
+                            wc.lpfnWndProc = PopupWndProc;
+                            wc.hbrBackground = GetStockObject(WHITE_BRUSH); /* GetStockObject(0) */
+                            wc.hIcon = NULL;
+                            wc.lpszClassName = szPopup;
+
+                            atom = RegisterClassA(&wc);
+                            if (atom == 0) {
+                                fOk = 0;
+                            } else {
+                                /* Tooltip window class */
+                                wc.style = CS_NOCLOSE | CS_SAVEBITS; /* 0x0A00 */
+                                wc.lpfnWndProc = TooltipWndProc;
+                                wc.hbrBackground = GetStockObject(WHITE_BRUSH); /* GetStockObject(0) */
+                                wc.hIcon = NULL;
+                                wc.lpszClassName = szTooltip;
+
+                                atom = RegisterClassA(&wc);
+                                if (atom == 0) {
+                                    fOk = 0;
+                                } else {
+                                    /* Browser window class */
+                                    wc.style = CS_NOCLOSE; /* 0x0200 */
+                                    wc.lpfnWndProc = BrowserWndProc;
+                                    wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+                                    wc.hIcon = NULL;
+                                    wc.lpszClassName = szBrowser;
+
+                                    atom = RegisterClassA(&wc);
+                                    if (atom == 0) {
+                                        fOk = 0;
+                                    } else {
+                                        /* Title window class */
+                                        wc.style = 0;
+                                        wc.lpfnWndProc = TitleWndProc;
+                                        wc.cbClsExtra = 0;
+                                        wc.cbWndExtra = 0;
+                                        wc.hInstance = hInst;
+                                        wc.hIcon = NULL;
+                                        wc.hCursor = LoadCursorA(NULL, IDC_ARROW);
+                                        wc.hbrBackground = GetStockObject(BLACK_BRUSH); /* GetStockObject(4) */
+                                        wc.lpszMenuName = NULL;
+                                        wc.lpszClassName = szTitle;
+
+                                        atom = RegisterClassA(&wc);
+                                        if (atom == 0) {
+                                            fOk = 0;
+                                        } else {
+                                            /* Report window class */
+                                            wc.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS; /* 0x000B */
+                                            wc.lpfnWndProc = ReportWndProc;
+                                            wc.cbClsExtra = 0;
+                                            wc.cbWndExtra = 0;
+                                            wc.hInstance = hInst;
+                                            wc.hIcon = NULL;
+                                            wc.hCursor = LoadCursorA(NULL, IDC_ARROW);
+                                            wc.hbrBackground = GetStockObject(LTGRAY_BRUSH); /* GetStockObject(1) */
+                                            wc.lpszMenuName = NULL;
+                                            wc.lpszClassName = szReport;
+
+                                            atom = RegisterClassA(&wc);
+                                            if (atom == 0)
+                                                fOk = 0;
+                                            else
+                                                fOk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    /* A minimal Title class is helpful for later but optional today. */
-    if (szTitle[0] == '\0') {
-        strcpy(szTitle, "StarsTitle");
-    }
-
-    memset(&wc, 0, sizeof(wc));
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-    wc.lpfnWndProc = TitleWndProc;
-    wc.hInstance = hInst;
-    wc.hIcon = NULL;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = szTitle;
-
-    (void)RegisterClass(&wc);
-    return 1;
+    return fOk;
 }
 
 void CreateChildWindows(void) {

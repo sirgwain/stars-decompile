@@ -2574,7 +2574,7 @@ _Static_assert(offsetof(ZIPPRODQ, rgpq) == 0x10, "offsetof(ZIPPRODQ,rgpq)");
 
 /* typind 4187 (0x105b) size=226 */
 typedef struct _sel {
-    STARSPOINT pt;        /* +0x0000 */
+    POINT pt;        /* +0x0000 */
     int16_t    grobj;     /* +0x0004 */
     int16_t    grobjFull; /* +0x0006 */
     int16_t    id;        /* +0x0008 */

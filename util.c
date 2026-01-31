@@ -293,10 +293,35 @@ int16_t FMatchTarget(FLEET *lpflTarget, int16_t mdTarget, int16_t fExact) {
 }
 
 void ClearFile(int16_t dt) {
-    char *pch;
     char  szFile[256];
+    char *pch;
 
-    /* TODO: implement */
+    /* _DATA::mpdtsz observed entries: xy, x, hst, m, h, r, log, chk */
+    if (dt < 0 || dt >= 8) {
+        return; /* original likely assumes caller passes valid dt */
+    }
+
+    /* Build from szBase, forcing the extension to mpdtsz[dt].
+       Original logic:
+         strcpy(szFile, szBase)
+         pch = strrchr(szFile, '.')
+         if (!pch) strcat(szFile, ".")
+         else pch[1] = '\0'  (keep trailing '.')
+         strcat(szFile, mpdtsz[dt])
+         remove(szFile)
+    */
+    (void)strncpy(szFile, szBase, sizeof(szFile));
+    szFile[sizeof(szFile) - 1] = '\0';
+
+    pch = strrchr(szFile, '.');
+    if (pch == NULL) {
+        (void)strncat(szFile, ".", sizeof(szFile) - strlen(szFile) - 1);
+    } else {
+        pch[1] = '\0';
+    }
+    (void)strncat(szFile, mpdtsz[dt], sizeof(szFile) - strlen(szFile) - 1);
+
+    (void)remove(szFile);
 }
 
 int32_t LComputePower(SHDEF *lpshdef) {
@@ -821,11 +846,19 @@ int16_t IStargateFromLppl(PLANET *lppl) {
 }
 
 int32_t DpOfLpflIshdef(FLEET *lpfl, int16_t ishdef) {
-    int16_t dpShdef;
-    int32_t dp;
+    uint16_t dpShdef;
+    int32_t  l;
+    int32_t  dp;
+    uint32_t u;
 
-    /* TODO: implement */
-    return 0;
+    dp = 5000;
+
+    dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
+    l = (int32_t)(((int32_t)lpfl->rgdv[ishdef].pctSh * (int32_t)dpShdef) / 10);
+    l *= (int32_t)lpfl->rgdv[ishdef].pctDp;
+
+    u = (uint32_t)lpfl->rgcsh[ishdef] * (uint32_t)l;
+    return (int32_t)(u / (uint32_t)dp);
 }
 
 int16_t FFleetSplitAll(FLEET *pfl) {

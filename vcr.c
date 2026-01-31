@@ -7,6 +7,8 @@
 #include "parts.h"
 #include "vcr.h"
 
+#include "resource.h"
+
 int32_t LdpFromItokDv(int16_t itok, DV *lpdv) {
     TOK   *ptok = &vrgtok[itok];
     SHDEF *pshdef = LpshdefFromTok(ptok);
@@ -279,9 +281,23 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 void EnableVCRButtons(void) {
-    int16_t i;
+    int16_t id;
 
-    /* TODO: implement */
+    /* Rewind buttons enabled if not at start */
+    for (id = IDC_VCR_REW_ALL; id <= IDC_VCR_REW; id++) {
+        EnableWindow(GetDlgItem(hwndVCRDlg, id), (uint16_t)((uint16_t)viStepVCRCur < 0x8000u));
+    }
+
+    /* Forward buttons enabled if not at end */
+    for (id = IDC_VCR_PLAY_PAUSE; id <= IDC_VCR_FWD_ALL; id++) {
+        EnableWindow(GetDlgItem(hwndVCRDlg, id), (uint16_t)(viStepVCRCur < vcStepVCR));
+    }
+
+    /* Focus handling */
+    if (viStepVCRCur == -1)
+        SetFocus(GetDlgItem(hwndVCRDlg, IDC_VCR_PLAY_PAUSE));
+    else if (viStepVCRCur == vcStepVCR)
+        SetFocus(GetDlgItem(hwndVCRDlg, IDOK));
 }
 
 int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {

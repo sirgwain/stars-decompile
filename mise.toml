@@ -695,6 +695,8 @@ bash "$ANALYZER" -H "$GHIDRA_PROJECT" Stars \
     -noanalysis \
     -scriptPath "$SCRIPTS_DIR" \
     -postScript ExportAllDecompiled.py "$OUTPUT_DIR" $PROJECT_DIR/scripts/nb09_ghidra_globals.json "$SEGMENT" 2>&1
+
+clang-format -i decompiled/all/*.c
 '''
 
 [tasks.track-implementation]

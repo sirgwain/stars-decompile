@@ -23,6 +23,7 @@
 #include "file.h"
 #include "platform.h"
 
+#include "mdi.h"
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
@@ -1504,7 +1505,6 @@ LNextTurn:
         goto LError;
     }
 
-    // TODO: AtEOF isn't working, not doing multiple turn loads yet
     if (!AtEOF(hf.fp)) {
         ReadRt();
         if (hdrCur.rt == rtBOF) {

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-31T04:25:35Z",
+  "generated_at_utc": "2026-01-31T23:02:55Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -1355,127 +1355,127 @@
     "Dump_RecordTypeName": {
       "signature": "static const char * Dump_RecordTypeName(uint16_t rt)",
       "file": "file.c",
-      "line": 41,
+      "line": 42,
       "kind": "definition"
     },
     "Dump_PrintHexBytes": {
       "signature": "static void Dump_PrintHexBytes(const uint8_t *pb, size_t cb)",
       "file": "file.c",
-      "line": 77,
+      "line": 78,
       "kind": "definition"
     },
     "Dump_FileSizeBytes": {
       "signature": "static int64_t Dump_FileSizeBytes(const char *path)",
       "file": "file.c",
-      "line": 83,
+      "line": 84,
       "kind": "definition"
     },
     "DumpGameFileBlocks": {
       "signature": "int DumpGameFileBlocks(const char *szPath)",
       "file": "file.c",
-      "line": 102,
+      "line": 103,
       "kind": "definition"
     },
     "stars_seek": {
       "signature": "int stars_seek(StarsFile *h, long offset, int whence)",
       "file": "file.c",
-      "line": 243,
+      "line": 244,
       "kind": "definition"
     },
     "stars_mode_from_md": {
       "signature": "static inline const char * stars_mode_from_md(int16_t mdOpen)",
       "file": "file.c",
-      "line": 251,
+      "line": 252,
       "kind": "definition"
     },
     "stars_open_file": {
       "signature": "static inline int stars_open_file(StarsFile *h, const char *path, int16_t mdOpen)",
       "file": "file.c",
-      "line": 265,
+      "line": 266,
       "kind": "definition"
     },
     "stars_close_file": {
       "signature": "static inline void stars_close_file(StarsFile *h)",
       "file": "file.c",
-      "line": 287,
+      "line": 288,
       "kind": "definition"
     },
     "stars_read": {
       "signature": "static inline size_t stars_read(StarsFile *h, void *dst, size_t cb)",
       "file": "file.c",
-      "line": 295,
+      "line": 296,
       "kind": "definition"
     },
     "read_u16_unaligned": {
       "signature": "static inline uint16_t read_u16_unaligned(const void *p)",
       "file": "file.c",
-      "line": 301,
+      "line": 302,
       "kind": "definition"
     },
     "stars_stricmp": {
       "signature": "static int stars_stricmp(const char *a, const char *b)",
       "file": "file.c",
-      "line": 308,
+      "line": 309,
       "kind": "definition"
     },
     "stars_strnicmp": {
       "signature": "static int stars_strnicmp(const char *a, const char *b, size_t n)",
       "file": "file.c",
-      "line": 320,
+      "line": 321,
       "kind": "definition"
     },
     "read_u32_unaligned": {
       "signature": "static inline uint32_t read_u32_unaligned(const void *p)",
       "file": "file.c",
-      "line": 333,
+      "line": 334,
       "kind": "definition"
     },
     "FileError": {
       "signature": "void FileError(StringId ids)",
       "file": "file.c",
-      "line": 343,
+      "line": 344,
       "kind": "definition"
     },
     "StreamOpen": {
       "signature": "void StreamOpen(const char *szFile, int16_t mdOpen)",
       "file": "file.c",
-      "line": 350,
+      "line": 351,
       "kind": "definition"
     },
     "UnpackBattlePlan": {
       "signature": "void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan)",
       "file": "file.c",
-      "line": 382,
+      "line": 383,
       "kind": "definition"
     },
     "FBadFileError": {
       "signature": "bool FBadFileError(StringId ids)",
       "file": "file.c",
-      "line": 412,
+      "line": 413,
       "kind": "definition"
     },
     "ReadRtPlr": {
       "signature": "void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn)",
       "file": "file.c",
-      "line": 428,
+      "line": 429,
       "kind": "definition"
     },
     "UpdateBattleRecords": {
       "signature": "void UpdateBattleRecords(void)",
       "file": "file.c",
-      "line": 488,
+      "line": 489,
       "kind": "definition"
     },
     "FReadFleet": {
       "signature": "bool FReadFleet(FLEET *lpfl)",
       "file": "file.c",
-      "line": 493,
+      "line": 494,
       "kind": "definition"
     },
     "FLoadGame": {
       "signature": "bool FLoadGame(const char *pszFileName, char *pszExt)",
       "file": "file.c",
-      "line": 668,
+      "line": 669,
       "kind": "definition"
     },
     "FReadShDef": {
@@ -1661,91 +1661,91 @@
     "EnumLogRts": {
       "signature": "void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void *lpPass, int16_t iPass)",
       "file": "log.c",
-      "line": 90,
+      "line": 91,
       "kind": "definition"
     },
     "FGetPrevLogRt": {
       "signature": "int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb)",
       "file": "log.c",
-      "line": 99,
+      "line": 108,
       "kind": "definition"
     },
     "LogChangeThing": {
       "signature": "void LogChangeThing(THING *lpth, THING *pthNew)",
       "file": "log.c",
-      "line": 106,
+      "line": 127,
       "kind": "definition"
     },
     "LogChangePlanet": {
       "signature": "void LogChangePlanet(PLANET *ppl, PLANET *pplNew)",
       "file": "log.c",
-      "line": 114,
+      "line": 135,
       "kind": "definition"
     },
     "FCheckLogFile": {
       "signature": "int16_t FCheckLogFile(int16_t iplr, int16_t *pfError)",
       "file": "log.c",
-      "line": 126,
+      "line": 147,
       "kind": "definition"
     },
     "LogChangeRelations": {
       "signature": "void LogChangeRelations(void)",
       "file": "log.c",
-      "line": 142,
+      "line": 163,
       "kind": "definition"
     },
     "FRunLogRecord": {
       "signature": "int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb)",
       "file": "log.c",
-      "line": 148,
+      "line": 169,
       "kind": "definition"
     },
     "FWriteHistFile": {
       "signature": "int16_t FWriteHistFile(int16_t iPlayer)",
       "file": "log.c",
-      "line": 191,
+      "line": 212,
       "kind": "definition"
     },
     "CancelMemRt": {
       "signature": "void CancelMemRt(int16_t rt)",
       "file": "log.c",
-      "line": 209,
+      "line": 230,
       "kind": "definition"
     },
     "LogMakeValidXferf": {
       "signature": "void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)",
       "file": "log.c",
-      "line": 215,
+      "line": 236,
       "kind": "definition"
     },
     "FRunLogFile": {
       "signature": "int16_t FRunLogFile(void)",
       "file": "log.c",
-      "line": 227,
+      "line": 248,
       "kind": "definition"
     },
     "LogMakeValidXfer": {
       "signature": "void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)",
       "file": "log.c",
-      "line": 237,
+      "line": 258,
       "kind": "definition"
     },
     "LogChangeFleet": {
       "signature": "void LogChangeFleet(FLEET *pfl, FLEET *pflNew)",
       "file": "log.c",
-      "line": 254,
+      "line": 275,
       "kind": "definition"
     },
     "LogChangeName": {
       "signature": "void LogChangeName(GrobjClass grobj, int16_t id, char *szName)",
       "file": "log.c",
-      "line": 279,
+      "line": 300,
       "kind": "definition"
     },
     "LogChangeShDef": {
       "signature": "void LogChangeShDef(SHDEF *lpshdefNew)",
       "file": "log.c",
-      "line": 287,
+      "line": 308,
       "kind": "definition"
     },
     "LogSplitFleet": {
@@ -1763,175 +1763,175 @@
     "VerifyTurns": {
       "signature": "void VerifyTurns(void)",
       "file": "mdi.c",
-      "line": 38,
+      "line": 60,
       "kind": "definition"
     },
     "FSerialAndEnvFromSz": {
       "signature": "int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)",
       "file": "mdi.c",
-      "line": 49,
+      "line": 71,
       "kind": "definition"
     },
     "FormatSerialAndEnv": {
       "signature": "void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)",
       "file": "mdi.c",
-      "line": 148,
+      "line": 170,
       "kind": "definition"
     },
     "FWasRaceFile": {
       "signature": "int16_t FWasRaceFile(char *szFile, int16_t fChkPass)",
       "file": "mdi.c",
-      "line": 239,
+      "line": 261,
       "kind": "definition"
     },
     "EnsureAis": {
       "signature": "void EnsureAis(void)",
       "file": "mdi.c",
-      "line": 255,
+      "line": 277,
       "kind": "definition"
     },
     "CTurnsOutSafe": {
       "signature": "int16_t CTurnsOutSafe(void)",
       "file": "mdi.c",
-      "line": 267,
+      "line": 289,
       "kind": "definition"
     },
     "HostModeDialog": {
-      "signature": "INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+      "signature": "INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)",
       "file": "mdi.c",
-      "line": 279,
+      "line": 301,
       "kind": "definition"
     },
     "FFindSomethingAndSelectIt": {
       "signature": "int16_t FFindSomethingAndSelectIt(void)",
       "file": "mdi.c",
-      "line": 303,
+      "line": 588,
       "kind": "definition"
     },
     "CFindTurnsOutstanding": {
       "signature": "int16_t CFindTurnsOutstanding(void)",
       "file": "mdi.c",
-      "line": 313,
+      "line": 598,
       "kind": "definition"
     },
     "TitleWndProc": {
       "signature": "LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "mdi.c",
-      "line": 325,
+      "line": 610,
       "kind": "definition"
     },
     "CommandHandler": {
-      "signature": "void CommandHandler(HWND hwnd, uint16_t wParam)",
+      "signature": "void CommandHandler(HWND hwnd, WPARAM wParam)",
       "file": "mdi.c",
-      "line": 723,
+      "line": 999,
       "kind": "definition"
     },
     "FrameWndProc": {
       "signature": "LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "mdi.c",
-      "line": 980,
+      "line": 1272,
       "kind": "definition"
     },
     "GetWindowRc": {
       "signature": "void GetWindowRc(HWND hwnd, RECT *prc)",
       "file": "mdi.c",
-      "line": 1096,
+      "line": 1868,
       "kind": "definition"
     },
     "DrawHostDialog2": {
       "signature": "void DrawHostDialog2(HWND hwnd, HDC hdcIn)",
       "file": "mdi.c",
-      "line": 1108,
+      "line": 1880,
       "kind": "definition"
     },
     "DrawHostOptions": {
       "signature": "void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)",
       "file": "mdi.c",
-      "line": 1129,
+      "line": 1901,
       "kind": "definition"
     },
     "WriteIniSettings": {
       "signature": "void WriteIniSettings(void)",
       "file": "mdi.c",
-      "line": 1137,
+      "line": 1909,
       "kind": "definition"
     },
     "HostTimerProc": {
       "signature": "VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)",
       "file": "mdi.c",
-      "line": 1516,
+      "line": 2288,
       "kind": "definition"
     },
     "GetASubMenu": {
       "signature": "HMENU GetASubMenu(HWND hwnd, int16_t iMenu)",
       "file": "mdi.c",
-      "line": 1532,
+      "line": 2304,
       "kind": "definition"
     },
     "FOpenGame": {
       "signature": "int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly)",
       "file": "mdi.c",
-      "line": 1546,
+      "line": 2318,
       "kind": "definition"
     },
     "InitializeMenu": {
       "signature": "void InitializeMenu(HMENU hmenu)",
       "file": "mdi.c",
-      "line": 1724,
+      "line": 2496,
       "kind": "definition"
     },
     "HcrsFromFrameWindowPt": {
       "signature": "uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel)",
       "file": "mdi.c",
-      "line": 1881,
+      "line": 2653,
       "kind": "definition"
     },
     "InvertPaneBorder": {
       "signature": "POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)",
       "file": "mdi.c",
-      "line": 1891,
+      "line": 2663,
       "kind": "definition"
     },
     "BringUpHostDlg": {
       "signature": "void BringUpHostDlg(void)",
       "file": "mdi.c",
-      "line": 1917,
+      "line": 2689,
       "kind": "definition"
     },
     "HostOptionsDialog": {
       "signature": "INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "mdi.c",
-      "line": 1930,
+      "line": 2702,
       "kind": "definition"
     },
     "InitMDIApp": {
-      "signature": "int16_t InitMDIApp(void)",
+      "signature": "short InitMDIApp(void)",
       "file": "mdi.c",
-      "line": 1942,
+      "line": 2714,
       "kind": "definition"
     },
     "CreateChildWindows": {
       "signature": "void CreateChildWindows(void)",
       "file": "mdi.c",
-      "line": 1984,
+      "line": 2868,
       "kind": "definition"
     },
     "SetWindowIniString": {
       "signature": "void SetWindowIniString(const char *sz , HWND hwnd)",
       "file": "mdi.c",
-      "line": 2076,
+      "line": 2960,
       "kind": "definition"
     },
     "RestoreSelection": {
       "signature": "void RestoreSelection(void)",
       "file": "mdi.c",
-      "line": 2096,
+      "line": 2980,
       "kind": "definition"
     },
     "RefitFrameChildren": {
       "signature": "void RefitFrameChildren(void)",
       "file": "mdi.c",
-      "line": 2102,
+      "line": 2986,
       "kind": "definition"
     },
     "HbHandleAlloc": {
@@ -2069,31 +2069,31 @@
     "DrawSelectionArrow": {
       "signature": "void DrawSelectionArrow(HDC hdc, RECT *prc, int16_t fEnabled)",
       "file": "mine.c",
-      "line": 238,
+      "line": 252,
       "kind": "definition"
     },
     "PopupMineralScanChoices": {
       "signature": "void PopupMineralScanChoices(HWND hwnd, int16_t x, int16_t y)",
       "file": "mine.c",
-      "line": 246,
+      "line": 260,
       "kind": "definition"
     },
     "SetMineralTitleBar": {
       "signature": "void SetMineralTitleBar(HWND hwnd)",
       "file": "mine.c",
-      "line": 264,
+      "line": 278,
       "kind": "definition"
     },
     "HtMineWindow": {
       "signature": "int16_t HtMineWindow(HWND hwnd, int16_t x, int16_t y)",
       "file": "mine.c",
-      "line": 275,
+      "line": 289,
       "kind": "definition"
     },
     "DrawDiamond": {
       "signature": "void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbr)",
       "file": "mine.c",
-      "line": 286,
+      "line": 300,
       "kind": "definition"
     },
     "FFindPlayerMessage": {
@@ -2189,67 +2189,67 @@
     "PszFormatString": {
       "signature": "char * PszFormatString(char *pszFormat, int16_t *pParamsReal)",
       "file": "msg.c",
-      "line": 476,
+      "line": 487,
       "kind": "definition"
     },
     "PszGetCompressedMessage": {
       "signature": "char * PszGetCompressedMessage(MessageId idm)",
       "file": "msg.c",
-      "line": 859,
+      "line": 870,
       "kind": "definition"
     },
     "WritePlayerMessages": {
       "signature": "void WritePlayerMessages(int16_t iPlayer)",
       "file": "msg.c",
-      "line": 868,
+      "line": 879,
       "kind": "definition"
     },
     "IMsgPrev": {
       "signature": "int16_t IMsgPrev(int16_t fFilteredOnly)",
       "file": "msg.c",
-      "line": 878,
+      "line": 889,
       "kind": "definition"
     },
     "IMsgNext": {
       "signature": "int16_t IMsgNext(int16_t fFilteredOnly)",
       "file": "msg.c",
-      "line": 918,
+      "line": 929,
       "kind": "definition"
     },
     "PszFormatIds": {
       "signature": "char * PszFormatIds(StringId ids, int16_t *pParams)",
       "file": "msg.c",
-      "line": 952,
+      "line": 963,
       "kind": "definition"
     },
     "DecorateMsgTitleBar": {
       "signature": "void DecorateMsgTitleBar(HDC hdc, RECT *prc)",
       "file": "msg.c",
-      "line": 962,
+      "line": 973,
       "kind": "definition"
     },
     "HtMsgBox": {
       "signature": "int16_t HtMsgBox(POINT pt)",
       "file": "msg.c",
-      "line": 985,
+      "line": 996,
       "kind": "definition"
     },
     "SetMsgTitle": {
       "signature": "void SetMsgTitle(HWND hwnd)",
       "file": "msg.c",
-      "line": 995,
+      "line": 1006,
       "kind": "definition"
     },
     "MsgDlg": {
       "signature": "INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "msg.c",
-      "line": 1012,
+      "line": 1023,
       "kind": "definition"
     },
     "MessageWndProc": {
       "signature": "LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "msg.c",
-      "line": 1029,
+      "line": 1040,
       "kind": "definition"
     },
     "FSendPlrMsg2": {
@@ -2489,133 +2489,133 @@
     "DrawPlanShip": {
       "signature": "void DrawPlanShip(HDC hdc, int16_t grbit)",
       "file": "planet.c",
-      "line": 631,
+      "line": 642,
       "kind": "definition"
     },
     "DrawPlanetStats": {
       "signature": "void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 651,
+      "line": 662,
       "kind": "definition"
     },
     "DrawPlanetShipList": {
       "signature": "void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 676,
+      "line": 687,
       "kind": "definition"
     },
     "DrawPlanetStarbase": {
       "signature": "void DrawPlanetStarbase(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 699,
+      "line": 710,
       "kind": "definition"
     },
     "DrawPlanetMinSum": {
       "signature": "void DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 719,
+      "line": 730,
       "kind": "definition"
     },
     "DrawCBEntireItem": {
       "signature": "void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)",
       "file": "planet.c",
-      "line": 732,
+      "line": 743,
       "kind": "definition"
     },
     "DrawMassWarpGauge": {
       "signature": "void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur)",
       "file": "planet.c",
-      "line": 740,
+      "line": 751,
       "kind": "definition"
     },
     "DrawPlanetProduction": {
       "signature": "void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 752,
+      "line": 763,
       "kind": "definition"
     },
     "DrawPlanShipBitmap": {
       "signature": "void DrawPlanShipBitmap(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 773,
+      "line": 784,
       "kind": "definition"
     },
     "FDrawTileNC": {
       "signature": "int16_t FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle)",
       "file": "planet.c",
-      "line": 791,
+      "line": 802,
       "kind": "definition"
     },
     "SetPlanetTitleBar": {
       "signature": "void SetPlanetTitleBar(HWND hwnd)",
       "file": "planet.c",
-      "line": 802,
+      "line": 813,
       "kind": "definition"
     },
     "HandleFocusState": {
       "signature": "void HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate)",
       "file": "planet.c",
-      "line": 809,
+      "line": 820,
       "kind": "definition"
     },
     "IdFindAdjStarbase": {
       "signature": "int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)",
       "file": "planet.c",
-      "line": 817,
+      "line": 828,
       "kind": "definition"
     },
     "FillShipDD": {
       "signature": "void FillShipDD(int16_t idSkip)",
       "file": "planet.c",
-      "line": 829,
+      "line": 840,
       "kind": "definition"
     },
     "ChangeMainObjSel": {
       "signature": "void ChangeMainObjSel(int16_t grobjNew, int16_t iObjSel)",
       "file": "planet.c",
-      "line": 839,
+      "line": 850,
       "kind": "definition"
     },
     "DrawProductionItem": {
       "signature": "void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox)",
       "file": "planet.c",
-      "line": 848,
+      "line": 859,
       "kind": "definition"
     },
     "FillPlanetProdLB": {
       "signature": "void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl)",
       "file": "planet.c",
-      "line": 876,
+      "line": 887,
       "kind": "definition"
     },
     "EnsureTileSize": {
       "signature": "void EnsureTileSize(int16_t fSmallTiles)",
       "file": "planet.c",
-      "line": 896,
+      "line": 907,
       "kind": "definition"
     },
     "ClickInPlanetOrders": {
       "signature": "uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn)",
       "file": "planet.c",
-      "line": 904,
+      "line": 915,
       "kind": "definition"
     },
     "PlanetClick": {
       "signature": "void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)",
       "file": "planet.c",
-      "line": 919,
+      "line": 930,
       "kind": "definition"
     },
     "SelectAdjPlanet": {
       "signature": "void SelectAdjPlanet(int16_t dInc, int16_t idPlanet)",
       "file": "planet.c",
-      "line": 942,
+      "line": 953,
       "kind": "definition"
     },
     "ReflowColumn": {
       "signature": "void ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw)",
       "file": "planet.c",
-      "line": 955,
+      "line": 966,
       "kind": "definition"
     },
     "PopFromLppl": {
@@ -2711,85 +2711,85 @@
     "PszNameProdItem": {
       "signature": "char * PszNameProdItem(PROD *lpprod)",
       "file": "produce.c",
-      "line": 8,
+      "line": 10,
       "kind": "definition"
     },
     "GetProductionCosts": {
       "signature": "void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne)",
       "file": "produce.c",
-      "line": 20,
+      "line": 22,
       "kind": "definition"
     },
     "EstimateItemProdSched": {
       "signature": "void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *piFirst, int16_t *piLast)",
       "file": "produce.c",
-      "line": 49,
+      "line": 51,
       "kind": "definition"
     },
     "InitProduction": {
       "signature": "void InitProduction(PROD *rgprod)",
       "file": "produce.c",
-      "line": 70,
+      "line": 72,
       "kind": "definition"
     },
     "FIsAutoBuild": {
       "signature": "bool FIsAutoBuild(PROD *lpprod)",
       "file": "produce.c",
-      "line": 82,
+      "line": 84,
       "kind": "definition"
     },
     "ProdCommandHandler": {
       "signature": "void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)",
       "file": "produce.c",
-      "line": 92,
+      "line": 94,
       "kind": "definition"
     },
     "ChangeProduction": {
       "signature": "int16_t ChangeProduction(int16_t fClear)",
       "file": "produce.c",
-      "line": 119,
+      "line": 121,
       "kind": "definition"
     },
     "EnableZipProdBtns": {
       "signature": "void EnableZipProdBtns(HWND hwnd, int16_t iSel)",
       "file": "produce.c",
-      "line": 133,
+      "line": 135,
       "kind": "definition"
     },
     "ProductionDlg": {
       "signature": "INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "produce.c",
-      "line": 139,
+      "line": 147,
       "kind": "definition"
     },
     "ZipProdDlg": {
       "signature": "INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "produce.c",
-      "line": 175,
+      "line": 183,
       "kind": "definition"
     },
     "FillProdSrcLB": {
       "signature": "void FillProdSrcLB(HWND hwndLB, int16_t mdFill)",
       "file": "produce.c",
-      "line": 204,
+      "line": 212,
       "kind": "definition"
     },
     "DrawProductionDlg": {
       "signature": "void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)",
       "file": "produce.c",
-      "line": 212,
+      "line": 220,
       "kind": "definition"
     },
     "InitializeProductionDlg": {
       "signature": "void InitializeProductionDlg(HWND hwnd)",
       "file": "produce.c",
-      "line": 234,
+      "line": 242,
       "kind": "definition"
     },
     "FillZipProdLB": {
       "signature": "void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq)",
       "file": "produce.c",
-      "line": 243,
+      "line": 251,
       "kind": "definition"
     },
     "FinishProduction": {
@@ -3008,106 +3008,106 @@
       "line": 139,
       "kind": "definition"
     },
-    "ReportDlg": {
-      "signature": "INT_PTR CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
+    "ReportWndProc": {
+      "signature": "LRESULT CALLBACK ReportWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "report.c",
-      "line": 163,
+      "line": 164,
       "kind": "definition"
     },
     "PrintMapDlg": {
       "signature": "INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "report.c",
-      "line": 195,
+      "line": 207,
       "kind": "definition"
     },
     "SetHScrollBar": {
       "signature": "void SetHScrollBar(void)",
       "file": "report.c",
-      "line": 208,
+      "line": 220,
       "kind": "definition"
     },
     "SortReportCache": {
       "signature": "void SortReportCache(int16_t irpt, int16_t icol)",
       "file": "report.c",
-      "line": 223,
+      "line": 235,
       "kind": "definition"
     },
     "InitScoreDlg": {
       "signature": "void InitScoreDlg(HWND hwnd, int16_t fVictory)",
       "file": "report.c",
-      "line": 235,
+      "line": 247,
       "kind": "definition"
     },
     "ReportColumnPopup": {
       "signature": "void ReportColumnPopup(POINT pt, int16_t icol, int16_t fRightBtn)",
       "file": "report.c",
-      "line": 249,
+      "line": 261,
       "kind": "definition"
     },
     "FDestIsWP0": {
       "signature": "int16_t FDestIsWP0(FLEET *lpfl)",
       "file": "report.c",
-      "line": 271,
+      "line": 283,
       "kind": "definition"
     },
     "ICompReport": {
       "signature": "int16_t ICompReport(void *arg1, void *arg2)",
       "file": "report.c",
-      "line": 279,
+      "line": 291,
       "kind": "definition"
     },
     "DrawReport": {
       "signature": "void DrawReport(HWND hwnd, HDC hdc, RECT *prc)",
       "file": "report.c",
-      "line": 326,
+      "line": 338,
       "kind": "definition"
     },
     "DxReportColHdr": {
       "signature": "int16_t DxReportColHdr(int16_t irpt, int16_t iCol, char *psz, HDC hdc)",
       "file": "report.c",
-      "line": 343,
+      "line": 355,
       "kind": "definition"
     },
     "LFetchScoreXVal": {
       "signature": "int32_t LFetchScoreXVal(SCOREX *lpsx, int16_t iVal)",
       "file": "report.c",
-      "line": 359,
+      "line": 371,
       "kind": "definition"
     },
     "ExecuteReportClick": {
       "signature": "void ExecuteReportClick(POINT pt, int16_t irpt, int16_t icol, int16_t irow)",
       "file": "report.c",
-      "line": 365,
+      "line": 377,
       "kind": "definition"
     },
     "DrawVCReport": {
       "signature": "void DrawVCReport(HDC hdc)",
       "file": "report.c",
-      "line": 385,
+      "line": 397,
       "kind": "definition"
     },
     "DrawReportItem": {
       "signature": "void DrawReportItem(HDC hdc, RECT *prc, int16_t irpt, int16_t irow, int16_t icol)",
       "file": "report.c",
-      "line": 414,
+      "line": 426,
       "kind": "definition"
     },
     "DrawMineralItem": {
       "signature": "void DrawMineralItem(HDC hdc, int16_t x, int16_t y, int16_t iMineral, int32_t l)",
       "file": "report.c",
-      "line": 452,
+      "line": 464,
       "kind": "definition"
     },
     "DrawHistoryReport": {
       "signature": "void DrawHistoryReport(HDC hdc)",
       "file": "report.c",
-      "line": 459,
+      "line": 471,
       "kind": "definition"
     },
     "DrawScoreReport": {
       "signature": "void DrawScoreReport(HDC hdc)",
       "file": "report.c",
-      "line": 491,
+      "line": 503,
       "kind": "definition"
     },
     "CostOfDevelopingItem": {
@@ -3155,19 +3155,19 @@
     "FTrackResearchDlg": {
       "signature": "int16_t FTrackResearchDlg(HWND hwnd, int16_t x, int16_t y, int16_t fkb)",
       "file": "research.c",
-      "line": 512,
+      "line": 528,
       "kind": "definition"
     },
     "DrawResearchDlg": {
       "signature": "void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t grbitDraw)",
       "file": "research.c",
-      "line": 526,
+      "line": 542,
       "kind": "definition"
     },
     "DisplayComponentInfo": {
       "signature": "void DisplayComponentInfo(HDC hdc, int16_t dx, int16_t dy, PART *ppart)",
       "file": "research.c",
-      "line": 576,
+      "line": 592,
       "kind": "definition"
     },
     "WriteRt": {
@@ -3329,157 +3329,157 @@
     "FindDlg": {
       "signature": "INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "scan.c",
-      "line": 91,
+      "line": 98,
       "kind": "definition"
     },
     "DrawScannerSBar": {
       "signature": "void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw)",
       "file": "scan.c",
-      "line": 99,
+      "line": 106,
       "kind": "definition"
     },
     "DrawRadarCircle": {
       "signature": "void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)",
       "file": "scan.c",
-      "line": 129,
+      "line": 136,
       "kind": "definition"
     },
     "SetScanScrollBars": {
       "signature": "void SetScanScrollBars(HWND hwnd)",
       "file": "scan.c",
-      "line": 151,
+      "line": 158,
       "kind": "definition"
     },
     "CShipsScanVis": {
       "signature": "int32_t CShipsScanVis(FLEET *lpfl)",
       "file": "scan.c",
-      "line": 196,
+      "line": 203,
       "kind": "definition"
     },
     "DrawShipScanPath": {
       "signature": "void DrawShipScanPath(HDC hdc, int16_t fShow)",
       "file": "scan.c",
-      "line": 210,
+      "line": 217,
       "kind": "definition"
     },
     "GetScanFleetOrientation": {
       "signature": "void GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD)",
       "file": "scan.c",
-      "line": 252,
+      "line": 259,
       "kind": "definition"
     },
     "PtToScan": {
       "signature": "int16_t PtToScan(int16_t d)",
       "file": "scan.c",
-      "line": 262,
+      "line": 269,
       "kind": "definition"
     },
     "ScanToPt": {
       "signature": "int16_t ScanToPt(int16_t d)",
       "file": "scan.c",
-      "line": 305,
+      "line": 312,
       "kind": "definition"
     },
     "SetScanWp": {
       "signature": "int16_t SetScanWp(int16_t iNew)",
       "file": "scan.c",
-      "line": 339,
+      "line": 346,
       "kind": "definition"
     },
     "FAddWayPoint": {
       "signature": "int16_t FAddWayPoint(POINT ptIn, SCAN *pscan)",
       "file": "scan.c",
-      "line": 346,
+      "line": 353,
       "kind": "definition"
     },
     "FSelectSz": {
       "signature": "int16_t FSelectSz(char *szName)",
       "file": "scan.c",
-      "line": 365,
+      "line": 372,
       "kind": "definition"
     },
     "GetDxDyOrientation": {
       "signature": "void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD)",
       "file": "scan.c",
-      "line": 384,
+      "line": 391,
       "kind": "definition"
     },
     "DrawLockLight": {
       "signature": "void DrawLockLight(HDC hdc, RECT *prc, int16_t fFullRedraw)",
       "file": "scan.c",
-      "line": 396,
+      "line": 403,
       "kind": "definition"
     },
     "FGetNextObjHere": {
       "signature": "int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs)",
       "file": "scan.c",
-      "line": 404,
+      "line": 411,
       "kind": "definition"
     },
     "FHandleMeasuringTape": {
       "signature": "int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt)",
       "file": "scan.c",
-      "line": 413,
+      "line": 420,
       "kind": "definition"
     },
     "FEnsurePointOnScreen": {
       "signature": "int16_t FEnsurePointOnScreen(POINT pt, int16_t fScroll)",
       "file": "scan.c",
-      "line": 432,
+      "line": 439,
       "kind": "definition"
     },
     "ChangeScanSel": {
       "signature": "void ChangeScanSel(SCAN *pscan, int16_t fValidScan)",
       "file": "scan.c",
-      "line": 443,
+      "line": 450,
       "kind": "definition"
     },
     "RedrawScanSel": {
       "signature": "void RedrawScanSel(HDC hdc, int16_t fVis)",
       "file": "scan.c",
-      "line": 459,
+      "line": 466,
       "kind": "definition"
     },
     "FHandleWayPointDrag": {
       "signature": "int16_t FHandleWayPointDrag(POINT pt)",
       "file": "scan.c",
-      "line": 473,
+      "line": 480,
       "kind": "definition"
     },
     "FNearAWayPoint": {
       "signature": "int16_t FNearAWayPoint(POINT pt, int16_t fLogical)",
       "file": "scan.c",
-      "line": 507,
+      "line": 514,
       "kind": "definition"
     },
     "ScrollScanner": {
       "signature": "void ScrollScanner(int16_t dx, int16_t dy)",
       "file": "scan.c",
-      "line": 516,
+      "line": 523,
       "kind": "definition"
     },
     "DrawScanFleetCount": {
       "signature": "void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, HDC hdc, HDC hdcMem)",
       "file": "scan.c",
-      "line": 528,
+      "line": 535,
       "kind": "definition"
     },
     "DrawScanner": {
       "signature": "int16_t DrawScanner(HDC hdc, RECT *prc)",
       "file": "scan.c",
-      "line": 540,
+      "line": 547,
       "kind": "definition"
     },
     "CtrPointScan": {
       "signature": "void CtrPointScan(POINT pt, int16_t fScroll)",
       "file": "scan.c",
-      "line": 639,
+      "line": 646,
       "kind": "definition"
     },
     "DrawScanXorLines": {
       "signature": "void DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt)",
       "file": "scan.c",
-      "line": 651,
+      "line": 658,
       "kind": "definition"
     },
     "ScanToLogical": {
@@ -3803,127 +3803,127 @@
     "FScout": {
       "signature": "int16_t FScout(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 8,
+      "line": 10,
       "kind": "definition"
     },
     "FStargateJump": {
       "signature": "int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist)",
       "file": "ship2.c",
-      "line": 16,
+      "line": 24,
       "kind": "definition"
     },
     "PctTerraFromLpfl": {
       "signature": "int32_t PctTerraFromLpfl(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 44,
+      "line": 52,
       "kind": "definition"
     },
     "AutoFleetOrder": {
       "signature": "void AutoFleetOrder(FLEET *lpfl, PLANET *lppl)",
       "file": "ship2.c",
-      "line": 60,
+      "line": 68,
       "kind": "definition"
     },
     "CMineSweepFromLphul": {
       "signature": "int32_t CMineSweepFromLphul(HUL *lphul)",
       "file": "ship2.c",
-      "line": 70,
+      "line": 78,
       "kind": "definition"
     },
     "MdCalcStargateDamage": {
       "signature": "int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg)",
       "file": "ship2.c",
-      "line": 83,
+      "line": 91,
       "kind": "definition"
     },
     "PctCloakFromLpfl": {
       "signature": "int16_t PctCloakFromLpfl(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 97,
+      "line": 105,
       "kind": "definition"
     },
     "NoAutoTrackFleet": {
       "signature": "void NoAutoTrackFleet(FLEET *lpflTarget)",
       "file": "ship2.c",
-      "line": 119,
+      "line": 127,
       "kind": "definition"
     },
     "CLayMinesFromLpfl": {
       "signature": "int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef)",
       "file": "ship2.c",
-      "line": 130,
+      "line": 138,
       "kind": "definition"
     },
     "FColonizer": {
       "signature": "int16_t FColonizer(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 149,
+      "line": 157,
       "kind": "definition"
     },
     "AutoRouteFleet": {
       "signature": "void AutoRouteFleet(FLEET *lpfl, PLANET *lppl)",
       "file": "ship2.c",
-      "line": 157,
+      "line": 171,
       "kind": "definition"
     },
     "KillUsedWaypoints": {
       "signature": "void KillUsedWaypoints(void)",
       "file": "ship2.c",
-      "line": 175,
+      "line": 189,
       "kind": "definition"
     },
     "CMineFromLpfl": {
       "signature": "int32_t CMineFromLpfl(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 189,
+      "line": 203,
       "kind": "definition"
     },
     "MarkTechsSeen": {
       "signature": "void MarkTechsSeen(HUL *lphul, int16_t iplr)",
       "file": "ship2.c",
-      "line": 206,
+      "line": 220,
       "kind": "definition"
     },
     "CPtsCloakFromLphs": {
       "signature": "int16_t CPtsCloakFromLphs(HS *lphs)",
       "file": "ship2.c",
-      "line": 215,
+      "line": 229,
       "kind": "definition"
     },
     "CMineSweepFromLpfl": {
       "signature": "int32_t CMineSweepFromLpfl(FLEET *lpfl)",
       "file": "ship2.c",
-      "line": 223,
+      "line": 237,
       "kind": "definition"
     },
     "RenameDlg": {
       "signature": "INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "ship2.c",
-      "line": 235,
+      "line": 249,
       "kind": "definition"
     },
     "MergeFleetsDlg": {
       "signature": "INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "ship2.c",
-      "line": 246,
+      "line": 260,
       "kind": "definition"
     },
     "ZipOrderDlg": {
       "signature": "INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "ship2.c",
-      "line": 259,
+      "line": 273,
       "kind": "definition"
     },
     "RenameZipDlg": {
       "signature": "INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "ship2.c",
-      "line": 286,
+      "line": 300,
       "kind": "definition"
     },
     "EnableZipBtns": {
       "signature": "void EnableZipBtns(HWND hwnd, int16_t iSel)",
       "file": "ship2.c",
-      "line": 294,
+      "line": 308,
       "kind": "definition"
     },
     "FSetUpBatchProcessing": {
@@ -3995,67 +3995,67 @@
     "FakeComboProc": {
       "signature": "LRESULT CALLBACK FakeComboProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "tb.c",
-      "line": 40,
+      "line": 55,
       "kind": "definition"
     },
     "FakeCEProc": {
       "signature": "LRESULT CALLBACK FakeCEProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "tb.c",
-      "line": 46,
+      "line": 61,
       "kind": "definition"
     },
     "TooltipWndProc": {
       "signature": "LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "tb.c",
-      "line": 52,
+      "line": 67,
       "kind": "definition"
     },
     "ShowTooltip": {
       "signature": "void ShowTooltip(StringId ids, RECT *prc)",
       "file": "tb.c",
-      "line": 68,
+      "line": 99,
       "kind": "definition"
     },
     "DrawToolbar": {
       "signature": "void DrawToolbar(HDC hdc, RECT *prc)",
       "file": "tb.c",
-      "line": 78,
+      "line": 109,
       "kind": "definition"
     },
     "DxOfBtn": {
       "signature": "int16_t DxOfBtn(int16_t itb)",
       "file": "tb.c",
-      "line": 86,
+      "line": 117,
       "kind": "definition"
     },
     "DrawBitmapButton": {
       "signature": "void DrawBitmapButton(HDC hdc, POINT pt, int16_t ibtn, int16_t fDown)",
       "file": "tb.c",
-      "line": 92,
+      "line": 123,
       "kind": "definition"
     },
     "ExecuteButton": {
       "signature": "void ExecuteButton(int16_t itb, int16_t fDown)",
       "file": "tb.c",
-      "line": 101,
+      "line": 132,
       "kind": "definition"
     },
     "FIsButtonDown": {
       "signature": "int16_t FIsButtonDown(int16_t itb)",
       "file": "tb.c",
-      "line": 125,
+      "line": 156,
       "kind": "definition"
     },
     "ItbFromPpt": {
       "signature": "int16_t ItbFromPpt(POINT *ppt)",
       "file": "tb.c",
-      "line": 131,
+      "line": 162,
       "kind": "definition"
     },
     "TerminateToolbarFocus": {
       "signature": "void TerminateToolbarFocus(int16_t fCancel)",
       "file": "tb.c",
-      "line": 140,
+      "line": 171,
       "kind": "definition"
     },
     "acutest_check_": {
@@ -4292,6 +4292,24 @@
       "line": 35,
       "kind": "definition"
     },
+    "enum_cb": {
+      "signature": "static int16_t enum_cb(void *lpv, int16_t rt, int16_t cb, void *lpPass, int16_t iPass)",
+      "file": "test/test_log.c",
+      "line": 19,
+      "kind": "definition"
+    },
+    "test_EnumLogRts_stops_on_zero": {
+      "signature": "static void test_EnumLogRts_stops_on_zero(void)",
+      "file": "test/test_log.c",
+      "line": 38,
+      "kind": "definition"
+    },
+    "test_FGetPrevLogRt_reads_prev_record": {
+      "signature": "static void test_FGetPrevLogRt_reads_prev_record(void)",
+      "file": "test/test_log.c",
+      "line": 95,
+      "kind": "definition"
+    },
     "clear_heap_lists": {
       "signature": "static void clear_heap_lists(void)",
       "file": "test/test_memory.c",
@@ -4392,6 +4410,12 @@
       "signature": "static void test_FSendPlrMsg_appends_first_player_message(void)",
       "file": "test/test_msg.c",
       "line": 359,
+      "kind": "definition"
+    },
+    "test_FRemovePlayerMessage_marks_deleted": {
+      "signature": "static void test_FRemovePlayerMessage_marks_deleted(void)",
+      "file": "test/test_msg.c",
+      "line": 400,
       "kind": "definition"
     },
     "clear_player0_for_tests": {
@@ -4502,6 +4526,24 @@
       "line": 96,
       "kind": "definition"
     },
+    "expected_colonizer_for_shdef": {
+      "signature": "static int16_t expected_colonizer_for_shdef(const SHDEF *psh)",
+      "file": "test/test_ship2.c",
+      "line": 9,
+      "kind": "definition"
+    },
+    "expected_scout_for_shdef": {
+      "signature": "static int16_t expected_scout_for_shdef(const SHDEF *psh)",
+      "file": "test/test_ship2.c",
+      "line": 14,
+      "kind": "definition"
+    },
+    "test_FColonizer_and_FScout_basic": {
+      "signature": "static void test_FColonizer_and_FScout_basic(void)",
+      "file": "test/test_ship2.c",
+      "line": 19,
+      "kind": "definition"
+    },
     "test_FreeLpth_shifts_and_decrements": {
       "signature": "static void test_FreeLpth_shifts_and_decrements(void)",
       "file": "test/test_thing.c",
@@ -4526,28 +4568,46 @@
       "line": 81,
       "kind": "definition"
     },
-    "ChgPopFromPlanet": {
-      "signature": "int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate)",
-      "file": "util.c",
-      "line": 1061,
+    "touch_file": {
+      "signature": "static void touch_file(const char *path)",
+      "file": "test/test_util.c",
+      "line": 8,
+      "kind": "definition"
+    },
+    "file_exists": {
+      "signature": "static int file_exists(const char *path)",
+      "file": "test/test_util.c",
+      "line": 17,
       "kind": "definition"
     },
     "apply_player0_env": {
       "signature": "static void apply_player0_env(const PopCase *tc, PLAYER *old_out)",
       "file": "test/test_util.c",
-      "line": 31,
+      "line": 46,
       "kind": "definition"
     },
     "make_planet_for_pop": {
       "signature": "static PLANET make_planet_for_pop(const PopCase *tc)",
       "file": "test/test_util.c",
-      "line": 43,
+      "line": 58,
       "kind": "definition"
     },
     "test_ChgPopFromPlanet_negative_desire_table": {
       "signature": "static void test_ChgPopFromPlanet_negative_desire_table(void)",
       "file": "test/test_util.c",
-      "line": 57,
+      "line": 72,
+      "kind": "definition"
+    },
+    "test_ClearFile_creates_and_removes_expected_name": {
+      "signature": "void test_ClearFile_creates_and_removes_expected_name(void)",
+      "file": "test/test_util.c",
+      "line": 133,
+      "kind": "definition"
+    },
+    "test_DpOfLpflIshdef_basic": {
+      "signature": "static void test_DpOfLpflIshdef_basic(void)",
+      "file": "test/test_util.c",
+      "line": 153,
       "kind": "definition"
     },
     "test_ICompLong": {
@@ -5045,7 +5105,7 @@
     "FCheckShipBuilder": {
       "signature": "int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip)",
       "file": "tutor.c",
-      "line": 329,
+      "line": 343,
       "kind": "definition"
     },
     "EndTutor": {
@@ -5141,319 +5201,325 @@
     "LComputePower": {
       "signature": "int32_t LComputePower(SHDEF *lpshdef)",
       "file": "util.c",
-      "line": 296,
+      "line": 313,
       "kind": "definition"
     },
     "PszGetFleetName": {
       "signature": "char * PszGetFleetName(int16_t id)",
       "file": "util.c",
-      "line": 312,
+      "line": 329,
       "kind": "definition"
     },
     "PszGetThingName": {
       "signature": "char * PszGetThingName(int16_t id)",
       "file": "util.c",
-      "line": 362,
+      "line": 379,
       "kind": "definition"
     },
     "LongFromSerialCh": {
       "signature": "int32_t LongFromSerialCh(char ch)",
       "file": "util.c",
-      "line": 418,
+      "line": 435,
       "kind": "definition"
     },
     "WPackLong": {
       "signature": "uint16_t WPackLong(int32_t l)",
       "file": "util.c",
-      "line": 435,
+      "line": 452,
       "kind": "definition"
     },
     "DGetDistance": {
       "signature": "double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)",
       "file": "util.c",
-      "line": 448,
+      "line": 465,
       "kind": "definition"
     },
     "FDeleteFleet": {
       "signature": "int16_t FDeleteFleet(int16_t idFleet, int16_t grobjSel, int16_t idSel)",
       "file": "util.c",
-      "line": 460,
+      "line": 477,
       "kind": "definition"
     },
     "WtFromLpfl": {
       "signature": "int32_t WtFromLpfl(FLEET *lpfl)",
       "file": "util.c",
-      "line": 474,
+      "line": 491,
       "kind": "definition"
     },
     "SelectOursAtObject": {
       "signature": "void SelectOursAtObject(POINT *ppt)",
       "file": "util.c",
-      "line": 482,
+      "line": 499,
       "kind": "definition"
     },
     "PszGetPlanetName": {
       "signature": "char * PszGetPlanetName(int16_t id)",
       "file": "util.c",
-      "line": 493,
+      "line": 510,
       "kind": "definition"
     },
     "FDupFleet": {
       "signature": "int16_t FDupFleet(FLEET *lpfl, FLEET *pfl)",
       "file": "util.c",
-      "line": 508,
+      "line": 525,
       "kind": "definition"
     },
     "FDupPlanet": {
       "signature": "int16_t FDupPlanet(PLANET *lppl, PLANET *ppl)",
       "file": "util.c",
-      "line": 515,
+      "line": 532,
       "kind": "definition"
     },
     "PszFleetNameFromWord": {
       "signature": "char * PszFleetNameFromWord(uint16_t w)",
       "file": "util.c",
-      "line": 522,
+      "line": 539,
       "kind": "definition"
     },
     "FValidSerialNo": {
       "signature": "int16_t FValidSerialNo(char *psz, int32_t *plSerial)",
       "file": "util.c",
-      "line": 553,
+      "line": 570,
       "kind": "definition"
     },
     "PszGetDistance": {
       "signature": "char * PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)",
       "file": "util.c",
-      "line": 564,
+      "line": 581,
       "kind": "definition"
     },
     "CalcPctSurvive": {
       "signature": "void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart)",
       "file": "util.c",
-      "line": 573,
+      "line": 590,
       "kind": "definition"
     },
     "IshFindSimilarDesign": {
       "signature": "int16_t IshFindSimilarDesign(HUL *lphul, int16_t iPlrDst)",
       "file": "util.c",
-      "line": 629,
+      "line": 646,
       "kind": "definition"
     },
     "DecorateHullName": {
       "signature": "void DecorateHullName(int16_t iplr, int16_t ish, char *psz)",
       "file": "util.c",
-      "line": 638,
+      "line": 655,
       "kind": "definition"
     },
     "FCanBuildShdef": {
       "signature": "int16_t FCanBuildShdef(SHDEF *lpshdef, int16_t iplr)",
       "file": "util.c",
-      "line": 647,
+      "line": 664,
       "kind": "definition"
     },
     "FFleetMergeAll": {
       "signature": "int16_t FFleetMergeAll(FLEET *pfl)",
       "file": "util.c",
-      "line": 659,
+      "line": 676,
       "kind": "definition"
     },
     "ICompFleetPoint2": {
       "signature": "int16_t ICompFleetPoint2(void *arg1, void *arg2)",
       "file": "util.c",
-      "line": 677,
+      "line": 694,
       "kind": "definition"
     },
     "TurnLog": {
       "signature": "void TurnLog(StringId ids)",
       "file": "util.c",
-      "line": 700,
+      "line": 717,
       "kind": "definition"
     },
     "PszPlayerName": {
       "signature": "char * PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t fThe, int16_t grWord, PLAYER *pplr)",
       "file": "util.c",
-      "line": 706,
+      "line": 723,
       "kind": "definition"
     },
     "IStargateFromLppl": {
       "signature": "int16_t IStargateFromLppl(PLANET *lppl)",
       "file": "util.c",
-      "line": 787,
+      "line": 804,
       "kind": "definition"
     },
     "DpOfLpflIshdef": {
       "signature": "int32_t DpOfLpflIshdef(FLEET *lpfl, int16_t ishdef)",
       "file": "util.c",
-      "line": 797,
+      "line": 814,
       "kind": "definition"
     },
     "FFleetSplitAll": {
       "signature": "int16_t FFleetSplitAll(FLEET *pfl)",
       "file": "util.c",
-      "line": 805,
+      "line": 830,
       "kind": "definition"
     },
     "ICompFleetPoint": {
       "signature": "int16_t ICompFleetPoint(void *arg1, void *arg2)",
       "file": "util.c",
-      "line": 816,
+      "line": 841,
       "kind": "definition"
     },
     "OutputSz": {
       "signature": "void OutputSz(int16_t dt, char *sz)",
       "file": "util.c",
-      "line": 824,
+      "line": 849,
       "kind": "definition"
     },
     "ComputeShdefPowers": {
       "signature": "void ComputeShdefPowers(void)",
       "file": "util.c",
-      "line": 871,
+      "line": 896,
       "kind": "definition"
     },
     "GetPlanetScannerRange": {
       "signature": "int16_t GetPlanetScannerRange(PLANET *lppl, int16_t *pDeep)",
       "file": "util.c",
-      "line": 878,
+      "line": 903,
       "kind": "definition"
     },
     "LpflNew": {
       "signature": "FLEET * LpflNew(int16_t iPlr, int16_t idPl)",
       "file": "util.c",
-      "line": 890,
+      "line": 915,
       "kind": "definition"
     },
     "UpdateShdefCost": {
       "signature": "void UpdateShdefCost(SHDEF *lpshdef)",
       "file": "util.c",
-      "line": 900,
+      "line": 925,
       "kind": "definition"
     },
     "FLookupSelPlanet": {
       "signature": "int16_t FLookupSelPlanet(PLANET *ppl)",
       "file": "util.c",
-      "line": 915,
+      "line": 940,
       "kind": "definition"
     },
     "FLookupThing": {
       "signature": "int16_t FLookupThing(int16_t idth, THING *pth)",
       "file": "util.c",
-      "line": 922,
+      "line": 947,
       "kind": "definition"
     },
     "FLookupFleet": {
       "signature": "int16_t FLookupFleet(int16_t idFleet, FLEET *pfl)",
       "file": "util.c",
-      "line": 930,
+      "line": 955,
       "kind": "definition"
     },
     "FLookupOrbitingXfer": {
       "signature": "int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip)",
       "file": "util.c",
-      "line": 938,
+      "line": 963,
       "kind": "definition"
     },
     "LinkFleets": {
       "signature": "void LinkFleets(int16_t fUnused)",
       "file": "util.c",
-      "line": 948,
+      "line": 973,
       "kind": "definition"
     },
     "IflFromLpfl": {
       "signature": "int16_t IflFromLpfl(FLEET *lpfl)",
       "file": "util.c",
-      "line": 984,
+      "line": 1009,
       "kind": "definition"
     },
     "DpShieldOfShdef": {
       "signature": "int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)",
       "file": "util.c",
-      "line": 995,
+      "line": 1020,
       "kind": "definition"
     },
     "GetTrueHullCost": {
       "signature": "void GetTrueHullCost(int16_t iPlayer, HUL *lphul, uint16_t *rgCost)",
       "file": "util.c",
-      "line": 1007,
+      "line": 1032,
       "kind": "definition"
     },
     "GetShdefScannerRange": {
       "signature": "int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
       "file": "util.c",
-      "line": 1016,
+      "line": 1041,
       "kind": "definition"
     },
     "ValidateWaypoints": {
       "signature": "void ValidateWaypoints(void)",
       "file": "util.c",
-      "line": 1042,
+      "line": 1067,
+      "kind": "definition"
+    },
+    "ChgPopFromPlanet": {
+      "signature": "int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate)",
+      "file": "util.c",
+      "line": 1086,
       "kind": "definition"
     },
     "FFleetCanJumpgate": {
       "signature": "int16_t FFleetCanJumpgate(FLEET *lpfl)",
       "file": "util.c",
-      "line": 1204,
+      "line": 1229,
       "kind": "definition"
     },
     "CalcPlayerScore": {
       "signature": "int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore)",
       "file": "util.c",
-      "line": 1214,
+      "line": 1239,
       "kind": "definition"
     },
     "FLookupPlanet": {
       "signature": "short FLookupPlanet(int16_t iPlanet, PLANET *ppl)",
       "file": "util.c",
-      "line": 1231,
+      "line": 1256,
       "kind": "definition"
     },
     "LpflNewSplit": {
       "signature": "FLEET * LpflNewSplit(FLEET *pfl)",
       "file": "util.c",
-      "line": 1304,
+      "line": 1329,
       "kind": "definition"
     },
     "WFromLpfl": {
       "signature": "uint16_t WFromLpfl(FLEET *lpfl)",
       "file": "util.c",
-      "line": 1312,
+      "line": 1337,
       "kind": "definition"
     },
     "FLookupObject": {
       "signature": "int16_t FLookupObject(GrobjClass grobj, int16_t id, void *pobj)",
       "file": "util.c",
-      "line": 1321,
+      "line": 1346,
       "kind": "definition"
     },
     "GetFleetScannerRange": {
       "signature": "int16_t GetFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
       "file": "util.c",
-      "line": 1327,
+      "line": 1352,
       "kind": "definition"
     },
     "FFindNearestObject": {
       "signature": "int16_t FFindNearestObject(POINT pt, GrobjClass grobj, SCAN *pscan)",
       "file": "util.c",
-      "line": 1341,
+      "line": 1366,
       "kind": "definition"
     },
     "CchGetETA": {
       "signature": "int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall)",
       "file": "util.c",
-      "line": 1368,
+      "line": 1393,
       "kind": "definition"
     },
     "DrawABunchOfStars": {
       "signature": "void DrawABunchOfStars(HDC hdc, RECT *prc)",
       "file": "util.c",
-      "line": 1386,
+      "line": 1411,
       "kind": "definition"
     },
     "DrawPlanetPrintDot": {
       "signature": "void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize)",
       "file": "util.c",
-      "line": 1399,
+      "line": 1424,
       "kind": "definition"
     },
     "NybbleFromCh": {
@@ -5777,103 +5843,103 @@
     "DibNumColors": {
       "signature": "uint32_t DibNumColors(const void *pv)",
       "file": "utilgen.c",
-      "line": 1066,
+      "line": 1084,
       "kind": "definition"
     },
     "RightTextOut": {
       "signature": "void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase)",
       "file": "utilgen.c",
-      "line": 1106,
+      "line": 1124,
       "kind": "definition"
     },
     "DrawBtn": {
       "signature": "void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText)",
       "file": "utilgen.c",
-      "line": 1113,
+      "line": 1131,
       "kind": "definition"
     },
     "_Draw3dFrame": {
       "signature": "void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase)",
       "file": "utilgen.c",
-      "line": 1144,
+      "line": 1162,
       "kind": "definition"
     },
     "HpalFromDib": {
       "signature": "HPALETTE HpalFromDib(HGLOBAL hdib)",
       "file": "utilgen.c",
-      "line": 1153,
+      "line": 1171,
       "kind": "definition"
     },
     "DibBlt": {
       "signature": "int16_t DibBlt(HDC hdc, int32_t x0, int32_t y0, int32_t dx, int32_t dy, HGLOBAL hdib, int32_t x1, int32_t y1, int32_t dxSrc, int32_t dySrc, int32_t rop)",
       "file": "utilgen.c",
-      "line": 1207,
+      "line": 1225,
       "kind": "definition"
     },
     "FGetMouseMove": {
       "signature": "int16_t FGetMouseMove(POINT *ppt)",
       "file": "utilgen.c",
-      "line": 1302,
+      "line": 1320,
       "kind": "definition"
     },
     "StickyDlgPos": {
       "signature": "void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit)",
       "file": "utilgen.c",
-      "line": 1310,
+      "line": 1328,
       "kind": "definition"
     },
     "UpdateProgressGauge": {
       "signature": "void UpdateProgressGauge(int16_t pctX10)",
       "file": "utilgen.c",
-      "line": 1364,
+      "line": 1382,
       "kind": "definition"
     },
     "PaletteSize": {
       "signature": "uint32_t PaletteSize(const void *pv)",
       "file": "utilgen.c",
-      "line": 1373,
+      "line": 1391,
       "kind": "definition"
     },
     "FreeHbr": {
       "signature": "void FreeHbr(HBRUSH hbr)",
       "file": "utilgen.c",
-      "line": 1396,
+      "line": 1414,
       "kind": "definition"
     },
     "FTrackBtn": {
       "signature": "int16_t FTrackBtn(BTNT *pbtnt)",
       "file": "utilgen.c",
-      "line": 1427,
+      "line": 1445,
       "kind": "definition"
     },
     "WrapTextOut": {
       "signature": "void WrapTextOut(HDC hdc, int16_t *px, int16_t *py, char *psz, int16_t cLen, int16_t xLeft, int16_t dxWidth, int16_t *pxMax, int16_t fNewLine, int16_t fPrint)",
       "file": "utilgen.c",
-      "line": 1436,
+      "line": 1454,
       "kind": "definition"
     },
     "DxStreamTextOut": {
       "signature": "int16_t DxStreamTextOut(HDC hdc, int16_t *px, int16_t y, char *psz, int16_t cLen, int16_t fPrint)",
       "file": "utilgen.c",
-      "line": 1453,
+      "line": 1471,
       "kind": "definition"
     },
     "LDrawGauge": {
       "signature": "int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *rghbr, int32_t cTot)",
       "file": "utilgen.c",
-      "line": 1476,
+      "line": 1494,
       "kind": "definition"
     },
     "DiaganolTextOut": {
       "signature": "void DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen)",
       "file": "utilgen.c",
-      "line": 1490,
+      "line": 1508,
       "kind": "definition"
     },
     "DrawProgressGauge": {
       "signature": "void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly)",
       "file": "utilgen.c",
-      "line": 1519,
+      "line": 1537,
       "kind": "definition"
     },
     "ShowProgressGauge": {
@@ -5897,85 +5963,85 @@
     "LdpFromItokDv": {
       "signature": "int32_t LdpFromItokDv(int16_t itok, DV *lpdv)",
       "file": "vcr.c",
-      "line": 10,
+      "line": 12,
       "kind": "definition"
     },
     "BtlDataGet": {
       "signature": "BTLDATA * BtlDataGet(int16_t i)",
       "file": "vcr.c",
-      "line": 35,
+      "line": 37,
       "kind": "definition"
     },
     "CBattleKills": {
       "signature": "int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)",
       "file": "vcr.c",
-      "line": 68,
+      "line": 70,
       "kind": "definition"
     },
     "CBattleUnits": {
       "signature": "int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu)",
       "file": "vcr.c",
-      "line": 102,
+      "line": 104,
       "kind": "definition"
     },
     "CBattles": {
       "signature": "int16_t CBattles(void)",
       "file": "vcr.c",
-      "line": 152,
+      "line": 154,
       "kind": "definition"
     },
     "VCRDlg": {
       "signature": "INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "vcr.c",
-      "line": 192,
+      "line": 194,
       "kind": "definition"
     },
     "EnableVCRButtons": {
       "signature": "void EnableVCRButtons(void)",
       "file": "vcr.c",
-      "line": 230,
+      "line": 232,
       "kind": "definition"
     },
     "PopupVCRMenu": {
       "signature": "int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc)",
       "file": "vcr.c",
-      "line": 236,
+      "line": 252,
       "kind": "definition"
     },
     "DrawVCR": {
       "signature": "void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd)",
       "file": "vcr.c",
-      "line": 258,
+      "line": 274,
       "kind": "definition"
     },
     "GetVCRStats": {
       "signature": "void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, int16_t *pcsh)",
       "file": "vcr.c",
-      "line": 297,
+      "line": 313,
       "kind": "definition"
     },
     "BattleVCR": {
       "signature": "void BattleVCR(int16_t iBattle)",
       "file": "vcr.c",
-      "line": 309,
+      "line": 325,
       "kind": "definition"
     },
     "SetVCRBoard": {
       "signature": "int16_t SetVCRBoard(int16_t iStep)",
       "file": "vcr.c",
-      "line": 322,
+      "line": 338,
       "kind": "definition"
     },
     "AnimateAttack": {
       "signature": "void AnimateAttack(HDC hdc)",
       "file": "vcr.c",
-      "line": 331,
+      "line": 347,
       "kind": "definition"
     },
     "Delay": {
       "signature": "void Delay(int16_t ctick)",
       "file": "vcr.c",
-      "line": 376,
+      "line": 392,
       "kind": "definition"
     },
     "GetOpenFileName": {
@@ -7066,140 +7132,140 @@
     },
     "MAKELPARAM": {
       "signature": "LPARAM MAKELPARAM(WORD lo, WORD hi)",
-      "file": "win_stubs.c",
-      "line": 1402,
-      "kind": "definition"
+      "file": "win_stubs.h",
+      "line": 237,
+      "kind": "prototype"
     },
     "GetTextExtentPointA": {
       "signature": "BOOL WINAPI GetTextExtentPointA(HDC hdc, LPCSTR lpString, int c, LPSIZE lpSize)",
       "file": "win_stubs.h",
-      "line": 934,
+      "line": 974,
       "kind": "prototype"
     },
     "TextOutA": {
       "signature": "BOOL WINAPI TextOutA(HDC hdc, int x, int y, LPCSTR lpString, int c)",
       "file": "win_stubs.h",
-      "line": 954,
+      "line": 994,
       "kind": "prototype"
     },
     "FreeProcInstance": {
       "signature": "void WINAPI FreeProcInstance(FARPROC lpProc)",
       "file": "win_stubs.h",
-      "line": 966,
+      "line": 1006,
       "kind": "prototype"
     },
     "GetDOSEnvironment": {
       "signature": "LPSTR WINAPI GetDOSEnvironment(void)",
       "file": "win_stubs.h",
-      "line": 968,
+      "line": 1008,
       "kind": "prototype"
     },
     "GlobalLock": {
       "signature": "void FAR *WINAPI GlobalLock(HGLOBAL hMem)",
       "file": "win_stubs.h",
-      "line": 977,
+      "line": 1017,
       "kind": "prototype"
     },
     "LockResource": {
       "signature": "void FAR *WINAPI LockResource(HGLOBAL hResData)",
       "file": "win_stubs.h",
-      "line": 986,
+      "line": 1026,
       "kind": "prototype"
     },
     "lstrcat": {
       "signature": "LPSTR WINAPI lstrcat(LPSTR lpString1, LPCSTR lpString2)",
       "file": "win_stubs.h",
-      "line": 988,
+      "line": 1028,
       "kind": "prototype"
     },
     "lstrcpy": {
       "signature": "LPSTR WINAPI lstrcpy(LPSTR lpString1, LPCSTR lpString2)",
       "file": "win_stubs.h",
-      "line": 989,
+      "line": 1029,
       "kind": "prototype"
     },
     "lstrlen": {
       "signature": "int WINAPI lstrlen(LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 993,
+      "line": 1033,
       "kind": "prototype"
     },
     "lstrlenA": {
       "signature": "int WINAPI lstrlenA(LPCSTR lpString)",
       "file": "win_stubs.h",
-      "line": 995,
+      "line": 1035,
       "kind": "prototype"
     },
     "UnlockSegment": {
       "signature": "void WINAPI UnlockSegment(UINT wSegment)",
       "file": "win_stubs.h",
-      "line": 999,
+      "line": 1039,
       "kind": "prototype"
     },
     "Yield": {
       "signature": "void WINAPI Yield(void)",
       "file": "win_stubs.h",
-      "line": 1001,
+      "line": 1041,
       "kind": "prototype"
     },
     "CreatePopupMenu": {
       "signature": "HMENU WINAPI CreatePopupMenu(void)",
       "file": "win_stubs.h",
-      "line": 1018,
+      "line": 1058,
       "kind": "prototype"
     },
     "DrawMenuBar": {
       "signature": "void WINAPI DrawMenuBar(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 1035,
+      "line": 1079,
       "kind": "prototype"
     },
     "GetActiveWindow": {
       "signature": "HWND WINAPI GetActiveWindow(void)",
       "file": "win_stubs.h",
-      "line": 1046,
+      "line": 1090,
       "kind": "prototype"
     },
     "GetCurrentTime": {
       "signature": "DWORD WINAPI GetCurrentTime(void)",
       "file": "win_stubs.h",
-      "line": 1049,
+      "line": 1093,
       "kind": "prototype"
     },
     "GetFocus": {
       "signature": "HWND WINAPI GetFocus(void)",
       "file": "win_stubs.h",
-      "line": 1054,
+      "line": 1098,
       "kind": "prototype"
     },
     "GetTickCount": {
       "signature": "DWORD WINAPI GetTickCount(void)",
       "file": "win_stubs.h",
-      "line": 1068,
+      "line": 1112,
       "kind": "prototype"
     },
     "MessageBeep": {
       "signature": "void WINAPI MessageBeep(UINT uType)",
       "file": "win_stubs.h",
-      "line": 1092,
+      "line": 1145,
       "kind": "prototype"
     },
     "PostQuitMessage": {
       "signature": "void WINAPI PostQuitMessage(int nExitCode)",
       "file": "win_stubs.h",
-      "line": 1098,
+      "line": 1151,
       "kind": "prototype"
     },
     "ReleaseCapture": {
       "signature": "void WINAPI ReleaseCapture(void)",
       "file": "win_stubs.h",
-      "line": 1102,
+      "line": 1162,
       "kind": "prototype"
     },
     "UpdateWindow": {
       "signature": "void WINAPI UpdateWindow(HWND hWnd)",
       "file": "win_stubs.h",
-      "line": 1124,
+      "line": 1184,
       "kind": "prototype"
     },
     "ParseCmdLine": {

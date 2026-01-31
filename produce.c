@@ -5,6 +5,8 @@
 
 #include "produce.h"
 
+#include "resource.h"
+
 char *PszNameProdItem(PROD *lpprod) {
     uint32_t iItem;
     int16_t  iDelta;
@@ -135,7 +137,13 @@ int16_t ChangeProduction(int16_t fClear) {
 void EnableZipProdBtns(HWND hwnd, int16_t iSel) {
     int16_t fEnabled;
 
-    /* TODO: implement */
+    if (iSel >= 1 && vrgZipProd[iSel].fValid)
+        fEnabled = 1;
+    else
+        fEnabled = 0;
+
+    EnableWindow(GetDlgItem(hwnd, IDC_DELETE), fEnabled);
+    EnableWindow(GetDlgItem(hwnd, IDC_RENAME), fEnabled);
 }
 
 INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

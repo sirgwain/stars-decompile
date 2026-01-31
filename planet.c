@@ -632,14 +632,25 @@ LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     PLANET            *lppl;
     FLEET             *lpfl;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x05a2 */
-    /* block (block) @ MEMORY_PLANET:0x065b */
-    /* block (block) @ MEMORY_PLANET:0x0705 */
-    /* block (block) @ MEMORY_PLANET:0x073c */
-    /* block (block) @ MEMORY_PLANET:0x0b44 */
-    /* label LRefocus @ MEMORY_PLANET:0x0941 */
-    /* label Default @ MEMORY_PLANET:0x0c77 */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;

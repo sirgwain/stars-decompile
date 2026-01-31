@@ -30,7 +30,7 @@ typedef struct MsgGlobalsSnapshot {
     PLAYER rgplr1;
     PLAYER rgplr2;
 
-    int16_t *lpMsg
+    int16_t *lpMsg;
 } MsgGlobalsSnapshot;
 
 static void snapshot_globals(MsgGlobalsSnapshot *out) {
@@ -402,9 +402,52 @@ static void test_FSendPlrMsg_appends_first_player_message(void) {
     restore_globals(&snap);
 }
 
+
+
+static void test_FRemovePlayerMessage_marks_deleted(void) {
+    MsgGlobalsSnapshot snap;
+    snapshot_globals(&snap);
+    apply_minimal_fixtures();
+
+    /* Empty buffer */
+    imemMsgCur = 0;
+    cMsg = 0;
+
+    /* Manually craft two records:
+     *  - record0 matches (iplr=1,msg=5,obj=42)
+     *  - record1 non-matching
+     */
+    uint8_t *b = (uint8_t *)lpMsg;
+    /* record0 */
+    b[0] = (uint8_t)(1 | (0 << 4));
+    *(uint16_t *)(b + 1) = (uint16_t)(5); /* iMsg=5 grWord=0 */
+    *(int16_t *)(b + 3) = 42;
+    imemMsgCur += 5;
+
+    /* record1 */
+    b += 5;
+    b[0] = (uint8_t)(2 | (0 << 4));
+    *(uint16_t *)(b + 1) = (uint16_t)(5);
+    *(int16_t *)(b + 3) = 42;
+    imemMsgCur += 5;
+
+    int16_t cDel = FRemovePlayerMessage(1, (MessageId)5, 42);
+    TEST_CHECK_(cDel == 1, "expected 1 deletion, got %d", (int)cDel);
+
+    /* record0 should be marked deleted (iMsg=0x1FF) while preserving grWord bits. */
+    uint16_t w0 = *(uint16_t *)(((uint8_t *)lpMsg) + 1);
+    TEST_CHECK_((w0 & 0x1FF) == 0x1FF, "record0 iMsg not marked deleted: 0x%04x", (unsigned)w0);
+
+    /* record1 untouched */
+    uint16_t w1 = *(uint16_t *)(((uint8_t *)lpMsg) + 6);
+    TEST_CHECK_((w1 & 0x1FF) == 5, "record1 iMsg changed unexpectedly: 0x%04x", (unsigned)w1);
+
+    restore_globals(&snap);
+}
 TEST_LIST = {
     {"MSG/PszFormatString table", test_PszFormatString_table},
     {"MSG/PackageUpMsg packs bytes+words", test_PackageUpMsg_packs_bytes_and_words},
     {"MSG/FSendPlrMsg appends first message", test_FSendPlrMsg_appends_first_player_message},
+    {"MSG/FRemovePlayerMessage marks deleted", test_FRemovePlayerMessage_marks_deleted},
     {NULL, NULL},
 };

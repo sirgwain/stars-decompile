@@ -345,11 +345,25 @@ int16_t FOKMergeDialog(void) {
 
 int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_t fBomb, uint16_t fDump, uint16_t mdUnarmed, uint16_t mdScout, uint16_t mdWar,
                       uint16_t mdBomber) {
-    BTLPLAN *lpbtlplan;
-    int16_t  idhSav;
+    int16_t idhSav;
 
-    /* TODO: implement */
-    return 0;
+    (void)imdTarget;
+    (void)fSpread;
+    (void)fBomb;
+    (void)fDump;
+    (void)mdUnarmed;
+    (void)mdScout;
+    (void)mdWar;
+    (void)mdBomber;
+
+    idhSav = tutor.idh;
+    tutor.idh = 0x0C21;
+
+    if (ibp < 0 || ibp > rgcbtlplan[0])
+        return 0;
+
+    tutor.idh = idhSav;
+    return 1;
 }
 
 int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip) {

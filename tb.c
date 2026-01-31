@@ -28,10 +28,25 @@ LRESULT CALLBACK TbWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     uint16_t    hwndCE;
     int16_t     pct;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TB:0x002d */
-    /* block (block) @ MEMORY_TB:0x00e3 */
-    /* label LShowTip @ MEMORY_TB:0x04ac */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;
@@ -57,9 +72,25 @@ LRESULT CALLBACK TooltipWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     int16_t     bkSav;
     int16_t     cch;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TB:0x1c41 */
-    /* label LKillTip @ MEMORY_TB:0x1c05 */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;

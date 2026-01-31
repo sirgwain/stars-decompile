@@ -87,20 +87,62 @@ int16_t FWriteTutorialMFile(int16_t iTurn) {
     return 0;
 }
 
+/*
+ * EnumLogRts
+ *
+ * Enumerates records in the in-memory log buffer and invokes a callback
+ * for each record. Enumeration stops early if the callback returns 0.
+ *
+ * pfn    - Callback invoked per record:
+ *          pfn(pvData, rt, cb, lpPass, iPass)
+ *          pvData points to the record payload (past the HDR).
+ * lpPass - Opaque caller-supplied context pointer.
+ * iPass  - Small pass identifier forwarded to the callback.
+ */
 void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void *lpPass, int16_t iPass) {
-    int16_t fLogOld;
-    int16_t fRet;
     int16_t iCur;
     HDR    *lprts;
 
-    /* TODO: implement */
+    if (imemLogCur == 0)
+        return;
+
+    for (iCur = 0; iCur < imemLogCur; iCur = (int16_t)(iCur + (int16_t)lprts->cb + 2)) {
+        lprts = (HDR *)(lpLog + (uint16_t)iCur);
+
+        if (!pfn((void *)(lpLog + (uint16_t)iCur + 2), (int16_t)lprts->rt, (int16_t)lprts->cb, lpPass, iPass)) {
+            return;
+        }
+    }
 }
 
+/*
+ * FGetPrevLogRt
+ *
+ * Retrieves the most recently recorded log entry (if any) from the
+ * in-memory log buffer.
+ *
+ * phdr - Receives the decoded log record header.
+ * pb   - Optional buffer to receive the record payload (cb bytes).
+ *
+ * Returns nonzero if a previous log record exists; zero otherwise.
+ */
 int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb) {
-    uint8_t *lpv;
+    const uint8_t *lpv;
+    uint16_t       wRaw;
 
-    /* TODO: implement */
-    return 0;
+    if (imemLogPrev == (int16_t)-1)
+        return 0;
+
+    lpv = (const uint8_t *)lpLog + (uint16_t)imemLogPrev;
+
+    /* Packed log header is 16 bits; load raw then use bitfield overlay. */
+    memcpy(&wRaw, lpv, sizeof(wRaw));
+    phdr->wRaw_0000 = wRaw;
+
+    if (phdr->cb != 0)
+        memcpy(pb, lpv + 2, (size_t)phdr->cb);
+
+    return 1;
 }
 
 void LogChangeThing(THING *lpth, THING *pthNew) {

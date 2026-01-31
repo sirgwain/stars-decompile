@@ -7,6 +7,18 @@
 extern uint8_t vrgbShuffleSerial[21];
 extern char    rgTOWidth[2][2];
 
+extern const char szBrowser[];
+extern const char szFrame[];
+extern const char szMessage[];
+extern const char szMine[];
+extern const char szPlanet[];
+extern const char szPopup[];
+extern const char szScan[];
+extern const char szTb[];
+extern const char szTitle[];
+extern const char szTooltip[];
+extern const char szReport[];
+
 /* functions */
 void    VerifyTurns(void);
 int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn);
@@ -20,7 +32,7 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
 int16_t          FFindSomethingAndSelectIt(void);
 int16_t          CFindTurnsOutstanding(void);
 LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
-void             CommandHandler(HWND hwnd, uint16_t wParam);
+void             CommandHandler(HWND hwnd, WPARAM wParam);
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
 void             GetWindowRc(HWND hwnd, RECT *prc);
 void             DrawHostDialog2(HWND hwnd, HDC hdcIn);

@@ -1,12 +1,27 @@
-#include "acutest.h"
-
+#include <stdio.h>
 #include <string.h>
-
+#include "acutest.h"
 #include "globals.h"
 #include "types.h"
+#include "util.h"
 
-/* util.c */
-int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate);
+static void touch_file(const char *path) {
+    FILE *fp = fopen(path, "wb");
+    TEST_CHECK(fp != NULL);
+    if (fp) {
+        fputc('x', fp);
+        fclose(fp);
+    }
+}
+
+static int file_exists(const char *path) {
+    FILE *fp = fopen(path, "rb");
+    if (fp) {
+        fclose(fp);
+        return 1;
+    }
+    return 0;
+}
 
 typedef struct PopCase {
     const char *name;
@@ -122,5 +137,57 @@ static void test_ChgPopFromPlanet_negative_desire_table(void) {
         rgplr[0] = old0;
     }
 }
+void test_ClearFile_creates_and_removes_expected_name(void) {
+    char path[256];
 
-TEST_LIST = {{"ChgPopFromPlanet negative desire table", test_ChgPopFromPlanet_negative_desire_table}, {NULL, NULL}};
+    /* Case 1: szBase without extension -> adds '.' + mpdtsz[dt]. */
+    (void)snprintf(szBase, sizeof(szBase), "stars_test_clearfile_base");
+    (void)snprintf(path, sizeof(path), "%s.%s", szBase, mpdtsz[0]);
+    touch_file(path);
+    TEST_CHECK(file_exists(path) == 1);
+    ClearFile(0);
+    TEST_CHECK(file_exists(path) == 0);
+
+    /* Case 2: szBase with extension -> replaces extension with mpdtsz[dt]. */
+    (void)snprintf(szBase, sizeof(szBase), "stars_test_clearfile_base.old");
+    (void)snprintf(path, sizeof(path), "stars_test_clearfile_base.%s", mpdtsz[0]);
+    touch_file(path);
+    TEST_CHECK(file_exists(path) == 1);
+    ClearFile(0);
+    TEST_CHECK(file_exists(path) == 0);
+}
+
+static void test_DpOfLpflIshdef_basic(void) {
+    /* Save/restore the per-player SHDEF table pointer. */
+    SHDEF *old0 = rglpshdef[0];
+
+    SHDEF shdefs[16];
+    memset(shdefs, 0, sizeof(shdefs));
+    shdefs[3].hul.dp = 100; /* arbitrary dp */
+    rglpshdef[0] = shdefs;
+
+    FLEET fl;
+    memset(&fl, 0, sizeof(fl));
+    fl.iPlayer = 0;
+    fl.rgcsh[3] = 2;
+    fl.rgdv[3].pctSh = 50;  /* low 7 bits */
+    fl.rgdv[3].pctDp = 200; /* high 9 bits */
+
+    /* tmp = (pctSh * dp) / 10 = (50*100)/10=500 */
+    /* tmp2 = tmp * pctDp = 500*200=100000 */
+    /* mult = count*tmp2 = 2*100000=200000 */
+    /* dp = mult / 5000 = 40 */
+    {
+        int32_t got = DpOfLpflIshdef(&fl, 3);
+        TEST_CHECK_(got == 40, "DpOfLpflIshdef got=%ld want=40", (long)got);
+    }
+
+    rglpshdef[0] = old0;
+}
+
+TEST_LIST = {
+    {"ChgPopFromPlanet negative desire table", test_ChgPopFromPlanet_negative_desire_table},
+    {"ClearFile builds expected name and removes", test_ClearFile_creates_and_removes_expected_name},
+    {"DpOfLpflIshdef basic", test_DpOfLpflIshdef_basic},
+    {NULL, NULL},
+};

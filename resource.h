@@ -82,9 +82,6 @@
 
 #define IDDIB_NUM_DESIGNS_PLATE 450 // numdesignsplate.bmp
 
-/* Title splash (original Stars! used resource id 0x01C1). */
-#define IDDIB_SPLASH 0x01C1 // splash.bmp
-
 // ---------------- Accelerators (keep legacy IDs) ----
 #define IDA_MAIN  116
 #define IDA_TITLE 1080
@@ -124,6 +121,17 @@
 // Turn menu
 #define IDM_TURN_WAIT_NEW 730
 #define IDM_TURN_GENERATE 731
+
+// FrameWndProc
+#define IDM_TURN_LOAD_NEXT_TURN 0x02DD
+#define IDM_FRAME_POST_OPEN     0x0FA1
+
+// TitleWndProc
+#define IDDIB_SPLASH        0x01C1 // splash.bmp
+#define IDM_TITLE_NEW_GAME  0
+#define IDM_TITLE_OPEN_GAME 1
+#define IDM_TITLE_CONTINUE  2
+#define IDM_TITLE_EXIT      3
 
 // Commands menu
 #define IDM_CMD_SHIP_DESIGN     740
@@ -182,6 +190,18 @@
 // Toolbar/accelerator aliases that jump to the same paths
 #define IDM_TOOL_NEW_GAME  0x0ED8 // Alias: New game
 #define IDM_TOOL_OPEN_GAME 0x0ED9 // Alias: Open game
+
+// Win16 legacy game-startup commands (posted to FrameWndProc via WM_COMMAND)
+#define IDM_GAME_QUIT     0x09C2
+#define IDM_GAME_START    0x09C4
+#define IDM_GAME_HOST     0x09C6
+#define IDM_GAME_CONTINUE 0x09C8
+
+// Legacy repaint command used by FrameWndProc
+#define IDM_VIEW_REPAINT 0x03FC
+
+// Unknown legacy command ID referenced by FrameWndProc; keep numeric ID until identified.
+#define WMX_UNKNOWN_006A 0x006A
 
 // ---- Commands (ship design / research / diplomacy) --------------------
 #define IDM_GAME_SHIP_BUILDER 0x007D // ShipBuilder
@@ -260,19 +280,108 @@
 #define IDM_UNKNOWN_09C4 0x09C4
 #define IDM_UNKNOWN_09C5 0x09C5
 #define IDM_UNKNOWN_0EE2 0x0EE2
-#define IDM_UNKNOWN_0FA1 0x0FA1
 #define IDM_UNKNOWN_1068 0x1068
 #define IDM_UNKNOWN_1069 0x1069
 
-// ---------------- Dialog IDs (800-899) --------------
-#define IDD_ABOUTBOX  800
+// ---------------- Dialogs ---------------------------
+#define IDD_MERGE_FLEETS 82 /* MergeFleetsDlg */
+#define IDD_TRANSFER     91 /* TransferDlg */
+#define IDD_SLOT         92 /* SlotDlg */
+#define IDD_PRODUCTION   93 /* ProductionDlg */
+#define IDD_ORDER_INFO   97 /* OrderInfoDlg */
+
+/* common / utility */
+#define IDD_SERIAL       86  /* reused generic dialog (PrintMap, msg, browser host) */
+#define IDD_ZIP_PROD     89  /* ZipProdDlg / ZipOrderDlg */
+#define IDD_ABOUT        90  /* About */
+#define IDD_HOST_MODE    115 /* HostOptionsDialog */
+#define IDD_PASSWORD     140 /* PASSWORD dialog */
+#define IDD_NEW_PASSWORD 141 /* NewPasswordDlg */
+
+/* research / browser */
+#define IDD_RESEARCH 127 /* ResearchDlg */
+#define IDD_BROWSER  128 /* Browser child dialog */
+
+/* race wizard */
+#define IDD_RACE_WIZARD_1 146 /* RaceWizardDlg1 */
+#define IDD_RACE_WIZARD_2 147 /* unnamed proc (slot between 1 and 3) */
+#define IDD_RACE_WIZARD_3 148 /* RaceWizardDlg3 */
+#define IDD_RACE_WIZARD_4 149 /* RaceWizardDlg4 */
+#define IDD_RACE_WIZARD_5 150 /* RaceWizardDlg5 */
+#define IDD_RACE_WIZARD_6 151 /* RaceWizardDlg6 */
+
+/* VCR */
+#define IDD_VCR 160 /* VCRDlg */
+
+/* new game */
+#define IDD_SIMPLE_NEW_GAME 209 /* SimpleNewGameDlg */
+#define IDD_NEW_GAME_1      390 /* NewGameDlg */
+#define IDD_NEW_GAME_2      391 /* NewGameDlg2 */
+#define IDD_NEW_GAME_3      392 /* NewGameDlg3 */
+#define IDD_Gauge           393 /* GuageDlgProc */
+
+/* host / options */
+#define IDD_HOST_OPTIONS 1026 /* HostOptionsDialog */
+#define IDD_SCOREX       102  /* ScoreXDlg */
+
+/* battle / plans */
+#define IDD_BATTLE_PLANS 2013 /* BattlePlansDlg */
+#define IDD_RENAME       2019 /* RenameDlg / NewPlanNameDlg (shared template) */
+
+/* relations / diplomacy */
+#define IDD_RELATIONS 2008 /* RelationsDlg */
+
+/* tutorial / panic */
+#define IDD_PANIC 2504 /* PanicDlg */
+#define IDD_TUTOR 2502 /* never referenced */
+
+/* find */
+#define IDD_FIND      4202 /* FindDlg */
 #define IDC_VERSION   801
 #define IDC_CREDITS   802
 #define IDC_ORDERINFO 803
 
-#define IDD_BROWSER         128
-#define IDD_PASSWORD        140
-#define IDD_SIMPLE_NEW_GAME 209
+// ---------------- Battle VCR Controls -----
+#define IDC_VCR_REW_ALL    161 /* |<< */
+#define IDC_VCR_REW        162 /* < */
+#define IDC_VCR_PLAY_PAUSE 163 /* >/|| */
+#define IDC_VCR_FWD        164 /* > */
+#define IDC_VCR_FWD_ALL    165 /* >>| */
+
+#define IDC_VCR_HELP 118
+
+#define IDC_PASSWORD_NEW         268  // EDITTEXT: new password
+#define IDC_PASSWORD_RETYPE      269  // EDITTEXT: retype password
+#define IDC_PASSWORD_STATUS_TEXT 2018 // LTEXT: status/help text
+
+#define IDC_AUTOGEN_WHEN_ALL_IN 1027 // CHECKBOX: when all players are in
+#define IDC_FORCEGEN_NEVER      2066 // RADIOBUTTON: never
+#define IDC_FORCEGEN_ROW1       2067 // RADIOBUTTON: (blank label in RC)
+#define IDC_FORCEGEN_ROW2       2068 // RADIOBUTTON: (blank label in RC)
+
+// ---------------- Host Mode dialog (IDD 115) ----------------
+#define IDC_HOST_GAME_NAME_TEXT  1033 // LTEXT: game name
+#define IDC_HOST_FILE_TEXT       1034 // LTEXT: file/base string
+#define IDC_HOST_NEXT_YEAR_TEXT  2016 // CTEXT: next year is
+#define IDC_HOST_TIME_SINCE_TEXT 2017 // CTEXT: time since last change
+
+#define IDC_HOST_GENERATE_NOW  1031 // "&Generate Now"
+#define IDC_HOST_AUTO_GENERATE 1032 // "&Auto Generate"
+#define IDC_HOST_PASSWORD      2015 // "&Password..."
+#define IDC_HOST_HELP          118  // "&Help" (alias of IDC_HELP)
+#define IDC_HOST_CLOSE         2    // "&Close" (IDCANCEL in this dialog)
+
+// HostModeDialog WM_COMMAND IDs referenced in the proc but not shown in your RC snippet
+#define IDC_HOST_OPTIONS 0x0405 // HostOptionsDialog button/command (in proc)
+
+// Optional: keep your existing numeric aliases consistent (no behavior change)
+#define IDC_U16_0x0407 IDC_HOST_GENERATE_NOW
+#define IDC_U16_0x0408 IDC_HOST_AUTO_GENERATE
+#define IDC_U16_0x0409 IDC_HOST_GAME_NAME_TEXT
+#define IDC_U16_0x040A IDC_HOST_FILE_TEXT
+#define IDC_U16_0x07DF IDC_HOST_PASSWORD
+#define IDC_U16_0x07E0 IDC_HOST_NEXT_YEAR_TEXT
+#define IDC_U16_0x07E1 IDC_HOST_TIME_SINCE_TEXT
 
 // ---------------- Tutorial blocks (RCDATA) ----------
 #define IDR_TUTORIAL_HST 10001 // res/tutorial/10001-tutorail.hst

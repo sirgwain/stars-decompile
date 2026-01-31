@@ -160,7 +160,8 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     return 0;
 }
 
-INT_PTR CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+// Renamed from ReportDlg, because it's used like a window, not a dialog
+LRESULT CALLBACK ReportWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HDC         hdc;
     HMENU       hmenu;
     RECT        rc;
@@ -178,18 +179,29 @@ INT_PTR CALLBACK ReportDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t     xCur;
     PAINTSTRUCT ps;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_REPORT:0x0027 */
-    /* block (block) @ MEMORY_REPORT:0x019b */
-    /* block (block) @ MEMORY_REPORT:0x0362 */
-    /* block (block) @ MEMORY_REPORT:0x04fc */
-    /* block (block) @ MEMORY_REPORT:0x067c */
-    /* block (block) @ MEMORY_REPORT:0x0788 */
-    /* block (block) @ MEMORY_REPORT:0x0818 */
-    /* block (block) @ MEMORY_REPORT:0x0860 */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
 
-    /* TODO: implement */
-    return 0;
+    case WM_SIZE:
+        /* TODO: layout report child controls */
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_CLOSE:
+        DestroyWindow(hwnd);
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 }
 
 INT_PTR CALLBACK PrintMapDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

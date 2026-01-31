@@ -71,18 +71,25 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     THING      *lpthMac;
     int16_t     id;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_SCAN:0x0068 */
-    /* block (block) @ MEMORY_SCAN:0x007a */
-    /* block (block) @ MEMORY_SCAN:0x0126 */
-    /* block (block) @ MEMORY_SCAN:0x03e6 */
-    /* block (block) @ MEMORY_SCAN:0x06cf */
-    /* block (block) @ MEMORY_SCAN:0x0955 */
-    /* block (block) @ MEMORY_SCAN:0x0d47 */
-    /* block (block) @ MEMORY_SCAN:0x0dd5 */
-    /* block (block) @ MEMORY_SCAN:0x0e21 */
-    /* label Default @ MEMORY_SCAN:0x0e6d */
-    /* label DblClick @ MEMORY_SCAN:0x0c42 */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;

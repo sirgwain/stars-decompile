@@ -470,12 +470,23 @@ void ResetMessages(void) {
 }
 
 int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj) {
-    uint8_t *lpbMax;
     uint8_t *lpb;
-    int16_t  cDel;
+    uint8_t *lpbMax;
+    int16_t  cDel = 0;
 
-    /* TODO: implement */
-    return 0;
+    lpbMax = (uint8_t *)lpMsg + (uint16_t)imemMsgCur;
+
+    for (lpb = (uint8_t *)lpMsg; lpb < lpbMax; lpb += (int16_t)((lpb[0] >> 4) + 5)) {
+        MSGHDR *pmsghdr = (MSGHDR *)(lpb + 1);
+        int16_t iObjRec = *(int16_t *)(lpb + 3);
+
+        if (((lpb[0] & 0x0F) == (uint8_t)iPlr) && ((uint16_t)pmsghdr->iMsg == (uint16_t)iMsg) && (iObjRec == iObj)) {
+            cDel++;
+            pmsghdr->iMsg = 0x01FFu; /* deleted marker */
+        }
+    }
+
+    return cDel;
 }
 
 char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
@@ -1067,30 +1078,26 @@ LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     char     szT[32];
     MSGPLR  *lpmsgplr;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x5ef1 */
-    /* block (block) @ MEMORY_MSG:0x6059 */
-    /* block (block) @ MEMORY_MSG:0x6084 */
-    /* block (block) @ MEMORY_MSG:0x60cf */
-    /* block (block) @ MEMORY_MSG:0x6109 */
-    /* block (block) @ MEMORY_MSG:0x62c6 */
-    /* block (block) @ MEMORY_MSG:0x643a */
-    /* block (block) @ MEMORY_MSG:0x65ec */
-    /* block (block) @ MEMORY_MSG:0x6aff */
-    /* block (block) @ MEMORY_MSG:0x6db8 */
-    /* block (block) @ MEMORY_MSG:0x6ea6 */
-    /* block (block) @ MEMORY_MSG:0x6eca */
-    /* block (block) @ MEMORY_MSG:0x6fee */
-    /* block (block) @ MEMORY_MSG:0x704c */
-    /* block (block) @ MEMORY_MSG:0x70fd */
-    /* label SetupNewMsg @ MEMORY_MSG:0x6c2a */
-    /* label Default @ MEMORY_MSG:0x718a */
-    /* label CheckBox @ MEMORY_MSG:0x6109 */
-    /* label ZoomBox @ MEMORY_MSG:0x61cc */
-    /* label NextMsg @ MEMORY_MSG:0x6ca9 */
-    /* label PrevMsg @ MEMORY_MSG:0x6ba0 */
-    /* label ToggleMsgMode @ MEMORY_MSG:0x6298 */
-    /* label GotoMsg @ MEMORY_MSG:0x6d8d */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
+
     /* TODO: implement */
     return 0;
 }

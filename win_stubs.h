@@ -81,6 +81,14 @@ typedef const void *LPCVOID;
 #define CS_DBLCLKS 0x0008
 #endif
 
+/* Win16/Win32 class style bits frequently used by Stars! */
+#ifndef CS_NOCLOSE
+#define CS_NOCLOSE 0x0200
+#endif
+#ifndef CS_SAVEBITS
+#define CS_SAVEBITS 0x0800
+#endif
+
 /* System cursor identifiers. */
 #ifndef IDC_ARROW
 #define IDC_ARROW MAKEINTRESOURCE(32512)
@@ -348,6 +356,16 @@ typedef struct tagMSG {
     DWORD  time;
     POINT  pt;
 } MSG;
+
+/* MINMAXINFO - used with WM_GETMINMAXINFO (Win16-style POINT fields). */
+typedef struct tagMINMAXINFO {
+    POINT ptReserved;
+    POINT ptMaxSize;
+    POINT ptMaxPosition;
+    POINT ptMinTrackSize;
+    POINT ptMaxTrackSize;
+} MINMAXINFO;
+typedef MINMAXINFO *LPMINMAXINFO;
 typedef MSG *LPMSG;
 
 /* PAINTSTRUCT - for BeginPaint/EndPaint */
@@ -415,6 +433,10 @@ typedef struct tagWNDCLASS {
     LPCSTR    lpszMenuName;
     LPCSTR    lpszClassName;
 } WNDCLASS;
+
+/* ANSI/Wide aliases used by code that targets real Win32 headers. */
+typedef WNDCLASS WNDCLASSA;
+typedef WNDCLASS WNDCLASSW;
 
 /* WINDOWPLACEMENT - window position info */
 typedef struct tagWINDOWPLACEMENT {
@@ -697,18 +719,24 @@ typedef struct tagTIMERINFO {
 #define WM_KILLFOCUS       0x0008
 #define WM_ENABLE          0x000A
 #define WM_PAINT           0x000F
+#define WM_GETMINMAXINFO   0x0024
 #define WM_QUERYNEWPALETTE 0x030F
 #define WM_PALETTECHANGED  0x0311
 #define WM_CLOSE           0x0010
 #define WM_QUIT            0x0012
 #define WM_ERASEBKGND      0x0014
+#define WM_SYSCOLORCHANGE  0x0015
 #define WM_SHOWWINDOW      0x0018
+#define WM_WININICHANGE    0x001A
 #define WM_SETCURSOR       0x0020
+#define WM_QUERYDRAGICON   0x0037
+#define WM_SYSCOMMAND      0x0112
 #define WM_KEYDOWN         0x0100
 #define WM_KEYUP           0x0101
 #define WM_CHAR            0x0102
 #define WM_COMMAND         0x0111
 #define WM_INITDIALOG      0x0110
+#define WM_ENTERIDLE       0x0121
 #define WM_INITMENU        0x0116
 #define WM_CTLCOLOREDIT    0x0133
 #define WM_CTLCOLORDLG     0x0136
@@ -724,6 +752,17 @@ typedef struct tagTIMERINFO {
 #define WM_RBUTTONUP       0x0205
 #define WM_RBUTTONDBLCLK   0x0206
 #define WM_USER            0x0400
+
+// WM_SIZE wParam values
+#define SIZE_RESTORED      0
+#define SIZE_MINIMIZED     1
+#define SIZE_MAXIMIZED     2
+
+// WM_SYSCOMMAND ids (mask with 0xFFF0)
+#define SC_RESTORE         0xF120
+#define SC_MINIMIZE        0xF020
+#define SC_MAXIMIZE        0xF030
+#define SC_CLOSE           0xF060
 
 /* Combo box messages / notifications */
 #define CB_GETCURSEL       0x0147
@@ -879,6 +918,7 @@ typedef struct tagTIMERINFO {
 #define VK_SHIFT   0x10
 #define VK_CONTROL 0x11
 #define VK_MENU    0x12
+#define VK_END     0x23
 #define VK_ESCAPE  0x1B
 #define VK_SPACE   0x20
 #define VK_LEFT    0x25
@@ -1084,6 +1124,10 @@ HWND WINAPI     CreateWindow(LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwSt
 #define CreateWindowA CreateWindow
 #endif
 LRESULT WINAPI  DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+#ifndef DefWindowProcA
+#define DefWindowProcA DefWindowProc
+#endif
 BOOL WINAPI     DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags);
 BOOL WINAPI     DestroyCursor(HCURSOR hCursor);
 BOOL WINAPI     DestroyIcon(HICON hIcon);
@@ -1146,8 +1190,17 @@ HACCEL WINAPI   LoadAccelerators(HINSTANCE hInstance, LPCSTR lpTableName);
 #define LoadAcceleratorsA LoadAccelerators
 #endif
 HBITMAP WINAPI  LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName);
+#ifndef LoadBitmapA
+#define LoadBitmapA LoadBitmap
+#endif
 HCURSOR WINAPI  LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName);
+#ifndef LoadCursorA
+#define LoadCursorA LoadCursor
+#endif
 HICON WINAPI    LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName);
+#ifndef LoadIconA
+#define LoadIconA LoadIcon
+#endif
 void WINAPI     MapWindowPoints(HWND hWndFrom, HWND hWndTo, POINT FAR *lpPoints, UINT cPoints);
 void WINAPI     MessageBeep(UINT uType);
 int WINAPI      MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
@@ -1159,6 +1212,13 @@ void WINAPI     PostQuitMessage(int nExitCode);
 BOOL WINAPI     PtInRect(const RECT FAR *lprc, POINT pt);
 UINT WINAPI     RealizePalette(HDC hdc);
 ATOM WINAPI     RegisterClass(const WNDCLASS FAR *lpWndClass);
+
+#ifndef RegisterClassA
+#define RegisterClassA RegisterClass
+#endif
+#ifndef RegisterClassA
+#define RegisterClassA RegisterClass
+#endif
 void WINAPI     ReleaseCapture(void);
 int WINAPI      ReleaseDC(HWND hWnd, HDC hDC);
 void WINAPI     ScreenToClient(HWND hWnd, POINT FAR *lpPoint);

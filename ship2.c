@@ -4,12 +4,22 @@
 
 #include "ship2.h"
 
+#include "parts.h"
+
 /* functions */
 int16_t FScout(FLEET *lpfl) {
     int16_t i;
-    int32_t l;
 
-    /* TODO: implement */
+    for (i = 0; i < ishdefMax; i++) {
+        if (lpfl->rgcsh[i] != 0) {
+            /* original: (__aFlshl(wFlags,1) & 0x70) != 0
+               equivalent: (wFlags & 0x38) != 0
+               SHDEF overlay: det bits 3..5 */
+            if ((rgshdef[i].det & 0x38u) != 0)
+                return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -148,9 +158,17 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
 
 int16_t FColonizer(FLEET *lpfl) {
     int16_t i;
-    int32_t l;
 
-    /* TODO: implement */
+    for (i = 0; i < ishdefMax; i++) {
+        if (lpfl->rgcsh[i] != 0) {
+            /* decompile: (__aFlshl(x,1) & 0xC000) != 0
+               equivalent: (x & 0x6000) != 0
+               SHDEF overlay: wFlags bits 13..14 == ishdef bits 3..4 */
+            if (((uint16_t)rgshdef[i].ishdef & 0x0018u) != 0)
+                return 1;
+        }
+    }
+
     return 0;
 }
 

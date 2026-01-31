@@ -256,11 +256,25 @@ LRESULT CALLBACK MineWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
     int16_t     cch;
     RECT        rc2;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MINE:0x00fd */
-    /* block (block) @ MEMORY_MINE:0x0182 */
-    /* block (block) @ MEMORY_MINE:0x0321 */
-    /* label Default @ MEMORY_MINE:0x0393 */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;

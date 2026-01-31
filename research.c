@@ -501,9 +501,25 @@ INT_PTR CALLBACK BrowserWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     PAINTSTRUCT ps;
     RECT        rc;
 
-    /* debug symbols */
-    /* label Validate @ MEMORY_RESEARCH:0x2939 */
-    /* label Default @ MEMORY_RESEARCH:0x2a6f */
+    switch (msg) {
+    case WM_CREATE:
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        /* if you paint the whole client yourself, returning 1 avoids flicker */
+        return 0;
+
+    case WM_DESTROY:
+        return 0;
+    }
+    return DefWindowProcA(hwnd, msg, wParam, lParam);
 
     /* TODO: implement */
     return 0;

@@ -13,12 +13,12 @@
 
 #if !defined(_WIN32) || defined(STARS_USE_WIN_STUBS)
 
+#include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <ctype.h>
 #include <unistd.h>
 
 #include "win_stubs.h"
@@ -1420,8 +1420,6 @@ int localtime_s(struct tm *result, const time_t *timep) {
     return 0;
 }
 
-LPARAM MAKELPARAM(WORD lo, WORD hi) {
-    return (LPARAM)(((DWORD)lo) | (((DWORD)hi) << 16));
-}
+LPARAM MAKELPARAM(WORD lo, WORD hi) { return (LPARAM)(((DWORD)lo) | (((DWORD)hi) << 16)); }
 
 #endif /* !_WIN32 || STARS_USE_WIN_STUBS */
