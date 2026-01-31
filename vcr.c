@@ -1,15 +1,14 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
-#include "vcr.h"
-#include "memory.h"
 #include "battle.h"
+#include "memory.h"
 #include "parts.h"
+#include "vcr.h"
 
-int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
-{
-    TOK *ptok = &vrgtok[itok];
+int32_t LdpFromItokDv(int16_t itok, DV *lpdv) {
+    TOK   *ptok = &vrgtok[itok];
     SHDEF *pshdef = LpshdefFromTok(ptok);
 
     /* SHDEF +0x38: base hull DP (uint16_t) */
@@ -18,8 +17,7 @@ int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
     /* Base DP = dpShdef * ptok->csh */
     int32_t dp = (int32_t)dpShdef * (int32_t)ptok->csh;
 
-    if (lpdv->dp != 0)
-    {
+    if (lpdv->dp != 0) {
         /*
          * dv layout:
          *   pctSh : 7 (bits 0..6)
@@ -44,18 +42,15 @@ int32_t LdpFromItokDv(int16_t itok, DV *lpdv)
     return dp;
 }
 
-BTLDATA *BtlDataGet(int16_t i)
-{
+BTLDATA *BtlDataGet(int16_t i) {
     HB *lphb = rglphb[htBattle];
     if (lphb == NULL)
         return NULL;
 
     BTLDATA *lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
 
-    for (;;)
-    {
-        while ((int16_t)lpbd->id != -1)
-        {
+    for (;;) {
+        while ((int16_t)lpbd->id != -1) {
             if (lpbd->cbData == 0)
                 return NULL;
 
@@ -98,21 +93,17 @@ BTLDATA *BtlDataGet(int16_t i)
  *   Total number of units destroyed, using 32-bit integer arithmetic to
  *   match the original Win16 long behavior.
  */
-int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
-{
-    TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
-    BTLREC *lpbr = (BTLREC *)((uint8_t *)rgtok +
-                              (uint32_t)lpbd->ctok * (uint32_t)sizeof(TOK));
+int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead) {
+    TOK     *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
+    BTLREC  *lpbr = (BTLREC *)((uint8_t *)rgtok + (uint32_t)lpbd->ctok * (uint32_t)sizeof(TOK));
     uint8_t *pbEnd = (uint8_t *)lpbd + (uint32_t)lpbd->cbData;
 
     uint32_t cKilled = 0;
 
-    while ((uint8_t *)lpbr < pbEnd)
-    {
+    while ((uint8_t *)lpbr < pbEnd) {
         int16_t cKill = lpbr->ctok;
 
-        for (int16_t i = 0; i < cKill; i++)
-        {
+        for (int16_t i = 0; i < cKill; i++) {
             KILL *pk = &lpbr->rgkill[i];
 
             if (pk->cshKill == 0)
@@ -120,21 +111,16 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
 
             uint8_t victimPlr = rgtok[pk->itok].iplr;
 
-            if (victimPlr == (uint8_t)idPlayer)
-            {
+            if (victimPlr == (uint8_t)idPlayer) {
                 if (fOurDead != 0)
                     cKilled += (uint32_t)pk->cshKill;
-            }
-            else
-            {
+            } else {
                 if (fOurDead == 0)
                     cKilled += (uint32_t)pk->cshKill;
             }
         }
 
-        lpbr = (BTLREC *)((uint8_t *)lpbr +
-                          6u +
-                          (uint32_t)cKill * (uint32_t)sizeof(KILL));
+        lpbr = (BTLREC *)((uint8_t *)lpbr + 6u + (uint32_t)cKill * (uint32_t)sizeof(KILL));
     }
 
     return (int32_t)cKilled;
@@ -164,22 +150,17 @@ int32_t CBattleKills(BTLDATA *lpbd, int16_t fOurDead)
  *   - All arithmetic and filtering behavior matches the original Win16
  *     implementation.
  */
-int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu)
-{
+int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu) {
     uint32_t lUnits = 0;
 
-    TOK *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
+    TOK    *rgtok = (TOK *)((uint8_t *)lpbd + 0x0e);
     uint8_t ctok = lpbd->ctok;
 
-    for (int16_t i = 0; i < (int16_t)ctok; i++)
-    {
+    for (int16_t i = 0; i < (int16_t)ctok; i++) {
         TOK *tok = &rgtok[i];
 
         /* Side filter */
-        uint16_t sideOk =
-            (tok->iplr == (uint8_t)idPlayer)
-                ? (grbitBu & grBuOurUnits)
-                : (grbitBu & grBuTheirUnits);
+        uint16_t sideOk = (tok->iplr == (uint8_t)idPlayer) ? (grbitBu & grBuOurUnits) : (grbitBu & grBuTheirUnits);
 
         if (sideOk == 0)
             continue;
@@ -190,11 +171,8 @@ int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu)
             continue;
 
         /* Hull-category filtering (ships only) */
-        if (!isStarbase && ((grbitBu & grBuClassAll) != grBuClassAll))
-        {
-            SHDEF *pshdef =
-                (SHDEF *)((uint8_t *)rglpshdef[tok->iplr] +
-                          (uint32_t)tok->ishdef * 0x93);
+        if (!isStarbase && ((grbitBu & grBuClassAll) != grBuClassAll)) {
+            SHDEF *pshdef = (SHDEF *)((uint8_t *)rglpshdef[tok->iplr] + (uint32_t)tok->ishdef * 0x93);
 
             HULDEF *phuldef = LphuldefFromId(pshdef->hul.ihuldef);
 
@@ -222,28 +200,23 @@ int32_t CBattleUnits(BTLDATA *lpbd, uint16_t grbitBu)
     return (int32_t)lUnits;
 }
 
-int16_t CBattles(void)
-{
-    int16_t cBattles = 0;
-    HB *lphb = rglphb[htBattle];
+int16_t CBattles(void) {
+    int16_t  cBattles = 0;
+    HB      *lphb = rglphb[htBattle];
     BTLDATA *lpbd;
 
-    if (lphb == NULL)
-    {
+    if (lphb == NULL) {
         return 0;
     }
 
     /* Battle data begins immediately after HB + WORD (0x10 + 0x02 = 0x12). */
     lpbd = (BTLDATA *)((uint8_t *)lphb + sizeof(HB) + sizeof(uint16_t));
 
-    for (;;)
-    {
+    for (;;) {
         /* Walk battle records within this heap block until sentinel id == -1. */
-        while (lpbd->id != (int16_t)-1)
-        {
+        while (lpbd->id != (int16_t)-1) {
             /* cb==0 means end of valid data (early out). In the decompile this is *(+6)==0. */
-            if (lpbd->cbData == 0)
-            {
+            if (lpbd->cbData == 0) {
                 return cBattles;
             }
 
@@ -255,8 +228,7 @@ int16_t CBattles(void)
         lphb = lphb->lphbNext;
 
         /* Decompile: if null OR *(uint16_t *)(hb+6) < 17, stop.  */
-        if (lphb == NULL || lphb->cbBlock < 17u)
-        {
+        if (lphb == NULL || lphb->cbBlock < 17u) {
             break;
         }
 
@@ -268,28 +240,27 @@ int16_t CBattles(void)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t i;
-    int16_t ibtn;
-    RECT rc;
-    int16_t dyFrame;
-    uint8_t brc;
-    int16_t iStep;
-    POINT pt;
-    int16_t dStep;
-    int16_t bkMode;
-    int16_t iSel;
-    RECT rcWindow;
-    int16_t bt;
-    int16_t dx;
-    RECT *prc;
-    int16_t iDir;
-    int16_t iCur;
-    uint32_t crBkSav;
+INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    int16_t     i;
+    int16_t     ibtn;
+    RECT        rc;
+    int16_t     dyFrame;
+    uint8_t     brc;
+    int16_t     iStep;
+    POINT       pt;
+    int16_t     dStep;
+    int16_t     bkMode;
+    int16_t     iSel;
+    RECT        rcWindow;
+    int16_t     bt;
+    int16_t     dx;
+    RECT       *prc;
+    int16_t     iDir;
+    int16_t     iCur;
+    uint32_t    crBkSav;
     PAINTSTRUCT ps;
-    BTNT btnt;
+    BTNT        btnt;
 
     /* debug symbols */
     /* block (block) @ MEMORY_VCR:0x0e9f */
@@ -307,26 +278,24 @@ INT_PTR CALLBACK VCRDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void EnableVCRButtons(void)
-{
+void EnableVCRButtons(void) {
     int16_t i;
 
     /* TODO: implement */
 }
 
-int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc)
-{
+int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc) {
     int16_t fAttack;
-    char *rgsz[1];
+    char   *rgsz[1];
     int16_t i;
     int16_t c;
-    char rgch[1536];
-    SHDEF *lpshdef;
+    char    rgch[1536];
+    SHDEF  *lpshdef;
     int16_t rgid[40];
     int16_t iChecked;
     int16_t iSel;
     int16_t j;
-    char *psz;
+    char   *psz;
     int16_t cch;
     int16_t cKilled;
 
@@ -337,12 +306,11 @@ int16_t PopupVCRMenu(HWND hwnd, int16_t x, int16_t y, uint8_t brc)
     return 0;
 }
 
-void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd)
-{
+void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd) {
     int16_t ctok;
     int16_t ibmpRace;
     int16_t bkMode;
-    HBRUSH hbrSav;
+    HBRUSH  hbrSav;
     int32_t dpShields;
     int16_t itokT;
     int32_t dpT;
@@ -353,18 +321,18 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd)
     int16_t c;
     int16_t i;
     uint8_t brcT;
-    SHDEF *lpshdef;
+    SHDEF  *lpshdef;
     int16_t ibmp;
     int16_t csh;
-    char *psz;
+    char   *psz;
     int16_t dx;
     int16_t j;
-    char szT[96];
+    char    szT[96];
     int16_t fJam;
-    RECT rc;
+    RECT    rc;
     int16_t x;
     int16_t cshT;
-    DV dv;
+    DV      dv;
     int32_t dpShT;
     int16_t xT;
     int16_t cshNew;
@@ -377,24 +345,22 @@ void DrawVCR(HDC hdc, int16_t iStart, int16_t iEnd)
     /* TODO: implement */
 }
 
-void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, int16_t *pcsh)
-{
-    int16_t cshT;
-    DV dv;
-    int32_t dpShields;
-    int32_t dpArmor;
-    int16_t i;
-    int16_t cshKill;
+void GetVCRStats(int16_t itok, int32_t *pdpArmor, DV *pdv, int32_t *pdpShields, int16_t *pcsh) {
+    int16_t  cshT;
+    DV       dv;
+    int32_t  dpShields;
+    int32_t  dpArmor;
+    int16_t  i;
+    int16_t  cshKill;
     uint16_t dpShdef;
 
     /* TODO: implement */
 }
 
-void BattleVCR(int16_t iBattle)
-{
+void BattleVCR(int16_t iBattle) {
     int16_t (*lpProc)(void);
     MemJump *penvMemSav;
-    MemJump env;
+    MemJump  env;
     ;
     HB *lphb;
 
@@ -404,9 +370,8 @@ void BattleVCR(int16_t iBattle)
     /* TODO: implement */
 }
 
-int16_t SetVCRBoard(int16_t iStep)
-{
-    TOK *ptok;
+int16_t SetVCRBoard(int16_t iStep) {
+    TOK    *ptok;
     int16_t i;
     int16_t itok;
 
@@ -414,41 +379,40 @@ int16_t SetVCRBoard(int16_t iStep)
     return 0;
 }
 
-void AnimateAttack(HDC hdc)
-{
-    TOK *ptokSrc;
-    TOK *ptokAttack;
-    POINT ptBeam1;
-    int16_t cFrame;
-    int16_t dyFrame;
-    POINT ptRay2;
-    POINT ptTop;
+void AnimateAttack(HDC hdc) {
+    TOK     *ptokSrc;
+    TOK     *ptokAttack;
+    POINT    ptBeam1;
+    int16_t  cFrame;
+    int16_t  dyFrame;
+    POINT    ptRay2;
+    POINT    ptTop;
     uint32_t dwTickLast;
-    int16_t dxFrame;
+    int16_t  dxFrame;
     uint32_t dwTickCur;
-    POINT ptBase;
-    int16_t dy;
-    POINT ptRay1;
-    int16_t y;
-    POINT ptRight;
-    POINT ptDest;
-    int16_t iHit;
+    POINT    ptBase;
+    int16_t  dy;
+    POINT    ptRay1;
+    int16_t  y;
+    POINT    ptRight;
+    POINT    ptDest;
+    int16_t  iHit;
     uint16_t grfWeapon;
-    POINT ptSrc;
-    POINT ptTorp;
-    POINT ptLeft;
+    POINT    ptSrc;
+    POINT    ptTorp;
+    POINT    ptLeft;
     // TIMERINFO ti;
-    int16_t iFrame;
-    int16_t dx;
-    int16_t fKill;
-    POINT ptDestBottom;
-    POINT ptBeam2;
-    POINT ptBottom;
-    POINT ptDestTop;
-    POINT ptDestRight;
-    POINT ptDestLeft;
-    int16_t x;
-    HDC hdcMem;
+    int16_t  iFrame;
+    int16_t  dx;
+    int16_t  fKill;
+    POINT    ptDestBottom;
+    POINT    ptBeam2;
+    POINT    ptBottom;
+    POINT    ptDestTop;
+    POINT    ptDestRight;
+    POINT    ptDestLeft;
+    int16_t  x;
+    HDC      hdcMem;
     uint16_t hbmpSav;
     uint16_t hbmpScreen;
 
@@ -460,8 +424,7 @@ void AnimateAttack(HDC hdc)
     /* TODO: implement */
 }
 
-void Delay(int16_t ctick)
-{
+void Delay(int16_t ctick) {
     uint32_t dwTickLast;
     uint32_t dwTickCur;
     // TIMERINFO ti;

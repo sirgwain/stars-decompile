@@ -1,22 +1,20 @@
 #define fFalse 0
-#define fTrue 1
+#define fTrue  1
 
-#define iPlayerNil -1
-#define cPlayerMax 16
-#define cShdefMax 16
-#define cDefenseCount 5
+#define iPlayerNil      -1
+#define cPlayerMax      16
+#define cShdefMax       16
+#define cDefenseCount   5
 #define iPlanetPartNone -1
 
-typedef enum CostType
-{
+typedef enum CostType {
     Ironium = 0,
     Boranium = 0,
     Germanium = 0,
     Resources = 0,
 } CostType;
 
-typedef enum RaceAttribute
-{
+typedef enum RaceAttribute {
     raCheapCol = 0,  // HE (Hyper Expansion)
     raStealth = 1,   // SS (Super Stealth)
     raAttack = 2,    // WM (War Monger)
@@ -30,8 +28,7 @@ typedef enum RaceAttribute
     raMax = 10,
 } RaceAttribute;
 
-typedef enum RaceGrbit
-{
+typedef enum RaceGrbit {
     ibitRaceIFE = 0x00,
     ibitRaceTT = 0x01,
     ibitRaceARM = 0x02,
@@ -51,8 +48,7 @@ typedef enum RaceGrbit
     ibitRaceLast = 32,
 } RaceGrbit;
 
-typedef enum RaceStat
-{
+typedef enum RaceStat {
     rsResGen = 0,
     rsFactProd = 1,
     rsFactBuild = 2,
@@ -70,8 +66,7 @@ typedef enum RaceStat
     rsMajorAdv = 14,
 } RaceStat;
 
-typedef enum DetType
-{
+typedef enum DetType {
     detNone = 0,
     detMinimal = 1,
     detObscure = 2,
@@ -80,8 +75,7 @@ typedef enum DetType
     detAll = 7,
 } DetType;
 
-typedef enum GrobjClass
-{
+typedef enum GrobjClass {
     grobjNone = 0x0,
     grobjPlanet = 0x1,
     grobjFleet = 0x2,
@@ -89,8 +83,7 @@ typedef enum GrobjClass
     grobjThing = 0x8,
 } GrobjClass;
 
-typedef enum HullSlotType
-{
+typedef enum HullSlotType {
     hstEngine = 0x0001,
     hstScanner = 0x0002,
     hstShield = 0x0004,
@@ -109,8 +102,7 @@ typedef enum HullSlotType
     hstPlanetary = 0x8000,
 } HullSlotType;
 
-typedef enum HullDef
-{
+typedef enum HullDef {
     ihuldefSmallFreighter = 0,
     ihuldefMediumFreighter = 1,
     ihuldefLargeFreighter = 2,
@@ -146,8 +138,7 @@ typedef enum HullDef
     ihuldefCount = 32,
 } HullDef;
 
-typedef enum HulDefSB
-{
+typedef enum HulDefSB {
     ihuldefSBOrbitalFort = 0,
     ihuldefSBSpaceDock = 1,
     ihuldefSBSpaceStation = 2,
@@ -155,16 +146,14 @@ typedef enum HulDefSB
     ihuldefSBDeathStar = 4,
 } HulDefSB;
 
-typedef enum StartingStarbase
-{
+typedef enum StartingStarbase {
     Starbase = 0,
     AcceleratorPlatform = 1,
     PortholetoBeyond = 2,
     StarterColony = 3,
 } StartingStarbase;
 
-typedef enum StartingShip
-{
+typedef enum StartingShip {
     LilliputianFreighter = 0,
     ShadowTransport = 1,
     SmaugarianPeepingTom = 2,
@@ -189,16 +178,14 @@ typedef enum StartingShip
     MTProbe = 21,
 } StartingShip;
 
-typedef enum ThingType
-{
+typedef enum ThingType {
     ithMinefield = 0,
     ithMineralPacket = 1,
     ithWormhole = 2,
     ithMysteryTrader = 3,
 } ThingType;
 
-typedef enum BattleUnitFlags
-{
+typedef enum BattleUnitFlags {
     /* Side selection */
     grBuOurUnits = 0x0001,   /* tok->iplr == idPlayer */
     grBuTheirUnits = 0x0002, /* tok->iplr != idPlayer */
@@ -216,15 +203,13 @@ typedef enum BattleUnitFlags
     grBuClassAll = 0x00F8
 } BattleUnitFlags;
 
-typedef enum GrStat
-{
+typedef enum GrStat {
     grStatFuel = 1,
     grStatCargo = 2,
 
 } GrStat;
 
-typedef enum iengine
-{
+typedef enum iengine {
     iengineSettlersDelight = 0,
     iengineQuickJump5 = 1,
     iengineFuelMizer = 2,
@@ -244,8 +229,7 @@ typedef enum iengine
     iengineCount = 16,
 } iengine;
 
-typedef enum iarmor
-{
+typedef enum iarmor {
     iarmorTritanium = 0,
     iarmorCrobmnium = 1,
     iarmorCarbonicArmor = 2,
@@ -261,8 +245,7 @@ typedef enum iarmor
     iarmorCount = 12,
 } iarmor;
 
-typedef enum iscanner
-{
+typedef enum iscanner {
     iscannerBatScanner = 0,
     iscannerRhinoScanner = 1,
     iscannerMoleScanner = 2,
@@ -282,8 +265,7 @@ typedef enum iscanner
     iscannerCount = 16,
 } iscanner;
 
-typedef enum ishield
-{
+typedef enum ishield {
     ishieldMoleSkinShield = 0,
     ishieldCowHideShield = 1,
     ishieldWolverineDiffuseShield = 2,
@@ -297,8 +279,7 @@ typedef enum ishield
     ishieldCount = 10,
 } ishield;
 
-typedef enum ispecialE
-{
+typedef enum ispecialE {
     ispecialETransportCloaking = 0,
     ispecialEStealthCloak = 1,
     ispecialESuperStealthCloak = 2,
@@ -319,8 +300,7 @@ typedef enum ispecialE
     ispecialECount = 17,
 } ispecialE;
 
-typedef enum ispecialM
-{
+typedef enum ispecialM {
     ispecialMColonizationModule = 0,
     ispecialMOrbitalConstructionModule = 1,
     ispecialMCargoPod = 2,
@@ -335,8 +315,7 @@ typedef enum ispecialM
     ispecialMCount = 11,
 } ispecialM;
 
-typedef enum imines
-{
+typedef enum imines {
     iminesMineDispenser40 = 0,
     iminesMineDispenser50 = 1,
     iminesMineDispenser80 = 2,
@@ -350,8 +329,7 @@ typedef enum imines
     iminesCount = 10,
 } imines;
 
-typedef enum imining
-{
+typedef enum imining {
     iminingRoboMidgetMiner = 0,
     iminingRoboMiniMiner = 1,
     iminingRoboMiner = 2,
@@ -363,8 +341,7 @@ typedef enum imining
     iminingCount = 8,
 } imining;
 
-typedef enum iplanetary
-{
+typedef enum iplanetary {
     iplanetaryViewer50 = 0,
     iplanetaryViewer90 = 1,
     iplanetaryScoper150 = 2,
@@ -383,8 +360,7 @@ typedef enum iplanetary
     iplanetaryCount = 15,
 } iplanetary;
 
-typedef enum iterra
-{
+typedef enum iterra {
     iterraTotalTerraform3 = 0,
     iterraTotalTerraform5 = 1,
     iterraTotalTerraform7 = 2,
@@ -408,8 +384,7 @@ typedef enum iterra
     iterraCount = 20,
 } iterra;
 
-typedef enum ibomb
-{
+typedef enum ibomb {
     ibombLadyFingerBomb = 0,
     ibombBlackCatBomb = 1,
     ibombM70Bomb = 2,
@@ -428,8 +403,7 @@ typedef enum ibomb
     ibombCount = 15,
 } ibomb;
 
-typedef enum itorp
-{
+typedef enum itorp {
     itorpAlphaTorpedo = 0,
     itorpBetaTorpedo = 1,
     itorpDeltaTorpedo = 2,
@@ -445,8 +419,7 @@ typedef enum itorp
     itorpCount = 12,
 } itorp;
 
-typedef enum ibeam
-{
+typedef enum ibeam {
     ibeamLaser = 0,
     ibeamXRayLaser = 1,
     ibeamMiniGun = 2,
@@ -474,8 +447,7 @@ typedef enum ibeam
     ibeamCount = 24,
 } ibeam;
 
-typedef enum ispecialSB
-{
+typedef enum ispecialSB {
     ispecialSBStargate100250 = 0,
     ispecialSBStargateAny300 = 1,
     ispecialSBStargate150600 = 2,
@@ -495,8 +467,7 @@ typedef enum ispecialSB
     ispecialSBCount = 16,
 } ispecialSB;
 
-typedef enum GrbitTrader
-{
+typedef enum GrbitTrader {
     grbitTraderNone = 0x0000,
     grbitTraderCargo = 0x0001,
     grbitTraderSpecial = 0x0002,
@@ -514,12 +485,4 @@ typedef enum GrbitTrader
     grbitTraderAll = 0x1fff,
 } GrbitTrader;
 
-typedef enum LookupResult
-{
-    LookupInvalid = 0,
-    LookupDisallowed = -1,
-    LookupOk = 1,
-    LookupNear = 2,
-    LookupNeedMany = 99
-} LookupResult;
-
+typedef enum LookupResult { LookupInvalid = 0, LookupDisallowed = -1, LookupOk = 1, LookupNear = 2, LookupNeedMany = 99 } LookupResult;

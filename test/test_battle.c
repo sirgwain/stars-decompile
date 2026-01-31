@@ -3,18 +3,17 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "globals.h"
-#include "types.h"
-#include "parts.h"
 #include "battle.h" /* SpdOfShip */
+#include "globals.h"
+#include "parts.h"
+#include "types.h"
 
-typedef struct SpdOfShipArgs
-{
+typedef struct SpdOfShipArgs {
     /* These mirror the table the user provided (mostly for documentation). */
-    int16_t idealEngineSpeed; /* warp */
-    uint16_t mass;            /* kT -> hul.wtEmpty */
-    uint8_t numEngines;       /* engine count in slot 0 */
-    int16_t movementBonus_x2; /* movement bonus * 2 (so 0.5 == 1, 2.5 == 5) */
+    int16_t  idealEngineSpeed; /* warp */
+    uint16_t mass;             /* kT -> hul.wtEmpty */
+    uint8_t  numEngines;       /* engine count in slot 0 */
+    int16_t  movementBonus_x2; /* movement bonus * 2 (so 0.5 == 1, 2.5 == 5) */
 
     /* What we actually need to construct the SHDEF for the test. */
     uint8_t iengine;     /* iengine enum value stored in HS.iItem */
@@ -22,20 +21,17 @@ typedef struct SpdOfShipArgs
     uint8_t fAttack;     /* set player's major advantage to raAttack */
 } SpdOfShipArgs;
 
-typedef struct SpdOfShipCase
-{
-    const char *name;
+typedef struct SpdOfShipCase {
+    const char   *name;
     SpdOfShipArgs args;
-    int16_t want;
+    int16_t       want;
 } SpdOfShipCase;
 
-static void set_engine_maxwarp(uint8_t iengine, int16_t wantWarp, ENGINE *old_out)
-{
+static void set_engine_maxwarp(uint8_t iengine, int16_t wantWarp, ENGINE *old_out) {
     ENGINE *pe = LpengineFromId((int16_t)iengine);
     TEST_CHECK_(pe != NULL, "LpengineFromId(%u) returned NULL", (unsigned)iengine);
 
-    if (old_out != NULL)
-    {
+    if (old_out != NULL) {
         *old_out = *pe;
     }
 
@@ -45,19 +41,16 @@ static void set_engine_maxwarp(uint8_t iengine, int16_t wantWarp, ENGINE *old_ou
        Note: special engines (Interspace10/Enigma/TransStar10/.../GalaxyScoop) ignore this,
        but it is harmless to set anyway.
     */
-    for (int i = 0; i < 12; i++)
-    {
+    for (int i = 0; i < 12; i++) {
         pe->rgcFuelUsed[i] = 0;
     }
 
-    for (int i = 9; i > 0; i--)
-    {
+    for (int i = 9; i > 0; i--) {
         pe->rgcFuelUsed[i] = (i > wantWarp) ? 121 : 0;
     }
 }
 
-static SHDEF make_shdef_spd(uint16_t mass, uint8_t iengine, uint8_t numEngines, uint8_t addThruster)
-{
+static SHDEF make_shdef_spd(uint16_t mass, uint8_t iengine, uint8_t numEngines, uint8_t addThruster) {
     SHDEF sh;
     memset(&sh, 0, sizeof(sh));
 
@@ -71,8 +64,7 @@ static SHDEF make_shdef_spd(uint16_t mass, uint8_t iengine, uint8_t numEngines, 
 
     sh.hul.chs = 1;
 
-    if (addThruster)
-    {
+    if (addThruster) {
         sh.hul.rghs[1].grhst = hstSpecialM;
         sh.hul.rghs[1].iItem = ispecialMManeuveringJet;
         sh.hul.rghs[1].cItem = 1;
@@ -82,8 +74,7 @@ static SHDEF make_shdef_spd(uint16_t mass, uint8_t iengine, uint8_t numEngines, 
     return sh;
 }
 
-static void test_SpdOfShip_table(void)
-{
+static void test_SpdOfShip_table(void) {
     static const SpdOfShipCase cases[] = {
         {"248 kT Destroyer + Trans Galactic Drive + thruster",
          {.idealEngineSpeed = 9, .mass = 248, .numEngines = 1, .movementBonus_x2 = 2, .iengine = iengineTransGalacticDrive, .addThruster = 1, .fAttack = 0},
@@ -113,8 +104,7 @@ static void test_SpdOfShip_table(void)
     /* Save/restore globals we touch. */
     const PLAYER plr0_old = rgplr[0];
 
-    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         const SpdOfShipCase *tc = &cases[i];
 
         /* Prepare engine lookup behavior for this test. */
@@ -123,8 +113,7 @@ static void test_SpdOfShip_table(void)
 
         /* Set up player major advantage for WM case. */
         rgplr[0] = plr0_old;
-        if (tc->args.fAttack)
-        {
+        if (tc->args.fAttack) {
             /* SpdOfShip adds +2 if GetRaceStat(..., rsMajorAdv) == raAttack.
                GetRaceStat reads PLAYER.rgAttr[RaceStat]. */
             rgplr[0].rgAttr[rsMajorAdv] = (int8_t)raAttack;
@@ -139,11 +128,8 @@ static void test_SpdOfShip_table(void)
 
         int16_t got = SpdOfShip(&fl, 0, NULL, 0, &sh);
 
-        TEST_CHECK_(got == tc->want,
-                    "case[%zu] %s: got=%d want=%d (warp=%d mass=%u engines=%u bonus=%.1f)",
-                    i, tc->name, (int)got, (int)tc->want,
-                    (int)tc->args.idealEngineSpeed, (unsigned)tc->args.mass, (unsigned)tc->args.numEngines,
-                    (double)tc->args.movementBonus_x2 / 2.0);
+        TEST_CHECK_(got == tc->want, "case[%zu] %s: got=%d want=%d (warp=%d mass=%u engines=%u bonus=%.1f)", i, tc->name, (int)got, (int)tc->want,
+                    (int)tc->args.idealEngineSpeed, (unsigned)tc->args.mass, (unsigned)tc->args.numEngines, (double)tc->args.movementBonus_x2 / 2.0);
 
         /* Restore engine table entry. */
         *LpengineFromId((int16_t)tc->args.iengine) = eng_old;
@@ -152,8 +138,7 @@ static void test_SpdOfShip_table(void)
     rgplr[0] = plr0_old;
 }
 
-static void test_FFuelTanker(void)
-{
+static void test_FFuelTanker(void) {
     SHDEF sh;
     memset(&sh, 0, sizeof(sh));
 
@@ -170,8 +155,7 @@ static void test_FFuelTanker(void)
     TEST_CHECK(FFuelTanker(&sh) == 0);
 }
 
-static void test_DzFromBrcBrc(void)
-{
+static void test_DzFromBrcBrc(void) {
     /* Same square -> 0 */
     TEST_CHECK(DzFromBrcBrc(0x44, 0x44) == 0);
 
@@ -188,8 +172,7 @@ static void test_DzFromBrcBrc(void)
     TEST_CHECK(DzFromBrcBrc(0x11, 0x36) == 5);
 }
 
-static void test_DxyFromSpdRound(void)
-{
+static void test_DxyFromSpdRound(void) {
     /* spd=0 => dxy = (0+2)/4 = 0, rem=0, even round adds 1 */
     TEST_CHECK(DxyFromSpdRound(0, 0) == 1);
     TEST_CHECK(DxyFromSpdRound(0, 1) == 0);
@@ -211,8 +194,7 @@ static void test_DxyFromSpdRound(void)
     TEST_CHECK(DxyFromSpdRound(6, 1) == 2);
 }
 
-static void test_FHullHasTeeth(void)
-{
+static void test_FHullHasTeeth(void) {
     HUL hul;
     memset(&hul, 0, sizeof(hul));
 
@@ -242,8 +224,7 @@ static void test_FHullHasTeeth(void)
     TEST_CHECK(FHullHasTeeth(&hul) == 0);
 }
 
-static void test_FHullHasBombs(void)
-{
+static void test_FHullHasBombs(void) {
     HUL hul;
     memset(&hul, 0, sizeof(hul));
 
@@ -279,11 +260,10 @@ static void test_FHullHasBombs(void)
     TEST_CHECK(FHullHasBombs(&hul) == 0);
 }
 
-TEST_LIST = {
-    {"SpdOfShip table", test_SpdOfShip_table},
-    {"FFuelTanker", test_FFuelTanker},
-    {"DzFromBrcBrc", test_DzFromBrcBrc},
-    {"DxyFromSpdRound", test_DxyFromSpdRound},
-    {"FHullHasTeeth", test_FHullHasTeeth},
-    {"FHullHasBombs", test_FHullHasBombs},
-    {NULL, NULL}};
+TEST_LIST = {{"SpdOfShip table", test_SpdOfShip_table},
+             {"FFuelTanker", test_FFuelTanker},
+             {"DzFromBrcBrc", test_DzFromBrcBrc},
+             {"DxyFromSpdRound", test_DxyFromSpdRound},
+             {"FHullHasTeeth", test_FHullHasTeeth},
+             {"FHullHasBombs", test_FHullHasBombs},
+             {NULL, NULL}};

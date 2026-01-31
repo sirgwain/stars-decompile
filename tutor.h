@@ -1,15 +1,15 @@
 #ifndef TUTOR_H_
 #define TUTOR_H_
 
-#include "types.h"
 #include "strings.h"
+#include "types.h"
 
 /* globals */
 extern ITEMACTION rgiaQuikDrop[5];
 extern ITEMACTION rgiaQuikLoad[5];
 extern ITEMACTION rgiaUnloadAllCol[5];
 extern ITEMACTION rgiaLoadAllCol[5];
-extern ZIPPRODQ1 rgzpqTut[2];
+extern ZIPPRODQ1  rgzpqTut[2];
 
 extern char mpishdefishTutor[6]; /* MEMORY_IO:0x0000 */
 
@@ -23,11 +23,11 @@ void AdvanceTutor(void);
 INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
 INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
 
-void ShowTutor(int16_t fShow);
-void StartTutor(int16_t fRestart);
-void EndTutor(int16_t fClose);
-void TutorError(int16_t idsError);
-void DrawTutorText(HWND hwnd);
+void    ShowTutor(int16_t fShow);
+void    StartTutor(int16_t fRestart);
+void    EndTutor(int16_t fClose);
+void    TutorError(int16_t idsError);
+void    DrawTutorText(HWND hwnd);
 int16_t FAskKillTutor(void);
 int16_t FOKMergeDialog(void);
 
@@ -50,7 +50,8 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp);
 int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit);
 int16_t FCheckSelection(GrobjClass grobj, int16_t id);
 int16_t FCheckSummary(GrobjClass grobj, int16_t id);
-int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_t fBomb, uint16_t fDump, uint16_t mdUnarmed, uint16_t mdScout, uint16_t mdWar, uint16_t mdBomber);
+int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_t fBomb, uint16_t fDump, uint16_t mdUnarmed, uint16_t mdScout, uint16_t mdWar,
+                      uint16_t mdBomber);
 int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip);
 
 void SaveGameState(void);

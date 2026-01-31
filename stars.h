@@ -15,7 +15,7 @@ INT_PTR CALLBACK About(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PA
 INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */ /* MEMORY_MAIN:0x151e */
 
 int16_t FGetSystemColors(void);                                         /* MEMORY_MAIN:0x08d2 */
-void FreeStuff(void);                                                   /* MEMORY_MAIN:0x0bae */
+void    FreeStuff(void);                                                /* MEMORY_MAIN:0x0bae */
 int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw); /* MEMORY_MAIN:0x165a */
 int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam);             /* MEMORY_MAIN:0x15de */
 

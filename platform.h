@@ -10,13 +10,10 @@
 /* INI write helper (used for MRU list maintenance). Returns non-zero on
  * success.
  */
-int32_t PlatformWritePrivateProfileString(const char *section,
-                                          const char *key,
-                                          const char *value,
-                                          const char *file_path);
+int32_t PlatformWritePrivateProfileString(const char *section, const char *key, const char *value, const char *file_path);
 
 /* Monotonic tick count and sleep used by StreamOpen retry logic. */
 uint32_t PlatformTickMs(void);
-void PlatformSleepMs(uint32_t ms);
+void     PlatformSleepMs(uint32_t ms);
 
 #endif /* STARS_PLATFORM_H_ */

@@ -9,11 +9,10 @@
 uint16_t mpimdgrbitBU[8] = {0x0008, 0x0008, 0x0010, 0x0020, 0x0080, 0x0040, 0x0008, 0x0008};
 
 /* functions */
-LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
+LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
     PAINTSTRUCT ps;
-    RECT rc;
+    RECT        rc;
 
     /* debug symbols */
     /* label Default @ MEMORY_POPUP:0x00e1 */
@@ -22,18 +21,17 @@ LRESULT CALLBACK PopupWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn)
-{
-    char *pszTitle;
+int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgids, char **rgsz, int16_t iChecked, int16_t fRightBtn) {
+    char   *pszTitle;
     int16_t tpm;
-    POINT pt;
+    POINT   pt;
     int16_t i;
-    char szTemp[128];
-    HMENU hmenuSub;
-    HMENU hmenuPopup;
-    char *pszT;
-    char *psz;
-    MSG msg;
+    char    szTemp[128];
+    HMENU   hmenuSub;
+    HMENU   hmenuPopup;
+    char   *pszT;
+    char   *psz;
+    MSG     msg;
     int16_t fChecked;
     int16_t fCheckedCur;
 
@@ -44,23 +42,22 @@ int16_t PopupMenu(HWND hwnd, int16_t x, int16_t y, int16_t cString, int32_t *rgi
     return 0;
 }
 
-void DrawPopup(HWND hwnd, HDC hdc)
-{
+void DrawPopup(HWND hwnd, HDC hdc) {
     COLORREF crBack;
-    char szT[80];
-    int16_t yCur;
-    int16_t i;
-    int16_t c;
-    int16_t bkMode;
-    HFONT hfontSav;
-    char *psz;
-    int16_t dx;
+    char     szT[80];
+    int16_t  yCur;
+    int16_t  i;
+    int16_t  c;
+    int16_t  bkMode;
+    HFONT    hfontSav;
+    char    *psz;
+    int16_t  dx;
     COLORREF crFore;
-    RECT rc;
-    char *lpsz;
-    int16_t csh;
-    int16_t dpT;
-    char szTB[40];
+    RECT     rc;
+    char    *lpsz;
+    int16_t  csh;
+    int16_t  dpT;
+    char     szTB[40];
 
     /* debug symbols */
     /* block (block) @ MEMORY_POPUP:0x0561 */
@@ -69,15 +66,14 @@ void DrawPopup(HWND hwnd, HDC hdc)
     /* TODO: implement */
 }
 
-POINT PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint)
-{
+POINT PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint) {
     int16_t iMax;
-    POINT pt;
+    POINT   pt;
     int16_t ids;
     int16_t y;
     int16_t xMax;
     int16_t i;
-    char *psz;
+    char   *psz;
     int16_t cnt;
     int16_t x;
 
@@ -89,9 +85,8 @@ POINT PtDisplayResourceInfo(HDC hdc, int16_t dx, int16_t fPrint)
     return (POINT){0, 0};
 }
 
-POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint)
-{
-    POINT pt;
+POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint) {
+    POINT   pt;
     int16_t y;
     int16_t xMax;
     int16_t cch;
@@ -103,7 +98,7 @@ POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint)
     int16_t pctDesireOld;
     int16_t pctDesire;
     int16_t iValSav;
-    char szOut[90];
+    char    szOut[90];
 
     /* debug symbols */
     /* block (block) @ MEMORY_POPUP:0x1ebf */
@@ -114,25 +109,24 @@ POINT PtDisplayPlanetStateInfo(HDC hdc, int16_t fPrint)
     return (POINT){0, 0};
 }
 
-void Popup(HWND hwnd, int16_t x, int16_t y)
-{
-    HDC hdc;
-    POINT pt;
+void Popup(HWND hwnd, int16_t x, int16_t y) {
+    HDC     hdc;
+    POINT   pt;
     int16_t dy;
     int16_t i;
     int16_t c;
-    HFONT hfontSav;
-    char *psz;
+    HFONT   hfontSav;
+    char   *psz;
     int16_t dx;
-    POINT ptT;
+    POINT   ptT;
     int16_t dx2;
     int16_t dxDamage;
     int16_t dxName;
     int16_t dxL;
     int16_t dxCoord;
-    char *lpsz;
+    char   *lpsz;
     int16_t dxR;
-    char szTB[40];
+    char    szTB[40];
 
     /* debug symbols */
     /* block (block) @ MEMORY_POPUP:0x0d22 */
@@ -144,17 +138,15 @@ void Popup(HWND hwnd, int16_t x, int16_t y)
     /* TODO: implement */
 }
 
-int16_t FIsPopupHullType(int16_t ishdef)
-{
+int16_t FIsPopupHullType(int16_t ishdef) {
     uint16_t imd;
 
     /* TODO: implement */
     return 0;
 }
 
-POINT PtDisplayString(HDC hdc, int16_t dx, int16_t fPrint)
-{
-    POINT pt;
+POINT PtDisplayString(HDC hdc, int16_t dx, int16_t fPrint) {
+    POINT   pt;
     int16_t y;
     int16_t xMax;
     int16_t x;
@@ -163,15 +155,14 @@ POINT PtDisplayString(HDC hdc, int16_t dx, int16_t fPrint)
     return (POINT){0, 0};
 }
 
-POINT PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint)
-{
-    PLANET pl;
-    char szT[150];
-    POINT pt;
+POINT PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint) {
+    PLANET  pl;
+    char    szT[150];
+    POINT   pt;
     int16_t y;
     int16_t xMax;
     int16_t c;
-    char *psz;
+    char   *psz;
     int32_t lMax;
     int16_t pctDesire;
     int16_t x;
@@ -185,30 +176,28 @@ POINT PtDisplayPlanetPopInfo(HDC hdc, int16_t fPrint)
     return (POINT){0, 0};
 }
 
-POINT PtDisplayZipOrdInfo(HDC hdc, int16_t xCtr, int16_t fPrint)
-{
-    POINT pt;
+POINT PtDisplayZipOrdInfo(HDC hdc, int16_t xCtr, int16_t fPrint) {
+    POINT   pt;
     int16_t y;
     int16_t xMax;
-    char *psz;
+    char   *psz;
     int16_t x;
 
     /* TODO: implement */
     return (POINT){0, 0};
 }
 
-POINT PtDisplayFactoryMineInfo(HDC hdc, int16_t dx, int16_t fPrint)
-{
-    char *pszTypes;
-    char szT[40];
-    POINT pt;
+POINT PtDisplayFactoryMineInfo(HDC hdc, int16_t dx, int16_t fPrint) {
+    char   *pszTypes;
+    char    szT[40];
+    POINT   pt;
     int16_t ids;
-    char *pszType;
+    char   *pszType;
     int16_t y;
     int16_t xMax;
     int16_t i;
     int16_t c;
-    char *psz;
+    char   *psz;
     int16_t cnt;
     int16_t x;
 

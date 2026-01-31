@@ -7,53 +7,50 @@
 #include "types.h"
 #include "utilgen.h"
 
-static void test_ICompLong(void)
-{
+static void test_ICompLong(void) {
     int32_t a, b;
 
     /* a < b => negative */
-    a = 10; b = 20;
+    a = 10;
+    b = 20;
     TEST_CHECK(ICompLong(&a, &b) < 0);
 
     /* a > b => positive */
-    a = 20; b = 10;
+    a = 20;
+    b = 10;
     TEST_CHECK(ICompLong(&a, &b) > 0);
 
     /* a == b => zero */
-    a = 42; b = 42;
+    a = 42;
+    b = 42;
     TEST_CHECK(ICompLong(&a, &b) == 0);
 
     /* negative values */
-    a = -100; b = 50;
+    a = -100;
+    b = 50;
     TEST_CHECK(ICompLong(&a, &b) < 0);
 
     /* zero vs positive */
-    a = 0; b = 1;
+    a = 0;
+    b = 1;
     TEST_CHECK(ICompLong(&a, &b) < 0);
 }
 
-static void test_FCompressDecompressUserString(void)
-{
-    typedef struct Case
-    {
+static void test_FCompressDecompressUserString(void) {
+    typedef struct Case {
         const char *in;
     } Case;
 
     /* Keep inputs to characters that Stars' NybbleFromCh/ChFromNybble mapping is expected to support. */
     const Case cases[] = {
-        {""},
-        {"Bob"},
-        {"Bob's Empire"},
-        {"The quick brown fox jumps over the lazy dog"},
-        {"Stars! 2.6j RC3"},
+        {""}, {"Bob"}, {"Bob's Empire"}, {"The quick brown fox jumps over the lazy dog"}, {"Stars! 2.6j RC3"},
     };
 
-    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         const char *in = cases[i].in;
 
         uint8_t comp[256];
-        char out[256];
+        char    out[256];
 
         int16_t cbCompCap = (int16_t)sizeof(comp);
         int16_t cbOutCap = (int16_t)sizeof(out);
@@ -66,15 +63,13 @@ static void test_FCompressDecompressUserString(void)
         int16_t okC = FCompressUserString((char *)in, (char *)comp, &cbComp);
 
         TEST_CHECK(okC != 0);
-        if (okC == 0)
-        {
+        if (okC == 0) {
             TEST_MSG("compress failed for case %zu: '%s'", i, in);
             continue;
         }
 
         TEST_CHECK(cbComp >= 0 && cbComp <= cbCompCap);
-        if (cbComp < 0 || cbComp > cbCompCap)
-        {
+        if (cbComp < 0 || cbComp > cbCompCap) {
             TEST_MSG("bad compressed size for case %zu: cbComp=%d cap=%d", i, (int)cbComp, (int)cbCompCap);
             continue;
         }
@@ -83,17 +78,14 @@ static void test_FCompressDecompressUserString(void)
         int16_t okD = FDecompressUserString((char *)comp, cbComp, out, &cbOutCap);
 
         TEST_CHECK(okD != 0);
-        if (okD == 0)
-        {
+        if (okD == 0) {
             TEST_MSG("decompress failed for case %zu: '%s' (cbComp=%d)", i, in, (int)cbComp);
             continue;
         }
 
         TEST_CHECK(strcmp(out, in) == 0);
-        if (strcmp(out, in) != 0)
-        {
-            TEST_MSG("roundtrip mismatch case %zu:\n  in : '%s'\n  out: '%s'\n  cbComp=%d",
-                     i, in, out, (int)cbComp);
+        if (strcmp(out, in) != 0) {
+            TEST_MSG("roundtrip mismatch case %zu:\n  in : '%s'\n  out: '%s'\n  cbComp=%d", i, in, out, (int)cbComp);
         }
     }
 
@@ -102,7 +94,7 @@ static void test_FCompressDecompressUserString(void)
         const char *in = "This is longer than 4";
 
         uint8_t comp[256];
-        char out[256];
+        char    out[256];
 
         int16_t cbComp = (int16_t)sizeof(comp);
         int16_t okC = FCompressUserString((char *)in, (char *)comp, &cbComp);
@@ -116,9 +108,8 @@ static void test_FCompressDecompressUserString(void)
     }
 }
 
-static void test_AddBackTrailingSpaces(void)
-{
-    char buf[] = "   hello";
+static void test_AddBackTrailingSpaces(void) {
+    char  buf[] = "   hello";
     char *p = buf;
     char *end = buf + 3;
 
@@ -139,9 +130,8 @@ static void test_AddBackTrailingSpaces(void)
     TEST_CHECK(p == buf);
 }
 
-static void test_ChopTrailingSpaces(void)
-{
-    char buf[] = "hello   ";
+static void test_ChopTrailingSpaces(void) {
+    char  buf[] = "hello   ";
     char *end = buf + 8;
 
     ChopTrailingSpaces(buf, &end);
@@ -160,9 +150,8 @@ static void test_ChopTrailingSpaces(void)
     TEST_CHECK(end == buf3);
 }
 
-static void test_ChopLastWord(void)
-{
-    char buf[] = "hello world foo";
+static void test_ChopLastWord(void) {
+    char  buf[] = "hello world foo";
     char *end = buf + 15;
 
     ChopLastWord(buf, &end);
@@ -178,8 +167,7 @@ static void test_ChopLastWord(void)
     TEST_CHECK(end == buf2 + 5);
 }
 
-static void test_LDistance2(void)
-{
+static void test_LDistance2(void) {
     POINT p1 = {0, 0};
     POINT p2 = {3, 4};
     TEST_CHECK(LDistance2(p1, p2) == 25);
@@ -193,10 +181,9 @@ static void test_LDistance2(void)
     TEST_CHECK(LDistance2(p5, p6) == 100);
 }
 
-static void test_PszFromInt(void)
-{
+static void test_PszFromInt(void) {
     int16_t cch;
-    char *result;
+    char   *result;
 
     result = PszFromInt(42, &cch);
     TEST_CHECK(strcmp(result, "42") == 0);
@@ -210,10 +197,9 @@ static void test_PszFromInt(void)
     TEST_CHECK(strcmp(result, "0") == 0);
 }
 
-static void test_PszFromLong(void)
-{
+static void test_PszFromLong(void) {
     int16_t cch;
-    char *result;
+    char   *result;
 
     result = PszFromLong(123456, &cch);
     TEST_CHECK(strcmp(result, "123456") == 0);
@@ -227,8 +213,7 @@ static void test_PszFromLong(void)
     TEST_CHECK(strcmp(result, "0") == 0);
 }
 
-static void test_LSaltFromSz(void)
-{
+static void test_LSaltFromSz(void) {
     /* Empty string returns 0 */
     TEST_CHECK(LSaltFromSz("") == 0);
 
@@ -252,9 +237,7 @@ static void test_LSaltFromSz(void)
     TEST_CHECK(s3a != 0);
 }
 
-
-static void test_ExpandRc_OffsetRc(void)
-{
+static void test_ExpandRc_OffsetRc(void) {
     RECT rc = {10, 20, 30, 40};
 
     ExpandRc(&rc, 2, 3);
@@ -270,15 +253,14 @@ static void test_ExpandRc_OffsetRc(void)
     TEST_CHECK(rc.bottom == 48);
 }
 
-TEST_LIST = {
-    {"ICompLong", test_ICompLong},
-    {"compress/decompress user string", test_FCompressDecompressUserString},
-    {"AddBackTrailingSpaces", test_AddBackTrailingSpaces},
-    {"ChopTrailingSpaces", test_ChopTrailingSpaces},
-    {"ChopLastWord", test_ChopLastWord},
-    {"LDistance2", test_LDistance2},
-    {"PszFromInt", test_PszFromInt},
-    {"PszFromLong", test_PszFromLong},
-    {"LSaltFromSz", test_LSaltFromSz},
-    {"ExpandRc/OffsetRc", test_ExpandRc_OffsetRc},
-    {NULL, NULL}};
+TEST_LIST = {{"ICompLong", test_ICompLong},
+             {"compress/decompress user string", test_FCompressDecompressUserString},
+             {"AddBackTrailingSpaces", test_AddBackTrailingSpaces},
+             {"ChopTrailingSpaces", test_ChopTrailingSpaces},
+             {"ChopLastWord", test_ChopLastWord},
+             {"LDistance2", test_LDistance2},
+             {"PszFromInt", test_PszFromInt},
+             {"PszFromLong", test_PszFromLong},
+             {"LSaltFromSz", test_LSaltFromSz},
+             {"ExpandRc/OffsetRc", test_ExpandRc_OffsetRc},
+             {NULL, NULL}};

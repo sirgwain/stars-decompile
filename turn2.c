@@ -5,8 +5,7 @@
 #include "turn2.h"
 
 /* functions */
-void Produce(void)
-{
+void Produce(void) {
     int32_t lResCur;
     int16_t cMax;
     int32_t rgResAvail[4];
@@ -17,11 +16,11 @@ void Produce(void)
     PLANET *lppl;
     int16_t i;
     int16_t idm;
-    PROD prodPartial;
+    PROD    prodPartial;
     int16_t fPrevProdIsAlch;
     int16_t fAutoBuildDone;
     int32_t lResearchTake;
-    PROD *lpprod;
+    PROD   *lpprod;
     PLANET *lpplMac;
     int16_t cMax2;
 
@@ -37,26 +36,24 @@ void Produce(void)
     /* TODO: implement */
 }
 
-void CreateBackupDir(void)
-{
+void CreateBackupDir(void) {
     char *pchT;
 
     /* TODO: implement */
 }
 
-void ThingDecay(void)
-{
-    THING *lpthMac;
-    int32_t pctDecay;
-    int16_t i;
-    int16_t ifl;
-    FLEET *lpfl;
-    THING *lpth;
+void ThingDecay(void) {
+    THING   *lpthMac;
+    int32_t  pctDecay;
+    int16_t  i;
+    int16_t  ifl;
+    FLEET   *lpfl;
+    THING   *lpth;
     uint16_t wDecay;
-    int32_t lDecay;
-    int16_t fMineExpert;
-    int32_t dy;
-    int32_t dx;
+    int32_t  lDecay;
+    int16_t  fMineExpert;
+    int32_t  dy;
+    int32_t  dx;
 
     /* debug symbols */
     /* block (block) @ MEMORY_TURN2:0x7346 */
@@ -66,34 +63,33 @@ void ThingDecay(void)
     /* TODO: implement */
 }
 
-void DropColonists(void)
-{
+void DropColonists(void) {
     COLDROP *lpcdLook;
-    int16_t fTie;
-    int32_t cMax;
-    PLANET pl;
-    int32_t lDefensePower;
-    int32_t cPowerTot;
+    int16_t  fTie;
+    int32_t  cMax;
+    PLANET   pl;
+    int32_t  lDefensePower;
+    int32_t  cPowerTot;
     COLDROP *lpcdCur;
-    int16_t iMax;
-    int16_t idPlanet;
-    int16_t iplrOldOwner;
-    int32_t cColTot;
-    int32_t lOldPop;
-    int32_t c2nd;
-    int16_t i;
-    int32_t rgcPower[16];
-    int16_t cSides;
-    float pctSurvive;
-    int32_t rgcCol[16];
-    int32_t lPower;
+    int16_t  iMax;
+    int16_t  idPlanet;
+    int16_t  iplrOldOwner;
+    int32_t  cColTot;
+    int32_t  lOldPop;
+    int32_t  c2nd;
+    int16_t  i;
+    int32_t  rgcPower[16];
+    int16_t  cSides;
+    float    pctSurvive;
+    int32_t  rgcCol[16];
+    int32_t  lPower;
     COLDROP *lpcdMax;
-    int16_t cpq;
-    int16_t iTech;
-    int16_t iDst;
-    int16_t iBonus;
-    PROD prod;
-    int16_t ipq;
+    int16_t  cpq;
+    int16_t  iTech;
+    int16_t  iDst;
+    int16_t  iBonus;
+    PROD     prod;
+    int16_t  ipq;
 
     /* debug symbols */
     /* block (block) @ MEMORY_TURN2:0x3ebb */
@@ -105,16 +101,14 @@ void DropColonists(void)
     /* TODO: implement */
 }
 
-void TossNonAutoBuildItems(PLANET *lppl)
-{
+void TossNonAutoBuildItems(PLANET *lppl) {
     int16_t iDst;
     int16_t iSrc;
 
     /* TODO: implement */
 }
 
-void UpdateResearchStatus(int16_t fUsePool)
-{
+void UpdateResearchStatus(int16_t fUsePool) {
     int16_t mdAvail;
     int16_t fRedoItAll;
     int16_t iTechCur;
@@ -130,11 +124,11 @@ void UpdateResearchStatus(int16_t fUsePool)
     int16_t grbitCur;
     int16_t cPlrAlive;
     int32_t lSpent;
-    PART part;
+    PART    part;
     int32_t l;
     int16_t iTT;
     int16_t iTechNext2;
-    char TechLevel;
+    char    TechLevel;
     int32_t l15pct;
     int16_t jj;
     int16_t iGoto;
@@ -153,14 +147,13 @@ void UpdateResearchStatus(int16_t fUsePool)
     /* TODO: implement */
 }
 
-void RemoteTerraforming(void)
-{
+void RemoteTerraforming(void) {
     int16_t fHelp;
     int16_t iBest;
     int16_t pctCur;
     PLANET *lppl;
     int16_t ifl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t cDone;
     int16_t iEnv;
     int16_t cAllowed;
@@ -170,8 +163,7 @@ void RemoteTerraforming(void)
     /* TODO: implement */
 }
 
-void UpdatePopulations(void)
-{
+void UpdatePopulations(void) {
     int32_t lPopChg;
     PLANET *lppl;
     PLANET *lpplMac;
@@ -186,51 +178,48 @@ void UpdatePopulations(void)
     /* TODO: implement */
 }
 
-void SweepForMines(void)
-{
-    int16_t iplr;
-    THING *lpthMac;
-    POINT pt;
-    int32_t dy;
-    int32_t lCur;
-    PLANET *lppl;
-    int16_t ifl;
-    FLEET *lpfl;
-    THING *lpth;
-    int32_t cMineCur;
-    int32_t dx;
-    int32_t cMine;
+void SweepForMines(void) {
+    int16_t  iplr;
+    THING   *lpthMac;
+    POINT    pt;
+    int32_t  dy;
+    int32_t  lCur;
+    PLANET  *lppl;
+    int16_t  ifl;
+    FLEET   *lpfl;
+    THING   *lpth;
+    int32_t  cMineCur;
+    int32_t  dx;
+    int32_t  cMine;
     uint16_t grbitPlr;
-    PLANET *lpplMac;
+    PLANET  *lpplMac;
 
     /* TODO: implement */
 }
 
-void UpdatePlayerScores(void)
-{
-    int32_t lScoreTot;
-    int16_t cFirst;
-    SCORE score;
-    int16_t cDead;
-    int16_t c;
-    int16_t i;
-    uint8_t rgcCond[16];
+void UpdatePlayerScores(void) {
+    int32_t  lScoreTot;
+    int16_t  cFirst;
+    SCORE    score;
+    int16_t  cDead;
+    int16_t  c;
+    int16_t  i;
+    uint8_t  rgcCond[16];
     uint16_t wWinners2;
-    int32_t rglScore[16];
-    int16_t iScoreMax;
-    int16_t j;
+    int32_t  rglScore[16];
+    int16_t  iScoreMax;
+    int16_t  j;
     uint16_t wWinners;
-    int16_t imsg;
-    int32_t lScore2nd;
-    int32_t lScoreMax;
+    int16_t  imsg;
+    int32_t  lScore2nd;
+    int32_t  lScoreMax;
 
     /* TODO: implement */
 }
 
-void UpdateGuesses(void)
-{
+void UpdateGuesses(void) {
     PLANET *lppl;
-    float pct;
+    float   pct;
     PLANET *lpplMac;
     int32_t l;
 
@@ -240,48 +229,45 @@ void UpdateGuesses(void)
     /* TODO: implement */
 }
 
-void MysteryTrader(void)
-{
+void MysteryTrader(void) {
     int16_t iSrc;
     int16_t cRand;
     int16_t i;
-    THING *lpth;
+    THING  *lpth;
     int16_t grbitTrader;
     int16_t rgC[4];
 
     /* TODO: implement */
 }
 
-int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists)
-{
-    int16_t iColDrop;
+int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists) {
+    int16_t  iColDrop;
     COLDROP *lpcdT;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly)
-{
-    int32_t pctT;
-    int16_t cMax;
+int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly) {
+    int32_t  pctT;
+    int16_t  cMax;
     uint32_t iobjOther;
-    int32_t cCanBuild;
-    int32_t lMinNeeded;
-    int32_t lAlchCost;
-    PROD prod;
-    int16_t fAutoBuild;
-    int16_t cBuilt;
-    int16_t cAlchemy;
-    int32_t rgCostPaid[4];
-    int16_t i;
-    int16_t fResourceBlocked;
-    int32_t pctInitial;
-    int32_t pctTooBig;
-    int32_t pct;
-    int32_t rgCost[4];
-    int16_t fMineralBlocked;
-    int32_t AddCost;
+    int32_t  cCanBuild;
+    int32_t  lMinNeeded;
+    int32_t  lAlchCost;
+    PROD     prod;
+    int16_t  fAutoBuild;
+    int16_t  cBuilt;
+    int16_t  cAlchemy;
+    int32_t  rgCostPaid[4];
+    int16_t  i;
+    int16_t  fResourceBlocked;
+    int32_t  pctInitial;
+    int32_t  pctTooBig;
+    int32_t  pct;
+    int32_t  rgCost[4];
+    int16_t  fMineralBlocked;
+    int32_t  AddCost;
 
     /* debug symbols */
     /* block (block) @ MEMORY_TURN2:0x1324 */
@@ -291,8 +277,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     return 0;
 }
 
-void AutoTerraform(void)
-{
+void AutoTerraform(void) {
     int16_t rgMax[3];
     int16_t rgp[16];
     PLANET *lppl;
@@ -305,29 +290,27 @@ void AutoTerraform(void)
     /* TODO: implement */
 }
 
-int16_t FPacketDecay(THING *lpth, int16_t pctRate)
-{
+int16_t FPacketDecay(THING *lpth, int16_t pctRate) {
     uint16_t iRateMin;
-    int16_t iRate;
-    int16_t i;
+    int16_t  iRate;
+    int16_t  i;
     uint16_t wDecay;
-    int32_t lDecay;
+    int32_t  lDecay;
 
     /* TODO: implement */
     return 0;
 }
 
-void TransferToOthers(void)
-{
-    int32_t l2;
-    int16_t idDst;
-    XFER rgxf[2];
-    int16_t idSrc;
-    int16_t i;
-    int16_t idm;
+void TransferToOthers(void) {
+    int32_t   l2;
+    int16_t   idDst;
+    XFER      rgxf[2];
+    int16_t   idSrc;
+    int16_t   i;
+    int16_t   idm;
     XFERFULL *lpxfMax;
     XFERFULL *lpxfCur;
-    int32_t l;
+    int32_t   l;
 
     /* debug symbols */
     /* label DoNext @ MEMORY_TURN2:0x34c6 */
@@ -335,8 +318,7 @@ void TransferToOthers(void)
     /* TODO: implement */
 }
 
-void MineMinerals(void)
-{
+void MineMinerals(void) {
     int32_t rglQuan[3];
     PLANET *lppl;
     PLANET *lpplMac;
@@ -344,29 +326,28 @@ void MineMinerals(void)
     /* TODO: implement */
 }
 
-int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals)
-{
-    int16_t iWarp;
-    int16_t i;
-    FLEET *lpfl;
-    int16_t idm;
-    int16_t fTwoMAs;
-    SHDEF *lpshdef;
-    int16_t cAllowed;
-    int16_t iEnv;
-    int32_t dpOrig;
-    THING *lpthMac;
-    int16_t cshDamaged;
-    int16_t cshOrig;
-    int16_t iDecayRate;
-    PART part;
+int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals) {
+    int16_t  iWarp;
+    int16_t  i;
+    FLEET   *lpfl;
+    int16_t  idm;
+    int16_t  fTwoMAs;
+    SHDEF   *lpshdef;
+    int16_t  cAllowed;
+    int16_t  iEnv;
+    int32_t  dpOrig;
+    THING   *lpthMac;
+    int16_t  cshDamaged;
+    int16_t  cshOrig;
+    int16_t  iDecayRate;
+    PART     part;
     uint16_t dpShdef;
-    THING *lpth;
-    int16_t raMajor;
-    int16_t iWarpAsked;
-    int16_t cSize;
-    int16_t rgwt[3];
-    int32_t l;
+    THING   *lpth;
+    int16_t  raMajor;
+    int16_t  iWarpAsked;
+    int16_t  cSize;
+    int16_t  rgwt[3];
+    int32_t  l;
 
     /* debug symbols */
     /* block (block) @ MEMORY_TURN2:0x1d3a */
@@ -380,18 +361,16 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
     return 0;
 }
 
-int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp)
-{
+int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp) {
     int16_t iBest;
     int16_t i;
-    PLAYER plrSav;
+    PLAYER  plrSav;
 
     /* TODO: implement */
     return 0;
 }
 
-void PlanetaryClimateChange(void)
-{
+void PlanetaryClimateChange(void) {
     int16_t iT;
     PLANET *lppl;
     int16_t i;
@@ -400,16 +379,14 @@ void PlanetaryClimateChange(void)
     /* TODO: implement */
 }
 
-void DiscoverNewMinerals(void)
-{
+void DiscoverNewMinerals(void) {
     PLANET *lppl;
     int16_t i;
 
     /* TODO: implement */
 }
 
-void MeteorStrike(void)
-{
+void MeteorStrike(void) {
     int16_t rgEnv[3];
     int16_t iT;
     int32_t rgQuan[4];
@@ -423,14 +400,13 @@ void MeteorStrike(void)
     /* TODO: implement */
 }
 
-void HealShips(void)
-{
+void HealShips(void) {
     int16_t pctShipHeal;
     int16_t dpHeal;
     PLANET *lppl;
     int16_t i;
-    FLEET *lpfl;
-    SHDEF *lpshdef;
+    FLEET  *lpfl;
+    SHDEF  *lpshdef;
     int16_t pct;
     int16_t ishdef;
     PLANET *lpplMac;
@@ -438,42 +414,30 @@ void HealShips(void)
     /* TODO: implement */
 }
 
-void CreateShip(int16_t iPlr, FLEET *lpfl, int16_t ishdef, int16_t cShip)
-{
+void CreateShip(int16_t iPlr, FLEET *lpfl, int16_t ishdef, int16_t cShip) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void BreedColonistsInTransit(void)
-{
+void BreedColonistsInTransit(void) {
     int16_t fNoBreeders;
-    char grfBreeder[16];
+    char    grfBreeder[16];
     int32_t lColGain;
     PLANET *lppl;
     int16_t ifl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t i;
     int32_t lColGainAct;
 
     /* TODO: implement */
 }
 
-void RandomEvents(void)
-{
+void RandomEvents(void) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void UnmarkMineFields(void)
-{
+void UnmarkMineFields(void) {
     THING *lpth;
     THING *end;
 
     end = lpThings + cThing;
-    for (lpth = lpThings; lpth < end; lpth++)
-    {
-        if (lpth->ith == 0)
-        {
+    for (lpth = lpThings; lpth < end; lpth++) {
+        if (lpth->ith == 0) {
             lpth->thm.grbitPlrNow = 0;
         }
     }

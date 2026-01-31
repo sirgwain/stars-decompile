@@ -1,16 +1,14 @@
-\
 #include "acutest.h"
 
 #include <string.h>
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 /* util.c */
 int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate);
 
-typedef struct PopCase
-{
+typedef struct PopCase {
     const char *name;
 
     /* player env model (use Stars defaults) */
@@ -30,13 +28,11 @@ typedef struct PopCase
     uint8_t want_acc_after;
 } PopCase;
 
-static void apply_player0_env(const PopCase *tc, PLAYER *old_out)
-{
+static void apply_player0_env(const PopCase *tc, PLAYER *old_out) {
     *old_out = rgplr[0];
 
     PLAYER pr = rgplr[0];
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         pr.rgEnvVar[i] = tc->pref[i];
         pr.rgEnvVarMin[i] = tc->minv[i];
         pr.rgEnvVarMax[i] = tc->maxv[i];
@@ -44,8 +40,7 @@ static void apply_player0_env(const PopCase *tc, PLAYER *old_out)
     rgplr[0] = pr;
 }
 
-static PLANET make_planet_for_pop(const PopCase *tc)
-{
+static PLANET make_planet_for_pop(const PopCase *tc) {
     PLANET pl;
     memset(&pl, 0, sizeof(pl));
 
@@ -59,8 +54,7 @@ static PLANET make_planet_for_pop(const PopCase *tc)
     return pl;
 }
 
-static void test_ChgPopFromPlanet_negative_desire_table(void)
-{
+static void test_ChgPopFromPlanet_negative_desire_table(void) {
     /*
      * These cases stay entirely in the pctDesire < 0 path, so they don't depend
      * on CalcPlanetMaxPop / growth scaling and are stable to test.
@@ -77,7 +71,7 @@ static void test_ChgPopFromPlanet_negative_desire_table(void)
          .env = {1, 50, 50},
          .pop = 100,
          .acc = 0,
-         .want_inc = -2,      /* (100*14/10)=140 => whole=1 rem=40; 0-40 borrows => -(1+1) */
+         .want_inc = -2, /* (100*14/10)=140 => whole=1 rem=40; 0-40 borrows => -(1+1) */
          .want_pop_after = 98,
          .want_acc_after = 60},
 
@@ -88,7 +82,7 @@ static void test_ChgPopFromPlanet_negative_desire_table(void)
          .env = {0, 50, 50},
          .pop = 100,
          .acc = 90,
-         .want_inc = -1,      /* (100*15/10)=150 => whole=1 rem=50; 90-50=40 => -1 */
+         .want_inc = -1, /* (100*15/10)=150 => whole=1 rem=50; 90-50=40 => -1 */
          .want_pop_after = 99,
          .want_acc_after = 40},
 
@@ -99,13 +93,12 @@ static void test_ChgPopFromPlanet_negative_desire_table(void)
          .env = {0, 50, 50},
          .pop = 100,
          .acc = 0,
-         .want_inc = -2,      /* whole=1 rem=50; 0-50 borrows => -(1+1); acc=50 */
+         .want_inc = -2, /* whole=1 rem=50; 0-50 borrows => -(1+1); acc=50 */
          .want_pop_after = 98,
          .want_acc_after = 50},
     };
 
-    for (int i = 0; i < (int)(sizeof(cases) / sizeof(cases[0])); i++)
-    {
+    for (int i = 0; i < (int)(sizeof(cases) / sizeof(cases[0])); i++) {
         const PopCase *tc = &cases[i];
 
         PLAYER old0;
@@ -114,7 +107,7 @@ static void test_ChgPopFromPlanet_negative_desire_table(void)
         PLANET pl = make_planet_for_pop(tc);
 
         /* fUpdate=0: no mutation */
-        PLANET pl_copy = pl;
+        PLANET  pl_copy = pl;
         int32_t inc = ChgPopFromPlanet(&pl, 0);
         TEST_CHECK_(inc == tc->want_inc, "%s: inc=%d want=%d", tc->name, (int)inc, (int)tc->want_inc);
         TEST_CHECK_(memcmp(&pl, &pl_copy, sizeof(pl)) == 0, "%s: fUpdate=0 must not mutate", tc->name);
@@ -123,15 +116,11 @@ static void test_ChgPopFromPlanet_negative_desire_table(void)
         pl = make_planet_for_pop(tc);
         inc = ChgPopFromPlanet(&pl, 1);
         TEST_CHECK_(inc == tc->want_inc, "%s (update): inc=%d want=%d", tc->name, (int)inc, (int)tc->want_inc);
-        TEST_CHECK_(pl.rgwtMin[3] == tc->want_pop_after,
-                    "%s (update): pop=%d want=%d", tc->name, (int)pl.rgwtMin[3], (int)tc->want_pop_after);
-        TEST_CHECK_(pl.rgbImp[0] == tc->want_acc_after,
-                    "%s (update): acc=%u want=%u", tc->name, (unsigned)pl.rgbImp[0], (unsigned)tc->want_acc_after);
+        TEST_CHECK_(pl.rgwtMin[3] == tc->want_pop_after, "%s (update): pop=%d want=%d", tc->name, (int)pl.rgwtMin[3], (int)tc->want_pop_after);
+        TEST_CHECK_(pl.rgbImp[0] == tc->want_acc_after, "%s (update): acc=%u want=%u", tc->name, (unsigned)pl.rgbImp[0], (unsigned)tc->want_acc_after);
 
         rgplr[0] = old0;
     }
 }
 
-TEST_LIST = {
-    {"ChgPopFromPlanet negative desire table", test_ChgPopFromPlanet_negative_desire_table},
-    {NULL, NULL}};
+TEST_LIST = {{"ChgPopFromPlanet negative desire table", test_ChgPopFromPlanet_negative_desire_table}, {NULL, NULL}};

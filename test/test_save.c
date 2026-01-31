@@ -4,48 +4,42 @@
 #include <string.h>
 
 #include "globals.h"
-#include "types.h"
 #include "save.h" /* SetSzWorkFromDt */
+#include "types.h"
 
 /* Snapshot/restore just the globals this test mutates. */
-typedef struct SaveGlobalsSnapshot
-{
+typedef struct SaveGlobalsSnapshot {
     char szBase[sizeof(szBase)];
     char szWork[sizeof(szWork)];
 } SaveGlobalsSnapshot;
 
-static SaveGlobalsSnapshot snapshot_globals(void)
-{
+static SaveGlobalsSnapshot snapshot_globals(void) {
     SaveGlobalsSnapshot s;
     memcpy(s.szBase, szBase, sizeof(szBase));
     memcpy(s.szWork, szWork, sizeof(szWork));
     return s;
 }
 
-static void restore_globals(const SaveGlobalsSnapshot *s)
-{
+static void restore_globals(const SaveGlobalsSnapshot *s) {
     memcpy(szBase, s->szBase, sizeof(szBase));
     memcpy(szWork, s->szWork, sizeof(szWork));
 }
 
-static void set_base(const char *base)
-{
+static void set_base(const char *base) {
     /* Ensure deterministic contents, then copy. */
     memset(szBase, 0, sizeof(szBase));
     memset(szWork, 0, sizeof(szWork));
     strncpy(szBase, base, sizeof(szBase) - 1);
 }
 
-static void test_SetSzWorkFromDt_table(void)
-{
+static void test_SetSzWorkFromDt_table(void) {
     const SaveGlobalsSnapshot snap = snapshot_globals();
 
-    typedef struct
-    {
+    typedef struct {
         const char *name;
         const char *base_in;
-        DtFileType dt;
-        int16_t iPlayer;
+        DtFileType  dt;
+        int16_t     iPlayer;
         const char *want_work;
         const char *want_base_after;
     } Case;
@@ -109,22 +103,19 @@ static void test_SetSzWorkFromDt_table(void)
         },
     };
 
-    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         const Case *tc = &cases[i];
 
         set_base(tc->base_in);
         SetSzWorkFromDt(tc->dt, tc->iPlayer);
 
         TEST_CHECK(strcmp(szWork, tc->want_work) == 0);
-        if (strcmp(szWork, tc->want_work) != 0)
-        {
+        if (strcmp(szWork, tc->want_work) != 0) {
             TEST_MSG("%s: szWork got='%s' want='%s'", tc->name, szWork, tc->want_work);
         }
 
         TEST_CHECK(strcmp(szBase, tc->want_base_after) == 0);
-        if (strcmp(szBase, tc->want_base_after) != 0)
-        {
+        if (strcmp(szBase, tc->want_base_after) != 0) {
             TEST_MSG("%s: szBase got='%s' want='%s'", tc->name, szBase, tc->want_base_after);
         }
     }
@@ -132,6 +123,4 @@ static void test_SetSzWorkFromDt_table(void)
     restore_globals(&snap);
 }
 
-TEST_LIST = {
-    {"save/SetSzWorkFromDt (table)", test_SetSzWorkFromDt_table},
-    {NULL, NULL}};
+TEST_LIST = {{"save/SetSzWorkFromDt (table)", test_SetSzWorkFromDt_table}, {NULL, NULL}};

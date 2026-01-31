@@ -1,12 +1,11 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "ship2.h"
 
 /* functions */
-int16_t FScout(FLEET *lpfl)
-{
+int16_t FScout(FLEET *lpfl) {
     int16_t i;
     int32_t l;
 
@@ -14,13 +13,12 @@ int16_t FScout(FLEET *lpfl)
     return 0;
 }
 
-int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist)
-{
+int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist) {
     int16_t dpPerShdefNew;
     int16_t dpShdef;
-    POINT pt;
+    POINT   pt;
     int16_t id;
-    FLEET flSrc;
+    FLEET   flSrc;
     int16_t cshT;
     uint8_t pctKill;
     int16_t i;
@@ -34,7 +32,7 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
     int32_t dp;
     int16_t dpPerShdefOld;
     int16_t cshDamagedOld;
-    FLEET flDead;
+    FLEET   flDead;
 
     /* debug symbols */
     /* label LKilledEmAll @ MEMORY_SHIP2:0x0f06 */
@@ -43,15 +41,14 @@ int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDi
     return 0;
 }
 
-int32_t PctTerraFromLpfl(FLEET *lpfl)
-{
+int32_t PctTerraFromLpfl(FLEET *lpfl) {
     int16_t j;
     int32_t pctTot;
     int16_t i;
     int32_t pct;
-    HUL *lphuldef;
+    HUL    *lphuldef;
     int16_t chs;
-    HS *lphs;
+    HS     *lphs;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x2794 */
@@ -60,36 +57,33 @@ int32_t PctTerraFromLpfl(FLEET *lpfl)
     return 0;
 }
 
-void AutoFleetOrder(FLEET *lpfl, PLANET *lppl)
-{
+void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
     int32_t cMine;
     int16_t ifl;
-    ORDER *lpord;
-    FLEET *lpflT;
+    ORDER  *lpord;
+    FLEET  *lpflT;
     int16_t fFoundFleet;
 
     /* TODO: implement */
 }
 
-int32_t CMineSweepFromLphul(HUL *lphul)
-{
+int32_t CMineSweepFromLphul(HUL *lphul) {
     int16_t chs;
-    HS *lphs;
+    HS     *lphs;
     int32_t lRange;
     int16_t j;
     int16_t fStarbase;
     int32_t lPow;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg)
-{
+int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg) {
     int32_t dBaseDistance;
-    PART partDst;
-    PART partSrc;
+    PART    partDst;
+    PART    partSrc;
     int32_t pctSurviveT;
     int32_t pctSurvive;
 
@@ -100,21 +94,20 @@ int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, in
     return 0;
 }
 
-int16_t PctCloakFromLpfl(FLEET *lpfl)
-{
+int16_t PctCloakFromLpfl(FLEET *lpfl) {
     int16_t j;
-    double dcPts;
-    double dwtFleet;
+    double  dcPts;
+    double  dwtFleet;
     int16_t i;
     int32_t cPtsCur;
     int16_t fUseFloat;
-    HUL *lphul;
+    HUL    *lphul;
     int32_t wtFleet;
     int16_t cScore;
     int32_t cPts;
     int32_t wtFleetCur;
     int16_t chs;
-    HS *lphs;
+    HS     *lphs;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x2dbb */
@@ -123,30 +116,28 @@ int16_t PctCloakFromLpfl(FLEET *lpfl)
     return 0;
 }
 
-void NoAutoTrackFleet(FLEET *lpflTarget)
-{
+void NoAutoTrackFleet(FLEET *lpflTarget) {
     int16_t iplr;
     int16_t idTarget;
     int16_t i;
-    ORDER *lpord;
+    ORDER  *lpord;
     int16_t ifl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
 
     /* TODO: implement */
 }
 
-int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef)
-{
+int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
     uint16_t iMin;
     uint16_t iMax;
-    int32_t cMine;
-    int16_t j;
-    int16_t i;
-    HUL *lphul;
-    PART part;
-    int32_t cMineTot;
-    int16_t chs;
-    HS *lphs;
+    int32_t  cMine;
+    int16_t  j;
+    int16_t  i;
+    HUL     *lphul;
+    PART     part;
+    int32_t  cMineTot;
+    int16_t  chs;
+    HS      *lphs;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x291e */
@@ -155,8 +146,7 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef)
     return 0;
 }
 
-int16_t FColonizer(FLEET *lpfl)
-{
+int16_t FColonizer(FLEET *lpfl) {
     int16_t i;
     int32_t l;
 
@@ -164,15 +154,14 @@ int16_t FColonizer(FLEET *lpfl)
     return 0;
 }
 
-void AutoRouteFleet(FLEET *lpfl, PLANET *lppl)
-{
+void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     int32_t dTravel;
     int16_t iWarp;
     int16_t pctDmg;
     int16_t wt;
     int32_t cTurns;
     int16_t i;
-    ORDER *lpord;
+    ORDER  *lpord;
     PLANET *lpplRoute;
     int16_t isbsDst;
     int16_t wtBig;
@@ -183,11 +172,10 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl)
     /* TODO: implement */
 }
 
-void KillUsedWaypoints(void)
-{
+void KillUsedWaypoints(void) {
     int16_t j;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t fRep;
     PLANET *lppl;
 
@@ -198,16 +186,15 @@ void KillUsedWaypoints(void)
     /* TODO: implement */
 }
 
-int32_t CMineFromLpfl(FLEET *lpfl)
-{
+int32_t CMineFromLpfl(FLEET *lpfl) {
     int32_t cMine;
     int16_t j;
     int16_t i;
-    HUL *lphuldef;
-    PART part;
+    HUL    *lphuldef;
+    PART    part;
     int32_t cMineTot;
     int16_t chs;
-    HS *lphs;
+    HS     *lphs;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x260a */
@@ -216,30 +203,27 @@ int32_t CMineFromLpfl(FLEET *lpfl)
     return 0;
 }
 
-void MarkTechsSeen(HUL *lphul, int16_t iplr)
-{
+void MarkTechsSeen(HUL *lphul, int16_t iplr) {
     int16_t iplrSav;
     int16_t iTech;
     int16_t ihs;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
 }
 
-int16_t CPtsCloakFromLphs(HS *lphs)
-{
+int16_t CPtsCloakFromLphs(HS *lphs) {
     int16_t cPts;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
     return 0;
 }
 
-int32_t CMineSweepFromLpfl(FLEET *lpfl)
-{
+int32_t CMineSweepFromLpfl(FLEET *lpfl) {
     int32_t lPowTot;
     int16_t i;
-    HUL *lphul;
+    HUL    *lphul;
     int32_t lPow;
 
     /* TODO: implement */
@@ -248,9 +232,8 @@ int32_t CMineSweepFromLpfl(FLEET *lpfl)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    RECT rc;
+INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    RECT    rc;
     int32_t lSel;
 
     /* debug symbols */
@@ -260,12 +243,11 @@ INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t i;
-    RECT rc;
-    char szT[80];
-    char *psz;
+    RECT    rc;
+    char    szT[80];
+    char   *psz;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x33a0 */
@@ -274,17 +256,16 @@ INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     return 0;
 }
 
-INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t i;
+INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    int16_t     i;
     PAINTSTRUCT ps;
-    RECT rc;
-    HWND hwndRad;
-    char *psz;
+    RECT        rc;
+    HWND        hwndRad;
+    char       *psz;
     int16_t (*lpProc)(void);
-    char *pszT;
-    RECT rcGBox;
+    char   *pszT;
+    RECT    rcGBox;
     int16_t cch;
     int16_t xCtr;
     int16_t iAction;
@@ -302,17 +283,15 @@ INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t ids;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
     return 0;
 }
 
-void EnableZipBtns(HWND hwnd, int16_t iSel)
-{
+void EnableZipBtns(HWND hwnd, int16_t iSel) {
     int16_t fEnabled;
 
     // TODO: replace with constants

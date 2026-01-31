@@ -1,15 +1,15 @@
 #ifndef STARS_NB09_TYPES_H
 #define STARS_NB09_TYPES_H
-#include <stdlib.h>
-#include <stdio.h>
+#include <ctype.h>
+#include <math.h>
+#include <setjmp.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
 #include <time.h>
-#include <setjmp.h>
 #include "enums.h"
 
 /*
@@ -18,9 +18,11 @@
  * - Otherwise: use our stub implementations for cross-platform compilation
  */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
+/* clang-format off */
 #include <windows.h>
-#include <shlobj.h>
 #include <commdlg.h>
+#include <shlobj.h>
+/* clang-format on */
 
 #else
 #include "win_stubs.h"
@@ -41,12 +43,9 @@ typedef struct STARSPOINT {
 } STARSPOINT;
 
 /* typind 4153 (0x1039) size=4 */
-typedef struct _prod
-{
-    union
-    {
-        struct
-        {
+typedef struct _prod {
+    union {
+        struct {
             uint32_t cItem : 10;
             uint32_t iItem : 7;
             uint32_t grobj : 3;
@@ -61,12 +60,9 @@ _Static_assert(sizeof(PROD) == 4, "sizeof(PROD)");
 #endif
 
 /* typind 4180 (0x1054) size=4 */
-typedef struct PLPROD
-{
-    union
-    {
-        struct
-        {
+typedef struct PLPROD {
+    union {
+        struct {
             uint16_t cbItem : 8;
             uint16_t fMark : 1;
             uint16_t ht : 3;
@@ -74,9 +70,9 @@ typedef struct PLPROD
         };
         uint16_t wRaw_0000;
     }; /* +0x0000 */
-    uint8_t iprodMax; /* +0x0002 */
-    uint8_t iprodMac; /* +0x0003 */
-    PROD rgprod[0];   /* +0x0004 */
+    uint8_t iprodMax;  /* +0x0002 */
+    uint8_t iprodMac;  /* +0x0003 */
+    PROD    rgprod[0]; /* +0x0004 */
 } PLPROD;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(PLPROD) == 4, "sizeof(PLPROD)");
@@ -86,12 +82,9 @@ _Static_assert(offsetof(PLPROD, rgprod) == 0x4, "offsetof(PLPROD,rgprod)");
 #endif
 
 /* typind 4299 (0x10cb) size=2 */
-typedef struct _itemaction
-{
-    union
-    {
-        struct
-        {
+typedef struct _itemaction {
+    union {
+        struct {
             uint16_t cQuan : 12;
             uint16_t iAction : 4;
         };
@@ -103,8 +96,7 @@ _Static_assert(sizeof(ITEMACTION) == 2, "sizeof(ITEMACTION)");
 #endif
 
 /* typind 4991 (0x137f) size=10 */
-typedef struct _taskxport
-{
+typedef struct _taskxport {
     ITEMACTION rgia[5]; /* +0x0000 */
 } TASKXPORT;
 #ifdef STARS_LAYOUT_CHECKS
@@ -113,8 +105,7 @@ _Static_assert(offsetof(TASKXPORT, rgia) == 0x0, "offsetof(TASKXPORT,rgia)");
 #endif
 
 /* typind 4993 (0x1381) size=4 */
-typedef struct _tasklaymines
-{
+typedef struct _tasklaymines {
     uint16_t cTime;    /* +0x0000 */
     uint16_t cTimeOld; /* +0x0002 */
 } TASKLAYMINES;
@@ -125,8 +116,7 @@ _Static_assert(offsetof(TASKLAYMINES, cTimeOld) == 0x2, "offsetof(TASKLAYMINES,c
 #endif
 
 /* typind 4995 (0x1383) size=4 */
-typedef struct _taskpatrol
-{
+typedef struct _taskpatrol {
     uint16_t iWarp; /* +0x0000 */
     uint16_t iDist; /* +0x0002 */
 } TASKPATROL;
@@ -137,8 +127,7 @@ _Static_assert(offsetof(TASKPATROL, iDist) == 0x2, "offsetof(TASKPATROL,iDist)")
 #endif
 
 /* typind 4997 (0x1385) size=2 */
-typedef struct _tasksell
-{
+typedef struct _tasksell {
     uint16_t iPlrX; /* +0x0000 */
 } TASKSELL;
 #ifdef STARS_LAYOUT_CHECKS
@@ -146,14 +135,11 @@ _Static_assert(sizeof(TASKSELL) == 2, "sizeof(TASKSELL)");
 _Static_assert(offsetof(TASKSELL, iPlrX) == 0x0, "offsetof(TASKSELL,iPlrX)");
 #endif
 /* typind 4101 (0x1005) size=18 */
-typedef struct _order
-{
-    STARSPOINT pt;   /* +0x0000 */
-    int16_t id; /* +0x0004 */
-    union
-    {
-        struct
-        {
+typedef struct _order {
+    STARSPOINT pt; /* +0x0000 */
+    int16_t    id; /* +0x0004 */
+    union {
+        struct {
             uint16_t grTask : 4;
             uint16_t iWarp : 4;
             uint16_t grobj : 4;
@@ -163,12 +149,11 @@ typedef struct _order
         };
         uint16_t wRaw_0006;
     }; /* +0x0006 */
-    union
-    {
-        TASKXPORT txp;
+    union {
+        TASKXPORT    txp;
         TASKLAYMINES tlm;
-        TASKPATROL tptl;
-        TASKSELL tsell;
+        TASKPATROL   tptl;
+        TASKSELL     tsell;
     }; /* +0x0008 */
 } ORDER;
 #ifdef STARS_LAYOUT_CHECKS
@@ -182,11 +167,10 @@ _Static_assert(offsetof(ORDER, tsell) == 0x8, "offsetof(ORDER,tsell)");
 #endif
 
 /* typind 4229 (0x1085) size=24 */
-typedef struct _ziporder
-{
-    TASKXPORT txp;   /* +0x0000 */
-    char szName[13]; /* +0x000a */
-    uint8_t fValid;  /* +0x0017 */
+typedef struct _ziporder {
+    TASKXPORT txp;        /* +0x0000 */
+    char      szName[13]; /* +0x000a */
+    uint8_t   fValid;     /* +0x0017 */
 } ZIPORDER;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(ZIPORDER) == 24, "sizeof(ZIPORDER)");
@@ -196,12 +180,9 @@ _Static_assert(offsetof(ZIPORDER, fValid) == 0x17, "offsetof(ZIPORDER,fValid)");
 #endif
 
 /* typind 5416 (0x1528) size=4 */
-typedef struct PLORD
-{
-    union
-    {
-        struct
-        {
+typedef struct PLORD {
+    union {
+        struct {
             uint16_t cbItem : 8;
             uint16_t fMark : 1;
             uint16_t ht : 3;
@@ -209,9 +190,9 @@ typedef struct PLORD
         };
         uint16_t wRaw_0000;
     }; /* +0x0000 */
-    uint8_t iordMax; /* +0x0002 */
-    uint8_t iordMac; /* +0x0003 */
-    ORDER rgord[0];  /* +0x0004 */
+    uint8_t iordMax;  /* +0x0002 */
+    uint8_t iordMac;  /* +0x0003 */
+    ORDER   rgord[0]; /* +0x0004 */
 } PLORD;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(PLORD) == 4, "sizeof(PLORD)");
@@ -221,14 +202,11 @@ _Static_assert(offsetof(PLORD, rgord) == 0x4, "offsetof(PLORD,rgord)");
 #endif
 
 /* typind 4098 (0x1002) size=56 */
-typedef struct _planet
-{
+typedef struct _planet {
     int16_t id;      /* +0x0000 */
     int16_t iPlayer; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fStarbase : 1;
@@ -244,26 +222,21 @@ typedef struct _planet
     uint8_t rgMinConc[3];     /* +0x0009 */
     uint8_t rgEnvVar[3];      /* +0x000c */
     uint8_t rgEnvVarOrig[3];  /* +0x000f */
-    union
-    {
+    union {
         uint16_t uGuesses;
-        struct
-        {
+        struct {
             uint16_t uPopGuess : 12;
             uint16_t uDefGuess : 4;
         };
     }; /* +0x0012 */
-    union
-    {
+    union {
         uint8_t rgbImp[8];
-        struct
-        {
+        struct {
             uint32_t iDeltaPop : 8;
             uint32_t cMines : 12;
             uint32_t cFactories : 12;
         };
-        struct
-        {
+        struct {
             uint32_t cDefenses : 12;
             uint32_t iScanner : 5;
             uint32_t unused5 : 5;
@@ -274,27 +247,22 @@ typedef struct _planet
         uint32_t dwRaw_0014;
     }; /* +0x0014 */
     int32_t rgwtMin[4]; /* +0x001c */
-    union
-    {
+    union {
         int32_t lStarbase;
-        struct
-        {
+        struct {
             uint16_t isb : 4;
             uint16_t pctDp : 12;
         };
-        struct
-        {
+        struct {
             uint16_t idFling : 10;
             uint16_t iWarpFling : 4;
             uint16_t fNoHeal : 1;
             uint16_t unused3 : 1;
         };
     }; /* +0x002c */
-    union
-    {
+    union {
         uint16_t wRouting;
-        struct
-        {
+        struct {
             uint16_t idRoute : 10;
             uint16_t unused4 : 6;
         };
@@ -304,8 +272,7 @@ typedef struct _planet
 } PLANET;
 
 /* typind 4114 (0x1012) size=64 */
-typedef struct _game
-{
+typedef struct _game {
     int32_t lid;         /* +0x0000 */
     int16_t mdSize;      /* +0x0004 */
     int16_t mdDensity;   /* +0x0006 */
@@ -313,11 +280,9 @@ typedef struct _game
     int16_t cPlanMax;    /* +0x000a */
     int16_t mdStartDist; /* +0x000c */
     int16_t fDirty;      /* +0x000e */
-    union
-    {
+    union {
         uint16_t wCrap;
-        struct
-        {
+        struct {
             uint16_t fExtraFuel : 1;
             uint16_t fSlowTech : 1;
             uint16_t fSinglePlr : 1;
@@ -331,9 +296,9 @@ typedef struct _game
             uint16_t unused : 4;
         };
     }; /* +0x0010 */
-    uint16_t turn;    /* +0x0012 */
-    uint8_t rgvc[12]; /* +0x0014 */
-    char szName[32];  /* +0x0020 */
+    uint16_t turn;       /* +0x0012 */
+    uint8_t  rgvc[12];   /* +0x0014 */
+    char     szName[32]; /* +0x0020 */
 } GAME;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(GAME) == 64, "sizeof(GAME)");
@@ -351,13 +316,10 @@ _Static_assert(offsetof(GAME, szName) == 0x20, "offsetof(GAME,szName)");
 #endif
 
 /* typind 4115 (0x1013) size=10 */
-typedef struct _gdata
-{
-    union
-    {
+typedef struct _gdata {
+    union {
         int32_t grBits;
-        struct
-        {
+        struct {
             uint16_t fUnknownShip : 1;
             uint16_t fGeneratingTurn : 1;
             uint16_t fForceTurn : 1;
@@ -374,8 +336,7 @@ typedef struct _gdata
             uint16_t fVCRTimer : 1;
             uint16_t mdScreenSize : 2;
         };
-        struct
-        {
+        struct {
             uint16_t fGameOverMan : 1;
             uint16_t fDontDoLogFiles : 1;
             uint16_t fFileCrippled : 1;
@@ -394,11 +355,9 @@ typedef struct _gdata
             uint16_t fToolbar : 1;
         };
     }; /* +0x0000 */
-    union
-    {
+    union {
         int32_t grBits2;
-        struct
-        {
+        struct {
             uint16_t fNoScannerDraw : 1;
             uint16_t fTrialPeriodOver : 1;
             uint16_t fClose : 1;
@@ -413,8 +372,7 @@ typedef struct _gdata
             uint16_t fScoreVictory : 2;
             uint16_t : 3;
         };
-        struct
-        {
+        struct {
             uint16_t iCurGraph : 4;
             uint16_t fMusic : 1;
             uint16_t fPerPlayerDumps : 1;
@@ -431,8 +389,7 @@ _Static_assert(offsetof(GDATA, grBits2) == 0x4, "offsetof(GDATA,grBits2)");
 #endif
 
 /* typind 4152 (0x1038) size=22 */
-typedef struct _framestuff
-{
+typedef struct _framestuff {
     int16_t dx;          /* +0x0000 */
     int16_t dy;          /* +0x0002 */
     int16_t xTop;        /* +0x0004 */
@@ -461,13 +418,10 @@ _Static_assert(offsetof(FRAMESTUFF, dy2MinWant) == 0x14, "offsetof(FRAMESTUFF,dy
 #endif
 
 /* typind 4158 (0x103e) size=2 */
-typedef struct _cyberinfo
-{
-    union
-    {
+typedef struct _cyberinfo {
+    union {
         uint16_t wInfo;
-        struct
-        {
+        struct {
             uint16_t iLstPktDir : 3;
             uint16_t fBltColony : 1;
             uint16_t fLaunchedPkt : 1;
@@ -483,13 +437,10 @@ _Static_assert(offsetof(CYBERINFO, wInfo) == 0x0, "offsetof(CYBERINFO,wInfo)");
 #endif
 
 /* typind 4160 (0x1040) size=2 */
-typedef struct _cyberinfotemp
-{
-    union
-    {
+typedef struct _cyberinfotemp {
+    union {
         uint16_t wInfo1;
-        struct
-        {
+        struct {
             uint16_t fIdleColonizers : 1;
             uint16_t cIdleFreighters : 2;
             uint16_t cFreightersDst : 2;
@@ -509,13 +460,10 @@ _Static_assert(offsetof(CYBERINFOTEMP, wInfo1) == 0x0, "offsetof(CYBERINFOTEMP,w
 #endif
 
 /* typind 4216 (0x1078) size=4 */
-typedef struct _hs
-{
+typedef struct _hs {
     uint16_t grhst; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t iItem : 8;
             uint16_t cItem : 8;
         };
@@ -528,12 +476,9 @@ _Static_assert(offsetof(HS, grhst) == 0x0, "offsetof(HS,grhst)");
 #endif
 
 /* typind 4286 (0x10be) size=36 */
-typedef struct _btlplan
-{
-    union
-    {
-        struct
-        {
+typedef struct _btlplan {
+    union {
+        struct {
             uint16_t iplr : 4;
             uint16_t iplan : 4;
             uint16_t mdTactic : 4;
@@ -543,10 +488,8 @@ typedef struct _btlplan
         };
         uint16_t wRaw_0000;
     }; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t mdTarget1 : 4;
             uint16_t mdTarget2 : 4;
             uint16_t iplrAttack : 5;
@@ -562,12 +505,9 @@ _Static_assert(offsetof(BTLPLAN, szName) == 0x4, "offsetof(BTLPLAN,szName)");
 #endif
 
 /* typind 4416 (0x1140) size=2 */
-typedef struct _aipart
-{
-    union
-    {
-        struct
-        {
+typedef struct _aipart {
+    union {
+        struct {
             uint16_t ibit : 4;
             uint16_t iItem : 5;
             uint16_t cItem : 4;
@@ -581,26 +521,22 @@ _Static_assert(sizeof(AIPART) == 2, "sizeof(AIPART)");
 #endif
 
 /* typind 4431 (0x114f) size=16 */
-typedef struct _hb
-{
-    uint16_t cbFree;      /* +0x0000 */
-    uint16_t cbBlock;     /* +0x0002 */
-    uint16_t cbSlop;      /* +0x0004 */
-    uint16_t ibTop;       /* +0x0006 */
+typedef struct _hb {
+    uint16_t    cbFree;   /* +0x0000 */
+    uint16_t    cbBlock;  /* +0x0002 */
+    uint16_t    cbSlop;   /* +0x0004 */
+    uint16_t    ibTop;    /* +0x0006 */
     struct _hb *lphbNext; /* +0x0008 */
-    uint16_t hmem;        /* +0x000c */
-    uint8_t ht;           /* +0x000e */
-    uint8_t unused1;      /* +0x000f */
+    uint16_t    hmem;     /* +0x000c */
+    uint8_t     ht;       /* +0x000e */
+    uint8_t     unused1;  /* +0x000f */
 } HB;
 
 /* typind 4440 (0x1158) size=2 */
-typedef struct _dv
-{
-    union
-    {
+typedef struct _dv {
+    union {
         uint16_t dp;
-        struct
-        {
+        struct {
             uint16_t pctSh : 7;
             uint16_t pctDp : 9;
         };
@@ -612,8 +548,7 @@ _Static_assert(offsetof(DV, dp) == 0x0, "offsetof(DV,dp)");
 #endif
 
 /* typind 4464 (0x1170) size=8 */
-typedef struct _diskfree_t
-{
+typedef struct _diskfree_t {
     uint16_t total_clusters;      /* +0x0000 */
     uint16_t avail_clusters;      /* +0x0002 */
     uint16_t sectors_per_cluster; /* +0x0004 */
@@ -652,17 +587,16 @@ _Static_assert(offsetof(TEXTMETRIC, tmDigitizedAspectY) == 0x1d, "offsetof(TEXTM
 #endif
 
 /* typind 4636 (0x121c) size=78 */
-typedef struct _engine
-{
-    int16_t id;              /* +0x0000 */
-    int8_t rgTech[6];        /* +0x0002 */
-    char szName[32];         /* +0x0008 */
-    int16_t cMass;           /* +0x0028 */
-    uint16_t resCost;        /* +0x002a */
-    int16_t rgwtOreCost[3];  /* +0x002c */
-    int16_t ibmp;            /* +0x0032 */
-    int16_t grfAbilities;    /* +0x0034 */
-    int16_t rgcFuelUsed[12]; /* +0x0036 */
+typedef struct _engine {
+    int16_t  id;              /* +0x0000 */
+    int8_t   rgTech[6];       /* +0x0002 */
+    char     szName[32];      /* +0x0008 */
+    int16_t  cMass;           /* +0x0028 */
+    uint16_t resCost;         /* +0x002a */
+    int16_t  rgwtOreCost[3];  /* +0x002c */
+    int16_t  ibmp;            /* +0x0032 */
+    int16_t  grfAbilities;    /* +0x0034 */
+    int16_t  rgcFuelUsed[12]; /* +0x0036 */
 } ENGINE;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(ENGINE) == 78, "sizeof(ENGINE)");
@@ -678,12 +612,9 @@ _Static_assert(offsetof(ENGINE, rgcFuelUsed) == 0x36, "offsetof(ENGINE,rgcFuelUs
 #endif
 
 /* typind 4700 (0x125c) size=4 */
-typedef struct _pl
-{
-    union
-    {
-        struct
-        {
+typedef struct _pl {
+    union {
+        struct {
             uint16_t cbItem : 8;
             uint16_t fMark : 1;
             uint16_t ht : 3;
@@ -703,17 +634,16 @@ _Static_assert(offsetof(PL, rgb) == 0x4, "offsetof(PL,rgb)");
 #endif
 
 /* typind 4749 (0x128d) size=56 */
-typedef struct _scanner
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t dRange;         /* +0x0034 */
-    int16_t grfAbilities;   /* +0x0036 */
+typedef struct _scanner {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  dRange;         /* +0x0034 */
+    int16_t  grfAbilities;   /* +0x0036 */
 } SCANNER;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SCANNER) == 56, "sizeof(SCANNER)");
@@ -729,16 +659,15 @@ _Static_assert(offsetof(SCANNER, grfAbilities) == 0x36, "offsetof(SCANNER,grfAbi
 #endif
 
 /* typind 4753 (0x1291) size=54 */
-typedef struct _planetary
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
+typedef struct _planetary {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
 } PLANETARY;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(PLANETARY) == 54, "sizeof(PLANETARY)");
@@ -753,16 +682,15 @@ _Static_assert(offsetof(PLANETARY, grAbility) == 0x34, "offsetof(PLANETARY,grAbi
 #endif
 
 /* typind 4761 (0x1299) size=54 */
-typedef struct _armor
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t dp;             /* +0x0034 */
+typedef struct _armor {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  dp;             /* +0x0034 */
 } ARMOR;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(ARMOR) == 54, "sizeof(ARMOR)");
@@ -777,16 +705,15 @@ _Static_assert(offsetof(ARMOR, dp) == 0x34, "offsetof(ARMOR,dp)");
 #endif
 
 /* typind 4764 (0x129c) size=54 */
-typedef struct _shield
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t dp;             /* +0x0034 */
+typedef struct _shield {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  dp;             /* +0x0034 */
 } SHIELD;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SHIELD) == 54, "sizeof(SHIELD)");
@@ -801,16 +728,15 @@ _Static_assert(offsetof(SHIELD, dp) == 0x34, "offsetof(SHIELD,dp)");
 #endif
 
 /* typind 4766 (0x129e) size=54 */
-typedef struct _special
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
+typedef struct _special {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
 } SPECIAL;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SPECIAL) == 54, "sizeof(SPECIAL)");
@@ -825,16 +751,15 @@ _Static_assert(offsetof(SPECIAL, grAbility) == 0x34, "offsetof(SPECIAL,grAbility
 #endif
 
 /* typind 4769 (0x12a1) size=54 */
-typedef struct _mines
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
+typedef struct _mines {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
 } MINES;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(MINES) == 54, "sizeof(MINES)");
@@ -849,16 +774,15 @@ _Static_assert(offsetof(MINES, grAbility) == 0x34, "offsetof(MINES,grAbility)");
 #endif
 
 /* typind 4771 (0x12a3) size=54 */
-typedef struct _mining
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
+typedef struct _mining {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
 } MINING;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(MINING) == 54, "sizeof(MINING)");
@@ -873,16 +797,15 @@ _Static_assert(offsetof(MINING, grAbility) == 0x34, "offsetof(MINING,grAbility)"
 #endif
 
 /* typind 4774 (0x12a6) size=54 */
-typedef struct _terra
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
+typedef struct _terra {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
 } TERRA;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(TERRA) == 54, "sizeof(TERRA)");
@@ -897,18 +820,17 @@ _Static_assert(offsetof(TERRA, grAbility) == 0x34, "offsetof(TERRA,grAbility)");
 #endif
 
 /* typind 4776 (0x12a8) size=58 */
-typedef struct _bomb
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t cRounds;        /* +0x0034 */
-    int16_t dDmgCol;        /* +0x0036 */
-    int16_t dDmgBldg;       /* +0x0038 */
+typedef struct _bomb {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  cRounds;        /* +0x0034 */
+    int16_t  dDmgCol;        /* +0x0036 */
+    int16_t  dDmgBldg;       /* +0x0038 */
 } BOMB;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(BOMB) == 58, "sizeof(BOMB)");
@@ -925,19 +847,18 @@ _Static_assert(offsetof(BOMB, dDmgBldg) == 0x38, "offsetof(BOMB,dDmgBldg)");
 #endif
 
 /* typind 4778 (0x12aa) size=60 */
-typedef struct _torp
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t dRangeMax;      /* +0x0034 */
-    int16_t dp;             /* +0x0036 */
-    int16_t init;           /* +0x0038 */
-    int16_t dHitChance;     /* +0x003a */
+typedef struct _torp {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  dRangeMax;      /* +0x0034 */
+    int16_t  dp;             /* +0x0036 */
+    int16_t  init;           /* +0x0038 */
+    int16_t  dHitChance;     /* +0x003a */
 } TORP;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(TORP) == 60, "sizeof(TORP)");
@@ -955,19 +876,18 @@ _Static_assert(offsetof(TORP, dHitChance) == 0x3a, "offsetof(TORP,dHitChance)");
 #endif
 
 /* typind 4780 (0x12ac) size=60 */
-typedef struct _beam
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t dRangeMax;      /* +0x0034 */
-    int16_t dp;             /* +0x0036 */
-    int16_t init;           /* +0x0038 */
-    int16_t grfAbilities;   /* +0x003a */
+typedef struct _beam {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  dRangeMax;      /* +0x0034 */
+    int16_t  dp;             /* +0x0036 */
+    int16_t  init;           /* +0x0038 */
+    int16_t  grfAbilities;   /* +0x003a */
 } BEAM;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(BEAM) == 60, "sizeof(BEAM)");
@@ -985,17 +905,16 @@ _Static_assert(offsetof(BEAM, grfAbilities) == 0x3a, "offsetof(BEAM,grfAbilities
 #endif
 
 /* typind 4786 (0x12b2) size=56 */
-typedef struct _specialsb
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
-    int16_t grAbility;      /* +0x0034 */
-    int16_t grAbility2;     /* +0x0036 */
+typedef struct _specialsb {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
+    int16_t  grAbility;      /* +0x0034 */
+    int16_t  grAbility2;     /* +0x0036 */
 } SPECIALSB;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SPECIALSB) == 56, "sizeof(SPECIALSB)");
@@ -1011,19 +930,17 @@ _Static_assert(offsetof(SPECIALSB, grAbility2) == 0x36, "offsetof(SPECIALSB,grAb
 #endif
 
 /* typind 4820 (0x12d4) size=12 */
-typedef struct _msgplr
-{
+typedef struct _msgplr {
     struct _msgplr *lpmsgplrNext; /* +0x0000 */
-    int16_t iPlrFrom;             /* +0x0004 */
-    int16_t iPlrTo;               /* +0x0006 */
-    int16_t iInRe;                /* +0x0008 */
-    int16_t cLen;                 /* +0x000a */
-    uint8_t rgbMsg[0];            /* +0x000c */
+    int16_t         iPlrFrom;     /* +0x0004 */
+    int16_t         iPlrTo;       /* +0x0006 */
+    int16_t         iInRe;        /* +0x0008 */
+    int16_t         cLen;         /* +0x000a */
+    uint8_t         rgbMsg[0];    /* +0x000c */
 } MSGPLR;
 
 /* typind 4822 (0x12d6) size=18 */
-typedef struct _msgbig
-{
+typedef struct _msgbig {
     int16_t iMsg;       /* +0x0000 */
     int16_t wGoto;      /* +0x0002 */
     int16_t rgParam[7]; /* +0x0004 */
@@ -1036,12 +953,9 @@ _Static_assert(offsetof(MSGBIG, rgParam) == 0x4, "offsetof(MSGBIG,rgParam)");
 #endif
 
 /* typind 4832 (0x12e0) size=4 */
-typedef struct _msghdr
-{
-    union
-    {
-        struct
-        {
+typedef struct _msghdr {
+    union {
+        struct {
             uint16_t iMsg : 9;
             uint16_t grWord : 7;
         };
@@ -1055,12 +969,9 @@ _Static_assert(offsetof(MSGHDR, wGoto) == 0x2, "offsetof(MSGHDR,wGoto)");
 #endif
 
 /* typind 4844 (0x12ec) size=2 */
-typedef struct _hdr
-{
-    union
-    {
-        struct
-        {
+typedef struct _hdr {
+    union {
+        struct {
             uint16_t cb : 10;
             uint16_t rt : 6;
         };
@@ -1072,12 +983,9 @@ _Static_assert(sizeof(HDR) == 2, "sizeof(HDR)");
 #endif
 
 /* typind 4854 (0x12f6) size=4 */
-typedef struct _starpack
-{
-    union
-    {
-        struct
-        {
+typedef struct _starpack {
+    union {
+        struct {
             uint32_t dx : 10;
             uint32_t y : 12;
             uint32_t id : 10;
@@ -1090,34 +998,27 @@ _Static_assert(sizeof(STARPACK) == 4, "sizeof(STARPACK)");
 #endif
 
 /* typind 4899 (0x1323) size=16 */
-typedef struct _rtbof
-{
-    char rgid[4];    /* +0x0000 */
+typedef struct _rtbof {
+    char    rgid[4]; /* +0x0000 */
     int32_t lidGame; /* +0x0004 */
-    union
-    {
+    union {
         uint16_t wVersion;
-        struct
-        {
+        struct {
             uint16_t verInc : 5;
             uint16_t verMinor : 7;
             uint16_t verMajor : 4;
         };
     }; /* +0x0008 */
     uint16_t turn; /* +0x000a */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             int16_t iPlayer : 5;
             int16_t lSaltTime : 11;
         };
         int16_t wRaw_000c;
     }; /* +0x000c */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t dt : 8;
             uint16_t fDone : 1;
             uint16_t fInUse : 1;
@@ -1138,14 +1039,11 @@ _Static_assert(offsetof(RTBOF, turn) == 0xa, "offsetof(RTBOF,turn)");
 #endif
 
 /* typind 4912 (0x1330) size=25 */
-typedef struct _xferfull
-{
+typedef struct _xferfull {
     uint16_t id1; /* +0x0000 */
     uint16_t id2; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint8_t grobj1 : 4;
             uint8_t grobj2 : 4;
         };
@@ -1161,15 +1059,12 @@ _Static_assert(offsetof(XFERFULL, rgcQuan) == 0x5, "offsetof(XFERFULL,rgcQuan)")
 #endif
 
 /* typind 4914 (0x1332) size=12 */
-typedef struct _coldrop
-{
+typedef struct _coldrop {
     int16_t idFleetSrc;  /* +0x0000 */
     int16_t idPlr;       /* +0x0002 */
     int16_t idPlanetDst; /* +0x0004 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t fCanColonize : 1;
             uint16_t unused : 15;
         };
@@ -1186,14 +1081,13 @@ _Static_assert(offsetof(COLDROP, cColonist) == 0x8, "offsetof(COLDROP,cColonist)
 #endif
 
 /* typind 4918 (0x1336) size=20 */
-typedef struct _score
-{
-    int32_t lScore;      /* +0x0000 */
-    int32_t cResources;  /* +0x0004 */
-    int16_t cPlanet;     /* +0x0008 */
-    int16_t cStarbase;   /* +0x000a */
-    uint16_t rgcsh[3];   /* +0x000c */
-    int16_t cTechLevels; /* +0x0012 */
+typedef struct _score {
+    int32_t  lScore;      /* +0x0000 */
+    int32_t  cResources;  /* +0x0004 */
+    int16_t  cPlanet;     /* +0x0008 */
+    int16_t  cStarbase;   /* +0x000a */
+    uint16_t rgcsh[3];    /* +0x000c */
+    int16_t  cTechLevels; /* +0x0012 */
 } SCORE;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SCORE) == 20, "sizeof(SCORE)");
@@ -1206,8 +1100,7 @@ _Static_assert(offsetof(SCORE, cTechLevels) == 0x12, "offsetof(SCORE,cTechLevels
 #endif
 
 /* typind 4927 (0x133f) size=16 */
-typedef struct _turnserial
-{
+typedef struct _turnserial {
     int32_t lSerialNumber; /* +0x0000 */
     uint8_t rgbConfig[11]; /* +0x0004 */
     uint8_t bPad;          /* +0x000f */
@@ -1220,8 +1113,7 @@ _Static_assert(offsetof(TURNSERIAL, bPad) == 0xf, "offsetof(TURNSERIAL,bPad)");
 #endif
 
 /* typind 4930 (0x1342) size=4 */
-typedef struct _rthisthdr
-{
+typedef struct _rthisthdr {
     int16_t cPlanet;      /* +0x0000 */
     int16_t cPlanetExtra; /* +0x0002 */
 } RTHISTHDR;
@@ -1232,13 +1124,10 @@ _Static_assert(offsetof(RTHISTHDR, cPlanetExtra) == 0x2, "offsetof(RTHISTHDR,cPl
 #endif
 
 /* typind 4937 (0x1349) size=2 */
-typedef struct _prodq1
-{
-    union
-    {
+typedef struct _prodq1 {
+    union {
         uint16_t w;
-        struct
-        {
+        struct {
             uint16_t mdIdle : 6;
             uint16_t cQuan : 10;
         };
@@ -1250,10 +1139,9 @@ _Static_assert(offsetof(PRODQ1, w) == 0x0, "offsetof(PRODQ1,w)");
 #endif
 
 /* typind 4942 (0x134e) size=4 */
-typedef struct _rtlogthing
-{
-    uint16_t idFull;   /* +0x0000 */
-    int16_t fDetonate; /* +0x0002 */
+typedef struct _rtlogthing {
+    uint16_t idFull;    /* +0x0000 */
+    int16_t  fDetonate; /* +0x0002 */
 } RTLOGTHING;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTLOGTHING) == 4, "sizeof(RTLOGTHING)");
@@ -1262,14 +1150,11 @@ _Static_assert(offsetof(RTLOGTHING, fDetonate) == 0x2, "offsetof(RTLOGTHING,fDet
 #endif
 
 /* typind 4955 (0x135b) size=6 */
-typedef struct _rtChgPlanetLong
-{
+typedef struct _rtChgPlanetLong {
     int16_t id; /* +0x0000 */
-    union
-    {
+    union {
         uint32_t ul;
-        struct
-        {
+        struct {
             uint32_t fNoResearch : 1;
             uint32_t idFling : 10;
             uint32_t iWarpFling : 4;
@@ -1285,14 +1170,11 @@ _Static_assert(offsetof(RTCHGPLANETLONG, ul) == 0x2, "offsetof(RTCHGPLANETLONG,u
 #endif
 
 /* typind 4966 (0x1366) size=23 */
-typedef struct _planetsome
-{
+typedef struct _planetsome {
     int16_t id;      /* +0x0000 */
     int16_t iPlayer; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fStarbase : 1;
@@ -1303,14 +1185,12 @@ typedef struct _planetsome
         uint16_t wRaw_0004;
     }; /* +0x0004 */
     uint16_t rgpctMinLevel[3]; /* +0x0006 */
-    char rgMinConc[3];         /* +0x000c */
-    uint8_t rgEnvVar[3];       /* +0x000f */
-    uint8_t rgEnvVarOrig[3];   /* +0x0012 */
-    union
-    {
+    char     rgMinConc[3];     /* +0x000c */
+    uint8_t  rgEnvVar[3];      /* +0x000f */
+    uint8_t  rgEnvVarOrig[3];  /* +0x0012 */
+    union {
         uint16_t uGuesses;
-        struct
-        {
+        struct {
             uint16_t uPopGuess : 12;
             uint16_t uDefGuess : 4;
         };
@@ -1328,18 +1208,16 @@ _Static_assert(offsetof(PLANETSOME, uGuesses) == 0x15, "offsetof(PLANETSOME,uGue
 #endif
 
 /* typind 4975 (0x136f) size=34 */
-typedef struct _exceptionl
-{
-    int16_t type;       /* +0x0000 */
-    char *name;         /* +0x0002 */
+typedef struct _exceptionl {
+    int16_t     type;   /* +0x0000 */
+    char       *name;   /* +0x0002 */
     long double arg1;   /* +0x0004 */
     long double arg2;   /* +0x000e */
     long double retval; /* +0x0018 */
 } EXCEPTIONL;
 
 /* typind 5100 (0x13ec) size=24 */
-typedef struct _logxfer
-{
+typedef struct _logxfer {
     int16_t id;         /* +0x0000 */
     int16_t grobj;      /* +0x0002 */
     int32_t rgdItem[5]; /* +0x0004 */
@@ -1352,8 +1230,7 @@ _Static_assert(offsetof(LOGXFER, rgdItem) == 0x4, "offsetof(LOGXFER,rgdItem)");
 #endif
 
 /* typind 5115 (0x13fb) size=36 */
-typedef struct _logxferf
-{
+typedef struct _logxferf {
     int16_t id;          /* +0x0000 */
     int16_t grobj;       /* +0x0002 */
     int16_t rgdItem[16]; /* +0x0004 */
@@ -1366,21 +1243,18 @@ _Static_assert(offsetof(LOGXFERF, rgdItem) == 0x4, "offsetof(LOGXFERF,rgdItem)")
 #endif
 
 /* typind 5132 (0x140c) size=7 */
-typedef struct _rtxfer
-{
+typedef struct _rtxfer {
     uint16_t id1; /* +0x0000 */
     uint16_t id2; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint8_t grobj1 : 4;
             uint8_t grobj2 : 4;
         };
         uint8_t wRaw_0004;
     }; /* +0x0004 */
     uint8_t grbitItems; /* +0x0005 */
-    char rgcQuan[1];    /* +0x0006 */
+    char    rgcQuan[1]; /* +0x0006 */
 } RTXFER;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTXFER) == 7, "sizeof(RTXFER)");
@@ -1391,15 +1265,14 @@ _Static_assert(offsetof(RTXFER, rgcQuan) == 0x6, "offsetof(RTXFER,rgcQuan)");
 #endif
 
 /* typind 5141 (0x1415) size=52 */
-typedef struct _compart
-{
-    int16_t id;             /* +0x0000 */
-    int8_t rgTech[6];       /* +0x0002 */
-    char szName[32];        /* +0x0008 */
-    int16_t cMass;          /* +0x0028 */
-    uint16_t resCost;       /* +0x002a */
-    int16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;           /* +0x0032 */
+typedef struct _compart {
+    int16_t  id;             /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szName[32];     /* +0x0008 */
+    int16_t  cMass;          /* +0x0028 */
+    uint16_t resCost;        /* +0x002a */
+    int16_t  rgwtOreCost[3]; /* +0x002c */
+    int16_t  ibmp;           /* +0x0032 */
 } COMPART;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(COMPART) == 52, "sizeof(COMPART)");
@@ -1413,14 +1286,11 @@ _Static_assert(offsetof(COMPART, ibmp) == 0x32, "offsetof(COMPART,ibmp)");
 #endif
 
 /* typind 5153 (0x1421) size=8 */
-typedef struct _rtxferx
-{
+typedef struct _rtxferx {
     uint16_t id1; /* +0x0000 */
     uint16_t id2; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint8_t grobj1 : 4;
             uint8_t grobj2 : 4;
         };
@@ -1438,12 +1308,11 @@ _Static_assert(offsetof(RTXFERX, rgcQuan) == 0x6, "offsetof(RTXFERX,rgcQuan)");
 #endif
 
 /* typind 5161 (0x1429) size=10 */
-typedef struct _thmine
-{
-    int32_t cMines;       /* +0x0000 */
+typedef struct _thmine {
+    int32_t  cMines;      /* +0x0000 */
     uint16_t grbitPlr;    /* +0x0004 */
-    uint8_t iType;        /* +0x0006 */
-    uint8_t fDetonate;    /* +0x0007 */
+    uint8_t  iType;       /* +0x0006 */
+    uint8_t  fDetonate;   /* +0x0007 */
     uint16_t grbitPlrNow; /* +0x0008 */
 } THMINE;
 #ifdef STARS_LAYOUT_CHECKS
@@ -1456,12 +1325,9 @@ _Static_assert(offsetof(THMINE, grbitPlrNow) == 0x8, "offsetof(THMINE,grbitPlrNo
 #endif
 
 /* typind 5185 (0x1441) size=10 */
-typedef struct _thpack
-{
-    union
-    {
-        struct
-        {
+typedef struct _thpack {
+    union {
+        struct {
             uint16_t idPlanet : 10;
             uint16_t iWarp : 4;
             uint16_t fMoved : 1;
@@ -1470,10 +1336,8 @@ typedef struct _thpack
         uint16_t wRaw_0000;
     }; /* +0x0000 */
     int16_t rgwtMin[3]; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t wtMax : 14;
             uint16_t iDecayRate : 2;
         };
@@ -1486,13 +1350,10 @@ _Static_assert(offsetof(THPACK, rgwtMin) == 0x2, "offsetof(THPACK,rgwtMin)");
 #endif
 
 /* typind 5270 (0x1496) size=10 */
-typedef struct _thtrader
-{
+typedef struct _thtrader {
     STARSPOINT ptDest; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t iWarp : 4;
             uint16_t fInclude : 1;
             uint16_t unused : 11;
@@ -1510,12 +1371,9 @@ _Static_assert(offsetof(THTRADER, grbitTrader) == 0x8, "offsetof(THTRADER,grbitT
 #endif
 
 /* typind 5213 (0x145d) size=8 */
-typedef struct _thworm
-{
-    union
-    {
-        struct
-        {
+typedef struct _thworm {
+    union {
+        struct {
             uint16_t iStable : 2;
             uint16_t cLastMove : 10;
             uint16_t fDestKnown : 1;
@@ -1536,26 +1394,22 @@ _Static_assert(offsetof(THWORM, idPartner) == 0x6, "offsetof(THWORM,idPartner)")
 #endif
 
 /* typind 4102 (0x1006) size=18 */
-typedef struct _thing
-{
-    union
-    {
+typedef struct _thing {
+    union {
         uint16_t idFull;
-        struct
-        {
+        struct {
             uint16_t id : 9;
             uint16_t iplr : 4;
             uint16_t ith : 3;
         };
     }; /* +0x0000 */
     STARSPOINT pt; /* +0x0002 */
-    union
-    {
-        uint8_t rgb[10];
-        THMINE thm;
-        THPACK thp;
+    union {
+        uint8_t  rgb[10];
+        THMINE   thm;
+        THPACK   thp;
         THTRADER tht;
-        THWORM thw;
+        THWORM   thw;
     }; /* +0x0006 */
     uint16_t turn; /* +0x0010 */
 } THING;
@@ -1572,14 +1426,11 @@ _Static_assert(offsetof(THING, turn) == 0x10, "offsetof(THING,turn)");
 #endif
 
 /* typind 5169 (0x1431) size=10 */
-typedef struct _rtxferl
-{
+typedef struct _rtxferl {
     uint16_t id1; /* +0x0000 */
     uint16_t id2; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint8_t grobj1 : 4;
             uint8_t grobj2 : 4;
         };
@@ -1597,21 +1448,18 @@ _Static_assert(offsetof(RTXFERL, rgcQuan) == 0x6, "offsetof(RTXFERL,rgcQuan)");
 #endif
 
 /* typind 5174 (0x1436) size=9 */
-typedef struct _rtxferf
-{
+typedef struct _rtxferf {
     uint16_t id1; /* +0x0000 */
     uint16_t id2; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint8_t grobj1 : 4;
             uint8_t grobj2 : 4;
         };
         uint8_t wRaw_0004;
     }; /* +0x0004 */
     uint16_t grbitItems; /* +0x0005 */
-    int16_t rgcQuan[1];  /* +0x0007 */
+    int16_t  rgcQuan[1]; /* +0x0007 */
 } RTXFERF;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTXFERF) == 9, "sizeof(RTXFERF)");
@@ -1622,8 +1470,7 @@ _Static_assert(offsetof(RTXFERF, rgcQuan) == 0x7, "offsetof(RTXFERF,rgcQuan)");
 #endif
 
 /* typind 5187 (0x1443) size=4 */
-typedef struct _rtshipint
-{
+typedef struct _rtshipint {
     int16_t id; /* +0x0000 */
     int16_t i;  /* +0x0002 */
 } RTSHIPINT;
@@ -1634,8 +1481,7 @@ _Static_assert(offsetof(RTSHIPINT, i) == 0x2, "offsetof(RTSHIPINT,i)");
 #endif
 
 /* typind 5190 (0x1446) size=20 */
-typedef struct _aistarbase
-{
+typedef struct _aistarbase {
     int16_t idPlanet;   /* +0x0000 */
     int16_t cFreighter; /* +0x0002 */
     int16_t rgflid[8];  /* +0x0004 */
@@ -1648,8 +1494,7 @@ _Static_assert(offsetof(AISTARBASE, rgflid) == 0x4, "offsetof(AISTARBASE,rgflid)
 #endif
 
 /* typind 5201 (0x1451) size=6 */
-typedef struct _rtshipint2
-{
+typedef struct _rtshipint2 {
     int16_t id; /* +0x0000 */
     int16_t i;  /* +0x0002 */
     int16_t i2; /* +0x0004 */
@@ -1662,15 +1507,12 @@ _Static_assert(offsetof(RTSHIPINT2, i2) == 0x4, "offsetof(RTSHIPINT2,i2)");
 #endif
 
 /* typind 5250 (0x1482) size=10 */
-typedef struct _timer
-{
+typedef struct _timer {
     int16_t mdForce;        /* +0x0000 */
     int16_t fAutoGenWhenIn; /* +0x0002 */
-    union
-    {
+    union {
         int16_t hrsForce;
-        struct
-        {
+        struct {
             uint16_t minForce : 12;
             uint16_t cPlr : 4;
         };
@@ -1686,8 +1528,7 @@ _Static_assert(offsetof(TIMER, tickcount) == 0x6, "offsetof(TIMER,tickcount)");
 #endif
 
 /* typind 5254 (0x1486) size=37 */
-typedef struct _rtchgname
-{
+typedef struct _rtchgname {
     int16_t id;      /* +0x0000 */
     int16_t grobj;   /* +0x0002 */
     uint8_t rgb[33]; /* +0x0004 */
@@ -1700,8 +1541,7 @@ _Static_assert(offsetof(RTCHGNAME, rgb) == 0x4, "offsetof(RTCHGNAME,rgb)");
 #endif
 
 /* typind 5257 (0x1489) size=16 */
-typedef struct complex
-{
+typedef struct complex {
     double x; /* +0x0000 */
     double y; /* +0x0008 */
 } complex;
@@ -1712,21 +1552,16 @@ _Static_assert(offsetof(complex, y) == 0x8, "offsetof(complex,y)");
 #endif
 
 /* typind 5259 (0x148b) size=4 */
-typedef struct _lsb
-{
-    union
-    {
-        struct
-        {
+typedef struct _lsb {
+    union {
+        struct {
             uint16_t isb : 4;
             uint16_t pctDp : 12;
         };
         uint16_t wRaw_0000;
     }; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t idFling : 10;
             uint16_t iWarpFling : 4;
             uint16_t unused3 : 2;
@@ -1767,21 +1602,16 @@ _Static_assert(offsetof(NEWTEXTMETRIC, ntmAvgWidth) == 0x27, "offsetof(NEWTEXTME
 #endif
 
 /* typind 5346 (0x14e2) size=4 */
-typedef struct _rtplanet
-{
-    union
-    {
-        struct
-        {
+typedef struct _rtplanet {
+    union {
+        struct {
             int16_t id : 11;
             int16_t iPlayer : 5;
         };
         int16_t wRaw_0000;
     }; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 7;
             uint16_t fHomeworld : 1;
             uint16_t fInclude : 1;
@@ -1801,12 +1631,9 @@ _Static_assert(sizeof(RTPLANET) == 4, "sizeof(RTPLANET)");
 #endif
 
 /* typind 5372 (0x14fc) size=2 */
-typedef struct _fleetid
-{
-    union
-    {
-        struct
-        {
+typedef struct _fleetid {
+    union {
+        struct {
             uint16_t ifl : 9;
             uint16_t iplr : 4;
             uint16_t junk : 3;
@@ -1819,12 +1646,9 @@ _Static_assert(sizeof(FLEETID) == 2, "sizeof(FLEETID)");
 #endif
 
 /* typind 5378 (0x1502) size=2 */
-typedef struct _vers
-{
-    union
-    {
-        struct
-        {
+typedef struct _vers {
+    union {
+        struct {
             uint16_t verInc : 5;
             uint16_t verMinor : 7;
             uint16_t verMajor : 4;
@@ -1837,14 +1661,11 @@ _Static_assert(sizeof(VERS) == 2, "sizeof(VERS)");
 #endif
 
 /* typind 5426 (0x1532) size=6 */
-typedef struct _planetminimal
-{
+typedef struct _planetminimal {
     int16_t id;      /* +0x0000 */
     int16_t iPlayer; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fStarbase : 1;
@@ -1862,8 +1683,7 @@ _Static_assert(offsetof(PLANETMINIMAL, iPlayer) == 0x2, "offsetof(PLANETMINIMAL,
 #endif
 
 /* typind 5456 (0x1550) size=17 */
-typedef struct _rtloghdr
-{
+typedef struct _rtloghdr {
     int16_t cbLog;         /* +0x0000 */
     int32_t lSerialNumber; /* +0x0002 */
     uint8_t rgbConfig[11]; /* +0x0006 */
@@ -1876,12 +1696,9 @@ _Static_assert(offsetof(RTLOGHDR, rgbConfig) == 0x6, "offsetof(RTLOGHDR,rgbConfi
 #endif
 
 /* typind 5460 (0x1554) size=2 */
-typedef struct _mdplr
-{
-    union
-    {
-        struct
-        {
+typedef struct _mdplr {
+    union {
+        struct {
             uint16_t reserved : 9;
             uint16_t fAi : 1;
             uint16_t lvlAi : 3;
@@ -1895,15 +1712,14 @@ _Static_assert(sizeof(MDPLR) == 2, "sizeof(MDPLR)");
 #endif
 
 /* typind 4167 (0x1047) size=16 */
-typedef struct _scan
-{
-    STARSPOINT pt;          /* +0x0000 */
-    int16_t grobj;     /* +0x0004 */
-    int16_t grobjFull; /* +0x0006 */
-    int16_t idpl;      /* +0x0008 */
-    int16_t ifl;       /* +0x000a */
-    int16_t iwp;       /* +0x000c */
-    int16_t ith;       /* +0x000e */
+typedef struct _scan {
+    STARSPOINT pt;        /* +0x0000 */
+    int16_t    grobj;     /* +0x0004 */
+    int16_t    grobjFull; /* +0x0006 */
+    int16_t    idpl;      /* +0x0008 */
+    int16_t    ifl;       /* +0x000a */
+    int16_t    iwp;       /* +0x000c */
+    int16_t    ith;       /* +0x000e */
 } SCAN;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SCAN) == 16, "sizeof(SCAN)");
@@ -1917,35 +1733,33 @@ _Static_assert(offsetof(SCAN, ith) == 0xe, "offsetof(SCAN,ith)");
 #endif
 
 /* typind 5198 (0x144e) size=12 */
-typedef struct _sbar
-{
-    int16_t grbit; /* +0x0000 */
-    int16_t id;    /* +0x0002 */
-    STARSPOINT pt;      /* +0x0004 */
-    char *psz;     /* +0x0008 */
-    SCAN *pscan;   /* +0x000a */
+typedef struct _sbar {
+    int16_t    grbit; /* +0x0000 */
+    int16_t    id;    /* +0x0002 */
+    STARSPOINT pt;    /* +0x0004 */
+    char      *psz;   /* +0x0008 */
+    SCAN      *pscan; /* +0x000a */
 } SBAR;
 
 /* typind 4276 (0x10b4) size=54 */
-typedef struct _rpt
-{
-    int32_t grbitVisible; /* +0x0000 */
-    int16_t irpt;         /* +0x0004 */
-    int16_t cFields;      /* +0x0006 */
-    int16_t cFieldFirst;  /* +0x0008 */
-    int16_t icolSort;     /* +0x000a */
-    int16_t fAscending;   /* +0x000c */
-    int16_t irowFirst;    /* +0x000e */
-    STARSPOINT ptDlg;          /* +0x0010 */
-    STARSPOINT ptSize;         /* +0x0014 */
-    int16_t fCached;      /* +0x0018 */
-    uint8_t rgbdx[16];    /* +0x001a */
-    int16_t cRows;        /* +0x002a */
-    int16_t cRowsVis;     /* +0x002c */
-    int16_t iSubsort;     /* +0x002e */
-    uint16_t hwndVScroll; /* +0x0030 */
-    uint16_t hwndHScroll; /* +0x0032 */
-    int16_t cColScroll;   /* +0x0034 */
+typedef struct _rpt {
+    int32_t    grbitVisible; /* +0x0000 */
+    int16_t    irpt;         /* +0x0004 */
+    int16_t    cFields;      /* +0x0006 */
+    int16_t    cFieldFirst;  /* +0x0008 */
+    int16_t    icolSort;     /* +0x000a */
+    int16_t    fAscending;   /* +0x000c */
+    int16_t    irowFirst;    /* +0x000e */
+    STARSPOINT ptDlg;        /* +0x0010 */
+    STARSPOINT ptSize;       /* +0x0014 */
+    int16_t    fCached;      /* +0x0018 */
+    uint8_t    rgbdx[16];    /* +0x001a */
+    int16_t    cRows;        /* +0x002a */
+    int16_t    cRowsVis;     /* +0x002c */
+    int16_t    iSubsort;     /* +0x002e */
+    uint16_t   hwndVScroll;  /* +0x0030 */
+    uint16_t   hwndHScroll;  /* +0x0032 */
+    int16_t    cColScroll;   /* +0x0034 */
 } RPT;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RPT) == 54, "sizeof(RPT)");
@@ -1969,14 +1783,11 @@ _Static_assert(offsetof(RPT, cColScroll) == 0x34, "offsetof(RPT,cColScroll)");
 #endif
 
 /* typind 5117 (0x13fd) size=12 */
-typedef struct _fleetsome
-{
+typedef struct _fleetsome {
     int16_t id;      /* +0x0000 */
     int16_t iPlayer; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fRepOrders : 1;
@@ -1986,8 +1797,8 @@ typedef struct _fleetsome
         };
         uint16_t wRaw_0004;
     }; /* +0x0004 */
-    int16_t idPlanet; /* +0x0006 */
-    STARSPOINT pt;         /* +0x0008 */
+    int16_t    idPlanet; /* +0x0006 */
+    STARSPOINT pt;       /* +0x0008 */
 } FLEETSOME;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(FLEETSOME) == 12, "sizeof(FLEETSOME)");
@@ -1998,27 +1809,23 @@ _Static_assert(offsetof(FLEETSOME, pt) == 0x8, "offsetof(FLEETSOME,pt)");
 #endif
 
 /* typind 5239 (0x1477) size=24 */
-typedef struct _drawcir
-{
-    int16_t *rgx;       /* +0x0000 */
-    int16_t *rgy;       /* +0x0002 */
-    int16_t *rgrad;     /* +0x0004 */
-    int16_t cCur;       /* +0x0006 */
-    int16_t cMax;       /* +0x0008 */
-    uint16_t hdc;       /* +0x000a */
-    RECT rcClip;        /* +0x000c */
-    int16_t fCovered;   /* +0x0014 */
-    int16_t fHollowOut; /* +0x0016 */
+typedef struct _drawcir {
+    int16_t *rgx;        /* +0x0000 */
+    int16_t *rgy;        /* +0x0002 */
+    int16_t *rgrad;      /* +0x0004 */
+    int16_t  cCur;       /* +0x0006 */
+    int16_t  cMax;       /* +0x0008 */
+    uint16_t hdc;        /* +0x000a */
+    RECT     rcClip;     /* +0x000c */
+    int16_t  fCovered;   /* +0x0014 */
+    int16_t  fHollowOut; /* +0x0016 */
 } DRAWCIR;
 
 /* typind 5429 (0x1535) size=10 */
-typedef struct _wn
-{
+typedef struct _wn {
     RECT rc; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t fMaximized : 1;
             uint16_t fMinimized : 1;
             uint16_t fInitalized : 1;
@@ -2033,19 +1840,16 @@ _Static_assert(offsetof(WN, rc) == 0x0, "offsetof(WN,rc)");
 #endif
 
 /* typind 4444 (0x115c) size=24 */
-typedef struct _btnt
-{
-    uint16_t hwnd;  /* +0x0000 */
-    uint16_t hdc;   /* +0x0002 */
-    RECT rc;        /* +0x0004 */
-    int16_t dTimer; /* +0x000c */
-    int16_t btf;    /* +0x000e */
-    char *szText;   /* +0x0010 */
-    int32_t lTicks; /* +0x0012 */
-    union
-    {
-        struct
-        {
+typedef struct _btnt {
+    uint16_t hwnd;   /* +0x0000 */
+    uint16_t hdc;    /* +0x0002 */
+    RECT     rc;     /* +0x0004 */
+    int16_t  dTimer; /* +0x000c */
+    int16_t  btf;    /* +0x000e */
+    char    *szText; /* +0x0010 */
+    int32_t  lTicks; /* +0x0012 */
+    union {
+        struct {
             uint16_t fFirst : 1;
             uint16_t fDown : 1;
             uint16_t fInitDown : 1;
@@ -2058,15 +1862,12 @@ typedef struct _btnt
 } BTNT;
 
 /* typind 5103 (0x13ef) size=14 */
-typedef struct _btn
-{
-    RECT rc;      /* +0x0000 */
+typedef struct _btn {
+    RECT    rc;   /* +0x0000 */
     int16_t bt;   /* +0x0008 */
     int16_t iVal; /* +0x000a */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t fVisible : 1;
             uint16_t fDisabled : 1;
             uint16_t iSide : 2;
@@ -2083,10 +1884,9 @@ _Static_assert(offsetof(BTN, iVal) == 0xa, "offsetof(BTN,iVal)");
 #endif
 
 /* typind 4933 (0x1345) size=2 */
-typedef struct _rtChgProdQ
-{
-    int16_t id;     /* +0x0000 */
-    PROD rgprod[0]; /* +0x0002 */
+typedef struct _rtChgProdQ {
+    int16_t id;        /* +0x0000 */
+    PROD    rgprod[0]; /* +0x0002 */
 } RTCHGPRODQ;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTCHGPRODQ) == 2, "sizeof(RTCHGPRODQ)");
@@ -2095,20 +1895,19 @@ _Static_assert(offsetof(RTCHGPRODQ, rgprod) == 0x2, "offsetof(RTCHGPRODQ,rgprod)
 #endif
 
 /* typind 4214 (0x1076) size=123 */
-typedef struct _hul
-{
-    int16_t ihuldef;         /* +0x0000 */
-    int8_t rgTech[6];        /* +0x0002 */
-    char szClass[32];        /* +0x0008 */
+typedef struct _hul {
+    int16_t  ihuldef;        /* +0x0000 */
+    int8_t   rgTech[6];      /* +0x0002 */
+    char     szClass[32];    /* +0x0008 */
     uint16_t wtEmpty;        /* +0x0028 */
     uint16_t resCost;        /* +0x002a */
     uint16_t rgwtOreCost[3]; /* +0x002c */
-    int16_t ibmp;            /* +0x0032 */
+    int16_t  ibmp;           /* +0x0032 */
     uint16_t wtCargoMax;     /* +0x0034 */
     uint16_t wtFuelMax;      /* +0x0036 */
     uint16_t dp;             /* +0x0038 */
-    HS rghs[16];             /* +0x003a */
-    uint8_t chs;             /* +0x007a */
+    HS       rghs[16];       /* +0x003a */
+    uint8_t  chs;            /* +0x007a */
 } HUL;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(HUL) == 123, "sizeof(HUL)");
@@ -2127,37 +1926,32 @@ _Static_assert(offsetof(HUL, chs) == 0x7a, "offsetof(HUL,chs)");
 #endif
 
 /* typind 4190 (0x105e) size=8 */
-typedef struct _part
-{
+typedef struct _part {
     HS hs; /* +0x0000 */
-    union
-    {
-        COMPART *pcom;
-        ARMOR *parmor;
-        HUL *phul;
-        ENGINE *pengine;
-        SCANNER *pscanner;
-        BEAM *pbeam;
-        TORP *ptorp;
-        BOMB *pbomb;
-        SHIELD *pshield;
-        SPECIAL *pspecial;
+    union {
+        COMPART   *pcom;
+        ARMOR     *parmor;
+        HUL       *phul;
+        ENGINE    *pengine;
+        SCANNER   *pscanner;
+        BEAM      *pbeam;
+        TORP      *ptorp;
+        BOMB      *pbomb;
+        SHIELD    *pshield;
+        SPECIAL   *pspecial;
         SPECIALSB *pspecialsb;
-        MINES *pmines;
-        MINING *pmining;
+        MINES     *pmines;
+        MINING    *pmining;
         PLANETARY *pplanetary;
-        TERRA *pterra;
+        TERRA     *pterra;
     }; /* +0x0004 */
 } PART;
 
 /* typind 5327 (0x14cf) size=17 */
-typedef struct _rtshdef
-{
-    union
-    {
+typedef struct _rtshdef {
+    union {
         uint16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fFree : 1;
@@ -2167,16 +1961,15 @@ typedef struct _rtshdef
     }; /* +0x0000 */
     uint8_t ihuldef; /* +0x0002 */
     uint8_t ibmp;    /* +0x0003 */
-    union
-    {
+    union {
         uint16_t wtEmpty;
         uint16_t dp;
     }; /* +0x0004 */
-    uint8_t chs;     /* +0x0006 */
-    uint16_t turn;   /* +0x0007 */
-    uint32_t cBuilt; /* +0x0009 */
-    uint32_t cExist; /* +0x000d */
-    HS rghs[0];      /* +0x0011 */
+    uint8_t  chs;     /* +0x0006 */
+    uint16_t turn;    /* +0x0007 */
+    uint32_t cBuilt;  /* +0x0009 */
+    uint32_t cExist;  /* +0x000d */
+    HS       rghs[0]; /* +0x0011 */
 } RTSHDEF;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTSHDEF) == 17, "sizeof(RTSHDEF)");
@@ -2193,23 +1986,18 @@ _Static_assert(offsetof(RTSHDEF, rghs) == 0x11, "offsetof(RTSHDEF,rghs)");
 #endif
 
 /* typind 4099 (0x1003) size=124 */
-typedef struct _fleet
-{
-    union
-    {
+typedef struct _fleet {
+    union {
         int16_t id;
-        struct
-        {
+        struct {
             uint16_t ifl : 9;
             uint16_t iplr : 4;
             uint16_t junk : 3;
         };
     }; /* +0x0000 */
     int16_t iPlayer; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fRepOrders : 1;
@@ -2222,40 +2010,34 @@ typedef struct _fleet
         };
         uint16_t wRaw_0004;
     }; /* +0x0004 */
-    int16_t idPlanet;  /* +0x0006 */
-    STARSPOINT pt;          /* +0x0008 */
-    int16_t rgcsh[16]; /* +0x000c */
-    union
-    {
-        DV rgdv[16];
+    int16_t    idPlanet;  /* +0x0006 */
+    STARSPOINT pt;        /* +0x0008 */
+    int16_t    rgcsh[16]; /* +0x000c */
+    union {
+        DV      rgdv[16];
         int32_t wtFleet;
     }; /* +0x002c */
-    int32_t rgwtMin[5];      /* +0x004c */
-    uint8_t iplan;           /* +0x0060 */
-    uint8_t bUnused;         /* +0x0061 */
-    int16_t cord;            /* +0x0062 */
-    PLORD *lpplord;          /* +0x0064 */
-    struct _fleet *lpflNext; /* +0x0068 */
-    union
-    {
+    int32_t        rgwtMin[5]; /* +0x004c */
+    uint8_t        iplan;      /* +0x0060 */
+    uint8_t        bUnused;    /* +0x0061 */
+    int16_t        cord;       /* +0x0062 */
+    PLORD         *lpplord;    /* +0x0064 */
+    struct _fleet *lpflNext;   /* +0x0068 */
+    union {
         int32_t lPower;
-        struct
-        {
+        struct {
             int16_t dMoveLeft;
             int16_t dMoveUsed;
         };
     }; /* +0x006c */
     int32_t lFuelUsed; /* +0x0070 */
-    union
-    {
+    union {
         int32_t dirLong;
-        struct
-        {
+        struct {
             uint16_t dirFltX : 8;
             uint16_t dirFltY : 8;
         };
-        struct
-        {
+        struct {
             uint16_t iwarpFlt : 4;
             uint16_t fdirValid : 1;
             uint16_t fCompChg : 1;
@@ -2290,30 +2072,27 @@ _Static_assert(offsetof(FLEET, lpszName) == 120u, "FLEET.lpszName offset");
 #endif
 
 /* typind 4329 (0x10e9) size=29 */
-typedef struct _tok
-{
-    uint16_t id;        /* +0x0000 */
-    uint8_t iplr;       /* +0x0002 */
-    uint8_t grobj;      /* +0x0003 */
-    uint8_t ishdef;     /* +0x0004 */
-    uint8_t brc;        /* +0x0005 */
-    uint8_t initBase;   /* +0x0006 */
-    uint8_t initMin;    /* +0x0007 */
-    uint8_t initMac;    /* +0x0008 */
-    uint8_t itokTarget; /* +0x0009 */
-    uint8_t pctCloak;   /* +0x000a */
-    uint8_t pctJam;     /* +0x000b */
-    uint8_t pctBC;      /* +0x000c */
-    uint8_t pctCap;     /* +0x000d */
-    uint8_t pctBeamDef; /* +0x000e */
-    uint16_t wt;        /* +0x000f */
-    uint16_t dpShield;  /* +0x0011 */
-    uint16_t csh;       /* +0x0013 */
-    DV dv;              /* +0x0015 */
-    union
-    {
-        struct
-        {
+typedef struct _tok {
+    uint16_t id;         /* +0x0000 */
+    uint8_t  iplr;       /* +0x0002 */
+    uint8_t  grobj;      /* +0x0003 */
+    uint8_t  ishdef;     /* +0x0004 */
+    uint8_t  brc;        /* +0x0005 */
+    uint8_t  initBase;   /* +0x0006 */
+    uint8_t  initMin;    /* +0x0007 */
+    uint8_t  initMac;    /* +0x0008 */
+    uint8_t  itokTarget; /* +0x0009 */
+    uint8_t  pctCloak;   /* +0x000a */
+    uint8_t  pctJam;     /* +0x000b */
+    uint8_t  pctBC;      /* +0x000c */
+    uint8_t  pctCap;     /* +0x000d */
+    uint8_t  pctBeamDef; /* +0x000e */
+    uint16_t wt;         /* +0x000f */
+    uint16_t dpShield;   /* +0x0011 */
+    uint16_t csh;        /* +0x0013 */
+    DV       dv;         /* +0x0015 */
+    union {
+        struct {
             uint16_t mdTarget1 : 4;
             uint16_t mdTarget2 : 4;
             uint16_t mdTactic : 4;
@@ -2321,10 +2100,8 @@ typedef struct _tok
         };
         uint16_t wRaw_0017;
     }; /* +0x0017 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t dxyLim : 4;
             uint16_t dxyMax : 4;
             uint16_t spd : 4;
@@ -2332,11 +2109,9 @@ typedef struct _tok
         };
         uint16_t wRaw_0019;
     }; /* +0x0019 */
-    union
-    {
+    union {
         uint16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t fActive : 1;
             uint16_t fDetector : 1;
             uint16_t fTorp : 1;
@@ -2372,12 +2147,9 @@ _Static_assert(offsetof(TOK, wFlags) == 0x1b, "offsetof(TOK,wFlags)");
 #endif
 
 /* typind 4830 (0x12de) size=5 */
-typedef struct _msgturn
-{
-    union
-    {
-        struct
-        {
+typedef struct _msgturn {
+    union {
+        struct {
             uint8_t iPlr : 4;
             uint8_t cbParams : 4;
         };
@@ -2391,13 +2163,10 @@ _Static_assert(offsetof(MSGTURN, msghdr) == 0x1, "offsetof(MSGTURN,msghdr)");
 #endif
 
 /* typind 4250 (0x109a) size=24 */
-typedef struct _scorex
-{
-    union
-    {
+typedef struct _scorex {
+    union {
         uint16_t wWord;
-        struct
-        {
+        struct {
             uint16_t iPlayer : 5;
             uint16_t fValid : 1;
             uint16_t grbitVC : 8;
@@ -2405,9 +2174,8 @@ typedef struct _scorex
             uint16_t fHistory : 1;
         };
     }; /* +0x0000 */
-    union
-    {
-        int16_t iRank;
+    union {
+        int16_t  iRank;
         uint16_t turn;
     }; /* +0x0002 */
     SCORE score; /* +0x0004 */
@@ -2421,11 +2189,10 @@ _Static_assert(offsetof(SCOREX, score) == 0x4, "offsetof(SCOREX,score)");
 #endif
 
 /* typind 4335 (0x10ef) size=26 */
-typedef struct _zipprodq1
-{
+typedef struct _zipprodq1 {
     uint8_t fNoResearch; /* +0x0000 */
     uint8_t cpq;         /* +0x0001 */
-    PRODQ1 rgpq[12];     /* +0x0002 */
+    PRODQ1  rgpq[12];    /* +0x0002 */
 } ZIPPRODQ1;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(ZIPPRODQ1) == 26, "sizeof(ZIPPRODQ1)");
@@ -2435,10 +2202,9 @@ _Static_assert(offsetof(ZIPPRODQ1, rgpq) == 0x2, "offsetof(ZIPPRODQ1,rgpq)");
 #endif
 
 /* typind 5218 (0x1462) size=1284 */
-typedef struct _aihist
-{
-    uint16_t cbAiHist;    /* +0x0000 */
-    int16_t cStarbase;    /* +0x0002 */
+typedef struct _aihist {
+    uint16_t   cbAiHist;  /* +0x0000 */
+    int16_t    cStarbase; /* +0x0002 */
     AISTARBASE rgasb[64]; /* +0x0004 */
 } AIHIST;
 #ifdef STARS_LAYOUT_CHECKS
@@ -2449,14 +2215,13 @@ _Static_assert(offsetof(AIHIST, rgasb) == 0x4, "offsetof(AIHIST,rgasb)");
 #endif
 
 /* typind 5422 (0x152e) size=28 */
-typedef struct _selSome
-{
-    STARSPOINT pt;          /* +0x0000 */
-    int16_t grobj;     /* +0x0004 */
-    int16_t grobjFull; /* +0x0006 */
-    int16_t id;        /* +0x0008 */
-    int16_t iwpAct;    /* +0x000a */
-    SCAN scan;         /* +0x000c */
+typedef struct _selSome {
+    STARSPOINT pt;        /* +0x0000 */
+    int16_t    grobj;     /* +0x0004 */
+    int16_t    grobjFull; /* +0x0006 */
+    int16_t    id;        /* +0x0008 */
+    int16_t    iwpAct;    /* +0x000a */
+    SCAN       scan;      /* +0x000c */
 } SELSOME;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SELSOME) == 28, "sizeof(SELSOME)");
@@ -2469,14 +2234,11 @@ _Static_assert(offsetof(SELSOME, scan) == 0xc, "offsetof(SELSOME,scan)");
 #endif
 
 /* typind 4332 (0x10ec) size=26 */
-typedef struct _ini
-{
+typedef struct _ini {
     WN wnFrame; /* +0x0000 */
-    union
-    {
+    union {
         uint16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t fStartupFile : 1;
             uint16_t fCmdLine : 1;
             uint16_t fWait : 1;
@@ -2492,12 +2254,12 @@ typedef struct _ini
             uint16_t fLogging : 1;
         };
     }; /* +0x000a */
-    uint16_t turn;    /* +0x000c */
-    int16_t iObjSel;  /* +0x000e */
-    int16_t idPlayer; /* +0x0010 */
-    int32_t lid;      /* +0x0012 */
-    int16_t cTurnGen; /* +0x0016 */
-    int16_t iMsg;     /* +0x0018 */
+    uint16_t turn;     /* +0x000c */
+    int16_t  iObjSel;  /* +0x000e */
+    int16_t  idPlayer; /* +0x0010 */
+    int32_t  lid;      /* +0x0012 */
+    int16_t  cTurnGen; /* +0x0016 */
+    int16_t  iMsg;     /* +0x0018 */
 } INI;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(INI) == 26, "sizeof(INI)");
@@ -2512,14 +2274,11 @@ _Static_assert(offsetof(INI, iMsg) == 0x18, "offsetof(INI,iMsg)");
 #endif
 
 /* typind 4104 (0x1008) size=147 */
-typedef struct _shdef
-{
+typedef struct _shdef {
     HUL hul; /* +0x0000 */
-    union
-    {
+    union {
         uint16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t det : 8;
             uint16_t fInclude : 1;
             uint16_t fFree : 1;
@@ -2530,16 +2289,15 @@ typedef struct _shdef
     uint16_t turn;   /* +0x007d */
     uint32_t cBuilt; /* +0x007f */
     uint32_t cExist; /* +0x0083 */
-    union
-    {
+    union {
         int32_t lPower;
         int32_t lVisible;
     }; /* +0x0087 */
     uint16_t grbitPlr;    /* +0x008b */
     uint16_t dScanRange;  /* +0x008d */
     uint16_t dScanRange2; /* +0x008f */
-    uint8_t pctDetect;    /* +0x0091 */
-    uint8_t iSteal;       /* +0x0092 */
+    uint8_t  pctDetect;   /* +0x0091 */
+    uint8_t  iSteal;      /* +0x0092 */
 } SHDEF;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SHDEF) == 147, "sizeof(SHDEF)");
@@ -2558,13 +2316,10 @@ _Static_assert(offsetof(SHDEF, iSteal) == 0x92, "offsetof(SHDEF,iSteal)");
 #endif
 
 /* typind 4745 (0x1289) size=143 */
-typedef struct _huldef
-{
+typedef struct _huldef {
     HUL hul; /* +0x0000 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t init : 6;
             uint16_t imdAttack : 4;
             uint16_t imdCategory : 4;
@@ -2572,8 +2327,8 @@ typedef struct _huldef
         };
         uint16_t wRaw_007b;
     }; /* +0x007b */
-    uint16_t wrcCargo; /* +0x007d */
-    uint8_t rgbrc[16]; /* +0x007f */
+    uint16_t wrcCargo;  /* +0x007d */
+    uint8_t  rgbrc[16]; /* +0x007f */
 } HULDEF;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(HULDEF) == 143, "sizeof(HULDEF)");
@@ -2583,12 +2338,9 @@ _Static_assert(offsetof(HULDEF, rgbrc) == 0x7f, "offsetof(HULDEF,rgbrc)");
 #endif
 
 /* typind 5337 (0x14d9) size=19 */
-typedef struct _rtchgshdef
-{
-    union
-    {
-        struct
-        {
+typedef struct _rtchgshdef {
+    union {
+        struct {
             uint16_t mdChg : 4;
             uint16_t iPlr : 4;
             uint16_t ishdef : 5;
@@ -2604,16 +2356,15 @@ _Static_assert(offsetof(RTCHGSHDEF, rtshdef) == 0x2, "offsetof(RTCHGSHDEF,rtshde
 #endif
 
 /* typind 4258 (0x10a2) size=14 */
-typedef struct _btldata
-{
-    uint16_t id;       /* +0x0000 */
-    uint8_t cplr;      /* +0x0002 */
-    uint8_t ctok;      /* +0x0003 */
-    uint16_t grfPlr;   /* +0x0004 */
-    uint16_t cbData;   /* +0x0006 */
-    uint16_t idPlanet; /* +0x0008 */
-    STARSPOINT pt;          /* +0x000a */
-    TOK rgtok[0];      /* +0x000e */
+typedef struct _btldata {
+    uint16_t   id;       /* +0x0000 */
+    uint8_t    cplr;     /* +0x0002 */
+    uint8_t    ctok;     /* +0x0003 */
+    uint16_t   grfPlr;   /* +0x0004 */
+    uint16_t   cbData;   /* +0x0006 */
+    uint16_t   idPlanet; /* +0x0008 */
+    STARSPOINT pt;       /* +0x000a */
+    TOK        rgtok[0]; /* +0x000e */
 } BTLDATA;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(BTLDATA) == 14, "sizeof(BTLDATA)");
@@ -2628,13 +2379,12 @@ _Static_assert(offsetof(BTLDATA, rgtok) == 0xe, "offsetof(BTLDATA,rgtok)");
 #endif
 
 /* typind 5107 (0x13f3) size=8 */
-typedef struct _kill
-{
-    uint8_t itok;      /* +0x0000 */
-    uint8_t grfWeapon; /* +0x0001 */
-    uint16_t cshKill;  /* +0x0002 */
-    uint16_t dpShield; /* +0x0004 */
-    DV dv;             /* +0x0006 */
+typedef struct _kill {
+    uint8_t  itok;      /* +0x0000 */
+    uint8_t  grfWeapon; /* +0x0001 */
+    uint16_t cshKill;   /* +0x0002 */
+    uint16_t dpShield;  /* +0x0004 */
+    DV       dv;        /* +0x0006 */
 } KILL;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(KILL) == 8, "sizeof(KILL)");
@@ -2646,15 +2396,12 @@ _Static_assert(offsetof(KILL, dv) == 0x6, "offsetof(KILL,dv)");
 #endif
 
 /* typind 4438 (0x1156) size=6 */
-typedef struct _btlrec
-{
+typedef struct _btlrec {
     uint8_t itok;    /* +0x0000 */
     uint8_t brcDest; /* +0x0001 */
     int16_t ctok;    /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t iRound : 4;
             uint16_t dzDis : 4;
             uint16_t itokAttack : 8;
@@ -2672,58 +2419,50 @@ _Static_assert(offsetof(BTLREC, rgkill) == 0x6, "offsetof(BTLREC,rgkill)");
 #endif
 
 /* typind 4116 (0x1014) size=192 */
-typedef struct _player
-{
-    int8_t iPlayer;  /* +0x0000 */
-    int8_t cShDef;   /* +0x0001 */
+typedef struct _player {
+    int8_t  iPlayer; /* +0x0000 */
+    int8_t  cShDef;  /* +0x0001 */
     int16_t cPlanet; /* +0x0002 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t cFleet : 12;
             uint16_t cshdefSB : 4;
         };
         uint16_t wRaw_0004;
     }; /* +0x0004 */
-    union
-    {
+    union {
         uint16_t wMdPlr;
-        struct
-        {
+        struct {
             uint16_t det : 3;
             uint16_t iPlrBmp : 5;
             uint16_t fInclude : 1;
             uint16_t mdPlayer : 7;
         };
-        struct
-        {
+        struct {
             uint16_t reserved : 9;
             uint16_t fAi : 1;
             uint16_t lvlAi : 3;
             uint16_t idAi : 3;
         };
     }; /* +0x0006 */
-    int16_t idPlanetHome;   /* +0x0008 */
-    uint16_t wScore;        /* +0x000a */
-    int32_t lSalt;          /* +0x000c */
-    int8_t rgEnvVar[3];     /* +0x0010 */
-    int8_t rgEnvVarMin[3];  /* +0x0013 */
-    int8_t rgEnvVarMax[3];  /* +0x0016 */
-    int8_t pctIdealGrowth;  /* +0x0019 */
-    int8_t rgTech[6];       /* +0x001a */
-    uint32_t rgResSpent[6]; /* +0x0020 */
-    int8_t pctResearch;     /* +0x0038 */
-    int8_t iTechCur;        /* +0x0039 */
-    int32_t lResLastYear;   /* +0x003a */
-    int8_t rgAttr[16];      /* +0x003e */
-    uint32_t grbitAttr;     /* +0x004e */
-    uint16_t grbitTrader;   /* +0x0052 */
-    union
-    {
+    int16_t  idPlanetHome;   /* +0x0008 */
+    uint16_t wScore;         /* +0x000a */
+    int32_t  lSalt;          /* +0x000c */
+    int8_t   rgEnvVar[3];    /* +0x0010 */
+    int8_t   rgEnvVarMin[3]; /* +0x0013 */
+    int8_t   rgEnvVarMax[3]; /* +0x0016 */
+    int8_t   pctIdealGrowth; /* +0x0019 */
+    int8_t   rgTech[6];      /* +0x001a */
+    uint32_t rgResSpent[6];  /* +0x0020 */
+    int8_t   pctResearch;    /* +0x0038 */
+    int8_t   iTechCur;       /* +0x0039 */
+    int32_t  lResLastYear;   /* +0x003a */
+    int8_t   rgAttr[16];     /* +0x003e */
+    uint32_t grbitAttr;      /* +0x004e */
+    uint16_t grbitTrader;    /* +0x0052 */
+    union {
         uint16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t fDead : 1;
             uint16_t fCrippled : 1;
             uint16_t fCheater : 1;
@@ -2732,10 +2471,10 @@ typedef struct _player
             uint16_t unused : 11;
         };
     }; /* +0x0054 */
-    ZIPPRODQ1 zpq1;           /* +0x0056 */
-    uint8_t rgmdRelation[16]; /* +0x0070 */
-    char szName[32];          /* +0x0080 */
-    char szNames[32];         /* +0x00a0 */
+    ZIPPRODQ1 zpq1;             /* +0x0056 */
+    uint8_t   rgmdRelation[16]; /* +0x0070 */
+    char      szName[32];       /* +0x0080 */
+    char      szNames[32];      /* +0x00a0 */
 } PLAYER;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(PLAYER) == 192, "sizeof(PLAYER)");
@@ -2766,13 +2505,10 @@ _Static_assert(offsetof(PLAYER, szNames) == 0xa0, "offsetof(PLAYER,szNames)");
 #endif
 
 /* typind 4333 (0x10ed) size=44 */
-typedef struct _tutor
-{
-    union
-    {
+typedef struct _tutor {
+    union {
         int16_t wFlags;
-        struct
-        {
+        struct {
             uint16_t fVisible : 1;
             uint16_t fGameSaved : 1;
             uint16_t fChange : 1;
@@ -2789,15 +2525,15 @@ typedef struct _tutor
             uint16_t unused : 1;
         };
     }; /* +0x0000 */
-    int16_t idt;        /* +0x0002 */
-    int16_t idtBold;    /* +0x0004 */
-    int16_t idh;        /* +0x0006 */
-    int16_t idsError;   /* +0x0008 */
-    int16_t iScanZoom;  /* +0x000a */
-    int16_t icolFSort;  /* +0x000c */
-    uint16_t grbitScan; /* +0x000e */
-    HWND hwnd;          /* +0x0010 */
-    ZIPPRODQ1 zpq;      /* +0x0012 */
+    int16_t   idt;       /* +0x0002 */
+    int16_t   idtBold;   /* +0x0004 */
+    int16_t   idh;       /* +0x0006 */
+    int16_t   idsError;  /* +0x0008 */
+    int16_t   iScanZoom; /* +0x000a */
+    int16_t   icolFSort; /* +0x000c */
+    uint16_t  grbitScan; /* +0x000e */
+    HWND      hwnd;      /* +0x0010 */
+    ZIPPRODQ1 zpq;       /* +0x0012 */
 } TUTOR;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(TUTOR) == 44, "sizeof(TUTOR)");
@@ -2814,18 +2550,15 @@ _Static_assert(offsetof(TUTOR, zpq) == 0x12, "offsetof(TUTOR,zpq)");
 #endif
 
 /* typind 4337 (0x10f1) size=40 */
-typedef struct _zipprodq
-{
-    char szName[13]; /* +0x0000 */
-    uint8_t fValid;  /* +0x000d */
-    union
-    {
+typedef struct _zipprodq {
+    char    szName[13]; /* +0x0000 */
+    uint8_t fValid;     /* +0x000d */
+    union {
         ZIPPRODQ1 zpq1;
-        struct
-        {
+        struct {
             uint8_t fNoResearch;
             uint8_t cpq;
-            PRODQ1 rgpq[12];
+            PRODQ1  rgpq[12];
         };
     }; /* +0x000e */
 } ZIPPRODQ;
@@ -2840,17 +2573,16 @@ _Static_assert(offsetof(ZIPPRODQ, rgpq) == 0x10, "offsetof(ZIPPRODQ,rgpq)");
 #endif
 
 /* typind 4187 (0x105b) size=226 */
-typedef struct _sel
-{
-    STARSPOINT pt;          /* +0x0000 */
-    int16_t grobj;     /* +0x0004 */
-    int16_t grobjFull; /* +0x0006 */
-    int16_t id;        /* +0x0008 */
-    int16_t iwpAct;    /* +0x000a */
-    SCAN scan;         /* +0x000c */
-    FLEET fl;          /* +0x001c */
-    PLANET pl;         /* +0x0098 */
-    THING th;          /* +0x00d0 */
+typedef struct _sel {
+    STARSPOINT pt;        /* +0x0000 */
+    int16_t    grobj;     /* +0x0004 */
+    int16_t    grobjFull; /* +0x0006 */
+    int16_t    id;        /* +0x0008 */
+    int16_t    iwpAct;    /* +0x000a */
+    SCAN       scan;      /* +0x000c */
+    FLEET      fl;        /* +0x001c */
+    PLANET     pl;        /* +0x0098 */
+    THING      th;        /* +0x00d0 */
 } SEL;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SEL) == 226, "sizeof(SEL)");
@@ -2866,15 +2598,13 @@ _Static_assert(offsetof(SEL, th) == 0xd0, "offsetof(SEL,th)");
 #endif
 
 /* typind 4910 (0x132e) size=128 */
-typedef struct _xfer
-{
+typedef struct _xfer {
     int16_t id;    /* +0x0000 */
     int16_t grobj; /* +0x0002 */
-    union
-    {
-        FLEET fl;
+    union {
+        FLEET  fl;
         PLANET pl;
-        THING th;
+        THING  th;
     }; /* +0x0004 */
 } XFER;
 #ifdef STARS_LAYOUT_CHECKS
@@ -2887,11 +2617,10 @@ _Static_assert(offsetof(XFER, th) == 0x4, "offsetof(XFER,th)");
 #endif
 
 /* typind 5226 (0x146a) size=22 */
-typedef struct _rtwaypt
-{
+typedef struct _rtwaypt {
     int16_t id;     /* +0x0000 */
     int16_t iWaypt; /* +0x0002 */
-    ORDER order;    /* +0x0004 */
+    ORDER   order;  /* +0x0004 */
 } RTWAYPT;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTWAYPT) == 22, "sizeof(RTWAYPT)");
@@ -2901,64 +2630,57 @@ _Static_assert(offsetof(RTWAYPT, order) == 0x4, "offsetof(RTWAYPT,order)");
 #endif
 
 /* typind 4291 (0x10c3) size=22 */
-typedef struct _popupdata
-{
+typedef struct _popupdata {
     int16_t grPopup; /* +0x0000 */
-    union
-    {
-        int32_t rgi[5];
-        int16_t dxOut;
-        int16_t iPlayer;
-        int16_t idPlan;
-        int16_t idPlanet;
-        FLEET *lpfl;
-        SHDEF *lpshdef;
-        PART part;
-        int16_t cMax;
-        int16_t iPlanetVar;
-        char *psz;
-        int16_t cCur;
-        int16_t fRedDamage;
-        int16_t fShowDamage;
-        int16_t iPlanVal;
-        int16_t cOperate;
-        int16_t dxDamage;
-        int16_t fHideCounts;
-        int16_t iPlanMin;
-        int16_t fFactory;
-        int16_t fToken;
+    union {
+        int32_t  rgi[5];
+        int16_t  dxOut;
+        int16_t  iPlayer;
+        int16_t  idPlan;
+        int16_t  idPlanet;
+        FLEET   *lpfl;
+        SHDEF   *lpshdef;
+        PART     part;
+        int16_t  cMax;
+        int16_t  iPlanetVar;
+        char    *psz;
+        int16_t  cCur;
+        int16_t  fRedDamage;
+        int16_t  fShowDamage;
+        int16_t  iPlanVal;
+        int16_t  cOperate;
+        int16_t  dxDamage;
+        int16_t  fHideCounts;
+        int16_t  iPlanMin;
+        int16_t  fFactory;
+        int16_t  fToken;
         uint16_t grbit;
-        int16_t iPlanMax;
-        int16_t fSummary;
-        int16_t iPlrVal;
-        int16_t iPlrMin;
-        int16_t itok;
-        int16_t iPlrMax;
+        int16_t  iPlanMax;
+        int16_t  fSummary;
+        int16_t  iPlrVal;
+        int16_t  iPlrMin;
+        int16_t  itok;
+        int16_t  iPlrMax;
     }; /* +0x0002 */
 } POPUPDATA;
 
 /* typind 5042 (0x13b2) size=2 */
-typedef struct _obj
-{
-    union
-    {
+typedef struct _obj {
+    union {
         PLANET *ppl;
-        FLEET *pfl;
-        THING *pth;
+        FLEET  *pfl;
+        THING  *pth;
     }; /* +0x0000 */
 } OBJ;
 
 /* typind 5046 (0x13b6) size=16 */
-typedef struct _tile
-{
+typedef struct _tile {
     int16_t yTop;                               /* +0x0000 */
     int16_t dyFull;                             /* +0x0002 */
     int16_t grbit;                              /* +0x0004 */
     void (*pfn)(uint16_t, struct _tile *, OBJ); /* +0x0006 */
-    union
-    {
-        struct
-        {
+    union {
+        struct {
             uint16_t iCol : 3;
             uint16_t id : 4;
             uint16_t fPopped : 1;

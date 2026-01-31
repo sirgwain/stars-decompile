@@ -1,6 +1,6 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "battle.h"
 #include "parts.h"
@@ -168,53 +168,48 @@ uint8_t rgbrcStart[] = {
 };
 
 /* functions */
-int16_t FFleetHasTeeth(FLEET *lpfl)
-{
+int16_t FFleetHasTeeth(FLEET *lpfl) {
     int16_t ishdef;
 
     /* TODO: implement */
     return 0;
 }
 
-void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt)
-{
+void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt) {
     int32_t wtTotal;
     int32_t wt;
     int16_t i;
-    THING *lpth;
+    THING  *lpth;
 
     /* TODO: implement */
 }
 
-void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef)
-{
-    int16_t iplr;
+void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef) {
+    int16_t  iplr;
     BTLPLAN *lpbtlplan;
-    int16_t ibp;
-    SHDEF *lpshdef;
+    int16_t  ibp;
+    SHDEF   *lpshdef;
 
     /* TODO: implement */
 }
 
-void CreateSalvage(FLEET *pfl, THING **plpth)
-{
+void CreateSalvage(FLEET *pfl, THING **plpth) {
     int32_t wtTotal;
-    SHDEF *lpshdefT;
+    SHDEF  *lpshdefT;
     PLANET *lppl;
     int16_t i;
     int32_t rgwtMinerals[3];
     int16_t j;
     int16_t fBleeding;
-    SHDEF shdefT;
+    SHDEF   shdefT;
 
     /* TODO: implement */
 }
 
-void DoBattles(int16_t fPostMovement)
-{
-    int16_t cplr;
-    int16_t ifl;
-    FLEET *lpfl;
+void DoBattles(int16_t fPostMovement) {
+    int16_t  cplr;
+    int16_t  ifl;
+    FLEET   *lpfl;
     uint16_t grfSpectator;
     uint16_t grfPlayer;
     uint16_t rggrfAttack[16];
@@ -222,35 +217,32 @@ void DoBattles(int16_t fPostMovement)
     /* TODO: implement */
 }
 
-void RandomizeTokOrder(void)
-{
-    TOK tok;
+void RandomizeTokOrder(void) {
+    TOK     tok;
     int16_t itokSwap;
     int16_t itok;
 
     /* TODO: implement */
 }
 
-int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC)
-{
+int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
     int16_t ihs;
     int16_t i;
     int16_t pct;
     int16_t initBase;
     int16_t cbc;
     int16_t pctBC;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
     return 0;
 }
 
-int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint16_t grfAttack)
-{
+int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint16_t grfAttack) {
     int16_t iBest;
     int16_t dMoves;
     int16_t rgy[2];
-    TOK *ptok;
+    TOK    *ptok;
     int16_t yEnemy;
     int16_t dzEnemy;
     int32_t dpGivenBest;
@@ -281,8 +273,7 @@ int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint
     return 0;
 }
 
-int16_t FAttackPlayer(FLEET *lpfl, int16_t iplr)
-{
+int16_t FAttackPlayer(FLEET *lpfl, int16_t iplr) {
     int16_t iplrCur;
     int16_t iplrT;
 
@@ -290,20 +281,18 @@ int16_t FAttackPlayer(FLEET *lpfl, int16_t iplr)
     return 0;
 }
 
-void CheckInitiative(TOK *ptok)
-{
-    SHDEF *lpshdef;
+void CheckInitiative(TOK *ptok) {
+    SHDEF  *lpshdef;
     int16_t pctBC;
 
     /* TODO: implement */
 }
 
-int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn)
-{
+int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn) {
     int16_t fFoundBigger;
     int16_t iflMac;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
 
     /* debug symbols */
     /* label LCommit @ MEMORY_BATTLE:0x1714 */
@@ -312,17 +301,15 @@ int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn)
     return 0;
 }
 
-void RegenShield(TOK *ptok)
-{
+void RegenShield(TOK *ptok) {
     int32_t dpNew;
     int32_t dpOrig;
 
     /* TODO: implement */
 }
 
-int16_t FDumpCargo(FLEET *lpfl)
-{
-    POINT pt;
+int16_t FDumpCargo(FLEET *lpfl) {
+    POINT   pt;
     PLANET *lppl;
     int16_t i;
 
@@ -330,56 +317,54 @@ int16_t FDumpCargo(FLEET *lpfl)
     return 0;
 }
 
-int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t mdTactic)
-{
+int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t mdTactic) {
     int32_t score;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack)
-{
-    int32_t dpShieldLeft;
-    int16_t dz;
-    SHDEF *lpshdefE;
-    int32_t dpArmorLeft;
-    int32_t dpSingle;
-    int32_t scoreBest;
-    TOK *ptok;
-    int16_t ctokDamaged;
-    int16_t itokTarget;
-    int32_t dpMain;
-    int32_t score;
-    int16_t fSetItok;
-    int16_t dxRangeCur;
-    int16_t ihs;
-    int32_t cTorpMiss;
-    int32_t cTorpFire;
-    int32_t cTorpsLeft;
-    int16_t i;
-    int32_t cTorpBase;
+int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack) {
+    int32_t  dpShieldLeft;
+    int16_t  dz;
+    SHDEF   *lpshdefE;
+    int32_t  dpArmorLeft;
+    int32_t  dpSingle;
+    int32_t  scoreBest;
+    TOK     *ptok;
+    int16_t  ctokDamaged;
+    int16_t  itokTarget;
+    int32_t  dpMain;
+    int32_t  score;
+    int16_t  fSetItok;
+    int16_t  dxRangeCur;
+    int16_t  ihs;
+    int32_t  cTorpMiss;
+    int32_t  cTorpFire;
+    int32_t  cTorpsLeft;
+    int16_t  i;
+    int32_t  cTorpBase;
     uint16_t grfWeapon;
-    int16_t cItem;
-    int32_t pctHit;
-    TOK *ptokTarget;
-    SHDEF *lpshdef;
-    int32_t lValue;
-    int32_t dpT;
-    HUL *lphul;
-    int32_t cTorpHit;
-    int16_t fPrimary;
-    int32_t dp;
-    int16_t itok;
-    int32_t dpCol;
-    TOK *ptokE;
-    PART part;
-    int32_t nds;
-    int32_t dpShieldCur;
-    int16_t fCapMissile;
-    int32_t dpHitArmor;
-    int32_t nts;
-    int32_t ntk;
+    int16_t  cItem;
+    int32_t  pctHit;
+    TOK     *ptokTarget;
+    SHDEF   *lpshdef;
+    int32_t  lValue;
+    int32_t  dpT;
+    HUL     *lphul;
+    int32_t  cTorpHit;
+    int16_t  fPrimary;
+    int32_t  dp;
+    int16_t  itok;
+    int32_t  dpCol;
+    TOK     *ptokE;
+    PART     part;
+    int32_t  nds;
+    int32_t  dpShieldCur;
+    int16_t  fCapMissile;
+    int32_t  dpHitArmor;
+    int32_t  nts;
+    int32_t  ntk;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x726e */
@@ -390,16 +375,13 @@ int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t g
     return 0;
 }
 
-int16_t FHullHasTeeth(HUL *lphul)
-{
-    HS *lphs;
+int16_t FHullHasTeeth(HUL *lphul) {
+    HS     *lphs;
     int16_t ihs;
 
     lphs = lphul->rghs;
-    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++)
-    {
-        if ((lphs->grhst & (hstTorp | hstBeam)) != 0 && lphs->cItem != 0)
-        {
+    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++) {
+        if ((lphs->grhst & (hstTorp | hstBeam)) != 0 && lphs->cItem != 0) {
             return 1;
         }
         lphs++;
@@ -407,9 +389,8 @@ int16_t FHullHasTeeth(HUL *lphul)
     return 0;
 }
 
-int16_t FFleetHasBombs(FLEET *lpfl)
-{
-    HUL *lphul;
+int16_t FFleetHasBombs(FLEET *lpfl) {
+    HUL    *lphul;
     int16_t imd;
     int16_t ishdef;
 
@@ -417,32 +398,25 @@ int16_t FFleetHasBombs(FLEET *lpfl)
     return 0;
 }
 
-int16_t DxyFromSpdRound(uint16_t spd, int16_t iRound)
-{
-    int16_t dxy;
+int16_t DxyFromSpdRound(uint16_t spd, int16_t iRound) {
+    int16_t  dxy;
     uint16_t rem;
 
     dxy = (int16_t)((spd + 2) / 4);
     rem = spd & 3;
 
-    if (rem == 0)
-    {
+    if (rem == 0) {
         dxy = (int16_t)(dxy + (int16_t)((iRound & 1) == 0));
-    }
-    else if (rem == 1)
-    {
+    } else if (rem == 1) {
         dxy = (int16_t)(dxy + (int16_t)((iRound & 3) != 2));
-    }
-    else if (rem == 3)
-    {
+    } else if (rem == 3) {
         dxy = (int16_t)(dxy + (int16_t)((iRound & 3) == 0));
     }
 
     return dxy;
 }
 
-int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC)
-{
+int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
     int32_t pctJam;
     int16_t i;
     int32_t pctHit;
@@ -452,8 +426,7 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC)
     return 0;
 }
 
-int16_t FCanKillTok(TOK *ptok1, TOK *ptok2)
-{
+int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
     int32_t lp1;
     int32_t lp2;
 
@@ -461,27 +434,24 @@ int16_t FCanKillTok(TOK *ptok1, TOK *ptok2)
     return 0;
 }
 
-int16_t FIsTargetOfMdTarget(TOK *ptok, int16_t mdTarget)
-{
+int16_t FIsTargetOfMdTarget(TOK *ptok, int16_t mdTarget) {
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef)
-{
-    int16_t iEngine;
-    int16_t cHalfThruster;
-    int16_t cThruster;
-    int16_t cEngineT = 0;
-    int16_t j;
-    int16_t iWarp;
-    int16_t spd;
+int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef) {
+    int16_t  iEngine;
+    int16_t  cHalfThruster;
+    int16_t  cThruster;
+    int16_t  cEngineT = 0;
+    int16_t  j;
+    int16_t  iWarp;
+    int16_t  spd;
     uint16_t wt;
 
     /* If SHDEF not provided, fetch from per-player ship-def table. */
-    if (lpshdef == NULL)
-    {
+    if (lpshdef == NULL) {
         lpshdef = &rglpshdef[lpfl->iPlayer][ishdef];
     }
 
@@ -490,104 +460,70 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
     cThruster = 0;
 
     /* Scan hull slots for engine/thruster components. */
-    for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
-    {
-        if (lpshdef->hul.rghs[j].cItem != 0)
-        {
-            if (lpshdef->hul.rghs[j].grhst == hstEngine)
-            {
+    for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
+        if (lpshdef->hul.rghs[j].cItem != 0) {
+            if (lpshdef->hul.rghs[j].grhst == hstEngine) {
                 iEngine = (int16_t)lpshdef->hul.rghs[j].iItem;
                 cEngineT = (int16_t)lpshdef->hul.rghs[j].cItem;
 
-                if (lpshdef->hul.rghs[j].iItem == iengineEnigmaPulsar)
-                {
+                if (lpshdef->hul.rghs[j].iItem == iengineEnigmaPulsar) {
                     cHalfThruster = (int16_t)(cHalfThruster + lpshdef->hul.rghs[j].cItem);
                 }
-            }
-            else if (lpshdef->hul.rghs[j].grhst == hstMining)
-            {
-                if (lpshdef->hul.rghs[j].iItem == iminingAlienMiner)
-                {
+            } else if (lpshdef->hul.rghs[j].grhst == hstMining) {
+                if (lpshdef->hul.rghs[j].iItem == iminingAlienMiner) {
                     cHalfThruster = (int16_t)(cHalfThruster + lpshdef->hul.rghs[j].cItem);
                 }
-            }
-            else if (lpshdef->hul.rghs[j].grhst == hstSpecialE)
-            {
-                if (lpshdef->hul.rghs[j].iItem == ispecialEMultiFunctionPod)
-                {
+            } else if (lpshdef->hul.rghs[j].grhst == hstSpecialE) {
+                if (lpshdef->hul.rghs[j].iItem == ispecialEMultiFunctionPod) {
                     cThruster = (int16_t)(cThruster + lpshdef->hul.rghs[j].cItem);
                 }
-            }
-            else if (lpshdef->hul.rghs[j].grhst == hstSpecialM)
-            {
-                if (lpshdef->hul.rghs[j].iItem == ispecialMManeuveringJet)
-                {
+            } else if (lpshdef->hul.rghs[j].grhst == hstSpecialM) {
+                if (lpshdef->hul.rghs[j].iItem == ispecialMManeuveringJet) {
                     cThruster = (int16_t)(cThruster + lpshdef->hul.rghs[j].cItem);
-                }
-                else if (lpshdef->hul.rghs[j].iItem == ispecialMOverthruster)
-                {
+                } else if (lpshdef->hul.rghs[j].iItem == ispecialMOverthruster) {
                     cThruster = (int16_t)(cThruster + (int16_t)(lpshdef->hul.rghs[j].cItem * 2));
                 }
             }
         }
     }
 
-    if ((iEngine == -1) || (cEngineT == 0))
-    {
+    if ((iEngine == -1) || (cEngineT == 0)) {
         return 0;
     }
 
     ENGINE *pengine = LpengineFromId(iEngine);
 
     /* Determine warp (special engines cap at warp 10; others limited by fuel usage). */
-    if ((iEngine == iengineInterspace10) ||
-        (iEngine == iengineEnigmaPulsar) ||
-        (iEngine == iengineTransStar10) ||
-        (iEngine == iengineTransGalacticMizerScoop) ||
-        (iEngine == iengineGalaxyScoop))
-    {
+    if ((iEngine == iengineInterspace10) || (iEngine == iengineEnigmaPulsar) || (iEngine == iengineTransStar10) ||
+        (iEngine == iengineTransGalacticMizerScoop) || (iEngine == iengineGalaxyScoop)) {
         iWarp = 10;
-    }
-    else
-    {
-        for (iWarp = 9; (0 < iWarp) && (120 < pengine->rgcFuelUsed[iWarp]); iWarp--)
-        {
+    } else {
+        for (iWarp = 9; (0 < iWarp) && (120 < pengine->rgcFuelUsed[iWarp]); iWarp--) {
             /* empty */
         }
     }
 
     spd = (int16_t)(iWarp - 4 + cThruster + (int16_t)((cHalfThruster + 1) / 2));
 
-    if (lpfl != NULL)
-    {
+    if (lpfl != NULL) {
         int16_t ra = GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv);
-        if (ra == raAttack)
-        {
+        if (ra == raAttack) {
             spd = (int16_t)(spd + 2);
         }
     }
 
     wt = lpshdef->hul.wtEmpty;
 
-    if (lpfl != NULL)
-    {
+    if (lpfl != NULL) {
         uint16_t wtCargoShdefMax = (uint16_t)WtMaxShdefStat(lpshdef, grStatCargo);
 
-        if (wtCargoShdefMax == 0)
-        {
+        if (wtCargoShdefMax == 0) {
             fDumpCargo = 0;
-        }
-        else
-        {
+        } else {
             uint32_t lCargo = (uint32_t)LGetFleetStat(lpfl, grStatCargo);
 
-            if (lCargo != 0)
-            {
-                uint32_t sum =
-                    (uint32_t)lpfl->rgwtMin[0] +
-                    (uint32_t)lpfl->rgwtMin[1] +
-                    (uint32_t)lpfl->rgwtMin[2] +
-                    (uint32_t)lpfl->rgwtMin[3];
+            if (lCargo != 0) {
+                uint32_t sum = (uint32_t)lpfl->rgwtMin[0] + (uint32_t)lpfl->rgwtMin[1] + (uint32_t)lpfl->rgwtMin[2] + (uint32_t)lpfl->rgwtMin[3];
 
                 /* Unsigned 32-bit multiply/divide like __aFulmul / __aFldiv. */
                 uint32_t add = (sum * (uint32_t)wtCargoShdefMax) / lCargo;
@@ -595,20 +531,17 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
             }
         }
 
-        if (fDumpCargo != 0)
-        {
+        if (fDumpCargo != 0) {
             spd = (int16_t)(spd - 1);
         }
 
-        if (ptok != NULL)
-        {
+        if (ptok != NULL) {
             /* Store Random(15) into TOK bitfield */
             ptok->dwt = (uint16_t)((uint16_t)Random(15) & 15u);
         }
     }
 
-    if (ptok != NULL)
-    {
+    if (ptok != NULL) {
         ptok->wt = wt;
     }
 
@@ -617,8 +550,7 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
         uint16_t c0 = (uint16_t)lpshdef->hul.rghs[0].cItem;
         uint32_t penalty = 0;
 
-        if (c0 != 0)
-        {
+        if (c0 != 0) {
             penalty = ((uint32_t)wt / 70u) / (uint32_t)c0;
         }
 
@@ -633,8 +565,7 @@ int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SH
     }
 }
 
-void DoBombing(void)
-{
+void DoBombing(void) {
     int16_t idmDst;
     int32_t modKill;
     int16_t fMulti;
@@ -649,16 +580,16 @@ void DoBombing(void)
     int32_t pctTerra;
     PLANET *lppl;
     int16_t ifl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int32_t cPPE;
     int32_t dmgBombPeople;
-    float pctSmart;
-    float pctSuccess;
+    float   pctSmart;
+    float   pctSuccess;
     int32_t dmgPeopleSmart;
     int16_t pctTot;
     int16_t dChg;
     int16_t i;
-    double pctSuccessHalf;
+    double  pctSuccessHalf;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0xb10b */
@@ -668,21 +599,20 @@ void DoBombing(void)
     /* TODO: implement */
 }
 
-void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pinit, int16_t *pinitMin, int16_t *pinitMac)
-{
-    int16_t iplr;
-    FLEET *lpflCur;
-    TOK *ptok;
-    int16_t initMac;
-    PLANET *lppl;
-    int16_t fDampeningField;
-    int16_t initMin;
+void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pinit, int16_t *pinitMin, int16_t *pinitMac) {
+    int16_t   iplr;
+    FLEET    *lpflCur;
+    TOK      *ptok;
+    int16_t   initMac;
+    PLANET   *lppl;
+    int16_t   fDampeningField;
+    int16_t   initMin;
     uint16_t *lpwtCargoCur;
-    TOK *ptokT;
-    uint8_t mpiplrdibrc[16];
-    int16_t fDumpCargo;
-    int16_t ishdef;
-    uint8_t rgfTorp[16];
+    TOK      *ptokT;
+    uint8_t   mpiplrdibrc[16];
+    int16_t   fDumpCargo;
+    int16_t   ishdef;
+    uint8_t   rgfTorp[16];
 
     /* debug symbols */
     /* label LTooManyTokens @ MEMORY_BATTLE:0x4a8f */
@@ -690,22 +620,21 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
     /* TODO: implement */
 }
 
-int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc)
-{
-    int16_t dzNonSapper;
-    uint8_t dz;
-    int16_t iplr;
+int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
+    int16_t  dzNonSapper;
+    uint8_t  dz;
+    int16_t  iplr;
     uint16_t mdTarget;
-    uint8_t dzBest;
-    int16_t itokLook;
-    int16_t iplrTarget;
-    TOK *ptokTarget;
-    int16_t dzMax;
-    uint8_t brcCur;
-    int16_t ihs;
-    SHDEF *lpshdef;
-    HUL *lphul;
-    PART part;
+    uint8_t  dzBest;
+    int16_t  itokLook;
+    int16_t  iplrTarget;
+    TOK     *ptokTarget;
+    int16_t  dzMax;
+    uint8_t  brcCur;
+    int16_t  ihs;
+    SHDEF   *lpshdef;
+    HUL     *lphul;
+    PART     part;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x53a7 */
@@ -714,43 +643,39 @@ int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc)
     return 0;
 }
 
-int16_t FFuelTanker(SHDEF *lpshdef)
-{
-    if (lpshdef->hul.ihuldef == ihuldefFuelTransport ||
-        lpshdef->hul.ihuldef == ihuldefSuperFuelXport)
-    {
+int16_t FFuelTanker(SHDEF *lpshdef) {
+    if (lpshdef->hul.ihuldef == ihuldefFuelTransport || lpshdef->hul.ihuldef == ihuldefSuperFuelXport) {
         return 1;
     }
     return 0;
 }
 
-int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t grfPlayer, uint16_t grfSpectator)
-{
-    int16_t cShipsInvolved;
+int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t grfPlayer, uint16_t grfSpectator) {
+    int16_t  cShipsInvolved;
     uint8_t *lpbMax;
-    TOK *ptok;
+    TOK     *ptok;
     uint16_t wt;
-    int16_t cShdefsInvolved;
+    int16_t  cShdefsInvolved;
     uint8_t *lpbSav;
-    int16_t initMac;
-    int16_t init;
+    int16_t  initMac;
+    int16_t  init;
     uint16_t wtT;
     uint16_t grplrLeft;
-    int16_t i;
-    int16_t j;
-    int16_t initMin;
-    BTLREC *lpbtlrec;
-    int16_t iRound;
-    FLEET *lpflT;
+    int16_t  i;
+    int16_t  j;
+    int16_t  initMin;
+    BTLREC  *lpbtlrec;
+    int16_t  iRound;
+    FLEET   *lpflT;
     uint16_t brcOrig;
     BTLDATA *lpbtldata;
-    uint8_t rgfInit[64];
+    uint8_t  rgfInit[64];
     uint16_t rgPlrLosses[256];
     uint16_t wtNext;
-    int16_t itok;
-    PLANET *lppl;
-    int32_t lwt;
-    MemJump env;
+    int16_t  itok;
+    PLANET  *lppl;
+    int32_t  lwt;
+    MemJump  env;
     MemJump *penvMemSav;
 
     /* debug symbols */
@@ -763,8 +688,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
     return 0;
 }
 
-void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit)
-{
+void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit) {
     int16_t pctJam;
     int32_t ldp;
     int32_t pctBeamDef;
@@ -776,53 +700,48 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit)
     int32_t pctCap;
     int16_t initMin;
     int32_t pctHit;
-    SHDEF *lpshdef;
+    SHDEF  *lpshdef;
     int16_t dxyLim;
     int16_t initBase;
-    HUL *lphul;
+    HUL    *lphul;
     int16_t dxyPart;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
 }
 
-SHDEF *LpshdefFromTok(TOK *ptok)
-{
+SHDEF *LpshdefFromTok(TOK *ptok) {
     /* Uses ptok->iplr (byte at +2) and ptok->ishdef (byte at +4). */
     uint8_t iplr = ptok->iplr;
     uint8_t ishdef = ptok->ishdef;
 
-    if (ishdef < ishdefMax)
-    {
+    if (ishdef < ishdefMax) {
         return &rglpshdef[iplr][ishdef];
-    }
-    else
-    {
+    } else {
         return &rglpshdefSB[iplr][ishdef];
     }
 }
 
-int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator)
-{
-    int16_t iplrStarbase;
-    FLEET *lpflCur;
-    int32_t rgcsh[16];
+int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator) {
+    int16_t  iplrStarbase;
+    FLEET   *lpflCur;
+    int32_t  rgcsh[16];
     uint16_t grPlr;
-    int16_t iplrCur;
-    PLANET *lppl;
-    int16_t cplr;
-    int16_t i;
-    int16_t mdRel;
-    uint8_t rgctok[16];
-    int16_t fChange;
+    int16_t  iplrCur;
+    PLANET  *lppl;
+    int16_t  cplr;
+    int16_t  i;
+    int16_t  mdRel;
+    uint8_t  rgctok[16];
+    int16_t  fChange;
     uint16_t iplrAttack;
-    int16_t fAttack;
-    int16_t cshdef;
-    int16_t ishdef;
-    int16_t cflTotal;
+    int16_t  fAttack;
+    int16_t  cshdef;
+    int16_t  ishdef;
+    int16_t  cflTotal;
     uint16_t grfPlayer;
-    int16_t ctokNew;
-    int16_t ctokFleet;
+    int16_t  ctokNew;
+    int16_t  ctokFleet;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x315e */
@@ -832,54 +751,51 @@ int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uin
     return 0;
 }
 
-void SpankTheCheaters(void)
-{
+void SpankTheCheaters(void) {
     int32_t lSell;
     PLANET *lppl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t ifl;
     int16_t i;
     int32_t pctSell;
     int16_t fCheater;
     int16_t fSellOff;
-    char rgfCheater[16];
+    char    rgfCheater[16];
     PLANET *lpplMac;
 
     /* TODO: implement */
 }
 
-int16_t ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint16_t *piGoto)
-{
+int16_t ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint16_t *piGoto) {
     uint16_t iGoto;
-    int16_t fBattle;
-    int16_t i;
-    int16_t iTech;
-    int32_t l;
+    int16_t  fBattle;
+    int16_t  i;
+    int16_t  iTech;
+    int32_t  l;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, uint16_t grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp)
-{
-    int16_t pctSh;
-    DV dv;
+int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, uint16_t grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp) {
+    int16_t   pctSh;
+    DV        dv;
     uint16_t *pwLosses;
-    int16_t cshOrigDamaged;
-    int32_t dpShdef;
-    int32_t ddpOrig;
-    int32_t dpOrig;
-    PLANET *lppl;
-    int16_t i;
-    int16_t cshOrig;
-    FLEET *lpfl;
-    int32_t cKillMax;
-    int16_t csh;
-    int32_t dpT;
-    int16_t pctDp;
-    int16_t ishdef;
-    int32_t dp;
-    uint16_t pctDpNew;
+    int16_t   cshOrigDamaged;
+    int32_t   dpShdef;
+    int32_t   ddpOrig;
+    int32_t   dpOrig;
+    PLANET   *lppl;
+    int16_t   i;
+    int16_t   cshOrig;
+    FLEET    *lpfl;
+    int32_t   cKillMax;
+    int16_t   csh;
+    int32_t   dpT;
+    int16_t   pctDp;
+    int16_t   ishdef;
+    int32_t   dp;
+    uint16_t  pctDpNew;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x8514 */
@@ -888,40 +804,39 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
     return 0;
 }
 
-void KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t fFallout)
-{
-    FLEET flDead;
+void KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t fFallout) {
+    FLEET   flDead;
     int16_t i;
-    FLEET flSrc;
+    FLEET   flSrc;
     int16_t csh;
 
     /* TODO: implement */
 }
 
-void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *rgPlrLosses, int16_t grfPlayer, int16_t cShipsInvolved, int16_t cShdefsInvolved, uint16_t grfSpectator)
-{
-    int16_t iplrStarbase;
-    int16_t iplr;
-    uint8_t rgcfl[16];
-    int32_t lpopStarbase;
+void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *rgPlrLosses, int16_t grfPlayer, int16_t cShipsInvolved, int16_t cShdefsInvolved,
+                        uint16_t grfSpectator) {
+    int16_t   iplrStarbase;
+    int16_t   iplr;
+    uint8_t   rgcfl[16];
+    int32_t   lpopStarbase;
     uint16_t *pw;
-    int16_t isb;
-    PLANET *lppl;
+    int16_t   isb;
+    PLANET   *lppl;
     uint16_t *pwThem;
-    int16_t fAlive;
-    int16_t cUs;
-    int16_t y;
-    FLEET *lpfl;
-    int16_t cThemDead;
-    int16_t i;
-    int16_t idm;
-    int16_t j;
-    FLEET *lpflT;
-    int16_t cUsDead;
-    int16_t iThem;
+    int16_t   fAlive;
+    int16_t   cUs;
+    int16_t   y;
+    FLEET    *lpfl;
+    int16_t   cThemDead;
+    int16_t   i;
+    int16_t   idm;
+    int16_t   j;
+    FLEET    *lpflT;
+    int16_t   cUsDead;
+    int16_t   iThem;
     uint16_t *pwUs;
-    int16_t cThem;
-    int16_t x;
+    int16_t   cThem;
+    int16_t   x;
 
     /* debug symbols */
     /* label IndecisiveXWay @ MEMORY_BATTLE:0xaa8f */
@@ -930,13 +845,12 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
     /* TODO: implement */
 }
 
-int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack)
-{
+int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
     uint16_t mdTarget;
-    int16_t iplr;
-    int16_t iplrLook;
-    TOK tok;
-    int16_t itokLook;
+    int16_t  iplr;
+    int16_t  iplrLook;
+    TOK      tok;
+    int16_t  itokLook;
 
     /* TODO: implement */
     return 0;
@@ -953,23 +867,20 @@ int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack)
  * This is the number of moves needed when diagonal movement costs 1,
  * which matches the battle board's 8-directional movement rules.
  */
-int16_t DzFromBrcBrc(uint8_t brc1, uint8_t brc2)
-{
+int16_t DzFromBrcBrc(uint8_t brc1, uint8_t brc2) {
     int16_t dx;
     int16_t dy;
 
     dx = abs((int16_t)(brc1 & 0x0F) - (int16_t)(brc2 & 0x0F));
     dy = abs((int16_t)(brc1 >> 4) - (int16_t)(brc2 >> 4));
 
-    if (dx <= dy)
-    {
+    if (dx <= dy) {
         return dy;
     }
     return dx;
 }
 
-int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *ptokTarget, int16_t fProximity)
-{
+int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *ptokTarget, int16_t fProximity) {
     int16_t dz;
     int32_t dpMax;
     int32_t dpShdef;
@@ -978,10 +889,10 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
     int32_t dpTotal;
     int16_t fOutOfRange;
     int32_t dRange;
-    HUL *lphul;
+    HUL    *lphul;
     int32_t cTorpHit;
     int32_t dp;
-    PART part;
+    PART    part;
     int32_t dpShieldsLeft;
 
     /* debug symbols */
@@ -991,36 +902,35 @@ int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *pt
     return 0;
 }
 
-int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack)
-{
+int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack) {
     uint16_t iplr;
-    int16_t xMax;
-    int16_t dz;
-    int32_t scoreBest;
-    uint8_t brc;
-    int32_t rgscoreNear[3][3];
-    int32_t score;
-    int16_t cBest;
-    int16_t yMin;
-    int16_t dy;
-    int16_t mdTactic;
-    int16_t y;
-    uint8_t brcOOR;
-    int16_t i;
-    int16_t yCur;
-    uint8_t brcBest;
-    int16_t dzAwayBest;
-    int16_t yMax;
-    int16_t dx;
-    int16_t xCur;
-    int16_t fPrimary;
-    int32_t dp;
-    int16_t dzAway;
-    int16_t x;
-    int16_t fXMajor;
-    int32_t lLow;
-    int16_t cLow;
-    POINT rgptDeltas[2];
+    int16_t  xMax;
+    int16_t  dz;
+    int32_t  scoreBest;
+    uint8_t  brc;
+    int32_t  rgscoreNear[3][3];
+    int32_t  score;
+    int16_t  cBest;
+    int16_t  yMin;
+    int16_t  dy;
+    int16_t  mdTactic;
+    int16_t  y;
+    uint8_t  brcOOR;
+    int16_t  i;
+    int16_t  yCur;
+    uint8_t  brcBest;
+    int16_t  dzAwayBest;
+    int16_t  yMax;
+    int16_t  dx;
+    int16_t  xCur;
+    int16_t  fPrimary;
+    int32_t  dp;
+    int16_t  dzAway;
+    int16_t  x;
+    int16_t  fXMajor;
+    int32_t  lLow;
+    int16_t  cLow;
+    POINT    rgptDeltas[2];
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x6332 */
@@ -1033,24 +943,19 @@ int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack)
     return 0;
 }
 
-int16_t FHullHasBombs(HUL *lphul)
-{
-    HS *lphs;
+int16_t FHullHasBombs(HUL *lphul) {
+    HS     *lphs;
     int16_t ihs;
 
     lphs = lphul->rghs;
-    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++)
-    {
-        if (lphs->grhst == hstBomb && lphs->cItem != 0)
-        {
+    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++) {
+        if (lphs->grhst == hstBomb && lphs->cItem != 0) {
             return 1;
         }
-        if (lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition && lphs->cItem != 0)
-        {
+        if (lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition && lphs->cItem != 0) {
             return 1;
         }
-        if (lphs->grhst == hstSpecialM && lphs->iItem == ispecialMOrbitalConstructionModule && lphs->cItem != 0)
-        {
+        if (lphs->grhst == hstSpecialM && lphs->iItem == ispecialMOrbitalConstructionModule && lphs->cItem != 0) {
             return 1;
         }
         lphs++;
@@ -1060,13 +965,12 @@ int16_t FHullHasBombs(HUL *lphul)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t (*lpProc)(void);
     int16_t idc;
     int16_t i;
     int16_t fRet;
-    RECT rc;
+    RECT    rc;
     int16_t cLen;
 
     /* debug symbols */
@@ -1078,22 +982,20 @@ INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     return 0;
 }
 
-INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     RECT rc;
 
     /* TODO: implement */
     return 0;
 }
 
-INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    int16_t i;
-    RECT rc;
-    HDC hdc;
-    int16_t mdSBase;
+INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    int16_t     i;
+    RECT        rc;
+    HDC         hdc;
+    int16_t     mdSBase;
     PAINTSTRUCT ps;
-    RECT rcGBox;
+    RECT        rcGBox;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BATTLE:0x019f */

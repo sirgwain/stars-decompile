@@ -10,13 +10,13 @@
 #include "init.h"
 #include "mdi.h"
 #include "planet.h"
+#include "race.h"
 #include "research.h"
+#include "save.h"
 #include "scan.h"
 #include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
-#include "save.h"
-#include "race.h"
 
 /* file existence check used by TitleWndProc (matches file.c portability) */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)

@@ -2,22 +2,20 @@
 #include "types.h"
 
 #include "globals.h"
-#include "race.h"
-#include "util.h"
 #include "parts.h"
+#include "race.h"
 #include "ship.h"
+#include "util.h"
 
 /* functions */
 
-int32_t GetFuelFree(FLEET *lpfl)
-{
+int32_t GetFuelFree(FLEET *lpfl) {
 
     /* TODO: implement */
     return 0;
 }
 
-int32_t GetCargoFree(FLEET *lpfl)
-{
+int32_t GetCargoFree(FLEET *lpfl) {
     int32_t cHave;
     int16_t i;
 
@@ -25,8 +23,7 @@ int32_t GetCargoFree(FLEET *lpfl)
     return 0;
 }
 
-int32_t XferSupply(int16_t iSupply, int32_t cQuan)
-{
+int32_t XferSupply(int16_t iSupply, int32_t cQuan) {
     int16_t iSrc;
     int32_t dChg;
     int32_t cAvailable;
@@ -35,34 +32,29 @@ int32_t XferSupply(int16_t iSupply, int32_t cQuan)
     return 0;
 }
 
-int16_t CshQueued(int16_t ishdef, int16_t *pfProgress, int16_t fSpaceDocks)
-{
+int16_t CshQueued(int16_t ishdef, int16_t *pfProgress, int16_t fSpaceDocks) {
     int16_t iprod;
     PLANET *lppl;
     int16_t csh;
     PLANET *lpplMac;
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* TODO: implement */
     return 0;
 }
 
-int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat)
-{
+int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat) {
     uint32_t acc = 0;
-    int16_t i;
+    int16_t  i;
 
     /* det==7 means a “normal” fleet we can score from its ship counts.
        Otherwise the original returns the sentinel 32000. */
-    if (lpfl->det == detAll)
-    {
+    if (lpfl->det == detAll) {
         SHDEF *lpshdefBase = rglpshdef[lpfl->iPlayer]; /* far pointer in Win16, normal 32-bit pointer here */
 
-        for (i = 0; i < cShdefMax; i++)
-        {
+        for (i = 0; i < cShdefMax; i++) {
             int16_t csh = lpfl->rgcsh[i];
-            if (csh != 0)
-            {
+            if (csh != 0) {
                 int16_t wt = WtMaxShdefStat(&lpshdefBase[i], grStat);
 
                 /* One cast to force unsigned 32-bit multiply */
@@ -75,38 +67,33 @@ int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat)
     return 32000;
 }
 
-int16_t FCanSplitAll(int32_t cBoat)
-{
-    if ((int32_t)(cBoat - 1 + (uint32_t)rgplr[idPlayer].cFleet) > cFleetAbsMax)
-    {
+int16_t FCanSplitAll(int32_t cBoat) {
+    if ((int32_t)(cBoat - 1 + (uint32_t)rgplr[idPlayer].cFleet) > cFleetAbsMax) {
         return 0;
     }
-    if (cBoat < 2)
-    {
+    if (cBoat < 2) {
         return 0;
     }
     return 1;
 }
 
-int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, int16_t fRangeOnly)
-{
+int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, int16_t fRangeOnly) {
     int32_t iEffNext;
     int32_t lT;
     int16_t fEfficient;
-    double d;
+    double  d;
     int32_t iEffCur;
     int32_t wtCargoT;
     int32_t lFuel;
-    ORDER *lpord;
+    ORDER  *lpord;
     int16_t i;
-    SHDEF *lpshdef;
+    SHDEF  *lpshdef;
     int32_t wtCargo;
     int16_t j;
     int32_t wtMass;
     int32_t rgieff[16];
 
-    if (lpfl == NULL || lpfl->lpplord == NULL)
-    {
+    if (lpfl == NULL || lpfl->lpplord == NULL) {
         return 0;
     }
 
@@ -114,14 +101,10 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
     gd.fRadiatingEngine = 0;
 
     /* If warp not provided, use the next waypoint's warp setting. */
-    if (iWarp == -1)
-    {
-        if (iOrd + 1 < lpfl->lpplord->iordMac)
-        {
+    if (iWarp == -1) {
+        if (iOrd + 1 < lpfl->lpplord->iordMac) {
             iWarp = (int16_t)lpfl->lpplord->rgord[iOrd + 1].iWarp;
-        }
-        else
-        {
+        } else {
             iWarp = 0;
         }
     }
@@ -135,10 +118,8 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
     /* Build per-design "efficiency" values (engine fuel use at this warp). */
     {
         SHDEF *base = rglpshdef[lpfl->iPlayer];
-        for (i = 0; i < 16; i++)
-        {
-            if (lpfl->rgcsh[i] <= 0)
-            {
+        for (i = 0; i < 16; i++) {
+            if (lpfl->rgcsh[i] <= 0) {
                 rgieff[i] = 0;
                 continue;
             }
@@ -146,17 +127,14 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
             lpshdef = (SHDEF *)((uint8_t *)base + (int32_t)i * 0x93);
 
             /* Find the first non-destroyed hull slot (status != 1). */
-            for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
-            {
-                if (lpshdef->hul.rghs[j].grhst != 1)
-                {
+            for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
+                if (lpshdef->hul.rghs[j].grhst != 1) {
                     break;
                 }
             }
 
             /* If no usable engine slot, treat as "very inefficient". */
-            if (j >= (int16_t)lpshdef->hul.chs)
-            {
+            if (j >= (int16_t)lpshdef->hul.chs) {
                 rgieff[i] = 99999;
                 continue;
             }
@@ -170,16 +148,14 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
                 int32_t eff = (int32_t)lpeng->rgcFuelUsed[iWarp];
 
                 /* Apply the "efficient" race bonus (15% reduction). */
-                if (fEfficient)
-                {
+                if (fEfficient) {
                     eff -= (eff * 15) / 100;
                 }
 
                 rgieff[i] = eff;
 
                 /* Engine id 10 toggles the global radiating-engine flag. */
-                if (engineId == 10)
-                {
+                if (engineId == 10) {
                     gd.fRadiatingEngine = 1;
                 }
             }
@@ -188,30 +164,20 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
 
     /* Sum cargo weight (first 4 cargo buckets; the 5th is fuel). */
     wtCargo = 0;
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         wtCargo += lpfl->rgwtMin[i];
     }
 
     /* Determine travel distance if requested. */
-    if (dTravel == -1)
-    {
-        if (fRangeOnly == 0)
-        {
-            if (iOrd + 1 < lpfl->lpplord->iordMac)
-            {
+    if (dTravel == -1) {
+        if (fRangeOnly == 0) {
+            if (iOrd + 1 < lpfl->lpplord->iordMac) {
                 lpord = &lpfl->lpplord->rgord[iOrd];
-                dTravel = (int32_t)(DGetDistance(lpord[0].pt.x, lpord[0].pt.y,
-                                                 lpord[1].pt.x, lpord[1].pt.y) +
-                                    0.0);
-            }
-            else
-            {
+                dTravel = (int32_t)(DGetDistance(lpord[0].pt.x, lpord[0].pt.y, lpord[1].pt.x, lpord[1].pt.y) + 0.0);
+            } else {
                 dTravel = 0;
             }
-        }
-        else
-        {
+        } else {
             /* Range-only mode uses a fixed nominal distance. */
             dTravel = 1000;
         }
@@ -223,20 +189,16 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
      */
     lFuel = 0;
     iEffCur = 0;
-    while (1)
-    {
+    while (1) {
         iEffNext = 0x000f423f; /* 999999 as a sentinel "none" */
 
-        for (i = 0; i < 16; i++)
-        {
+        for (i = 0; i < 16; i++) {
             int16_t csh = lpfl->rgcsh[i];
-            if (csh <= 0)
-            {
+            if (csh <= 0) {
                 continue;
             }
 
-            if (rgieff[i] == iEffCur)
-            {
+            if (rgieff[i] == iEffCur) {
                 /* Cargo allocation for this design. */
                 int16_t capPerShip = WtMaxShdefStat((SHDEF *)((uint8_t *)rglpshdef[lpfl->iPlayer] + (int32_t)i * 0x93), 2);
                 int32_t capTotal = (int32_t)csh * (int32_t)capPerShip;
@@ -250,64 +212,50 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
                 lT = (int32_t)((int64_t)iEffCur * (int64_t)dTravel);
 
                 /* Fuel used is roughly wtMass*lT/2000 (with float fallback in Win16). */
-                if (wtMass <= 0 || lT <= 0)
-                {
+                if (wtMass <= 0 || lT <= 0) {
                     /* no-op */
-                }
-                else
-                {
+                } else {
                     int64_t num = (int64_t)wtMass * (int64_t)lT;
                     int32_t add;
 
                     /* Preserve the original "use double when huge" behavior, but
                      * still compute with correct math.
                      */
-                    if (num > (int64_t)INT32_MAX * 2000LL)
-                    {
+                    if (num > (int64_t)INT32_MAX * 2000LL) {
                         d = ((double)wtMass * (double)lT) / 2000.0;
                         add = (int32_t)d;
-                    }
-                    else
-                    {
+                    } else {
                         add = (int32_t)(num / 2000LL);
                     }
 
                     lFuel += add;
                 }
-            }
-            else if (rgieff[i] > iEffCur)
-            {
-                if (rgieff[i] < iEffNext)
-                {
+            } else if (rgieff[i] > iEffCur) {
+                if (rgieff[i] < iEffNext) {
                     iEffNext = rgieff[i];
                 }
             }
         }
 
-        if (iEffNext == 0x000f423f)
-        {
+        if (iEffNext == 0x000f423f) {
             break;
         }
         iEffCur = iEffNext;
     }
 
     /* Convert internal 1/10 units to whole fuel units. */
-    if (fRangeOnly == 0)
-    {
+    if (fRangeOnly == 0) {
         lFuel += 9;
     }
     lFuel = lFuel / 10;
 
-    if (fRangeOnly != 0)
-    {
+    if (fRangeOnly != 0) {
         /* Range = (fuel_on_board * 1000) / fuel_per_1000_distance. */
-        if (lFuel == 0)
-        {
+        if (lFuel == 0) {
             return (int32_t)0xca00; /* "infinite" sentinel used by original */
         }
 
-        if (lFuel < 100001)
-        {
+        if (lFuel < 100001) {
             int64_t num = (int64_t)lpfl->rgwtMin[4] * 1000LL;
             return (int32_t)(num / (int64_t)lFuel);
         }
@@ -315,8 +263,7 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
         /* Avoid overflow by scaling fuel use first (mirrors original). */
         {
             int32_t scaled = lFuel / 1000;
-            if (scaled <= 0)
-            {
+            if (scaled <= 0) {
                 return (int32_t)0xca00;
             }
             return lpfl->rgwtMin[4] / scaled;
@@ -326,14 +273,13 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
     return lFuel;
 }
 
-void DeleteCurWayPoint(int16_t fBackup)
-{
-    POINT pt;
-    POINT rgpt[3];
+void DeleteCurWayPoint(int16_t fBackup) {
+    POINT   pt;
+    POINT   rgpt[3];
     int16_t cpt;
-    SCAN scan;
+    SCAN    scan;
     int16_t ipt;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x9dce */
@@ -341,21 +287,20 @@ void DeleteCurWayPoint(int16_t fBackup)
     /* TODO: implement */
 }
 
-int16_t TransferStuff(int16_t id1, int16_t grobj1, int16_t id2, int16_t grobj2, int16_t mdXfer)
-{
+int16_t TransferStuff(int16_t id1, int16_t grobj1, int16_t id2, int16_t grobj2, int16_t mdXfer) {
     XFER xfer[2];
     int16_t (*lpProcXfer)(void);
     int16_t rgValidHull[16];
     int32_t lPopPrev;
     int16_t iDelFleet;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t fSuccess;
     int16_t grbit;
     int16_t j;
-    BTN rgbtn[32];
-    POINT pt;
-    RECT rc;
+    BTN     rgbtn[32];
+    POINT   pt;
+    RECT    rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x55c8 */
@@ -366,16 +311,14 @@ int16_t TransferStuff(int16_t id1, int16_t grobj1, int16_t id2, int16_t grobj2, 
     return 0;
 }
 
-void Merge2Fleets(FLEET *lpflDst, FLEET *lpflDel, int16_t fNoDelete)
-{
-    FLEET rgfl[2];
+void Merge2Fleets(FLEET *lpflDst, FLEET *lpflDel, int16_t fNoDelete) {
+    FLEET   rgfl[2];
     int16_t i;
 
     /* TODO: implement */
 }
 
-void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2)
-{
+void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
     int16_t iplr;
     int32_t rgCargoCapLoss[2];
     int32_t wtCargoXfer;
@@ -384,15 +327,15 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2)
     int16_t rgrgcshLoss[2][16];
     int32_t rgrgCargoDelta[2][5];
     int32_t rgFuelCapacity[2];
-    FLEET *rgpflNew[1];
+    FLEET  *rgpflNew[1];
     int16_t wtCargoMax;
     int16_t wtFuelMax;
     int16_t i;
     int32_t lChg;
     int32_t rgFuelCapLoss[2];
-    FLEET rgflCur[2];
+    FLEET   rgflCur[2];
     int16_t j;
-    SHDEF *lpshdef;
+    SHDEF  *lpshdef;
     int32_t rgCargoCapacity[2];
     int16_t ishdef;
     int32_t l;
@@ -411,15 +354,14 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2)
     /* TODO: implement */
 }
 
-void SelectAdjFleet(int16_t dInc, int16_t idFleet)
-{
-    POINT pt;
+void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
+    POINT   pt;
     int16_t idOld;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t idNew;
-    FLEET *lpflT;
-    SCAN scan;
+    FLEET  *lpflT;
+    SCAN    scan;
 
     /* debug symbols */
     /* label FinishUp @ MEMORY_SHIP:0x3fa9 */
@@ -427,8 +369,7 @@ void SelectAdjFleet(int16_t dInc, int16_t idFleet)
     /* TODO: implement */
 }
 
-int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops)
-{
+int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops) {
     int16_t i;
     int16_t j;
     int16_t iWorst;
@@ -438,19 +379,17 @@ int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops)
     return 0;
 }
 
-void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle)
-{
+void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
     ORDER ord;
 
     /* TODO: implement */
 }
 
-int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)
-{
-    THING *pth;
-    XFER xfer;
+int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj) {
+    THING  *pth;
+    XFER    xfer;
     int16_t i;
-    FLEET *pfl;
+    FLEET  *pfl;
     PLANET *ppl;
     int32_t wtFree;
 
@@ -461,25 +400,21 @@ int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, vo
     return 0;
 }
 
-int16_t FCanSplit(int32_t cBoat)
-{
+int16_t FCanSplit(int32_t cBoat) {
     /* If player already has max fleets (0x200 = 512), can't split */
-    if (rgplr[idPlayer].cFleet == cFleetAbsMax)
-    {
+    if (rgplr[idPlayer].cFleet == cFleetAbsMax) {
         return 0;
     }
     /* Need at least 2 boats to split */
-    if (cBoat < 2)
-    {
+    if (cBoat < 2) {
         return 0;
     }
     return 1;
 }
 
-int16_t FCanMerge(FLEET *pfl)
-{
+int16_t FCanMerge(FLEET *pfl) {
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int32_t csh;
     int16_t cfl;
     int16_t ishdef;
@@ -488,16 +423,15 @@ int16_t FCanMerge(FLEET *pfl)
     return 0;
 }
 
-void DestroyAllIshdef(int16_t ishdef, int16_t iplr)
-{
-    FLEET flDead;
+void DestroyAllIshdef(int16_t ishdef, int16_t iplr) {
+    FLEET   flDead;
     int16_t cKill;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t i;
     int16_t grbit;
     int16_t j;
     int16_t cDel;
-    FLEET flNew;
+    FLEET   flNew;
 
     /* debug symbols */
     /* label IncrementI @ MEMORY_SHIP:0xc5b8 */
@@ -505,51 +439,39 @@ void DestroyAllIshdef(int16_t ishdef, int16_t iplr)
     /* TODO: implement */
 }
 
-int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat)
-{
+int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat) {
     int16_t wt;
     int16_t j;
-    HUL *lphul;
+    HUL    *lphul;
 
-    if (lpshdef == NULL)
-    {
+    if (lpshdef == NULL) {
         return 0;
     }
 
     /* Base stats come from the hull definition. */
     {
         HULDEF *lphuldef = LphuldefFromId(lpshdef->hul.ihuldef);
-        if (lphuldef == NULL)
-        {
+        if (lphuldef == NULL) {
             return 0;
         }
         lphul = &lphuldef->hul;
     }
 
-    if (grStat == grStatFuel)
-    {
+    if (grStat == grStatFuel) {
         /* Fuel capacity. */
         wt = lphul->wtFuelMax;
 
         /* Add-ons from certain hull slots. */
-        for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
-        {
+        for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
             HS *hs = &lpshdef->hul.rghs[j];
-            if (hs->grhst == hstSpecialM)
-            {
-                if (hs->iItem == ispecialMFuelTank)
-                {
+            if (hs->grhst == hstSpecialM) {
+                if (hs->iItem == ispecialMFuelTank) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 250);
-                }
-                else if (hs->iItem == ispecialMSuperFuelTank)
-                {
+                } else if (hs->iItem == ispecialMSuperFuelTank) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 500);
                 }
-            }
-            else if (hs->grhst == hstSpecialE)
-            {
-                if (hs->iItem == ispecialEAntiMatterGenerator)
-                {
+            } else if (hs->grhst == hstSpecialE) {
+                if (hs->iItem == ispecialEAntiMatterGenerator) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 200);
                 }
             }
@@ -557,26 +479,18 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat)
         return wt;
     }
 
-    if (grStat == grStatCargo)
-    {
+    if (grStat == grStatCargo) {
         /* Cargo capacity. */
         wt = lphul->wtCargoMax;
 
-        for (j = 0; j < (int16_t)lpshdef->hul.chs; j++)
-        {
+        for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
             HS *hs = &lpshdef->hul.rghs[j];
-            if (hs->grhst == hstSpecialM)
-            {
-                if (hs->iItem == ispecialMCargoPod)
-                {
+            if (hs->grhst == hstSpecialM) {
+                if (hs->iItem == ispecialMCargoPod) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 50);
-                }
-                else if (hs->iItem == ispecialMSuperCargoPod)
-                {
+                } else if (hs->iItem == ispecialMSuperCargoPod) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 100);
-                }
-                else if (hs->iItem == ispecialMMultiCargoPod)
-                {
+                } else if (hs->iItem == ispecialMMultiCargoPod) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 250);
                 }
             }
@@ -587,30 +501,27 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat)
     return 0;
 }
 
-int16_t FEnumCalcJettison(void *lprt, int16_t rt, int16_t cb, PLANET *lppl, int16_t iFleet)
-{
-    POINT pt;
-    int16_t i;
-    int16_t grbit;
-    FLEET fl;
-    int16_t j;
+int16_t FEnumCalcJettison(void *lprt, int16_t rt, int16_t cb, PLANET *lppl, int16_t iFleet) {
+    POINT    pt;
+    int16_t  i;
+    int16_t  grbit;
+    FLEET    fl;
+    int16_t  j;
     RTXFERX *prtxferx;
-    RTXFER *prtxfer;
+    RTXFER  *prtxfer;
 
     /* TODO: implement */
     return 0;
 }
 
-void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr)
-{
+void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr) {
     PLANET *lppl;
     PLANET *lpplMac;
 
     /* TODO: implement */
 }
 
-void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
-{
+void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts) {
     const COMPART *lpcom = ppart->pcom;
 
     // 1) Base costs
@@ -619,8 +530,7 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
     rgCosts[Germanium] = lpcom->rgwtOreCost[Germanium];
     rgCosts[Resources] = lpcom->resCost;
 
-    if (iPlayer == -1)
-    {
+    if (iPlayer == -1) {
         // No player context → raw costs only
         return;
     }
@@ -636,22 +546,18 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
 
     int pctDiscount = 0; // % to subtract (0..75 normal, 0..80 with BET)
 
-    if (!skipTechDiscount)
-    {
+    if (!skipTechDiscount) {
         // Find smallest positive (have-req) across 6 techs; if none, use min(have)
         int bestGap = 100;
-        for (int t = 0; t < 6; ++t)
-        {
+        for (int t = 0; t < 6; ++t) {
             const int req = (int)(signed char)lpcom->rgTech[t];
             const int have = (int)(signed char)plr->rgTech[t];
             const int gap = have - req;
             if (req > 0 && gap < bestGap)
                 bestGap = gap;
         }
-        if (bestGap == 100)
-        {
-            for (int t = 0; t < 6; ++t)
-            {
+        if (bestGap == 100) {
+            for (int t = 0; t < 6; ++t) {
                 const int have = (int)(signed char)plr->rgTech[t];
                 if (have < bestGap)
                     bestGap = have;
@@ -660,26 +566,20 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
         if (bestGap > 19)
             bestGap = 19;
 
-        if (bestGap > 0)
-        {
+        if (bestGap > 0) {
             const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
-            if (!fBET)
-            {
+            if (!fBET) {
                 pctDiscount = bestGap * 4;
                 if (pctDiscount > 75)
                     pctDiscount = 75;
-            }
-            else
-            {
+            } else {
                 pctDiscount = bestGap * 5;
                 if (pctDiscount > 80)
                     pctDiscount = 80;
             }
 
-            for (int k = 0; k < 4; ++k)
-            {
-                if (rgCosts[k] != 0)
-                {
+            for (int k = 0; k < 4; ++k) {
+                if (rgCosts[k] != 0) {
                     const int cut = (rgCosts[k] * pctDiscount) / 100;
                     rgCosts[k] -= cut;
                     if (rgCosts[k] == 0)
@@ -692,43 +592,33 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
     // 3) Race modifiers
 
     // Stargate PRT: small starbase items cheaper
-    if (ppart->hs.grhst == hstSpecialSB)
-    {
-        if (GetRaceStat(plr, rsMajorAdv) == raStargate && ppart->hs.iItem <= ispecialSBStargateAnyAny)
-        {
+    if (ppart->hs.grhst == hstSpecialSB) {
+        if (GetRaceStat(plr, rsMajorAdv) == raStargate && ppart->hs.iItem <= ispecialSBStargateAnyAny) {
             for (int k = 0; k < 4; ++k)
                 rgCosts[k] -= rgCosts[k] / 4; // -25%
         }
     }
 
     // Weapons: Attack -25%, Defend +25%
-    if (ppart->hs.grhst == hstBeam || ppart->hs.grhst == hstTorp || ppart->hs.grhst == hstBomb)
-    {
+    if (ppart->hs.grhst == hstBeam || ppart->hs.grhst == hstTorp || ppart->hs.grhst == hstBomb) {
         const int ra = GetRaceStat(plr, rsMajorAdv);
-        if (ra == raAttack)
-        {
+        if (ra == raAttack) {
             for (int k = 0; k < 4; ++k)
                 rgCosts[k] -= rgCosts[k] / 4;
-        }
-        else if (ra == raDefend)
-        {
+        } else if (ra == raDefend) {
             for (int k = 0; k < 4; ++k)
                 rgCosts[k] += rgCosts[k] / 4;
         }
     }
     // Terraformers: Terra halves resource cost only
-    else if (ppart->hs.grhst == hstTerra)
-    {
-        if (GetRaceStat(plr, rsMajorAdv) == raTerra)
-        {
+    else if (ppart->hs.grhst == hstTerra) {
+        if (GetRaceStat(plr, rsMajorAdv) == raTerra) {
             rgCosts[Resources] = rgCosts[Resources] / 2;
         }
     }
     // Cheap Engines LRT: engines -50% (all four slots)
-    else if (ppart->hs.grhst == hstEngine)
-    {
-        if (GetRaceGrbit(plr, ibitRaceCheapEngines))
-        {
+    else if (ppart->hs.grhst == hstEngine) {
+        if (GetRaceGrbit(plr, ibitRaceCheapEngines)) {
             for (int k = 0; k < 4; ++k)
                 rgCosts[k] -= rgCosts[k] / 2;
         }
@@ -739,22 +629,17 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
     const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
     const bool fSuppressBET = gd.fDontCalcBleed ? true : false;
 
-    if (pctDiscount < 1 && fBET && !fSuppressBET)
-    {
+    if (pctDiscount < 1 && fBET && !fSuppressBET) {
         bool requiresTech = false;
-        for (int t = 0; t < 6; ++t)
-        {
-            if ((int)(signed char)lpcom->rgTech[t] > 0)
-            {
+        for (int t = 0; t < 6; ++t) {
+            if ((int)(signed char)lpcom->rgTech[t] > 0) {
                 requiresTech = true;
                 break;
             }
         }
-        if (requiresTech)
-        {
+        if (requiresTech) {
             gd.fBleedingEdge = 1; // mark applied
-            for (int k = 0; k < 4; ++k)
-            {
+            for (int k = 0; k < 4; ++k) {
                 rgCosts[k] = rgCosts[k] * 2; // double all costs
             }
             return;
@@ -765,30 +650,28 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts)
     gd.fBleedingEdge = 0;
 }
 
-void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks)
-{
+void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks) {
     int16_t iprod;
     PLANET *lppl;
     int16_t iDst;
     PLANET *lpplMac;
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* TODO: implement */
 }
 
-int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
-{
+int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo) {
     int32_t lCur;
     int16_t iWarp;
     int16_t dist;
     PLANET *lppl;
     int16_t i;
     int32_t lTot;
-    ORDER *lpord;
+    ORDER  *lpord;
     int16_t cYears;
-    SHDEF *lpshdef;
+    SHDEF  *lpshdef;
     int16_t j;
-    double dbl;
+    double  dbl;
     int32_t l;
     int32_t lOneYearUse;
     int32_t lFuelGain;
@@ -798,8 +681,7 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
 
     (void)fMaxCargo; /* not used by the original logic in this build */
 
-    if (lpfl == NULL || lpfl->lpplord == NULL)
-    {
+    if (lpfl == NULL || lpfl->lpplord == NULL) {
         return 0;
     }
 
@@ -811,8 +693,7 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
      * tracking the maximum running total (worst case) and resetting at friendly
      * starbases that can refuel.
      */
-    for (i = 0; i < iwp; i++)
-    {
+    for (i = 0; i < iwp; i++) {
         int32_t legUse = 0;
         int32_t minUse = 0;
 
@@ -820,14 +701,11 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
         lpord = &lpfl->lpplord->rgord[i];
         iWarp = (int16_t)lpord[1].iWarp;
 
-        if (iWarp <= 0 || iWarp > 10)
-        {
+        if (iWarp <= 0 || iWarp > 10) {
             cYears = 1;
             dist = 0;
             legUse = 0;
-        }
-        else
-        {
+        } else {
             /* Distance between waypoints (integer). */
             dbl = DGetDistance(lpord[0].pt.x, lpord[0].pt.y, lpord[1].pt.x, lpord[1].pt.y);
             dist = (int16_t)dbl;
@@ -835,15 +713,11 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
             /* Years required at this warp: ceil(dist / (warp*warp)). */
             {
                 int32_t w2 = (int32_t)iWarp * (int32_t)iWarp;
-                if (w2 <= 0)
-                {
+                if (w2 <= 0) {
                     cYears = 1;
-                }
-                else
-                {
+                } else {
                     cYears = (int16_t)((dist + w2 - 1) / w2);
-                    if (cYears < 1)
-                    {
+                    if (cYears < 1) {
                         cYears = 1;
                     }
                 }
@@ -854,8 +728,7 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
             legUse = minUse;
         }
 
-        if (cYears > 1)
-        {
+        if (cYears > 1) {
             /* Fuel for a full year's travel at this warp (distance = warp^2). */
             int32_t w2 = (int32_t)iWarp * (int32_t)iWarp;
             lOneYearUse = EstFuelUse(lpfl, i, iWarp, w2, 0);
@@ -864,8 +737,7 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
             {
                 int32_t fullYears = (int32_t)(cYears - 1);
                 int32_t rem = (int32_t)dist - w2 * fullYears;
-                if (rem < 0)
-                {
+                if (rem < 0) {
                     rem = 0;
                 }
                 legUse = (int32_t)((int64_t)lOneYearUse * (int64_t)fullYears);
@@ -873,62 +745,51 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
             }
 
             /* Ensure we never estimate less than the basic one-year use. */
-            if (legUse < minUse)
-            {
+            if (legUse < minUse) {
                 legUse = minUse;
             }
 
             /* Potential fuel gain from ram scoops (and certain tanker hulls). */
             lFuelGain = LCalcFuelGainFromRamScoops(lpfl, iWarp, w2);
-            for (j = 0; j < 16; j++)
-            {
+            for (j = 0; j < 16; j++) {
                 int16_t csh = lpfl->rgcsh[j];
-                if (csh <= 0)
-                {
+                if (csh <= 0) {
                     continue;
                 }
                 lpshdef = (SHDEF *)((uint8_t *)rglpshdef[lpfl->iPlayer] + (int32_t)j * 0x93);
-                if (lpshdef->hul.ihuldef == 0x19 || lpshdef->hul.ihuldef == 0x1a)
-                {
+                if (lpshdef->hul.ihuldef == 0x19 || lpshdef->hul.ihuldef == 0x1a) {
                     /* Tankers add a fixed "gain" per ship (200 in original). */
                     lFuelGain += (int32_t)csh * 200;
                 }
             }
 
             /* If gains reduce per-year usage, apply to the full-years portion. */
-            if (lFuelGain > 0 && lFuelGain < lOneYearUse)
-            {
+            if (lFuelGain > 0 && lFuelGain < lOneYearUse) {
                 int32_t fullYears = (int32_t)(cYears - 1);
                 int32_t reducedYear = lOneYearUse - lFuelGain;
                 int32_t alt = (int32_t)((int64_t)reducedYear * (int64_t)fullYears) + lOneYearUse;
-                if (alt < legUse)
-                {
+                if (alt < legUse) {
                     legUse = alt;
                 }
             }
         }
 
         lCur += legUse;
-        if (lCur > lTot)
-        {
+        if (lCur > lTot) {
             lTot = lCur;
         }
 
         /* Refuel reset at friendly starbases (grobj == 1 for planet). */
-        if ((int16_t)lpord[1].grobj == 1)
-        {
+        if ((int16_t)lpord[1].grobj == 1) {
             lppl = LpplFromId(lpord[1].id);
-            if (lppl != NULL && lppl->iPlayer == lpfl->iPlayer && lppl->fStarbase)
-            {
+            if (lppl != NULL && lppl->iPlayer == lpfl->iPlayer && lppl->fStarbase) {
                 /* Check the starbase design hull for "has capacity". */
-                SHDEF *sb = rglpshdefSB[lpfl->iPlayer];
+                SHDEF  *sb = rglpshdefSB[lpfl->iPlayer];
                 int16_t isb = (int16_t)lppl->isb;
-                if (sb != NULL && isb >= 0)
-                {
-                    SHDEF *sbdef = (SHDEF *)((uint8_t *)sb + (int32_t)isb * 0x93);
+                if (sb != NULL && isb >= 0) {
+                    SHDEF  *sbdef = (SHDEF *)((uint8_t *)sb + (int32_t)isb * 0x93);
                     HULDEF *huldef = LphuldefFromId(sbdef->hul.ihuldef);
-                    if (huldef != NULL && huldef->hul.wtCargoMax != 0)
-                    {
+                    if (huldef != NULL && huldef->hul.wtCargoMax != 0) {
                         lCur = 0;
                     }
                 }
@@ -939,15 +800,14 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)
     return lTot;
 }
 
-void FleetOrdersChangeTarget(FLEET *lpflOld)
-{
+void FleetOrdersChangeTarget(FLEET *lpflOld) {
     int16_t id;
-    POINT pt;
+    POINT   pt;
     int16_t fChg;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t iord;
     int16_t iflMac;
-    SCAN scan;
+    SCAN    scan;
     int16_t grobj;
 
     /* TODO: implement */
@@ -955,26 +815,22 @@ void FleetOrdersChangeTarget(FLEET *lpflOld)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t dyMore;
+INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    int16_t     dyMore;
     PAINTSTRUCT ps;
-    POINT pt;
-    HWND hwndBtn;
-    RECT rcBtn;
-    int16_t dx;
-    RECT rc;
+    POINT       pt;
+    HWND        hwndBtn;
+    RECT        rcBtn;
+    int16_t     dx;
+    RECT        rc;
 
     /* TODO: implement */
     return 0;
 }
 
-LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    if ((msg == WM_CHAR) &&
-        (((wParam < (WPARAM)'0') || ((WPARAM)'9' < wParam)) && (wParam != (WPARAM)8)))
-    {
+LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if ((msg == WM_CHAR) && (((wParam < (WPARAM)'0') || ((WPARAM)'9' < wParam)) && (wParam != (WPARAM)8))) {
         return 0;
     }
 
@@ -982,24 +838,23 @@ LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return CallWindowProc(lpfnRealEditProc, hwnd, msg, wParam, lParam);
 }
 
-void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
+void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     int16_t fPercent;
     int16_t (*lpProc)(void);
     int32_t lSel;
-    XFER xf;
-    char szT[34];
+    XFER    xf;
+    char    szT[34];
     int32_t lMin;
     int16_t ishdef;
     int16_t grbit;
     int16_t ifl;
     int16_t ish;
-    FLEET *lpfl;
-    char rgb[8];
+    FLEET  *lpfl;
+    char    rgb[8];
     int16_t ishPrimary;
     int16_t i;
     int16_t iInit;
-    FLEET *lpflBest;
+    FLEET  *lpflBest;
     int16_t rgifl[512];
 
     /* debug symbols */
@@ -1012,9 +867,8 @@ void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam)
     /* TODO: implement */
 }
 
-void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
-{
-    RECT rgrc[2];
+void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply) {
+    RECT    rgrc[2];
     int16_t fCreatedDC;
     int16_t i;
     int16_t dxCtr;
@@ -1025,32 +879,30 @@ void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)
     /* TODO: implement */
 }
 
-void DrawFleetShipsXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply)
-{
+void DrawFleetShipsXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply) {
     int16_t yTop;
     int16_t fOtherPlr;
     int16_t c;
     int16_t i;
     int16_t xRight;
-    FLEET fl;
+    FLEET   fl;
     int16_t xLeft;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-void DrawShipPlanet(HDC hdc, TILE *ptile, OBJ obj)
-{
+void DrawShipPlanet(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t yTop;
     int16_t dy;
     int16_t i;
     int16_t xRight;
-    char *psz;
+    char   *psz;
     int16_t dx;
     int16_t xLeft;
-    RECT rc;
-    THING *lpth;
-    THING *lpthMac;
+    RECT    rc;
+    THING  *lpth;
+    THING  *lpthMac;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x1923 */
@@ -1058,36 +910,34 @@ void DrawShipPlanet(HDC hdc, TILE *ptile, OBJ obj)
     /* TODO: implement */
 }
 
-void DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj)
-{
+void DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj) {
     int32_t cBoat;
     int16_t swp;
     int16_t dxRight;
     int16_t yTop;
-    RECT rcT;
+    RECT    rcT;
     int16_t dyWrong;
     int16_t c;
     int16_t i;
-    FLEET *pfl;
+    FLEET  *pfl;
     int16_t xStart;
     int16_t xRight;
     int16_t dxLabel;
     int16_t xLeft;
     int32_t l;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-void UpdateOrdersDDs(int16_t iLevel)
-{
+void UpdateOrdersDDs(int16_t iLevel) {
     int32_t rglSel[3];
     int16_t iMin;
     int16_t i;
-    char *psz;
+    char   *psz;
     int16_t iSel;
     int16_t iMax;
-    char szT[80];
+    char    szT[80];
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x9496 */
@@ -1097,74 +947,66 @@ void UpdateOrdersDDs(int16_t iLevel)
     /* TODO: implement */
 }
 
-void SetFleetDropDownSel(int16_t id)
-{
+void SetFleetDropDownSel(int16_t id) {
     int16_t idSkip;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t iOffset;
 
     /* TODO: implement */
 }
-void FillBattleDD(int16_t iSel)
-{
+void FillBattleDD(int16_t iSel) {
     int16_t i;
 
     /* TODO: implement */
 }
 
-void SetOrdersLbSel(int16_t iSel)
-{
+void SetOrdersLbSel(int16_t iSel) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void FillFleetCompLB(void)
-{
+void FillFleetCompLB(void) {
     int16_t i;
     int32_t pctDmg;
 
     /* TODO: implement */
 }
 
-uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn)
-{
-    int32_t lCur;
-    HDC hdc;
-    PLANET pl;
-    int16_t iWarp;
-    POINT ptOld;
-    int16_t idPlan;
-    int32_t lMax;
-    int32_t lSel;
-    int16_t iSkip;
-    int32_t xRnd;
-    int16_t grbit;
-    XFER xf;
-    int32_t lNew;
-    int16_t irc;
-    int32_t dx;
-    int32_t lTempMin;
-    int16_t fFirst;
-    int16_t fTwoMAs;
-    int32_t lTempMax;
-    int16_t cMax;
-    int16_t fSep;
-    char sz255[2];
-    int16_t i;
-    THING *lpth;
-    int16_t c;
-    THING *lpthMac;
-    ORDER *lpord;
-    FLEET *lpfl;
-    char *rgszZip[1];
+uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn) {
+    int32_t    lCur;
+    HDC        hdc;
+    PLANET     pl;
+    int16_t    iWarp;
+    POINT      ptOld;
+    int16_t    idPlan;
+    int32_t    lMax;
+    int32_t    lSel;
+    int16_t    iSkip;
+    int32_t    xRnd;
+    int16_t    grbit;
+    XFER       xf;
+    int32_t    lNew;
+    int16_t    irc;
+    int32_t    dx;
+    int32_t    lTempMin;
+    int16_t    fFirst;
+    int16_t    fTwoMAs;
+    int32_t    lTempMax;
+    int16_t    cMax;
+    int16_t    fSep;
+    char       sz255[2];
+    int16_t    i;
+    THING     *lpth;
+    int16_t    c;
+    THING     *lpthMac;
+    ORDER     *lpord;
+    FLEET     *lpfl;
+    char      *rgszZip[1];
     TASKXPORT *lptxp;
-    ZIPORDER rgzo[4];
+    ZIPORDER   rgzo[4];
     int16_t (*lpProc)(void);
     int16_t fRet;
     int32_t rgid[100];
     int16_t iChecked;
-    SCAN scan;
+    SCAN    scan;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x7d37 */
@@ -1180,8 +1022,7 @@ uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRigh
     return 0;
 }
 
-void UpdateXferBtns(void)
-{
+void UpdateXferBtns(void) {
     int16_t iSide;
     int16_t i;
     int16_t iLastButton;
@@ -1191,8 +1032,7 @@ void UpdateXferBtns(void)
     /* TODO: implement */
 }
 
-int16_t FSetupXferBtns(RECT *prc)
-{
+int16_t FSetupXferBtns(RECT *prc) {
     int16_t cBtn;
     int16_t iMax;
     int16_t dy;
@@ -1201,11 +1041,11 @@ int16_t FSetupXferBtns(RECT *prc)
     int16_t fThingXfer;
     int16_t j;
     int16_t dxCtr;
-    RECT rcRight;
+    RECT    rcRight;
     int16_t dxLabels;
-    RECT rcBtn;
-    RECT rcLeft;
-    RECT rc;
+    RECT    rcBtn;
+    RECT    rcLeft;
+    RECT    rc;
 
     /* debug symbols */
     /* label NoGauges @ MEMORY_SHIP:0x7070 */
@@ -1214,8 +1054,7 @@ int16_t FSetupXferBtns(RECT *prc)
     return 0;
 }
 
-void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame, int16_t ibmp, int16_t cDiff, int16_t fShrink, int16_t ibmpRace, int16_t csh)
-{
+void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame, int16_t ibmp, int16_t cDiff, int16_t fShrink, int16_t ibmpRace, int16_t csh) {
     int16_t dxyPlus;
     int16_t yCur;
     int16_t c;
@@ -1224,7 +1063,7 @@ void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame,
     int16_t dx;
     int16_t xCur;
     int16_t dxyPlusWidth;
-    HBRUSH hbrSav;
+    HBRUSH  hbrSav;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x4920 */
@@ -1232,26 +1071,25 @@ void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame,
     /* TODO: implement */
 }
 
-void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj)
-{
+void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t swp;
     int16_t dxRight;
     int16_t iWarp;
     int16_t yTop;
-    POINT pt;
-    RECT rcT;
+    POINT   pt;
+    RECT    rcT;
     int16_t dWrong;
     int32_t lTot;
     int16_t c;
-    FLEET *pfl;
+    FLEET  *pfl;
     int16_t xRight;
     int16_t iScanActual;
-    RECT rcGauge;
-    char *psz;
+    RECT    rcGauge;
+    char   *psz;
     int16_t xLeft;
-    ORDER ord;
+    ORDER   ord;
     int32_t l;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* label DoDistance @ MEMORY_SHIP:0x04aa */
@@ -1260,32 +1098,30 @@ void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj)
     /* TODO: implement */
 }
 
-void DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit)
-{
+void DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit) {
     uint16_t rghbr[5];
-    int32_t lMax;
-    int16_t c;
-    int16_t i;
-    int32_t rgSize[5];
-    int16_t iMode;
-    int16_t cSections;
-    int32_t l;
+    int32_t  lMax;
+    int16_t  c;
+    int16_t  i;
+    int32_t  rgSize[5];
+    int16_t  iMode;
+    int16_t  cSections;
+    int32_t  l;
 
     /* TODO: implement */
 }
 
-void DrawFleetCargoXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply)
-{
+void DrawFleetCargoXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply) {
     int16_t yTop;
     int16_t fOtherPlr;
     int16_t c;
     int16_t i;
     int16_t xRight;
-    FLEET fl;
+    FLEET   fl;
     int16_t dxLabels;
-    RECT rcGauge;
+    RECT    rcGauge;
     int16_t xLeft;
-    RECT rc;
+    RECT    rc;
     int16_t iMap;
 
     /* debug symbols */
@@ -1294,51 +1130,49 @@ void DrawFleetCargoXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply)
     /* TODO: implement */
 }
 
-void DrawThingXferSide(HDC hdc, RECT *prc, THING *pth, int16_t iSupply)
-{
+void DrawThingXferSide(HDC hdc, RECT *prc, THING *pth, int16_t iSupply) {
     int16_t yTop;
     int16_t i;
     int16_t xRight;
     int16_t dxLabels;
-    RECT rcGauge;
+    RECT    rcGauge;
     int16_t xLeft;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)
-{
-    int16_t dxKt;
-    int16_t dxT;
-    int16_t swp;
-    int16_t dxRight;
-    int16_t yTop;
-    int16_t yTopMsg;
-    int16_t ids;
-    int16_t edWid;
-    PLANET *lppl;
-    ORDER *lpord;
-    FLEET *pfl;
-    int16_t i;
-    int16_t fActive;
-    int16_t xRight;
+void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj) {
+    int16_t  dxKt;
+    int16_t  dxT;
+    int16_t  swp;
+    int16_t  dxRight;
+    int16_t  yTop;
+    int16_t  yTopMsg;
+    int16_t  ids;
+    int16_t  edWid;
+    PLANET  *lppl;
+    ORDER   *lpord;
+    FLEET   *pfl;
+    int16_t  i;
+    int16_t  fActive;
+    int16_t  xRight;
     uint16_t grtask;
-    char szT[8];
-    int16_t yBot;
-    int16_t dxRight2;
-    char *psz;
-    int16_t cch;
-    int16_t xLeft;
-    int32_t l;
-    RECT rc;
-    char *pszT;
-    int16_t j;
-    int32_t cMine;
-    RECT rcT;
-    int16_t dyCur;
-    int16_t c;
-    int32_t rgl[4];
+    char     szT[8];
+    int16_t  yBot;
+    int16_t  dxRight2;
+    char    *psz;
+    int16_t  cch;
+    int16_t  xLeft;
+    int32_t  l;
+    RECT     rc;
+    char    *pszT;
+    int16_t  j;
+    int32_t  cMine;
+    RECT     rcT;
+    int16_t  dyCur;
+    int16_t  c;
+    int32_t  rgl[4];
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x0d93 */
@@ -1356,64 +1190,56 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)
     /* TODO: implement */
 }
 
-void DrawPlanetXferSide(HDC hdc, RECT *prc, PLANET *ppl, int16_t iSupply)
-{
-    PLANET pl;
+void DrawPlanetXferSide(HDC hdc, RECT *prc, PLANET *ppl, int16_t iSupply) {
+    PLANET  pl;
     int16_t yTop;
     int16_t c;
     int16_t i;
     int16_t xRight;
-    char *psz;
+    char   *psz;
     int16_t xLeft;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
-void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj)
-{
+void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj) {
     int16_t dxRight;
     int32_t l2;
     int16_t yTop;
     int16_t i;
     int16_t c;
-    FLEET *pfl;
+    FLEET  *pfl;
     int16_t xRight;
-    RECT rcGauge;
+    RECT    rcGauge;
     int16_t xLeft;
     int32_t l;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-void FillOrdersLB(void)
-{
+void FillOrdersLB(void) {
     int16_t i;
-    char *psz;
-    ORDER ord;
+    char   *psz;
+    ORDER   ord;
 
     /* TODO: implement */
 }
 
-void GetXferLeftRightRcs(RECT *prcWhole, RECT *prcLeft, RECT *prcRight)
-{
+void GetXferLeftRightRcs(RECT *prcWhole, RECT *prcLeft, RECT *prcRight) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)
-{
-    POINT ptOld;
-    POINT pt;
+int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb) {
+    POINT   ptOld;
+    POINT   pt;
     int32_t dChg;
-    BTNT btnt;
+    BTNT    btnt;
     int32_t cCur;
     int16_t i;
     int16_t iBtn;
     int16_t iVal;
-    BTN btn;
+    BTN     btn;
     int32_t cNew;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* label FinishUp @ MEMORY_SHIP:0x5f70 */

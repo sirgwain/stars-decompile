@@ -1,6 +1,6 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "parts.h"
 #include "race.h"
@@ -3575,25 +3575,21 @@ SPECIALSB rgspecialSB[16] = {
     },
 };
 
-void LookupBestPlanetaryScanner(PART *ppart)
-{
+void LookupBestPlanetaryScanner(PART *ppart) {
     /* Set planetary and start at iItem=8, preserving cItem. */
     ppart->hs.grhst = hstPlanetary;
     ppart->hs.iItem = 8;
 
     /* Walk downward until the part becomes legal or iItem reaches 0. */
-    while (FLookupPart(ppart) != 1 && ppart->hs.iItem != 0)
-    {
+    while (FLookupPart(ppart) != 1 && ppart->hs.iItem != 0) {
         /* Preserve 8-bit wrap/truncation explicitly. */
         ppart->hs.iItem = (uint8_t)(ppart->hs.iItem - 1u);
     }
 }
 
 // attach union pointer so CheckTechRequirements sees the right record
-static inline int attach_part_ptr(PART *part, uint16_t grhst, uint16_t iItem)
-{
-    switch (grhst)
-    {
+static inline int attach_part_ptr(PART *part, uint16_t grhst, uint16_t iItem) {
+    switch (grhst) {
     case hstEngine:
         if (iItem >= iengineCount)
             return LookupInvalid;
@@ -3674,10 +3670,9 @@ static inline int attach_part_ptr(PART *part, uint16_t grhst, uint16_t iItem)
     }
 }
 
-LookupResult FLookupPart(PART *part)
-{
+LookupResult FLookupPart(PART *part) {
     int16_t raMajor;
-    HS hs;
+    HS      hs;
 
     const uint16_t grhst = part->hs.grhst;
     const uint16_t iItem = part->hs.iItem;
@@ -3690,12 +3685,10 @@ LookupResult FLookupPart(PART *part)
     }
 
     const PLAYER *me = (idPlayer == -1) ? NULL : &rgplr[idPlayer];
-    const int majorAdv = me ? GetRaceStat(me, rsMajorAdv) : raNone;
+    const int     majorAdv = me ? GetRaceStat(me, rsMajorAdv) : raNone;
 
-    if (me)
-    {
-        switch (grhst)
-        {
+    if (me) {
+        switch (grhst) {
         case hstEngine:
             if (iItem == iengineSettlersDelight && majorAdv != raCheapCol)
                 return LookupDisallowed;
@@ -3791,10 +3784,8 @@ LookupResult FLookupPart(PART *part)
                 return LookupDisallowed;
 
             // stargates 0..6: if not raStargate, #1 and >3 are disallowed
-            if (iItem <= ispecialSBStargateAnyAny)
-            {
-                if (majorAdv != raStargate)
-                {
+            if (iItem <= ispecialSBStargateAnyAny) {
+                if (majorAdv != raStargate) {
                     if (iItem == ispecialSBStargateAny300)
                         return LookupDisallowed;
                     if (iItem > ispecialSBStargate300500)
@@ -3831,7 +3822,8 @@ LookupResult FLookupPart(PART *part)
                 return LookupDisallowed;
             if ((iItem == ihuldefFuelTransport || iItem == ihuldefSuperFreighter) && majorAdv != raDefend)
                 return LookupDisallowed;
-            if ((iItem == ihuldefMiner || iItem == ihuldefMaxiMiner || iItem == ihuldefMidgetMiner || iItem == ihuldefUltraMiner) && GetRaceGrbit(me, ibitRaceOBRM))
+            if ((iItem == ihuldefMiner || iItem == ihuldefMaxiMiner || iItem == ihuldefMidgetMiner || iItem == ihuldefUltraMiner) &&
+                GetRaceGrbit(me, ibitRaceOBRM))
                 return LookupDisallowed;
             if ((iItem == ihuldefMidgetMiner || iItem == ihuldefMiner || iItem == ihuldefUltraMiner) && !GetRaceGrbit(me, ibitRaceARM))
                 return LookupDisallowed;
@@ -3864,8 +3856,7 @@ LookupResult FLookupPart(PART *part)
         case hstSpecialE:
             if (FShouldPartBeHidden(part))
                 return LookupDisallowed;
-            switch (iItem)
-            {
+            switch (iItem) {
             case ispecialETransportCloaking: // 0
             case ispecialEUltraStealthCloak: // 3
                 if (majorAdv != raStealth)
@@ -3903,16 +3894,13 @@ LookupResult FLookupPart(PART *part)
     return TechStatus(part->pcom->rgTech);
 }
 
-HULDEF *LphuldefFromId(HullDef id)
-{
-    if (id < 0)
-    {
+HULDEF *LphuldefFromId(HullDef id) {
+    if (id < 0) {
         return NULL;
     }
 
     /* Normal hulls are 0..31. */
-    if (id < 32)
-    {
+    if (id < 32) {
         return &rghuldef[id];
     }
 
@@ -3920,8 +3908,7 @@ HULDEF *LphuldefFromId(HullDef id)
     return LphuldefSBFromId((int16_t)(id - ihuldefCount));
 }
 
-int16_t TechStatus(char *rgTech)
-{
+int16_t TechStatus(char *rgTech) {
     int16_t fInAWhile;
     int16_t i;
     int16_t fAlmost;
@@ -3934,22 +3921,17 @@ int16_t TechStatus(char *rgTech)
 
     const int8_t *have = plr->rgTech;
 
-    int missing_count = 0;
-    int missing_idx = -1;  // 0..5 if exactly one field is missing
-    bool near_one = false; // exactly one short by 1 and it’s the current research field
+    int       missing_count = 0;
+    int       missing_idx = -1; // 0..5 if exactly one field is missing
+    bool      near_one = false; // exactly one short by 1 and it’s the current research field
     const int iTechCur = (plr->iTechCur & 0x0F);
 
-    for (int techLevel = 0; techLevel < 6; ++techLevel)
-    {
-        if (have[techLevel] < rgTech[techLevel])
-        {
+    for (int techLevel = 0; techLevel < 6; ++techLevel) {
+        if (have[techLevel] < rgTech[techLevel]) {
             ++missing_count;
-            if (techLevel == iTechCur && have[techLevel] + 1 == rgTech[techLevel])
-            {
+            if (techLevel == iTechCur && have[techLevel] + 1 == rgTech[techLevel]) {
                 near_one = true;
-            }
-            else
-            {
+            } else {
                 missing_idx = techLevel;
             }
         }
@@ -3960,8 +3942,7 @@ int16_t TechStatus(char *rgTech)
     if (missing_count == 1 && near_one)
         return LookupNear;
 
-    if (missing_count == 1 && missing_idx >= 0)
-    {
+    if (missing_count == 1 && missing_idx >= 0) {
         // Same arithmetic as the legacy code: (need - have) + 1
         return (int)(rgTech[missing_idx] - have[missing_idx]) + 1;
     }
@@ -3969,33 +3950,23 @@ int16_t TechStatus(char *rgTech)
     return 99; // multiple requirements missing
 }
 
-HULDEF *LphuldefSBFromId(int16_t id)
-{
-    if (id < 0 || id >= (int16_t)(sizeof(rghuldefSB) / sizeof(rghuldefSB[0])))
-    {
+HULDEF *LphuldefSBFromId(int16_t id) {
+    if (id < 0 || id >= (int16_t)(sizeof(rghuldefSB) / sizeof(rghuldefSB[0]))) {
         return NULL;
     }
     return &rghuldefSB[id];
 }
 
-SHDEF *LpshdefT(void)
-{
-    return rgshdefT;
-}
+SHDEF *LpshdefT(void) { return rgshdefT; }
 
-PLANETARY *LpplanetaryFromId(int16_t id)
-{
+PLANETARY *LpplanetaryFromId(int16_t id) {
     /* Ghidra showed a bogus symbol; stride 0x1b is PLANETARY size. */
     return &rgplanetary[id];
 }
 
-SHDEF *LpshdefSBT(void)
-{
-    return rgshdefSBT;
-}
+SHDEF *LpshdefSBT(void) { return rgshdefSBT; }
 
-int16_t FLookupPartX(PART *ppart, HullSlotType grhst, uint16_t iItem)
-{
+int16_t FLookupPartX(PART *ppart, HullSlotType grhst, uint16_t iItem) {
     ppart->hs.grhst = grhst;
 
     /* Decompile behavior: write low byte, then clear high byte. */
@@ -4005,14 +3976,12 @@ int16_t FLookupPartX(PART *ppart, HullSlotType grhst, uint16_t iItem)
     return FLookupPart(ppart);
 }
 
-SCANNER *LpscannerFromId(int16_t id)
-{
+SCANNER *LpscannerFromId(int16_t id) {
     /* stride 0x38 is SCANNER size */
     return &rgscanner[id];
 }
 
-ENGINE *LpengineFromId(int16_t id)
-{
+ENGINE *LpengineFromId(int16_t id) {
     /* stride 0x4e is ENGINE size */
     return &rgengine[id];
 }

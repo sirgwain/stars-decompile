@@ -7,24 +7,27 @@
 #include <string.h>
 
 static DebugLogLevel g_level = DBGLOG_TRACE;
-static int g_inited = 0;
+static int           g_inited = 0;
 
-static const char *level_to_str(DebugLogLevel level)
-{
-    switch (level)
-    {
-    case DBGLOG_ERROR: return "ERROR";
-    case DBGLOG_WARN:  return "WARN";
-    case DBGLOG_INFO:  return "INFO";
-    case DBGLOG_DEBUG: return "DEBUG";
-    case DBGLOG_TRACE: return "TRACE";
-    default:           return "LOG";
+static const char *level_to_str(DebugLogLevel level) {
+    switch (level) {
+    case DBGLOG_ERROR:
+        return "ERROR";
+    case DBGLOG_WARN:
+        return "WARN";
+    case DBGLOG_INFO:
+        return "INFO";
+    case DBGLOG_DEBUG:
+        return "DEBUG";
+    case DBGLOG_TRACE:
+        return "TRACE";
+    default:
+        return "LOG";
     }
 }
 
-static DebugLogLevel parse_level(const char *s)
-{
-    char buf[32];
+static DebugLogLevel parse_level(const char *s) {
+    char   buf[32];
     size_t n;
 
     if (s == NULL)
@@ -56,8 +59,7 @@ static DebugLogLevel parse_level(const char *s)
     return g_level;
 }
 
-void DbgLogSetLevel(DebugLogLevel level)
-{
+void DbgLogSetLevel(DebugLogLevel level) {
     if (level < DBGLOG_ERROR)
         level = DBGLOG_ERROR;
     if (level > DBGLOG_TRACE)
@@ -65,13 +67,9 @@ void DbgLogSetLevel(DebugLogLevel level)
     g_level = level;
 }
 
-DebugLogLevel DbgLogGetLevel(void)
-{
-    return g_level;
-}
+DebugLogLevel DbgLogGetLevel(void) { return g_level; }
 
-void DbgLogInitFromEnv(void)
-{
+void DbgLogInitFromEnv(void) {
     if (g_inited)
         return;
 
@@ -84,8 +82,7 @@ void DbgLogInitFromEnv(void)
 
     {
         const char *s = getenv("STARS_LOG_LEVEL");
-        if (s != NULL && s[0] != '\0')
-        {
+        if (s != NULL && s[0] != '\0') {
             g_level = parse_level(s);
         }
     }
@@ -93,13 +90,7 @@ void DbgLogInitFromEnv(void)
     g_inited = 1;
 }
 
-void DbgLogPrintf(DebugLogLevel level,
-                  const char *file,
-                  int line,
-                  const char *func,
-                  const char *fmt,
-                  ...)
-{
+void DbgLogPrintf(DebugLogLevel level, const char *file, int line, const char *func, const char *fmt, ...) {
     va_list ap;
 
     DbgLogInitFromEnv();
@@ -117,18 +108,10 @@ void DbgLogPrintf(DebugLogLevel level,
     fflush(stderr);
 }
 
-void DbgLogHexDump(DebugLogLevel level,
-                   const char *file,
-                   int line,
-                   const char *func,
-                   const void *data,
-                   size_t len,
-                   size_t max_bytes,
-                   const char *label)
-{
+void DbgLogHexDump(DebugLogLevel level, const char *file, int line, const char *func, const void *data, size_t len, size_t max_bytes, const char *label) {
     const uint8_t *p = (const uint8_t *)data;
-    size_t n = len;
-    size_t off = 0;
+    size_t         n = len;
+    size_t         off = 0;
 
     DbgLogInitFromEnv();
     if (level > g_level)
@@ -140,33 +123,26 @@ void DbgLogHexDump(DebugLogLevel level,
     if (label == NULL)
         label = "hexdump";
 
-    fprintf(stderr, "[%-5s] %s:%d %s: %s (%zu bytes%s)\n",
-            level_to_str(level), file, line, func, label, n, (n < len) ? ", truncated" : "");
+    fprintf(stderr, "[%-5s] %s:%d %s: %s (%zu bytes%s)\n", level_to_str(level), file, line, func, label, n, (n < len) ? ", truncated" : "");
 
-    while (off < n)
-    {
-        char ascii[17];
+    while (off < n) {
+        char   ascii[17];
         size_t chunk = (n - off);
         if (chunk > 16)
             chunk = 16;
 
-        for (size_t i = 0; i < 16; i++)
-        {
-            if (i < chunk)
-            {
+        for (size_t i = 0; i < 16; i++) {
+            if (i < chunk) {
                 uint8_t b = p[off + i];
                 ascii[i] = (char)((b >= 32 && b < 127) ? b : '.');
-            }
-            else
-            {
+            } else {
                 ascii[i] = ' ';
             }
         }
         ascii[16] = '\0';
 
         fprintf(stderr, "  %04zx: ", off);
-        for (size_t i = 0; i < 16; i++)
-        {
+        for (size_t i = 0; i < 16; i++) {
             if (i < chunk)
                 fprintf(stderr, "%02x ", (unsigned)p[off + i]);
             else

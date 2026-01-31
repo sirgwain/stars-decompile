@@ -18,30 +18,25 @@
 #include "types.h"
 
 /* Prefer your real headers; adjust if you named them differently. */
-#include "globals.h"   /* mphtcbAlloc, rglphb */
 #include "../memory.h" /* LphbAlloc/LphbReAlloc/ResetHb/FreeHb */
+#include "globals.h"   /* mphtcbAlloc, rglphb */
 
-static void clear_heap_lists(void)
-{
-    for (int i = 0; i < (int)htCount; i++)
-    {
+static void clear_heap_lists(void) {
+    for (int i = 0; i < (int)htCount; i++) {
         rglphb[i] = NULL;
     }
 }
 
-static void set_min_alloc_defaults(void)
-{
+static void set_min_alloc_defaults(void) {
     /* Make tests deterministic: give each heap type a known min size. */
-    for (int i = 0; i < (int)htCount; i++)
-    {
+    for (int i = 0; i < (int)htCount; i++) {
         mphtcbAlloc[i] = 0x0100; /* 256 bytes min by default for tests */
     }
 }
 
 /* ---------- Tests ---------- */
 
-static void test_LphbAlloc_respects_min_and_inits_header(void)
-{
+static void test_LphbAlloc_respects_min_and_inits_header(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -63,8 +58,7 @@ static void test_LphbAlloc_respects_min_and_inits_header(void)
     FreeHb(hb);
 }
 
-static void test_LphbAlloc_no_min_clamp_when_large_enough(void)
-{
+static void test_LphbAlloc_no_min_clamp_when_large_enough(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -82,8 +76,7 @@ static void test_LphbAlloc_no_min_clamp_when_large_enough(void)
     FreeHb(hb);
 }
 
-static void test_LphbReAlloc_grows_updates_list_and_zeroes_tail(void)
-{
+static void test_LphbReAlloc_grows_updates_list_and_zeroes_tail(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -98,8 +91,7 @@ static void test_LphbReAlloc_grows_updates_list_and_zeroes_tail(void)
 
     /* scribble a recognizable pattern into the old block tail to detect new zeroing */
     uint8_t *p = (uint8_t *)hb;
-    for (uint16_t i = sizeof(HB); i < oldBlock; i++)
-    {
+    for (uint16_t i = sizeof(HB); i < oldBlock; i++) {
         p[i] = 0xAA;
     }
 
@@ -116,11 +108,9 @@ static void test_LphbReAlloc_grows_updates_list_and_zeroes_tail(void)
     TEST_CHECK(hb2->ibTop == (uint16_t)sizeof(HB));
 
     /* Verify GMEM_ZEROINIT-like behavior: new bytes appended are zero. */
-    if (newBlock > oldBlock)
-    {
+    if (newBlock > oldBlock) {
         uint8_t *q = (uint8_t *)hb2;
-        for (uint16_t i = oldBlock; i < newBlock; i++)
-        {
+        for (uint16_t i = oldBlock; i < newBlock; i++) {
             TEST_CHECK(q[i] == 0);
             if (q[i] != 0)
                 break;
@@ -131,8 +121,7 @@ static void test_LphbReAlloc_grows_updates_list_and_zeroes_tail(void)
     FreeHb(hb2);
 }
 
-static void test_ResetHb_resets_all_blocks_in_heap_list(void)
-{
+static void test_ResetHb_resets_all_blocks_in_heap_list(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -158,8 +147,7 @@ static void test_ResetHb_resets_all_blocks_in_heap_list(void)
     ResetHb(htShips);
 
     /* Verify both blocks reset */
-    for (HB *t = rglphb[htShips]; t != NULL; t = t->lphbNext)
-    {
+    for (HB *t = rglphb[htShips]; t != NULL; t = t->lphbNext) {
         TEST_CHECK(t->ibTop == (uint16_t)sizeof(HB));
         TEST_CHECK(t->cbFree == (uint16_t)(t->cbBlock - (uint16_t)sizeof(HB)));
         TEST_CHECK(t->cbSlop == (uint16_t)(t->cbBlock - (uint16_t)sizeof(HB)));
@@ -170,8 +158,7 @@ static void test_ResetHb_resets_all_blocks_in_heap_list(void)
     FreeHb(hb2); /* frees chain hb2->hb1 */
 }
 
-static void test_FreeHb_null_ok_and_frees_chain(void)
-{
+static void test_FreeHb_null_ok_and_frees_chain(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -191,8 +178,7 @@ static void test_FreeHb_null_ok_and_frees_chain(void)
     TEST_CHECK(1);
 }
 
-static void test_LphbFromLpHt_finds_block_containing_pointer(void)
-{
+static void test_LphbFromLpHt_finds_block_containing_pointer(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -220,8 +206,7 @@ static void test_LphbFromLpHt_finds_block_containing_pointer(void)
     FreeHb(hb2);
 }
 
-static void test_LpAlloc_and_FreeLp_round_trip_and_top_rollback(void)
-{
+static void test_LpAlloc_and_FreeLp_round_trip_and_top_rollback(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -235,7 +220,7 @@ static void test_LpAlloc_and_FreeLp_round_trip_and_top_rollback(void)
 
     uint16_t cb = 7;
     uint16_t cb_00 = (uint16_t)((cb + 3u) & 0xfffeu);
-    void *p = LpAlloc(cb, htMsg);
+    void    *p = LpAlloc(cb, htMsg);
     TEST_CHECK(p != NULL);
 
     uint16_t *hdr = (uint16_t *)((uint8_t *)p - 2);
@@ -257,8 +242,7 @@ static void test_LpAlloc_and_FreeLp_round_trip_and_top_rollback(void)
     FreeHb(hb);
 }
 
-static void test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows(void)
-{
+static void test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -273,15 +257,14 @@ static void test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows(void)
     memset(p, 0x5A, 16);
 
     uint16_t cbCur = *(uint16_t *)((uint8_t *)p - 2);
-    void *p2 = LpReAlloc(p, 32, htString);
+    void    *p2 = LpReAlloc(p, 32, htString);
     TEST_CHECK(p2 == p);
 
     uint16_t cbNew = *(uint16_t *)((uint8_t *)p2 - 2);
     TEST_CHECK(cbNew > cbCur);
 
     /* Old bytes preserved */
-    for (int i = 0; i < 16; i++)
-    {
+    for (int i = 0; i < 16; i++) {
         TEST_CHECK(((uint8_t *)p2)[i] == 0x5A);
         if (((uint8_t *)p2)[i] != 0x5A)
             break;
@@ -292,8 +275,7 @@ static void test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows(void)
     FreeHb(hb);
 }
 
-static void test_LpReAlloc_moves_and_copies_when_not_at_top(void)
-{
+static void test_LpReAlloc_moves_and_copies_when_not_at_top(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -314,8 +296,7 @@ static void test_LpReAlloc_moves_and_copies_when_not_at_top(void)
     TEST_CHECK(p2 != p);
 
     /* Old bytes copied */
-    for (int i = 0; i < 16; i++)
-    {
+    for (int i = 0; i < 16; i++) {
         TEST_CHECK(((uint8_t *)p2)[i] == 0xA5);
         if (((uint8_t *)p2)[i] != 0xA5)
             break;
@@ -327,8 +308,7 @@ static void test_LpReAlloc_moves_and_copies_when_not_at_top(void)
     FreeHb(hb);
 }
 
-static void test_LpplAlloc_FreePl_and_LpplReAlloc(void)
-{
+static void test_LpplAlloc_FreePl_and_LpplReAlloc(void) {
     clear_heap_lists();
     set_min_alloc_defaults();
 
@@ -358,8 +338,7 @@ static void test_LpplAlloc_FreePl_and_LpplReAlloc(void)
     TEST_CHECK(pl2->ht == (uint16_t)htOrd);
 
     /* Old bytes preserved (up to old payload size) */
-    for (uint16_t i = 0; i < (uint16_t)(oldSize - sizeof(PL)); i++)
-    {
+    for (uint16_t i = 0; i < (uint16_t)(oldSize - sizeof(PL)); i++) {
         TEST_CHECK(pl2->rgb[i] == 0xCC);
         if (pl2->rgb[i] != 0xCC)
             break;
@@ -381,15 +360,14 @@ static void test_LpplAlloc_FreePl_and_LpplReAlloc(void)
 
 /* ---------- Test list ---------- */
 
-TEST_LIST = {
-    {"memory/LphbAlloc respects min and inits header", test_LphbAlloc_respects_min_and_inits_header},
-    {"memory/LphbAlloc uses want size when >= min", test_LphbAlloc_no_min_clamp_when_large_enough},
-    {"memory/LphbReAlloc grows, updates list, zeros", test_LphbReAlloc_grows_updates_list_and_zeroes_tail},
-    {"memory/ResetHb resets all blocks", test_ResetHb_resets_all_blocks_in_heap_list},
-    {"memory/FreeHb NULL ok and frees chain", test_FreeHb_null_ok_and_frees_chain},
-    {"memory/LphbFromLpHt finds block containing pointer", test_LphbFromLpHt_finds_block_containing_pointer},
-    {"memory/LpAlloc+FreeLp round-trip and top rollback", test_LpAlloc_and_FreeLp_round_trip_and_top_rollback},
-    {"memory/LpReAlloc grows in-place when possible", test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows},
-    {"memory/LpReAlloc moves+copies when not at top", test_LpReAlloc_moves_and_copies_when_not_at_top},
-    {"memory/LpplAlloc/FreePl/LpplReAlloc", test_LpplAlloc_FreePl_and_LpplReAlloc},
-    {NULL, NULL}};
+TEST_LIST = {{"memory/LphbAlloc respects min and inits header", test_LphbAlloc_respects_min_and_inits_header},
+             {"memory/LphbAlloc uses want size when >= min", test_LphbAlloc_no_min_clamp_when_large_enough},
+             {"memory/LphbReAlloc grows, updates list, zeros", test_LphbReAlloc_grows_updates_list_and_zeroes_tail},
+             {"memory/ResetHb resets all blocks", test_ResetHb_resets_all_blocks_in_heap_list},
+             {"memory/FreeHb NULL ok and frees chain", test_FreeHb_null_ok_and_frees_chain},
+             {"memory/LphbFromLpHt finds block containing pointer", test_LphbFromLpHt_finds_block_containing_pointer},
+             {"memory/LpAlloc+FreeLp round-trip and top rollback", test_LpAlloc_and_FreeLp_round_trip_and_top_rollback},
+             {"memory/LpReAlloc grows in-place when possible", test_LpReAlloc_grows_in_place_when_at_top_and_slop_allows},
+             {"memory/LpReAlloc moves+copies when not at top", test_LpReAlloc_moves_and_copies_when_not_at_top},
+             {"memory/LpplAlloc/FreePl/LpplReAlloc", test_LpplAlloc_FreePl_and_LpplReAlloc},
+             {NULL, NULL}};

@@ -1,20 +1,19 @@
 #ifndef AI3_H_
 #define AI3_H_
 
-
 #include "types.h"
 
 /* globals */
-extern uint8_t vrgAiMacintiResOrder[8];  /* MEMORY_AI3:0x0000 */
-extern uint16_t vrgMacIshAip[31];  /* MEMORY_AI3:0x2a06 */
-extern uint8_t vrgMacAip[248];  /* MEMORY_AI3:0x2a44 */
+extern uint8_t  vrgAiMacintiResOrder[8]; /* MEMORY_AI3:0x0000 */
+extern uint16_t vrgMacIshAip[31];        /* MEMORY_AI3:0x2a06 */
+extern uint8_t  vrgMacAip[248];          /* MEMORY_AI3:0x2a44 */
 
 /* functions */
-int16_t FPotentMacWarFleet(FLEET *lpfl, int16_t *pcEquiv);  /* MEMORY_AI3:0x42ec */
-void EnsureMacintiShdefs(void);  /* MEMORY_AI3:0x2b3c */
-int16_t IdTargetMacFreighter(FLEET *lpfl);  /* MEMORY_AI3:0x3524 */
-void TargetMacArmada(FLEET *lpfl);  /* MEMORY_AI3:0x3e3a */
-int16_t FRetargetMiner(FLEET *lpfl);  /* MEMORY_AI3:0x336c */
-void DoMacintiAiTurn(PROD *rgprod);  /* MEMORY_AI3:0x0008 */
+int16_t FPotentMacWarFleet(FLEET *lpfl, int16_t *pcEquiv); /* MEMORY_AI3:0x42ec */
+void    EnsureMacintiShdefs(void);                         /* MEMORY_AI3:0x2b3c */
+int16_t IdTargetMacFreighter(FLEET *lpfl);                 /* MEMORY_AI3:0x3524 */
+void    TargetMacArmada(FLEET *lpfl);                      /* MEMORY_AI3:0x3e3a */
+int16_t FRetargetMiner(FLEET *lpfl);                       /* MEMORY_AI3:0x336c */
+void    DoMacintiAiTurn(PROD *rgprod);                     /* MEMORY_AI3:0x0008 */
 
 #endif /* AI3_H_ */

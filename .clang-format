@@ -9,3 +9,15 @@ AlignConsecutiveDeclarations: true
 
 # Optional: Use a specific column limit for alignment
 ColumnLimit: 160
+
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+IncludeCategories:
+  # 1) System / SDK headers
+  - Regex: '^<.*>'
+    Priority: 1
+
+  # 2) Project headers
+  - Regex: '^".*"'
+    Priority: 2

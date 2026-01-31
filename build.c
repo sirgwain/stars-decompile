@@ -1,52 +1,46 @@
 
 #include "types.h"
 
-#include "globals.h"
 #include "build.h"
+#include "globals.h"
 
 /* globals */
 uint16_t rggrbitParts[13] = {0x19ff, 0x0008, 0x0010, 0x0040, 0x0800, 0x0001, 0x1000, 0x0100, 0x0080, 0x0002, 0x0004, 0x0020, 0x0030};     /* 10c8:0038 */
 uint16_t rggrbitPartsSB[8] = {0x0a3c, 0x0008, 0x0010, 0x0800, 0x0200, 0x0004, 0x0020, 0x0030};                                            /* 10c8:006c */
 uint16_t rghstCat[14] = {0x0030, 0x1800, 0x0008, 0x0010, 0x0040, 0x0001, 0x0100, 0x0080, 0x0002, 0x0004, 0x0800, 0x1000, 0x0020, 0x0200}; /* 10c8:0000 */
-int16_t rgidsCat[14] = {1104, 1105, 1088, 1089, 1090, 1092, 1094, 1095, 1098, 1099, 1091, 1093, 1103, 1096};                              /* 10c8:001c */
-int16_t rgidsParts[13] = {1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1098, 1099, 1103, 1104};                                  /* 10c8:0052 */
-int16_t rgidsPartsSB[8] = {1087, 1088, 1089, 1091, 1096, 1099, 1103, 1104};                                                               /* 10c8:007c */
+int16_t  rgidsCat[14] = {1104, 1105, 1088, 1089, 1090, 1092, 1094, 1095, 1098, 1099, 1091, 1093, 1103, 1096};                             /* 10c8:001c */
+int16_t  rgidsParts[13] = {1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1098, 1099, 1103, 1104};                                 /* 10c8:0052 */
+int16_t  rgidsPartsSB[8] = {1087, 1088, 1089, 1091, 1096, 1099, 1103, 1104};                                                              /* 10c8:007c */
 
 /* functions */
 
-void KillQueuedMassPackets(PLANET *lppl)
-{
+void KillQueuedMassPackets(PLANET *lppl) {
     int16_t iprod;
     int16_t iDst;
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* TODO: implement */
 }
 
-int16_t IEmptyBmpFromGrhst(HullSlotType grhst)
-{
+int16_t IEmptyBmpFromGrhst(HullSlotType grhst) {
     int16_t i;
 
-    for (i = 0; i < (int16_t)(sizeof(rgmapBuildBmps) / sizeof(rgmapBuildBmps[0])); i++)
-    {
-        if ((HullSlotType)rgmapBuildBmps[i] == grhst)
-        {
+    for (i = 0; i < (int16_t)(sizeof(rgmapBuildBmps) / sizeof(rgmapBuildBmps[0])); i++) {
+        if ((HullSlotType)rgmapBuildBmps[i] == grhst) {
             return i;
         }
     }
     return 0;
 }
 
-SHDEF *NthValidShdef(int16_t n)
-{
+SHDEF *NthValidShdef(int16_t n) {
     int16_t i;
 
     /* TODO: implement */
     return NULL;
 }
 
-SHDEF *NthValidEnemyShdef(int16_t n)
-{
+SHDEF *NthValidEnemyShdef(int16_t n) {
     int16_t i;
     int16_t j;
 
@@ -54,39 +48,35 @@ SHDEF *NthValidEnemyShdef(int16_t n)
     return NULL;
 }
 
-int16_t PctJammerFromHul(HUL *lphul)
-{
+int16_t PctJammerFromHul(HUL *lphul) {
     int32_t pctJam;
     int16_t ihs;
     int16_t i;
     int32_t pctHit;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
     return 0;
 }
 
-void MakeNewName(char *lpsz)
-{
+void MakeNewName(char *lpsz) {
     int16_t cLen;
 
     /* TODO: implement */
 }
 
-void KillQueuedShips(PLANET *lppl)
-{
+void KillQueuedShips(PLANET *lppl) {
     int16_t iprod;
     int16_t iDst;
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* TODO: implement */
 }
 
 #ifdef _WIN32
 
-int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit)
-{
-    char rgch[40];
+int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit) {
+    char    rgch[40];
     int16_t fProgress;
     int16_t id;
     int16_t ids;
@@ -96,27 +86,26 @@ int16_t FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, int16_t fEdit)
     return 0;
 }
 
-INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    RECT rcWindow;
-    HDC hdc;
-    RECT rcGBox;
-    SHDEF *lpshdef;
-    int16_t left;
-    PAINTSTRUCT ps;
-    HWND hwndItem;
-    int16_t cch;
-    int32_t lSel;
-    RECT rc;
-    int16_t i;
-    int16_t fProgress;
-    DRAWITEMSTRUCT *lpdis;
+INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    RECT               rcWindow;
+    HDC                hdc;
+    RECT               rcGBox;
+    SHDEF             *lpshdef;
+    int16_t            left;
+    PAINTSTRUCT        ps;
+    HWND               hwndItem;
+    int16_t            cch;
+    int32_t            lSel;
+    RECT               rc;
+    int16_t            i;
+    int16_t            fProgress;
+    DRAWITEMSTRUCT    *lpdis;
     MEASUREITEMSTRUCT *lpmis;
-    POINT pt;
-    int16_t fProtoSB;
-    int16_t cshQueued;
-    int16_t j;
-    PART part;
+    POINT              pt;
+    int16_t            fProtoSB;
+    int16_t            cshQueued;
+    int16_t            j;
+    PART               part;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BUILD:0x07ca */
@@ -142,41 +131,39 @@ INT_PTR CALLBACK SlotDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)
-{
+void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate) {
     uint32_t cr;
     uint32_t crForeSav;
-    int16_t ibmp;
-    int16_t bkSav;
-    RECT rc;
+    int16_t  ibmp;
+    int16_t  bkSav;
+    RECT     rc;
 
     /* TODO: implement */
 }
 
-void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc)
-{
-    char rgch[20];
-    DV dv;
+void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc) {
+    char     rgch[20];
+    DV       dv;
     uint16_t rgCosts[4];
-    int16_t fCreatedDC;
+    int16_t  fCreatedDC;
     uint32_t crForeSav;
-    int16_t dxMineral;
-    int16_t k;
+    int16_t  dxMineral;
+    int16_t  k;
     uint32_t crBackSav;
-    int16_t csh;
-    HUL *lphul;
-    int32_t dpShield;
-    int16_t cch;
-    int32_t dp;
-    int16_t dxkT;
-    RECT rc;
-    int16_t i;
-    int16_t pct;
-    int32_t lwt;
-    int16_t j;
-    int16_t dPlanRange;
-    int16_t dRange;
-    int16_t pctDetect;
+    int16_t  csh;
+    HUL     *lphul;
+    int32_t  dpShield;
+    int16_t  cch;
+    int32_t  dp;
+    int16_t  dxkT;
+    RECT     rc;
+    int16_t  i;
+    int16_t  pct;
+    int32_t  lwt;
+    int16_t  j;
+    int16_t  dPlanRange;
+    int16_t  dRange;
+    int16_t  pctDetect;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BUILD:0x49fb */
@@ -189,8 +176,7 @@ void DrawBuildSelHull(HWND hwnd, HDC hdc, int16_t iDraw, RECT *prc)
     /* TODO: implement */
 }
 
-int16_t ShipBuilder(POINT ptDlgSize)
-{
+int16_t ShipBuilder(POINT ptDlgSize) {
     int16_t (*lpProcSlot)(void);
     int16_t fSuccess;
 
@@ -198,27 +184,26 @@ int16_t ShipBuilder(POINT ptDlgSize)
     return 0;
 }
 
-void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw)
-{
+void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw) {
     uint16_t grhst;
-    HS hsShip;
+    HS       hsShip;
     uint16_t rgCosts[4];
-    int16_t fCreatedDC;
-    int16_t c;
-    int16_t i;
+    int16_t  fCreatedDC;
+    int16_t  c;
+    int16_t  i;
     uint32_t crForeSav;
-    int16_t fPlural;
-    int16_t k;
-    char szWord[80];
+    int16_t  fPlural;
+    int16_t  k;
+    char     szWord[80];
     uint32_t crBackSav;
-    HS hsHul;
-    int16_t cch;
-    PART part;
-    int16_t x;
-    int16_t dxkT;
-    RECT rc;
-    int16_t iSel;
-    char *pch;
+    HS       hsHul;
+    int16_t  cch;
+    PART     part;
+    int16_t  x;
+    int16_t  dxkT;
+    RECT     rc;
+    int16_t  iSel;
+    char    *pch;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BUILD:0x3b7b */
@@ -229,25 +214,24 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, int16_t iDraw)
     /* TODO: implement */
 }
 
-void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
-{
-    int16_t yTop;
-    int16_t iMax;
-    int16_t cSlot;
-    int16_t fCreatedDC;
-    HDC hdcMem;
-    int16_t c;
-    int16_t i;
-    int16_t bkMode;
-    int16_t j;
-    int16_t cItem;
-    int16_t ibmp;
+void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
+    int16_t  yTop;
+    int16_t  iMax;
+    int16_t  cSlot;
+    int16_t  fCreatedDC;
+    HDC      hdcMem;
+    int16_t  c;
+    int16_t  i;
+    int16_t  bkMode;
+    int16_t  j;
+    int16_t  cItem;
+    int16_t  ibmp;
     uint16_t hbmpSav;
-    int16_t xLeft;
-    PART part;
-    HULDEF *lphuldef;
-    RECT rc;
-    int16_t iInventSel;
+    int16_t  xLeft;
+    PART     part;
+    HULDEF  *lphuldef;
+    RECT     rc;
+    int16_t  iInventSel;
     uint16_t hpenSav;
     uint16_t hbrSav;
     uint32_t crBkSav;
@@ -259,54 +243,46 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
     /* TODO: implement */
 }
 
-void ShowMainControls(HWND hwnd, int16_t sw)
-{
+void ShowMainControls(HWND hwnd, int16_t sw) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void FillBuildDD(HWND hwndDD, int16_t md)
-{
+void FillBuildDD(HWND hwndDD, int16_t md) {
     int16_t ishdefMac;
     int16_t fProgress;
     int16_t fAdded;
     int16_t i;
     int16_t j;
-    SHDEF *lpshdef;
-    RECT rc;
-    PART part;
+    SHDEF  *lpshdef;
+    RECT    rc;
+    PART    part;
 
     /* TODO: implement */
 }
 
-int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify)
-{
+int16_t IDropPart(POINT pt, HS hsSrc, int16_t iSrc, int16_t fNoModify) {
     int16_t cSlot;
     int16_t cNew;
     int16_t i;
-    HS hsHul;
-    HS hsDst;
-    RECT rc;
+    HS      hsHul;
+    HS      hsDst;
+    RECT    rc;
 
     /* TODO: implement */
     return 0;
 }
 
-void FillBuildPartsLB(HWND hwndLB, int16_t grbit)
-{
+void FillBuildPartsLB(HWND hwndLB, int16_t grbit) {
     int16_t mdAvail;
     int16_t i;
-    char sz[200];
+    char    sz[200];
     int16_t grbitCur;
-    PART part;
+    PART    part;
 
     /* TODO: implement */
 }
 
-LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t iSel;
-    POINT pt;
+    POINT   pt;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BUILD:0x676a */
@@ -316,55 +292,53 @@ LRESULT CALLBACK FakeListProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void UpdateSlotGlobals(void)
-{
-    int16_t yTop;
-    int16_t cSlot;
-    int16_t i;
+void UpdateSlotGlobals(void) {
+    int16_t  yTop;
+    int16_t  cSlot;
+    int16_t  i;
     uint16_t wrc;
-    int16_t xLeft;
-    HULDEF *lphuldef;
+    int16_t  xLeft;
+    HULDEF  *lphuldef;
 
     /* TODO: implement */
 }
 
-int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBox, int16_t fRightBtn)
-{
-    HDC hdc;
-    POINT ptOld;
-    POINT ptTileSize;
-    int16_t ibmpY;
-    POINT pt;
-    int16_t cSlot;
-    int16_t iSrc;
-    POINT ptDNew;
-    int16_t ibmpX;
-    HDC hdcMem;
-    int16_t i;
+int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBox, int16_t fRightBtn) {
+    HDC      hdc;
+    POINT    ptOld;
+    POINT    ptTileSize;
+    int16_t  ibmpY;
+    POINT    pt;
+    int16_t  cSlot;
+    int16_t  iSrc;
+    POINT    ptDNew;
+    int16_t  ibmpX;
+    HDC      hdcMem;
+    int16_t  i;
     uint16_t hbmpFullSav;
-    RECT rcStart;
-    int16_t fUseMem;
+    RECT     rcStart;
+    int16_t  fUseMem;
     uint16_t hbmpScreen;
-    int16_t ibmp;
+    int16_t  ibmp;
     uint16_t hbmpOld;
-    HDC hdcMemFull;
-    POINT ptD;
-    int16_t iSel;
+    HDC      hdcMemFull;
+    POINT    ptD;
+    int16_t  iSel;
     uint16_t hbmpSav;
-    HS hs;
-    int16_t fFirst;
-    PART part;
-    RECT rc;
-    int16_t iDir;
-    int16_t dyStart;
-    int16_t yTop;
-    int16_t dxStart;
-    int16_t bt;
-    BTNT btnt;
-    RECT *prc;
-    int16_t iBase;
-    int16_t iCur;
-    int16_t xLeft;
+    HS       hs;
+    int16_t  fFirst;
+    PART     part;
+    RECT     rc;
+    int16_t  iDir;
+    int16_t  dyStart;
+    int16_t  yTop;
+    int16_t  dxStart;
+    int16_t  bt;
+    BTNT     btnt;
+    RECT    *prc;
+    int16_t  iBase;
+    int16_t  iCur;
+    int16_t  xLeft;
 
     /* debug symbols */
     /* block (block) @ MEMORY_BUILD:0x3102 */
@@ -374,10 +348,9 @@ int16_t FTrackSlot(HWND hwnd, int16_t x, int16_t y, int16_t fkb, int16_t fListBo
     return 0;
 }
 
-void SetBuildSelection(int16_t iSrc)
-{
+void SetBuildSelection(int16_t iSrc) {
     int16_t iSelOld;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* label RedrawSel @ MEMORY_BUILD:0x544c */

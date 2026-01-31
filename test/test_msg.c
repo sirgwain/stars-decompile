@@ -4,32 +4,27 @@
 #include <string.h>
 
 #include "globals.h"
-#include "types.h"
 #include "memory.h"
 #include "msg.h" /* PctPlanetDesirability */
+#include "types.h"
 
 /* Keep these local to the test file. */
-enum
-{
-    TEST_MAX_PLAYERS = 3,
-    TEST_MAX_SHDEF = 16
-};
+enum { TEST_MAX_PLAYERS = 3, TEST_MAX_SHDEF = 16 };
 
 /* Backing storage for each player's design table. */
 static SHDEF g_test_shdef[TEST_MAX_PLAYERS][TEST_MAX_SHDEF];
 
 /* Snapshot rglpshdef pointers (not the structs they point to). */
-typedef struct MsgGlobalsSnapshot
-{
+typedef struct MsgGlobalsSnapshot {
     int16_t idPlayer;
-    GAME game;
+    GAME    game;
 
     /* Save/restore the pointer table entries. */
     SHDEF *rglpshdef_ptrs[TEST_MAX_PLAYERS];
 
     int16_t rgidPlan[999];
-    char szBase[256];
-    char szWork[360];
+    char    szBase[256];
+    char    szWork[360];
 
     PLAYER rgplr0;
     PLAYER rgplr1;
@@ -38,14 +33,12 @@ typedef struct MsgGlobalsSnapshot
     int16_t *lpMsg
 } MsgGlobalsSnapshot;
 
-static void snapshot_globals(MsgGlobalsSnapshot *out)
-{
+static void snapshot_globals(MsgGlobalsSnapshot *out) {
     out->idPlayer = idPlayer;
     out->game = game;
 
     /* Save current pointer table (first N players we touch in tests). */
-    for (int i = 0; i < TEST_MAX_PLAYERS; i++)
-    {
+    for (int i = 0; i < TEST_MAX_PLAYERS; i++) {
         out->rglpshdef_ptrs[i] = rglpshdef[i];
     }
 
@@ -62,14 +55,12 @@ static void snapshot_globals(MsgGlobalsSnapshot *out)
     lpMsg = (int16_t *)LpAlloc(65480, htMsg);
 }
 
-static void restore_globals(const MsgGlobalsSnapshot *in)
-{
+static void restore_globals(const MsgGlobalsSnapshot *in) {
     idPlayer = in->idPlayer;
     game = in->game;
 
     /* Restore pointer table entries. */
-    for (int i = 0; i < TEST_MAX_PLAYERS; i++)
-    {
+    for (int i = 0; i < TEST_MAX_PLAYERS; i++) {
         rglpshdef[i] = in->rglpshdef_ptrs[i];
     }
 
@@ -86,14 +77,12 @@ static void restore_globals(const MsgGlobalsSnapshot *in)
     lpMsg = in->lpMsg;
 }
 
-static void apply_minimal_fixtures(void)
-{
+static void apply_minimal_fixtures(void) {
     /* Keep tests deterministic. */
     idPlayer = 1;
     game.cPlayer = 3;
 
-    for (size_t i = 0; i < sizeof(rgidPlan) / sizeof(rgidPlan[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(rgidPlan) / sizeof(rgidPlan[0]); i++) {
         rgidPlan[i] = (int16_t)i;
     }
 
@@ -113,8 +102,7 @@ static void apply_minimal_fixtures(void)
     memset(g_test_shdef, 0, sizeof(g_test_shdef));
 
     /* Point the global pointer table at our backing storage. */
-    for (int iplr = 0; iplr < TEST_MAX_PLAYERS; iplr++)
-    {
+    for (int iplr = 0; iplr < TEST_MAX_PLAYERS; iplr++) {
         rglpshdef[iplr] = &g_test_shdef[iplr][0];
     }
 
@@ -143,16 +131,14 @@ static void apply_minimal_fixtures(void)
  * Table-driven tests
  * ------------------------------------------------------------ */
 
-typedef struct MsgCase
-{
+typedef struct MsgCase {
     const char *name;
     const char *fmt;
-    int16_t params[6];
+    int16_t     params[6];
     const char *want;
 } MsgCase;
 
-static void test_PszFormatString_table(void)
-{
+static void test_PszFormatString_table(void) {
     static const MsgCase cases[] = {
         {
             .name = "literal passthrough",
@@ -299,18 +285,14 @@ static void test_PszFormatString_table(void)
     snapshot_globals(&snap);
     apply_minimal_fixtures();
 
-    for (size_t idx = 0; idx < sizeof(cases) / sizeof(cases[0]); idx++)
-    {
+    for (size_t idx = 0; idx < sizeof(cases) / sizeof(cases[0]); idx++) {
         const MsgCase *tc = &cases[idx];
 
         /* Run */
         char *got = PszFormatString((char *)tc->fmt, (int16_t *)tc->params);
 
-        TEST_CHECK_(got == szMsgBuf,
-                    "case[%zu] %s: return pointer must be szMsgBuf", idx, tc->name);
-        TEST_CHECK_(strcmp(got, tc->want) == 0,
-                    "case[%zu] %s:\n  fmt=\"%s\"\n  got =\"%s\"\n  want=\"%s\"",
-                    idx, tc->name, tc->fmt, got, tc->want);
+        TEST_CHECK_(got == szMsgBuf, "case[%zu] %s: return pointer must be szMsgBuf", idx, tc->name);
+        TEST_CHECK_(strcmp(got, tc->want) == 0, "case[%zu] %s:\n  fmt=\"%s\"\n  got =\"%s\"\n  want=\"%s\"", idx, tc->name, tc->fmt, got, tc->want);
     }
 
     restore_globals(&snap);
@@ -320,11 +302,9 @@ static void test_PszFormatString_table(void)
  * PackageUpMsg packing tests
  * ------------------------------------------------------------ */
 
-static MessageId find_msg_with_nargs(uint8_t n)
-{
+static MessageId find_msg_with_nargs(uint8_t n) {
     /* Message ids are stored in 9 bits (0..0x1FF). */
-    for (uint16_t i = 0; i <= 0x01FFu; i++)
-    {
+    for (uint16_t i = 0; i <= 0x01FFu; i++) {
         if (((const uint8_t *)rgcMsgArgs)[i] == n)
             return (MessageId)i;
     }
@@ -333,8 +313,7 @@ static MessageId find_msg_with_nargs(uint8_t n)
     return (MessageId)0;
 }
 
-static void test_PackageUpMsg_packs_bytes_and_words(void)
-{
+static void test_PackageUpMsg_packs_bytes_and_words(void) {
     MsgGlobalsSnapshot snap;
     snapshot_globals(&snap);
     apply_minimal_fixtures();
@@ -369,26 +348,22 @@ static void test_PackageUpMsg_packs_bytes_and_words(void)
         TEST_CHECK_(mt->iPlr == 2, "iPlr nibble wrong: got %u", (unsigned)mt->iPlr);
         TEST_CHECK_(mt->cbParams == 4, "cbParams wrong: got %u", (unsigned)mt->cbParams);
 
-        TEST_CHECK_(mt->msghdr.iMsg == ((uint16_t)iMsg & 0x01FFu),
-                    "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
+        TEST_CHECK_(mt->msghdr.iMsg == ((uint16_t)iMsg & 0x01FFu), "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
         TEST_CHECK_(mt->msghdr.wGoto == -123, "wGoto wrong: got %d", (int)mt->msghdr.wGoto);
 
         /* Only the 2nd arg (bit 1) should be a word. */
-        TEST_CHECK_(mt->msghdr.grWord == 0x0002u,
-                    "grWord wrong: got 0x%X", (unsigned)mt->msghdr.grWord);
+        TEST_CHECK_(mt->msghdr.grWord == 0x0002u, "grWord wrong: got 0x%X", (unsigned)mt->msghdr.grWord);
     }
 
     /* Verify payload bytes (little-endian word). */
     TEST_CHECK_(buf[5] == 0x12, "p1 byte wrong: got 0x%02X", (unsigned)buf[5]);
-    TEST_CHECK_(buf[6] == 0x34 && buf[7] == 0x12,
-                "p2 word bytes wrong: got 0x%02X 0x%02X", (unsigned)buf[6], (unsigned)buf[7]);
+    TEST_CHECK_(buf[6] == 0x34 && buf[7] == 0x12, "p2 word bytes wrong: got 0x%02X 0x%02X", (unsigned)buf[6], (unsigned)buf[7]);
     TEST_CHECK_(buf[8] == 0xFF, "p3 byte wrong: got 0x%02X", (unsigned)buf[8]);
 
     restore_globals(&snap);
 }
 
-static void test_FSendPlrMsg_appends_first_player_message(void)
-{
+static void test_FSendPlrMsg_appends_first_player_message(void) {
     MsgGlobalsSnapshot snap;
     snapshot_globals(&snap);
     apply_minimal_fixtures();
@@ -406,33 +381,22 @@ static void test_FSendPlrMsg_appends_first_player_message(void)
         int16_t i = 0;
         int16_t iMin = 0;
 
-        int16_t ret = FSendPlrMsg(
-            i,
-            idmHomePlanetPeopleReadyLeaveNestExplore,
-            iMin,
-            iMin,
-            0, 0, 0, 0, 0, 0);
+        int16_t ret = FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
 
-        TEST_CHECK_(ret == 1,
-                    "FSendPlrMsg should return 1 for initial player message");
+        TEST_CHECK_(ret == 1, "FSendPlrMsg should return 1 for initial player message");
     }
 
     /* One message should now be queued */
-    TEST_CHECK_(cMsg == 1,
-                "expected cMsg == 1, got %d", (int)cMsg);
-    TEST_CHECK_(imemMsgCur > 0,
-                "imemMsgCur should advance after message append");
+    TEST_CHECK_(cMsg == 1, "expected cMsg == 1, got %d", (int)cMsg);
+    TEST_CHECK_(imemMsgCur > 0, "imemMsgCur should advance after message append");
 
     /* Inspect the queued message header */
     {
         const MSGTURN *mt = (const MSGTURN *)lpMsg;
 
-        TEST_CHECK_(mt->iPlr == 0,
-                    "iPlr wrong: got %u", (unsigned)mt->iPlr);
+        TEST_CHECK_(mt->iPlr == 0, "iPlr wrong: got %u", (unsigned)mt->iPlr);
 
-        TEST_CHECK_(mt->msghdr.iMsg ==
-                        (uint16_t)idmHomePlanetPeopleReadyLeaveNestExplore,
-                    "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
+        TEST_CHECK_(mt->msghdr.iMsg == (uint16_t)idmHomePlanetPeopleReadyLeaveNestExplore, "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
     }
 
     restore_globals(&snap);

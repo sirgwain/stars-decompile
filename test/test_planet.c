@@ -4,13 +4,12 @@
 #include <string.h>
 
 #include "globals.h"
-#include "types.h"
-#include "parts.h"
 #include "memory.h" /* htPlanets allocation*/
+#include "parts.h"
 #include "planet.h" /* PctPlanetDesirability */
+#include "types.h"
 
-typedef struct HabCase
-{
+typedef struct HabCase {
     const char *name;
 
     /* player env model */
@@ -25,20 +24,18 @@ typedef struct HabCase
        - if expect_exact: want is exact
        - else: want is ignored and we check bounds/relations */
     int16_t want;
-    int8_t expect_exact;
+    int8_t  expect_exact;
 
     /* optional: bounds check for non-exact cases */
     int16_t min_want;
     int16_t max_want;
 } HabCase;
 
-static void apply_player0(const HabCase *tc, PLAYER *old_out)
-{
+static void apply_player0(const HabCase *tc, PLAYER *old_out) {
     *old_out = rgplr[0];
 
     PLAYER pr = rgplr[0];
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         pr.rgEnvVar[i] = tc->pref[i];
         pr.rgEnvVarMin[i] = tc->minv[i];
         pr.rgEnvVarMax[i] = tc->maxv[i];
@@ -46,19 +43,16 @@ static void apply_player0(const HabCase *tc, PLAYER *old_out)
     rgplr[0] = pr;
 }
 
-static PLANET make_planet(const HabCase *tc)
-{
+static PLANET make_planet(const HabCase *tc) {
     PLANET pl;
     memset(&pl, 0, sizeof(pl));
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         pl.rgEnvVar[i] = tc->env[i];
     }
     return pl;
 }
 
-static void test_PctPlanetDesirability_table_stars_defaults(void)
-{
+static void test_PctPlanetDesirability_table_stars_defaults(void) {
     /* Stars default race window: 15..85, pref=50. */
     static const HabCase cases[] = {
         {.name = "ideal (50,50,50) in 15..85 => 100",
@@ -106,51 +100,39 @@ static void test_PctPlanetDesirability_table_stars_defaults(void)
          .expect_exact = 1},
     };
 
-    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         const HabCase *tc = &cases[i];
 
         /* sanity: keep tests Stars-faithful unless intentionally testing bad data */
-        for (int k = 0; k < 3; k++)
-        {
-            TEST_CHECK_(tc->env[k] >= 1 && tc->env[k] <= 100,
-                        "case[%zu] %s: env[%d]=%d must be 1..100 for Stars data",
-                        i, tc->name, k, (int)tc->env[k]);
+        for (int k = 0; k < 3; k++) {
+            TEST_CHECK_(tc->env[k] >= 1 && tc->env[k] <= 100, "case[%zu] %s: env[%d]=%d must be 1..100 for Stars data", i, tc->name, k, (int)tc->env[k]);
         }
 
         PLAYER old;
         apply_player0(tc, &old);
 
-        PLANET pl = make_planet(tc);
+        PLANET  pl = make_planet(tc);
         int16_t got = PctPlanetDesirability(&pl, 0);
 
-        if (tc->expect_exact)
-        {
-            TEST_CHECK_(got == tc->want,
-                        "case[%zu] %s: got=%d want=%d env={%d,%d,%d}",
-                        i, tc->name, (int)got, (int)tc->want,
-                        (int)tc->env[0], (int)tc->env[1], (int)tc->env[2]);
-        }
-        else
-        {
-            TEST_CHECK_(got >= tc->min_want && got <= tc->max_want,
-                        "case[%zu] %s: got=%d expected in [%d..%d] env={%d,%d,%d}",
-                        i, tc->name, (int)got, (int)tc->min_want, (int)tc->max_want,
-                        (int)tc->env[0], (int)tc->env[1], (int)tc->env[2]);
+        if (tc->expect_exact) {
+            TEST_CHECK_(got == tc->want, "case[%zu] %s: got=%d want=%d env={%d,%d,%d}", i, tc->name, (int)got, (int)tc->want, (int)tc->env[0], (int)tc->env[1],
+                        (int)tc->env[2]);
+        } else {
+            TEST_CHECK_(got >= tc->min_want && got <= tc->max_want, "case[%zu] %s: got=%d expected in [%d..%d] env={%d,%d,%d}", i, tc->name, (int)got,
+                        (int)tc->min_want, (int)tc->max_want, (int)tc->env[0], (int)tc->env[1], (int)tc->env[2]);
         }
 
         rgplr[0] = old;
     }
 }
 
-static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
-{
+static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void) {
     /* Save/restore globals we touch. */
     const int16_t idPlayer_old = idPlayer;
 
     /* Pick an arbitrary owner slot that exists. */
     const int owner = 0;
-    SHDEF *sbtab_old = rglpshdefSB[owner];
+    SHDEF    *sbtab_old = rglpshdefSB[owner];
 
     /* Provide a small SB design table with at least 16 entries (isb low 4 bits). */
     static SHDEF sbtab[16];
@@ -174,7 +156,7 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
         sb->hul.rghs[0].iItem = ispecialSBUltraDriver10; /* warpCode -> warp 10 */
         sb->hul.rghs[0].cItem = 1;
 
-        bool two = true;
+        bool    two = true;
         int16_t got = IWarpMAFromLppl(&pl, &two);
         TEST_CHECK_(got == 0, "no visibility: got=%d want=0", (int)got);
         TEST_CHECK_(two == false, "no visibility: pfTwo should be false");
@@ -193,7 +175,7 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
         sb->hul.rghs[1].iItem = ispecialSBMassDriver7; /* warp 7 (lower) */
         sb->hul.rghs[1].cItem = 1;
 
-        bool two = true;
+        bool    two = true;
         int16_t got = IWarpMAFromLppl(&pl, &two);
         TEST_CHECK_(got == 10, "owner visibility: got=%d want=10", (int)got);
         TEST_CHECK_(two == false, "owner visibility: pfTwo should be false for single top MA");
@@ -215,7 +197,7 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
         sb->hul.rghs[2].iItem = ispecialSBMassDriver7; /* warp 7 (lower) */
         sb->hul.rghs[2].cItem = 1;
 
-        bool two = false;
+        bool    two = false;
         int16_t got = IWarpMAFromLppl(&pl, &two);
         TEST_CHECK_(got == 10, "two at top: got=%d want=10", (int)got);
         TEST_CHECK_(two == true, "two at top: pfTwo should be true");
@@ -237,7 +219,7 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
         sb->hul.rghs[2].iItem = ispecialSBUltraDriver13; /* warp 13 (higher) */
         sb->hul.rghs[2].cItem = 1;
 
-        bool two = true;
+        bool    two = true;
         int16_t got = IWarpMAFromLppl(&pl, &two);
         TEST_CHECK_(got == 13, "higher overrides: got=%d want=13", (int)got);
         TEST_CHECK_(two == false, "higher overrides: pfTwo should be false (single at top warp)");
@@ -248,8 +230,7 @@ static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)
     idPlayer = idPlayer_old;
 }
 
-static void test_PopFromLppl(void)
-{
+static void test_PopFromLppl(void) {
     PLANET pl;
     memset(&pl, 0, sizeof(pl));
 
@@ -263,13 +244,12 @@ static void test_PopFromLppl(void)
     TEST_CHECK_(got == 25, "no visibility: got=%d want=0", (int)got);
 }
 
-static void test_CMaxOperableFactories_clamps_and_mac_zero(void)
-{
+static void test_CMaxOperableFactories_clamps_and_mac_zero(void) {
     const int iplr = 0;
-    PLAYER old = rgplr[iplr];
-    GAME gameOld = game;
-    PLANET *lpPlanetsOld = lpPlanets;
-    int cPlanetOld = cPlanet;
+    PLAYER    old = rgplr[iplr];
+    GAME      gameOld = game;
+    PLANET   *lpPlanetsOld = lpPlanets;
+    int       cPlanetOld = cPlanet;
 
     PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
     pl.rgwtMin[3] = 100; /* any nonzero pop */
@@ -305,13 +285,12 @@ static void test_CMaxOperableFactories_clamps_and_mac_zero(void)
     game = gameOld;
 }
 
-static void test_CMaxOperableMines_clamps_and_mac_zero(void)
-{
+static void test_CMaxOperableMines_clamps_and_mac_zero(void) {
     const int iplr = 0;
-    PLAYER old = rgplr[iplr];
-    GAME gameOld = game;
-    PLANET *lpPlanetsOld = lpPlanets;
-    int cPlanetOld = cPlanet;
+    PLAYER    old = rgplr[iplr];
+    GAME      gameOld = game;
+    PLANET   *lpPlanetsOld = lpPlanets;
+    int       cPlanetOld = cPlanet;
 
     PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
     pl.rgwtMin[3] = 100; /* any nonzero pop */
@@ -347,11 +326,10 @@ static void test_CMaxOperableMines_clamps_and_mac_zero(void)
     game = gameOld;
 }
 
-static void test_CalcPlanetMaxPop_race_modifiers_smoke(void)
-{
+static void test_CalcPlanetMaxPop_race_modifiers_smoke(void) {
     const int iplr = 0;
-    PLAYER old = rgplr[iplr];
-    PLANET pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
+    PLAYER    old = rgplr[iplr];
+    PLANET    pl = {.iPlayer = iplr, .rgEnvVar = {50, 50, 50}};
 
     /* Use the player's homeworld id if available; otherwise, try 0 as a fallback. */
     int16_t idpl = rgplr[iplr].idPlanetHome;
@@ -365,8 +343,7 @@ static void test_CalcPlanetMaxPop_race_modifiers_smoke(void)
     int32_t base = CalcPlanetMaxPop(idpl, (int16_t)iplr);
 
     /* If we can't resolve a planet in the current test harness, just ensure it doesn't crash. */
-    if (base == 0)
-    {
+    if (base == 0) {
         TEST_CHECK_(base == 0, "smoke: base returned 0");
         rgplr[iplr] = old;
         return;
@@ -386,10 +363,9 @@ static void test_CalcPlanetMaxPop_race_modifiers_smoke(void)
     rgplr[iplr] = old;
 }
 
-TEST_LIST = {
-    {"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
-    {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},
-    {"CMaxOperableFactories clamp + raMacintosh", test_CMaxOperableFactories_clamps_and_mac_zero},
-    {"CMaxOperableMines clamp + raMacintosh", test_CMaxOperableMines_clamps_and_mac_zero},
-    {"CalcPlanetMaxPop race modifiers smoke", test_CalcPlanetMaxPop_race_modifiers_smoke},
-    {NULL, NULL}};
+TEST_LIST = {{"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
+             {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},
+             {"CMaxOperableFactories clamp + raMacintosh", test_CMaxOperableFactories_clamps_and_mac_zero},
+             {"CMaxOperableMines clamp + raMacintosh", test_CMaxOperableMines_clamps_and_mac_zero},
+             {"CalcPlanetMaxPop race modifiers smoke", test_CalcPlanetMaxPop_race_modifiers_smoke},
+             {NULL, NULL}};

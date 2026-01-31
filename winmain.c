@@ -3,9 +3,9 @@
 
 #include <string.h>
 
-#include "types.h"
 #include "globals.h"
 #include "resource.h"
+#include "types.h"
 
 #include "init.h"
 #include "mdi.h"
@@ -20,8 +20,7 @@
  * deep UI behaviors (FrameWndProc, menus, etc.) at this stage.
  */
 
-static void ParseCmdLine(char *lpCmdLine)
-{
+static void ParseCmdLine(char *lpCmdLine) {
     char *lpT = lpCmdLine;
 
     while (*lpT != '\0') {
@@ -210,8 +209,7 @@ static void ParseCmdLine(char *lpCmdLine)
     }
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     MSG msg;
 
     hInst = hInstance;
@@ -254,12 +252,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
-        if ((hwndTitle != NULL) && (hAccelTitle != NULL) && TranslateAccelerator(hwndTitle, hAccelTitle, &msg))
-        {
+        if ((hwndTitle != NULL) && (hAccelTitle != NULL) && TranslateAccelerator(hwndTitle, hAccelTitle, &msg)) {
             continue;
         }
-        if ((hAccel != NULL) && (hwndFrame != NULL) && TranslateAccelerator(hwndFrame, hAccel, &msg))
-        {
+        if ((hAccel != NULL) && (hwndFrame != NULL) && TranslateAccelerator(hwndFrame, hAccel, &msg)) {
             continue;
         }
         TranslateMessage(&msg);

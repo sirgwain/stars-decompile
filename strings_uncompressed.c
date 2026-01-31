@@ -32,7 +32,9 @@ const char *const aSTRUncompressed[] = {
     /*   30 (0x001e) */ "The log file \\f is more recent than the game you are trying to load. Ignoring log file.",
     /*   31 (0x001f) */ "The amount of cargo you may specify here must be between 1 and 4000 or between 1% and 100%.",
     /*   32 (0x0020) */ "There isn't enough free memory to modify the production dialog.",
-    /*   33 (0x0021) */ "This message type has been filtered out and will not be shown by default anymore. You will still be sent these messages and to show them, click on the magnifying glass.",
+    /*   33 (0x0021) */
+    "This message type has been filtered out and will not be shown by default anymore. You will still be sent these messages and to show them, click on the "
+    "magnifying glass.",
     /*   34 (0x0022) */ "All the messages you have been sent this year are filtered out. If you want to view these messages, click on the magnifying glass.",
     /*   35 (0x0023) */ "Warning: The colonize mission cannot be carried out because none of your ships in this fleet have a colonization module in them.",
     /*   36 (0x0024) */ "Note: All ships in the fleet will be dismantled to provide supplies for the colonists.",
@@ -41,7 +43,8 @@ const char *const aSTRUncompressed[] = {
     /*   39 (0x0027) */ "Fuel Usage vs. Warp Speed",
     /*   40 (0x0028) */ "Shield Coverage vs. Defense Quan",
     /*   41 (0x0029) */ "This engine can only be mounted on the Mini-Colonizer Hull and requires the primary racial trait 'Hyper-Expansion'.",
-    /*   42 (0x002a) */ "This engine creates powerful waves of radiation and will kill some of your colonists if the midpoint of your race's Radiation band isn't at least 85mR.",
+    /*   42 (0x002a) */
+    "This engine creates powerful waves of radiation and will kill some of your colonists if the midpoint of your race's Radiation band isn't at least 85mR.",
     /*   43 (0x002b) */ "This engine requires the lesser racial trait 'Improved fuel efficiency'.",
     /*   44 (0x002c) */ "This engine requires the lesser racial trait 'Improved fuel efficiency' and not 'No Ram Scoop Engines'.",
     /*   45 (0x002d) */ "This engine requires the lesser racial trait 'No Ram Scoop Engines'.",
@@ -51,10 +54,16 @@ const char *const aSTRUncompressed[] = {
     /*   49 (0x0031) */ "Enemy fleets not orbiting a planet can be detected up to %d light years away.",
     /*   50 (0x0032) */ "Enemy fleets cannot be detected by this scanner unless they are at the same location as the scanner.",
     /*   51 (0x0033) */ "This scanner is capable of determining a planet's environment and composition while in orbit of the planet.",
-    /*   52 (0x0034) */ "This scanner can determine a planet's basic stats from a distance of up to %d light years. The scanner will also spot enemy fleets attempting to hide behind planets within range.",
-    /*   53 (0x0035) */ "This scanner can determine a planet's basic stats from a distance of 45 light years. It also decreases the range at which enemy ships can see the ship by 20%.",
+    /*   52 (0x0034) */
+    "This scanner can determine a planet's basic stats from a distance of up to %d light years. The scanner will also spot enemy fleets attempting to hide "
+    "behind planets within range.",
+    /*   53 (0x0035) */
+    "This scanner can determine a planet's basic stats from a distance of 45 light years. It also decreases the range at which enemy ships can see the ship by "
+    "20%.",
     /*   54 (0x0036) */ "This scanner is capable of penetrating the defenses of enemy fleets allowing you to steal their cargo.",
-    /*   55 (0x0037) */ "This scanner can determine a planet's stats from a distance of 120 l.y. This scanner is capable of penetrating the defenses of enemy fleets and planets allowing you to steal their cargo.",
+    /*   55 (0x0037) */
+    "This scanner can determine a planet's stats from a distance of 120 l.y. This scanner is capable of penetrating the defenses of enemy fleets and planets "
+    "allowing you to steal their cargo.",
     /*   56 (0x0038) */ "This scanner requires the primary racial trait 'Super Stealth'.",
     /*   57 (0x0039) */ "This cloak requires the primary racial trait 'Super Stealth'.",
     /*   58 (0x003a) */ "This armor or shield requires the primary racial trait 'Super Stealth'.",
@@ -210,12 +219,16 @@ const char *const aSTRUncompressed[] = {
     /*  208 (0x00d0) */ "; however, your colonists are currently capable of operating only ",
     /*  209 (0x00d1) */ " of them.",
     /*  210 (0x00d2) */ "Apply or define a production template",
-    /*  211 (0x00d3) */ "Right click on the blue diamond to apply a production template to this queue, or choose <Customize> to define a template based on the auto build items in the current queue.",
+    /*  211 (0x00d3) */
+    "Right click on the blue diamond to apply a production template to this queue, or choose <Customize> to define a template based on the auto build items in "
+    "the current queue.",
     /*  212 (0x00d4) */ "This pod increases the fuel capacity of the ship by %dmg.",
     /*  213 (0x00d5) */ "This pod increases the cargo capacity of the ship by %dkT.",
     /*  214 (0x00d6) */ "This pod increases the cargo capacity of the ship by 250kT, provides a 10% cloak and 50dp of armor.",
     /*  215 (0x00d7) */ "This pod allows a ship to colonize a planet and will dismantle the ship upon arrival and convert it into supplies for the colonists.",
-    /*  216 (0x00d8) */ "This module contains an empty orbital hull which can be deployed in orbit of an uninhabited planet. The pod also contains viral weapons capable of killing 2000 enemy colonists per attack.",
+    /*  216 (0x00d8) */
+    "This module contains an empty orbital hull which can be deployed in orbit of an uninhabited planet. The pod also contains viral weapons capable of "
+    "killing 2000 enemy colonists per attack.",
     /*  217 (0x00d9) */ "This device allows a ship to jump to planetary stargates. The range and weight limits are determined by the destination stargate.",
     /*  218 (0x00da) */ "The deflector decreases the damage done by beam weapons to the ship by up to 10%.",
     /*  219 (0x00db) */ "Cloaks unarmed hulls, reducing the range at which scanners detect it by up to 75%",
@@ -223,7 +236,8 @@ const char *const aSTRUncompressed[] = {
     /*  221 (0x00dd) */ "Cloaks any ship by up to 30%, acts as a 10% jammer and maneuvering jet.",
     /*  222 (0x00de) */ "Remember to load colonists before embarking on the mission!",
     /*  223 (0x00df) */ "This module contains robots capable of mining up to ",
-    /*  224 (0x00e0) */ "kT of each mineral (depending on concentration) from an uninhabited planet the ship is orbiting. The fleet must have orders set to 'Remote Mining'.",
+    /*  224 (0x00e0) */
+    "kT of each mineral (depending on concentration) from an uninhabited planet the ship is orbiting. The fleet must have orders set to 'Remote Mining'.",
     /*  225 (0x00e1) */ " This module also acts as a 30% cloak, 30% jammer, and half a maneuvering jet.",
     /*  226 (0x00e2) */ "Warning: This fleet contains no ships with remote mining modules on them. This mission will be unsuccessful.",
     /*  227 (0x00e3) */ "Warning: This fleet contains no ships with adjuster modules.",
@@ -235,7 +249,9 @@ const char *const aSTRUncompressed[] = {
     /*  233 (0x00e9) */ "This fleet can lay %ld mines per year.",
     /*  234 (0x00ea) */ "The password you have entered is incorrect, please try again.",
     /*  235 (0x00eb) */ "The passwords you typed in the two fields are not the same, please reenter them.",
-    /*  236 (0x00ec) */ "You have been using this demo version of Stars! for more than 20 days. To continue using this game, see the ordering information available from the Help menu.",
+    /*  236 (0x00ec) */
+    "You have been using this demo version of Stars! for more than 20 days. To continue using this game, see the ordering information available from the Help "
+    "menu.",
     /*  237 (0x00ed) */ " generates ",
     /*  238 (0x00ee) */ " resources each year.  ",
     /*  239 (0x00ef) */ " of these resources have been allocated to research.",
@@ -276,34 +292,69 @@ const char *const aSTRUncompressed[] = {
     /*  274 (0x0112) */ "Primary Racial Trait",
     /*  275 (0x0113) */ "Description of Trait",
     /*  276 (0x0114) */ "You must expand to survive. You are given a small and cheap colony hull and an engine which travels at Warp 6 using no fuel. ",
-    /*  277 (0x0115) */ "Your race will grow at twice the growth rate you select in step four; however, the maximum population for a given planet is cut in half. ",
+    /*  277 (0x0115) */
+    "Your race will grow at twice the growth rate you select in step four; however, the maximum population for a given planet is cut in half. ",
     /*  278 (0x0116) */ "The completely flexible Meta Morph hull will be available only to your race.",
-    /*  279 (0x0117) */ "You can sneak through enemy territory and execute stunning surprise attacks. You are given top-drawer cloaks and all your ships have 75% cloaking built in. ",
-    /*  280 (0x0118) */ "Cargo does not decrease your cloaking abilities. The Stealth Bomber and Rogue are at your disposal, as are a scanner, shield and armor with stealthy properties. ",
-    /*  281 (0x0119) */ "Two scanners which allow you to steal minerals from enemy fleets and planets are also available. You may safely travel through mine fields at one warp speed faster than the limits.",
-    /*  282 (0x011a) */ "You rule the battle field. Your colonists attack better, your ships are faster in battle, and you build weapons 25% cheaper than other races.",
+    /*  279 (0x0117) */
+    "You can sneak through enemy territory and execute stunning surprise attacks. You are given top-drawer cloaks and all your ships have 75% cloaking built "
+    "in. ",
+    /*  280 (0x0118) */
+    "Cargo does not decrease your cloaking abilities. The Stealth Bomber and Rogue are at your disposal, as are a scanner, shield and armor with stealthy "
+    "properties. ",
+    /*  281 (0x0119) */
+    "Two scanners which allow you to steal minerals from enemy fleets and planets are also available. You may safely travel through mine fields at one warp "
+    "speed faster than the limits.",
+    /*  282 (0x011a) */
+    "You rule the battle field. Your colonists attack better, your ships are faster in battle, and you build weapons 25% cheaper than other races.",
     /*  283 (0x011b) */ "You start the game with a knowledge of Tech 6 weapons and Tech 1 in energy and propulsion. ",
     /*  284 (0x011c) */ "Unfortunately, your race doesn't understand the necessity of building any but the most basic planetary defenses and no mine fields.",
-    /*  285 (0x011d) */ "You are an expert at fiddling with planetary environments. You start the game with Tech 6 in Biotechnology and a ship capable of terraforming planets from orbit. You can arm your ships with ",
-    /*  286 (0x011e) */ "bombs that unterraform enemy worlds. Terraforming costs you nothing and planets you leave revert to their original environments. Planets you own have up to a 10% chance of permanently improving an environment ",
+    /*  285 (0x011d) */
+    "You are an expert at fiddling with planetary environments. You start the game with Tech 6 in Biotechnology and a ship capable of terraforming planets "
+    "from orbit. You can arm your ships with ",
+    /*  286 (0x011e) */
+    "bombs that unterraform enemy worlds. Terraforming costs you nothing and planets you leave revert to their original environments. Planets you own have up "
+    "to a 10% chance of permanently improving an environment ",
     /*  287 (0x011f) */ "variable by 1% per year.",
-    /*  288 (0x0120) */ "You are strong and hard to defeat. Your colonists repel attacks better, your ships heal faster, you have special battle devices that protect your ships ",
+    /*  288 (0x0120) */
+    "You are strong and hard to defeat. Your colonists repel attacks better, your ships heal faster, you have special battle devices that protect your ships ",
     /*  289 (0x0121) */ "and can lay Speed Trap mine fields. You have a device that acts as both a shield and armor. Your peace-loving people refuse to build ",
-    /*  290 (0x0122) */ "Smart Bombs.  Planetary defenses cost you 40% less, though weapons cost you 25% more. Your colonists are able to reproduce while being transported by your fleets.",
-    /*  291 (0x0123) */ "You are an expert in laying mine fields. You have a vast array of mine types at your disposal and two unique hull design which are made for mine dispersal. ",
-    /*  292 (0x0124) */ "Your mine fields act as scanners and you have the ability to remote detonate your own Standard mine fields. You may safely travel two warp speeds faster than the stated limits through enemy ",
+    /*  290 (0x0122) */
+    "Smart Bombs.  Planetary defenses cost you 40% less, though weapons cost you 25% more. Your colonists are able to reproduce while being transported by "
+    "your fleets.",
+    /*  291 (0x0123) */
+    "You are an expert in laying mine fields. You have a vast array of mine types at your disposal and two unique hull design which are made for mine "
+    "dispersal. ",
+    /*  292 (0x0124) */
+    "Your mine fields act as scanners and you have the ability to remote detonate your own Standard mine fields. You may safely travel two warp speeds faster "
+    "than the stated limits through enemy ",
     /*  293 (0x0125) */ "mine fields. You start the game with 2 mine laying ships and Tech 2 in Propulsion and BioTech.",
-    /*  294 (0x0126) */ "Your race excels at accelerating mineral packets to distant planets. You start with a Warp 5 accelerator at your home starbase and Tech 4 Energy. ",
-    /*  295 (0x0127) */ "You will eventually be able to fling packets at the mind numbing speed of Warp 13. You can fling smaller packets and all of your packets have penetrating scanners embedded in them. ",
-    /*  296 (0x0128) */ "You will start the game owning a second planet some distance away if the universe size isn't tiny. Packets you fling that aren't fully caught have a chance of terraforming the target planet.",
-    /*  297 (0x0129) */ "Your race excels in building stargates. You start with Tech 5 in Propulsion and Construction. You start the game with a second planet if the universe size isn't tiny.  Both planets ",
-    /*  298 (0x012a) */ "have stargates. Eventually you may build stargates which have unlimited capabilities. Stargates cost you 25% less to build. Your race can automatically scan any enemy ",
-    /*  299 (0x012b) */ "planet with a stargate which is in range of one of your stargates. Exceeding the safety limits of stargates is less likely to kill your ships.",
-    /*  300 (0x012c) */ "Your race developed in an alternate plane. Your people cannot survive on planets and live in orbit on your starbases, which are 20% cheaper to build. You cannot build planetary installations, but your people ",
-    /*  301 (0x012d) */ "have an intrinsic ability to mine and scan for enemy fleets. You can remote mine your own worlds. If a starbase is destroyed, all your colonists orbiting that world are killed. Your population maximums are ",
+    /*  294 (0x0126) */
+    "Your race excels at accelerating mineral packets to distant planets. You start with a Warp 5 accelerator at your home starbase and Tech 4 Energy. ",
+    /*  295 (0x0127) */
+    "You will eventually be able to fling packets at the mind numbing speed of Warp 13. You can fling smaller packets and all of your packets have penetrating "
+    "scanners embedded in them. ",
+    /*  296 (0x0128) */
+    "You will start the game owning a second planet some distance away if the universe size isn't tiny. Packets you fling that aren't fully caught have a "
+    "chance of terraforming the target planet.",
+    /*  297 (0x0129) */
+    "Your race excels in building stargates. You start with Tech 5 in Propulsion and Construction. You start the game with a second planet if the universe "
+    "size isn't tiny.  Both planets ",
+    /*  298 (0x012a) */
+    "have stargates. Eventually you may build stargates which have unlimited capabilities. Stargates cost you 25% less to build. Your race can automatically "
+    "scan any enemy ",
+    /*  299 (0x012b) */
+    "planet with a stargate which is in range of one of your stargates. Exceeding the safety limits of stargates is less likely to kill your ships.",
+    /*  300 (0x012c) */
+    "Your race developed in an alternate plane. Your people cannot survive on planets and live in orbit on your starbases, which are 20% cheaper to build. You "
+    "cannot build planetary installations, but your people ",
+    /*  301 (0x012d) */
+    "have an intrinsic ability to mine and scan for enemy fleets. You can remote mine your own worlds. If a starbase is destroyed, all your colonists orbiting "
+    "that world are killed. Your population maximums are ",
     /*  302 (0x012e) */ "determined by the type of starbase you have. You will eventually be able to build the Death Star.",
     /*  303 (0x012f) */ "Your race does not specialize in a single area. You start the game with Tech 3 in all areas and an assortment of ships. ",
-    /*  304 (0x0130) */ "Your Scout, Destroyer, and Frigate hulls have a built-in penetrating scanner which grows more powerful as your Electronics tech increases. Your maximum planetary population is 20% greater than other races.",
+    /*  304 (0x0130) */
+    "Your Scout, Destroyer, and Frigate hulls have a built-in penetrating scanner which grows more powerful as your Electronics tech increases. Your maximum "
+    "planetary population is 20% greater than other races.",
     /*  305 (0x0131) */ " ",
     /*  306 (0x0132) */ "Improved Fuel Efficiency",
     /*  307 (0x0133) */ "Total Terraforming",
@@ -319,20 +370,39 @@ const char *const aSTRUncompressed[] = {
     /*  317 (0x013d) */ "Low Starting Population",
     /*  318 (0x013e) */ "Bleeding Edge Technology",
     /*  319 (0x013f) */ "Regenerating Shields",
-    /*  320 (0x0140) */ "This gives you the Fuel Mizer and Galaxy Scoop engines and increases your starting Propulsion tech by 1 level. All engines use 15% less fuel.",
+    /*  320 (0x0140) */
+    "This gives you the Fuel Mizer and Galaxy Scoop engines and increases your starting Propulsion tech by 1 level. All engines use 15% less fuel.",
     /*  321 (0x0141) */ "Allows you to terraform by investing solely in Biotechnology. You may terraform a variable up to 30%. Terraforming costs 30% less.",
-    /*  322 (0x0142) */ "Gives you three additional mining hulls and two new robots. You will start the game with two Midget-Miners. Don't pick 'Only Basic Remote Mining' with this option.",
-    /*  323 (0x0143) */ "Gives you two new starbase designs. The Stardock allows you to build light ships. The Ultra Station is a formidable weapons platform. Your starbases cost 20% less and are 20% cloaked.",
-    /*  324 (0x0144) */ "Your race takes a holistic approach to research. Only half of the resources dedicated to research will be applied to the current field of research; however, 15% of the total will be applied to all other fields.",
-    /*  325 (0x0145) */ "When you scrap a fleet at a starbase, you recover 90% of the minerals and some of the resources. The resources are available for use the next year. Scrapping at a planet gives you half the starbase amount.",
+    /*  322 (0x0142) */
+    "Gives you three additional mining hulls and two new robots. You will start the game with two Midget-Miners. Don't pick 'Only Basic Remote Mining' with "
+    "this option.",
+    /*  323 (0x0143) */
+    "Gives you two new starbase designs. The Stardock allows you to build light ships. The Ultra Station is a formidable weapons platform. Your starbases cost "
+    "20% less and are 20% cloaked.",
+    /*  324 (0x0144) */
+    "Your race takes a holistic approach to research. Only half of the resources dedicated to research will be applied to the current field of research; "
+    "however, 15% of the total will be applied to all other fields.",
+    /*  325 (0x0145) */
+    "When you scrap a fleet at a starbase, you recover 90% of the minerals and some of the resources. The resources are available for use the next year. "
+    "Scrapping at a planet gives you half the starbase amount.",
     /*  326 (0x0146) */ "Allows you to turn resources into minerals four times more efficiently than other races. This may be performed at any planet you own.",
-    /*  327 (0x0147) */ "No engines which travel at Warp 5 or greater burning no fuel will be available. However, the Interspace-10 engine will be available. This drive travels at Warp 10 without taking damage.",
-    /*  328 (0x0148) */ "You can throw engines together at half cost; however, at speeds in excess of Warp 6, there is a 10% chance the engines won't engage. You start with Propulsion one level higher than you would otherwise.",
-    /*  329 (0x0149) */ "The only mining ship available to you will be the Mini-Miner. This trait overrides 'Advanced Remote Mining'. Your maximum population per planet is increased by 10%.",
+    /*  327 (0x0147) */
+    "No engines which travel at Warp 5 or greater burning no fuel will be available. However, the Interspace-10 engine will be available. This drive travels "
+    "at Warp 10 without taking damage.",
+    /*  328 (0x0148) */
+    "You can throw engines together at half cost; however, at speeds in excess of Warp 6, there is a 10% chance the engines won't engage. You start with "
+    "Propulsion one level higher than you would otherwise.",
+    /*  329 (0x0149) */
+    "The only mining ship available to you will be the Mini-Miner. This trait overrides 'Advanced Remote Mining'. Your maximum population per planet is "
+    "increased by 10%.",
     /*  330 (0x014a) */ "No planet penetrating scanners will be available to you. However, conventional scanners will have their range doubled.",
     /*  331 (0x014b) */ "You will start with 30% fewer colonists.",
-    /*  332 (0x014c) */ "New techs initially cost twice as much to build. As soon as you exceed all of the tech requirements by one level, the cost drops back to normal. Miniaturization occurs at 5% a level and pegs at 80%.",
-    /*  333 (0x014d) */ "All shields are 40% stronger than the listed rating. Shields regenerate 10% of maximum strength after every round of battle. However, your armor will only be 50% of its rated strength.",
+    /*  332 (0x014c) */
+    "New techs initially cost twice as much to build. As soon as you exceed all of the tech requirements by one level, the cost drops back to normal. "
+    "Miniaturization occurs at 5% a level and pegs at 80%.",
+    /*  333 (0x014d) */
+    "All shields are 40% stronger than the listed rating. Shields regenerate 10% of maximum strength after every round of battle. However, your armor will "
+    "only be 50% of its rated strength.",
     /*  334 (0x014e) */ "This robot miner requires the lesser racial trait 'Advanced Remote Mining'.",
     /*  335 (0x014f) */ "This mining hull requires the lesser racial trait 'Advanced Remote Mining'.",
     /*  336 (0x0150) */ "This robot miner will not be available if the lesser racial trait 'Only Basic Remote Mining' is selected.",
@@ -351,8 +421,12 @@ const char *const aSTRUncompressed[] = {
     /*  349 (0x015d) */ "This part is not available to 'Alternate Reality' races.",
     /*  350 (0x015e) */ "This part requires the primary racial trait of 'Alternate Reality'.",
     /*  351 (0x015f) */ "This part requires the primary racial trait of 'Claim Adjuster'.",
-    /*  352 (0x0160) */ "This modified mining robot terraforms inhabited planets by 1% per year. It has a positive effect on friendly planets, a negative effect on neutral and enemy planets. It also provides 25% cloaking.",
-    /*  353 (0x0161) */ "This bomb does not kill colonists or destroy installations. This bomb 'unterraforms' planets toward their original state up to 1% per variable per bombing run. Planetary defenses have no effect on this bomb.",
+    /*  352 (0x0160) */
+    "This modified mining robot terraforms inhabited planets by 1% per year. It has a positive effect on friendly planets, a negative effect on neutral and "
+    "enemy planets. It also provides 25% cloaking.",
+    /*  353 (0x0161) */
+    "This bomb does not kill colonists or destroy installations. This bomb 'unterraforms' planets toward their original state up to 1% per variable per "
+    "bombing run. Planetary defenses have no effect on this bomb.",
     /*  354 (0x0162) */ "Allows you to modify any of a planet's three environment variables up to %d%% from its original value.",
     /*  355 (0x0163) */ "Allows you to modify a planet's %s by up to %d%% from its original value.",
     /*  356 (0x0164) */ "This scanner will be unavailable if you have the lesser racial trait 'No Advanced Scanners'.",
@@ -396,7 +470,9 @@ const char *const aSTRUncompressed[] = {
     /*  394 (0x018a) */ "Increases speed in battle by 1/%d square of movement.",
     /*  395 (0x018b) */ "Not Yet Implemented.",
     /*  396 (0x018c) */ "This engine will be unavailable if you have the lesser racial trait 'No Ramscoop Engines'.",
-    /*  397 (0x018d) */ "Right-click on the blue diamond to bring up a popup menu listing all the objects you see at the selected waypoint. Select an item to change the waypoint target.",
+    /*  397 (0x018d) */
+    "Right-click on the blue diamond to bring up a popup menu listing all the objects you see at the selected waypoint. Select an item to change the waypoint "
+    "target.",
     /*  398 (0x018e) */ "Your turn has been submitted. Changes made after your turn has been submitted may be lost. Would you like to unsubmit your turn?",
     /*  399 (0x018f) */ "The new turn is currently being generated by the host. The new turn will be loaded.",
     /*  400 (0x0190) */ "None/Disengage",
@@ -457,7 +533,9 @@ const char *const aSTRUncompressed[] = {
     /*  455 (0x01c7) */ "Density",
     /*  456 (0x01c8) */ "Player Positions",
     /*  457 (0x01c9) */ "Advanced Game",
-    /*  458 (0x01ca) */ "This button allows you to configure multi-player games and custom tailor advanced game options. You do not need to press this button for standard single player games.",
+    /*  458 (0x01ca) */
+    "This button allows you to configure multi-player games and custom tailor advanced game options. You do not need to press this button for standard single "
+    "player games.",
     /*  459 (0x01cb) */ "Shooting Fish in a Barrel",
     /*  460 (0x01cc) */ "A Walk in the Park",
     /*  461 (0x01cd) */ "Sleepwalking in Paradise",
@@ -504,11 +582,16 @@ const char *const aSTRUncompressed[] = {
     /*  502 (0x01f6) */ "Tutorial: You have placed the wrong component in the slot. Drag the component back to the listbox and try again.",
     /*  503 (0x01f7) */ "Tutorial: You must finish the tutorial tasks before exiting this dialog.",
     /*  504 (0x01f8) */ "Tutorial: You haven't yet finished creating the new design yet. Follow the tutorial instructions, then hit the Done button.",
-    /*  505 (0x01f9) */ "Tutorial: You haven't picked the correct image for this design. Press the right arrow under the ship image and hit the Done button again.",
-    /*  506 (0x01fa) */ "Tutorial: Verify that you have a Radiating Hydro-Ram Scoop, 3 Yakimora Light Phasers, 2 Carbonic armors, a Fuel Tank and a Battle Computer and try again.",
-    /*  507 (0x01fb) */ "Tutorial: You don't have the right parts on the design. Verify that the ship has a Long Hump 6 engine, a Rhino Scanner and two Robo-Miners.",
+    /*  505 (0x01f9) */
+    "Tutorial: You haven't picked the correct image for this design. Press the right arrow under the ship image and hit the Done button again.",
+    /*  506 (0x01fa) */
+    "Tutorial: Verify that you have a Radiating Hydro-Ram Scoop, 3 Yakimora Light Phasers, 2 Carbonic armors, a Fuel Tank and a Battle Computer and try again.",
+    /*  507 (0x01fb) */
+    "Tutorial: You don't have the right parts on the design. Verify that the ship has a Long Hump 6 engine, a Rhino Scanner and two Robo-Miners.",
     /*  508 (0x01fc) */ "Tutorial: You don't have the right parts on the design. Verify that the ship has a Daddy Long Legs 7 engine and 3 Mine Dispenser 50s.",
-    /*  509 (0x01fd) */ "Tutorial: You don't have the right parts on the design. Verify that the ship has Radiating Hydro-Ram Scoop engines, 8 Black Cat bombs and a Fuel Tank and try again.",
+    /*  509 (0x01fd) */
+    "Tutorial: You don't have the right parts on the design. Verify that the ship has Radiating Hydro-Ram Scoop engines, 8 Black Cat bombs and a Fuel Tank and "
+    "try again.",
     /*  510 (0x01fe) */ "Tutorial: You don't have the correct hull selected in the hull dropdown. Please select the proper hull design and retry.",
     /*  511 (0x01ff) */ "Tutorial: You don't have the correct ship selected in the ship dropdown. Please select the proper ship design and retry.",
     /*  512 (0x0200) */ "Tutorial: The name of this design in the editbox must be 'Gater'. Change the name and hit the Done button again.",
@@ -618,13 +701,19 @@ const char *const aSTRUncompressed[] = {
     /*  616 (0x0268) */ "Tutorial: You have given an incorrect transfer order. Please reread the tutorial text and try again.",
     /*  617 (0x0269) */ "Tutorial: You have given an incorrect quantity in a transfer order. Please reread the tutorial text and try again.",
     /*  618 (0x026a) */ "Are you sure you wish to generate now?  This option does NOT guarantee that all players have turned in their turns.",
-    /*  619 (0x026b) */ "You currently have %d %s%s and %d in production%s. If you delete this design, these ships will be destroyed and/or removed from the queues. Are you sure?",
-    /*  620 (0x026c) */ "You currently have %d %s%s in production queues%s. If you delete this design, these ships will be removed from the queues. Are you sure?",
+    /*  619 (0x026b) */
+    "You currently have %d %s%s and %d in production%s. If you delete this design, these ships will be destroyed and/or removed from the queues. Are you sure?",
+    /*  620 (0x026c) */
+    "You currently have %d %s%s in production queues%s. If you delete this design, these ships will be removed from the queues. Are you sure?",
     /*  621 (0x026d) */ "You currently have %d %s%s. If you delete this design, these ships will be destroyed. Are you sure?",
-    /*  622 (0x026e) */ "You currently have %d %s%s and %d in production%s. If you delete this design, these starbases will be destroyed and/or removed from the queues. Are you sure?",
-    /*  623 (0x026f) */ "You currently have %d %s%s in production queues%s. If you delete this design, these starbases will be removed from the queues. Are you sure?",
+    /*  622 (0x026e) */
+    "You currently have %d %s%s and %d in production%s. If you delete this design, these starbases will be destroyed and/or removed from the queues. Are you "
+    "sure?",
+    /*  623 (0x026f) */
+    "You currently have %d %s%s in production queues%s. If you delete this design, these starbases will be removed from the queues. Are you sure?",
     /*  624 (0x0270) */ "You currently have %d %s%s. If you delete this design, these starbases will be destroyed. Are you sure?",
-    /*  625 (0x0271) */ "You currently have %d %s%s in production queues%s. If you edit this design, some of these ships may be removed from the queues. Are you sure?",
+    /*  625 (0x0271) */
+    "You currently have %d %s%s in production queues%s. If you edit this design, some of these ships may be removed from the queues. Are you sure?",
     /*  626 (0x0272) */ "Task: %s",
     /*  627 (0x0273) */ "WP: %s",
     /*  628 (0x0274) */ "Warp: %d",
@@ -712,7 +801,9 @@ const char *const aSTRUncompressed[] = {
     /*  710 (0x02c6) */ "The new turn is available.",
     /*  711 (0x02c7) */ "Sorry, but the turn has already been generated. Any changes not already saved have been lost. Would you like to load the new turn?",
     /*  712 (0x02c8) */ "Auto Generate is disabled because all of the human players are dead or inactive.",
-    /*  713 (0x02c9) */ "Note: Stars! prefers a screen resolution of at least 800x600 with 256 colors. Some visual elements may appear less than optimal in your current video mode.",
+    /*  713 (0x02c9) */
+    "Note: Stars! prefers a screen resolution of at least 800x600 with 256 colors. Some visual elements may appear less than optimal in your current video "
+    "mode.",
     /*  714 (0x02ca) */ "The file \\w was created with a newer version of Stars! You must upgrade to be able to read this file.",
     /*  715 (0x02cb) */ "dead",
     /*  716 (0x02cc) */ "turned in",
@@ -730,7 +821,9 @@ const char *const aSTRUncompressed[] = {
     /*  728 (0x02d8) */ "Chance / l.y. of a hit: ",
     /*  729 (0x02d9) */ "Dmg done to each ship: ",
     /*  730 (0x02da) */ "Min damage done to fleet: ",
-    /*  731 (0x02db) */ "Numbers in parenthesis are for fleets containing a ship with ram scoop engines. Note that the chance of hitting a mine goes up the % listed for EACH warp you exceed the safe speed.",
+    /*  731 (0x02db) */
+    "Numbers in parenthesis are for fleets containing a ship with ram scoop engines. Note that the chance of hitting a mine goes up the % listed for EACH warp "
+    "you exceed the safe speed.",
     /*  732 (0x02dc) */ "Rename Fleet",
     /*  733 (0x02dd) */ "This starbase hull requires the lesser racial trait, 'Improved Starbases'.",
     /*  734 (0x02de) */ "This starbase hull has a space dock and can build ships.",
@@ -928,7 +1021,9 @@ const char *const aSTRUncompressed[] = {
     /*  926 (0x039e) */ "Increases the damage done by all beam weapons on the ship by %d%%.",
     /*  927 (0x039f) */ "This jamming device requires the primary racial trait of 'Inner Strength'.",
     /*  928 (0x03a0) */ "Has a %d%% chance of deflecting incoming torpedoes. Deflected torpedoes will still reduce shields (if any by 1/8 the damage value).",
-    /*  929 (0x03a1) */ "The module increases the accuracy of your torpedoes by %d%% and increases your initiative by %d. If an enemy ship has jammers the computer acts to offset their effects.",
+    /*  929 (0x03a1) */
+    "The module increases the accuracy of your torpedoes by %d%% and increases your initiative by %d. If an enemy ship has jammers the computer acts to offset "
+    "their effects.",
     /*  930 (0x03a2) */ "The origin of this part is unknown.",
     /*  931 (0x03a3) */ "The origin of this hull is unknown.",
     /*  932 (0x03a4) */ "The origin of this process is unknown.",
@@ -936,7 +1031,9 @@ const char *const aSTRUncompressed[] = {
     /*  934 (0x03a6) */ "This part also acts as a 100dp shield, 20% cloak, 20% torpedo jammer, AND a 80/40 l.y. scanner.",
     /*  935 (0x03a7) */ "This part also acts as a 10% cloak, increases torpedo accuracy up to 10%, AND a 150/75 l.y. scanner.",
     /*  936 (0x03a8) */ "This weapon can also bomb planets (2% colonists killed, 5 installations destroyed) and lay 40 standard mines/year.",
-    /*  937 (0x03a9) */ "This process gives a planet a new birth. All traces of civilization (aside from the people) are eliminated as the planet revitalizes itself into an entirely new world.",
+    /*  937 (0x03a9) */
+    "This process gives a planet a new birth. All traces of civilization (aside from the people) are eliminated as the planet revitalizes itself into an "
+    "entirely new world.",
     /*  938 (0x03aa) */ "Owns ",
     /*  939 (0x03ab) */ "of all planets.",
     /*  940 (0x03ac) */ " ",
@@ -977,7 +1074,9 @@ const char *const aSTRUncompressed[] = {
     /*  975 (0x03cf) */ "Destination:",
     /*  976 (0x03d0) */ "Stability:",
     /*  977 (0x03d1) */ "(%d, %d)",
-    /*  978 (0x03d2) */ "The trader requests interested parties to send it a fleet with at least 5000kT of minerals on board to be absorbed into the trader. It offers technological assistance in return.",
+    /*  978 (0x03d2) */
+    "The trader requests interested parties to send it a fleet with at least 5000kT of minerals on board to be absorbed into the trader. It offers "
+    "technological assistance in return.",
     /*  979 (0x03d3) */ "Trader is traveling at Warp %d.",
     /*  980 (0x03d4) */ "Easter Bunny",
     /*  981 (0x03d5) */ "Killjoy",
@@ -1259,9 +1358,13 @@ const char *const aSTRUncompressed[] = {
     /* 1257 (0x04e9) */ "Route to",
     /* 1258 (0x04ea) */ "n/a",
     /* 1259 (0x04eb) */ "Your race is incapable of building factories.",
-    /* 1260 (0x04ec) */ "Your race is incapable of building mines. However, your colonists have an innate mining ability equal to one tenth the square root of the starbase population.",
+    /* 1260 (0x04ec) */
+    "Your race is incapable of building mines. However, your colonists have an innate mining ability equal to one tenth the square root of the starbase "
+    "population.",
     /* 1261 (0x04ed) */ "Organic",
-    /* 1262 (0x04ee) */ "Your race cannot build planetary scanners. Your starbases have an innate scanning ability whose distance is equal to the square root of one tenth the starbase population.",
+    /* 1262 (0x04ee) */
+    "Your race cannot build planetary scanners. Your starbases have an innate scanning ability whose distance is equal to the square root of one tenth the "
+    "starbase population.",
     /* 1263 (0x04ef) */ "Planetary scanners and defenses are not available to 'Alternate Reality' races.",
     /* 1264 (0x04f0) */ "???",
     /* 1265 (0x04f1) */ "Dock Capacity:  ",
@@ -1304,7 +1407,9 @@ const char *const aSTRUncompressed[] = {
     /* 1302 (0x0516) */ "You can't have more than %d waypoints.",
     /* 1303 (0x0517) */ "Send Messages (%d of %d)",
     /* 1304 (0x0518) */ "Up to ",
-    /* 1305 (0x0519) */ "Tutorial: The 'Contribute only leftover...' checkbox in the production queue does not have the right value. Please open the production dialog and try again.",
+    /* 1305 (0x0519) */
+    "Tutorial: The 'Contribute only leftover...' checkbox in the production queue does not have the right value. Please open the production dialog and try "
+    "again.",
     /* 1306 (0x051a) */ "To make the tutorial reappear complete your task or choose Tutorial from the Help menu.",
     /* 1307 (0x051b) */ "Planetary Scanner",
     /* 1308 (0x051c) */ "(all torpedoes deflected)",
@@ -1416,7 +1521,8 @@ const char *const aSTRUncompressed[] = {
 };
 const char *const aMSGUncompressed[] = {
     /*    0 (0x0000) */ "The \\v00 Colonists you dropped on \\p were massacred by the ground troops of \\l.",
-    /*    1 (0x0001) */ "Of the \\v00 Colonists you dropped on \\p, \\P were destroyed by planetary defenses, the rest were massacred by the ground troops of \\l.",
+    /*    1 (0x0001) */
+    "Of the \\v00 Colonists you dropped on \\p, \\P were destroyed by planetary defenses, the rest were massacred by the ground troops of \\l.",
     /*    2 (0x0002) */ "The \\v00 Colonists you forced to transport down to \\p died because you did not colonize the planet first.",
     /*    3 (0x0003) */ "Your ground troops on \\p valiantly destroyed the \\v00 attacking barbarians of \\l!",
     /*    4 (0x0004) */ "Your planetary defenses and ground troops on \\p destroyed the \\v00 invading troops of \\l.",
@@ -1455,9 +1561,13 @@ const char *const aMSGUncompressed[] = {
     /*   37 (0x0025) */ "The population on \\p has decreased from \\v00 to \\v00.",
     /*   38 (0x0026) */ "The population on \\p has decreased by \\v00 colonists due to overcrowding.",
     /*   39 (0x0027) */ "\\s has run out of fuel.",
-    /*   40 (0x0028) */ "\\s's waypoint, \\s, appears to have been destroyed or has disappeared. Orders have been changed to go to the last known location of the fleet.",
-    /*   41 (0x0029) */ "The fleet you were tracking with \\s, appears to have ducked behind \\p. Orders for your fleet have been changed to go to that planet.",
-    /*   42 (0x002a) */ "The fleet you were tracking with \\s, appears to have outrun the range of your scanners. Orders for your fleet have been changed to go to the last known location of that fleet.",
+    /*   40 (0x0028) */
+    "\\s's waypoint, \\s, appears to have been destroyed or has disappeared. Orders have been changed to go to the last known location of the fleet.",
+    /*   41 (0x0029) */
+    "The fleet you were tracking with \\s, appears to have ducked behind \\p. Orders for your fleet have been changed to go to that planet.",
+    /*   42 (0x002a) */
+    "The fleet you were tracking with \\s, appears to have outrun the range of your scanners. Orders for your fleet have been changed to go to the last known "
+    "location of that fleet.",
     /*   43 (0x002b) */ "\\s has loaded \\V of \\m from \\n.",
     /*   44 (0x002c) */ "\\s has beamed \\V \\m from \\n.",
     /*   45 (0x002d) */ "\\s has unloaded \\V of \\m to \\n.",
@@ -1475,7 +1585,8 @@ const char *const aMSGUncompressed[] = {
     /*   57 (0x0039) */ "You have built a defense outpost on \\p.",
     /*   58 (0x003a) */ "You have built \\i defense outposts on \\p.",
     /*   59 (0x003b) */ "You have upgraded the \\i defenses on \\p to use \\k technology.",
-    /*   60 (0x003c) */ "There isn't enough fuel available at \\n to allow \\s to get to the next waypoint. Your fleet will wait for more fuel. You need about \\vmg more fuel.",
+    /*   60 (0x003c) */
+    "There isn't enough fuel available at \\n to allow \\s to get to the next waypoint. Your fleet will wait for more fuel. You need about \\vmg more fuel.",
     /*   61 (0x003d) */ "\\s will never make it to its next waypoint as its fuel capacity is \\vmg and the trip requires approximately \\vmg of fuel.",
     /*   62 (0x003e) */ "\\p has completed its orders. The production queue is empty.",
     /*   63 (0x003f) */ "The production queue on \\p is empty.",
@@ -1488,11 +1599,14 @@ const char *const aMSGUncompressed[] = {
     /*   70 (0x0046) */ "\\o attempted to transfer \\V of \\m to \\o. Only \\U was successfully received.",
     /*   71 (0x0047) */ "\\o attempted to transfer \\V \\m to \\o. Only \\v00 Colonists were successfully received. The rest perished in Deep Space!",
     /*   72 (0x0048) */ "\\o only received \\V of \\m from \\o. However, \\U was sent. The remainder was lost in space.",
-    /*   73 (0x0049) */ "\\o only received \\V \\m from \\o. However, \\v00 Colonists were sent. The remains of the other colonists are scattered across Deep Space!",
+    /*   73 (0x0049) */
+    "\\o only received \\V \\m from \\o. However, \\v00 Colonists were sent. The remains of the other colonists are scattered across Deep Space!",
     /*   74 (0x004a) */ "\\o attempted to transfer \\V of \\m to \\o. None of it was successfully received.",
     /*   75 (0x004b) */ "\\o attempted to transfer \\V \\m to \\o. None of the Colonists were successfully received. They all perished in Deep Space!",
     /*   76 (0x004c) */ "\\o attempted to receive \\V of \\m from \\o. However, all of it was lost in Deep Space.",
-    /*   77 (0x004d) */ "\\o attempted to receive \\V \\m from \\o. However, none of the Colonists were successfully received. The remains of colonists are scattered across Deep Space!",
+    /*   77 (0x004d) */
+    "\\o attempted to receive \\V \\m from \\o. However, none of the Colonists were successfully received. The remains of colonists are scattered across Deep "
+    "Space!",
     /*   78 (0x004e) */ "\\s has completed its assigned orders.",
     /*   79 (0x004f) */ "Your starbase at \\p failed to build a new ship of type \\i because someone lost the plans!",
     /*   80 (0x0050) */ "Your scientists have completed research into Tech Level \\i for \\j. They will continue their efforts in the \\j field.",
@@ -1500,15 +1614,24 @@ const char *const aMSGUncompressed[] = {
     /*   82 (0x0052) */ "\\s has orders to colonize \\p, but \\p is already populated. The colonize order has been canceled.",
     /*   83 (0x0053) */ "\\s has orders to colonize \\p, but you have failed to bring along any colonists. The colonize order has been canceled.",
     /*   84 (0x0054) */ "\\s has orders to colonize \\p, but none of the ships in \\s have a colonization module. The colonize order has been canceled.",
-    /*   85 (0x0055) */ "\\s has tried to beam colonists down to \\p, but the planet is uninhabited. You must outfit a ship with a colony module and give it orders to colonize.",
-    /*   86 (0x0056) */ "The captain of \\s has attempted to beam colonists down to \\p, but was overruled by the bridge crew since your people cannot survive on the surface of a planet.",
-    /*   87 (0x0057) */ "Your colonists attempting to set up shop on \\p were reduced to protoplasmic blobs when they landed on the surface due to their inability to survive on planets.",
+    /*   85 (0x0055) */
+    "\\s has tried to beam colonists down to \\p, but the planet is uninhabited. You must outfit a ship with a colony module and give it orders to colonize.",
+    /*   86 (0x0056) */
+    "The captain of \\s has attempted to beam colonists down to \\p, but was overruled by the bridge crew since your people cannot survive on the surface of a "
+    "planet.",
+    /*   87 (0x0057) */
+    "Your colonists attempting to set up shop on \\p were reduced to protoplasmic blobs when they landed on the surface due to their inability to survive on "
+    "planets.",
     /*   88 (0x0058) */ "All of your colonists assaulting \\p have been killed by forces from the orbiting starbase.",
     /*   89 (0x0059) */ "\\F has been dismantled for \\vkT of minerals which have deposited on \\p.",
     /*   90 (0x005a) */ "\\F has been dismantled for \\vkT of minerals at the starbase orbiting \\p.",
     /*   91 (0x005b) */ "\\X\\F has been dismantled. The scrap was left in deep space.",
-    /*   92 (0x005c) */ "\\F has been dismantled for \\vkT of minerals which have deposited on \\p. Ultimate recycling has also made \\v resources available for immediate use (less if other ships were scrapped here this year).",
-    /*   93 (0x005d) */ "\\F has been dismantled for \\vkT of minerals at the starbase orbiting \\p. Ultimate recycling has also made \\v resources available for immediate use (less if other ships were scrapped here this year).",
+    /*   92 (0x005c) */
+    "\\F has been dismantled for \\vkT of minerals which have deposited on \\p. Ultimate recycling has also made \\v resources available for immediate use "
+    "(less if other ships were scrapped here this year).",
+    /*   93 (0x005d) */
+    "\\F has been dismantled for \\vkT of minerals at the starbase orbiting \\p. Ultimate recycling has also made \\v resources available for immediate use "
+    "(less if other ships were scrapped here this year).",
     /*   94 (0x005e) */ "Your colonists settling \\p have found a strange artifact boosting your research in \\j by \\i resources.",
     /*   95 (0x005f) */ "Your recent breakthrough in \\j has also given you the \\k benefit.",
     /*   96 (0x0060) */ "\\s has bombed \\p, killing \\i00 colonists.",
@@ -1520,7 +1643,8 @@ const char *const aMSGUncompressed[] = {
     /*  102 (0x0066) */ "\\s has bombed \\p, destroying one\\X installation. Planetary defenses stopped \\P of your bombs.",
     /*  103 (0x0067) */ "\\s has bombed \\p, destroying \\i factories and mines. Planetary defenses stopped \\P of your bombs.",
     /*  104 (0x0068) */ "\\s has bombed \\p, killing \\i00 colonists, and destroying one\\X installation.  Planetary defenses stopped \\P of your bombs.",
-    /*  105 (0x0069) */ "\\s has bombed \\p, killing \\i00 colonists, and destroying \\i defenses, factories and mines. Planetary defenses stopped \\P of your bombs.",
+    /*  105 (0x0069) */
+    "\\s has bombed \\p, killing \\i00 colonists, and destroying \\i defenses, factories and mines. Planetary defenses stopped \\P of your bombs.",
     /*  106 (0x006a) */ "The \\s has bombed \\p, killing \\i00 of your colonists.",
     /*  107 (0x006b) */ "The \\s has bombed \\p, destroying one\\X of your installations.",
     /*  108 (0x006c) */ "The \\s has bombed \\p, destroying \\i of your defenses, factories and mines.",
@@ -1529,31 +1653,50 @@ const char *const aMSGUncompressed[] = {
     /*  111 (0x006f) */ "The \\s has bombed \\p, killing \\i00 of your colonists. Planetary defenses destroyed \\P of the incoming bombs.",
     /*  112 (0x0070) */ "The \\s has bombed \\p, destroying one\\X of your installations. Planetary defenses destroyed \\P of the incoming bombs.",
     /*  113 (0x0071) */ "The \\s has bombed \\p, destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of the incoming bombs.",
-    /*  114 (0x0072) */ "The \\s has bombed \\p, killing \\i00 of your colonists, and destroying one\\X of your installations. Planetary defenses destroyed \\P of the incoming bombs.",
-    /*  115 (0x0073) */ "The \\s has bombed \\p, killing \\i00 of your colonists, and destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of the incoming bombs.",
+    /*  114 (0x0072) */
+    "The \\s has bombed \\p, killing \\i00 of your colonists, and destroying one\\X of your installations. Planetary defenses destroyed \\P of the incoming "
+    "bombs.",
+    /*  115 (0x0073) */
+    "The \\s has bombed \\p, killing \\i00 of your colonists, and destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of "
+    "the incoming bombs.",
     /*  116 (0x0074) */ "Engine radiation has killed \\i00 colonists traveling in \\s.",
     /*  117 (0x0075) */ "\\s had orders to mine \\p, but the fleet doesn't have any remote mining modules. The order has been canceled.",
     /*  118 (0x0076) */ "Remote mining robots from \\s had orders to mine \\p, but the planet is inhabited. The order has been canceled.",
     /*  119 (0x0077) */ "Remote mining robots from \\s had orders to mine in deep space. The order has been canceled.",
-    /*  120 (0x0078) */ "Your recent breakthrough in \\j has also given you the \\k hull type. To build ships with this design, go to the Ship Design dialog, select Available Hull Types, and press Copy Selected Design.",
+    /*  120 (0x0078) */
+    "Your recent breakthrough in \\j has also given you the \\k hull type. To build ships with this design, go to the Ship Design dialog, select Available "
+    "Hull Types, and press Copy Selected Design.",
     /*  121 (0x0079) */ "\\s has loaded \\V of \\m from \\s.",
     /*  122 (0x007a) */ "\\s has beamed over \\V \\m from \\s.",
     /*  123 (0x007b) */ "Your terraforming efforts on \\p have \\I the \\e to \\E.",
     /*  124 (0x007c) */ "\\p has built a new \\k planetary scanner.",
     /*  125 (0x007d) */ "\\s has been loaded with \\V of \\m by the mining robots of \\s working on \\p.",
     /*  126 (0x007e) */ "A battle took place at \\n. Press the Goto button to view the VCR recording of the battle.",
-    /*  127 (0x007f) */ "Tip: You can hide unimportant messages by clicking the checkmark in the messages titlebar. You can reshow these messages at any time by clicking on the magnifying glass in the titlebar.",
-    /*  128 (0x0080) */ "Tip: To add waypoints, select a ship, then click on the desired destination while holding down the Shift key. You can also drag existing waypoints to move them to a new location.",
+    /*  127 (0x007f) */
+    "Tip: You can hide unimportant messages by clicking the checkmark in the messages titlebar. You can reshow these messages at any time by clicking on the "
+    "magnifying glass in the titlebar.",
+    /*  128 (0x0080) */
+    "Tip: To add waypoints, select a ship, then click on the desired destination while holding down the Shift key. You can also drag existing waypoints to "
+    "move them to a new location.",
     /*  129 (0x0081) */ "Tip: To design your own ships, press 'F4', select 'Available Hull Types', pick one from the dropdown, and hit the 'Copy' button.",
-    /*  130 (0x0082) */ "Tip: Popup help is available over many of the displayed statistics. For example you can click on planet statistics in the summary window to get additional details.",
+    /*  130 (0x0082) */
+    "Tip: Popup help is available over many of the displayed statistics. For example you can click on planet statistics in the summary window to get "
+    "additional details.",
     /*  131 (0x0083) */ "A small comet has crashed into \\p bringing new minerals and altering the planet's environment.",
     /*  132 (0x0084) */ "A medium-sized comet has crashed into \\p bringing a significant quantity of minerals to the planet.",
     /*  133 (0x0085) */ "A large comet has crashed into \\p bringing a wide variety of new minerals and drastically altering the planet's environment.",
     /*  134 (0x0086) */ "A huge comet has crashed into \\p embedding vast quantities of minerals in the planet and radically altering its environment.",
-    /*  135 (0x0087) */ "A small comet has crashed into your planet \\p, killing 25% of your colonists. The comet brought additional minerals and has altered the planet's \\e.",
-    /*  136 (0x0088) */ "A medium-sized comet has crashed into your planet \\p, killing 45% of your colonists. The comet brought additional minerals and has altered the planet's \\e and \\e.",
-    /*  137 (0x0089) */ "A large comet has crashed into your planet \\p, killing 65% of your colonists. The comet brought significant quantities of minerals and has altered the planet's \\e, \\e, and \\e.",
-    /*  138 (0x008a) */ "A huge comet has crashed into your planet \\p, killing 85% of your colonists. The comet has embedded vast stores of minerals and has altered the planet's \\e, \\e, and \\e.",
+    /*  135 (0x0087) */
+    "A small comet has crashed into your planet \\p, killing 25% of your colonists. The comet brought additional minerals and has altered the planet's \\e.",
+    /*  136 (0x0088) */
+    "A medium-sized comet has crashed into your planet \\p, killing 45% of your colonists. The comet brought additional minerals and has altered the planet's "
+    "\\e and \\e.",
+    /*  137 (0x0089) */
+    "A large comet has crashed into your planet \\p, killing 65% of your colonists. The comet brought significant quantities of minerals and has altered the "
+    "planet's \\e, \\e, and \\e.",
+    /*  138 (0x008a) */
+    "A huge comet has crashed into your planet \\p, killing 85% of your colonists. The comet has embedded vast stores of minerals and has altered the planet's "
+    "\\e, \\e, and \\e.",
     /*  139 (0x008b) */ "\\s has run out of fuel. The fleet's speed has been decreased to Warp \\i.",
     /*  140 (0x008c) */ "Your scientists on \\p have transmuted common materials into \\ikT each of Ironium, Boranium and Germanium.",
     /*  141 (0x008d) */ "A battle took place at \\n. Your \\z was destroyed. The screams of \\v00 colonists echo in your brain.",
@@ -1572,36 +1715,55 @@ const char *const aMSGUncompressed[] = {
     /*  154 (0x009a) */ "A battle took place at \\n. Neither your \\z*\\i nor \\z*\\i was completely destroyed in the incident.",
     /*  155 (0x009b) */ "A battle took place at \\n against \\l. \\i of your forces destroyed all of the enemy forces, taking no casualties.",
     /*  156 (0x009c) */ "A battle took place at \\n against \\l. All of your forces were destroyed by \\i of the enemy's forces.",
-    /*  157 (0x009d) */ "A battle took place at \\n against \\l. \\i of your forces destroyed all of the enemy forces, however, \\i of your ships were destroyed.",
-    /*  158 (0x009e) */ "A battle took place at \\n against \\l. All of your forces were destroyed by \\i of the enemy's forces. You managed to destroy \\i of the enemy's forces.",
-    /*  159 (0x009f) */ "A battle took place at \\n against \\l. Neither your \\i forces nor the enemy's \\i forces were completely wiped out. You lost \\i and the enemy lost \\i.",
+    /*  157 (0x009d) */
+    "A battle took place at \\n against \\l. \\i of your forces destroyed all of the enemy forces, however, \\i of your ships were destroyed.",
+    /*  158 (0x009e) */
+    "A battle took place at \\n against \\l. All of your forces were destroyed by \\i of the enemy's forces. You managed to destroy \\i of the enemy's forces.",
+    /*  159 (0x009f) */
+    "A battle took place at \\n against \\l. Neither your \\i forces nor the enemy's \\i forces were completely wiped out. You lost \\i and the enemy lost "
+    "\\i.",
     /*  160 (0x00a0) */ "A battle took place at \\n against \\l. \\i of your forces destroyed \\z, taking no casualties.",
     /*  161 (0x00a1) */ "A battle took place at \\n against \\l. Your \\z was destroyed by \\i of the enemy's forces.",
     /*  162 (0x00a2) */ "A battle took place at \\n against \\l. \\i of your forces destroyed \\z, however, \\i of your forces were destroyed.",
-    /*  163 (0x00a3) */ "A battle took place at \\n against \\l. Your \\z was destroyed by \\i of the enemy's forces. You managed to destroy \\i of the their forces.",
+    /*  163 (0x00a3) */
+    "A battle took place at \\n against \\l. Your \\z was destroyed by \\i of the enemy's forces. You managed to destroy \\i of the their forces.",
     /*  164 (0x00a4) */ "A battle took place at \\n involving \\i races. \\i of your forces destroyed all the enemy forces without a single casualty.",
     /*  165 (0x00a5) */ "A battle took place at \\n involving \\i races. You lost \\i of your \\i forces. All of the enemy forces were destroyed.",
-    /*  166 (0x00a6) */ "A battle took place at \\n involving \\i races. Your entire armada of \\i forces was destroyed by \\i enemy forces. You didn't manage to destroy a single ship.",
-    /*  167 (0x00a7) */ "A battle took place at \\n involving \\i races. Your entire armada of \\i forces was destroyed by \\i enemy forces. They lost \\i forces.",
+    /*  166 (0x00a6) */
+    "A battle took place at \\n involving \\i races. Your entire armada of \\i forces was destroyed by \\i enemy forces. You didn't manage to destroy a single "
+    "ship.",
+    /*  167 (0x00a7) */
+    "A battle took place at \\n involving \\i races. Your entire armada of \\i forces was destroyed by \\i enemy forces. They lost \\i forces.",
     /*  168 (0x00a8) */ "A battle took place at \\n involving \\i races. You lost \\i of your \\i forces while they lost \\i of their \\i forces.",
     /*  169 (0x00a9) */ "Your home planet is \\p. Your people are ready to leave the nest and explore the universe. Good luck.",
     /*  170 (0x00aa) */ "You have found a planet occupied by someone else. \\p is currently owned by \\l.",
-    /*  171 (0x00ab) */ "You have found a new planet which unfortunately is not habitable by you. \\P of your colonists will die each year if you colonize \\p.",
+    /*  171 (0x00ab) */
+    "You have found a new planet which unfortunately is not habitable by you. \\P of your colonists will die each year if you colonize \\p.",
     /*  172 (0x00ac) */ "You have found a new habitable planet.  Your colonists will grow by up to \\P per year if you colonize \\p.",
-    /*  173 (0x00ad) */ "You have found a new planet but you don't know if it is habitable or not yet. \\p will remain a mystery until you visit it with a fleet with better scanners.",
-    /*  174 (0x00ae) */ "You have found a new planet which you have the ability to make habitable. With terraforming, your colonists will grow by up to \\P per year if you colonize \\p.",
+    /*  173 (0x00ad) */
+    "You have found a new planet but you don't know if it is habitable or not yet. \\p will remain a mystery until you visit it with a fleet with better "
+    "scanners.",
+    /*  174 (0x00ae) */
+    "You have found a new planet which you have the ability to make habitable. With terraforming, your colonists will grow by up to \\P per year if you "
+    "colonize \\p.",
     /*  175 (0x00af) */ "\\p has built as many mines as the current population can operate. Auto building of mines is temporarily blocked.",
     /*  176 (0x00b0) */ "\\p has built as many mines as the planet can support. Auto building of mines is stopped.",
     /*  177 (0x00b1) */ "\\p has built as many factories as the current population can operate. Auto building of factories is temporarily blocked.",
     /*  178 (0x00b2) */ "\\p has built as many factories as the planet can support. Auto building of factories is stopped.",
     /*  179 (0x00b3) */ "\\p has built as many defenses as the current population can operate. Auto building of defenses is temporarily blocked.",
     /*  180 (0x00b4) */ "\\p has built as many defenses as the planet can support. Auto building of defenses is stopped.",
-    /*  181 (0x00b5) */ "The forces of \\Z have been declared the winner of this game. You are advised to accept their supremacy, though you may continue the fight.",
-    /*  182 (0x00b6) */ "You have been declared the winner of this game. You may continue to play though, if you wish to really rub everyone's nose in your grand victory.",
-    /*  183 (0x00b7) */ "You, along with \\Z have been declared the winners of this game. You may continue to play though, if you wish to attempt to improve your standing among your fellow dictators.",
+    /*  181 (0x00b5) */
+    "The forces of \\Z have been declared the winner of this game. You are advised to accept their supremacy, though you may continue the fight.",
+    /*  182 (0x00b6) */
+    "You have been declared the winner of this game. You may continue to play though, if you wish to really rub everyone's nose in your grand victory.",
+    /*  183 (0x00b7) */
+    "You, along with \\Z have been declared the winners of this game. You may continue to play though, if you wish to attempt to improve your standing among "
+    "your fellow dictators.",
     /*  184 (0x00b8) */ "You are dead. All your planets have been overrun and your spaceships defeated.",
     /*  185 (0x00b9) */ "The order to build a scanner at \\p was canceled as you already have a scanner there.",
-    /*  186 (0x00ba) */ "Your starbase at \\p built \\i new ship(s) of type \\z but they were lost in an administrative goof. Your bureaucrats can only keep an eye on 512 fleets at a time.",
+    /*  186 (0x00ba) */
+    "Your starbase at \\p built \\i new ship(s) of type \\z but they were lost in an administrative goof. Your bureaucrats can only keep an eye on 512 fleets "
+    "at a time.",
     /*  187 (0x00bb) */ "All traces of \\L have been eliminated from the galaxy, may they rest in peace.",
     /*  188 (0x00bc) */ "All traces of every other rival have been eliminated from the galaxy. You alone are left to rule the universe!",
     /*  189 (0x00bd) */ "\\s has accomplished all the remote terraforming you are currently capable of performing at \\p.",
@@ -1617,24 +1779,35 @@ const char *const aMSGUncompressed[] = {
     /*  199 (0x00c7) */ "\\s has been stopped in a \\L \\M mine field at \\n. Your fleet has taken \\i damage points and \\i of your ships were destroyed.",
     /*  200 (0x00c8) */ "\\X\\F has been annihilated in a \\L \\M mine field at \\n.",
     /*  201 (0x00c9) */ "\\s has been stopped in your \\M mine field at \\n.",
-    /*  202 (0x00ca) */ "\\s has been stopped in your \\M mine field at \\n. Your mines have inflicted \\i damage points, but you didn't manage to destroy any ships.",
-    /*  203 (0x00cb) */ "\\s has been stopped in your \\M mine field at \\n. Your mines have inflicted \\i damage points and you have destroyed \\i of the ships.",
+    /*  202 (0x00ca) */
+    "\\s has been stopped in your \\M mine field at \\n. Your mines have inflicted \\i damage points, but you didn't manage to destroy any ships.",
+    /*  203 (0x00cb) */
+    "\\s has been stopped in your \\M mine field at \\n. Your mines have inflicted \\i damage points and you have destroyed \\i of the ships.",
     /*  204 (0x00cc) */ "\\X\\s has been annihilated in your \\M mine field at \\n.",
     /*  205 (0x00cd) */ "\\p has built a new \\z.",
     /*  206 (0x00ce) */ "\\p has built a new \\z. Ships up to \\ikT in total hull weight can now be built at this facility.",
     /*  207 (0x00cf) */ "\\p has built a new \\z. Ships of any size can now be built here.",
-    /*  208 (0x00d0) */ "Your recent breakthrough in \\j has also given you the \\k hull. To design starbases with this hull, go to the Ship Design dialog, select Starbases, Available Hull Types, and press Copy Selected Design.",
+    /*  208 (0x00d0) */
+    "Your recent breakthrough in \\j has also given you the \\k hull. To design starbases with this hull, go to the Ship Design dialog, select Starbases, "
+    "Available Hull Types, and press Copy Selected Design.",
     /*  209 (0x00d1) */ "The mineral packet formed at \\p has disintegrated because the planet does not have a mass accelerator.",
-    /*  210 (0x00d2) */ "The mineral packet formed at \\p has disintegrated because you didn't target the mass accelerator. Click on the Set Dest button in the Starbase tile to target the accelerator.",
+    /*  210 (0x00d2) */
+    "The mineral packet formed at \\p has disintegrated because you didn't target the mass accelerator. Click on the Set Dest button in the Starbase tile to "
+    "target the accelerator.",
     /*  211 (0x00d3) */ "\\p has produced a mineral packet which has a destination of \\p.",
     /*  212 (0x00d4) */ "\\p has produced a mineral packet which has been combined with another packet heading for \\p.",
     /*  213 (0x00d5) */ "Your mass accelerator at \\p has successfully captured a packet\\S containing \\vkT of minerals.",
-    /*  214 (0x00d6) */ "Your mass accelerator at \\p was partially successfully in capturing a \\vkT mineral packet\\S. Unable to completely slow the packet, \\i00 of your colonists were killed in the collision.",
-    /*  215 (0x00d7) */ "Your mass accelerator at \\p was partially successfully in capturing a \\vkT mineral packet\\S. Unfortunately, \\i00 of your colonists and \\i of your defenses were destroyed in the collision.",
+    /*  214 (0x00d6) */
+    "Your mass accelerator at \\p was partially successfully in capturing a \\vkT mineral packet\\S. Unable to completely slow the packet, \\i00 of your "
+    "colonists were killed in the collision.",
+    /*  215 (0x00d7) */
+    "Your mass accelerator at \\p was partially successfully in capturing a \\vkT mineral packet\\S. Unfortunately, \\i00 of your colonists and \\i of your "
+    "defenses were destroyed in the collision.",
     /*  216 (0x00d8) */ "\\p was bombarded with a \\vkT mineral packet\\S. \\i00 of your colonists were killed by the collision.",
     /*  217 (0x00d9) */ "\\p was bombarded with a \\vkT mineral packet\\S. \\i00 of your colonists and \\i of your defenses were destroyed by the collision.",
     /*  218 (0x00da) */ "\\p was annihilated by a mineral packet\\S.  All of your colonists were killed.",
-    /*  219 (0x00db) */ "\\s didn't get all the \\m it attempted to transfer from the mineral packet as another player stole it first. Only \\ikT of \\m was actually acquired.",
+    /*  219 (0x00db) */
+    "\\s didn't get all the \\m it attempted to transfer from the mineral packet as another player stole it first. Only \\ikT of \\m was actually acquired.",
     /*  220 (0x00dc) */ "\\s didn't get any of the \\m it attempted to transfer from the mineral packet as another player stole it first.",
     /*  221 (0x00dd) */ "\\o was unable to transfer \\ikT of \\m out of the \\ikT request.",
     /*  222 (0x00de) */ "\\s attempted to use a stargate at \\n, but no stargate exists there.",
@@ -1644,13 +1817,21 @@ const char *const aMSGUncompressed[] = {
     /*  226 (0x00e2) */ "\\s attempted to use the stargate at \\p to reach \\n but could not because no stargate could be detected at the destination.",
     /*  227 (0x00e3) */ "\\s attempted to use the stargate at \\p to reach \\p but could not because the destination is out of range.",
     /*  228 (0x00e4) */ "\\s attempted to use the stargate at \\p to reach \\p but could not because ships of type \\z are too massive.",
-    /*  229 (0x00e5) */ "\\s attempted to use the stargate at \\p to reach \\p but could not because the starbase at \\p blocked it. The planet at each end must be owned by you or a friend of yours.",
+    /*  229 (0x00e5) */
+    "\\s attempted to use the stargate at \\p to reach \\p but could not because the starbase at \\p blocked it. The planet at each end must be owned by you "
+    "or a friend of yours.",
     /*  230 (0x00e6) */ "\\s attempted to use the stargate at \\p but could not because the starbase at \\p is not owned by you or a friend of yours.",
-    /*  231 (0x00e7) */ "Heedless to the danger, \\s attempted to use the stargate at \\p to reach \\p.  The fleet never arrived. The distance or mass must have been too great.",
-    /*  232 (0x00e8) */ "\\s used the stargate at \\p to reach \\p losing only \\i ships to the treacherous void.  They were fortunate.  They exceeded the capability of the gates.",
-    /*  233 (0x00e9) */ "\\s used the stargate at \\p to reach \\p losing \\i ships to the unforgiving void. Exceeding the capability of your stargates is not recommended.",
-    /*  234 (0x00ea) */ "\\s used the stargate at \\p to reach \\p unfortunately losing \\i ships to the great unknown. Exceeding the capability of your stargates is dangerous.",
-    /*  235 (0x00eb) */ "\\s used the stargate at \\p to reach \\p losing an unbelievable \\v ships. The jump was far in excess of the capabilities of starbases involved.",
+    /*  231 (0x00e7) */
+    "Heedless to the danger, \\s attempted to use the stargate at \\p to reach \\p.  The fleet never arrived. The distance or mass must have been too great.",
+    /*  232 (0x00e8) */
+    "\\s used the stargate at \\p to reach \\p losing only \\i ships to the treacherous void.  They were fortunate.  They exceeded the capability of the "
+    "gates.",
+    /*  233 (0x00e9) */
+    "\\s used the stargate at \\p to reach \\p losing \\i ships to the unforgiving void. Exceeding the capability of your stargates is not recommended.",
+    /*  234 (0x00ea) */
+    "\\s used the stargate at \\p to reach \\p unfortunately losing \\i ships to the great unknown. Exceeding the capability of your stargates is dangerous.",
+    /*  235 (0x00eb) */
+    "\\s used the stargate at \\p to reach \\p losing an unbelievable \\v ships. The jump was far in excess of the capabilities of starbases involved.",
     /*  236 (0x00ec) */ "\\s has unloaded \\vkT of minerals to \\p in preparation for jumping through the stargate.",
     /*  237 (0x00ed) */ "\\s has unloaded \\v00 colonists to \\p in preparation for jumping through the stargate.",
     /*  238 (0x00ee) */ "\\s has unloaded \\v00 colonists and \\vkT of minerals to \\p in preparation for jumping through the stargate.",
@@ -1668,25 +1849,46 @@ const char *const aMSGUncompressed[] = {
     /*  250 (0x00fa) */ "\\s reports a battle took place at \\n. Your forces were not involved.",
     /*  251 (0x00fb) */ "Your colonists in \\s have made good use of their time increasing their on-board number by \\i00 colonists.",
     /*  252 (0x00fc) */ "\\p does not have enough minerals available to fling any packets this year.",
-    /*  253 (0x00fd) */ "Fundamental changes in the environment of \\p have permanently altered the planet's \\e. This change has canceled all planetary production.",
+    /*  253 (0x00fd) */
+    "Fundamental changes in the environment of \\p have permanently altered the planet's \\e. This change has canceled all planetary production.",
     /*  254 (0x00fe) */ "Your surveyors on \\p have discovered a previously unknown deposit of \\m, significantly increasing the planet's concentration.",
     /*  255 (0x00ff) */ "Your patrolling \\s has targeted \\s for intercept.",
-    /*  256 (0x0100) */ "Your population suspects you are a usurper. Their productivity is off 20% and their growth rate was halved last year. Press 'Goto' to validate your copy of Stars!",
-    /*  257 (0x0101) */ "Your colonists suspect that you are in fact the \\l emperor. Their productivity is off 20% and their growth rate was halved last year. Press 'Goto' to enter your UNIQUE Stars! serial number.",
-    /*  258 (0x0102) */ "\\s has refused to move, doubting your authority to rule. Press the 'Goto' button to enter your UNIQUE Stars! serial number and assert your authority.",
-    /*  259 (0x0103) */ "Your fleet captains have staged a strike and demand free elections. None of your fleets moved this year. Press 'Goto' to enter your UNIQUE Stars! serial number.",
-    /*  260 (0x0104) */ "\\s has defected from your ranks due to your inability to project legitimate power. Press the 'Goto' button to enter your UNIQUE Stars! serial number.",
-    /*  261 (0x0105) */ "The crew of \\s has sold off \\i% of their cargo on the black market to pad their salaries. Press the 'Goto' button to crack down on this illegal activity.",
+    /*  256 (0x0100) */
+    "Your population suspects you are a usurper. Their productivity is off 20% and their growth rate was halved last year. Press 'Goto' to validate your copy "
+    "of Stars!",
+    /*  257 (0x0101) */
+    "Your colonists suspect that you are in fact the \\l emperor. Their productivity is off 20% and their growth rate was halved last year. Press 'Goto' to "
+    "enter your UNIQUE Stars! serial number.",
+    /*  258 (0x0102) */
+    "\\s has refused to move, doubting your authority to rule. Press the 'Goto' button to enter your UNIQUE Stars! serial number and assert your authority.",
+    /*  259 (0x0103) */
+    "Your fleet captains have staged a strike and demand free elections. None of your fleets moved this year. Press 'Goto' to enter your UNIQUE Stars! serial "
+    "number.",
+    /*  260 (0x0104) */
+    "\\s has defected from your ranks due to your inability to project legitimate power. Press the 'Goto' button to enter your UNIQUE Stars! serial number.",
+    /*  261 (0x0105) */
+    "The crew of \\s has sold off \\i% of their cargo on the black market to pad their salaries. Press the 'Goto' button to crack down on this illegal "
+    "activity.",
     /*  262 (0x0106) */ "Freedom fighters on \\p have attacked and destroyed \\i of your mines. Press the 'Goto' button to restore law and order.",
     /*  263 (0x0107) */ "Freedom fighters on \\p have stolen \\ikT of \\m from your stockpiles. Press the 'Goto' button to restore law and order.",
-    /*  264 (0x0108) */ "The Mystery Trader has refused to give the captain of \\s an audience. It may be due to an insufficient quantity of minerals carried by your fleet.",
-    /*  265 (0x0109) */ "\\F has been absorbed by the Mystery Trader. The trader has given you \\i technology advances. The trader suggests that you visit other traders as they may carry different items of interest.",
+    /*  264 (0x0108) */
+    "The Mystery Trader has refused to give the captain of \\s an audience. It may be due to an insufficient quantity of minerals carried by your fleet.",
+    /*  265 (0x0109) */
+    "\\F has been absorbed by the Mystery Trader. The trader has given you \\i technology advances. The trader suggests that you visit other traders as they "
+    "may carry different items of interest.",
     /*  266 (0x010a) */ "\\F has been absorbed by the Mystery Trader. In return, the trader has given you \\i technology advances.",
-    /*  267 (0x010b) */ "\\F has been absorbed by the Mystery Trader. You have been given the plans for a unique part to place on your ships. The trader suggests you visit other traders.",
-    /*  268 (0x010c) */ "\\F has been absorbed by the Mystery Trader. In return, you have been given the plans for a new ship hull. The trader suggests you visit other traders.",
+    /*  267 (0x010b) */
+    "\\F has been absorbed by the Mystery Trader. You have been given the plans for a unique part to place on your ships. The trader suggests you visit other "
+    "traders.",
+    /*  268 (0x010c) */
+    "\\F has been absorbed by the Mystery Trader. In return, you have been given the plans for a new ship hull. The trader suggests you visit other traders.",
     /*  269 (0x010d) */ "\\F has been absorbed by the Mystery Trader. However, the trader was unable to teach you anything new.",
-    /*  270 (0x010e) */ "\\F has been absorbed by the Mystery Trader. However, the trader was unable to teach you anything new. The trader says that you might have better luck with a different trader.",
-    /*  271 (0x010f) */ "\\F has been absorbed by the Mystery Trader. In return, you have been given the plans for a powerful planetary device. The trader suggests you visit other traders.",
+    /*  270 (0x010e) */
+    "\\F has been absorbed by the Mystery Trader. However, the trader was unable to teach you anything new. The trader says that you might have better luck "
+    "with a different trader.",
+    /*  271 (0x010f) */
+    "\\F has been absorbed by the Mystery Trader. In return, you have been given the plans for a powerful planetary device. The trader suggests you visit "
+    "other traders.",
     /*  272 (0x0110) */ "The Mystery Trader \\s was heading for has vanished. Orders have been changed to go to the last known location of the Trader.",
     /*  273 (0x0111) */ "The Mine Field \\s was heading for has vanished. Orders have been changed to go to the last known location of the field.",
     /*  274 (0x0112) */ "\\p does not have enough minerals available to continue its auto build orders.",
@@ -1704,15 +1906,22 @@ const char *const aMSGUncompressed[] = {
     /*  286 (0x011e) */ "\\s had orders to transfer cargo to or from a \\G. A futile pursuit.",
     /*  287 (0x011f) */ "\\s attempted to load \\m from a planet you don't control. Order has been canceled.",
     /*  288 (0x0120) */ "\\s attempted to load \\m from a fleet you don't control. Order has been canceled.",
-    /*  289 (0x0121) */ "\\s attempted to set it's amount of \\m on board to \\U. Unfortunately \\n couldn't provide enough. Fleet will wait until able to fulfill the order.",
-    /*  290 (0x0122) */ "\\s attempted to set it's number of \\m on board to \\U. Unfortunately \\n couldn't provide enough people. Fleet will wait until able to fulfill the order.",
+    /*  289 (0x0121) */
+    "\\s attempted to set it's amount of \\m on board to \\U. Unfortunately \\n couldn't provide enough. Fleet will wait until able to fulfill the order.",
+    /*  290 (0x0122) */
+    "\\s attempted to set it's number of \\m on board to \\U. Unfortunately \\n couldn't provide enough people. Fleet will wait until able to fulfill the "
+    "order.",
     /*  291 (0x0123) */ "\\s attempted to load \\m or from deep space. The attempt was unsuccessful.",
     /*  292 (0x0124) */ "\\s attempted to shanghai \\v00 colonists from \\n. The attempt was unsuccessful.",
     /*  293 (0x0125) */ "\\s attempted to steal \\vmg of fuel from \\n. The attempt was unsuccessful.",
     /*  294 (0x0126) */ "\\s failed to load fuel from \\n.",
     /*  295 (0x0127) */ "\\s is at \\p and has been rerouted to \\p.",
-    /*  296 (0x0128) */ "\\s is at \\p and has been rerouted to \\p. Unfortuently it does not have enough fuel on board to make the journey so the fleet will wait for further instructions.",
-    /*  297 (0x0129) */ "\\p has orders to build a mineral packet, but either doesn't have a mass accelerator, or hasn't targeted the accelerator. The order to build has been canceled.",
+    /*  296 (0x0128) */
+    "\\s is at \\p and has been rerouted to \\p. Unfortuently it does not have enough fuel on board to make the journey so the fleet will wait for further "
+    "instructions.",
+    /*  297 (0x0129) */
+    "\\p has orders to build a mineral packet, but either doesn't have a mass accelerator, or hasn't targeted the accelerator. The order to build has been "
+    "canceled.",
     /*  298 (0x012a) */ "\\p has orders to build planetary installations beyond the maximum allowed. The orders have been reduced to the maximum allowable.",
     /*  299 (0x012b) */ "\\XA mysterious trading vessel broadcasting a proposal has been detected entering known space.",
     /*  300 (0x012c) */ "\\s has improved \\p from a value of \\i% to \\i%.",
@@ -1724,24 +1933,37 @@ const char *const aMSGUncompressed[] = {
     /*  306 (0x0132) */ "A mineral packet has permanently \\I the default \\e on \\p by \\i%.",
     /*  307 (0x0133) */ "Your mineral packet has \\I the \\e on \\p to \\E.",
     /*  308 (0x0134) */ "A mineral packet has \\I the \\e on \\p to \\E.",
-    /*  309 (0x0135) */ "\\s has tried to beam colonists down to \\p, but the planet's starbase would kill them all before they land. The bridge crew rescinds the order.",
+    /*  309 (0x0135) */
+    "\\s has tried to beam colonists down to \\p, but the planet's starbase would kill them all before they land. The bridge crew rescinds the order.",
     /*  310 (0x0136) */ "Your scientists have completed research into Tech Level \\i for \\j. Their primary research focus for next year is the \\j field.",
     /*  311 (0x0137) */ "\\s has executed orders to follow a fleet and awaits further direction.",
     /*  312 (0x0138) */ "\\s had orders to follow a fleet which didn't move. The crew awaits further orders.",
-    /*  313 (0x0139) */ "Your starbase at \\p built \\i new \\z(s) but due to a lack of 27B/6 Fleet ID Requisition forms they have been merged with \\s which fortunately happend to be nearby.",
+    /*  313 (0x0139) */
+    "Your starbase at \\p built \\i new \\z(s) but due to a lack of 27B/6 Fleet ID Requisition forms they have been merged with \\s which fortunately happend "
+    "to be nearby.",
     /*  314 (0x013a) */ "Examination of wreckage from the battle at \\n uncovered plans for a new part to place on your ships.",
     /*  315 (0x013b) */ "Examination of wreckage from the battle at \\n uncovered plans for a new ship hull.",
     /*  316 (0x013c) */ "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. In the process you have discovered a new technology.",
     /*  317 (0x013d) */ "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. In the process you have gained a research level in \\j.",
-    /*  318 (0x013e) */ "\\s has been dismantled for \\vkT of minerals which have deposited on \\p. It has also made \\v resources available for immediate use. In the process you have discovered a new technology.",
-    /*  319 (0x013f) */ "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. It has also made \\v resources available for immediate use. In the process you have gained a level in \\j.",
+    /*  318 (0x013e) */
+    "\\s has been dismantled for \\vkT of minerals which have deposited on \\p. It has also made \\v resources available for immediate use. In the process you "
+    "have discovered a new technology.",
+    /*  319 (0x013f) */
+    "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. It has also made \\v resources available for immediate use. In the process "
+    "you have gained a level in \\j.",
     /*  320 (0x0140) */ "\\s has been dismantled for \\vkT of minerals which have deposited on \\p.",
     /*  321 (0x0141) */ "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p.",
-    /*  322 (0x0142) */ "\\s has been dismantled for \\vkT of minerals which have deposited on \\p. Ultimate recycling has also made \\v resources available for immediate use (less if other ships were scrapped here this year).",
-    /*  323 (0x0143) */ "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. Ultimate recycling has also made \\v resources available for immediate use (less if other ships were scrapped here this year).",
+    /*  322 (0x0142) */
+    "\\s has been dismantled for \\vkT of minerals which have deposited on \\p. Ultimate recycling has also made \\v resources available for immediate use "
+    "(less if other ships were scrapped here this year).",
+    /*  323 (0x0143) */
+    "\\s has been dismantled for \\vkT of minerals at the starbase orbiting \\p. Ultimate recycling has also made \\v resources available for immediate use "
+    "(less if other ships were scrapped here this year).",
     /*  324 (0x0144) */ "A battle took place at \\n. You destroyed \\z killing \\v00 of their colonists in the bargain.",
-    /*  325 (0x0145) */ "Your recent breakthrough in \\j has also taught you how to build \\k defenses. All existing planetary defenses have been upgraded to the new technology.",
-    /*  326 (0x0146) */ "\\p was bombarded with a packet\\S containing \\vkT of minerals. However, the packet didn't damage any of your installations or kill any colonists.",
+    /*  325 (0x0145) */
+    "Your recent breakthrough in \\j has also taught you how to build \\k defenses. All existing planetary defenses have been upgraded to the new technology.",
+    /*  326 (0x0146) */
+    "\\p was bombarded with a packet\\S containing \\vkT of minerals. However, the packet didn't damage any of your installations or kill any colonists.",
     /*  327 (0x0147) */ "\\s attempted to reach \\n via stargate, but could not because no stargate could be detected at the destination.",
     /*  328 (0x0148) */ "You couldn't give \\s away because that player is dead.",
     /*  329 (0x0149) */ "You couldn't give \\s away because there were some of your colonists on board.",
@@ -1751,14 +1973,18 @@ const char *const aMSGUncompressed[] = {
     /*  333 (0x014d) */ "\\F has successfully been given to \\l.",
     /*  334 (0x014e) */ "\\L have given you \\F.",
     /*  335 (0x014f) */ "\\F has been absorbed by the Mystery Trader. In return, you have been given \\i of the Trader's auxillary ships for your own use.",
-    /*  336 (0x0150) */ "\\F has been absorbed by the Mystery Trader. In return, the trader tried to give you a ship, but you were unable to store the design records necessary for upkeep.",
+    /*  336 (0x0150) */
+    "\\F has been absorbed by the Mystery Trader. In return, the trader tried to give you a ship, but you were unable to store the design records necessary "
+    "for upkeep.",
     /*  337 (0x0151) */ "\\XA mass packet appears to be on a collision course with \\p, which currently is unable to safely catch the packet.",
     /*  338 (0x0152) */ "Your starbase at \\p is scheduled to complete all remaining production items this year.",
     /*  339 (0x0153) */ "You have received one battle recording this year.",
     /*  340 (0x0154) */ "You have received \\i battle recordings this year.",
     /*  341 (0x0155) */ "\\s is not allowed to transfer colonists to another player.",
     /*  342 (0x0156) */ "\\p has been auto terraformed to a value of \\i%.",
-    /*  343 (0x0157) */ "Your recent breakthrough in \\j has also taught you how to build the \\k scanner. All existing planetary scanners have been upgraded to the new technology.",
+    /*  343 (0x0157) */
+    "Your recent breakthrough in \\j has also taught you how to build the \\k scanner. All existing planetary scanners have been upgraded to the new "
+    "technology.",
     /*  344 (0x0158) */ "Breeding activities on \\s have overflowed living space.  \\v00 colonists have been beamed down to \\p.",
     /*  345 (0x0159) */ "Your intelligence gathering activities combined with synergistic science have aided your research efforts in \\j by \\i resources.",
     /*  346 (0x015a) */ "\\s has degraded \\p from a value of \\i% to \\i%.",
@@ -1767,11 +1993,15 @@ const char *const aMSGUncompressed[] = {
     /*  349 (0x015d) */ "You have info on a new planet. If you colonize \\p, you can make its value \\i%.",
     /*  350 (0x015e) */ "\\s was unable to use the stargate at \\p because you had colonists on board and do not control the planet.",
     /*  351 (0x015f) */ "\\F has been annihilated in a \\L \\M mine field at \\n.",
-    /*  352 (0x0160) */ "\\s has been damaged by a detonating \\L \\M mine field at \\n. Your fleet has taken \\i damage points but none of your ships were destroyed.",
-    /*  353 (0x0161) */ "\\s has taken damage from a detonating \\L \\M mine field at \\n. Your fleet has taken \\i damage points and \\i of your ships were destroyed.",
+    /*  352 (0x0160) */
+    "\\s has been damaged by a detonating \\L \\M mine field at \\n. Your fleet has taken \\i damage points but none of your ships were destroyed.",
+    /*  353 (0x0161) */
+    "\\s has taken damage from a detonating \\L \\M mine field at \\n. Your fleet has taken \\i damage points and \\i of your ships were destroyed.",
     /*  354 (0x0162) */ "\\F has been annihilated in your \\M mine field at \\n.",
-    /*  355 (0x0163) */ "\\s has been damaged by your detonating \\M mine field at \\n. Your mines have inflicted \\i damage points, but you didn't manage to destroy any ships.",
-    /*  356 (0x0164) */ "\\s has been damaged by your detonating \\M mine field at \\n. Your mines have inflicted \\i damage points and you have destroyed \\i of the ships.",
+    /*  355 (0x0163) */
+    "\\s has been damaged by your detonating \\M mine field at \\n. Your mines have inflicted \\i damage points, but you didn't manage to destroy any ships.",
+    /*  356 (0x0164) */
+    "\\s has been damaged by your detonating \\M mine field at \\n. Your mines have inflicted \\i damage points and you have destroyed \\i of the ships.",
     /*  357 (0x0165) */ "\\s has tried to beam colonists to deep space. This order has been canceled.",
     /*  358 (0x0166) */ "Your fleets\\X have bombed \\p, killing \\i00 colonists.",
     /*  359 (0x0167) */ "Your fleets\\X have bombed \\p, destroying one installation.",
@@ -1781,8 +2011,10 @@ const char *const aMSGUncompressed[] = {
     /*  363 (0x016b) */ "Your fleets\\X have bombed \\p, killing \\i00 colonists. Planetary defenses stopped \\P of your bombs.",
     /*  364 (0x016c) */ "Your fleets\\X have bombed \\p, destroying one\\X installation. Planetary defenses stopped \\P of your bombs.",
     /*  365 (0x016d) */ "Your fleets\\X have bombed \\p, destroying \\i factories and mines. Planetary defenses stopped \\P of your bombs.",
-    /*  366 (0x016e) */ "Your fleets\\X have bombed \\p, killing \\i00 colonists, and destroying one\\X installation.  Planetary defenses stopped \\P of your bombs.",
-    /*  367 (0x016f) */ "Your fleets\\X have bombed \\p, killing \\i00 colonists, and destroying \\i defenses, factories and mines. Planetary defenses stopped \\P of your bombs.",
+    /*  366 (0x016e) */
+    "Your fleets\\X have bombed \\p, killing \\i00 colonists, and destroying one\\X installation.  Planetary defenses stopped \\P of your bombs.",
+    /*  367 (0x016f) */
+    "Your fleets\\X have bombed \\p, killing \\i00 colonists, and destroying \\i defenses, factories and mines. Planetary defenses stopped \\P of your bombs.",
     /*  368 (0x0170) */ "\\O fleets have bombed \\p, killing \\i00 of your colonists.",
     /*  369 (0x0171) */ "\\O fleets have bombed \\p, destroying one\\X of your installations.",
     /*  370 (0x0172) */ "\\O fleets have bombed \\p, destroying \\i of your defenses, factories and mines.",
@@ -1790,16 +2022,23 @@ const char *const aMSGUncompressed[] = {
     /*  372 (0x0174) */ "\\O fleets have bombed \\p, killing \\i00 of your colonists, and destroying \\i of your defenses, factories and mines.",
     /*  373 (0x0175) */ "\\O fleets have bombed \\p, killing \\i00 of your colonists. Planetary defenses destroyed \\P of the incoming bombs.",
     /*  374 (0x0176) */ "\\O fleets have bombed \\p, destroying one\\X of your installations. Planetary defenses destroyed \\P of the incoming bombs.",
-    /*  375 (0x0177) */ "\\O fleets have bombed \\p, destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of the incoming bombs.",
-    /*  376 (0x0178) */ "\\O fleets have bombed \\p, killing \\i00 of your colonists, and destroying one\\X of your installations. Planetary defenses destroyed \\P of the incoming bombs.",
-    /*  377 (0x0179) */ "\\O fleets have bombed \\p, killing \\i00 of your colonists, and destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of the incoming bombs.",
+    /*  375 (0x0177) */
+    "\\O fleets have bombed \\p, destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P of the incoming bombs.",
+    /*  376 (0x0178) */
+    "\\O fleets have bombed \\p, killing \\i00 of your colonists, and destroying one\\X of your installations. Planetary defenses destroyed \\P of the "
+    "incoming bombs.",
+    /*  377 (0x0179) */
+    "\\O fleets have bombed \\p, killing \\i00 of your colonists, and destroying \\i of your defenses, factories and mines. Planetary defenses destroyed \\P "
+    "of the incoming bombs.",
     /*  378 (0x017a) */ "Your fleets\\X have retro-bombed \\p, undoing \\i% of its terraforming.",
     /*  379 (0x017b) */ "\\O fleets have retro-bombed \\p, undoing \\i% of its terraforming.",
     /*  380 (0x017c) */ "Your fleets\\X have bombed \\p, killing off all the enemy colonists.",
     /*  381 (0x017d) */ "\\O fleets have bombed \\p, killing all of your colonists.",
     /*  382 (0x017e) */ "\\s failed to lay mines this year due to technical difficulties.",
     /*  383 (0x017f) */ "\\p failed to fling a mineral packet due to technical difficulties.",
-    /*  384 (0x0180) */ "Due to excessive fleet maneuvering in the battle area, some of your fleets could not participate in the battle at \\n and will be unable to fulfill their assigned tasks this year.",
+    /*  384 (0x0180) */
+    "Due to excessive fleet maneuvering in the battle area, some of your fleets could not participate in the battle at \\n and will be unable to fulfill their "
+    "assigned tasks this year.",
     /*  385 (0x0181) */ "\\p was bombarded with a \\vkT mineral packet\\S. Fortunately, no one was home at the time.",
     /*  386 (0x0182) */ "Hacked race discovered. \\L race statistics have been altered to bring them into compliance with the cosmic code.",
 };
@@ -1911,7 +2150,9 @@ const char *const aTUTUncompressed[] = {
     /*  104 (0x0068) */ "Read your next two messages and Goto 90210.",
     /*  105 (0x0069) */ " The production queue here is empty and we ought to do something about it.",
     /*  106 (0x006a) */ " Hit the q key.",
-    /*  107 (0x006b) */ "Double click on Factory 3 times and then on Mine 3 times so the queue shows 3 factories followed by 3 mines. Check the 'Contribute only leftover...' box and hit OK.",
+    /*  107 (0x006b) */
+    "Double click on Factory 3 times and then on Mine 3 times so the queue shows 3 factories followed by 3 mines. Check the 'Contribute only leftover...' box "
+    "and hit OK.",
     /*  108 (0x006c) */ "It will take 10 years to build the 3 factories and an additional couple of years to build the mines. 90210 needs more people.",
     /*  109 (0x006d) */ " Right click on Stove Top and select Teamster #4.",
     /*  110 (0x006e) */ "Click on the Xfer button in the Command pane,",
@@ -1920,7 +2161,8 @@ const char *const aTUTUncompressed[] = {
     /*  113 (0x0071) */ " change the waypoint task to Transport.",
     /*  114 (0x0072) */ " Then right click on the blue diamond in the Waypoint Task tile and select QuikDrop to empty the freighter's hold at 90210.",
     /*  115 (0x0073) */ "Read your next message and Goto Hiho.",
-    /*  116 (0x0074) */ " Notice that Armed Probe #1, which is the blue triangle just to the right of Hiho, hasn't reached Hiho yet but we already see Hiho's stats.",
+    /*  116 (0x0074) */
+    " Notice that Armed Probe #1, which is the blue triangle just to the right of Hiho, hasn't reached Hiho yet but we already see Hiho's stats.",
     /*  117 (0x0075) */ "The dark yellow circle surrounding Armed Probe #1 shows the range at which it can detect planetary values.",
     /*  118 (0x0076) */ " Double click on Armed Probe #1.",
     /*  119 (0x0077) */ " ",
@@ -1993,12 +2235,17 @@ const char *const aTUTUncompressed[] = {
     /*  186 (0x00ba) */ " Filter them out by clicking the blue check mark in the Messages pane",
     /*  187 (0x00bb) */ " then go on to your next message.",
     /*  188 (0x00bc) */ "Goto 90210 and open the production queue.",
-    /*  189 (0x00bd) */ " Shift-double click on 'Factories (Auto Build)' and then on 'Mines (Auto Build)' in the left hand listbox queueing 10 of each, then hit OK.",
+    /*  189 (0x00bd) */
+    " Shift-double click on 'Factories (Auto Build)' and then on 'Mines (Auto Build)' in the left hand listbox queueing 10 of each, then hit OK.",
     /*  190 (0x00be) */ "Read the rest of your messages.",
     /*  191 (0x00bf) */ " ",
     /*  192 (0x00c0) */ "Click on the red triangle between Slime and No Vacancy.",
-    /*  193 (0x00c1) */ " This is an enemy scout ship. Right clicking on the fleet image in the Summary pane will show us what we know about its design. We can't tell at this time whether",
-    /*  194 (0x00c2) */ " or not it's armed. According to the projected path in the scanner it is headed for No Vacancy and the tick marks show that it will arrive there in two years.",
+    /*  193 (0x00c1) */
+    " This is an enemy scout ship. Right clicking on the fleet image in the Summary pane will show us what we know about its design. We can't tell at this "
+    "time whether",
+    /*  194 (0x00c2) */
+    " or not it's armed. According to the projected path in the scanner it is headed for No Vacancy and the tick marks show that it will arrive there in two "
+    "years.",
     /*  195 (0x00c3) */ "Armed Probe #1 won't be able to catch it. We need more attack craft.",
     /*  196 (0x00c4) */ " Add two Armed Probes to Stove Top's queue.",
     /*  197 (0x00c5) */ "That's all for this year.",
@@ -2150,7 +2397,8 @@ const char *const aTUTUncompressed[] = {
     /*  343 (0x0157) */ " ",
     /*  344 (0x0158) */ "Click on each of the items in the Production tile. That Mini-Miner will only take 4 years to build now.",
     /*  345 (0x0159) */ "Read your final message.",
-    /*  346 (0x015a) */ " We're low enough on minerals at this point that designing additional ships just isn't that interesting. We'll look at your new Privateer hull later.",
+    /*  346 (0x015a) */
+    " We're low enough on minerals at this point that designing additional ships just isn't that interesting. We'll look at your new Privateer hull later.",
     /*  347 (0x015b) */ "We left Armed Probe #9 hanging out near Prune. It looks like that salvage dissipated, oh well.",
     /*  348 (0x015c) */ " Send Armed Probe #9 back to Stove Top.",
     /*  349 (0x015d) */ "That's enough for this year.",
@@ -2160,7 +2408,8 @@ const char *const aTUTUncompressed[] = {
     /*  353 (0x0161) */ " Other than needing some more people it's doing just fine.",
     /*  354 (0x0162) */ "Read your final message and Goto Oxygen.",
     /*  355 (0x0163) */ " This planet is slightly out of your habitable range. We should add terraforming to the default production template.",
-    /*  356 (0x0164) */ "Add 'Min Terraform Up To 2%' to Oxygen's queue, right click on the blue diamond and select <Customize> and Import then OK both dialogs.",
+    /*  356 (0x0164) */
+    "Add 'Min Terraform Up To 2%' to Oxygen's queue, right click on the blue diamond and select <Customize> and Import then OK both dialogs.",
     /*  357 (0x0165) */ "That's all for this year. Automation makes some years fly by faster than others.",
     /*  358 (0x0166) */ "Generate when ready.",
     /*  359 (0x0167) */ " ",
@@ -2242,10 +2491,12 @@ const char *const aTUTUncompressed[] = {
     /*  435 (0x01b3) */ "Find the Min Conc column, right click and Reverse Sort by Mineral Concentration - Weighted Average.",
     /*  436 (0x01b4) */ " Oxygen, Sea Squared, Red Storm and Wallaby all have excellent mineral concentrations but",
     /*  437 (0x01b5) */ " Wallaby has the highest population and is closest to the Berserker's planets.",
-    /*  438 (0x01b6) */ " Unfortunately Wallaby still has a negative growth rate. Let's keep the colonists flowing there for a while before adding a Gater to the queue.",
+    /*  438 (0x01b6) */
+    " Unfortunately Wallaby still has a negative growth rate. Let's keep the colonists flowing there for a while before adding a Gater to the queue.",
     /*  439 (0x01b7) */ "Generate when ready.",
     /*  440 (0x01b8) */ "Read your first message and Goto Teamster #4.",
-    /*  441 (0x01b9) */ " It seems that the Mini Miner we added at Prune has increased our load per trip beyond the freighter's capacity on a full tank of fuel.",
+    /*  441 (0x01b9) */
+    " It seems that the Mini Miner we added at Prune has increased our load per trip beyond the freighter's capacity on a full tank of fuel.",
     /*  442 (0x01ba) */ "We could decrease the speed of each leg of Teamster #4's route or transfer some fuel from Cotton Picker #6.",
     /*  443 (0x01bb) */ "As the remote miners are now producing more",
     /*  444 (0x01bc) */ " minerals than we can carry each trip we should just build another freighter to merge with Teamster #4.",
@@ -2405,11 +2656,13 @@ const char *const aTUTUncompressed[] = {
     /*  598 (0x0256) */ "Generate at will.",
     /*  599 (0x0257) */ " ",
     /*  600 (0x0258) */ "Read your first 3 messages and Goto Destroyer #13.",
-    /*  601 (0x0259) */ " Notice that your 9 Destroyers are shown with a red bar about half way across their text in the Fleet Composition tile. This means the ships are damaged.",
+    /*  601 (0x0259) */
+    " Notice that your 9 Destroyers are shown with a red bar about half way across their text in the Fleet Composition tile. This means the ships are damaged.",
     /*  602 (0x025a) */ " Click on the Destroyer in the Fleet Composition tile.",
     /*  603 (0x025b) */ " If you are running in at least 800x600 mode you will see that your ships are 51% damaged.",
     /*  604 (0x025c) */ "Read the next 8 messages and view your assault on the enemy starbase.",
-    /*  605 (0x025d) */ " Well, the Berserkers shouldn't be building any more colonizers... Notice the Berserker colonizer that escaped our trap heading for No Vacancy.",
+    /*  605 (0x025d) */
+    " Well, the Berserkers shouldn't be building any more colonizers... Notice the Berserker colonizer that escaped our trap heading for No Vacancy.",
     /*  606 (0x025e) */ "Read the rest of your messages and generate.",
     /*  607 (0x025f) */ " ",
     /*  608 (0x0260) */ "Read your first 6 messages and Goto Stove Top.",
@@ -2420,7 +2673,9 @@ const char *const aTUTUncompressed[] = {
     /*  613 (0x0265) */ " ",
     /*  614 (0x0266) */ " ",
     /*  615 (0x0267) */ " ",
-    /*  616 (0x0268) */ "Nothing much happening this year. View your battle at Hacker and you will see your destroyers aren't fast enough to get in range of the Berserker mine layers.",
+    /*  616 (0x0268) */
+    "Nothing much happening this year. View your battle at Hacker and you will see your destroyers aren't fast enough to get in range of the Berserker mine "
+    "layers.",
     /*  617 (0x0269) */ "You will have to design a faster ship by using faster engines or by including Maneuvering Jets in the design.",
     /*  618 (0x026a) */ "The first of your bombers arrive next year.",
     /*  619 (0x026b) */ "Read all your messages and generate when ready.",

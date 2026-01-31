@@ -1,14 +1,13 @@
 
-#include "types.h"
-#include "globals.h"
 #include "debuglog.h"
+#include "globals.h"
+#include "types.h"
 
 #include "produce.h"
 
-char *PszNameProdItem(PROD *lpprod)
-{
+char *PszNameProdItem(PROD *lpprod) {
     uint32_t iItem;
-    int16_t iDelta;
+    int16_t  iDelta;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PRODUCE:0x3d94 */
@@ -18,27 +17,26 @@ char *PszNameProdItem(PROD *lpprod)
     return NULL;
 }
 
-void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne)
-{
+void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne) {
     uint16_t rgCostsCur[4];
     uint32_t iItem;
     uint16_t rgCosts[4];
-    int16_t i;
-    int16_t j;
-    SHDEF *lpshdef;
-    int16_t raMajor;
+    int16_t  i;
+    int16_t  j;
+    SHDEF   *lpshdef;
+    int16_t  raMajor;
     uint32_t cItem;
-    int16_t fStarbase;
-    PART part;
-    int16_t cost;
-    int16_t chs;
-    HUL *lphulNew;
-    HUL *lphulCur;
-    int16_t costUpg;
-    int16_t costHalf;
-    HUL *lphulT;
-    int16_t rgCostsPartCur[4];
-    int16_t rgCostsPartNew[4];
+    int16_t  fStarbase;
+    PART     part;
+    int16_t  cost;
+    int16_t  chs;
+    HUL     *lphulNew;
+    HUL     *lphulCur;
+    int16_t  costUpg;
+    int16_t  costHalf;
+    HUL     *lphulT;
+    int16_t  rgCostsPartCur[4];
+    int16_t  rgCostsPartNew[4];
 
     /* debug symbols */
     /* block (block) @ MEMORY_PRODUCE:0x40a4 */
@@ -48,13 +46,12 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     /* TODO: implement */
 }
 
-void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *piFirst, int16_t *piLast)
-{
+void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *piFirst, int16_t *piLast) {
     int32_t cResearch;
-    PLANET pl;
+    PLANET  pl;
     int32_t rglQuan[3];
     int16_t cBuilt;
-    PROD prodPartial;
+    PROD    prodPartial;
     int16_t mdStatus;
     int16_t i;
     int16_t j;
@@ -62,7 +59,7 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_
     int16_t fAlchemy;
     int16_t iMac;
     int32_t rgRes[4];
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* debug symbols */
     /* label LCleanUp @ MEMORY_PRODUCE:0x5469 */
@@ -70,21 +67,19 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_
     /* TODO: implement */
 }
 
-void InitProduction(PROD *rgprod)
-{
-    int16_t iWarp;
-    int16_t iSrc;
+void InitProduction(PROD *rgprod) {
+    int16_t  iWarp;
+    int16_t  iSrc;
     uint16_t u;
-    int16_t i;
-    int16_t ipl;
-    PART part;
-    PROD *lpprod;
+    int16_t  i;
+    int16_t  ipl;
+    PART     part;
+    PROD    *lpprod;
 
     /* TODO: implement */
 }
 
-bool FIsAutoBuild(PROD *lpprod)
-{
+bool FIsAutoBuild(PROD *lpprod) {
     DBG_LOGW("FIsAutoBuild not implemented");
 
     (void)lpprod;
@@ -96,20 +91,19 @@ bool FIsAutoBuild(PROD *lpprod)
 
 #ifdef _WIN32
 
-void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
+void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam) {
     int32_t lSel;
     int16_t iSrc;
-    HWND hwndLB;
+    HWND    hwndLB;
     int16_t c;
     int16_t iDst;
-    PROD prodLast;
+    PROD    prodLast;
     int16_t ipl;
     int16_t fRefillSrc;
     int16_t iMac;
-    RECT rc;
-    PROD *lpprod;
-    PROD prod;
+    RECT    rc;
+    PROD   *lpprod;
+    PROD    prod;
     int16_t cMax;
     PLPROD *lpplprodT;
 
@@ -124,12 +118,11 @@ void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
     /* TODO: implement */
 }
 
-int16_t ChangeProduction(int16_t fClear)
-{
-    MemJump env;
+int16_t ChangeProduction(int16_t fClear) {
+    MemJump  env;
     MemJump *penvMemSav;
     int16_t (*lpProcProd)(void);
-    PROD rgprod[64];
+    PROD    rgprod[64];
     int16_t fSuccess;
 
     /* debug symbols */
@@ -139,34 +132,32 @@ int16_t ChangeProduction(int16_t fClear)
     return 0;
 }
 
-void EnableZipProdBtns(HWND hwnd, int16_t iSel)
-{
+void EnableZipProdBtns(HWND hwnd, int16_t iSel) {
     int16_t fEnabled;
 
     /* TODO: implement */
 }
 
-INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    PAINTSTRUCT ps;
-    RECT rc;
-    int16_t dxPBtn;
-    int16_t dy;
-    DRAWITEMSTRUCT *lpdis;
+INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC                hdc;
+    PAINTSTRUCT        ps;
+    RECT               rc;
+    int16_t            dxPBtn;
+    int16_t            dy;
+    DRAWITEMSTRUCT    *lpdis;
     MEASUREITEMSTRUCT *lpmis;
-    POINT pt;
-    int16_t cMax;
-    uint16_t hcs;
-    char sz255[2];
-    int16_t i;
-    RECT rcT;
-    int16_t xCtr;
-    int16_t dx;
-    int16_t dyLB;
-    char *rgszZip[1];
-    int16_t rgidProdBtns[10];
-    ZIPPRODQ rgzp[4];
+    POINT              pt;
+    int16_t            cMax;
+    uint16_t           hcs;
+    char               sz255[2];
+    int16_t            i;
+    RECT               rcT;
+    int16_t            xCtr;
+    int16_t            dx;
+    int16_t            dyLB;
+    char              *rgszZip[1];
+    int16_t            rgidProdBtns[10];
+    ZIPPRODQ           rgzp[4];
     int16_t (*lpProc)(void);
     int16_t fRet;
 
@@ -183,22 +174,21 @@ INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     return 0;
 }
 
-INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
+INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
     PAINTSTRUCT ps;
-    int16_t i;
-    int16_t iBase;
-    RECT rc;
-    int16_t dy;
+    int16_t     i;
+    int16_t     iBase;
+    RECT        rc;
+    int16_t     dy;
     int16_t (*lpProc)(void);
-    char *psz;
-    RECT rcGBox;
-    char *pszT;
-    RECT rc2;
+    char   *psz;
+    RECT    rcGBox;
+    char   *pszT;
+    RECT    rc2;
     int16_t cch;
     int16_t cpq;
-    HWND hwndRad;
+    HWND    hwndRad;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PRODUCE:0x549f */
@@ -213,17 +203,15 @@ INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void FillProdSrcLB(HWND hwndLB, int16_t mdFill)
-{
-    char szT[80];
+void FillProdSrcLB(HWND hwndLB, int16_t mdFill) {
+    char    szT[80];
     int16_t i;
-    char *psz;
+    char   *psz;
 
     /* TODO: implement */
 }
 
-void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
-{
+void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw) {
     int32_t lSel;
     int16_t iSrc;
     int16_t idc;
@@ -233,9 +221,9 @@ void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
     int32_t rgCost[4];
     int16_t dxkT;
     int16_t k;
-    RECT rc;
-    PROD prod;
-    char szT[100];
+    RECT    rc;
+    PROD    prod;
+    char    szT[100];
 
     /* debug symbols */
     /* block (block) @ MEMORY_PRODUCE:0x3964 */
@@ -243,29 +231,23 @@ void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)
     /* TODO: implement */
 }
 
-void FinishProduction(int16_t fWrite)
-{
+void FinishProduction(int16_t fWrite) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void InitializeProductionDlg(HWND hwnd)
-{
-    char rgch[86];
+void InitializeProductionDlg(HWND hwnd) {
+    char    rgch[86];
     int16_t i;
     int16_t iSel;
-    PROD *lpprod;
+    PROD   *lpprod;
 
     /* TODO: implement */
 }
 
-void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq)
-{
+void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq) {
     int16_t i;
-    HWND hwndLB;
-    char szAuto[40];
-    char szFormat[15];
-    RECT rc;
+    HWND    hwndLB;
+    char    szAuto[40];
+    char    szFormat[15];
+    RECT    rc;
 
     /* TODO: implement */
 }

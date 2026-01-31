@@ -1,8 +1,8 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
-#include "types.h"
 #include <assert.h>
+#include "types.h"
 
 #ifdef NDEBUG
 #define Assert(expr) ((void)0)

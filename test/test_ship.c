@@ -4,19 +4,16 @@
 #include <string.h>
 
 #include "globals.h"
-#include "types.h"
 #include "parts.h"
 #include "ship.h" /* WtMaxShdefStat, LGetFleetStat */
+#include "types.h"
 
-
-static void test_WtMaxShdefStat_table(void)
-{
-    struct Case
-    {
+static void test_WtMaxShdefStat_table(void) {
+    struct Case {
         const char *name;
-        SHDEF shdef;
-        int16_t grStat;
-        int16_t want;
+        SHDEF       shdef;
+        int16_t     grStat;
+        int16_t     want;
     };
 
     static const struct Case cases[] = {
@@ -24,20 +21,16 @@ static void test_WtMaxShdefStat_table(void)
         {"Small Freighter Fuel returns wtFuelMax", {.hul = {.ihuldef = ihuldefSmallFreighter}}, grStatFuel, 130},
     };
 
-    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
-    {
+    for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         const struct Case *tc = &cases[i];
 
         int16_t got = WtMaxShdefStat(&tc->shdef, tc->grStat);
 
-        TEST_CHECK_(got == tc->want,
-                    "case[%zu] %s: got=%d want=%d",
-                    i, tc->name, (int)got, (int)tc->want);
+        TEST_CHECK_(got == tc->want, "case[%zu] %s: got=%d want=%d", i, tc->name, (int)got, (int)tc->want);
     }
 }
 
-static void test_LGetFleetStat_basic(void)
-{
+static void test_LGetFleetStat_basic(void) {
     /* Save/restore the per-player SHDEF table pointer. */
     SHDEF *old0 = rglpshdef[0];
 
@@ -45,7 +38,7 @@ static void test_LGetFleetStat_basic(void)
     SHDEF shdefs[16];
     memset(shdefs, 0, sizeof(shdefs));
 
-    /* Two ship designs with known caps. */    
+    /* Two ship designs with known caps. */
     shdefs[0] = (SHDEF){.hul = {.ihuldef = ihuldefSmallFreighter}};
     shdefs[1] = (SHDEF){.hul = {.ihuldef = ihuldefFuelTransport}};
 
@@ -81,8 +74,7 @@ static void test_LGetFleetStat_basic(void)
     rglpshdef[0] = old0;
 }
 
-static void test_FCanSplit(void)
-{
+static void test_FCanSplit(void) {
     PLAYER plr_old = rgplr[idPlayer];
 
     /* With < 2 boats, can't split */
@@ -101,8 +93,7 @@ static void test_FCanSplit(void)
     rgplr[idPlayer] = plr_old;
 }
 
-static void test_FCanSplitAll(void)
-{
+static void test_FCanSplitAll(void) {
     PLAYER plr_old = rgplr[idPlayer];
 
     /* With 2 boats and 10 fleets, can split all */
@@ -120,9 +111,8 @@ static void test_FCanSplitAll(void)
     rgplr[idPlayer] = plr_old;
 }
 
-TEST_LIST = {
-    {"WtMaxShdefStat table", test_WtMaxShdefStat_table},
-    {"LGetFleetStat basic", test_LGetFleetStat_basic},
-    {"FCanSplit", test_FCanSplit},
-    {"FCanSplitAll", test_FCanSplitAll},
-    {NULL, NULL}};
+TEST_LIST = {{"WtMaxShdefStat table", test_WtMaxShdefStat_table},
+             {"LGetFleetStat basic", test_LGetFleetStat_basic},
+             {"FCanSplit", test_FCanSplit},
+             {"FCanSplitAll", test_FCanSplitAll},
+             {NULL, NULL}};

@@ -1,6 +1,6 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "tutor.h"
 
@@ -9,17 +9,16 @@ ITEMACTION rgiaQuikDrop[5];     /* MEMORY_TUTOR:0x0f94 */
 ITEMACTION rgiaQuikLoad[5];     /* MEMORY_TUTOR:0x0f9e */
 ITEMACTION rgiaUnloadAllCol[5]; /* MEMORY_TUTOR:0x0fa8 */
 ITEMACTION rgiaLoadAllCol[5];   /* MEMORY_TUTOR:0x0fb2 */
-ZIPPRODQ1 rgzpqTut[2];          /* MEMORY_TUTOR:0x663a */
+ZIPPRODQ1  rgzpqTut[2];         /* MEMORY_TUTOR:0x663a */
 
 char mpishdefishTutor[6] = {3, 4, 9, 6, 7, 14};
 
-void AdvanceTutor(void)
-{
-    char szTitle[50];
+void AdvanceTutor(void) {
+    char    szTitle[50];
     int16_t fRedraw;
     int16_t idtT;
     int16_t fTaskDone;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* label LUpdatePage @ MEMORY_TUTOR:0x0b55 */
@@ -30,10 +29,9 @@ void AdvanceTutor(void)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     HMENU hmenu;
-    RECT rc;
+    RECT  rc;
     int16_t (*lpProc)(void);
     int16_t fRet;
 
@@ -44,8 +42,7 @@ INT_PTR CALLBACK TutorDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     RECT rc;
 
     /* TODO: implement */
@@ -53,30 +50,24 @@ INT_PTR CALLBACK PanicDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 /* functions */
-void EndTutor(int16_t fClose)
-{
+void EndTutor(int16_t fClose) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void DrawTutorText(HWND hwnd)
-{
-    HDC hdc;
-    int16_t yTop;
-    int16_t fPara;
+void DrawTutorText(HWND hwnd) {
+    HDC         hdc;
+    int16_t     yTop;
+    int16_t     fPara;
     PAINTSTRUCT ps;
-    int16_t didt;
-    int16_t xLeft;
-    int16_t cch;
-    char rgch[256];
-    RECT rcBtn;
-    RECT rc;
+    int16_t     didt;
+    int16_t     xLeft;
+    int16_t     cch;
+    char        rgch[256];
+    RECT        rcBtn;
+    RECT        rc;
 
     /* TODO: implement */
 }
 
-int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3, int16_t wtColonists)
-{
+int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3, int16_t wtColonists) {
     int16_t fRet;
     int16_t idh;
     int16_t idhSav;
@@ -88,8 +79,7 @@ int16_t FCheckCargo(FLEET *lpfl, int16_t wtMin1, int16_t wtMin2, int16_t wtMin3,
     return 0;
 }
 
-int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute)
-{
+int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute) {
     PLANET *lppl;
     int16_t idhSav;
 
@@ -97,16 +87,14 @@ int16_t FCheckPlanetRoute(int16_t idpl, int16_t idplRoute)
     return 0;
 }
 
-int16_t FCheckScanner(int16_t md, int16_t iZoom)
-{
+int16_t FCheckScanner(int16_t md, int16_t iZoom) {
     int16_t idhSav;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct)
-{
+int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct) {
     uint16_t cur;
 
     /*
@@ -125,10 +113,7 @@ int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct)
      */
     cur = (uint16_t)rgplr[0].iTechCur;
 
-    if (((cur & 0x000F) == (uint16_t)iTech) &&
-        ((cur >> 4) == (uint16_t)iTechNext) &&
-        (rgplr[0].pctResearch == pct))
-    {
+    if (((cur & 0x000F) == (uint16_t)iTech) && ((cur >> 4) == (uint16_t)iTechNext) && (rgplr[0].pctResearch == pct)) {
         return 1;
     }
 
@@ -150,8 +135,7 @@ int16_t FCheckResearch(int16_t iTech, int16_t iTechNext, int16_t pct)
 
     return 0;
 }
-int16_t FTutorTaskDone(void)
-{
+int16_t FTutorTaskDone(void) {
     HS hs1;
     HS hs2;
     HS hs;
@@ -165,44 +149,40 @@ int16_t FTutorTaskDone(void)
     return 0;
 }
 
-int16_t FCheckFleetName(int16_t id, int16_t ids)
-{
-    FLEET *lpfl;
-    char szT[33];
+int16_t FCheckFleetName(int16_t id, int16_t ids) {
+    FLEET  *lpfl;
+    char    szT[33];
     int16_t idhSav;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, int16_t ids)
-{
+int16_t FCheckZip(int16_t iZip, ITEMACTION *lpiaGoal, int16_t ids) {
     ITEMACTION *piaCur;
-    int16_t i;
-    char szT[33];
-    int16_t idhSav;
+    int16_t     i;
+    char        szT[33];
+    int16_t     idhSav;
 
     /* TODO: implement */
     return 0;
 }
 
-void SaveGameState(void)
-{
+void SaveGameState(void) {
     HMENU hmenu;
 
     /* TODO: implement */
 }
 
-int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITEMACTION *lpiaGoal)
-{
-    ORDER ord;
-    int16_t fRet;
+int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITEMACTION *lpiaGoal) {
+    ORDER       ord;
+    int16_t     fRet;
     ITEMACTION *piaCur;
-    int16_t i;
-    FLEET *lpfl;
-    int16_t idh;
-    int16_t grobj;
-    int16_t idhSav;
+    int16_t     i;
+    FLEET      *lpfl;
+    int16_t     idh;
+    int16_t     grobj;
+    int16_t     idhSav;
 
     /* debug symbols */
     /* label LReturn @ MEMORY_TUTOR:0x73fa */
@@ -211,11 +191,10 @@ int16_t FCheckXferWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, ITE
     return 0;
 }
 
-int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp)
-{
-    ORDER ord;
+int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, uint16_t grTask, uint16_t iWarp) {
+    ORDER   ord;
     int16_t fRet;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t idh;
     int16_t idhSav;
 
@@ -226,28 +205,24 @@ int16_t FCheckFleetWP(uint16_t ifl, int16_t iord, GrobjClass grobj, int16_t id, 
     return 0;
 }
 
-void ShowTutor(int16_t fShow)
-{
+void ShowTutor(int16_t fShow) {
     int16_t cmd;
 
-    if (tutor.hwnd != 0)
-    {
+    if (tutor.hwnd != 0) {
         cmd = (fShow == 0) ? 0 : 5;
         ShowWindow(tutor.hwnd, cmd);
         tutor.fVisible = (uint16_t)(fShow != 0);
     }
 }
 
-void RestoreGameState(void)
-{
+void RestoreGameState(void) {
     HMENU hmenu;
 
     /* TODO: implement */
 }
 
-int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, uint16_t iPlan, uint16_t iDist)
-{
-    FLEET *lpfl;
+int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, uint16_t iPlan, uint16_t iDist) {
+    FLEET  *lpfl;
     int16_t idhSav;
     int16_t grobj;
 
@@ -255,9 +230,8 @@ int16_t FCheckPatrolWP(uint16_t ifl, int16_t iord, int16_t id, uint16_t iWarp, u
     return 0;
 }
 
-int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears)
-{
-    FLEET *lpfl;
+int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears) {
+    FLEET  *lpfl;
     int16_t idhSav;
     int16_t grobj;
 
@@ -265,19 +239,17 @@ int16_t FCheckLayingWP(uint16_t ifl, int16_t iord, int16_t id, int16_t iYears)
     return 0;
 }
 
-int16_t FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter)
-{
+int16_t FCheckMessages(int16_t imsg, MessageId idm, int16_t fFilter) {
     int16_t idhSav;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckQueue(int16_t ipl, int16_t iprod, GrobjClass grobj, uint16_t iItem, uint16_t cItem, uint16_t fNoResearch)
-{
+int16_t FCheckQueue(int16_t ipl, int16_t iprod, GrobjClass grobj, uint16_t iItem, uint16_t cItem, uint16_t fNoResearch) {
     int16_t fRet;
     PLANET *lppl;
-    PROD prod;
+    PROD    prod;
     int16_t idh;
     int16_t idhSav;
 
@@ -288,8 +260,7 @@ int16_t FCheckQueue(int16_t ipl, int16_t iprod, GrobjClass grobj, uint16_t iItem
     return 0;
 }
 
-int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction)
-{
+int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction) {
     HS hs2;
     HS hs;
     HS hs1;
@@ -309,18 +280,16 @@ int16_t FTutorialEnabledShipBuilder(int16_t itutsbAction)
     return 0;
 }
 
-int16_t FCheckTemplate(int16_t iTemplate)
-{
+int16_t FCheckTemplate(int16_t iTemplate) {
     int16_t i;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp)
-{
+int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp) {
     int16_t ish;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t csh;
     int16_t idhSav;
 
@@ -328,10 +297,9 @@ int16_t FCheckColonizeWP(uint16_t ifl, int16_t id, uint16_t iWarp)
     return 0;
 }
 
-int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit)
-{
+int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit) {
     uint16_t cItemAct;
-    int16_t idhSav;
+    int16_t  idhSav;
 
     /* debug symbols */
     /* label BadCnt @ MEMORY_TUTOR:0x7896 */
@@ -341,23 +309,20 @@ int16_t FCheckBuilderPart(int16_t iSlot, HS *phs, uint16_t cInit)
     return 0;
 }
 
-int16_t FAskKillTutor(void)
-{
+int16_t FAskKillTutor(void) {
 
     /* TODO: implement */
     return 0;
 }
 
-void StartTutor(int16_t fRestart)
-{
+void StartTutor(int16_t fRestart) {
     int16_t cx;
     int16_t cch;
 
     /* TODO: implement */
 }
 
-int16_t FCheckSelection(GrobjClass grobj, int16_t id)
-{
+int16_t FCheckSelection(GrobjClass grobj, int16_t id) {
     int16_t fRet;
     int16_t idhSav;
 
@@ -365,32 +330,29 @@ int16_t FCheckSelection(GrobjClass grobj, int16_t id)
     return 0;
 }
 
-int16_t FCheckSummary(GrobjClass grobj, int16_t id)
-{
+int16_t FCheckSummary(GrobjClass grobj, int16_t id) {
     int16_t fRet;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FOKMergeDialog(void)
-{
+int16_t FOKMergeDialog(void) {
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_t fBomb, uint16_t fDump, uint16_t mdUnarmed, uint16_t mdScout, uint16_t mdWar, uint16_t mdBomber)
-{
+int16_t FCheckBtlPlan(int16_t ibp, uint16_t imdTarget, uint16_t fSpread, uint16_t fBomb, uint16_t fDump, uint16_t mdUnarmed, uint16_t mdScout, uint16_t mdWar,
+                      uint16_t mdBomber) {
     BTLPLAN *lpbtlplan;
-    int16_t idhSav;
+    int16_t  idhSav;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip)
-{
+int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip) {
     int16_t iSel;
     int16_t idhSav;
 
@@ -398,10 +360,6 @@ int16_t FCheckShipBuilder(int16_t iCategory, int16_t iShip)
     return 0;
 }
 
-void TutorError(int16_t idsError)
-{
-
-    /* TODO: implement */
-}
+void TutorError(int16_t idsError) { /* TODO: implement */ }
 
 #endif /* _WIN32 */

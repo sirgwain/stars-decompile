@@ -1,40 +1,36 @@
 
 #include "types.h"
 
+#include "globals.h"
 #include "memory.h"
 #include "msg.h"
 #include "strings.h"
 #include "utilgen.h"
-#include "globals.h"
 
 uint16_t mphtcbAlloc[12] = {0xf800, 0x1000, 0x1000, 0x1000, 0x2000, 0xf800, 0xff00, 0x4440, 0x1000, 0x1800, 0x0800, 0xff00};
-HB *rglphb[12] = {0};
+HB      *rglphb[12] = {0};
 
 /* ---- minimal 16-bit handle table (cross-platform replacement for HGLOBAL) ---- */
-typedef struct HbHandleRec
-{
-    uint16_t h;
-    void *p;
+typedef struct HbHandleRec {
+    uint16_t            h;
+    void               *p;
     struct HbHandleRec *next;
 } HbHandleRec;
 
 static HbHandleRec *g_hbHandles;
-static uint16_t g_nextHbHandle = 1;
+static uint16_t     g_nextHbHandle = 1;
 
-static uint16_t HbHandleAlloc(void *p)
-{
+static uint16_t HbHandleAlloc(void *p) {
     HbHandleRec *r = (HbHandleRec *)malloc(sizeof(*r));
-    uint16_t h;
+    uint16_t     h;
 
-    if (!r)
-    {
+    if (!r) {
         return 0;
     }
 
     /* wrap-safe: 0 is reserved as invalid */
     h = g_nextHbHandle++;
-    if (h == 0)
-    {
+    if (h == 0) {
         h = g_nextHbHandle++;
     }
 
@@ -46,13 +42,10 @@ static uint16_t HbHandleAlloc(void *p)
 }
 
 /* Update existing handle -> pointer mapping (handle stays the same across realloc). */
-static void HbHandleUpdate(uint16_t h, void *pNew)
-{
+static void HbHandleUpdate(uint16_t h, void *pNew) {
     HbHandleRec *r;
-    for (r = g_hbHandles; r != NULL; r = r->next)
-    {
-        if (r->h == h)
-        {
+    for (r = g_hbHandles; r != NULL; r = r->next) {
+        if (r->h == h) {
             r->p = pNew;
             return;
         }
@@ -61,15 +54,12 @@ static void HbHandleUpdate(uint16_t h, void *pNew)
 }
 
 /* Remove handle mapping. Returns the pointer that was mapped (or NULL). */
-static void *HbHandleFree(uint16_t h)
-{
+static void *HbHandleFree(uint16_t h) {
     HbHandleRec **pp = &g_hbHandles;
-    HbHandleRec *cur;
+    HbHandleRec  *cur;
 
-    while ((cur = *pp) != NULL)
-    {
-        if (cur->h == h)
-        {
+    while ((cur = *pp) != NULL) {
+        if (cur->h == h) {
             void *p = cur->p;
             *pp = cur->next;
             free(cur);
@@ -81,13 +71,10 @@ static void *HbHandleFree(uint16_t h)
 }
 
 /* Lookup a handle -> pointer mapping (replacement for GlobalLock). */
-static void *HbHandleLock(uint16_t h)
-{
+static void *HbHandleLock(uint16_t h) {
     HbHandleRec *r;
-    for (r = g_hbHandles; r != NULL; r = r->next)
-    {
-        if (r->h == h)
-        {
+    for (r = g_hbHandles; r != NULL; r = r->next) {
+        if (r->h == h) {
             return r->p;
         }
     }
@@ -95,19 +82,16 @@ static void *HbHandleLock(uint16_t h)
 }
 
 /* functions */
-void ResetHb(HeapType ht)
-{
-    HB *lphb;
+void ResetHb(HeapType ht) {
+    HB      *lphb;
     uint16_t cb;
 
-    if ((uint16_t)ht >= (uint16_t)htCount)
-    {
+    if ((uint16_t)ht >= (uint16_t)htCount) {
         return;
     }
 
     lphb = rglphb[(uint16_t)ht];
-    while (lphb != NULL)
-    {
+    while (lphb != NULL) {
         lphb->ibTop = sizeof(HB);
 
         cb = lphb->cbBlock;
@@ -121,25 +105,21 @@ void ResetHb(HeapType ht)
     }
 }
 
-void FreePl(PL *lppl)
-{
-    if (lppl != NULL)
-    {
+void FreePl(PL *lppl) {
+    if (lppl != NULL) {
         FreeLp(lppl, (HeapType)lppl->ht);
     }
 }
 
-HB *LphbReAlloc(HB *lphb)
-{
+HB *LphbReAlloc(HB *lphb) {
     uint16_t cbCur;
     uint16_t cbGrow;
     uint16_t hmem;
-    uint8_t ht;
-    size_t newSize;
-    HB *lphbNew;
+    uint8_t  ht;
+    size_t   newSize;
+    HB      *lphbNew;
 
-    if (lphb == NULL)
-    {
+    if (lphb == NULL) {
         return NULL;
     }
 
@@ -150,14 +130,12 @@ HB *LphbReAlloc(HB *lphb)
     cbGrow = mphtcbAlloc[(uint16_t)ht];
 
     /* Win16 caps blocks at 0xFFDC (= 0x10000 - 0x24). If already at/over, OOM. */
-    if (cbCur >= 0xFFDC)
-    {
+    if (cbCur >= 0xFFDC) {
         goto LReAllocOOM;
     }
 
     /* Clamp growth so cbCur + cbGrow <= 0xFFDC. */
-    if ((uint16_t)(0xFFDC - cbCur) < cbGrow)
-    {
+    if ((uint16_t)(0xFFDC - cbCur) < cbGrow) {
         cbGrow = (uint16_t)(0xFFDC - cbCur);
     }
 
@@ -166,14 +144,12 @@ HB *LphbReAlloc(HB *lphb)
        - zero-inits new tail if it grows */
     newSize = (size_t)cbCur + (size_t)cbGrow;
     lphbNew = (HB *)realloc(lphb, newSize);
-    if (lphbNew == NULL)
-    {
+    if (lphbNew == NULL) {
         goto LReAllocOOM;
     }
 
     /* Zero-init the grown bytes to match GMEM_ZEROINIT. */
-    if (cbGrow != 0)
-    {
+    if (cbGrow != 0) {
         memset(((uint8_t *)lphbNew) + cbCur, 0, (size_t)cbGrow);
     }
 
@@ -182,19 +158,14 @@ HB *LphbReAlloc(HB *lphb)
     lphbNew->hmem = hmem;
 
     /* Fix up per-heap HB linked list if the block moved. */
-    if (rglphb[(uint16_t)ht] == lphb)
-    {
+    if (rglphb[(uint16_t)ht] == lphb) {
         rglphb[(uint16_t)ht] = lphbNew;
-    }
-    else
-    {
+    } else {
         HB *t = rglphb[(uint16_t)ht];
-        while (t != NULL && t->lphbNext != lphb)
-        {
+        while (t != NULL && t->lphbNext != lphb) {
             t = t->lphbNext;
         }
-        if (t != NULL)
-        {
+        if (t != NULL) {
             t->lphbNext = lphbNew;
         }
         /* If not found, leave list unchanged (matches the decompile's "best effort"). */
@@ -207,36 +178,29 @@ HB *LphbReAlloc(HB *lphb)
 
     return lphbNew;
 
-LReAllocOOM:
-{
+LReAllocOOM: {
     int16_t mbType = 0x10;
-    char *sz = PszFormatIds(idsMemory, (int16_t *)0);
+    char   *sz = PszFormatIds(idsMemory, (int16_t *)0);
     AlertSz(sz, mbType);
     longjmp(penvMem->env, -1);
 }
 }
 
-PL *LpplReAlloc(PL *lppl, uint16_t cAlloc)
-{
+PL *LpplReAlloc(PL *lppl, uint16_t cAlloc) {
     PL *lpplNew;
 
-    lpplNew = (PL *)LpReAlloc(
-        lppl,
-        (uint16_t)(lppl->cbItem * cAlloc + sizeof(PL)),
-        (HeapType)lppl->ht);
+    lpplNew = (PL *)LpReAlloc(lppl, (uint16_t)(lppl->cbItem * cAlloc + sizeof(PL)), (HeapType)lppl->ht);
 
     lpplNew->iMax = cAlloc;
 
     return lpplNew;
 }
 
-HB *LphbFromLpHt(void *lp, HeapType ht)
-{
+HB *LphbFromLpHt(void *lp, HeapType ht) {
     HB *lphb;
 
     /* bounds-check like the decompile: (ht < 0) || (0xb < ht) */
-    if ((int)ht < 0 || (int)ht >= (int)htCount)
-    {
+    if ((int)ht < 0 || (int)ht >= (int)htCount) {
         return NULL;
     }
 
@@ -244,13 +208,11 @@ HB *LphbFromLpHt(void *lp, HeapType ht)
 
     /* find the HB whose address range contains lp:
        (lphb < lp) && (lp < (uint8_t*)lphb + lphb->cbBlock) */
-    while (lphb != NULL)
-    {
+    while (lphb != NULL) {
         uint8_t *base = (uint8_t *)lphb;
         uint8_t *end = base + lphb->cbBlock;
 
-        if ((void *)lphb < lp && lp < (void *)end)
-        {
+        if ((void *)lphb < lp && lp < (void *)end) {
             break;
         }
 
@@ -260,10 +222,9 @@ HB *LphbFromLpHt(void *lp, HeapType ht)
     return lphb;
 }
 
-void FreeLp(void *lp, HeapType ht)
-{
-    HB *lphb;
-    uint16_t cbSpan;
+void FreeLp(void *lp, HeapType ht) {
+    HB       *lphb;
+    uint16_t  cbSpan;
     uint16_t *phdr;
 
     if (lp == NULL)
@@ -282,16 +243,14 @@ void FreeLp(void *lp, HeapType ht)
     lphb->cbFree += cbSpan;
 
     /* if this was the last allocation at the top, roll ibTop back and return span to slop */
-    if ((uint16_t)(((uint8_t *)lp - (uint8_t *)lphb) + cbSpan - 2u) == lphb->ibTop)
-    {
+    if ((uint16_t)(((uint8_t *)lp - (uint8_t *)lphb) + cbSpan - 2u) == lphb->ibTop) {
         lphb->ibTop -= cbSpan;
         lphb->cbSlop += cbSpan;
     }
 }
 
-void *LpAlloc(uint16_t cb, HeapType ht)
-{
-    HB *lphb;
+void *LpAlloc(uint16_t cb, HeapType ht) {
+    HB      *lphb;
     uint16_t cb_00;
     uint8_t *lpbTop;
     uint8_t *lpb;
@@ -301,20 +260,16 @@ void *LpAlloc(uint16_t cb, HeapType ht)
 
     lphb = rglphb[ht];
 
-    for (;;)
-    {
-        if (lphb == NULL || cb_00 <= lphb->cbFree)
-        {
-            if (lphb == NULL)
-            {
+    for (;;) {
+        if (lphb == NULL || cb_00 <= lphb->cbFree) {
+            if (lphb == NULL) {
                 lphb = LphbAlloc(cb_00, ht);
             }
 
             lpbTop = (uint8_t *)lphb + lphb->ibTop;
 
             /* fast path: allocate from slop at top of heap */
-            if (cb_00 <= lphb->cbSlop)
-            {
+            if (cb_00 <= lphb->cbSlop) {
                 *(uint16_t *)lpbTop = cb_00 - 2u; /* size word (no free bit) */
                 lphb->ibTop += cb_00;
                 lphb->cbFree -= cb_00;
@@ -324,18 +279,15 @@ void *LpAlloc(uint16_t cb, HeapType ht)
 
             /* scan the chunk list starting at +0x10 up to ibTop */
             lpb = (uint8_t *)lphb + 0x10;
-            while ((uint16_t)(lpb - (uint8_t *)lphb) < lphb->ibTop)
-            {
+            while ((uint16_t)(lpb - (uint8_t *)lphb) < lphb->ibTop) {
                 uint8_t *start = lpb;
                 uint16_t hdr = *(uint16_t *)lpb;
 
                 lpb += (hdr & 0xfffeu) + 2u;
 
-                if ((hdr & 1u) != 0)
-                {
+                if ((hdr & 1u) != 0) {
                     /* coalesce consecutive free chunks until big enough or hit top */
-                    while ((uint16_t)(lpb - (uint8_t *)lphb) < lphb->ibTop)
-                    {
+                    while ((uint16_t)(lpb - (uint8_t *)lphb) < lphb->ibTop) {
                         uint16_t hdr2 = *(uint16_t *)lpb;
                         if ((hdr2 & 1u) == 0)
                             break;
@@ -350,8 +302,7 @@ void *LpAlloc(uint16_t cb, HeapType ht)
                         /* mark merged span as one free chunk */
                         *(uint16_t *)start = (span - 2u) | 1u;
 
-                        if (cb_00 <= span)
-                        {
+                        if (cb_00 <= span) {
                             /* allocate the *entire* span (no splitting) */
                             *(uint16_t *)start &= 0xfffeu;
                             lphb->cbFree -= span;
@@ -367,19 +318,17 @@ void *LpAlloc(uint16_t cb, HeapType ht)
     }
 }
 
-void *LpReAlloc(void *lp, uint16_t cb, HeapType ht)
-{
+void *LpReAlloc(void *lp, uint16_t cb, HeapType ht) {
     uint16_t cbCur;
     uint16_t cb_00;
     uint16_t cbGrow;
-    HB *lphb;
-    void *lpNew;
+    HB      *lphb;
+    void    *lpNew;
 
     cbCur = *(uint16_t *)((uint8_t *)lp - 2);
     cb_00 = (cb + 1u) & 0xfffeu; /* original used +1 here */
 
-    if (cbCur >= cb_00)
-    {
+    if (cbCur >= cb_00) {
         return lp;
     }
 
@@ -388,14 +337,10 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht)
     lphb = LphbFromLpHt(lp, ht);
 
     /* If the pointer isn't found in this heap chain, we can't do in-place growth. */
-    if (lphb != NULL)
-    {
-        for (;;)
-        {
+    if (lphb != NULL) {
+        for (;;) {
             /* in-place grow only if this allocation is exactly at the heap top and slop is enough */
-            if ((uint8_t *)lphb + lphb->ibTop == (uint8_t *)lp + cbCur &&
-                cbGrow <= lphb->cbSlop)
-            {
+            if ((uint8_t *)lphb + lphb->ibTop == (uint8_t *)lp + cbCur && cbGrow <= lphb->cbSlop) {
                 lphb->cbSlop -= cbGrow;
                 lphb->cbFree -= cbGrow;
                 lphb->ibTop += cbGrow;
@@ -404,8 +349,7 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht)
             }
 
             /* planets/things heaps can move during HB realloc; update lp accordingly */
-            if (ht != htPlanets && ht != htThings)
-            {
+            if (ht != htPlanets && ht != htThings) {
                 break;
             }
 
@@ -414,8 +358,7 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht)
 
             /* After moving, re-read current size header from the new location */
             cbCur = *(uint16_t *)((uint8_t *)lp - 2);
-            if (cbCur >= cb_00)
-            {
+            if (cbCur >= cb_00) {
                 return lp;
             }
             cbGrow = cb_00 - cbCur;
@@ -429,11 +372,10 @@ void *LpReAlloc(void *lp, uint16_t cb, HeapType ht)
     return lpNew;
 }
 
-HB *LphbAlloc(uint16_t cb, HeapType ht)
-{
+HB *LphbAlloc(uint16_t cb, HeapType ht) {
     uint16_t want;
     uint16_t hmem;
-    HB *lphb;
+    HB      *lphb;
 
     /* Header size is 16 bytes in the original Win16 build, but in our
      * cross-platform build HB can be larger (e.g. 64-bit pointers). Use the
@@ -445,39 +387,35 @@ HB *LphbAlloc(uint16_t cb, HeapType ht)
     /* Original adds 0x10 for the HB header. Modern equivalent: add sizeof(HB). */
     want = (uint16_t)(cb + cbHdr);
 
-    if ((uint16_t)ht >= (uint16_t)htCount)
-    {
+    if ((uint16_t)ht >= (uint16_t)htCount) {
         /* original likely never calls with invalid ht; be defensive */
         int16_t mbType = 0x10;
-        char *sz = PszFormatIds(0x1a, (int16_t *)0);
+        char   *sz = PszFormatIds(0x1a, (int16_t *)0);
         AlertSz(sz, mbType);
         longjmp(penvMem->env, -1);
     }
 
-    if (want < mphtcbAlloc[(uint16_t)ht])
-    {
+    if (want < mphtcbAlloc[(uint16_t)ht]) {
         want = mphtcbAlloc[(uint16_t)ht];
     }
 
     /* Win16 GlobalAlloc(0x22, cb) ~= calloc (zeroed) */
     lphb = (HB *)calloc(1, (size_t)want);
-    if (!lphb)
-    {
+    if (!lphb) {
         int16_t mbType = 0x10;
-        char *sz = PszFormatIds(0x1a, (int16_t *)0);
+        char   *sz = PszFormatIds(0x1a, (int16_t *)0);
         AlertSz(sz, mbType);
         longjmp(penvMem->env, -1);
     }
 
     /* Create a 16-bit “handle” for this block (replacement for HGLOBAL). */
     hmem = HbHandleAlloc(lphb);
-    if (hmem == 0)
-    {
+    if (hmem == 0) {
         /* extremely rare; treat as OOM like the original */
         free(lphb);
         {
             int16_t mbType = 0x10;
-            char *sz = PszFormatIds(0x1a, (int16_t *)0);
+            char   *sz = PszFormatIds(0x1a, (int16_t *)0);
             AlertSz(sz, mbType);
             longjmp(penvMem->env, -1);
         }
@@ -498,8 +436,7 @@ HB *LphbAlloc(uint16_t cb, HeapType ht)
     return lphb;
 }
 
-PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht)
-{
+PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht) {
     PL *lppl;
 
     /* sizeof(PL) is verified to match original layout in your asserts */
@@ -518,11 +455,9 @@ PL *LpplAlloc(uint16_t cbItem, uint16_t cAlloc, HeapType ht)
     return lppl;
 }
 
-void FreeHb(HB *lphb)
-{
-    while (lphb != NULL)
-    {
-        HB *lphbNext = lphb->lphbNext;
+void FreeHb(HB *lphb) {
+    while (lphb != NULL) {
+        HB      *lphbNext = lphb->lphbNext;
         uint16_t hmem = lphb->hmem;
 
         /* In Win16: GlobalUnlock(hmem); GlobalFree(hmem); */
@@ -531,12 +466,9 @@ void FreeHb(HB *lphb)
             /* Prefer freeing the handle-mapped pointer, in case a caller passes
              * a stale HB* after a move/realloc.
              */
-            if (p != NULL)
-            {
+            if (p != NULL) {
                 free(p);
-            }
-            else
-            {
+            } else {
                 free(lphb);
             }
         }

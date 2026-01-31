@@ -3,15 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "build.h"
 #include "globals.h"
-#include "types.h"
 #include "thing.h"
 #include "turn2.h"
-#include "build.h"
+#include "types.h"
 
-static void test_FreeLpth_shifts_and_decrements(void)
-{
-    THING *saved_lpThings = lpThings;
+static void test_FreeLpth_shifts_and_decrements(void) {
+    THING  *saved_lpThings = lpThings;
     int16_t saved_cThing = cThing;
 
     lpThings = (THING *)calloc(3, sizeof(THING));
@@ -34,8 +33,7 @@ static void test_FreeLpth_shifts_and_decrements(void)
     cThing = saved_cThing;
 }
 
-static void test_PctWormholeMoves_clamps_and_uses_fields(void)
-{
+static void test_PctWormholeMoves_clamps_and_uses_fields(void) {
     THING th = {0};
 
     /* pct = (cLastMove/5) - (2 - iStable), clamped to [0,6] */
@@ -53,9 +51,8 @@ static void test_PctWormholeMoves_clamps_and_uses_fields(void)
     TEST_CHECK(PctWormholeMoves(&th) == 6);
 }
 
-static void test_UnmarkMineFields_clears_grbitPlrNow_only_for_mines(void)
-{
-    THING *saved_lpThings = lpThings;
+static void test_UnmarkMineFields_clears_grbitPlrNow_only_for_mines(void) {
+    THING  *saved_lpThings = lpThings;
     int16_t saved_cThing = cThing;
 
     lpThings = (THING *)calloc(2, sizeof(THING));
@@ -81,8 +78,7 @@ static void test_UnmarkMineFields_clears_grbitPlrNow_only_for_mines(void)
     cThing = saved_cThing;
 }
 
-static void test_IEmptyBmpFromGrhst_finds_index_or_zero(void)
-{
+static void test_IEmptyBmpFromGrhst_finds_index_or_zero(void) {
     /* rgmapBuildBmps[0] is some sentinel; function returns 0 when not found */
     TEST_CHECK(IEmptyBmpFromGrhst((HullSlotType)rgmapBuildBmps[0]) == 0);
     TEST_CHECK(IEmptyBmpFromGrhst((HullSlotType)rgmapBuildBmps[1]) == 1);
