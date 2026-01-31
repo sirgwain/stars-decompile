@@ -13,23 +13,23 @@
 short FCreateStuff(void)
 
 {
-  undefined2 *puVar1;
-  undefined2 uVar2;
-  PLAYER *pPVar3;
-  byte *pbVar4;
-  short *psVar5;
+  PLAYER *pPVar1;
+  PLAYER *pPVar2;
+  byte *pbVar3;
+  short *psVar4;
+  ushort *puVar5;
   ushort *puVar6;
-  ushort *puVar7;
-  fn_lpfnFakeListProc *pfVar8;
-  fn_lpfnGaugeDlgProc *pfVar9;
-  fn_lpfnFakeEditProc *pfVar10;
-  fn_lpfnFakeComboProc *pfVar11;
-  fn_lpfnFakeCEProc *pfVar12;
-  fn_lpfnReportDlgProc *pfVar13;
-  fn_lpfnBrowserDlgProc *pfVar14;
-  fn_lpfnHostTimerProc *pfVar15;
-  byte *pbVar16;
-  bool bVar17;
+  fn_lpfnFakeListProc *pfVar7;
+  fn_lpfnGaugeDlgProc *pfVar8;
+  fn_lpfnFakeEditProc *pfVar9;
+  fn_lpfnFakeComboProc *pfVar10;
+  fn_lpfnFakeCEProc *pfVar11;
+  fn_lpfnReportDlgProc *pfVar12;
+  fn_lpfnBrowserDlgProc *pfVar13;
+  fn_lpfnHostTimerProc *pfVar14;
+  byte *pbVar15;
+  bool bVar16;
+  char cVar17;
   short sVar18;
   short sVar19;
   HBITMAP HVar20;
@@ -37,7 +37,7 @@ short FCreateStuff(void)
   ushort uVar22;
   char *sz;
   int iVar23;
-  undefined2 *puVar24;
+  PLAYER *pPVar24;
   PLAYER *pPVar25;
   ushort *puVar26;
   short dx;
@@ -46,7 +46,7 @@ short FCreateStuff(void)
   short dy;
   short fFailed;
   
-  bVar17 = false;
+  bVar16 = false;
   sVar18 = GetSystemMetrics(0);
   sVar19 = GetSystemMetrics(1);
   if ((sVar18 < 800) || (sVar19 < 600)) {
@@ -62,16 +62,16 @@ short FCreateStuff(void)
     gd.grBits._0_2_ = (uint)gd.grBits & 0x3fff | 0xc000;
   }
   gd.grBits._0_2_ = (uint)gd.grBits & 0xfb7f;
-  puVar24 = (undefined2 *)&vrgplrDef;
+  pPVar24 = (PLAYER *)vrgplrDef;
   pPVar25 = (PLAYER *)&vplr;
   for (iVar23 = 0x60; iVar23 != 0; iVar23 = iVar23 + -1) {
-    pPVar3 = pPVar25;
+    pPVar2 = pPVar25;
     pPVar25 = &pPVar25->cPlanet;
-    puVar1 = puVar24;
-    puVar24 = puVar24 + 1;
-    uVar2 = *puVar1;
-    pPVar3->iPlayer = (char)uVar2;
-    pPVar3->cShDef = (char)((uint)uVar2 >> 8);
+    pPVar1 = pPVar24;
+    pPVar24 = &pPVar24->cPlanet;
+    cVar17 = pPVar1->cShDef;
+    pPVar2->iPlayer = pPVar1->iPlayer;
+    pPVar2->cShDef = cVar17;
   }
   hrgnHuge = CreateRectRgn(-10,-10,2000,2000);
   hrgnScratch = CreateRectRgn(0,0,10,10);
@@ -156,25 +156,25 @@ short FCreateStuff(void)
   hdibToolbar = HdibLoadBigResource(0xb2);
   if (((hdibPlanets == 0) || (hdibThings == 0)) || (hdibToolbar == 0))
   {
-    bVar17 = true;
+    bVar16 = true;
   }
   for (i = 0; i < 5; i = i + 1) {
     uVar22 = HdibLoadBigResource(i + 0x228);
     ((ushort *)rghdibShips)[i] = uVar22;
     if (((ushort *)rghdibShips)[i] == 0) {
-      bVar17 = true;
+      bVar16 = true;
     }
     uVar22 = HdibLoadBigResource(i + 0x22d);
     ((ushort *)rghdibShipsT)[i] = uVar22;
     if (((ushort *)rghdibShipsT)[i] == 0) {
-      bVar17 = true;
+      bVar16 = true;
     }
   }
   for (i = 0; i < 7; i = i + 1) {
     uVar22 = HdibLoadBigResource(i + 500);
     ((ushort *)rghdibInventory)[i] = uVar22;
     if (((ushort *)rghdibInventory)[i] == 0) {
-      bVar17 = true;
+      bVar16 = true;
     }
   }
   vhpal = HpalFromDib(rghdibShips[3]);
@@ -210,7 +210,7 @@ short FCreateStuff(void)
   vlprgidMisc = LpAlloc(0x800,htPerm);
   vlprgidPlanet = LpAlloc(0x800,htPerm);
   puVar26 = LpAlloc(0x800,htPerm);
-  if (((((bVar17) || (hbmpScanner == 0)) ||
+  if (((((bVar16) || (hbmpScanner == 0)) ||
        ((hbmpUnknownPlanet == 0 ||
         ((hbmpBackBld == 0 || (hdibRaces == 0)))))) ||
       (hdibRacesT == 0)) ||
@@ -223,62 +223,62 @@ short FCreateStuff(void)
     AlertSz(sz,sVar18);
     sVar18 = 0;
     puVar26 = vlprgidFleet;
-    pbVar4 = lpLog;
-    psVar5 = lpMsg;
-    puVar6 = vlprgidMisc;
-    puVar7 = vlprgidPlanet;
-    pfVar8 = lpfnFakeListProc;
-    pfVar9 = lpfnGaugeDlgProc;
-    pfVar10 = lpfnFakeEditProc;
-    pfVar11 = lpfnFakeComboProc;
-    pfVar12 = lpfnFakeCEProc;
-    pfVar13 = lpfnReportDlgProc;
-    pfVar14 = lpfnBrowserDlgProc;
-    pfVar15 = lpfnHostTimerProc;
-    pbVar16 = lpb2k;
+    pbVar3 = lpLog;
+    psVar4 = lpMsg;
+    puVar5 = vlprgidMisc;
+    puVar6 = vlprgidPlanet;
+    pfVar7 = lpfnFakeListProc;
+    pfVar8 = lpfnGaugeDlgProc;
+    pfVar9 = lpfnFakeEditProc;
+    pfVar10 = lpfnFakeComboProc;
+    pfVar11 = lpfnFakeCEProc;
+    pfVar12 = lpfnReportDlgProc;
+    pfVar13 = lpfnBrowserDlgProc;
+    pfVar14 = lpfnHostTimerProc;
+    pbVar15 = lpb2k;
   }
   else {
     sVar18 = 1;
-    pbVar4 = lpLog;
-    psVar5 = lpMsg;
-    puVar6 = vlprgidMisc;
-    puVar7 = vlprgidPlanet;
-    pfVar8 = lpfnFakeListProc;
-    pfVar9 = lpfnGaugeDlgProc;
-    pfVar10 = lpfnFakeEditProc;
-    pfVar11 = lpfnFakeComboProc;
-    pfVar12 = lpfnFakeCEProc;
-    pfVar13 = lpfnReportDlgProc;
-    pfVar14 = lpfnBrowserDlgProc;
-    pfVar15 = lpfnHostTimerProc;
-    pbVar16 = lpb2k;
+    pbVar3 = lpLog;
+    psVar4 = lpMsg;
+    puVar5 = vlprgidMisc;
+    puVar6 = vlprgidPlanet;
+    pfVar7 = lpfnFakeListProc;
+    pfVar8 = lpfnGaugeDlgProc;
+    pfVar9 = lpfnFakeEditProc;
+    pfVar10 = lpfnFakeComboProc;
+    pfVar11 = lpfnFakeCEProc;
+    pfVar12 = lpfnReportDlgProc;
+    pfVar13 = lpfnBrowserDlgProc;
+    pfVar14 = lpfnHostTimerProc;
+    pbVar15 = lpb2k;
   }
-  lpb2k._2_2_ = (undefined2)((ulong)pbVar16 >> 0x10);
-  lpb2k._0_2_ = (byte *)pbVar16;
-  lpfnHostTimerProc._2_2_ = (undefined2)((ulong)pfVar15 >> 0x10);
-  lpfnHostTimerProc._0_2_ = (fn_lpfnHostTimerProc *)pfVar15;
-  lpfnBrowserDlgProc._2_2_ = (undefined2)((ulong)pfVar14 >> 0x10);
-  lpfnBrowserDlgProc._0_2_ = (fn_lpfnBrowserDlgProc *)pfVar14;
-  lpfnReportDlgProc._2_2_ = (undefined2)((ulong)pfVar13 >> 0x10);
-  lpfnReportDlgProc._0_2_ = (fn_lpfnReportDlgProc *)pfVar13;
-  lpfnFakeCEProc._2_2_ = (undefined2)((ulong)pfVar12 >> 0x10);
-  lpfnFakeCEProc._0_2_ = (fn_lpfnFakeCEProc *)pfVar12;
-  lpfnFakeComboProc._2_2_ = (undefined2)((ulong)pfVar11 >> 0x10);
-  lpfnFakeComboProc._0_2_ = (fn_lpfnFakeComboProc *)pfVar11;
-  lpfnFakeEditProc._2_2_ = (undefined2)((ulong)pfVar10 >> 0x10);
-  lpfnFakeEditProc._0_2_ = (fn_lpfnFakeEditProc *)pfVar10;
-  lpfnGaugeDlgProc._2_2_ = (undefined2)((ulong)pfVar9 >> 0x10);
-  lpfnGaugeDlgProc._0_2_ = (fn_lpfnGaugeDlgProc *)pfVar9;
-  lpfnFakeListProc._2_2_ = (undefined2)((ulong)pfVar8 >> 0x10);
-  lpfnFakeListProc._0_2_ = (fn_lpfnFakeListProc *)pfVar8;
-  vlprgidPlanet._2_2_ = (undefined2)((ulong)puVar7 >> 0x10);
-  vlprgidPlanet._0_2_ = (ushort *)puVar7;
-  vlprgidMisc._2_2_ = (undefined2)((ulong)puVar6 >> 0x10);
-  vlprgidMisc._0_2_ = (ushort *)puVar6;
-  lpMsg._2_2_ = (undefined2)((ulong)psVar5 >> 0x10);
-  lpMsg._0_2_ = (short *)psVar5;
-  lpLog._2_2_ = (undefined2)((ulong)pbVar4 >> 0x10);
-  lpLog._0_2_ = (byte *)pbVar4;
+  lpb2k._2_2_ = (undefined2)((ulong)pbVar15 >> 0x10);
+  lpb2k._0_2_ = (byte *)pbVar15;
+  lpfnHostTimerProc._2_2_ = (undefined2)((ulong)pfVar14 >> 0x10);
+  lpfnHostTimerProc._0_2_ = (fn_lpfnHostTimerProc *)pfVar14;
+  lpfnBrowserDlgProc._2_2_ = (undefined2)((ulong)pfVar13 >> 0x10);
+  lpfnBrowserDlgProc._0_2_ = (fn_lpfnBrowserDlgProc *)pfVar13;
+  lpfnReportDlgProc._2_2_ = (undefined2)((ulong)pfVar12 >> 0x10);
+  lpfnReportDlgProc._0_2_ = (fn_lpfnReportDlgProc *)pfVar12;
+  lpfnFakeCEProc._2_2_ = (undefined2)((ulong)pfVar11 >> 0x10);
+  lpfnFakeCEProc._0_2_ = (fn_lpfnFakeCEProc *)pfVar11;
+  lpfnFakeComboProc._2_2_ = (undefined2)((ulong)pfVar10 >> 0x10);
+  lpfnFakeComboProc._0_2_ = (fn_lpfnFakeComboProc *)pfVar10;
+  lpfnFakeEditProc._2_2_ = (undefined2)((ulong)pfVar9 >> 0x10);
+  lpfnFakeEditProc._0_2_ = (fn_lpfnFakeEditProc *)pfVar9;
+  lpfnGaugeDlgProc._2_2_ = (undefined2)((ulong)pfVar8 >> 0x10);
+  lpfnGaugeDlgProc._0_2_ = (fn_lpfnGaugeDlgProc *)pfVar8;
+  lpfnFakeListProc._2_2_ = (undefined2)((ulong)pfVar7 >> 0x10);
+  lpfnFakeListProc._0_2_ = (fn_lpfnFakeListProc *)pfVar7;
+  vlprgidPlanet._2_2_ = (undefined2)((ulong)puVar6 >> 0x10);
+  vlprgidPlanet._0_2_ = (ushort *)puVar6;
+  vlprgidMisc._2_2_ = (undefined2)((ulong)puVar5 >> 0x10);
+  vlprgidMisc._0_2_ = (ushort *)puVar5;
+  lpMsg._2_2_ = (undefined2)((ulong)psVar4 >> 0x10);
+  lpMsg._0_2_ = (short *)psVar4;
+  lpLog._2_2_ = (undefined2)((ulong)pbVar3 >> 0x10);
+  lpLog._0_2_ = (byte *)pbVar3;
   vlprgidFleet._2_2_ = (undefined2)((ulong)puVar26 >> 0x10);
   vlprgidFleet._0_2_ = (ushort *)puVar26;
   return sVar18;

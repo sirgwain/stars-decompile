@@ -32,12 +32,12 @@ cmake --preset win32
 cmake --build --preset build-win32-debug
 ```
 
-### macos crossover build (mingw-w64)
+### macos wine build (mingw-w64)
 
 ```bash
-cmake --preset macos-crossover
-cmake --build --preset build-macos-crossover
-cmake --build --preset run-crossover
+cmake --preset macos-wine
+cmake --build --preset build-macos-wine
+cmake --build --preset run-wine
 ```
 
 ---
@@ -54,7 +54,7 @@ cmake --build --preset run-tests
 
 - Presets use the following build directories:
   - `build/` for native builds
-  - `build-win/` for MinGW / Crossover builds
+  - `build-win/` for MinGW / Wine builds
 - If you change compiler or toolchain settings, it’s often easiest to delete the corresponding build directory and reconfigure.
 
 ## scripts
@@ -162,7 +162,7 @@ https://github.com/sirgwain/ghidra/tree/win16-stars
 | Task                    | Description                            |
 | ----------------------- | -------------------------------------- |
 | `mise run build-native` | Build native (macOS/Linux) with CMake  |
-| `mise run build-cross`  | Build CrossOver (mingw-w64) with CMake |
+| `mise run build-wine`  | Build Wine (mingw-w64) with CMake |
 | `mise run build-test`   | Build and run all tests                |
 | `mise run build-all`    | Build native + cross + run tests       |
 

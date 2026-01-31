@@ -1,37 +1,41 @@
 
-#include "types.h"
-#include "globals.h"
 #include "debuglog.h"
+#include "globals.h"
+#include "types.h"
 
 #include "resource.h"
 
-#include "mdi.h"
+#include "create.h"
+#include "file.h"
 #include "init.h"
+#include "mdi.h"
+#include "planet.h"
+#include "research.h"
+#include "scan.h"
+#include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
-#include "tutor.h"
-#include "create.h"
-#include "planet.h"
-#include "file.h"
+#include "save.h"
+#include "race.h"
 
 /* file existence check used by TitleWndProc (matches file.c portability) */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #include <io.h>
-#define stars_access _access
+#define stars_access      _access
 #define stars_access_mode 0
 #else
 #include <unistd.h>
-#define stars_access access
+#define stars_access      access
 #define stars_access_mode 0
 #endif
 
 /* globals */
-char rgTOWidth[2][2] = {{-3, 0}, {2, 1}};                                                                                                                       /* 1020:7702 */
-uint8_t vrgbShuffleSerial[21] = {0x0b, 0x04, 0x05, 0x10, 0x11, 0x0c, 0x13, 0x0f, 0x0a, 0x01, 0x0e, 0x0d, 0x03, 0x12, 0x02, 0x14, 0x09, 0x07, 0x00, 0x08, 0x06}; /* 1020:2870 */
+char    rgTOWidth[2][2] = {{-3, 0}, {2, 1}}; /* 1020:7702 */
+uint8_t vrgbShuffleSerial[21] = {0x0b, 0x04, 0x05, 0x10, 0x11, 0x0c, 0x13, 0x0f, 0x0a, 0x01, 0x0e,
+                                 0x0d, 0x03, 0x12, 0x02, 0x14, 0x09, 0x07, 0x00, 0x08, 0x06}; /* 1020:2870 */
 
 /* functions */
-void VerifyTurns(void)
-{
+void VerifyTurns(void) {
     int16_t idsError;
     int16_t idCur;
     int16_t cAi;
@@ -42,28 +46,25 @@ void VerifyTurns(void)
     /* TODO: implement */
 }
 
-int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
-{
-    bool bNibHi = false;
+int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn) {
+    bool    bNibHi = false;
     int16_t fSuccess = 0;
 
     uint8_t rgbRaw2[21];
     uint8_t rgbRaw[21];
 
-    int16_t iRaw = 0;
-    int16_t cBits = 0;
+    int16_t  iRaw = 0;
+    int16_t  cBits = 0;
     uint32_t tank = 0;
 
     *plSerial = 0;
     memset(pbEnv, 0, 0x0B);
 
     /* Decode 21 bytes from custom base64-ish stream */
-    for (int16_t i = 0; i < 0x15; i++)
-    {
-        while (cBits < 8)
-        {
+    for (int16_t i = 0; i < 0x15; i++) {
+        while (cBits < 8) {
             uint8_t b64;
-            char ch = *pszIn++;
+            char    ch = *pszIn++;
 
             if (ch >= 'A' && ch <= 'Z')
                 b64 = (uint8_t)(ch - 'A');
@@ -91,11 +92,7 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
 
     /* Serial is first 4 bytes, little-endian (matches Win16 stores) */
     {
-        uint32_t lSerial =
-            ((uint32_t)rgbRaw[0]) |
-            ((uint32_t)rgbRaw[1] << 8) |
-            ((uint32_t)rgbRaw[2] << 16) |
-            ((uint32_t)rgbRaw[3] << 24);
+        uint32_t lSerial = ((uint32_t)rgbRaw[0]) | ((uint32_t)rgbRaw[1] << 8) | ((uint32_t)rgbRaw[2] << 16) | ((uint32_t)rgbRaw[3] << 24);
 
         if (!FValidSerialLong(lSerial))
             return 0;
@@ -107,21 +104,17 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
         Randomize(lSerial);
 
         iRaw = 0x0F;
-        for (int16_t i = 0; i < 0x0B; i++)
-        {
+        for (int16_t i = 0; i < 0x0B; i++) {
             for (int16_t j = (int16_t)rgbRaw[i + 4]; j > 0; j--)
                 (void)Random(0x10);
 
-            if (bNibHi)
-            {
+            if (bNibHi) {
                 uint16_t want = (uint16_t)(rgbRaw[iRaw] >> 4);
                 uint16_t got = (uint16_t)Random(0x10) & 0xFFu;
                 if (want != got)
                     fSuccess = 0;
                 iRaw = (int16_t)(iRaw + 1);
-            }
-            else
-            {
+            } else {
                 uint16_t want = (uint16_t)(rgbRaw[iRaw] & 0x0Fu);
                 uint16_t got = (uint16_t)Random(0x10) & 0xFFu;
                 if (want != got)
@@ -142,8 +135,7 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
 
         PopRandom();
 
-        if (fSuccess != 0)
-        {
+        if (fSuccess != 0) {
             *plSerial = (int32_t)lSerial;
             memcpy(pbEnv, rgbRaw + 4, 0x0B);
         }
@@ -157,14 +149,13 @@ int16_t FSerialAndEnvFromSz(int32_t *plSerial, uint8_t *pbEnv, char *pszIn)
  * - Produces a 28-character ASCII encoding (plus NUL) from lSerial + 11-byte pbEnv.
  * - Preserves original 16-bit-ish RNG flow and packing (nibbles, XOR check nibble, shuffle, 6-bit encoding).
  */
-void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
-{
+void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut) {
     uint8_t rgbRaw[21];
     uint8_t rgbRaw2[21];
     uint8_t bXor;
     int16_t iRaw;
     int16_t i, j;
-    int packHighNibble = 0;
+    int     packHighNibble = 0;
 
     /* Win16 code passed caller SI:DI as an extra cookie; in Win32 we don't have that. */
     PushRandom(0x0011000bU, 0);
@@ -182,21 +173,16 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
 
     /* Append 11 random nibbles, packed two per byte starting at raw[15]. */
     iRaw = 0x0f;
-    for (i = 0; i < 11; i++)
-    {
-        for (j = (int16_t)pbEnv[i]; j > 0; j--)
-        {
+    for (i = 0; i < 11; i++) {
+        for (j = (int16_t)pbEnv[i]; j > 0; j--) {
             (void)Random(0x10);
         }
 
-        if (packHighNibble)
-        {
+        if (packHighNibble) {
             uint16_t r = Random(0x10);
             rgbRaw[iRaw] = (uint8_t)(rgbRaw[iRaw] | (uint8_t)((r & 0x0fU) << 4));
             iRaw++;
-        }
-        else
-        {
+        } else {
             rgbRaw[iRaw] = (uint8_t)Random(0x10); /* low nibble only (0..15) */
         }
 
@@ -205,8 +191,7 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
 
     /* XOR of the first 15 bytes (0..14), stored as the high nibble of current byte. */
     bXor = 0;
-    for (i = 0; i < 0x0f; i++)
-    {
+    for (i = 0; i < 0x0f; i++) {
         bXor ^= rgbRaw[i];
     }
     rgbRaw[iRaw] = (uint8_t)(rgbRaw[iRaw] | (uint8_t)(bXor << 4));
@@ -214,8 +199,7 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
     PopRandom();
 
     /* Permute into rgbRaw2 using vrgbShuffleSerial. */
-    for (i = 0; i < 21; i++)
-    {
+    for (i = 0; i < 21; i++) {
         rgbRaw2[i] = rgbRaw[vrgbShuffleSerial[i]];
     }
 
@@ -224,14 +208,12 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
      * Bits are consumed LSB-first from a little-endian bit bucket.
      */
     {
-        int bits = 0;
-        int rawIndex = 0;
+        int      bits = 0;
+        int      rawIndex = 0;
         uint32_t tank = 0;
 
-        for (i = 0; i < 0x1c; i++)
-        {
-            while (bits < 6)
-            {
+        for (i = 0; i < 0x1c; i++) {
+            while (bits < 6) {
                 tank |= (uint32_t)rgbRaw2[rawIndex++] << (uint32_t)bits;
                 bits += 8;
             }
@@ -241,24 +223,15 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
                 tank >>= 6;
                 bits -= 6;
 
-                if (b64 < 0x1a)
-                {
+                if (b64 < 0x1a) {
                     *pszOut = (char)('A' + b64);
-                }
-                else if (b64 < 0x34)
-                {
+                } else if (b64 < 0x34) {
                     *pszOut = (char)('a' + (b64 - 0x1a));
-                }
-                else if (b64 < 0x3e)
-                {
+                } else if (b64 < 0x3e) {
                     *pszOut = (char)('0' + (b64 - 0x34));
-                }
-                else if (b64 == 0x3e)
-                {
+                } else if (b64 == 0x3e) {
                     *pszOut = '-';
-                }
-                else
-                {
+                } else {
                     *pszOut = '*';
                 }
 
@@ -270,15 +243,14 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut)
     *pszOut = '\0';
 }
 
-int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
-{
-    int16_t idsError;
-    int32_t lSaltSav;
-    PLAYER plr;
+int16_t FWasRaceFile(char *szFile, int16_t fChkPass) {
+    int16_t  idsError;
+    int32_t  lSaltSav;
+    PLAYER   plr;
     MemJump *penvMemSav;
-    MemJump env;
-    int16_t fRet;
-    int16_t fSav;
+    MemJump  env;
+    int16_t  fRet;
+    int16_t  fSav;
 
     /* debug symbols */
     /* label LBadFile @ MEMORY_MDI:0x5dec */
@@ -287,21 +259,19 @@ int16_t FWasRaceFile(char *szFile, int16_t fChkPass)
     return 0;
 }
 
-void EnsureAis(void)
-{
+void EnsureAis(void) {
     int16_t fHostSav;
     int16_t fErrSav;
     int16_t fOpened;
     int16_t fWorkDone;
     int16_t fSubmitSav;
     int16_t iPlayer;
-    MDPLR rgmdplr[16];
+    MDPLR   rgmdplr[16];
 
     /* TODO: implement */
 }
 
-int16_t CTurnsOutSafe(void)
-{
+int16_t CTurnsOutSafe(void) {
     int16_t idPlayerSav;
     int16_t fHostModeSav;
     int16_t fGenSav;
@@ -313,20 +283,19 @@ int16_t CTurnsOutSafe(void)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     int16_t (*lpProc)(void);
-    int16_t fRet;
-    RECT rc;
-    int16_t mf;
-    HDC hdc;
-    POINT pt;
-    int16_t tpm;
-    int16_t i;
-    int16_t iRet;
-    int16_t iSel;
-    int16_t iDiamond;
-    HMENU hmenuPopup;
+    int16_t     fRet;
+    RECT        rc;
+    int16_t     mf;
+    HDC         hdc;
+    POINT       pt;
+    int16_t     tpm;
+    int16_t     i;
+    int16_t     iRet;
+    int16_t     iSel;
+    int16_t     iDiamond;
+    HMENU       hmenuPopup;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -338,19 +307,17 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     return 0;
 }
 
-int16_t FFindSomethingAndSelectIt(void)
-{
+int16_t FFindSomethingAndSelectIt(void) {
     PLANET *lpplMac;
     PLANET *lppl;
     int16_t i;
-    FLEET *lpfl;
+    FLEET  *lpfl;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t CFindTurnsOutstanding(void)
-{
+int16_t CFindTurnsOutstanding(void) {
     int16_t idsError;
     int16_t cAi;
     int16_t i;
@@ -362,24 +329,23 @@ int16_t CFindTurnsOutstanding(void)
     return 0;
 }
 
-LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t i;
-    HPALETTE hpalSav;
-    RECT rc;
-    int16_t dy;
-    int16_t dxGap;
-    int16_t dx;
-    int16_t xCur;
-    char *psz;
+LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    int16_t     i;
+    HPALETTE    hpalSav;
+    RECT        rc;
+    int16_t     dy;
+    int16_t     dxGap;
+    int16_t     dx;
+    int16_t     xCur;
+    char       *psz;
     PAINTSTRUCT ps;
-    RECT rcWnd;
-    HBRUSH hbrSav;
-    RECT rcT;
-    LOGFONT *plf;
-    HFONT hfont;
-    HFONT hfontSav;
+    RECT        rcWnd;
+    HBRUSH      hbrSav;
+    RECT        rcT;
+    LOGFONT    *plf;
+    HFONT       hfont;
+    HFONT       hfontSav;
 
     /* --------------------------------------------------------------------
      * Notes:
@@ -388,34 +354,27 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
      * - Palette handling matches WM_QUERYNEWPALETTE / WM_PALETTECHANGED logic.
      * -------------------------------------------------------------------- */
 
-    switch (msg)
-    {
-    case WM_CREATE:
-    {
-        DBG_LOGD("WM_CREATE: vcScreenColors=%d vhdibTitle=%p vhpalSplash=%p dyArial8=%d",
-                 (int)vcScreenColors, (void *)vhdibTitle, (void *)vhpalSplash, (int)dyArial8);
+    switch (msg) {
+    case WM_CREATE: {
+        DBG_LOGD("WM_CREATE: vcScreenColors=%d vhdibTitle=%p vhpalSplash=%p dyArial8=%d", (int)vcScreenColors, (void *)vhdibTitle, (void *)vhpalSplash,
+                 (int)dyArial8);
 
         /* Load splash (256+ colors only) and palette. */
-        if (vcScreenColors >= 8)
-        {
+        if (vcScreenColors >= 8) {
             DBG_LOGD("WM_CREATE: loading splash resource IDDIB_SPLASH=%d", (int)IDDIB_SPLASH);
             vhdibTitle = HdibLoadBigResource(IDDIB_SPLASH);
             DBG_LOGD("WM_CREATE: HdibLoadBigResource -> vhdibTitle=%p", (void *)vhdibTitle);
 
-            if (vhpalSplash == NULL && vhdibTitle != NULL)
-            {
+            if (vhpalSplash == NULL && vhdibTitle != NULL) {
                 vhpalSplash = HpalFromDib(vhdibTitle);
                 DBG_LOGD("WM_CREATE: HpalFromDib(%p) -> vhpalSplash=%p", (void *)vhdibTitle, (void *)vhpalSplash);
             }
-        }
-        else
-        {
+        } else {
             DBG_LOGD("WM_CREATE: skipping splash load (vcScreenColors=%d < 8)", (int)vcScreenColors);
         }
 
         GetClientRect(hwnd, &rc);
-        DBG_LOGD("WM_CREATE: client rc: L=%d T=%d R=%d B=%d",
-                 (int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom);
+        DBG_LOGD("WM_CREATE: client rc: L=%d T=%d R=%d B=%d", (int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom);
 
         /* Use the same 4:3 letterboxed “content rect” as the splash so buttons stay inside it. */
         {
@@ -427,8 +386,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
             int32_t contentW = fullW;
             int32_t contentH = (contentW * srcH) / srcW;
-            if (contentH > fullH)
-            {
+            if (contentH > fullH) {
                 contentH = fullH;
                 contentW = (contentH * srcW) / srcH;
             }
@@ -437,8 +395,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             const int32_t contentY = (fullH - contentH) / 2;
 
             /* Log so you can confirm the math matches WM_PAINT */
-            DBG_LOGD("WM_CREATE: content rc: X=%ld Y=%ld W=%ld H=%ld",
-                     (long)contentX, (long)contentY, (long)contentW, (long)contentH);
+            DBG_LOGD("WM_CREATE: content rc: X=%ld Y=%ld W=%ld H=%ld", (long)contentX, (long)contentY, (long)contentW, (long)contentH);
 
             /* Now base layout off contentW/contentH, but keep everything in 32-bit until the end. */
 
@@ -452,12 +409,10 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 DBG_LOGD("WM_CREATE: dx clamped=%ld", (long)dx32);
 
                 /* if short content window, add dx/6 */
-                if (contentH < 650)
-                {
+                if (contentH < 650) {
                     int32_t add32 = dx32 / 6;
                     dx32 += add32;
-                    DBG_LOGD("WM_CREATE: short contentH=%ld -> dx += dx/6 (%ld) => %ld",
-                             (long)contentH, (long)add32, (long)dx32);
+                    DBG_LOGD("WM_CREATE: short contentH=%ld -> dx += dx/6 (%ld) => %ld", (long)contentH, (long)add32, (long)dx32);
                 }
 
                 /* dxGap = (contentW - dx*4)/4 */
@@ -473,8 +428,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     dxGap = (int16_t)dxGap32;
                     xCur = (int16_t)xCur32;
 
-                    DBG_LOGD("WM_CREATE: dxGap=%ld xCur(start)=%ld (contentX=%ld)",
-                             (long)dxGap32, (long)xCur32, (long)contentX);
+                    DBG_LOGD("WM_CREATE: dxGap=%ld xCur(start)=%ld (contentX=%ld)", (long)dxGap32, (long)xCur32, (long)contentX);
                 }
             }
 
@@ -494,73 +448,47 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
 
         /* Create 4 buttons */
-        for (i = 0; i < 4; i++)
-        {
+        for (i = 0; i < 4; i++) {
             psz = PszGetCompressedString(idsNewGame + i);
-            DBG_LOGD("WM_CREATE: button[%d] text id=%d psz=%p '%s'",
-                     (int)i, (int)(idsNewGame + i), (void *)psz, (psz ? psz : "(null)"));
+            DBG_LOGD("WM_CREATE: button[%d] text id=%d psz=%p '%s'", (int)i, (int)(idsNewGame + i), (void *)psz, (psz ? psz : "(null)"));
 
-            rghwndBtnSplash[i] = CreateWindow(
-                "BUTTON",
-                psz,
-                WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                xCur,
-                (int16_t)(rc.bottom - dy - ((5 * dyArial8) / 2)),
-                dx,
-                dy,
-                hwnd,
-                (HMENU)(uintptr_t)i,
-                hInst,
-                NULL);
+            rghwndBtnSplash[i] = CreateWindow("BUTTON", psz, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, xCur, (int16_t)(rc.bottom - dy - ((5 * dyArial8) / 2)), dx,
+                                              dy, hwnd, (HMENU)(uintptr_t)i, hInst, NULL);
 
-            DBG_LOGD("WM_CREATE: CreateWindow BUTTON[%d] -> hwnd=%p at x=%d y=%d w=%d h=%d",
-                     (int)i, (void *)rghwndBtnSplash[i],
-                     (int)xCur, (int)(rc.bottom - dy - ((5 * dyArial8) / 2)),
-                     (int)dx, (int)dy);
+            DBG_LOGD("WM_CREATE: CreateWindow BUTTON[%d] -> hwnd=%p at x=%d y=%d w=%d h=%d", (int)i, (void *)rghwndBtnSplash[i], (int)xCur,
+                     (int)(rc.bottom - dy - ((5 * dyArial8) / 2)), (int)dx, (int)dy);
 
-            if (rghwndBtnSplash[i] == NULL)
-            {
+            if (rghwndBtnSplash[i] == NULL) {
                 DBG_LOGD("WM_CREATE: ERROR: CreateWindow failed for button[%d]", (int)i);
             }
 
-            if (i == 2)
-            {
-                DBG_LOGD("WM_CREATE: button[2] continue check: szBase[0]=0x%02x szBase='%s'",
-                         (unsigned)(uint8_t)szBase[0], szBase);
+            if (i == 2) {
+                DBG_LOGD("WM_CREATE: button[2] continue check: szBase[0]=0x%02x szBase='%s'", (unsigned)(uint8_t)szBase[0], szBase);
 
                 /* Default: disable unless we prove the file exists. */
                 bool enable = false;
 
-                if (szBase[0] != '\0')
-                {
+                if (szBase[0] != '\0') {
                     int acc = stars_access(szBase, stars_access_mode); /* mode should be 0 like __access(path,0) */
-                    DBG_LOGD("WM_CREATE: stars_access('%s', mode=%d) -> %d",
-                             szBase, (int)stars_access_mode, (int)acc);
+                    DBG_LOGD("WM_CREATE: stars_access('%s', mode=%d) -> %d", szBase, (int)stars_access_mode, (int)acc);
 
-                    if (acc != -1)
-                    {
+                    if (acc != -1) {
                         enable = true; /* file exists -> keep enabled */
                         DBG_LOGD("WM_CREATE: button[2] enabled (file exists)");
-                    }
-                    else
-                    {
+                    } else {
                         DBG_LOGD("WM_CREATE: button[2] will disable (file missing/unreadable)");
                     }
-                }
-                else
-                {
+                } else {
                     DBG_LOGD("WM_CREATE: button[2] will disable (empty szBase)");
                 }
 
                 EnableWindow(rghwndBtnSplash[2], enable ? TRUE : FALSE);
-                if (!enable)
-                {
+                if (!enable) {
                     DBG_LOGD("WM_CREATE: disabled button[2]");
                 }
             }
 
-            if (rc.bottom < 500)
-            {
+            if (rc.bottom < 500) {
                 DBG_LOGD("WM_CREATE: setting font for button[%d] font=%p", (int)i, (void *)rghfontArial8[1]);
                 SendMessage(rghwndBtnSplash[i], WM_SETFONT, (WPARAM)rghfontArial8[1], MAKELPARAM(TRUE, 0));
             }
@@ -572,36 +500,28 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
     }
 
-    case WM_DESTROY:
-    {
-        DBG_LOGD("WM_DESTROY: vhdibTitle=%p vhpalSplash=%p fFreeingTitle=%d gd.fExitWindows=%d vretExitValue=%d",
-                 (void *)vhdibTitle, (void *)vhpalSplash, (int)fFreeingTitle, (int)gd.fExitWindows, (int)vretExitValue);
+    case WM_DESTROY: {
+        DBG_LOGD("WM_DESTROY: vhdibTitle=%p vhpalSplash=%p fFreeingTitle=%d gd.fExitWindows=%d vretExitValue=%d", (void *)vhdibTitle, (void *)vhpalSplash,
+                 (int)fFreeingTitle, (int)gd.fExitWindows, (int)vretExitValue);
 
-        if (vhdibTitle != NULL)
-        {
+        if (vhdibTitle != NULL) {
             DBG_LOGD("WM_DESTROY: freeing DIB %p", (void *)vhdibTitle);
             GlobalUnlock(vhdibTitle);
             FreeResource(vhdibTitle);
             vhdibTitle = NULL;
         }
 
-        if (!fFreeingTitle)
-        {
+        if (!fFreeingTitle) {
             DBG_LOGD("WM_DESTROY: normal exit path");
-            if (gd.fExitWindows)
-            {
+            if (gd.fExitWindows) {
                 DBG_LOGD("WM_DESTROY: ExitWindows(%u)", (unsigned)(uint16_t)vretExitValue);
                 ExitWindows((DWORD)(uint16_t)vretExitValue, 0);
-            }
-            else
-            {
+            } else {
                 DBG_LOGD("WM_DESTROY: WriteIniSettings(); PostQuitMessage(%d)", (int)vretExitValue);
                 WriteIniSettings();
                 PostQuitMessage(vretExitValue);
             }
-        }
-        else
-        {
+        } else {
             DBG_LOGD("WM_DESTROY: fFreeingTitle=1 => skipping exit path");
         }
 
@@ -611,19 +531,16 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_QUERYNEWPALETTE:
         DBG_LOGD("WM_QUERYNEWPALETTE: vcScreenColors=%d vhpalSplash=%p", (int)vcScreenColors, (void *)vhpalSplash);
         /* fallthrough */
-    case WM_PALETTECHANGED:
-    {
-        DBG_LOGD("WM_PALETTECHANGED: wParam(hwndChanged)=%p self=%p vcScreenColors=%d vhpalSplash=%p",
-                 (void *)(HWND)wParam, (void *)hwnd, (int)vcScreenColors, (void *)vhpalSplash);
+    case WM_PALETTECHANGED: {
+        DBG_LOGD("WM_PALETTECHANGED: wParam(hwndChanged)=%p self=%p vcScreenColors=%d vhpalSplash=%p", (void *)(HWND)wParam, (void *)hwnd, (int)vcScreenColors,
+                 (void *)vhpalSplash);
 
-        if (msg == WM_PALETTECHANGED && (HWND)wParam == hwnd)
-        {
+        if (msg == WM_PALETTECHANGED && (HWND)wParam == hwnd) {
             DBG_LOGD("WM_PALETTECHANGED: ignoring (we caused it)");
             return 0;
         }
 
-        if (vcScreenColors < 8 || vhpalSplash == NULL)
-        {
+        if (vcScreenColors < 8 || vhpalSplash == NULL) {
             DBG_LOGD("WM_PALETTE*: skipping realize (colors=%d pal=%p)", (int)vcScreenColors, (void *)vhpalSplash);
             return 0;
         }
@@ -640,8 +557,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         SelectPalette(hdc, hpalSav, FALSE);
         ReleaseDC(hwnd, hdc);
 
-        if (i != 0)
-        {
+        if (i != 0) {
             DBG_LOGD("WM_PALETTE*: invalidating (palette changed)");
             InvalidateRect(hwnd, NULL, TRUE);
             return 1;
@@ -650,27 +566,22 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
     }
 
-    case WM_COMMAND:
-    {
-        DBG_LOGD("WM_COMMAND: wParam=0x%lx lParam=0x%lx (id=%lu) fFreeingTitle=%d",
-                 (unsigned long)wParam, (unsigned long)lParam, (unsigned long)wParam, (int)fFreeingTitle);
+    case WM_COMMAND: {
+        DBG_LOGD("WM_COMMAND: wParam=0x%lx lParam=0x%lx (id=%lu) fFreeingTitle=%d", (unsigned long)wParam, (unsigned long)lParam, (unsigned long)wParam,
+                 (int)fFreeingTitle);
 
-        switch (wParam)
-        {
+        switch (wParam) {
         case 0:
             NewGameWizard(hwnd, 0);
 
-            if (lpPlanets == NULL && game.lid == 0)
-            {
+            if (lpPlanets == NULL && game.lid == 0) {
                 DBG_LOGD("WM_COMMAND: new game failed -> SetFocus(title)");
                 SetFocus(hwnd);
                 break;
             }
 
-            if (!fFreeingTitle)
-            {
-                DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p hwndFrame=%p",
-                         (void *)hwndTitle, (void *)hwndFrame);
+            if (!fFreeingTitle) {
+                DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p hwndFrame=%p", (void *)hwndTitle, (void *)hwndFrame);
                 fFreeingTitle = 1;
                 DestroyWindow(hwndTitle);
                 hwndTitle = NULL;
@@ -681,8 +592,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             break;
 
         case 1:
-        case 2:
-        {
+        case 2: {
             bool fStartup = ((uint16_t)wParam == 2);
             DBG_LOGD("WM_COMMAND: %s (fStartup=%d)", (wParam == 1) ? "Load" : "Continue", (int)fStartup);
 
@@ -690,18 +600,15 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 int og = FOpenGame(hwnd, 0);
                 DBG_LOGD("WM_COMMAND: FOpenGame -> %d (idPlayer=%d)", (int)og, (int)idPlayer);
 
-                if (og > 0)
-                {
-                    if (!fFreeingTitle)
-                    {
+                if (og > 0) {
+                    if (!fFreeingTitle) {
                         DBG_LOGD("WM_COMMAND: destroying title window hwndTitle=%p", (void *)hwndTitle);
                         fFreeingTitle = 1;
                         DestroyWindow(hwndTitle);
                         hwndTitle = NULL;
                     }
 
-                    if (idPlayer != -1)
-                    {
+                    if (idPlayer != -1) {
                         DBG_LOGD("WM_COMMAND: ShowWindow(hwndFrame, SW_SHOW)");
                         ShowWindow(hwndFrame, SW_SHOW);
                     }
@@ -712,17 +619,13 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     DBG_LOGD("WM_COMMAND: PostMessage(hwndFrame, WM_COMMAND, 0x0fa1)");
                     PostMessage(hwndFrame, WM_COMMAND, (WPARAM)0x0fa1, 0);
 
-                    DBG_LOGD("WM_COMMAND: tutorial? game.fTutorial=%d idPlayer=%d",
-                             (int)game.fTutorial, (int)idPlayer);
+                    DBG_LOGD("WM_COMMAND: tutorial? game.fTutorial=%d idPlayer=%d", (int)game.fTutorial, (int)idPlayer);
 
-                    if (game.fTutorial && idPlayer == 0)
-                    {
+                    if (game.fTutorial && idPlayer == 0) {
                         DBG_LOGD("WM_COMMAND: StartTutor(0)");
                         StartTutor(0);
                     }
-                }
-                else
-                {
+                } else {
                     DBG_LOGD("WM_COMMAND: open failed -> SetFocus(title)");
                     SetFocus(hwnd);
                 }
@@ -738,8 +641,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             DBG_LOGD("WM_COMMAND: Exit path gd.fExitWindows=%d vretExitValue=%d", (int)gd.fExitWindows, (int)vretExitValue);
             if (gd.fExitWindows)
                 ExitWindows((DWORD)(uint16_t)vretExitValue, 0);
-            else
-            {
+            else {
                 WriteIniSettings();
                 PostQuitMessage(vretExitValue);
             }
@@ -749,13 +651,11 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         return 0;
     }
 
-    case WM_PAINT:
-    {
-        DBG_LOGD("WM_PAINT: IsIconic=%d vcScreenColors=%d vhdibTitle=%p vhpalSplash=%p",
-                 (int)IsIconic(hwnd), (int)vcScreenColors, (void *)vhdibTitle, (void *)vhpalSplash);
+    case WM_PAINT: {
+        DBG_LOGD("WM_PAINT: IsIconic=%d vcScreenColors=%d vhdibTitle=%p vhpalSplash=%p", (int)IsIconic(hwnd), (int)vcScreenColors, (void *)vhdibTitle,
+                 (void *)vhpalSplash);
 
-        if (IsIconic(hwnd))
-        {
+        if (IsIconic(hwnd)) {
             hdc = BeginPaint(hwnd, &ps);
             DBG_LOGD("WM_PAINT(iconic): BeginPaint hdc=%p hiconStars=%p", (void *)hdc, (void *)hiconStars);
             DrawIcon(hdc, 2, 2, hiconStars);
@@ -770,11 +670,9 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         DBG_LOGD("WM_PAINT: SelectObject(hbrButtonFace=%p) -> old=%p", (void *)hbrButtonFace, (void *)hbrSav);
 
         GetClientRect(hwnd, &rcWnd);
-        DBG_LOGD("WM_PAINT: client rcWnd: L=%d T=%d R=%d B=%d",
-                 (int)rcWnd.left, (int)rcWnd.top, (int)rcWnd.right, (int)rcWnd.bottom);
+        DBG_LOGD("WM_PAINT: client rcWnd: L=%d T=%d R=%d B=%d", (int)rcWnd.left, (int)rcWnd.top, (int)rcWnd.right, (int)rcWnd.bottom);
 
-        if (vcScreenColors >= 8 && vhdibTitle != NULL)
-        {
+        if (vcScreenColors >= 8 && vhdibTitle != NULL) {
             /* source is 800x600 (4:3) */
             const int32_t srcW = 800;
             const int32_t srcH = 600;
@@ -788,8 +686,7 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             /* fit with preserved aspect (integer, 32-bit intermediates) */
             int32_t dstW = fullW;
             int32_t dstH = (dstW * srcH) / srcW;
-            if (dstH > fullH)
-            {
+            if (dstH > fullH) {
                 dstH = fullH;
                 dstW = (dstH * srcW) / srcH;
             }
@@ -801,15 +698,8 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             /* (optional) clear bars so you don’t see junk from previous frames */
             PatBlt(hdc, 0, 0, fullW, fullH, BLACKNESS);
 
-            DibBlt(hdc,
-                   dstX, dstY,
-                   dstW, dstH,
-                   vhdibTitle, 0, 0,
-                   srcW, srcH,
-                   SRCCOPY);
-        }
-        else
-        {
+            DibBlt(hdc, dstX, dstY, dstW, dstH, vhdibTitle, 0, 0, srcW, srcH, SRCCOPY);
+        } else {
             DBG_LOGD("WM_PAINT: fallback stars: colors=%d vhdibTitle=%p", (int)vcScreenColors, (void *)vhdibTitle);
             /* ... existing fallback ... */
         }
@@ -823,14 +713,13 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             DBG_LOGD("WM_PAINT: rghwndBtnSplash[0]=%p", (void *)rghwndBtnSplash[0]);
 
         GetWindowRect(rghwndBtnSplash[0], &rc);
-        DBG_LOGD("WM_PAINT: button0 rect (screen coords): L=%d T=%d R=%d B=%d",
-                 (int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom);
+        DBG_LOGD("WM_PAINT: button0 rect (screen coords): L=%d T=%d R=%d B=%d", (int)rc.left, (int)rc.top, (int)rc.right, (int)rc.bottom);
 
         rcWnd.top = (int16_t)(rc.top - ((9 * dyArial8) / 2));
         rcWnd.bottom = (int16_t)(rcWnd.top + ((3 * dyArial8) / 2));
 
-        DBG_LOGD("WM_PAINT: version rcWnd (mixed coords!): L=%d T=%d R=%d B=%d dyArial8=%d",
-                 (int)rcWnd.left, (int)rcWnd.top, (int)rcWnd.right, (int)rcWnd.bottom, (int)dyArial8);
+        DBG_LOGD("WM_PAINT: version rcWnd (mixed coords!): L=%d T=%d R=%d B=%d dyArial8=%d", (int)rcWnd.left, (int)rcWnd.top, (int)rcWnd.right,
+                 (int)rcWnd.bottom, (int)dyArial8);
 
         RcCtrTextOut(hdc, &rcWnd, psz, (int16_t)strlen(psz));
         DBG_LOGD("WM_PAINT: RcCtrTextOut done");
@@ -846,119 +735,316 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 }
 
-void CommandHandler(HWND hwnd, uint16_t wParam)
-{
+void CommandHandler(HWND hwnd, uint16_t wParam) {
     POINT pt;
     HMENU hmenu;
     int16_t (*lpProc)(void);
-    int16_t dy;
-    char szExt[4];
-    int16_t dx;
-    int16_t fRet;
-    RECT rc;
-    int16_t iplrOld;
-    int16_t cPageX;
-    int16_t idCur;
-    int16_t mf;
-    int16_t id;
-    char *psz;
+    int16_t  dy;
+    char     szExt[4];
+    int16_t  dx;
+    int16_t  fRet;
+    RECT     rc;
+    int16_t  iplrOld;
+    int16_t  cPageX;
+    int16_t  idCur;
+    int16_t  mf;
+    int16_t  id;
+    char    *psz;
     uint16_t hcurSav;
-    int16_t ids;
-    PLANET *lpplMac;
-    int16_t cObj;
-    int16_t ifl;
-    PLANET *lppl;
-    FLEET *lpfl;
-    int16_t i;
+    int16_t  ids;
+    PLANET  *lpplMac;
+    int16_t  cObj;
+    int16_t  ifl;
+    PLANET  *lppl;
+    FLEET   *lpfl;
+    int16_t  i;
     // TIMERINFO ti;
     uint32_t dwTickCur;
     uint32_t dwTickBase;
     // PD pd;
-    int16_t cPageY;
-    int16_t xPage;
-    int16_t dxMax;
-    int16_t dxDPI;
-    int16_t dyPrintTiny;
-    int16_t dMargin;
-    int16_t y;
-    int32_t ldx;
+    int16_t  cPageY;
+    int16_t  xPage;
+    int16_t  dxMax;
+    int16_t  dxDPI;
+    int16_t  dyPrintTiny;
+    int16_t  dMargin;
+    int16_t  y;
+    int32_t  ldx;
     uint16_t hfontPrintTiny;
     uint16_t hfontPrint;
-    POINT ptLegendB;
-    POINT ptLegendA;
-    int16_t dyPrint;
-    int16_t dyMax;
+    POINT    ptLegendB;
+    POINT    ptLegendA;
+    int16_t  dyPrint;
+    int16_t  dyMax;
     uint16_t hfontSav;
-    int16_t dSize;
-    int16_t yPage;
-    int16_t cch;
-    int32_t ldy;
-    int16_t dyDPI;
-    int16_t yOff;
-    int16_t xOff;
-    int32_t x;
-    char szT[256];
+    int16_t  dSize;
+    int16_t  yPage;
+    int16_t  cch;
+    int32_t  ldy;
+    int16_t  dyDPI;
+    int16_t  yOff;
+    int16_t  xOff;
+    int32_t  x;
+    char     szT[256];
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x3112 */
-    /* block (block) @ MEMORY_MDI:0x32e6 */
-    /* block (block) @ MEMORY_MDI:0x3387 */
-    /* block (block) @ MEMORY_MDI:0x3602 */
-    /* block (block) @ MEMORY_MDI:0x39c0 */
-    /* block (block) @ MEMORY_MDI:0x3b66 */
-    /* block (block) @ MEMORY_MDI:0x3bf0 */
-    /* block (block) @ MEMORY_MDI:0x3f6e */
-    /* block (block) @ MEMORY_MDI:0x4090 */
-    /* block (block) @ MEMORY_MDI:0x440c */
-    /* block (block) @ MEMORY_MDI:0x44cc */
-    /* block (block) @ MEMORY_MDI:0x451d */
-    /* block (block) @ MEMORY_MDI:0x4592 */
-    /* block (block) @ MEMORY_MDI:0x461d */
-    /* block (block) @ MEMORY_MDI:0x4818 */
-    /* block (block) @ MEMORY_MDI:0x4b14 */
-    /* block (block) @ MEMORY_MDI:0x4df3 */
-    /* label LTutorialFinishUp @ MEMORY_MDI:0x433d */
-    /* label LWaitForTurn @ MEMORY_MDI:0x47d1 */
-    /* label RepGen @ MEMORY_MDI:0x42d0 */
-    /* label Default @ MEMORY_MDI:0x50ba */
-    /* label LNewTurnAvail @ MEMORY_MDI:0x4818 */
-    /* label LRetryReport @ MEMORY_MDI:0x4504 */
+    /* Popup menus use temporary IDs 15000..15099. Convert to 0x10000..0x10063 */
+    if (wParam >= 15000 && wParam < 15100) {
+        // TODO: figure out how these map up to tooltips
+        iPopMenuSel = 0x10000 + (wParam - 15000);
+        return;
+    }
+    switch (wParam) {
+    /* =======================
+     * File
+     * ======================= */
+    case IDM_FILE_HOST_GAME:
+        /* TODO */
+        break;
+    case IDM_FILE_NEW_GAME:
+        /* TODO */
+        break;
+
+    case IDM_FILE_OPEN_GAME:
+        /* TODO */
+        break;
+
+    case IDM_FILE_RETURN_TO_TITLE:
+        /* TODO */
+        break;
+
+    case IDM_FILE_MRU1:
+    case IDM_FILE_MRU2:
+    case IDM_FILE_MRU3:
+    case IDM_FILE_MRU4:
+    case IDM_FILE_MRU5:
+    case IDM_FILE_MRU6:
+    case IDM_FILE_MRU7:
+    case IDM_FILE_MRU8:
+    case IDM_FILE_MRU9:
+        /* TODO: open MRU slot (idCmd tells which) */
+        break;
+
+    /* =======================
+     * Tools
+     * ======================= */
+    case IDM_TOOL_NEW_GAME:
+        /* TODO */
+        break;
+
+    case IDM_TOOL_OPEN_GAME:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Turn / Game flow
+     * ======================= */
+    case IDM_TURN_END_A:
+        /* TODO */
+        break;
+
+    case IDM_TURN_END_B:
+        /* TODO */
+        break;
+
+    case IDM_GAME_WAIT_FOR_TURN:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Game dialogs / reports
+     * ======================= */
+    case IDM_GAME_RESEARCH:
+        /* TODO */
+        break;
+
+    case IDM_GAME_SHIP_BUILDER:
+        /* TODO */
+        break;
+
+    case IDM_GAME_BATTLE_PLANS1:
+    case IDM_GAME_BATTLE_PLANS2:
+        /* TODO */
+        break;
+
+    case IDM_GAME_RELATIONS:
+    case IDM_GAME_RELATIONS2:
+        /* TODO */
+        break;
+
+    case IDM_GAME_SCORE:
+    case IDM_GAME_SCORE2:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Race
+     * ======================= */
+    case IDM_RACE_CREATE:
+        /* TODO */
+        break;
+
+    case IDM_RACE_EDIT1:
+    case IDM_RACE_EDIT2:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Reports
+     * ======================= */
+    case IDM_REPORT_PLANET:
+        /* TODO */
+        break;
+
+    case IDM_REPORT_FLEET:
+        /* TODO */
+        break;
+
+    case IDM_REPORT_ENEMY_FLEET:
+        /* TODO */
+        break;
+
+    case IDM_REPORT_BATTLE:
+        /* TODO */
+        break;
+
+    case IDM_REPORT_CYCLE:
+        /* TODO */
+        break;
+
+    /* =======================
+     * View
+     * ======================= */
+    case IDM_VIEW_LAYOUT_0:
+    case IDM_VIEW_LAYOUT_1:
+    case IDM_VIEW_LAYOUT_2:
+        /* TODO */
+        break;
+
+    case IDM_VIEW_BROWSER_TOGGLE:
+    case IDM_VIEW_BROWSER_TOGGLE2:
+        if (game.lid == 0)
+            break; /* no game loaded */
+
+        if (idPlayer == (int16_t)-1)
+            break; /* no active player */
+
+        bool fShow = false;
+
+        if (hwndBrowser == NULL) {
+            /* Create modeless dialog; BrowserDlgProc should set hwndBrowser on WM_INITDIALOG */
+            hwndBrowser = CreateDialogA(hInst,                         /* your HINSTANCE */
+                                        MAKEINTRESOURCEA(IDD_BROWSER), /* TODO: replace with your real dialog resource id */
+                                        hwndFrame,                     /* parent */
+                                        BrowserWndProc);               /* your dialog proc */
+
+            fShow = (hwndBrowser != NULL);
+        } else {
+            DestroyWindow(hwndBrowser);
+            hwndBrowser = NULL;
+            fShow = false;
+        }
+
+        /* Update menu check state: View submenu index 5, command id 0x100 in original */
+        {
+            HMENU hmenuSub = GetASubMenu(hwnd, 5);
+            if (hmenuSub != NULL) {
+                CheckMenuItem(hmenuSub, IDM_HELP_TECH_BROWSER, MF_BYCOMMAND | (fShow ? MF_CHECKED : MF_UNCHECKED));
+            }
+        }
+
+        break;
+
+    /* =======================
+     * Scan zoom
+     * ======================= */
+    case IDM_SCAN_ZOOM_0:
+    case IDM_SCAN_ZOOM_1:
+    case IDM_SCAN_ZOOM_2:
+    case IDM_SCAN_ZOOM_3:
+    case IDM_SCAN_ZOOM_4:
+    case IDM_SCAN_ZOOM_5:
+    case IDM_SCAN_ZOOM_6:
+    case IDM_SCAN_ZOOM_7:
+    case IDM_SCAN_ZOOM_8:
+        /* TODO: set scan zoom level */
+        break;
+
+    /* =======================
+     * Fleet waypoint editing
+     * ======================= */
+    case IDM_FLEET_INSERT_WAYPOINT:
+        /* TODO */
+        break;
+
+    case IDM_FLEET_DELETE_WAYPOINT:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Help
+     * ======================= */
+    case IDM_HELP_CONTENTS:
+    case IDM_HELP_CONTENTS2:
+        /* TODO */
+        break;
+
+    case IDM_HELP_ABOUT:
+        /* TODO */
+        break;
+
+    /* =======================
+     * Debug
+     * ======================= */
+    case IDM_DEBUG_DUMP_UNIVERSE:
+    case IDM_DEBUG_DUMP_PLANETS:
+    case IDM_DEBUG_DUMP_FLEETS:
+        /* TODO */
+        break;
+
+    case IDM_DEBUG_GEN_10_TURNS:
+    case IDM_DEBUG_GEN_100_TURNS:
+        /* TODO */
+        break;
+
+    default:
+        DBG_LOGE("CommandHandler: unhandled command %u\n", (unsigned)wParam);
+        break;
+    }
 
     /* TODO: implement */
 }
 
-LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t i;
+LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC      hdc;
+    int16_t  i;
     uint16_t hpalSav;
-    int16_t ich;
-    int16_t fErrSav;
-    int16_t idCur;
-    int16_t iOffset;
+    int16_t  ich;
+    int16_t  fErrSav;
+    int16_t  idCur;
+    int16_t  iOffset;
     uint16_t hcs;
-    int16_t id;
-    int16_t idPlanet;
-    POINT ptOld;
-    POINT pt;
+    int16_t  id;
+    int16_t  idPlanet;
+    POINT    ptOld;
+    POINT    pt;
     uint16_t uTimerIdOld;
-    int16_t grSel;
-    char *pch;
-    RECT rc;
-    char szExt[4];
+    int16_t  grSel;
+    char    *pch;
+    RECT     rc;
+    char     szExt[4];
     int16_t (*lpProc)(void);
-    int16_t fRet;
-    POINT ptAct;
-    RECT rc2;
-    int32_t lSerial;
-    POINT ptD;
-    uint16_t hbrSav;
-    POINT ptStart;
-    POINT ptChg;
-    TEXTMETRIC tm;
+    int16_t     fRet;
+    POINT       ptAct;
+    RECT        rc2;
+    int32_t     lSerial;
+    POINT       ptD;
+    uint16_t    hbrSav;
+    POINT       ptStart;
+    POINT       ptChg;
+    TEXTMETRIC  tm;
     PAINTSTRUCT ps;
-    int16_t yOffset;
-    char szTemp[80];
+    int16_t     yOffset;
+    char        szTemp[80];
 
     /*
      * TODO: full FrameWndProc implementation.
@@ -966,16 +1052,13 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
      * For now, this minimal WndProc allows the window to be created and closed,
      * which is enough to validate that WinMain + init can launch a basic app.
      */
-    switch (msg)
-    {
-    case WM_CREATE:
-    {
-        HDC hdc;
+    switch (msg) {
+    case WM_CREATE: {
+        HDC        hdc;
         TEXTMETRIC tm;
 
         hdc = GetDC(hwnd);
-        if (hdc != NULL)
-        {
+        if (hdc != NULL) {
             (void)FCreateFonts(hdc);
 
             /* System font height (including external leading), Win32 style */
@@ -986,9 +1069,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             dySBar = (int16_t)((int32_t)(dyArial8 + 0x0c) * 2);
 
             ReleaseDC(hwnd, hdc);
-        }
-        else
-        {
+        } else {
             /* Defensive fallbacks if DC acquisition fails */
             dySysFont = 0;
             dySBar = (int16_t)((int32_t)(dyArial8 + 0x0c) * 2);
@@ -1006,50 +1087,34 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
          * Win16 behavior: if no game is currently loaded, create the full-screen
          * title/splash window (WS_POPUP|WS_VISIBLE) as a child of the hidden frame.
          */
-        if (hwndTitle == NULL)
-        {
+        if (hwndTitle == NULL) {
             int cx = GetSystemMetrics(SM_CXSCREEN);
             int cy = GetSystemMetrics(SM_CYSCREEN);
 
-            hwndTitle = CreateWindowA(
-                szTitle,
-                "Stars!",
-                WS_POPUP | WS_VISIBLE,
-                0,
-                0,
-                cx,
-                cy,
-                hwndFrame,
-                NULL,
-                hInst,
-                NULL);
+            hwndTitle = CreateWindowA(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, cx, cy, hwndFrame, NULL, hInst, NULL);
             fFreeingTitle = 0;
         }
         return 0;
 
-    case WM_QUERYNEWPALETTE:
-    {
-        if (hwndTitle)
-        {
+    case WM_QUERYNEWPALETTE: {
+        if (hwndTitle) {
             return SendMessage(hwndTitle, msg, wParam, lParam);
         }
 
-        HDC hdc = GetDC(hwnd);
+        HDC      hdc = GetDC(hwnd);
         HPALETTE hpalOld = SelectPalette(hdc, vhpal, FALSE);
-        int changed = RealizePalette(hdc);
+        int      changed = RealizePalette(hdc);
         SelectPalette(hdc, hpalOld, FALSE);
         ReleaseDC(hwnd, hdc);
 
-        if (changed)
-        {
+        if (changed) {
             InvalidateRect(hwnd, NULL, TRUE);
             return TRUE;
         }
         return FALSE;
     }
 
-    case WM_PALETTECHANGED:
-    {
+    case WM_PALETTECHANGED: {
         if ((HWND)wParam == hwnd)
             return 0;
 
@@ -1073,8 +1138,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-void GetWindowRc(HWND hwnd, RECT *prc)
-{
+void GetWindowRc(HWND hwnd, RECT *prc) {
     WINDOWPLACEMENT wndpl;
 
     wndpl.length = sizeof(wndpl);
@@ -1086,21 +1150,20 @@ void GetWindowRc(HWND hwnd, RECT *prc)
     prc->bottom = (int16_t)(wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top);
 }
 
-void DrawHostDialog2(HWND hwnd, HDC hdcIn)
-{
+void DrawHostDialog2(HWND hwnd, HDC hdcIn) {
     uint32_t dsec;
-    HDC hdc;
+    HDC      hdc;
     uint16_t dhour;
-    int16_t bkMode;
-    int16_t yCur;
-    int16_t i;
+    int16_t  bkMode;
+    int16_t  yCur;
+    int16_t  i;
     uint16_t dmin;
-    int16_t dday;
-    int16_t cch;
-    RECT rcDiamond;
+    int16_t  dday;
+    int16_t  cch;
+    RECT     rcDiamond;
     uint32_t crBackSav;
-    int16_t x;
-    char szStat[30];
+    int16_t  x;
+    char     szStat[30];
 
     /* debug symbols */
     /* block (block) @ MEMORY_MDI:0x6300 */
@@ -1108,8 +1171,7 @@ void DrawHostDialog2(HWND hwnd, HDC hdcIn)
     /* TODO: implement */
 }
 
-void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)
-{
+void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw) {
 
     // Stars! original: trivial prologue/epilogue only (no-op).
     (void)hwnd;
@@ -1117,8 +1179,7 @@ void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw)
     (void)iDraw;
 }
 
-void WriteIniSettings(void)
-{
+void WriteIniSettings(void) {
     char szSection[16];
     char szIniFile[256];
     char szEntry[16];
@@ -1145,8 +1206,7 @@ void WriteIniSettings(void)
     CchGetString(idsResolution, szEntry);
     {
         int16_t i = (int16_t)((vcScreenColors < 5) ? 1 : 0);
-        if (gd.mdScreenSize == 0)
-        {
+        if (gd.mdScreenSize == 0) {
             i = (int16_t)(i | 2);
         }
         (void)snprintf((char *)szWork, sizeof(szWork), "%d", (int)i);
@@ -1163,39 +1223,23 @@ void WriteIniSettings(void)
         const char *pszFmt = PszGetCompressedString(idsC04d04d04d04d);
 
         CchGetString(idsReportfleetwin, szEntry);
-        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
-                       0x4d,
-                       (int)vrptFleet.ptDlg.x,
-                       (int)vrptFleet.ptDlg.y,
-                       (int)vrptFleet.ptDlg.x + (int)vrptFleet.ptSize.x,
-                       (int)vrptFleet.ptDlg.y + (int)vrptFleet.ptSize.y);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt, 0x4d, (int)vrptFleet.ptDlg.x, (int)vrptFleet.ptDlg.y,
+                       (int)vrptFleet.ptDlg.x + (int)vrptFleet.ptSize.x, (int)vrptFleet.ptDlg.y + (int)vrptFleet.ptSize.y);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
         CchGetString(idsReportefleetwin, szEntry);
-        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
-                       0x4d,
-                       (int)vrptEFleet.ptDlg.x,
-                       (int)vrptEFleet.ptDlg.y,
-                       (int)vrptEFleet.ptDlg.x + (int)vrptEFleet.ptSize.x,
-                       (int)vrptEFleet.ptDlg.y + (int)vrptEFleet.ptSize.y);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt, 0x4d, (int)vrptEFleet.ptDlg.x, (int)vrptEFleet.ptDlg.y,
+                       (int)vrptEFleet.ptDlg.x + (int)vrptEFleet.ptSize.x, (int)vrptEFleet.ptDlg.y + (int)vrptEFleet.ptSize.y);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
         CchGetString(idsReportbtlwin, szEntry);
-        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
-                       0x4d,
-                       (int)vrptBattle.ptDlg.x,
-                       (int)vrptBattle.ptDlg.y,
-                       (int)vrptBattle.ptDlg.x + (int)vrptBattle.ptSize.x,
-                       (int)vrptBattle.ptDlg.y + (int)vrptBattle.ptSize.y);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt, 0x4d, (int)vrptBattle.ptDlg.x, (int)vrptBattle.ptDlg.y,
+                       (int)vrptBattle.ptDlg.x + (int)vrptBattle.ptSize.x, (int)vrptBattle.ptDlg.y + (int)vrptBattle.ptSize.y);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
         CchGetString(idsReportplanwin, szEntry);
-        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt,
-                       0x4d,
-                       (int)vrptPlanet.ptDlg.x,
-                       (int)vrptPlanet.ptDlg.y,
-                       (int)vrptPlanet.ptDlg.x + (int)vrptPlanet.ptSize.x,
-                       (int)vrptPlanet.ptDlg.y + (int)vrptPlanet.ptSize.y);
+        (void)snprintf((char *)szWork, sizeof(szWork), pszFmt, 0x4d, (int)vrptPlanet.ptDlg.x, (int)vrptPlanet.ptDlg.y,
+                       (int)vrptPlanet.ptDlg.x + (int)vrptPlanet.ptSize.x, (int)vrptPlanet.ptDlg.y + (int)vrptPlanet.ptSize.y);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
     }
 
@@ -1235,20 +1279,17 @@ void WriteIniSettings(void)
     /* tile layout strings */
     {
         int16_t iPass = 2;
-        TILE *rgtile = (TILE *)&rgtilePlanet;
+        TILE   *rgtile = (TILE *)&rgtilePlanet;
         int16_t ctile = 6;
 
         CchGetString(idsPlanettiles, szEntry);
 
-        while (iPass != 0)
-        {
-            char *psz = (char *)szWork;
+        while (iPass != 0) {
+            char    *psz = (char *)szWork;
             uint16_t iCol = 0;
 
-            for (int16_t i = 0; i < ctile; i++)
-            {
-                while (iCol < (uint16_t)rgtile[i].iCol)
-                {
+            for (int16_t i = 0; i < ctile; i++) {
+                while (iCol < (uint16_t)rgtile[i].iCol) {
                     iCol++;
                     *psz++ = '*';
                 }
@@ -1275,32 +1316,19 @@ void WriteIniSettings(void)
     CchGetString(idsSelection, szEntry);
     {
         char ch;
-        if (sel.grobj == grobjNone)
-        {
+        if (sel.grobj == grobjNone) {
             ch = 'N';
-        }
-        else if (sel.grobj == grobjPlanet)
-        {
+        } else if (sel.grobj == grobjPlanet) {
             ch = 'P';
-        }
-        else if (sel.grobj == grobjFleet)
-        {
+        } else if (sel.grobj == grobjFleet) {
             ch = 'S';
-        }
-        else if (sel.grobj == grobjOther)
-        {
+        } else if (sel.grobj == grobjOther) {
             ch = 'E';
-        }
-        else
-        {
+        } else {
             ch = 'N';
         }
 
-        (void)snprintf((char *)szWork, sizeof(szWork),
-                       PszGetCompressedString(idsCCD),
-                       (int)ch,
-                       (int)((char)idPlayer + 'B'),
-                       (int)sel.id);
+        (void)snprintf((char *)szWork, sizeof(szWork), PszGetCompressedString(idsCCD), (int)ch, (int)((char)idPlayer + 'B'), (int)sel.id);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
     }
 
@@ -1321,8 +1349,7 @@ void WriteIniSettings(void)
     WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
     /* v2.5 scanner options */
-    if (gd.fChgScanner != 0)
-    {
+    if (gd.fChgScanner != 0) {
         (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)grbitScan);
         CchGetString(idsScanmodev25, szEntry);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
@@ -1350,8 +1377,7 @@ void WriteIniSettings(void)
     WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
     /* per-player file settings */
-    if (idPlayer != -1)
-    {
+    if (idPlayer != -1) {
         CchGetString(idsFiles, szSection);
 
         CchGetString(idsWait2, szEntry);
@@ -1359,8 +1385,7 @@ void WriteIniSettings(void)
         ((char *)szWork)[1] = '\0';
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
-        if (gd.fWriteTurnNum != 0)
-        {
+        if (gd.fWriteTurnNum != 0) {
             (void)snprintf((char *)szWork, sizeof(szWork), "%u", (unsigned)game.turn);
             CchGetString(idsTurn, szEntry);
             WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
@@ -1370,16 +1395,14 @@ void WriteIniSettings(void)
         }
 
         CchGetString(idsFile1, szEntry);
-        (void)snprintf((char *)szWork, sizeof(szWork), "%s.m%d",
-                       (char *)szBase, 0x1120, (int)(idPlayer + 1));
+        (void)snprintf((char *)szWork, sizeof(szWork), "%s.m%d", (char *)szBase, 0x1120, (int)(idPlayer + 1));
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
     }
 
     /* misc report state */
     CchGetString(idsMisc, szSection);
 
-    if (gd.fChgReports != 0)
-    {
+    if (gd.fChgReports != 0) {
         CchGetString(idsReportplanfld, szEntry);
         (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)vrptPlanet.grbitVisible);
         WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
@@ -1387,8 +1410,7 @@ void WriteIniSettings(void)
         CchGetString(idsReportplansort, szEntry);
         {
             int16_t i = vrptPlanet.icolSort;
-            if (vrptPlanet.fAscending != 0)
-            {
+            if (vrptPlanet.fAscending != 0) {
                 i = (int16_t)(i | 0x0100);
             }
             (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
@@ -1402,8 +1424,7 @@ void WriteIniSettings(void)
         CchGetString(idsReportfleetsort, szEntry);
         {
             int16_t i = vrptFleet.icolSort;
-            if (vrptFleet.fAscending != 0)
-            {
+            if (vrptFleet.fAscending != 0) {
                 i = (int16_t)(i | 0x0100);
             }
             (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
@@ -1417,8 +1438,7 @@ void WriteIniSettings(void)
         CchGetString(idsReportefltsort, szEntry);
         {
             int16_t i = vrptEFleet.icolSort;
-            if (vrptEFleet.fAscending != 0)
-            {
+            if (vrptEFleet.fAscending != 0) {
                 i = (int16_t)(i | 0x0100);
             }
             (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
@@ -1432,8 +1452,7 @@ void WriteIniSettings(void)
         CchGetString(idsReportbtlsort, szEntry);
         {
             int16_t i = vrptBattle.icolSort;
-            if (vrptBattle.fAscending != 0)
-            {
+            if (vrptBattle.fAscending != 0) {
                 i = (int16_t)(i | 0x0100);
             }
             (void)snprintf((char *)szWork, sizeof(szWork), PCTD, (int)i);
@@ -1454,34 +1473,27 @@ void WriteIniSettings(void)
     WritePrivateProfileStringA(szSection, szEntry, (char *)szWork, szIniFile);
 
     /* zip orders */
-    if (gd.fChgZipOrd != 0)
-    {
+    if (gd.fChgZipOrd != 0) {
         CchGetString(idsZiporders, szSection);
 
-        for (int16_t i = 0; i < 4; i++)
-        {
+        for (int16_t i = 0; i < 4; i++) {
             size_t cch;
 
             strncpy(szEntry, szSection, sizeof(szEntry) - 1);
             szEntry[sizeof(szEntry) - 1] = '\0';
 
             cch = strlen(szEntry);
-            if (cch + 2 <= sizeof(szEntry))
-            {
+            if (cch + 2 <= sizeof(szEntry)) {
                 szEntry[cch] = (char)('1' + i);
                 szEntry[cch + 1] = '\0';
             }
 
-            if (vrgZip[i].fValid == 0)
-            {
+            if (vrgZip[i].fValid == 0) {
                 ((char *)szWork)[0] = '\0';
-            }
-            else
-            {
+            } else {
                 char *psz = (char *)szWork;
 
-                for (int16_t j = 0; j < 5; j++)
-                {
+                for (int16_t j = 0; j < 5; j++) {
                     uint16_t cQuan = (uint16_t)vrgZip[i].txp.rgia[j].cQuan;
                     uint16_t iAction = (uint16_t)vrgZip[i].txp.rgia[j].iAction;
 
@@ -1502,10 +1514,8 @@ void WriteIniSettings(void)
     }
 
     /* zip production queues */
-    if (gd.fChgZipProd != 0)
-    {
-        for (int16_t i = 0; i < 5; i++)
-        {
+    if (gd.fChgZipProd != 0) {
+        for (int16_t i = 0; i < 5; i++) {
             size_t cch;
 
             CchGetString(idsZiporders, szSection);
@@ -1514,27 +1524,22 @@ void WriteIniSettings(void)
             szEntry[sizeof(szEntry) - 1] = '\0';
 
             cch = strlen(szEntry);
-            if (cch + 3 <= sizeof(szEntry))
-            {
+            if (cch + 3 <= sizeof(szEntry)) {
                 szEntry[cch] = 'P';
                 szEntry[cch + 1] = (char)('1' + i);
                 szEntry[cch + 2] = '\0';
             }
 
-            if (vrgZipProd[i].fValid == 0)
-            {
+            if (vrgZipProd[i].fValid == 0) {
                 ((char *)szWork)[0] = '\0';
-            }
-            else
-            {
+            } else {
                 char *psz;
 
                 ((char *)szWork)[0] = (char)(vrgZipProd[i].zpq1.fNoResearch + 'a');
                 ((char *)szWork)[1] = (char)(vrgZipProd[i].zpq1.cpq + 'a');
 
                 psz = (char *)szWork + 2;
-                for (int16_t j = 0; j < (int16_t)(uint8_t)vrgZipProd[i].zpq1.cpq; j++)
-                {
+                for (int16_t j = 0; j < (int16_t)(uint8_t)vrgZipProd[i].zpq1.cpq; j++) {
                     uint16_t w = vrgZipProd[i].rgpq[j].w;
 
                     psz[0] = (char)(((w >> 0) & 0x000F) + 0x61);
@@ -1553,10 +1558,9 @@ void WriteIniSettings(void)
     }
 }
 
-VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
-{
-    HWND hwndT;
-    char szExt[4];
+VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+    HWND    hwndT;
+    char    szExt[4];
     int16_t cOut;
     int16_t fSav;
     int16_t idCur;
@@ -1570,13 +1574,11 @@ VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
     /* TODO: implement */
 }
 
-HMENU GetASubMenu(HWND hwnd, int16_t iMenu)
-{
+HMENU GetASubMenu(HWND hwnd, int16_t iMenu) {
     int16_t iOffset = 0;
 
     /* If an MDI child is active and maximized, the frame menu has an extra item. */
-    if (hwndActive != NULL && IsZoomed(hwndActive))
-    {
+    if (hwndActive != NULL && IsZoomed(hwndActive)) {
         iOffset = 1;
     }
 
@@ -1586,37 +1588,197 @@ HMENU GetASubMenu(HWND hwnd, int16_t iMenu)
     }
 }
 
-int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly)
-{
-    // OFN ofn;
-    uint16_t i;
-    char szFile[256];
+int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
+    StringId ids;
+    int16_t  fRet;
+    int16_t  grobjIni;
+
+    char  szFilter[256];
+    char  szFileTitle[256];
+    char  szFile[256];
     char *pch;
-    char szFileTitle[256];
-    char szFilter[256];
-    int16_t fRet;
-    int16_t grobjIni;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x5a99 */
-    /* block (block) @ MEMORY_MDI:0x5cd3 */
-    /* label LGotFileName @ MEMORY_MDI:0x5a99 */
+    OPENFILENAMEA ofn;
 
-    /* TODO: implement */
-    return 0;
+    if (ini.fStartupFile == 0) {
+        szFile[0] = '\0';
+
+        ids = (fRaceOnly == 0) ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles;
+        CchGetString(ids, szFilter);
+
+        /* resource filter uses '|' separators; Win32 wants embedded NULs */
+        for (uint16_t i = 0; szFilter[i] != '\0'; ++i) {
+            if (szFilter[i] == '|')
+                szFilter[i] = '\0';
+        }
+
+        memset(&ofn, 0, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFilter = szFilter;
+        ofn.nFilterIndex = 1;
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = (DWORD)sizeof(szFile);
+        ofn.lpstrFileTitle = szFileTitle;
+        ofn.nMaxFileTitle = (DWORD)sizeof(szFileTitle);
+        ofn.lpstrInitialDir = szDirName;
+
+        /* 0x1804 = OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST */
+        ofn.Flags = OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+        if (!GetOpenFileNameA(&ofn))
+            return 0;
+    } else {
+        /* startup file path: szBase holds full path; also mutate szBase into directory */
+        lstrcpyA(szFile, szBase);
+
+        pch = strrchr(szBase, '\\');
+        if (pch != NULL)
+            *pch = '\0';
+
+        pch = strrchr(szFile, '.');
+        if (pch == NULL) {
+            SetSzWorkFromDt(dtHost, -1);
+            lstrcpyA(szFile, szWork);
+            pch = strrchr(szFile, '.');
+        }
+
+        ofn.nFileOffset = 0;
+        ofn.nFileExtension = (pch != NULL) ? (WORD)((pch - szFile) + 1) : 0;
+
+        fFileErrSilent = 1;
+    }
+
+    /* common tail */
+    szDirName[0] = '\0';
+
+    fRet = FWasRaceFile(szFile + ofn.nFileOffset, (int16_t)(fRaceOnly == 0));
+
+    if (fRaceOnly == 0) {
+        if (fRet == 0) {
+            if (ofn.nFileExtension != 0)
+                szFile[ofn.nFileExtension - 1] = '\0';
+
+            DestroyCurGame();
+
+            /* base name (no extension) becomes szBase */
+            lstrcpyA(szBase, szFile);
+
+            if (!FLoadGame(szFile, szFile + ofn.nFileExtension)) {
+                if (ini.fStartupFile != 0) {
+                    ini.wFlags = 0;
+                    fFileErrSilent = 0;
+                }
+                return 0;
+            }
+
+            if (ini.fStartupFile != 0) {
+                fFileErrSilent = 0;
+                ini.fStartupFile = 0;
+
+                /* derive directory into szDirName */
+                pch = strrchr(szFile, '\\');
+                if (pch != NULL) {
+                    size_t n = (size_t)(pch - szFile);
+                    if (n >= sizeof(szDirName))
+                        n = sizeof(szDirName) - 1;
+                    memcpy(szDirName, szFile, n);
+                    szDirName[n] = '\0';
+                }
+
+                /* if hosting and NOT generating turn, set gd.grBits2 bit2 (fClose) */
+                if (idPlayer == -1 && ini.fGen == 0) {
+                    gd.fClose = 1;
+                }
+
+                /* if ini.lid != game.lid OR ini.turn < game.turn => clear ini.fTry */
+                if (ini.lid != game.lid || ini.turn < game.turn) {
+                    ini.fTry = 0;
+                }
+            }
+
+            /* reset selection state */
+            sel.grobjFull = grobjNone;
+            sel.grobj = grobjNone;
+            sel.iwpAct = -1;
+            sel.id = -1;
+
+            sel.scan.grobjFull = grobjNone;
+            sel.scan.grobj = grobjNone;
+            sel.scan.iwp = -1;
+            sel.scan.ifl = -1;
+            sel.scan.idpl = -1;
+
+            fOrdersVis = 0;
+
+            CreateChildWindows();
+
+            if (idPlayer == -1) {
+                if (hwndTitle != NULL && fFreeingTitle == 0) {
+                    fFreeingTitle = 1;
+                    DestroyWindow(hwndTitle);
+                    hwndTitle = NULL;
+                }
+
+                BringUpHostDlg();
+                return 0;
+            }
+
+            /* snapshot grobjSel nibble, then send WM_COMMAND 0x0FA1 */
+            grobjIni = (int16_t)ini.grobjSel;
+
+            SendMessageA(hwndFrame, WM_COMMAND, (WPARAM)0x0FA1, 0);
+
+            /*
+             * ASM behavior:
+             * - if grobjIni != 0 AND now grobjSel == 0 => return 1
+             * - else clear grobjSel and maybe auto-select something
+             */
+            if (grobjIni != 0 && ini.grobjSel == 0)
+                return 1;
+
+            ini.grobjSel = 0;
+
+            if (ini.grobjSel == 0) {
+                if (cPlanet != 0)
+                    (void)FFindSomethingAndSelectIt();
+            }
+
+            return 1;
+        }
+
+        /* race file picked when expecting game file */
+        if (ini.fStartupFile != 0 && vSerialNumber == 0)
+            fRet = -1;
+
+        fFileErrSilent = 0;
+        ini.fStartupFile = 0;
+
+        if (fRet == -1)
+            return -1;
+
+        (void)RaceCreationWizard(hwnd, 0, 0);
+        return 0;
+    }
+
+    /* fRaceOnly */
+    if (fRet > 0) {
+        /* NOTE: szRaceFile is declared [0] in NB09; must be backed by real storage. */
+        lstrcpyA(szRaceFile, szFile + ofn.nFileOffset);
+    }
+
+    return fRet;
 }
 
-void InitializeMenu(HMENU hmenu)
-{
-    HMENU hmenuFile;
-    HMENU hmenuView;
-    HMENU hmenuTurn;
-    HMENU hmenuFrame;
-    UINT uFlags;
+void InitializeMenu(HMENU hmenu) {
+    HMENU   hmenuFile;
+    HMENU   hmenuView;
+    HMENU   hmenuTurn;
+    HMENU   hmenuFrame;
+    UINT    uFlags;
     int16_t i;
 
-    if (hmenu == NULL)
-    {
+    if (hmenu == NULL) {
         hmenu = GetMenu(hwndFrame);
     }
 
@@ -1634,11 +1796,9 @@ void InitializeMenu(HMENU hmenu)
         /* Find insertion point: after IDM_FILE_SAVE_SUBMIT */
         int posSubmit = -1;
         int cItems = GetMenuItemCount(hmenuFile);
-        for (int pos = 0; pos < cItems; pos++)
-        {
+        for (int pos = 0; pos < cItems; pos++) {
             UINT id = GetMenuItemID(hmenuFile, pos);
-            if (id == IDM_FILE_SAVE_SUBMIT)
-            {
+            if (id == IDM_FILE_SAVE_SUBMIT) {
                 posSubmit = pos;
                 break;
             }
@@ -1648,8 +1808,7 @@ void InitializeMenu(HMENU hmenu)
         int posInsert = (posSubmit >= 0) ? (posSubmit + 1) : 0;
 
         /* First delete any existing MRU items (0x10cc..0x10d4) */
-        for (UINT id = idMruBase; id < idMruBase + (UINT)cMaxMru; id++)
-        {
+        for (UINT id = idMruBase; id < idMruBase + (UINT)cMaxMru; id++) {
             DeleteMenu(hmenuFile, id, MF_BYCOMMAND);
         }
 
@@ -1660,12 +1819,10 @@ void InitializeMenu(HMENU hmenu)
         /* MRU list layout: 9 entries * 0x100 bytes each */
 
         i = 0;
-        while (i < cMaxMru)
-        {
+        while (i < cMaxMru) {
             const char *pszMru = vrgszMRU + (i * cbMruEntry);
 
-            if (pszMru[0] == '\0')
-            {
+            if (pszMru[0] == '\0') {
                 break;
             }
 
@@ -1675,11 +1832,7 @@ void InitializeMenu(HMENU hmenu)
             /* Copy at most 0xFF chars from the slot, and force NUL */
             lstrcpynA(szWork + 3, pszMru, 0x100); /* copies up to 0xFF + NUL */
 
-            InsertMenuA(hmenuFile,
-                        (UINT)(posInsert + i),
-                        MF_BYPOSITION | MF_STRING,
-                        (UINT)(idMruBase + (UINT)i),
-                        szWork);
+            InsertMenuA(hmenuFile, (UINT)(posInsert + i), MF_BYPOSITION | MF_STRING, (UINT)(idMruBase + (UINT)i), szWork);
             i++;
         }
     }
@@ -1687,51 +1840,36 @@ void InitializeMenu(HMENU hmenu)
     /* ---------------- Enable/disable items using your IDM_* ----------------
        Win16 used "3" for disabled; Win32 uses MF_GRAYED|MF_DISABLED. */
 
-    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
-                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
-                 : (MF_BYCOMMAND | MF_ENABLED);
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr) ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED) : (MF_BYCOMMAND | MF_ENABLED);
 
     /* Close */
     EnableMenuItem(hmenuFrame, IDM_FILE_CLOSE, uFlags);
 
     /* Open is disabled if no base (matches original 0x0069 logic) */
-    uFlags = (szBase[0] == '\0')
-                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
-                 : (MF_BYCOMMAND | MF_ENABLED);
+    uFlags = (szBase[0] == '\0') ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED) : (MF_BYCOMMAND | MF_ENABLED);
     EnableMenuItem(hmenuFrame, IDM_FILE_OPEN, uFlags);
 
     /* Turn items (these are under the Turn popup in menu.rc, but EnableMenuItem works with BYCOMMAND on the frame menu) */
-    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
-                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
-                 : (MF_BYCOMMAND | MF_ENABLED);
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr) ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED) : (MF_BYCOMMAND | MF_ENABLED);
     EnableMenuItem(hmenuFrame, IDM_TURN_WAIT_NEW, uFlags);
 
-    uFlags = (szBase[0] == '\0' || (game.fSinglePlr && (lSaltCur <= 0)))
-                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
-                 : (MF_BYCOMMAND | MF_ENABLED);
+    uFlags = (szBase[0] == '\0' || (game.fSinglePlr && (lSaltCur <= 0))) ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED) : (MF_BYCOMMAND | MF_ENABLED);
     EnableMenuItem(hmenuFrame, IDM_TURN_GENERATE, uFlags);
 
     /* Submit (Save And Submit) */
-    uFlags = (szBase[0] == '\0' || game.fSinglePlr)
-                 ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED)
-                 : (MF_BYCOMMAND | MF_ENABLED);
+    uFlags = (szBase[0] == '\0' || game.fSinglePlr) ? (MF_BYCOMMAND | MF_GRAYED | MF_DISABLED) : (MF_BYCOMMAND | MF_ENABLED);
     EnableMenuItem(hmenuFrame, IDM_FILE_SAVE_SUBMIT, uFlags);
 
     /* ---------------- View checks using your IDM_* ---------------- */
 
-    CheckMenuItem(hmenuFrame, IDM_VIEW_TOOLBAR,
-                  gd.fToolbar ? (MF_BYCOMMAND | MF_CHECKED)
-                              : (MF_BYCOMMAND | MF_UNCHECKED));
+    CheckMenuItem(hmenuFrame, IDM_VIEW_TOOLBAR, gd.fToolbar ? (MF_BYCOMMAND | MF_CHECKED) : (MF_BYCOMMAND | MF_UNCHECKED));
 
-    CheckMenuItem(hmenuFrame, IDM_VIEW_FIND,
-                  ((grbitScan & 0x2000) != 0) ? (MF_BYCOMMAND | MF_CHECKED)
-                                              : (MF_BYCOMMAND | MF_UNCHECKED));
+    CheckMenuItem(hmenuFrame, IDM_VIEW_FIND, ((grbitScan & 0x2000) != 0) ? (MF_BYCOMMAND | MF_CHECKED) : (MF_BYCOMMAND | MF_UNCHECKED));
 
     /* ---------------- Zoom/layout checks using your command IDs ---------------- */
     {
         UINT idZoom = 0;
-        switch (iScanZoom)
-        {
+        switch (iScanZoom) {
         case 0:
             idZoom = IDM_VIEW_ZOOM_25;
             break;
@@ -1765,16 +1903,12 @@ void InitializeMenu(HMENU hmenu)
         }
 
         /* Radio-check the whole zoom range */
-        CheckMenuRadioItem(hmenuView,
-                           IDM_VIEW_ZOOM_25, IDM_VIEW_ZOOM_400,
-                           idZoom,
-                           MF_BYCOMMAND);
+        CheckMenuRadioItem(hmenuView, IDM_VIEW_ZOOM_25, IDM_VIEW_ZOOM_400, idZoom, MF_BYCOMMAND);
     }
 
     {
         UINT idLayout = IDM_VIEW_LAYOUT_LARGE;
-        switch (iWindowLayout)
-        {
+        switch (iWindowLayout) {
         case 0:
             idLayout = IDM_VIEW_LAYOUT_LARGE;
             break;
@@ -1789,41 +1923,36 @@ void InitializeMenu(HMENU hmenu)
             break;
         }
 
-        CheckMenuRadioItem(hmenuView,
-                           IDM_VIEW_LAYOUT_LARGE, IDM_VIEW_LAYOUT_SMALL,
-                           idLayout,
-                           MF_BYCOMMAND);
+        CheckMenuRadioItem(hmenuView, IDM_VIEW_LAYOUT_LARGE, IDM_VIEW_LAYOUT_SMALL, idLayout, MF_BYCOMMAND);
     }
 
     DrawMenuBar(hwndFrame);
 }
 
-uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel)
-{
+uint16_t HcrsFromFrameWindowPt(POINT pt, int16_t *pgrSel) {
     uint16_t hcs;
-    int16_t fInHBar2;
-    int16_t fInHBar1;
-    int16_t fInVBar;
+    int16_t  fInHBar2;
+    int16_t  fInHBar1;
+    int16_t  fInVBar;
 
     /* TODO: implement */
     return 0;
 }
 
-POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
-{
+POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev) {
     int16_t notMin;
     int16_t dChg;
-    POINT dptT;
-    POINT dptPrev;
+    POINT   dptT;
+    POINT   dptPrev;
     int16_t dyAboveMinCur;
-    POINT dptOld;
+    POINT   dptOld;
     int16_t dyMsgCur;
     int16_t dyMinAboveH2;
     int16_t dyPlanMin;
     int16_t dxScanMin;
     int16_t x;
     int16_t dyMin;
-    POINT pt;
+    POINT   pt;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MDI:0x1e63 */
@@ -1836,8 +1965,7 @@ POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev)
     return pt;
 }
 
-void BringUpHostDlg(void)
-{
+void BringUpHostDlg(void) {
     POINT pt;
     int16_t (*lpProc)(void);
     int16_t fRet;
@@ -1850,10 +1978,9 @@ void BringUpHostDlg(void)
     /* TODO: implement */
 }
 
-INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    RECT rc;
-    HDC hdc;
+INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    RECT        rc;
+    HDC         hdc;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -1863,8 +1990,7 @@ INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
     return 0;
 }
 
-int16_t InitMDIApp(void)
-{
+int16_t InitMDIApp(void) {
     WNDCLASS wc;
 
     /*
@@ -1874,8 +2000,7 @@ int16_t InitMDIApp(void)
      * Those are deferred until their respective WndProcs are implemented.
      */
 
-    if (szFrame[0] == '\0')
-    {
+    if (szFrame[0] == '\0') {
         strcpy(szFrame, "StarsFrame");
     }
 
@@ -1889,14 +2014,12 @@ int16_t InitMDIApp(void)
     wc.lpszMenuName = MAKEINTRESOURCEA(STARSMENU);
     wc.lpszClassName = szFrame;
 
-    if (RegisterClass(&wc) == 0)
-    {
+    if (RegisterClass(&wc) == 0) {
         return 0;
     }
 
     /* A minimal Title class is helpful for later but optional today. */
-    if (szTitle[0] == '\0')
-    {
+    if (szTitle[0] == '\0') {
         strcpy(szTitle, "StarsTitle");
     }
 
@@ -1914,14 +2037,95 @@ int16_t InitMDIApp(void)
     return 1;
 }
 
-void CreateChildWindows(void)
-{
-    char szData[100];
-    POINT pt;
-    char *psz;
-    char szGame[15];
+void CreateChildWindows(void) {
+    char        szGame[15];
+    const char *psz;
+    POINT       pt;
+    RECT        rcClient;
+    char        szData[100];
 
-    /* TODO: implement */
+    if (idPlayer == -1) {
+        CchGetString(idsStarsSHostMode, szWork);
+        /* Win16 code used _wsprintf(szData, szWork) with no varargs. */
+        lstrcpynA(szData, szWork, (int)sizeof(szData));
+    } else {
+        /* Find start of the leaf name in szBase (walk backwards to '\' or ':'). */
+        psz = szBase + lstrlenA(szBase);
+        while (psz > szBase && psz[-1] != '\\' && psz[-1] != ':')
+            --psz;
+
+        /* Copy up to 8 chars, lowercase it. */
+        lstrcpynA(szGame, psz, 9);
+        CharLowerA(szGame);
+
+        lstrcpynA(szGame + lstrlenA(szGame), ".m%d", (int)sizeof(szGame) - lstrlenA(szGame));
+
+        char *pszPlr = PszPlayerName(idPlayer, 0, 1, 0, 0, (PLAYER *)0);
+
+        wsprintfA(szData, "Stars! -- %s -- %s -- %s", game.szName, pszPlr, szGame);
+    }
+
+    SetWindowTextA(hwndFrame, szData);
+
+    if (idPlayer == -1)
+        return;
+
+    /* pt in the decompile is used for the Mine window size; make it deterministic from the frame client. */
+    GetClientRect(hwndFrame, &rcClient);
+    pt.x = rcClient.right - rcClient.left;
+    pt.y = rcClient.bottom - rcClient.top;
+
+    /* Scanner window */
+    if (hwndScanner == NULL) {
+        hwndScanner = CreateWindowA(szScan,                      /* class (DS:01e2) */
+                                    NULL, WS_CHILD | WS_VISIBLE, /* decompile showed 0x50000000 here already */
+                                    -200, -200, 10, 10, hwndFrame, NULL, hInst, NULL);
+    } else {
+        InvalidateRect(hwndScanner, NULL, TRUE);
+        yScanTop = 1000;
+        xScanTop = 1000;
+        SetScanScrollBars(hwndScanner);
+    }
+
+    /* Mine window */
+    if (hwndMine == NULL) {
+        hwndMine = CreateWindowA(szMine,                      /* class (DS:01ec) */
+                                 NULL, WS_CHILD | WS_VISIBLE, /* decompile’s 0x5000 is a truncated style */
+                                 -500, -500,                  /* decompile’s 0xfe0c (int16_t) */
+                                 pt.x, pt.y, hwndFrame, NULL, hInst, NULL);
+    } else {
+        InvalidateRect(hwndMine, NULL, TRUE);
+    }
+
+    /* Planet window */
+    if (hwndPlanet == NULL) {
+        hwndPlanet = CreateWindowA(szPlanet,                                /* class (DS:01f6) */
+                                   NULL, WS_CHILD | WS_VISIBLE, -500, -500, /* 0xfe0c */
+                                   10, 10, hwndFrame, NULL, hInst, NULL);
+    } else {
+        InvalidateRect(hwndPlanet, NULL, TRUE);
+    }
+
+    /* Toolbar (?) window */
+    if (hwndTb == NULL) {
+        hwndTb = CreateWindowA(szTb,                                    /* class (DS:0242) */
+                               NULL, WS_CHILD | WS_VISIBLE, -500, -500, /* 0xfe0c */
+                               10, 10, hwndFrame, NULL, hInst, NULL);
+    } else {
+        InvalidateRect(hwndTb, NULL, TRUE);
+    }
+
+    /* Message window: always recreated */
+    if (hwndMessage != NULL) {
+        DestroyWindow(hwndMessage);
+        hwndMessage = NULL;
+    }
+
+    hwndMessage = CreateWindowA(szMessage,                               /* class (DS:0202) */
+                                NULL, WS_CHILD | WS_VISIBLE, -500, -500, /* 0xfe0c */
+                                10, 10, hwndFrame, NULL, hInst, NULL);
+
+    RefitFrameChildren();
 }
 
 /*
@@ -1936,23 +2140,17 @@ void CreateChildWindows(void)
  * This function assumes the format string expects: (char state, int left, int top, int right, int bottom)
  * which matches the data marshaling in the decompile.
  */
-void SetWindowIniString(const char *sz /*unused in the snippet*/, HWND hwnd)
-{
+void SetWindowIniString(const char *sz /*unused in the snippet*/, HWND hwnd) {
     (void)sz; /* appears unused in the provided decompile */
 
     RECT rc;
     char ch;
 
-    if (IsZoomed(hwnd))
-    {
+    if (IsZoomed(hwnd)) {
         ch = 'M';
-    }
-    else if (IsIconic(hwnd))
-    {
+    } else if (IsIconic(hwnd)) {
         ch = 'I';
-    }
-    else
-    {
+    } else {
         ch = 'R';
     }
 
@@ -1962,31 +2160,149 @@ void SetWindowIniString(const char *sz /*unused in the snippet*/, HWND hwnd)
     snprintf(szWork, sizeof(szWork), pszFmt, ch, rc.left, rc.top, rc.right, rc.bottom);
 }
 
-void RestoreSelection(void)
-{
+void RestoreSelection(void) {
     PLANET *lppl;
 
     /* TODO: implement */
 }
 
-void RefitFrameChildren(void)
-{
-    int16_t dyMsg;
-    HMENU hmenu;
-    int16_t i;
-    int16_t dyMinMin;
-    int16_t dyMsgMin;
-    int16_t dyMin;
-    int16_t dyT;
-    int16_t yScanner;
-    int16_t dyTot;
+void RefitFrameChildren(void) {
+    if (hwndFrame == NULL)
+        return;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MDI:0x8d56 */
-    /* block (block) @ MEMORY_MDI:0x8de6 */
-    /* block (block) @ MEMORY_MDI:0x8fb7 */
+    if (IsIconic(hwndFrame))
+        return;
 
-    /* TODO: implement */
+    /* Common derived minimums based on font height */
+    const int dyMsgFloor = ((dyArial8 * 13) >> 1) + 10;
+    const int dyMinFloor = (dyArial8 * 13) - 0x24;
+
+    int dyMsg;
+    int dyMin;
+    int yToolbar = 0;
+
+    if (iWindowLayout != 1 && iWindowLayout != 2) {
+        /* Single-column layout: Planet/Message/Mine on left; Scanner on right */
+
+        /* Clamp xTop */
+        if (vfs.dx - vfs.dxPlanWant < 100)
+            vfs.xTop = vfs.dx - 100;
+        else
+            vfs.xTop = vfs.dxPlanWant;
+
+        if (vfs.xTop < 199)
+            vfs.xTop = 0xC6;
+
+        /* Clamp wanted heights */
+        if (vfs.dyMsgWant < dyMsgFloor)
+            vfs.dyMsgWant = (int16_t)dyMsgFloor;
+
+        if (vfs.dyMinWant < dyMinFloor)
+            vfs.dyMinWant = (int16_t)dyMinFloor;
+
+        dyMsg = vfs.dyMsgWant;
+        dyMin = vfs.dyMinWant;
+
+        /* If there isn't enough vertical room, proportionally scale dyMsg/dyMin. */
+        if (vfs.dy - (dyMsg + dyMin + 0x10) < 0x32) {
+            const int avail = vfs.dy - 0x42;
+            const int denom = dyMsg + dyMin;
+
+            if (denom > 0) {
+                int newMsg = MulDiv(avail, dyMsg, denom);
+                int newMin = MulDiv(avail, dyMin, denom);
+
+                if (newMsg < dyMsgFloor) {
+                    newMin -= (dyMsgFloor - newMsg);
+                    newMsg = dyMsgFloor;
+                } else if (newMin < dyMinFloor) {
+                    const int d = dyMinFloor - newMin;
+                    newMin = dyMinFloor;
+                    newMsg -= d;
+                }
+
+                dyMsg = newMsg;
+                dyMin = newMin;
+            }
+        }
+
+        vfs.y1 = (int16_t)((vfs.dy - dyMin - dyMsg) - 0x10);
+        vfs.y2 = (int16_t)(vfs.y1 + dyMsg + 8);
+
+        if (hwndScanner != NULL) {
+            /* Toolbar visible only when "gd.grBits high word" is negative (Win16 artifact). */
+            if ((int16_t)((uint32_t)gd.grBits >> 16) < 0) {
+                MoveWindow(hwndTb, vfs.xTop + 8, 0, (vfs.dx - vfs.xTop) - 8, 0x24, TRUE);
+                yToolbar = 0x24;
+            } else {
+                /* Hide offscreen */
+                MoveWindow(hwndTb, 0, -100, 0x32, 0x32, TRUE);
+                yToolbar = 0;
+            }
+
+            MoveWindow(hwndScanner, vfs.xTop + 8, yToolbar, (vfs.dx - vfs.xTop) - 8, vfs.dy - yToolbar, TRUE);
+
+            MoveWindow(hwndPlanet, 0, 0, vfs.xTop, vfs.y1, TRUE);
+            MoveWindow(hwndMessage, 0, vfs.y1 + 8, vfs.xTop, dyMsg, TRUE);
+            MoveWindow(hwndMine, 0, vfs.y2 + 8, vfs.xTop, dyMin, TRUE);
+        }
+    } else {
+        /* Split layout: Scanner+Mine on right; Planet+Message on left */
+
+        if (vfs.dx - vfs.dx2PlanWant < 200)
+            vfs.xTop = vfs.dx - 200;
+        else
+            vfs.xTop = vfs.dx2PlanWant;
+
+        if (vfs.xTop < 199)
+            vfs.xTop = 0xC6;
+
+        if (vfs.dy2MsgWant < dyMsgFloor)
+            vfs.dy2MsgWant = (int16_t)dyMsgFloor;
+
+        if (vfs.dy2MinWant < dyMinFloor)
+            vfs.dy2MinWant = (int16_t)dyMinFloor;
+
+        dyMsg = vfs.dy2MsgWant;
+        if (vfs.dy - (dyMsg + 8) < 100)
+            dyMsg = vfs.dy - 0x6C;
+
+        dyMin = vfs.dy2MinWant;
+        if (vfs.dy - (dyMin + 8) < 100)
+            dyMin = vfs.dy - 0x6C;
+
+        vfs.y1 = (int16_t)((vfs.dy - dyMsg) - 8);
+        vfs.y2 = (int16_t)((vfs.dy - dyMin) - 8);
+
+        if (hwndScanner != NULL) {
+            if ((int16_t)((uint32_t)gd.grBits >> 16) < 0) {
+                MoveWindow(hwndTb, 0, 0, vfs.dx, 0x24, TRUE);
+                yToolbar = 0x24;
+            } else {
+                MoveWindow(hwndTb, 0, -100, 0x32, 0x32, TRUE);
+                yToolbar = 0;
+            }
+
+            MoveWindow(hwndScanner, vfs.xTop + 8, yToolbar, (vfs.dx - vfs.xTop) - 8, vfs.y2 - yToolbar, TRUE);
+
+            MoveWindow(hwndPlanet, 0, yToolbar, vfs.xTop, vfs.y1 - yToolbar, TRUE);
+
+            MoveWindow(hwndMessage, 0, vfs.y1 + 8, vfs.xTop, dyMsg, TRUE);
+
+            MoveWindow(hwndMine, vfs.xTop + 8, vfs.y2 + 8, (vfs.dx - vfs.xTop) - 8, dyMin, TRUE);
+        }
+    }
+
+    /* Update View->Layout checkmarks */
+    {
+        HMENU hmenuBar = (HMENU)GetASubMenu(hwndFrame, 1);
+        HMENU hmenuView = GetSubMenu(hmenuBar, 4);
+
+        for (int id = 0x82; id < 0x85; ++id) {
+            const UINT f = MF_BYCOMMAND | (((id - 0x82) == iWindowLayout) ? MF_CHECKED : MF_UNCHECKED);
+            CheckMenuItem(hmenuView, (UINT)id, f);
+        }
+    }
 }
 
 #endif /* _WIN32 */

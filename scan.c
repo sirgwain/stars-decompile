@@ -1,4 +1,5 @@
 
+#include "globals.h"
 #include "types.h"
 
 #include "scan.h"
@@ -14,8 +15,7 @@ COLORREF rgcrScanMine[3] = {0x00ff0000, 0x0000ffff, 0x000000ff}; /* 1058:0026 */
 
 /* functions */
 
-int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
-{
+int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord) {
     int32_t lFuel;
     int16_t iWarp;
     int16_t cTravel;
@@ -30,7 +30,7 @@ int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
     int16_t i;
     PLANET *lppl;
     int16_t iWarpOld;
-    SCAN scan;
+    SCAN    scan;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x7afd */
@@ -45,32 +45,31 @@ int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
 
 #ifdef _WIN32
 
-LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    POINT pt;
+LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    POINT       pt;
     PAINTSTRUCT ps;
-    RECT rc;
-    int16_t iScanNew;
-    int16_t d;
-    uint16_t hpenSav;
-    int16_t dy;
-    int16_t dx;
-    int16_t iRopSav;
-    int16_t i;
-    uint32_t tick;
-    PLANET plT;
-    int16_t fChgScan;
-    SCAN scan;
-    int16_t c;
-    THING *lpth;
-    FLEET *lpfl;
-    int16_t fSep;
-    int32_t rgid[100];
-    int16_t iChecked;
-    int16_t iSel;
-    THING *lpthMac;
-    int16_t id;
+    RECT        rc;
+    int16_t     iScanNew;
+    int16_t     d;
+    uint16_t    hpenSav;
+    int16_t     dy;
+    int16_t     dx;
+    int16_t     iRopSav;
+    int16_t     i;
+    uint32_t    tick;
+    PLANET      plT;
+    int16_t     fChgScan;
+    SCAN        scan;
+    int16_t     c;
+    THING      *lpth;
+    FLEET      *lpfl;
+    int16_t     fSep;
+    int32_t     rgid[100];
+    int16_t     iChecked;
+    int16_t     iSel;
+    THING      *lpthMac;
+    int16_t     id;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x0068 */
@@ -89,8 +88,7 @@ LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     return 0;
 }
 
-INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     char szName[40];
     RECT rc;
 
@@ -98,28 +96,27 @@ INT_PTR CALLBACK FindDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw)
-{
-    int16_t fhdc;
+void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw) {
+    int16_t  fhdc;
     uint32_t crText;
-    POINT pt2;
-    int16_t id;
-    POINT pt;
-    int16_t grReal;
-    int16_t iBkPrev;
-    int16_t c;
+    POINT    pt2;
+    int16_t  id;
+    POINT    pt;
+    int16_t  grReal;
+    int16_t  iBkPrev;
+    int16_t  c;
     uint32_t crBk;
-    int16_t dxHole;
+    int16_t  dxHole;
     uint16_t hfontSav;
-    RECT rcClip;
-    char *psz;
-    HBRUSH hbrSav;
-    int16_t fDoName;
-    int32_t l;
-    int16_t grobj;
-    RECT rcT;
-    RECT rc;
-    char szBuf[100];
+    RECT     rcClip;
+    char    *psz;
+    HBRUSH   hbrSav;
+    int16_t  fDoName;
+    int32_t  l;
+    int16_t  grobj;
+    RECT     rcT;
+    RECT     rc;
+    char     szBuf[100];
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x69a6 */
@@ -129,21 +126,20 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, int16_t fFullRedraw)
     /* TODO: implement */
 }
 
-void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
-{
-    int16_t y2;
-    int32_t r2;
+void DrawRadarCircle(DRAWCIR *pdc, RECT *prc) {
+    int16_t  y2;
+    int32_t  r2;
     uint32_t crSav;
-    int16_t dy;
-    int16_t y;
-    int16_t iFree;
-    int16_t i;
-    int16_t dx;
-    int16_t x2;
-    int16_t rad;
-    int32_t l;
-    int16_t x;
-    RECT rc;
+    int16_t  dy;
+    int16_t  y;
+    int16_t  iFree;
+    int16_t  i;
+    int16_t  dx;
+    int16_t  x2;
+    int16_t  rad;
+    int32_t  l;
+    int16_t  x;
+    RECT     rc;
 
     /* debug symbols */
     /* label DrawEllipse @ MEMORY_SCAN:0x5002 */
@@ -152,22 +148,63 @@ void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
     /* TODO: implement */
 }
 
-void SetScanScrollBars(HWND hwnd)
-{
-    int16_t xMax;
-    int16_t dy;
-    int16_t yMax;
-    int16_t dx;
+void SetScanScrollBars(HWND hwnd) {
+    // TODO: not tested
     RECT rc;
 
-    /* TODO: implement */
+    /* These locals exist in NB09 but are just intermediates. */
+    int16_t dx;
+    int16_t dy;
+    int16_t xMax;
+    int16_t yMax;
+
+    fInScrollSet = 1;
+
+    GetClientRect(hwnd, &rc);
+
+    /* Convert client size (pixels) into “scan units”. */
+    dx = ScanToPt((int16_t)rc.right);
+    dy = ScanToPt((int16_t)(rc.bottom - dySBar));
+
+    /*
+     * The scan view seems to be centered around [1000 .. dGalInv-1000].
+     * Compute maximum scroll position so that the visible span fits,
+     * with a floor of 1000.
+     */
+    {
+        int32_t maxX = (int32_t)(dGalInv - 1000) - (int32_t)dx;
+        int32_t maxY = (int32_t)(dGalInv - 1000) - (int32_t)dy;
+
+        xMax = (int16_t)((maxX < 1000) ? 1000 : maxX);
+        yMax = (int16_t)((maxY < 1000) ? 1000 : maxY);
+    }
+
+    /* Align max values down to 4 (same as: (val+3)&~3). */
+    SetScrollRange(hwnd, SB_HORZ, 1000, (xMax + 3) & (int16_t)~3, TRUE);
+
+    /*
+     * The original has a weird “if (fInScrollSet != 0) && (SetScrollRange(...), fInScrollSet != 0))”
+     * which is effectively “call SetScrollRange(SB_VERT,...) and, if we are still in scroll-set mode,
+     * compute page/inc and clear the flag”.
+     */
+    SetScrollRange(hwnd, SB_VERT, 1000, (yMax + 3) & (int16_t)~3, TRUE);
+
+    if (fInScrollSet != 0) {
+        /* Use the smaller visible dimension for paging. */
+        if (dy <= dx)
+            dx = dy;
+
+        dScanPage = (int16_t)(((dx / 3) & (int16_t)~3));
+        dScanInc = (int16_t)((((dScanPage / 8) + 2) & (int16_t)~3));
+
+        fInScrollSet = 0;
+    }
 }
 
-int32_t CShipsScanVis(FLEET *lpfl)
-{
-    int16_t j;
-    int32_t csh;
-    int16_t k;
+int32_t CShipsScanVis(FLEET *lpfl) {
+    int16_t  j;
+    int32_t  csh;
+    int16_t  k;
     uint16_t grbitSh;
 
     /* debug symbols */
@@ -178,34 +215,33 @@ int32_t CShipsScanVis(FLEET *lpfl)
     return 0;
 }
 
-void DrawShipScanPath(HDC hdc, int16_t fShow)
-{
-    ORDER *lpord2;
-    int16_t rgDup[87];
-    int16_t j;
+void DrawShipScanPath(HDC hdc, int16_t fShow) {
+    ORDER   *lpord2;
+    int16_t  rgDup[87];
+    int16_t  j;
     uint16_t hpenSav;
-    POINT pt2;
-    POINT pt;
-    int16_t iRopSav;
-    int16_t dy;
-    ORDER *lpord1;
-    POINT ptCur;
-    FLEET *lpfl;
-    int16_t i;
-    int16_t fHdc;
-    int32_t lWarp2;
-    int16_t dRad;
-    int16_t dx;
-    RECT rc;
-    int16_t id;
-    THING *lpth;
-    int16_t fDoneRoute;
-    double dAngle;
-    POINT rgptArrow[2];
-    int16_t dx5;
-    POINT ptTick;
-    int16_t dy5;
-    double m;
+    POINT    pt2;
+    POINT    pt;
+    int16_t  iRopSav;
+    int16_t  dy;
+    ORDER   *lpord1;
+    POINT    ptCur;
+    FLEET   *lpfl;
+    int16_t  i;
+    int16_t  fHdc;
+    int32_t  lWarp2;
+    int16_t  dRad;
+    int16_t  dx;
+    RECT     rc;
+    int16_t  id;
+    THING   *lpth;
+    int16_t  fDoneRoute;
+    double   dAngle;
+    POINT    rgptArrow[2];
+    int16_t  dx5;
+    POINT    ptTick;
+    int16_t  dy5;
+    double   m;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x54c6 */
@@ -221,8 +257,7 @@ void DrawShipScanPath(HDC hdc, int16_t fShow)
     /* TODO: implement */
 }
 
-void GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD)
-{
+void GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD) {
     int16_t dy;
     int16_t dx;
 
@@ -232,40 +267,101 @@ void GetScanFleetOrientation(FLEET *lpfl, POINT *ppt, POINT *pptD)
     /* TODO: implement */
 }
 
-int16_t PtToScan(int16_t d)
-{
+int16_t PtToScan(int16_t d) {
+    if (iScanZoom != 0) {
+        switch (iScanZoom) {
+        case 1:
+            d = (d * 5) >> 2;
+            break;
 
-    /* TODO: implement */
-    return 0;
+        case 2:
+            d = (d * 3) >> 1;
+            break;
+
+        case 3:
+            d = d << 1;
+            break;
+
+        case 4:
+            d = d << 2;
+            break;
+
+        case -4:
+            d = d >> 2;
+            break;
+
+        case -3:
+            d = (d * 3) >> 3;
+            break;
+
+        case -2:
+            d = d >> 1;
+            break;
+
+        case -1:
+            d = (d * 3) >> 2;
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    return d;
 }
 
-int16_t ScanToPt(int16_t d)
-{
-
-    /* TODO: implement */
-    return 0;
+int16_t ScanToPt(int16_t d) {
+    if (iScanZoom != 0) {
+        switch (iScanZoom) {
+        case 1:
+            d = (d << 2) / 5;
+            break;
+        case 2:
+            d = (d << 1) / 3;
+            break;
+        case 3:
+            d = d >> 1;
+            break;
+        case 4:
+            d = d >> 2;
+            break;
+        case -4:
+            d = d << 2;
+            break;
+        case -3:
+            d = (d << 3) / 3;
+            break;
+        case -2:
+            d = d << 1;
+            break;
+        case -1:
+            d = (d << 2) / 3;
+            break;
+        default:
+            break;
+        }
+    }
+    return d;
 }
 
-int16_t SetScanWp(int16_t iNew)
-{
+int16_t SetScanWp(int16_t iNew) {
     SCAN scan;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FAddWayPoint(POINT ptIn, SCAN *pscan)
-{
-    HDC hdc;
+int16_t FAddWayPoint(POINT ptIn, SCAN *pscan) {
+    HDC     hdc;
     int16_t id;
     int16_t dy;
-    ORDER *lpord;
+    ORDER  *lpord;
     int16_t lDist;
-    POINT rgpt[3];
+    POINT   rgpt[3];
     int16_t dx;
     int16_t cpt;
     int16_t ipt;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x79b9 */
@@ -274,16 +370,15 @@ int16_t FAddWayPoint(POINT ptIn, SCAN *pscan)
     return 0;
 }
 
-int16_t FSelectSz(char *szName)
-{
-    char *pch;
+int16_t FSelectSz(char *szName) {
+    char   *pch;
     int16_t ifl;
-    FLEET *lpfl;
+    FLEET  *lpfl;
     int16_t ipl;
     int16_t cch;
-    char szT[20];
+    char    szT[20];
     int16_t iplPartial;
-    SCAN scan;
+    SCAN    scan;
 
     /* debug symbols */
     /* label GoWithPartial @ MEMORY_SCAN:0x94ef */
@@ -294,9 +389,8 @@ int16_t FSelectSz(char *szName)
     return 0;
 }
 
-void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD)
-{
-    double dbl;
+void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD) {
+    double  dbl;
     int16_t iBmp;
 
     /* debug symbols */
@@ -305,24 +399,18 @@ void GetDxDyOrientation(int16_t dx, int16_t dy, POINT *ppt, POINT *pptD)
     /* TODO: implement */
 }
 
-void ScanToLogical(POINT *ppt)
-{
+void ScanToLogical(POINT *ppt) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void DrawLockLight(HDC hdc, RECT *prc, int16_t fFullRedraw)
-{
+void DrawLockLight(HDC hdc, RECT *prc, int16_t fFullRedraw) {
     int16_t dy;
     int16_t dx;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs)
-{
-    FLEET *lpfl;
+int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs) {
+    FLEET  *lpfl;
     int16_t i;
     int16_t fFound;
 
@@ -330,45 +418,42 @@ int16_t FGetNextObjHere(SCAN *pscan, int16_t fOnlyOurs)
     return 0;
 }
 
-int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt)
-{
-    HDC hdc;
+int16_t FHandleMeasuringTape(SCAN *pscan, POINT pt) {
+    HDC      hdc;
     uint16_t hpenSav;
-    SBAR sbar;
-    POINT ptLogLast;
-    int16_t grTypeIn;
-    POINT ptLogical;
-    POINT ptBase;
-    int16_t iropSav;
-    POINT ptNew;
-    char szT[20];
-    int16_t fVirgin;
-    SCAN scan;
-    RECT rc;
+    SBAR     sbar;
+    POINT    ptLogLast;
+    int16_t  grTypeIn;
+    POINT    ptLogical;
+    POINT    ptBase;
+    int16_t  iropSav;
+    POINT    ptNew;
+    char     szT[20];
+    int16_t  fVirgin;
+    SCAN     scan;
+    RECT     rc;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FEnsurePointOnScreen(POINT pt, int16_t fScroll)
-{
+int16_t FEnsurePointOnScreen(POINT pt, int16_t fScroll) {
     int16_t cy;
     int16_t fFix;
     int16_t cx;
-    POINT ptCtr;
-    RECT rc;
+    POINT   ptCtr;
+    RECT    rc;
 
     /* TODO: implement */
     return 0;
 }
 
-void ChangeScanSel(SCAN *pscan, int16_t fValidScan)
-{
+void ChangeScanSel(SCAN *pscan, int16_t fValidScan) {
     int16_t fMineFieldSel;
-    RECT rcMine;
+    RECT    rcMine;
     int16_t fChgWp;
     int16_t iRad;
-    HDC hdc;
+    HDC     hdc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x8d78 */
@@ -379,44 +464,42 @@ void ChangeScanSel(SCAN *pscan, int16_t fValidScan)
     /* TODO: implement */
 }
 
-void RedrawScanSel(HDC hdc, int16_t fVis)
-{
+void RedrawScanSel(HDC hdc, int16_t fVis) {
     int16_t sel_grobj;
     int16_t fhdc;
     int16_t dOff;
-    POINT pt;
+    POINT   pt;
     int16_t sel_id;
     int16_t fNoSelRedraw;
-    SCAN sel_scan;
-    RECT rc;
+    SCAN    sel_scan;
+    RECT    rc;
     int16_t sel_grobjFull;
 
     /* TODO: implement */
 }
 
-int16_t FHandleWayPointDrag(POINT pt)
-{
-    int16_t fChg;
-    HDC hdc;
+int16_t FHandleWayPointDrag(POINT pt) {
+    int16_t  fChg;
+    HDC      hdc;
     uint16_t hpenSav;
-    SBAR sbar;
-    int16_t fMarker;
-    char szDeepSpace[40];
-    int16_t fDup;
-    int16_t grTypeIn;
+    SBAR     sbar;
+    int16_t  fMarker;
+    char     szDeepSpace[40];
+    int16_t  fDup;
+    int16_t  grTypeIn;
     uint16_t hcurSav;
-    ORDER *lpord;
-    int16_t i;
-    POINT ptLogical;
-    POINT ptNext;
-    int16_t fDel;
-    POINT rgpt[4];
-    POINT ptNew;
-    int16_t cpt;
-    POINT ptPrev;
-    SCAN scan;
-    int16_t fFirst;
-    RECT rc;
+    ORDER   *lpord;
+    int16_t  i;
+    POINT    ptLogical;
+    POINT    ptNext;
+    int16_t  fDel;
+    POINT    rgpt[4];
+    POINT    ptNew;
+    int16_t  cpt;
+    POINT    ptPrev;
+    SCAN     scan;
+    int16_t  fFirst;
+    RECT     rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x8a9f */
@@ -427,25 +510,19 @@ int16_t FHandleWayPointDrag(POINT pt)
     return 0;
 }
 
-void LogicalToScan(POINT *ppt)
-{
+void LogicalToScan(POINT *ppt) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-int16_t FNearAWayPoint(POINT pt, int16_t fLogical)
-{
-    ORDER *lpord;
+int16_t FNearAWayPoint(POINT pt, int16_t fLogical) {
+    ORDER  *lpord;
     int16_t i;
-    SCAN scan;
+    SCAN    scan;
 
     /* TODO: implement */
     return 0;
 }
 
-void ScrollScanner(int16_t dx, int16_t dy)
-{
-    HDC hdc;
+void ScrollScanner(int16_t dx, int16_t dy) {
+    HDC  hdc;
     RECT rcUpd;
     RECT rcUpd2;
     RECT rc;
@@ -456,95 +533,93 @@ void ScrollScanner(int16_t dx, int16_t dy)
     /* TODO: implement */
 }
 
-void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, HDC hdc, HDC hdcMem)
-{
-    int32_t l2;
-    int16_t f999;
+void DrawScanFleetCount(FLEET *lpfl, int16_t x, int16_t y, HDC hdc, HDC hdcMem) {
+    int32_t  l2;
+    int16_t  f999;
     uint32_t cr;
-    FLEET *lpflWalk;
-    int16_t iPlr;
+    FLEET   *lpflWalk;
+    int16_t  iPlr;
     uint16_t hbmpSav;
-    int32_t l;
+    int32_t  l;
 
     /* TODO: implement */
 }
 
-int16_t DrawScanner(HDC hdc, RECT *prc)
-{
-    int16_t xOff;
-    int16_t dExpand;
+int16_t DrawScanner(HDC hdc, RECT *prc) {
+    int16_t  xOff;
+    int16_t  dExpand;
     uint16_t hpenSav;
-    FLEET *lpflT;
-    int16_t j;
-    int16_t yTop;
-    int16_t xMax;
-    POINT pt;
-    int16_t id;
+    FLEET   *lpflT;
+    int16_t  j;
+    int16_t  yTop;
+    int16_t  xMax;
+    POINT    pt;
+    int16_t  id;
     uint32_t crFore;
-    int16_t iBkPrev;
-    POINT ptD;
-    PLANET *lpplMac;
-    int16_t yBmp;
-    int16_t dy;
+    int16_t  iBkPrev;
+    POINT    ptD;
+    PLANET  *lpplMac;
+    int16_t  yBmp;
+    int16_t  dy;
     uint16_t hbmpXSav;
     uint16_t hbmpScreen;
-    int16_t id2;
-    HDC hdcScreen;
-    PLANET *lppl;
-    int16_t yMax;
-    char rgWhatsHere[999];
-    HDC hdcMem;
-    THING *lpth;
-    FLEET *lpfl;
-    int16_t i;
-    int16_t xMin;
+    int16_t  id2;
+    HDC      hdcScreen;
+    PLANET  *lppl;
+    int16_t  yMax;
+    char     rgWhatsHere[999];
+    HDC      hdcMem;
+    THING   *lpth;
+    FLEET   *lpfl;
+    int16_t  i;
+    int16_t  xMin;
     uint16_t hbmpSav;
-    int16_t iord;
-    RECT rcClip;
-    int16_t yOff;
-    RECT rcDraw;
-    int16_t dRange;
-    int16_t idP;
-    POINT ptO;
-    int16_t fSelected;
-    int16_t fMA;
-    int16_t fStarbase;
-    POINT ptSelMain;
-    THING *lpthMac;
-    int16_t fStargate;
+    int16_t  iord;
+    RECT     rcClip;
+    int16_t  yOff;
+    RECT     rcDraw;
+    int16_t  dRange;
+    int16_t  idP;
+    POINT    ptO;
+    int16_t  fSelected;
+    int16_t  fMA;
+    int16_t  fStarbase;
+    POINT    ptSelMain;
+    THING   *lpthMac;
+    int16_t  fStargate;
     uint16_t mdScanBase;
-    int16_t yMin;
-    int16_t dx;
-    HBRUSH hbrSav;
-    int16_t xLeft;
-    int16_t fDoDraw;
-    POINT ptOrigin;
-    RECT rc;
-    int32_t l;
+    int16_t  yMin;
+    int16_t  dx;
+    HBRUSH   hbrSav;
+    int16_t  xLeft;
+    int16_t  fDoDraw;
+    POINT    ptOrigin;
+    RECT     rc;
+    int32_t  l;
     uint32_t crBack;
-    int16_t fTerra;
-    int16_t iOff;
-    int16_t iRel;
-    POINT pt2;
-    int16_t dRad;
+    int16_t  fTerra;
+    int16_t  iOff;
+    int16_t  iRel;
+    POINT    pt2;
+    int16_t  dRad;
     uint32_t cr;
-    int16_t pctDesire;
-    int16_t xOut;
-    THING *lpthDest;
-    HBRUSH hbr;
-    int16_t fConc;
-    int16_t yOut;
-    int32_t lPop;
+    int16_t  pctDesire;
+    int16_t  xOut;
+    THING   *lpthDest;
+    HBRUSH   hbr;
+    int16_t  fConc;
+    int16_t  yOut;
+    int32_t  lPop;
     uint16_t hbmpTrSav;
-    int16_t rgy[250];
-    int16_t fPlanetScanner;
-    int16_t ropSav;
-    int16_t rgx[250];
-    int16_t rgrad[250];
-    DRAWCIR dc;
-    int16_t dPlanRange;
-    int16_t dThingRange;
-    int16_t fDetonating;
+    int16_t  rgy[250];
+    int16_t  fPlanetScanner;
+    int16_t  ropSav;
+    int16_t  rgx[250];
+    int16_t  rgrad[250];
+    DRAWCIR  dc;
+    int16_t  dPlanRange;
+    int16_t  dThingRange;
+    int16_t  fDetonating;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SCAN:0x14c6 */
@@ -569,25 +644,23 @@ int16_t DrawScanner(HDC hdc, RECT *prc)
     return 0;
 }
 
-void CtrPointScan(POINT pt, int16_t fScroll)
-{
+void CtrPointScan(POINT pt, int16_t fScroll) {
     int16_t dxCur;
     int16_t cy;
     int16_t y;
     int16_t cx;
     int16_t dyCur;
     int16_t x;
-    RECT rc;
+    RECT    rc;
 
     /* TODO: implement */
 }
 
-void DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt)
-{
+void DrawScanXorLines(HDC hdc, POINT *rgpt, int16_t cpt) {
     uint16_t hpenSav;
-    int16_t iRopSav;
-    int16_t i;
-    RECT rc;
+    int16_t  iRopSav;
+    int16_t  i;
+    RECT     rc;
 
     /* TODO: implement */
 }

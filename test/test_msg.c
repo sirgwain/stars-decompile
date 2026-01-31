@@ -5,6 +5,7 @@
 
 #include "globals.h"
 #include "types.h"
+#include "memory.h"
 #include "msg.h" /* PctPlanetDesirability */
 
 /* Keep these local to the test file. */
@@ -33,6 +34,8 @@ typedef struct MsgGlobalsSnapshot
     PLAYER rgplr0;
     PLAYER rgplr1;
     PLAYER rgplr2;
+
+    int16_t *lpMsg
 } MsgGlobalsSnapshot;
 
 static void snapshot_globals(MsgGlobalsSnapshot *out)
@@ -53,6 +56,10 @@ static void snapshot_globals(MsgGlobalsSnapshot *out)
     out->rgplr0 = rgplr[0];
     out->rgplr1 = rgplr[1];
     out->rgplr2 = rgplr[2];
+
+    out->lpMsg = lpMsg;
+    // have to initalize lpMsg
+    lpMsg = (int16_t *)LpAlloc(65480, htMsg);
 }
 
 static void restore_globals(const MsgGlobalsSnapshot *in)
@@ -73,6 +80,10 @@ static void restore_globals(const MsgGlobalsSnapshot *in)
     rgplr[0] = in->rgplr0;
     rgplr[1] = in->rgplr1;
     rgplr[2] = in->rgplr2;
+
+    // free our memmory and restore
+    FreeLp(lpMsg, htMsg);
+    lpMsg = in->lpMsg;
 }
 
 static void apply_minimal_fixtures(void)
@@ -305,7 +316,131 @@ static void test_PszFormatString_table(void)
     restore_globals(&snap);
 }
 
+/* ------------------------------------------------------------
+ * PackageUpMsg packing tests
+ * ------------------------------------------------------------ */
+
+static MessageId find_msg_with_nargs(uint8_t n)
+{
+    /* Message ids are stored in 9 bits (0..0x1FF). */
+    for (uint16_t i = 0; i <= 0x01FFu; i++)
+    {
+        if (((const uint8_t *)rgcMsgArgs)[i] == n)
+            return (MessageId)i;
+    }
+
+    /* If this ever trips, the message table layout changed. */
+    return (MessageId)0;
+}
+
+static void test_PackageUpMsg_packs_bytes_and_words(void)
+{
+    MsgGlobalsSnapshot snap;
+    snapshot_globals(&snap);
+    apply_minimal_fixtures();
+
+    /* Ensure the gating logic allows the message to be queued. */
+    rgplr[2].fAi = 0;
+    rgplr[2].idAi = 0;
+
+    /* Pick any message id that expects exactly 3 params so we can
+     * deterministically test grWord and cbParams. */
+    MessageId iMsg = find_msg_with_nargs(3);
+    TEST_CHECK_(iMsg != (MessageId)0, "need a message id with 3 params in rgcMsgArgs");
+
+    uint8_t buf[32];
+    memset(buf, 0, sizeof(buf));
+
+    /* Keep the offset small so the bounds check passes. */
+    imemMsgCur = 0;
+
+    /* p1 fits in a byte, p2 forces a word, p3 fits in a byte. */
+    int16_t cb = PackageUpMsg(buf, /*iPlr=*/2, iMsg, /*iObj=*/-123,
+                              /*p1=*/0x12,
+                              /*p2=*/(int16_t)0x1234,
+                              /*p3=*/(int16_t)0x00FF,
+                              /*p4=*/0, /*p5=*/0, /*p6=*/0, /*p7=*/0);
+
+    TEST_CHECK_(cb == 9, "expected packed size 9 (5 header + 4 params), got %d", (int)cb);
+
+    {
+        const MSGTURN *mt = (const MSGTURN *)buf;
+
+        TEST_CHECK_(mt->iPlr == 2, "iPlr nibble wrong: got %u", (unsigned)mt->iPlr);
+        TEST_CHECK_(mt->cbParams == 4, "cbParams wrong: got %u", (unsigned)mt->cbParams);
+
+        TEST_CHECK_(mt->msghdr.iMsg == ((uint16_t)iMsg & 0x01FFu),
+                    "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
+        TEST_CHECK_(mt->msghdr.wGoto == -123, "wGoto wrong: got %d", (int)mt->msghdr.wGoto);
+
+        /* Only the 2nd arg (bit 1) should be a word. */
+        TEST_CHECK_(mt->msghdr.grWord == 0x0002u,
+                    "grWord wrong: got 0x%X", (unsigned)mt->msghdr.grWord);
+    }
+
+    /* Verify payload bytes (little-endian word). */
+    TEST_CHECK_(buf[5] == 0x12, "p1 byte wrong: got 0x%02X", (unsigned)buf[5]);
+    TEST_CHECK_(buf[6] == 0x34 && buf[7] == 0x12,
+                "p2 word bytes wrong: got 0x%02X 0x%02X", (unsigned)buf[6], (unsigned)buf[7]);
+    TEST_CHECK_(buf[8] == 0xFF, "p3 byte wrong: got 0x%02X", (unsigned)buf[8]);
+
+    restore_globals(&snap);
+}
+
+static void test_FSendPlrMsg_appends_first_player_message(void)
+{
+    MsgGlobalsSnapshot snap;
+    snapshot_globals(&snap);
+    apply_minimal_fixtures();
+
+    /* Ensure player 0 is allowed to receive messages */
+    rgplr[0].fAi = 0;
+    rgplr[0].idAi = 0;
+
+    /* Start with empty message buffer */
+    imemMsgCur = 0;
+    cMsg = 0;
+
+    /* Use the first message a player gets */
+    {
+        int16_t i = 0;
+        int16_t iMin = 0;
+
+        int16_t ret = FSendPlrMsg(
+            i,
+            idmHomePlanetPeopleReadyLeaveNestExplore,
+            iMin,
+            iMin,
+            0, 0, 0, 0, 0, 0);
+
+        TEST_CHECK_(ret == 1,
+                    "FSendPlrMsg should return 1 for initial player message");
+    }
+
+    /* One message should now be queued */
+    TEST_CHECK_(cMsg == 1,
+                "expected cMsg == 1, got %d", (int)cMsg);
+    TEST_CHECK_(imemMsgCur > 0,
+                "imemMsgCur should advance after message append");
+
+    /* Inspect the queued message header */
+    {
+        const MSGTURN *mt = (const MSGTURN *)lpMsg;
+
+        TEST_CHECK_(mt->iPlr == 0,
+                    "iPlr wrong: got %u", (unsigned)mt->iPlr);
+
+        TEST_CHECK_(mt->msghdr.iMsg ==
+                        (uint16_t)idmHomePlanetPeopleReadyLeaveNestExplore,
+                    "iMsg wrong: got %u", (unsigned)mt->msghdr.iMsg);
+    }
+
+    restore_globals(&snap);
+}
+
 TEST_LIST = {
     {"MSG/PszFormatString table", test_PszFormatString_table},
+    {"MSG/PackageUpMsg packs bytes+words", test_PackageUpMsg_packs_bytes_and_words},
+    {"MSG/FSendPlrMsg appends first message", test_FSendPlrMsg_appends_first_player_message},
     {NULL, NULL},
 };

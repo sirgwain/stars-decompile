@@ -37,19 +37,6 @@
       }
     },
     {
-      "name": "macos-crossover",
-      "displayName": "macOS \u2192 Win32 (Crossover / MinGW)",
-      "inherits": "base",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-win",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchains/mingw-w64.cmake",
-        "STARS_BUILD_CLI": "OFF",
-        "STARS_BUILD_WIN32": "ON",
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
       "name": "macos-linux-debug",
       "displayName": "macOS / Linux (CLI only, Debug)",
       "inherits": "base",
@@ -73,6 +60,19 @@
         "STARS_BUILD_WIN32": "OFF",
         "CMAKE_C_FLAGS": "-D_WIN32=1 -DSTARS_USE_WIN_STUBS=1"
       }
+    },
+    {
+      "name": "macos-wine",
+      "displayName": "macOS \u2192 Win32 (Wine / MinGW)",
+      "inherits": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-win",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/toolchains/mingw-w64.cmake",
+        "STARS_BUILD_CLI": "OFF",
+        "STARS_BUILD_WIN32": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
   "buildPresets": [
@@ -88,9 +88,9 @@
       "configuration": "Debug"
     },
     {
-      "name": "build-macos-crossover",
-      "displayName": "Build (macOS Crossover)",
-      "configurePreset": "macos-crossover"
+      "name": "build-macos-wine",
+      "displayName": "Build (macOS Wine)",
+      "configurePreset": "macos-wine"
     },
     {
       "name": "run-tests",
@@ -101,11 +101,19 @@
       ]
     },
     {
-      "name": "run-crossover",
-      "displayName": "Run in Crossover",
-      "configurePreset": "macos-crossover",
+      "name": "run-wine",
+      "displayName": "Run in Wine",
+      "configurePreset": "macos-wine",
       "targets": [
-        "run_in_crossover"
+        "run_in_wine"
+      ]
+    },
+    {
+      "name": "run-wine-gdb",
+      "displayName": "Run in Wine (winedbg --gdb)",
+      "configurePreset": "macos-wine",
+      "targets": [
+        "run_in_wine_gdb"
       ]
     },
     {

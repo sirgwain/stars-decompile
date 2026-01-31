@@ -1,42 +1,59 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
-#include "msg.h"
-#include "memory.h"
 #include "file.h"
+#include "memory.h"
+#include "msg.h"
+#include "parts.h"
+#include "planet.h"
 #include "strings.h"
 #include "util.h"
 #include "utilgen.h"
-#include "planet.h"
-#include "parts.h"
 
 /* globals */
-char aMSGCmpr[22836] = {0};
-uint8_t acMSG[387] = {0x62, 0xa5, 0x7c, 0x63, 0x69, 0x99, 0x6c, 0x9b, 0x7c, 0x83, 0x2d, 0x84, 0x5a, 0x53, 0x6f, 0x49, 0x43, 0x44, 0x31, 0x4f, 0x5e, 0x6e, 0x6d, 0x5f, 0x37, 0x37, 0x54, 0x3d, 0x70, 0x69, 0x56, 0x53, 0x67, 0x65, 0x4b, 0x59, 0x84, 0x42, 0x56, 0x1a, 0xa6, 0x9e, 0xcc, 0x26, 0x24, 0x24, 0x20, 0x2f, 0x37, 0x4f, 0x58, 0x6b, 0x73, 0x26, 0x28, 0x22, 0x24, 0x2e, 0x30, 0x47, 0xb1, 0x98, 0x48, 0x2e, 0x5f, 0x69, 0x33, 0x2f, 0x34, 0x30, 0x5d, 0x97, 0x71, 0xa9, 0x5f, 0x98, 0x6e, 0xc0, 0x29, 0x69, 0x89, 0x71, 0x6f, 0x87, 0x8c, 0xaa, 0xba, 0xb5, 0x6c, 0x56, 0x57, 0x49, 0xed, 0xee, 0x75, 0x4e, 0x33, 0x36, 0x4a, 0x5b, 0x6b, 0x6e, 0x75, 0x79, 0x97, 0xa6, 0x42, 0x4a, 0x59, 0x71, 0x84, 0x87, 0x8f, 0x9e, 0xba, 0xc9, 0x45, 0x7c, 0x81, 0x6c, 0xf4, 0x26, 0x2a, 0x43, 0x2f, 0x5b, 0x74, 0xe1, 0xd6, 0xb3, 0xc7, 0x6e, 0x7b, 0x91, 0x90, 0xb1, 0xc6, 0xd5, 0xca, 0x55, 0x82, 0x78, 0x7c, 0x42, 0x3a, 0x54, 0x62, 0x71, 0x6d, 0x61, 0x60, 0x6e, 0x7d, 0x79, 0x7b, 0x83, 0x7a, 0x9d, 0xb5, 0xaf, 0x6c, 0x6c, 0x87, 0xa2, 0x8d, 0x8b, 0xb8, 0x9d, 0x84, 0x78, 0x5d, 0x9e, 0x82, 0xb8, 0xc5, 0x85, 0x6a, 0x8d, 0x72, 0x8b, 0x70, 0xa6, 0xad, 0xd3, 0x5c, 0x5c, 0xcc, 0x62, 0x84, 0x6f, 0x4c, 0x7d, 0x7b, 0x5e, 0x41, 0x1e, 0x30, 0x3a, 0x94, 0x91, 0x42, 0x39, 0xa2, 0x99, 0x3f, 0x1c, 0x73, 0x50, 0xfe, 0x73, 0xcb, 0x48, 0x6c, 0x6e, 0xdb, 0xdd, 0x7b, 0x99, 0x5e, 0xae, 0x7f, 0x4b, 0x4c, 0x78, 0x42, 0x5b, 0x83, 0x73, 0x7a, 0xc1, 0x89, 0xab, 0xad, 0xa8, 0xac, 0xa8, 0x68, 0x64, 0x7e, 0x69, 0x78, 0x78, 0x9d, 0x54, 0x55, 0x65, 0x66, 0x21, 0x90, 0x65, 0x4f, 0x7b, 0x57, 0x9e, 0x93, 0x38, 0xcc, 0xf6, 0xc1, 0xd3, 0xc6, 0xb6, 0x8d, 0x90, 0xb0, 0xdf, 0x7e, 0xc2, 0xb6, 0x7f, 0xd4, 0xc6, 0x92, 0x8c, 0x55, 0x63, 0x64, 0x99, 0x82, 0x8f, 0x97, 0x26, 0x11, 0x36, 0x78, 0x72, 0x4f, 0x5e, 0x5d, 0xab, 0xb5, 0x57, 0x5d, 0x59, 0x24, 0x2c, 0xb7, 0xb0, 0x99, 0x6f, 0x3b, 0x4a, 0x48, 0x84, 0x84, 0x53, 0x51, 0x39, 0x37, 0xa3, 0x97, 0x4e, 0x5f, 0xe4, 0x7a, 0x65, 0x94, 0x96, 0xd8, 0xd2, 0x54, 0x55, 0xeb, 0xec, 0x6e, 0xb3, 0xb2, 0x78, 0x40, 0x5a, 0x7e, 0x85, 0x3c, 0x2d, 0x1e, 0x9f, 0xc1, 0x87, 0x61, 0x38, 0x38, 0x3f, 0x38, 0xb4, 0x7c, 0x93, 0x39, 0x48, 0x59, 0x63, 0x72, 0x3e, 0xa2, 0xa1, 0x3d, 0xb0, 0xa7, 0x53, 0x44, 0x47, 0x5b, 0x6c, 0x7c, 0x7f, 0x86, 0x8a, 0xa8, 0xb7, 0x49, 0x51, 0x60, 0x78, 0x8b, 0x8e, 0x96, 0xa5, 0xc1, 0xd0, 0x59, 0x54, 0x53, 0x46, 0x46, 0x4c, 0xce, 0x6f, 0x82};
-char rgMSGLookupTable[72] = " eotasnirldh\\ucpfybm.gvwk,YT0'AzPMSXFxOIj%UVL-CDEN!GHq*W()25:QR1B/46Z78?";
+char    aMSGCmpr[22836] = {0};
+uint8_t acMSG[387] = {
+    0x62, 0xa5, 0x7c, 0x63, 0x69, 0x99, 0x6c, 0x9b, 0x7c, 0x83, 0x2d, 0x84, 0x5a, 0x53, 0x6f, 0x49, 0x43, 0x44, 0x31, 0x4f, 0x5e, 0x6e, 0x6d, 0x5f, 0x37, 0x37,
+    0x54, 0x3d, 0x70, 0x69, 0x56, 0x53, 0x67, 0x65, 0x4b, 0x59, 0x84, 0x42, 0x56, 0x1a, 0xa6, 0x9e, 0xcc, 0x26, 0x24, 0x24, 0x20, 0x2f, 0x37, 0x4f, 0x58, 0x6b,
+    0x73, 0x26, 0x28, 0x22, 0x24, 0x2e, 0x30, 0x47, 0xb1, 0x98, 0x48, 0x2e, 0x5f, 0x69, 0x33, 0x2f, 0x34, 0x30, 0x5d, 0x97, 0x71, 0xa9, 0x5f, 0x98, 0x6e, 0xc0,
+    0x29, 0x69, 0x89, 0x71, 0x6f, 0x87, 0x8c, 0xaa, 0xba, 0xb5, 0x6c, 0x56, 0x57, 0x49, 0xed, 0xee, 0x75, 0x4e, 0x33, 0x36, 0x4a, 0x5b, 0x6b, 0x6e, 0x75, 0x79,
+    0x97, 0xa6, 0x42, 0x4a, 0x59, 0x71, 0x84, 0x87, 0x8f, 0x9e, 0xba, 0xc9, 0x45, 0x7c, 0x81, 0x6c, 0xf4, 0x26, 0x2a, 0x43, 0x2f, 0x5b, 0x74, 0xe1, 0xd6, 0xb3,
+    0xc7, 0x6e, 0x7b, 0x91, 0x90, 0xb1, 0xc6, 0xd5, 0xca, 0x55, 0x82, 0x78, 0x7c, 0x42, 0x3a, 0x54, 0x62, 0x71, 0x6d, 0x61, 0x60, 0x6e, 0x7d, 0x79, 0x7b, 0x83,
+    0x7a, 0x9d, 0xb5, 0xaf, 0x6c, 0x6c, 0x87, 0xa2, 0x8d, 0x8b, 0xb8, 0x9d, 0x84, 0x78, 0x5d, 0x9e, 0x82, 0xb8, 0xc5, 0x85, 0x6a, 0x8d, 0x72, 0x8b, 0x70, 0xa6,
+    0xad, 0xd3, 0x5c, 0x5c, 0xcc, 0x62, 0x84, 0x6f, 0x4c, 0x7d, 0x7b, 0x5e, 0x41, 0x1e, 0x30, 0x3a, 0x94, 0x91, 0x42, 0x39, 0xa2, 0x99, 0x3f, 0x1c, 0x73, 0x50,
+    0xfe, 0x73, 0xcb, 0x48, 0x6c, 0x6e, 0xdb, 0xdd, 0x7b, 0x99, 0x5e, 0xae, 0x7f, 0x4b, 0x4c, 0x78, 0x42, 0x5b, 0x83, 0x73, 0x7a, 0xc1, 0x89, 0xab, 0xad, 0xa8,
+    0xac, 0xa8, 0x68, 0x64, 0x7e, 0x69, 0x78, 0x78, 0x9d, 0x54, 0x55, 0x65, 0x66, 0x21, 0x90, 0x65, 0x4f, 0x7b, 0x57, 0x9e, 0x93, 0x38, 0xcc, 0xf6, 0xc1, 0xd3,
+    0xc6, 0xb6, 0x8d, 0x90, 0xb0, 0xdf, 0x7e, 0xc2, 0xb6, 0x7f, 0xd4, 0xc6, 0x92, 0x8c, 0x55, 0x63, 0x64, 0x99, 0x82, 0x8f, 0x97, 0x26, 0x11, 0x36, 0x78, 0x72,
+    0x4f, 0x5e, 0x5d, 0xab, 0xb5, 0x57, 0x5d, 0x59, 0x24, 0x2c, 0xb7, 0xb0, 0x99, 0x6f, 0x3b, 0x4a, 0x48, 0x84, 0x84, 0x53, 0x51, 0x39, 0x37, 0xa3, 0x97, 0x4e,
+    0x5f, 0xe4, 0x7a, 0x65, 0x94, 0x96, 0xd8, 0xd2, 0x54, 0x55, 0xeb, 0xec, 0x6e, 0xb3, 0xb2, 0x78, 0x40, 0x5a, 0x7e, 0x85, 0x3c, 0x2d, 0x1e, 0x9f, 0xc1, 0x87,
+    0x61, 0x38, 0x38, 0x3f, 0x38, 0xb4, 0x7c, 0x93, 0x39, 0x48, 0x59, 0x63, 0x72, 0x3e, 0xa2, 0xa1, 0x3d, 0xb0, 0xa7, 0x53, 0x44, 0x47, 0x5b, 0x6c, 0x7c, 0x7f,
+    0x86, 0x8a, 0xa8, 0xb7, 0x49, 0x51, 0x60, 0x78, 0x8b, 0x8e, 0x96, 0xa5, 0xc1, 0xd0, 0x59, 0x54, 0x53, 0x46, 0x46, 0x4c, 0xce, 0x6f, 0x82};
+char    rgMSGLookupTable[72] = " eotasnirldh\\ucpfybm.gvwk,YT0'AzPMSXFxOIj%UVL-CDEN!GHq*W()25:QR1B/46Z78?";
 int16_t aiMSGChunkOffset[7] = {0, 2854, 6582, 10933, 14692, 18914, 22612};
-char rgcMsgArgs[387] = {4, 5, 3, 4, 4, 2, 2, 4, 2, 3, 1, 1, 2, 1, 4, 3, 3, 3, 2, 2, 4, 4, 3, 3, 4, 4, 4, 3, 3, 3, 3, 4, 4, 3, 3, 1, 1, 5, 3, 1, 2, 2, 1, 6, 6, 6, 6, 2, 3, 3, 4, 3, 4, 1, 2, 1, 2, 1, 2, 4, 5, 5, 1, 1, 1, 1, 5, 5, 5, 5, 7, 7, 7, 7, 5, 5, 5, 5, 1, 2, 3, 1, 3, 2, 3, 2, 2, 1, 1, 4, 4, 2, 6, 6, 3, 3, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 2, 2, 2, 1, 3, 5, 5, 4, 3, 6, 2, 0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 4, 4, 2, 2, 5, 5, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 4, 4, 5, 5, 7, 5, 5, 6, 6, 4, 5, 5, 6, 7, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 3, 1, 0, 2, 6, 1, 1, 3, 7, 3, 3, 5, 6, 7, 6, 4, 5, 6, 5, 2, 3, 2, 3, 1, 1, 2, 2, 4, 5, 6, 5, 6, 2, 4, 2, 4, 3, 1, 2, 1, 4, 3, 4, 4, 3, 3, 4, 4, 4, 5, 4, 4, 6, 5, 5, 5, 1, 2, 7, 1, 1, 2, 1, 1, 3, 2, 1, 2, 2, 2, 0, 1, 1, 0, 1, 2, 2, 3, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 6, 6, 0, 1, 5, 1, 1, 2, 2, 2, 2, 2, 6, 6, 2, 5, 5, 3, 3, 3, 1, 1, 1, 4, 3, 3, 1, 1, 4, 4, 4, 4, 2, 3, 1, 1, 4, 2, 2, 4, 5, 6, 7, 4, 4, 6, 6, 5, 3, 4, 3, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 0, 1, 1, 2, 3, 4, 2, 4, 3, 2, 2, 2, 5, 6, 7, 4, 5, 6, 1, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 3, 3, 2, 2, 1, 1, 2, 4, 1}; /* 1030:5b0e */
+char    rgcMsgArgs[387] = {4, 5, 3, 4, 4, 2, 2, 4, 2, 3, 1, 1, 2, 1, 4, 3, 3, 3, 2, 2, 4, 4, 3, 3, 4, 4, 4, 3, 3, 3, 3, 4, 4, 3, 3, 1, 1, 5, 3, 1, 2, 2, 1, 6,
+                           6, 6, 6, 2, 3, 3, 4, 3, 4, 1, 2, 1, 2, 1, 2, 4, 5, 5, 1, 1, 1, 1, 5, 5, 5, 5, 7, 7, 7, 7, 5, 5, 5, 5, 1, 2, 3, 1, 3, 2, 3, 2, 2, 1,
+                           1, 4, 4, 2, 6, 6, 3, 3, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 2, 2, 2, 1, 3, 5, 5, 4, 3, 6, 2, 0, 0, 0, 0, 1,
+                           1, 1, 1, 2, 3, 4, 4, 2, 2, 5, 5, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 4, 4, 5, 5, 7, 5, 5, 6, 6, 4, 5, 5, 6, 7, 1, 2, 2, 2, 1, 2, 1,
+                           1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 3, 1, 0, 2, 6, 1, 1, 3, 7, 3, 3, 5, 6, 7, 6, 4, 5, 6, 5, 2, 3, 2, 3, 1, 1, 2, 2, 4, 5, 6, 5, 6, 2, 4,
+                           2, 4, 3, 1, 2, 1, 4, 3, 4, 4, 3, 3, 4, 4, 4, 5, 4, 4, 6, 5, 5, 5, 1, 2, 7, 1, 1, 2, 1, 1, 3, 2, 1, 2, 2, 2, 0, 1, 1, 0, 1, 2, 2, 3,
+                           1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 6, 6, 0, 1, 5, 1, 1, 2, 2, 2, 2, 2, 6, 6, 2, 5, 5, 3, 3, 3, 1, 1, 1, 4, 3, 3, 1, 1, 4, 4, 4,
+                           4, 2, 3, 1, 1, 4, 2, 2, 4, 5, 6, 7, 4, 4, 6, 6, 5, 3, 4, 3, 1, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 0, 1, 1, 2, 3, 4, 2, 4, 3, 2, 2, 2, 5,
+                           6, 7, 4, 5, 6, 1, 3, 2, 3, 4, 4, 4, 4, 4, 5, 5, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 3, 3, 2, 2, 1, 1, 2, 4, 1}; /* 1030:5b0e */
 
 extern const char *const aMSGUncompressed[];
 
 /* functions */
-int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj)
-{
+int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj) {
     uint8_t *lpb = (uint8_t *)lpMsg;
     uint8_t *lpbMax = (uint8_t *)lpMsg + (uint32_t)imemMsgCur * 2u;
 
-    for (;;)
-    {
-        if (lpb >= lpbMax)
-        {
+    for (;;) {
+        if (lpb >= lpbMax) {
             return 0;
         }
 
-        if (((lpb[0] & 0x0F) == (uint8_t)iPlr) &&
-            (((*(uint16_t *)(lpb + 1)) & 0x01FFu) == (uint16_t)iMsg) &&
-            (*(int16_t *)(lpb + 3) == iObj))
-        {
+        if (((lpb[0] & 0x0F) == (uint8_t)iPlr) && (((*(uint16_t *)(lpb + 1)) & 0x01FFu) == (uint16_t)iMsg) && (*(int16_t *)(lpb + 3) == iObj)) {
             return 1;
         }
 
@@ -44,13 +61,11 @@ int16_t FFindPlayerMessage(int16_t iPlr, int16_t iMsg, int16_t iObj)
     }
 }
 
-int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
-{
+int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb) {
     const uint8_t *lpb;
     const uint8_t *end;
 
-    if (iMsg < 0 || iMsg >= cMsg || pmb == NULL)
-    {
+    if (iMsg < 0 || iMsg >= cMsg || pmb == NULL) {
         return 0;
     }
 
@@ -58,21 +73,18 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
     end = (const uint8_t *)lpMsg + imemMsgCur;
 
     /* Walk forward iMsg records; when iMsg==0, decode into *pmb. */
-    for (;;)
-    {
-        if (lpb + sizeof(MSGHDR) > end)
-        {
+    for (;;) {
+        if (lpb + sizeof(MSGHDR) > end) {
             /* Shouldn’t happen if cMsg/imemMsgCur are consistent. */
             return 0;
         }
 
         const MSGHDR *mh = (const MSGHDR *)lpb;
-        uint16_t idm = (uint16_t)mh->iMsg; /* 9-bit id */
-        uint16_t u = (uint16_t)mh->grWord; /* 7-bit “param is word” bitfield */
+        uint16_t      idm = (uint16_t)mh->iMsg; /* 9-bit id */
+        uint16_t      u = (uint16_t)mh->grWord; /* 7-bit “param is word” bitfield */
         lpb += sizeof(MSGHDR);
 
-        if (iMsg == 0)
-        {
+        if (iMsg == 0) {
             pmb->iMsg = (int16_t)idm;
             pmb->wGoto = mh->wGoto;
             for (int k = 0; k < 7; k++)
@@ -81,31 +93,24 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
 
         /* Param count comes from rgcMsgArgs[idm] (asm proves this). */
         uint8_t cParam = 0;
-        if (idm < (uint16_t)sizeof(rgcMsgArgs))
-        {
+        if (idm < (uint16_t)sizeof(rgcMsgArgs)) {
             cParam = (uint8_t)rgcMsgArgs[idm];
         }
 
         /* Safety: MSGBIG only has 7 params. Stars messages should never exceed that. */
-        if (cParam > 7)
-        {
+        if (cParam > 7) {
             cParam = 7;
         }
 
-        for (uint8_t i = 0; i < cParam; ++i)
-        {
+        for (uint8_t i = 0; i < cParam; ++i) {
             if (lpb >= end)
                 return 0;
 
-            if (iMsg == 0)
-            {
-                if ((u & 1u) == 0)
-                {
+            if (iMsg == 0) {
+                if ((u & 1u) == 0) {
                     /* byte param */
                     pmb->rgParam[i] = (int16_t)(uint16_t)(*lpb);
-                }
-                else
-                {
+                } else {
                     /* word param */
                     if (lpb + 2 > end)
                         return 0;
@@ -117,8 +122,7 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
             u >>= 1;
         }
 
-        if (iMsg == 0)
-        {
+        if (iMsg == 0) {
             return 1;
         }
 
@@ -127,56 +131,107 @@ int16_t FGetNMsgbig(int16_t iMsg, MSGBIG *pmb)
     }
 }
 
-int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
-{
+int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6,
+                     int16_t p7) {
     int16_t *pi;
-    int16_t i;
+    int16_t  i;
     uint16_t grbit;
     MSGTURN *lpmt;
     uint8_t *lpb;
     uint8_t *lpbBase;
 
-    /* TODO: implement */
-    return 0;
+    if (iPlr == -1)
+        return 0;
+
+    /* gate message creation based on player state / message kind */
+    {
+        const PLAYER *pplr = &rgplr[iPlr];
+
+        if (!((pplr->fAi == 0) || (pplr->idAi == 7) || (iMsg == idmHasBombedKillingOffEnemyColonists) ||
+              (iMsg == idmHaveAttackedFirstRateStormTroopersThough) || (iMsg == idmColonistsHaveDiedOffLongerControlPlanet) ||
+              (iMsg == idmColonistsHaveJumpedShipLongerControlPlanet))) {
+            return 0;
+        }
+    }
+
+    /* ensure we have room for worst-case (header + 7 params as words) */
+    if ((uint16_t)(imemMsgCur + cbPackedMsgSize) > cbPackedMsgAllocSize)
+        return -1;
+
+    lpmt = (MSGTURN *)pb;
+
+    /* write header */
+    lpmt->iPlr = (uint8_t)iPlr;
+    lpmt->msghdr.iMsg = (uint16_t)iMsg; /* 9-bit field */
+    lpmt->msghdr.wGoto = iObj;
+
+    /* pack params */
+    lpbBase = pb + sizeof(MSGTURN); /* == pb + 5 */
+    lpb = lpbBase;
+
+    grbit = 1;
+
+    /* IMPORTANT: params are not guaranteed to be contiguous on modern ABIs. */
+    {
+        int16_t rgParam[7] = {p1, p2, p3, p4, p5, p6, p7};
+        pi = rgParam;
+
+        for (i = 0; i < (int16_t)((const uint8_t *)rgcMsgArgs)[(uint16_t)iMsg]; i++) {
+            if (((uint16_t)*pi & 0xFF00u) == 0u) {
+                /* param fits in byte */
+                *lpb++ = (uint8_t)*pi;
+            } else {
+                /* param needs a word; mark it in grWord and write 16-bit value */
+                lpmt->msghdr.grWord |= grbit;
+
+                *(uint16_t *)lpb = (uint16_t)*pi; /* little-endian write */
+                lpb += 2;
+            }
+
+            pi++;
+            grbit <<= 1;
+        }
+    }
+
+    /* cbParams is number of bytes written after the MSGTURN header */
+    lpmt->cbParams = (uint8_t)(lpb - lpbBase);
+
+    /* return total packed size */
+    return (int16_t)(lpb - pb);
 }
 
-char *PszGetMessageN(int16_t iMsg)
-{
+char *PszGetMessageN(int16_t iMsg) {
     MSGBIG mb;
-    char *psz;
+    char  *psz;
 
     /* TODO: implement */
     return NULL;
 }
 
-int16_t IdmGetMessageN(int16_t iMsg)
-{
+int16_t IdmGetMessageN(int16_t iMsg) {
     MSGBIG mb;
-    if (!FGetNMsgbig(iMsg, &mb))
-    {
+    if (!FGetNMsgbig(iMsg, &mb)) {
         return -1;
     }
     return mb.iMsg;
 }
 
-int16_t FFinishPlrMsgEntry(int16_t dInc)
-{
+int16_t FFinishPlrMsgEntry(int16_t dInc) {
     uint8_t *lpbMsg;
-    int16_t i;
-    int16_t cbNew;
-    int16_t iPlrTo;
-    MSGPLR *lpmpCur;
-    MSGPLR *lpmpPrev;
-    int16_t cb;
+    int16_t  i;
+    int16_t  cbNew;
+    int16_t  iPlrTo;
+    MSGPLR  *lpmpCur;
+    MSGPLR  *lpmpPrev;
+    int16_t  cb;
 
     /* TODO: implement */
     return 0;
 }
 
-void MarkPlanetsPlayerLost(int16_t iPlayer)
-{
+void MarkPlanetsPlayerLost(int16_t iPlayer) {
     uint8_t *lpbMax;
-    PLANET *lppl;
+    PLANET  *lppl;
     uint8_t *lpbT;
     uint16_t w;
     uint8_t *lpb;
@@ -187,63 +242,132 @@ void MarkPlanetsPlayerLost(int16_t iPlayer)
     /* TODO: implement */
 }
 
-char *PszFormatMessage(MessageId idm, int16_t *pParams)
-{
+char *PszFormatMessage(MessageId idm, int16_t *pParams) {
 
     /* TODO: implement */
     return NULL;
 }
 
-int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2)
-{
-    uint8_t rgb[64];
-    int16_t *pi;
+void SetFilteringGroups(MessageId idm, int16_t fSet) {
     int16_t i;
-    uint16_t grbit;
-    uint8_t *pb;
+
+    /* TODO: implement */
+}
+
+int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
+    uint8_t  rgbWork[40];
+    int16_t  cbMsg;
+    uint8_t *lpb;
+
+    cbMsg = PackageUpMsg(rgbWork, iPlr, iMsg, iObj, p1, p2, p3, p4, p5, p6, p7);
+
+    /* ASM behavior:
+       - cbMsg > 0: appended => return 1
+       - cbMsg == 0: gated off / not queued => return 1
+       - cbMsg < 0: no room / failure => return 0
+    */
+    if (cbMsg <= 0)
+        return (cbMsg == 0) ? 1 : 0;
+
+    /* In Win16 this was a far pointer add: lpMsg:imemMsgCur.
+       In the port, lpMsg is a flat pointer to the message buffer. */
+    lpb = (uint8_t *)lpMsg + (uint16_t)imemMsgCur;
+
+    memmove(lpb, rgbWork, (size_t)(uint16_t)cbMsg);
+
+    imemMsgCur = (int16_t)((uint16_t)imemMsgCur + (uint16_t)cbMsg);
+    cMsg = (int16_t)((uint16_t)cMsg + 1u);
+
+    return 1;
+}
+
+int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2) { return FSendPlrMsg(iPlr, iMsg, iObj, p1, p2, 0, 0, 0, 0, 0); }
+
+int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2) {
+    int16_t  sVar1;
+    MSGHDR  *pmsghdr;
     uint16_t cSize;
-    MSGHDR *pmsghdr;
+    uint8_t *pb;
+    uint16_t grbit;
+    int16_t  i;
+    int16_t *pi;
+    uint8_t  rgb[64];
 
-    /* TODO: implement */
-    return 0;
+    /* Ensure room for worst-case packed message. */
+    if ((uint16_t)(imemMsgCur + (uint16_t)cbPackedMsgSize) > (uint16_t)cbPackedMsgAllocSize)
+        return 0;
+
+    pmsghdr = (MSGHDR *)rgb;
+
+    /* Set message id; clear grWord initially; store goto/object. */
+    pmsghdr->iMsg = (uint16_t)iMsg;
+    pmsghdr->grWord = 0;
+    pmsghdr->wGoto = iObj;
+
+    /* Mark this message as “sent” in the bitset. */
+    ((uint8_t *)bitfMsgSent)[(uint16_t)iMsg >> 3] |= (uint8_t)(1u << ((uint8_t)iMsg & 7u));
+
+    pb = rgb + sizeof(MSGHDR);
+    grbit = 1;
+
+    /* IMPORTANT: params are not guaranteed to be contiguous on modern ABIs. */
+    {
+        int16_t rgParam[2] = {p1, p2};
+        pi = rgParam;
+
+        for (i = 0; i < (int16_t)((const uint8_t *)rgcMsgArgs)[(uint16_t)iMsg]; i++) {
+            if (((uint16_t)*pi & 0xFF00u) == 0u) {
+                *pb++ = (uint8_t)*pi;
+            } else {
+                pmsghdr->grWord |= grbit;
+                *(uint16_t *)pb = (uint16_t)*pi; /* little-endian */
+                pb += 2;
+            }
+
+            pi++;
+            grbit <<= 1;
+        }
+    }
+
+    cSize = (uint16_t)(pb - rgb);
+
+    if (fPrepend == 0) {
+        /* append at end */
+        memmove((uint8_t *)lpMsg + (uint16_t)imemMsgCur, rgb, (size_t)cSize);
+    } else {
+        /* prepend: shift existing messages forward by cSize, then copy new to front */
+        memmove((uint8_t *)lpMsg + cSize, (uint8_t *)lpMsg, (size_t)(uint16_t)imemMsgCur);
+        memmove((uint8_t *)lpMsg, rgb, (size_t)cSize);
+    }
+
+    imemMsgCur = (int16_t)((uint16_t)imemMsgCur + cSize);
+    cMsg = (int16_t)((uint16_t)cMsg + 1u);
+
+    iMsgCur = -1;
+    iMsgCur = IMsgNext(0);
+
+    sVar1 = 1;
+    return sVar1;
 }
 
-void SetFilteringGroups(MessageId idm, int16_t fSet)
-{
-    int16_t i;
-
-    /* TODO: implement */
-}
-
-int16_t FSendPlrMsg2(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2)
-{
-
-    /* TODO: implement */
-    return 0;
-}
-
-void ReadPlayerMessages(void)
-{
-    MemJump env;
+void ReadPlayerMessages(void) {
+    MemJump  env;
     MemJump *penvMemSav = penvMem;
 
     // Stage 1: append rt==0x0c payload blocks into lpMsg
     uint16_t bytesAppended = 0;
-    bool oomHappened = false;
+    bool     oomHappened = false;
 
     uint8_t *writeBase = (uint8_t *)lpMsg + imemMsgCur;
 
-    while (hdrCur.rt == rtMsg)
-    {                            // was: (wFlags >> 10) == 0x0c
+    while (hdrCur.rt == rtMsg) { // was: (wFlags >> 10) == 0x0c
         uint16_t cb = hdrCur.cb; // was: (wFlags & 0x03ff)
 
-        if (cb != 0)
-        {
+        if (cb != 0) {
             // Preserve the original weird bounds check shape exactly
             int32_t cur = (int32_t)(uint16_t)(imemMsgCur + bytesAppended);
             int32_t limit = (int32_t)(-(int32_t)cb - 0x38);
-            if (cur < limit)
-            {
+            if (cur < limit) {
                 memmove(writeBase + bytesAppended, rgbCur, cb);
                 bytesAppended = (uint16_t)(bytesAppended + cb);
             }
@@ -258,8 +382,7 @@ void ReadPlayerMessages(void)
     uint8_t *p = writeBase;
     uint8_t *pEnd = writeBase + bytesAppended;
 
-    while (p < pEnd)
-    {
+    while (p < pEnd) {
         MSGHDR *mh = (MSGHDR *)p;
 
         // bitfMsgSent[msgId] = 1
@@ -272,8 +395,7 @@ void ReadPlayerMessages(void)
         uint16_t argBits = (uint16_t)mh->grWord; // was: (wFlags >> 9)
         p += sizeof(MSGHDR);
 
-        for (int16_t ai = 0; ai < (int16_t)rgcMsgArgs[msgId]; ai++)
-        {
+        for (int16_t ai = 0; ai < (int16_t)rgcMsgArgs[msgId]; ai++) {
             p += 1u + (uint8_t)(argBits & 1u);
             argBits >>= 1;
         }
@@ -281,29 +403,24 @@ void ReadPlayerMessages(void)
 
     // Stage 3: find tail of incoming MSGPLR list
     MSGPLR *tail = (MSGPLR *)&vlpmsgplrIn;
-    while (tail->lpmsgplrNext != NULL)
-    {
+    while (tail->lpmsgplrNext != NULL) {
         tail = tail->lpmsgplrNext;
     }
 
     // Stage 4: guarded alloc loop for rt==0x28 records
     penvMem = &env;
 
-    if (setjmp(env.env) != 0)
-    {
+    if (setjmp(env.env) != 0) {
         oomHappened = true;
         penvMem = penvMemSav;
     }
 
-    while (true)
-    {
-        if (hdrCur.rt != rtPlrMsg)
-        { // was: (wFlags >> 10) != 0x28
+    while (true) {
+        if (hdrCur.rt != rtPlrMsg) { // was: (wFlags >> 10) != 0x28
             break;
         }
 
-        if (!oomHappened)
-        {
+        if (!oomHappened) {
             uint16_t cb = hdrCur.cb; // was: (wFlags & 0x03ff)
 
             MSGPLR *node = (MSGPLR *)LpAlloc(cb, htPlrMsg);
@@ -323,8 +440,7 @@ void ReadPlayerMessages(void)
     iMsgCur = IMsgNext(0);
 }
 
-int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
-{
+int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
     uint8_t rgbWork[40];
     int16_t cbMsg;
 
@@ -332,15 +448,13 @@ int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t
     return 0;
 }
 
-void MarkPlayersThatSentMsgs(int16_t iPlayer)
-{
+void MarkPlayersThatSentMsgs(int16_t iPlayer) {
     MSGPLR *lpmp;
 
     /* TODO: implement */
 }
 
-void ResetMessages(void)
-{
+void ResetMessages(void) {
     imemMsgCur = 0;
     iMsgCur = -1;
     cMsg = 0;
@@ -355,44 +469,39 @@ void ResetMessages(void)
     vcmsgplrOut = 0;
 }
 
-int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)
-{
+int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj) {
     uint8_t *lpbMax;
     uint8_t *lpb;
-    int16_t cDel;
+    int16_t  cDel;
 
     /* TODO: implement */
     return 0;
 }
 
-char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
-{
-    char *pch;
-    char *pchT;
+char *PszFormatString(char *pszFormat, int16_t *pParamsReal) {
+    char    *pch;
+    char    *pchT;
     int16_t *pParams;
     uint16_t w;
-    int16_t i;
-    int16_t c;
-    int16_t cOut;
-    int16_t iMineral;
-    char szBuf[480];
+    int16_t  i;
+    int16_t  c;
+    int16_t  cOut;
+    int16_t  iMineral;
+    char     szBuf[480];
 
     iMineral = -1;
     pParams = pParamsReal;
     pch = szMsgBuf;
 
-    for (;;)
-    {
+    for (;;) {
         char esc;
 
-        if (*pszFormat == '\0')
-        {
+        if (*pszFormat == '\0') {
             *pch = '\0';
             return szMsgBuf;
         }
 
-        if (*pszFormat != '\\')
-        {
+        if (*pszFormat != '\\') {
             *pch++ = *pszFormat++;
             continue;
         }
@@ -401,8 +510,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
         pszFormat++;
         esc = *pszFormat;
 
-        switch (esc)
-        {
+        switch (esc) {
         case 'E': /* Env var */
             pchT = PszCalcEnvVar((int16_t)((uint16_t)pParams[0] >> 8), (int16_t)(pParams[0] & 0xff));
             break;
@@ -425,13 +533,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
 
         case 'L':
         case 'l': /* Player name with flags in param; 'L' capitalizes */
-            pchT = PszPlayerName(
-                (int16_t)(pParams[0] & 15),
-                (int16_t)(esc == 'L'),
-                (int16_t)((pParams[0] & 0x10) != 0),
-                (int16_t)((pParams[0] & 0x20) != 0),
-                (int16_t)((pParams[0] & 0x00c0) >> 6),
-                (PLAYER *)0);
+            pchT = PszPlayerName((int16_t)(pParams[0] & 15), (int16_t)(esc == 'L'), (int16_t)((pParams[0] & 0x10) != 0), (int16_t)((pParams[0] & 0x20) != 0),
+                                 (int16_t)((pParams[0] & 0x00c0) >> 6), (PLAYER *)0);
             break;
 
         case 'M': /* rgszMineField / table at 0x1120:04f2 */
@@ -444,21 +547,17 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             pchT = PszPlayerName((int16_t)w, 0, 0, 0, 0, (PLAYER *)0);
             break;
 
-        case 'P':
-        { /* Percent, prints x% or x.y% depending on remainder */
+        case 'P': { /* Percent, prints x% or x.y% depending on remainder */
             int16_t v = pParams[0];
             int16_t whole = (int16_t)(v / 100);
             int16_t frac = (int16_t)(v - (int16_t)(whole * 100));
 
-            if (frac != 0)
-            {
+            if (frac != 0) {
                 if (frac < 0)
                     frac = (int16_t)-frac;
                 /* s_%d.%d%%_1120_01c8 */
                 c = (int16_t)sprintf(pch, "%d.%d%%", whole, frac);
-            }
-            else
-            {
+            } else {
                 /* s__%dkT_1120_01b8 (name from your symbol dump; string is "%d%%" style) */
                 c = (int16_t)sprintf(pch, "%dkT", whole);
             }
@@ -470,8 +569,7 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
         }
 
         case 'S': /* "of <player>'s origin" unless self */
-            if (pParams[0] != idPlayer)
-            {
+            if (pParams[0] != idPlayer) {
                 (void)CchGetString(idsOf2, szBuf);
                 pchT = PszPlayerName(pParams[0], 0, 0, 0, 0, (PLAYER *)0);
                 strcat(szBuf, pchT);
@@ -487,9 +585,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
 
         case 'U':
         case 'V':
-        case 'v':
-        { /* 32-bit number, maybe append units/mineral name */
-            int32_t l;
+        case 'v': { /* 32-bit number, maybe append units/mineral name */
+            int32_t  l;
             uint16_t lo = (uint16_t)pParams[0];
             uint16_t hi = (uint16_t)pParams[1];
 
@@ -499,10 +596,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             c = (int16_t)sprintf(pch, PCTLD, l);
             pch += c;
 
-            if (esc != 'v')
-            {
-                if (esc == 'V')
-                {
+            if (esc != 'v') {
+                if (esc == 'V') {
                     iMineral = pParams[0];
                     /* NOTE: original does NOT consume here unless 'V' */
                     /* it reads iMineral from current pParams and then falls through */
@@ -522,17 +617,13 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             pszFormat++;
             continue;
 
-        case 'Z':
-        { /* player bitmask -> list of names, with "and" */
+        case 'Z': { /* player bitmask -> list of names, with "and" */
             w = (uint16_t)pParams[0];
 
-            if (w != 0)
-            {
-                if (((w - 1) & w) == 0)
-                {
+            if (w != 0) {
+                if (((w - 1) & w) == 0) {
                     c = 0;
-                    while ((w & 1) == 0)
-                    {
+                    while ((w & 1) == 0) {
                         w >>= 1;
                         c++;
                     }
@@ -541,19 +632,13 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
                 }
 
                 cOut = 0;
-                for (i = 0; i < game.cPlayer; i++)
-                {
-                    if ((w & 1) != 0)
-                    {
-                        if (cOut > 0)
-                        {
-                            if ((w & 0xfffe) == 0)
-                            {
+                for (i = 0; i < game.cPlayer; i++) {
+                    if ((w & 1) != 0) {
+                        if (cOut > 0) {
+                            if ((w & 0xfffe) == 0) {
                                 c = (int16_t)CchGetString(idsAnd, pch);
                                 pch += c;
-                            }
-                            else
-                            {
+                            } else {
                                 *pch++ = ',';
                                 *pch++ = ' ';
                             }
@@ -587,21 +672,16 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
         case 'h':
         case 'r':
         case 't':
-        case 'y':
-        {
+        case 'y': {
             /* base path */
             strcpy(pch, szBase);
             pch += (int16_t)strlen(szBase);
 
-            if (esc == 'f')
-            {
-                if (idPlayer == -1)
-                {
+            if (esc == 'f') {
+                if (idPlayer == -1) {
                     /* ".x%d" then fall into DoInt */
                     c = (int16_t)sprintf(pch, ".x%d", (int)(idPlayer + 1));
-                }
-                else
-                {
+                } else {
                     /* ".m%d" */
                     c = (int16_t)sprintf(pch, ".m%d", (int)(idPlayer + 1));
                 }
@@ -611,16 +691,14 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
                 continue;
             }
 
-            if (esc == 'h')
-            {
+            if (esc == 'h') {
                 strcat(pch, ".h");
                 pch += 4;
                 pszFormat++;
                 continue;
             }
 
-            if (esc == 'r')
-            {
+            if (esc == 'r') {
                 c = (int16_t)sprintf(pch, ".h%d", (int)(idPlayer + 1));
                 pch += c;
                 pParams += 1;
@@ -628,15 +706,11 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
                 continue;
             }
 
-            if (esc == 't')
-            {
-                if (idPlayer == -1)
-                {
+            if (esc == 't') {
+                if (idPlayer == -1) {
                     strcat(pch, ".hst");
                     pch += 4;
-                }
-                else
-                {
+                } else {
                     c = (int16_t)sprintf(pch, ".m%d", (int)(idPlayer + 1));
                     pch += c;
                     pParams += 1;
@@ -667,9 +741,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             pchT = PszGetCompressedString((int16_t)(pParams[0] + idsEnergy));
             break;
 
-        case 'k':
-        { /* part name from 2 params */
-            PART part;
+        case 'k': { /* part name from 2 params */
+            PART     part;
             uint16_t w1 = (uint16_t)pParams[0];
             uint16_t w2 = (uint16_t)pParams[1];
 
@@ -696,23 +769,18 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             break;
 
         case 'n': /* loc name, thing name, or planet/fleet depending on sentinel */
-            if (pParams[0] == -2)
-            {
+            if (pParams[0] == -2) {
                 pParams += 1;
                 pchT = PszGetThingName(pParams[0]);
                 break;
             }
-            if (pParams[0] == -1)
-            {
+            if (pParams[0] == -1) {
                 pParams += 1;
                 /* fall through to 'o' behavior using new current param */
-                if (((uint16_t)pParams[0] & 0x8000) != 0)
-                {
+                if (((uint16_t)pParams[0] & 0x8000) != 0) {
                     w = (uint16_t)pParams[0] | 0x8000;
                     pchT = PszGetFleetName((int16_t)w);
-                }
-                else
-                {
+                } else {
                     pchT = PszGetPlanetName(pParams[0]);
                 }
                 break;
@@ -723,13 +791,10 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             break;
 
         case 'o': /* planet-or-fleet depending on high bit */
-            if (((uint16_t)pParams[0] & 0x8000) != 0)
-            {
+            if (((uint16_t)pParams[0] & 0x8000) != 0) {
                 w = (uint16_t)pParams[0] | 0x8000;
                 pchT = PszGetFleetName((int16_t)w);
-            }
-            else
-            {
+            } else {
                 pchT = PszGetPlanetName(pParams[0]);
             }
             break;
@@ -756,27 +821,20 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
             pszFormat++;
             continue;
 
-        case 'z':
-        { /* ship design name from packed (iplr<<5)|ish */
+        case 'z': { /* ship design name from packed (iplr<<5)|ish */
             int16_t iplr = (int16_t)((uint16_t)pParams[0] >> 5);
             int16_t ish = (int16_t)((uint16_t)pParams[0] & 31);
-            SHDEF *lpshdef;
+            SHDEF  *lpshdef;
 
-            if (ish < 16)
-            {
+            if (ish < 16) {
                 lpshdef = &rglpshdef[iplr][ish];
-            }
-            else
-            {
+            } else {
                 lpshdef = &rglpshdefSB[iplr][ish - 16];
             }
 
-            if (iplr == idPlayer)
-            {
+            if (iplr == idPlayer) {
                 strcpy(pch, lpshdef->hul.szClass);
-            }
-            else
-            {
+            } else {
                 char *szPlayerName = PszPlayerName(iplr, 0, 0, 1, 0, (PLAYER *)0);
                 (void)sprintf(pch, "%s %s", szPlayerName, lpshdef->hul.szClass);
             }
@@ -803,10 +861,8 @@ char *PszFormatString(char *pszFormat, int16_t *pParamsReal)
     }
 }
 
-char *PszGetCompressedMessage(MessageId idm)
-{
-    if (iLastMsgGet == idm)
-    {
+char *PszGetCompressedMessage(MessageId idm) {
+    if (iLastMsgGet == idm) {
         return szLastMsgGet;
     }
     iLastMsgGet = idm;
@@ -814,65 +870,50 @@ char *PszGetCompressedMessage(MessageId idm)
     return szLastMsgGet;
 }
 
-void WritePlayerMessages(int16_t iPlayer)
-{
+void WritePlayerMessages(int16_t iPlayer) {
     uint8_t *lpbMax;
-    uint8_t rgb[1024];
-    int16_t cbMsg;
-    MSGPLR *lpmp;
+    uint8_t  rgb[1024];
+    int16_t  cbMsg;
+    MSGPLR  *lpmp;
     uint8_t *lpb;
 
     /* TODO: implement */
 }
 
-int16_t IMsgPrev(int16_t fFilteredOnly)
-{
+int16_t IMsgPrev(int16_t fFilteredOnly) {
     int16_t i = iMsgCur;
 
-    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
-    {
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0) {
         /* If we're in the "incoming player msg" region (iMsgCur > cMsg), just step back. */
-        if (cMsg < iMsgCur)
-        {
+        if (cMsg < iMsgCur) {
             i = (int16_t)(iMsgCur - 1);
-        }
-        else
-        {
-            for (;;)
-            {
+        } else {
+            for (;;) {
                 int16_t idm;
-                int not_set;
+                int     not_set;
 
                 i = (int16_t)(i - 1);
-                if (i < 0)
-                {
+                if (i < 0) {
                     return -1;
                 }
 
                 idm = IdmGetMessageN(i);
 
                 /* Inline bit test: bitfMsgFiltered[idm] */
-                not_set = ((bitfMsgFiltered[(uint16_t)idm >> 3] &
-                            (uint8_t)(1u << ((uint16_t)idm & 7u))) == 0);
+                not_set = ((bitfMsgFiltered[(uint16_t)idm >> 3] & (uint8_t)(1u << ((uint16_t)idm & 7u))) == 0);
 
                 /* If fFilteredOnly==1: skip until bit is set.
                    If fFilteredOnly==0: skip while bit is set. */
-                if (not_set != (fFilteredOnly != 0))
-                {
+                if (not_set != (fFilteredOnly != 0)) {
                     break;
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         /* Viewing filtered messages normally: no filtering logic, just step back. */
-        if (iMsgCur < 1)
-        {
+        if (iMsgCur < 1) {
             i = -1;
-        }
-        else
-        {
+        } else {
             i = (int16_t)(iMsgCur - 1);
         }
     }
@@ -880,21 +921,16 @@ int16_t IMsgPrev(int16_t fFilteredOnly)
     return i;
 }
 
-int16_t IMsgNext(int16_t fFilteredOnly)
-{
+int16_t IMsgNext(int16_t fFilteredOnly) {
     int16_t i = iMsgCur;
 
-    if (fViewFilteredMsg == 0 || fFilteredOnly != 0)
-    {
-        for (;;)
-        {
+    if (fViewFilteredMsg == 0 || fFilteredOnly != 0) {
+        for (;;) {
             ++i;
 
-            if ((int16_t)cMsg <= i)
-            {
+            if ((int16_t)cMsg <= i) {
                 /* Past end of normal messages: allow “incoming player messages” region. */
-                if (i < (int16_t)(cMsg + vcmsgplrIn))
-                {
+                if (i < (int16_t)(cMsg + vcmsgplrIn)) {
                     return i;
                 }
                 return -1;
@@ -902,16 +938,14 @@ int16_t IMsgNext(int16_t fFilteredOnly)
 
             {
                 int16_t idm = IdmGetMessageN(i);
-                int filtered =
-                    (bitfMsgFiltered[idm >> 3] & (1 << (idm & 7))) != 0;
+                int     filtered = (bitfMsgFiltered[idm >> 3] & (1 << (idm & 7))) != 0;
 
                 /* Decompile does: while ( (filtered==0) == fFilteredOnly ) keep looping.
                    That means:
                    - if fFilteredOnly==0: stop when filtered==0 (i.e., NOT filtered out)
                    - if fFilteredOnly==1: stop when filtered!=0 (i.e., filtered)
                  */
-                if ((filtered ? 1 : 0) == (fFilteredOnly ? 1 : 0))
-                {
+                if ((filtered ? 1 : 0) == (fFilteredOnly ? 1 : 0)) {
                     return i;
                 }
             }
@@ -919,15 +953,13 @@ int16_t IMsgNext(int16_t fFilteredOnly)
     }
 
     /* Not filtering-only, but the view is filtered: just step within the extended range. */
-    if (iMsgCur < (int16_t)(cMsg + vcmsgplrIn - 1))
-    {
+    if (iMsgCur < (int16_t)(cMsg + vcmsgplrIn - 1)) {
         return (int16_t)(iMsgCur + 1);
     }
     return -1;
 }
 
-char *PszFormatIds(StringId ids, int16_t *pParams)
-{
+char *PszFormatIds(StringId ids, int16_t *pParams) {
     char *psz;
 
     psz = PszGetCompressedString(ids);
@@ -935,32 +967,21 @@ char *PszFormatIds(StringId ids, int16_t *pParams)
     return psz;
 }
 
-int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)
-{
-    uint8_t rgbWork[40];
-    int16_t cbMsg;
-    uint8_t *lpb;
-
-    /* TODO: implement */
-    return 0;
-}
-
 #ifdef _WIN32
 
-void DecorateMsgTitleBar(HDC hdc, RECT *prc)
-{
-    int16_t xDst;
-    int16_t ySrcMask;
+void DecorateMsgTitleBar(HDC hdc, RECT *prc) {
+    int16_t  xDst;
+    int16_t  ySrcMask;
     uint16_t hbrSav;
     uint16_t hbmpSav;
-    int16_t dySrc;
-    int16_t i;
-    HDC hdcMem;
-    int16_t idm;
-    int16_t ySrc;
-    int16_t yDst;
-    int16_t dxSrc;
-    int16_t xyStart;
+    int16_t  dySrc;
+    int16_t  i;
+    HDC      hdcMem;
+    int16_t  idm;
+    int16_t  ySrc;
+    int16_t  yDst;
+    int16_t  dxSrc;
+    int16_t  xyStart;
     uint32_t crBkSav;
     uint32_t crTextSav;
 
@@ -971,8 +992,7 @@ void DecorateMsgTitleBar(HDC hdc, RECT *prc)
     /* TODO: implement */
 }
 
-int16_t HtMsgBox(POINT pt)
-{
+int16_t HtMsgBox(POINT pt) {
     int16_t i;
 
     /* debug symbols */
@@ -982,16 +1002,15 @@ int16_t HtMsgBox(POINT pt)
     return 0;
 }
 
-void SetMsgTitle(HWND hwnd)
-{
+void SetMsgTitle(HWND hwnd) {
     int16_t cMsgTot;
     int16_t i;
-    MSGBIG mb;
-    char ch;
-    char szT[80];
+    MSGBIG  mb;
+    char    ch;
+    char    szT[80];
     int16_t sw;
     MSGPLR *lpmp;
-    RECT rc;
+    RECT    rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MSG:0x732e */
@@ -1000,14 +1019,13 @@ void SetMsgTitle(HWND hwnd)
     /* TODO: implement */
 }
 
-INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    RECT rc;
-    HDC hdc;
-    POINT pt;
-    RECT rcEdit;
-    int16_t cch;
-    char szT[256];
+INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    RECT        rc;
+    HDC         hdc;
+    POINT       pt;
+    RECT        rcEdit;
+    int16_t     cch;
+    char        szT[256];
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -1018,37 +1036,36 @@ INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    HDC hdc;
-    int16_t i;
-    char *psz;
+LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HDC         hdc;
+    int16_t     i;
+    char       *psz;
     PAINTSTRUCT ps;
-    int16_t dy;
-    int16_t idm;
-    int16_t dx;
-    POINT pt;
-    char *lpsz;
-    THING *lpth;
+    int16_t     dy;
+    int16_t     idm;
+    int16_t     dx;
+    POINT       pt;
+    char       *lpsz;
+    THING      *lpth;
     int16_t (*lpProc)(void);
     uint16_t hcs;
-    int16_t ht;
+    int16_t  ht;
     uint16_t hbrSav;
-    int16_t fRet;
-    RECT rc;
-    int16_t fSet;
-    MSGPLR *lpmp;
+    int16_t  fRet;
+    RECT     rc;
+    int16_t  fSet;
+    MSGPLR  *lpmp;
     uint32_t crFore;
-    int32_t lSerial;
-    int16_t dxMax;
-    MSGPLR *lpmpSrc;
+    int32_t  lSerial;
+    int16_t  dxMax;
+    MSGPLR  *lpmpSrc;
     uint32_t crBack;
-    SCAN scan;
-    RECT rcActual;
-    int16_t cch;
-    int16_t iMode;
-    char szT[32];
-    MSGPLR *lpmsgplr;
+    SCAN     scan;
+    RECT     rcActual;
+    int16_t  cch;
+    int16_t  iMode;
+    char     szT[32];
+    MSGPLR  *lpmsgplr;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MSG:0x5ef1 */

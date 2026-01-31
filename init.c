@@ -1,28 +1,27 @@
 
-#include "types.h"
 #include "globals.h"
 #include "resource.h"
+#include "types.h"
 
+#include "debuglog.h"
 #include "init.h"
 #include "mdi.h"
-#include "utilgen.h"
 #include "memory.h"
 #include "msg.h"
-#include "debuglog.h"
+#include "utilgen.h"
 
 #ifdef _WIN32
 /* globals */
 uint8_t rgPalGray[20] = {0x0a, 0x14, 0x1e, 0x28, 0x3d, 0x47, 0x51, 0x5c, 0x70, 0x7a, 0x85, 0x8f, 0xa1, 0xab, 0xb6, 0xc1, 0xd7, 0xe1, 0xeb, 0xf5};
 
-bool FCreateStuff(void)
-{
+bool FCreateStuff(void) {
     DBG_LOGI("FCreateStuff");
-    bool fFailed;
+    bool    fFailed;
     int16_t cx;
     int16_t cy;
     int16_t i;
     HBITMAP hbmp;
-    HBRUSH hbr;
+    HBRUSH  hbr;
     HGLOBAL hdib;
 
     fFailed = false;
@@ -31,20 +30,13 @@ bool FCreateStuff(void)
     cy = GetSystemMetrics(SM_CYSCREEN);
 
     /* gd.grBits is a union with bitfields in types.h; mdScreenSize lives in the top 2 bits of the low word. */
-    if ((cx < 800) || (cy < 600))
-    {
+    if ((cx < 800) || (cy < 600)) {
         gd.mdScreenSize = 0;
-    }
-    else if ((cx < 0x0400) || (cy < 0x0300))
-    {
+    } else if ((cx < 0x0400) || (cy < 0x0300)) {
         gd.mdScreenSize = 1;
-    }
-    else if ((cx < 0x0457) || (cy < 0x0378))
-    {
+    } else if ((cx < 0x0457) || (cy < 0x0378)) {
         gd.mdScreenSize = 2;
-    }
-    else
-    {
+    } else {
         gd.mdScreenSize = 3;
     }
 
@@ -114,8 +106,7 @@ bool FCreateStuff(void)
     hbr50Screen = CreatePatternBrush(hbmp);
     DeleteObject(hbmp);
 
-    for (i = 0; i < 3; i++)
-    {
+    for (i = 0; i < 3; i++) {
         hbmp = LoadBitmap(hInst, MAKEINTRESOURCEA((uint16_t)(IDB_MINESPAT_BASE + i)));
         hbr = CreatePatternBrush(hbmp);
         rghbrPat[i] = hbr;
@@ -163,64 +154,46 @@ bool FCreateStuff(void)
     hdibThings = HdibLoadBigResource(IDDIB_THING_ICONS);
     hdibToolbar = HdibLoadBigResource(IDDIB_SCANNER_TOOLBAR);
 
-    if ((hdibPlanets == 0) || (hdibThings == 0) || (hdibToolbar == 0))
-    {
+    if ((hdibPlanets == 0) || (hdibThings == 0) || (hdibToolbar == 0)) {
         fFailed = true;
 
-        DBG_LOGE(
-            "Critical DIB load failure during init: "
-            "hdibPlanets=%p hdibThings=%p hdibToolbar=%p",
-            hdibPlanets,
-            hdibThings,
-            hdibToolbar);
+        DBG_LOGE("Critical DIB load failure during init: "
+                 "hdibPlanets=%p hdibThings=%p hdibToolbar=%p",
+                 hdibPlanets, hdibThings, hdibToolbar);
     }
 
-    for (i = 0; i < 5; i++)
-    {
+    for (i = 0; i < 5; i++) {
         uint16_t id;
 
         id = (uint16_t)(IDDIB_HULL_ICONS_BASE + i);
         hdib = HdibLoadBigResource(id);
         rghdibShips[i] = hdib;
 
-        if (hdib == 0)
-        {
+        if (hdib == 0) {
             fFailed = true;
-            DBG_LOGE(
-                "Failed to load ship hull icon (large): resource id=0x%04x index=%d",
-                id,
-                i);
+            DBG_LOGE("Failed to load ship hull icon (large): resource id=0x%04x index=%d", id, i);
         }
 
         id = (uint16_t)(IDDIB_HULL_ICONS_SMALL_BASE + i);
         hdib = HdibLoadBigResource(id);
         rghdibShipsT[i] = hdib;
 
-        if (hdib == 0)
-        {
+        if (hdib == 0) {
             fFailed = true;
-            DBG_LOGE(
-                "Failed to load ship hull icon (small): resource id=0x%04x index=%d",
-                id,
-                i);
+            DBG_LOGE("Failed to load ship hull icon (small): resource id=0x%04x index=%d", id, i);
         }
     }
 
-    for (i = 0; i < 7; i++)
-    {
+    for (i = 0; i < 7; i++) {
         uint16_t id;
 
         id = (uint16_t)(IDDIB_TECH_ICONS_BASE + i);
         hdib = HdibLoadBigResource(id);
         rghdibInventory[i] = hdib;
 
-        if (hdib == 0)
-        {
+        if (hdib == 0) {
             fFailed = true;
-            DBG_LOGE(
-                "Failed to load tech inventory icon: resource id=0x%04x index=%d",
-                id,
-                i);
+            DBG_LOGE("Failed to load tech inventory icon: resource id=0x%04x index=%d", id, i);
         }
     }
 
@@ -246,8 +219,8 @@ bool FCreateStuff(void)
     rghiconVCR[5] = LoadIcon(hInst, MAKEINTRESOURCEA(IDI_TORP3));
     rghiconVCR[6] = LoadIcon(hInst, MAKEINTRESOURCEA(IDI_TORP4));
 
-    lpLog = (uint8_t *)LpAlloc(32000, htLog);
-    lpMsg = (int16_t *)LpAlloc(0xffc8, htMsg);
+    lpLog = (uint8_t *)LpAlloc(cbLogAllocSize, htLog);
+    lpMsg = (int16_t *)LpAlloc(cbPackedMsgAllocSize, htMsg);
 
     /*
      * Win16 required MakeProcInstance() for callback thunks.
@@ -273,29 +246,13 @@ bool FCreateStuff(void)
 
     /* Log all critical resources for debugging */
     DBG_LOGI("Resource check: fFailed=%d", fFailed);
-    DBG_LOGI("  hbmpScanner=%p hbmpUnknownPlanet=%p hbmpBackBld=%p",
-             (void *)hbmpScanner, (void *)hbmpUnknownPlanet, (void *)hbmpBackBld);
-    DBG_LOGI("  hdibRaces=%p hdibRacesT=%p hdibRacesX=%p",
-             (void *)hdibRaces, (void *)hdibRacesT, (void *)hdibRacesX);
-    DBG_LOGI("  hbmpMono=%p hbmpScanShip=%p hbmpMsg=%p",
-             (void *)hbmpMono, (void *)hbmpScanShip, (void *)hbmpMsg);
-    DBG_LOGI("  hiconHost=%p hiconStars=%p hiconWait=%p",
-             (void *)hiconHost, (void *)hiconStars, (void *)hiconWait);
+    DBG_LOGI("  hbmpScanner=%p hbmpUnknownPlanet=%p hbmpBackBld=%p", (void *)hbmpScanner, (void *)hbmpUnknownPlanet, (void *)hbmpBackBld);
+    DBG_LOGI("  hdibRaces=%p hdibRacesT=%p hdibRacesX=%p", (void *)hdibRaces, (void *)hdibRacesT, (void *)hdibRacesX);
+    DBG_LOGI("  hbmpMono=%p hbmpScanShip=%p hbmpMsg=%p", (void *)hbmpMono, (void *)hbmpScanShip, (void *)hbmpMsg);
+    DBG_LOGI("  hiconHost=%p hiconStars=%p hiconWait=%p", (void *)hiconHost, (void *)hiconStars, (void *)hiconWait);
 
-    if (fFailed ||
-        (hbmpScanner == 0) ||
-        (hbmpUnknownPlanet == 0) ||
-        (hbmpBackBld == 0) ||
-        (hdibRaces == 0) ||
-        (hdibRacesT == 0) ||
-        (hdibRacesX == 0) ||
-        (hbmpMono == 0) ||
-        (hbmpScanShip == 0) ||
-        (hbmpMsg == 0) ||
-        (hiconHost == 0) ||
-        (hiconStars == 0) ||
-        (hiconWait == 0))
-    {
+    if (fFailed || (hbmpScanner == 0) || (hbmpUnknownPlanet == 0) || (hbmpBackBld == 0) || (hdibRaces == 0) || (hdibRacesT == 0) || (hdibRacesX == 0) ||
+        (hbmpMono == 0) || (hbmpScanShip == 0) || (hbmpMsg == 0) || (hiconHost == 0) || (hiconStars == 0) || (hiconWait == 0)) {
         DBG_LOGE("Resource load failed - one or more handles are NULL (see above)");
         char *sz = PszFormatIds(idsUnableLoadBitmaps, (int16_t *)0);
         AlertSz(sz, MB_ICONSTOP);
@@ -305,18 +262,15 @@ bool FCreateStuff(void)
     return true;
 }
 
-bool FCreateFonts(HDC hdc)
-{
-    LOGFONT lf;
+bool FCreateFonts(HDC hdc) {
+    LOGFONT    lf;
     TEXTMETRIC tm;
-    HFONT hfontSav;
-    SIZE sz;
+    HFONT      hfontSav;
+    SIZE       sz;
 
     /* Ensure our Arial face-name strings are loaded (4 variants). */
-    for (int i = 0; i < 4; i++)
-    {
-        if (rgszArial[i][0] == '\0')
-        {
+    for (int i = 0; i < 4; i++) {
+        if (rgszArial[i][0] == '\0') {
             CchGetString((int16_t)(idsArial2 + i), rgszArial[i]);
         }
     }
@@ -334,8 +288,7 @@ bool FCreateFonts(HDC hdc)
         int16_t h = (int16_t)MulDiv(10, logPixY, 72);
         lf.lfHeight = (int16_t)(-h);
 
-        for (int i = 0; i < 2; i++)
-        {
+        for (int i = 0; i < 2; i++) {
             strcpy(lf.lfFaceName, rgszArial[i]);
             rghfontArial10[i] = CreateFontIndirect(&lf);
         }
@@ -367,8 +320,7 @@ bool FCreateFonts(HDC hdc)
         int16_t h = (int16_t)MulDiv(8, logPixY, 72);
         lf.lfHeight = (int16_t)(-h);
 
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++) {
             strcpy(lf.lfFaceName, rgszArial[i]);
             rghfontArial8[i] = CreateFontIndirect(&lf);
         }
@@ -410,9 +362,8 @@ bool FCreateFonts(HDC hdc)
  * The original code assumes this exact layout when it does szWork[5]=0,
  * szWork[2]=0, and then reads yy from szWork+6, mm from szWork, dd from szWork+3.
  * ------------------------------------------------------------------ */
-static void StrDate_MMDDYY(char *dst /* >= 9 bytes */)
-{
-    time_t t = time(NULL);
+static void StrDate_MMDDYY(char *dst /* >= 9 bytes */) {
+    time_t    t = time(NULL);
     struct tm tmv;
 #if defined(_WIN32)
     localtime_s(&tmv, &t);
@@ -435,18 +386,15 @@ static void StrDate_MMDDYY(char *dst /* >= 9 bytes */)
     dst[8] = '\0';
 }
 
-void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)
-{
+void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile) {
     uint16_t iCol = 0;
-    int16_t iTile = 0;
+    int16_t  iTile = 0;
 
-    for (; *pszFormat != '\0'; pszFormat++)
-    {
+    for (; *pszFormat != '\0'; pszFormat++) {
         char ch = *pszFormat;
 
         /* '*' bumps column from 0 -> 1 (once) */
-        if (ch == '*')
-        {
+        if (ch == '*') {
             if (iCol == 0)
                 iCol = 1;
             continue;
@@ -456,25 +404,19 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)
         uint16_t id;
         uint16_t fPopped;
 
-        if (ch >= 'A' && ch <= 'P')
-        {
+        if (ch >= 'A' && ch <= 'P') {
             id = (uint16_t)(ch - 'A');
             fPopped = 1;
-        }
-        else if (ch >= 'a' && ch <= 'p')
-        {
+        } else if (ch >= 'a' && ch <= 'p') {
             id = (uint16_t)(ch - 'a');
             fPopped = 0;
-        }
-        else
-        {
+        } else {
             continue;
         }
 
         /* Find matching tile by id, starting at iTile */
         int16_t i = iTile;
-        while (i < ctile)
-        {
+        while (i < ctile) {
             if ((uint16_t)rgtile[i].id == id)
                 break;
             i++;
@@ -488,8 +430,7 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)
         rgtile[i].fPopped = fPopped;
 
         /* Bring tile forward if needed */
-        if (i != iTile)
-        {
+        if (i != iTile) {
             TILE tmp = rgtile[i];
             rgtile[i] = rgtile[iTile];
             rgtile[iTile] = tmp;
@@ -499,22 +440,20 @@ void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)
     }
 
     /* Clamp remaining tiles to at least current column */
-    for (int16_t i = iTile; i < ctile; i++)
-    {
+    for (int16_t i = iTile; i < ctile; i++) {
         if ((uint16_t)rgtile[i].iCol < iCol)
             rgtile[i].iCol = iCol;
     }
 }
 
-void ReadIniSettings(void)
-{
+void ReadIniSettings(void) {
     char szSection[16];
     char szIniFile[256];
     char szEntry[16];
-    WN wnT;
+    WN   wnT;
 
-    int16_t i;
-    int16_t iPass;
+    int16_t  i;
+    int16_t  iPass;
     uint16_t w;
 
     /* clear ini.fWait/fGen/fTry (bits 2..4) */
@@ -539,8 +478,7 @@ void ReadIniSettings(void)
 
     /* report window remembered positions */
     GetIniWinRc(szSection, szIniFile, idsReportfleetwin, &wnT);
-    if (wnT.rc.left != (int16_t)0x8000)
-    {
+    if (wnT.rc.left != (int16_t)0x8000) {
         vrptFleet.ptDlg.x = wnT.rc.left;
         vrptFleet.ptDlg.y = wnT.rc.top;
         vrptFleet.ptSize.x = (int16_t)(wnT.rc.right - wnT.rc.left);
@@ -548,8 +486,7 @@ void ReadIniSettings(void)
     }
 
     GetIniWinRc(szSection, szIniFile, idsReportefleetwin, &wnT);
-    if (wnT.rc.left != (int16_t)0x8000)
-    {
+    if (wnT.rc.left != (int16_t)0x8000) {
         vrptEFleet.ptDlg.x = wnT.rc.left;
         vrptEFleet.ptDlg.y = wnT.rc.top;
         vrptEFleet.ptSize.x = (int16_t)(wnT.rc.right - wnT.rc.left);
@@ -557,8 +494,7 @@ void ReadIniSettings(void)
     }
 
     GetIniWinRc(szSection, szIniFile, idsReportbtlwin, &wnT);
-    if (wnT.rc.left != (int16_t)0x8000)
-    {
+    if (wnT.rc.left != (int16_t)0x8000) {
         vrptBattle.ptDlg.x = wnT.rc.left;
         vrptBattle.ptDlg.y = wnT.rc.top;
         vrptBattle.ptSize.x = (int16_t)(wnT.rc.right - wnT.rc.left);
@@ -566,8 +502,7 @@ void ReadIniSettings(void)
     }
 
     GetIniWinRc(szSection, szIniFile, idsReportplanwin, &wnT);
-    if (wnT.rc.left != (int16_t)0x8000)
-    {
+    if (wnT.rc.left != (int16_t)0x8000) {
         vrptPlanet.ptDlg.x = wnT.rc.left;
         vrptPlanet.ptDlg.y = wnT.rc.top;
         vrptPlanet.ptSize.x = (int16_t)(wnT.rc.right - wnT.rc.left);
@@ -578,10 +513,8 @@ void ReadIniSettings(void)
     CchGetString(idsResolution, szEntry);
     {
         uint16_t uRes = (uint16_t)GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
-        if (uRes == 0)
-        {
-            if ((vcScreenColors < 5) || (gd.mdScreenSize == 0))
-            {
+        if (uRes == 0) {
+            if ((vcScreenColors < 5) || (gd.mdScreenSize == 0)) {
                 char *sz = PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, (short *)0);
                 AlertSz(sz, 0x10);
             }
@@ -591,12 +524,9 @@ void ReadIniSettings(void)
     /* layout (clamped to 0..2) */
     CchGetString(idsLayout, szEntry);
     iWindowLayout = (int16_t)GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    if (iWindowLayout < 0)
-    {
+    if (iWindowLayout < 0) {
         iWindowLayout = 0;
-    }
-    else if (iWindowLayout >= 3)
-    {
+    } else if (iWindowLayout >= 3) {
         iWindowLayout = 2;
     }
 
@@ -651,12 +581,9 @@ void ReadIniSettings(void)
     CchGetString(idsGlobalsettings, szEntry);
     {
         int16_t cch = (int16_t)GetPrivateProfileString(szSection, szEntry, "", szWork, 0x28, szIniFile);
-        if (cch == 0x1c)
-        {
+        if (cch == 0x1c) {
             FSerialAndEnvFromSz(&vSerialNumber, vrgbMachineConfig, szWork);
-        }
-        else
-        {
+        } else {
             vSerialNumber = 0;
         }
     }
@@ -676,8 +603,7 @@ void ReadIniSettings(void)
         int16_t cch = (int16_t)GetPrivateProfileString(szSection, szEntry, "N", szWork, 0x14, szIniFile);
 
         ini.grobjSel = 0;
-        if (cch >= 3)
-        {
+        if (cch >= 3) {
             if (szWork[0] == 'P')
                 ini.grobjSel = 1;
             else if (szWork[0] == 'S')
@@ -687,17 +613,13 @@ void ReadIniSettings(void)
             else
                 ini.grobjSel = 0; /* 'N' or unknown */
 
-            if ((szWork[1] < 'B') || ('Q' < szWork[1]))
-            {
+            if ((szWork[1] < 'B') || ('Q' < szWork[1])) {
                 ini.grobjSel = 0;
-            }
-            else
-            {
+            } else {
                 ini.idPlayer = (int16_t)(szWork[1] - 'B');
             }
 
-            if (ini.grobjSel != 0)
-            {
+            if (ini.grobjSel != 0) {
                 ini.iObjSel = (int16_t)atoi(szWork + 2);
             }
         }
@@ -710,11 +632,10 @@ void ReadIniSettings(void)
     /* game id (hex-ish) */
     CchGetString(idsGameid, szEntry);
     {
-        int16_t cch = (int16_t)GetPrivateProfileString(szSection, szEntry, "0", szWork, 10, szIniFile);
+        int16_t  cch = (int16_t)GetPrivateProfileString(szSection, szEntry, "0", szWork, 10, szIniFile);
         uint32_t u = 0;
-        for (i = 0; i < cch; i++)
-        {
-            char ch = szWork[i];
+        for (i = 0; i < cch; i++) {
+            char     ch = szWork[i];
             uint32_t digit;
 
             u = (u << 4) & 0xffffffffu;
@@ -735,8 +656,7 @@ void ReadIniSettings(void)
     CchGetString(idsScanzoom, szEntry);
     {
         uint16_t uZoom = (uint16_t)GetPrivateProfileInt(szSection, szEntry, 4, szIniFile);
-        if ((uZoom != 0) && (uZoom < 10))
-        {
+        if ((uZoom != 0) && (uZoom < 10)) {
             iScanZoom = (int16_t)(uZoom - 5);
         }
     }
@@ -758,8 +678,7 @@ void ReadIniSettings(void)
 
     CchGetString(idsScanmodev25, szEntry);
     grbitScan = (uint16_t)GetPrivateProfileInt(szSection, szEntry, 0x00e0, szIniFile);
-    if ((grbitScan & 0xc00f) > 5)
-    {
+    if ((grbitScan & 0xc00f) > 5) {
         grbitScan = 0;
         grbitScanShip = 0;
     }
@@ -767,8 +686,7 @@ void ReadIniSettings(void)
     /* minerals graph scale */
     CchGetString(idsMineralscale, szEntry);
     cMinGrafMax = (int16_t)GetPrivateProfileInt(szSection, szEntry, cMinGrafMax, szIniFile);
-    if ((cMinGrafMax < 100) || (cMinGrafMax > 30000))
-    {
+    if ((cMinGrafMax < 100) || (cMinGrafMax > 30000)) {
         cMinGrafMax = 5000;
     }
 
@@ -785,43 +703,33 @@ void ReadIniSettings(void)
     CchGetString(idsFile1, szEntry);
     {
         int16_t cch = (int16_t)GetPrivateProfileString(szSection, szEntry, "str", szWork, 0x100, szIniFile);
-        if (cch < 4)
-        {
+        if (cch < 4) {
             ini.fStartupFile = 0;
-        }
-        else
-        {
+        } else {
             ini.fStartupFile = 1;
             strcpy(szBase, szWork);
         }
     }
 
     /* MRU list (9 entries of 0x100 each) */
-    if (vrgszMRU == 0)
-    {
+    if (vrgszMRU == 0) {
         vrgszMRU = LpAlloc(0x900, htPerm);
     }
 
     {
         uint16_t baseLen = (uint16_t)strlen(szEntry);
-        for (i = 0; i < 9; i++)
-        {
+        for (i = 0; i < 9; i++) {
             szEntry[baseLen - 1] = (char)('1' + i);
-            if (GetPrivateProfileString(szSection, szEntry, "str",
-                                        vrgszMRU + (i * 0x100), 0x100, szIniFile) < 4)
-            {
+            if (GetPrivateProfileString(szSection, szEntry, "str", vrgszMRU + (i * 0x100), 0x100, szIniFile) < 4) {
                 vrgszMRU[i * 0x100] = '\0';
             }
         }
 
         /* compact non-empty entries to front */
         iPass = 0;
-        for (i = 0; i < 9; i++)
-        {
-            if (vrgszMRU[i * 0x100] != '\0')
-            {
-                if (i != iPass)
-                {
+        for (i = 0; i < 9; i++) {
+            if (vrgszMRU[i * 0x100] != '\0') {
+                if (i != iPass) {
                     strcpy(vrgszMRU + (iPass * 0x100), vrgszMRU + (i * 0x100));
                     vrgszMRU[i * 0x100] = '\0';
                 }
@@ -851,8 +759,7 @@ void ReadIniSettings(void)
 
     CchGetString(idsBackups, szEntry);
     vcBackupDirs = (int16_t)GetPrivateProfileInt(szSection, szEntry, 1, szIniFile);
-    if ((vcBackupDirs < 1) || (vcBackupDirs > 999))
-    {
+    if ((vcBackupDirs < 1) || (vcBackupDirs > 999)) {
         vcBackupDirs = 1;
     }
 
@@ -899,8 +806,7 @@ void ReadIniSettings(void)
 
     CchGetString(idsReportdefgraph, szEntry);
     gd.iCurGraph = (uint16_t)(GetPrivateProfileInt(szSection, szEntry, 7, szIniFile) & 0x0f);
-    if (gd.iCurGraph > 7)
-    {
+    if (gd.iCurGraph > 7) {
         gd.iCurGraph = 7;
     }
 
@@ -913,17 +819,16 @@ void ReadIniSettings(void)
     szWork[5] = '\0';
     szWork[2] = '\0';
     {
-        int16_t yy = (int16_t)atoi(szWork + 6);
-        int16_t mm = (int16_t)atoi(szWork);
-        int16_t dd = (int16_t)atoi(szWork + 3);
+        int16_t  yy = (int16_t)atoi(szWork + 6);
+        int16_t  mm = (int16_t)atoi(szWork);
+        int16_t  dd = (int16_t)atoi(szWork + 3);
         uint32_t uDateCur = (uint32_t)dd + (uint32_t)mm * 31u + (uint32_t)yy * 372u;
 
         CchGetString(idsHistoryinfo, szEntry);
         {
             int32_t installed = (int32_t)GetPrivateProfileInt(szSection, szEntry, -1, szIniFile);
             uDateInstalled = (uint16_t)uDateCur;
-            if ((uint32_t)installed <= uDateCur)
-            {
+            if ((uint32_t)installed <= uDateCur) {
                 uDateInstalled = (uint16_t)installed;
             }
         }
@@ -933,14 +838,12 @@ void ReadIniSettings(void)
 
     /* Fonts section: override arial names */
     CchGetString(idsFonts, szSection);
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         CchGetString((int16_t)(idsArial + i), szEntry);
         GetPrivateProfileString(szSection, szEntry, "", szWork, 0x50, szIniFile);
         {
             uint16_t len = (uint16_t)strlen(szWork);
-            if ((len > 4) && (len < 0x20))
-            {
+            if ((len > 4) && (len < 0x20)) {
                 strncpy(rgszArial[i], szWork, sizeof(rgszArial[i]) - 1);
                 rgszArial[i][sizeof(rgszArial[i]) - 1] = '\0';
             }
@@ -951,8 +854,7 @@ void ReadIniSettings(void)
     CchGetString(idsZiporders, szSection);
     memset(vrgZip, 0, sizeof(vrgZip));
 
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         char *psz;
 
         strcpy(szEntry, szSection);
@@ -966,28 +868,21 @@ void ReadIniSettings(void)
 
         {
             uint16_t len = (uint16_t)strlen(szWork);
-            if ((len > 0x13) && (len < 0x21))
-            {
+            if ((len > 0x13) && (len < 0x21)) {
                 /* must have at least 20 chars of a..p */
                 int16_t ok = 0;
                 psz = szWork;
-                while (ok < 0x14 && ('a' <= *psz) && (*psz <= 'p'))
-                {
+                while (ok < 0x14 && ('a' <= *psz) && (*psz <= 'p')) {
                     ok++;
                     psz++;
                 }
 
-                if (ok > 0x13)
-                {
+                if (ok > 0x13) {
                     /* parse 5 * 4 nibbles, then name */
                     psz = szWork;
-                    for (iPass = 0; iPass < 5; iPass++)
-                    {
+                    for (iPass = 0; iPass < 5; iPass++) {
                         uint16_t action = (uint16_t)(psz[0] - 'a');
-                        uint16_t qty =
-                            (uint16_t)(psz[1] - 'a') |
-                            (uint16_t)((psz[2] - 'a') << 4) |
-                            (uint16_t)((psz[3] - 'a') << 8);
+                        uint16_t qty = (uint16_t)(psz[1] - 'a') | (uint16_t)((psz[2] - 'a') << 4) | (uint16_t)((psz[3] - 'a') << 8);
 
                         vrgZip[i].txp.rgia[iPass].iAction = action;
                         vrgZip[i].txp.rgia[iPass].cQuan = qty;
@@ -1005,8 +900,7 @@ void ReadIniSettings(void)
     /* ZipProdQ section */
     memset(vrgZipProd, 0, sizeof(vrgZipProd));
 
-    for (i = 0; i < 5; i++)
-    {
+    for (i = 0; i < 5; i++) {
         strcpy(szEntry, szSection);
         {
             uint16_t len = (uint16_t)strlen(szEntry);
@@ -1019,33 +913,27 @@ void ReadIniSettings(void)
 
         {
             uint16_t len = (uint16_t)strlen(szWork);
-            if ((len > 2) && (len < 0x41))
-            {
+            if ((len > 2) && (len < 0x41)) {
                 int16_t cpq = (int16_t)(szWork[1] - 'a');
-                if ((cpq >= 0) && (cpq < 13))
-                {
-                    char *psz2 = szWork;
+                if ((cpq >= 0) && (cpq < 13)) {
+                    char   *psz2 = szWork;
                     int16_t need = (int16_t)(cpq * 4 + 2);
                     int16_t ok = 0;
 
-                    while (ok < need && ('a' <= *psz2) && (*psz2 <= 'p'))
-                    {
+                    while (ok < need && ('a' <= *psz2) && (*psz2 <= 'p')) {
                         ok++;
                         psz2++;
                     }
 
-                    if (ok >= need)
-                    {
-                        if (strlen(psz2) < 13)
-                        {
+                    if (ok >= need) {
+                        if (strlen(psz2) < 13) {
                             strcpy(vrgZipProd[i].szName, psz2);
                             vrgZipProd[i].fNoResearch = (uint8_t)(szWork[0] != 'a');
                             vrgZipProd[i].cpq = (uint8_t)cpq;
                             vrgZipProd[i].fValid = 1;
 
                             psz2 = szWork + 2;
-                            for (iPass = 0; iPass < cpq; iPass++)
-                            {
+                            for (iPass = 0; iPass < cpq; iPass++) {
                                 uint16_t w0 = (uint16_t)(psz2[0] - 'a');
                                 uint16_t w1 = (uint16_t)(psz2[1] - 'a');
                                 uint16_t w2 = (uint16_t)(psz2[2] - 'a');
@@ -1053,13 +941,11 @@ void ReadIniSettings(void)
                                 uint16_t ww = (uint16_t)(w0 | (w1 << 4) | (w2 << 8) | (w3 << 12));
 
                                 /* clamp cQuan (upper 10 bits) to <= 0x3fc; if too large, force cQuan=1 */
-                                if ((uint16_t)(ww >> 6) > 0x3fcu)
-                                {
+                                if ((uint16_t)(ww >> 6) > 0x3fcu) {
                                     ww = (uint16_t)((ww & 0x003fu) | 0x0040u);
                                 }
                                 /* clamp mdIdle (low 6 bits) to <= 6; else clear */
-                                if ((ww & 0x003fu) > 6u)
-                                {
+                                if ((ww & 0x003fu) > 6u) {
                                     ww = (uint16_t)(ww & 0xffc0u);
                                 }
 
@@ -1077,17 +963,15 @@ void ReadIniSettings(void)
     vrgZipProd[0].fValid = 1;
 }
 
-void InitStarsPath()
-{
+void InitStarsPath() {
     szStarsPath[0] = '\0';
     GetCurrentDirectoryA(sizeof(szStarsPath), szStarsPath);
     lstrcatA(szStarsPath, "\\");
 }
 
-int16_t InitInstance(int16_t nCmdShow)
-{
+int16_t InitInstance(int16_t nCmdShow) {
     int16_t sw;
-    RECT rc;
+    RECT    rc;
 
     (void)rc;
 
@@ -1099,33 +983,20 @@ int16_t InitInstance(int16_t nCmdShow)
 
     ReadIniSettings();
 
-    hwndFrame = CreateWindowA(
-        szFrame,
-        "Stars!",
-        WS_OVERLAPPEDWINDOW,
-        ini.wnFrame.rc.left,
-        ini.wnFrame.rc.top,
-        ini.wnFrame.rc.right,
-        ini.wnFrame.rc.bottom,
-        NULL,
-        NULL,
-        hInst,
-        NULL);
+    hwndFrame = CreateWindowA(szFrame, "Stars!", WS_OVERLAPPEDWINDOW, ini.wnFrame.rc.left, ini.wnFrame.rc.top, ini.wnFrame.rc.right, ini.wnFrame.rc.bottom,
+                              NULL, NULL, hInst, NULL);
 
-    if (hwndFrame == NULL)
-    {
+    if (hwndFrame == NULL) {
         return 0;
     }
 
     hAccel = LoadAcceleratorsA(hInst, MAKEINTRESOURCEA(IDA_MAIN));
-    if (hAccel == NULL)
-    {
+    if (hAccel == NULL) {
         return 0;
     }
 
     hAccelTitle = LoadAcceleratorsA(hInst, MAKEINTRESOURCEA(IDA_TITLE));
-    if (hAccelTitle == NULL)
-    {
+    if (hAccelTitle == NULL) {
         return 0;
     }
 
@@ -1133,19 +1004,13 @@ int16_t InitInstance(int16_t nCmdShow)
      * decompile:
      *   if (nCmdShow == 1) { if (!min && !max) sw=1; else sw=3; } else sw=nCmdShow;
      */
-    if (nCmdShow == SW_SHOWNORMAL)
-    {
-        if ((ini.wnFrame.fMinimized == 0) && (ini.wnFrame.fMaximized == 0))
-        {
+    if (nCmdShow == SW_SHOWNORMAL) {
+        if ((ini.wnFrame.fMinimized == 0) && (ini.wnFrame.fMaximized == 0)) {
             sw = SW_SHOWNORMAL;
-        }
-        else
-        {
+        } else {
             sw = SW_SHOWMAXIMIZED;
         }
-    }
-    else
-    {
+    } else {
         sw = nCmdShow;
     }
 
@@ -1155,8 +1020,7 @@ int16_t InitInstance(int16_t nCmdShow)
     return 1;
 }
 
-void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)
-{
+void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn) {
     /* INI value format (17 chars total): [M|R|I] then 4 fixed-width signed fields (4 chars each). */
     char szEntry[16];
     RECT rc;
@@ -1170,32 +1034,26 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)
 
     /* Default value is "X" (i.e., not present / invalid). */
     {
-        uint32_t cch = GetPrivateProfileStringA(
-            szSection, szEntry, "X", szWork, 0x14, szIniFile);
+        uint32_t cch = GetPrivateProfileStringA(szSection, szEntry, "X", szWork, 0x14, szIniFile);
 
-        if (cch == 0x11 && (szWork[0] == 'M' || szWork[0] == 'R' || szWork[0] == 'I'))
-        {
+        if (cch == 0x11 && (szWork[0] == 'M' || szWork[0] == 'R' || szWork[0] == 'I')) {
             const char *pch = szWork + 1;
-            int16_t rg[4];
-            int i;
+            int16_t     rg[4];
+            int         i;
 
-            for (i = 0; i < 4; i++)
-            {
+            for (i = 0; i < 4; i++) {
                 int16_t val = 0;
-                bool fNeg = false;
-                int j;
+                bool    fNeg = false;
+                int     j;
 
-                for (j = 0; j < 4; j++)
-                {
+                for (j = 0; j < 4; j++) {
                     char ch = *pch++;
-                    if (ch == '-')
-                    {
+                    if (ch == '-') {
                         /* Win16 quirk: any '-' in the 4-char field makes it negative. */
                         fNeg = true;
                         continue;
                     }
-                    if (ch < '0' || ch > '9')
-                    {
+                    if (ch < '0' || ch > '9') {
                         goto INIT_NoRc;
                     }
                     val = (int16_t)(val * 10 + (int16_t)(ch - '0'));
@@ -1220,8 +1078,7 @@ void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)
     }
 
 INIT_NoRc:
-    if (!fOk)
-    {
+    if (!fOk) {
         rc.left = (int16_t)-0x8000;
         rc.right = (int16_t)-0x8000;
         rc.top = 0;
@@ -1239,13 +1096,12 @@ INIT_NoRc:
     pwn->fInitalized = (uint16_t)(fInitalized ? 1 : 0);
 }
 
-void InitTiles(void)
-{
-    int16_t yTop;
-    int16_t ctile;
-    TILE *rgtile;
-    int16_t i;
-    int16_t iPass;
+void InitTiles(void) {
+    int16_t  yTop;
+    int16_t  ctile;
+    TILE    *rgtile;
+    int16_t  i;
+    int16_t  iPass;
     uint16_t iCol;
 
     /* TODO: implement */

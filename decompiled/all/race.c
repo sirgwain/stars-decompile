@@ -3027,13 +3027,15 @@ void CreateRandomRace(PLAYER *pplr)
 {
   PLAYER *pPVar1;
   undefined2 uVar2;
-  undefined2 *puVar3;
-  char cVar4;
-  short sVar5;
-  char *pcVar6;
-  int iVar7;
-  undefined2 *puVar8;
+  PLAYER *pPVar3;
+  undefined2 *puVar4;
+  char cVar5;
+  short sVar6;
+  char *pcVar7;
+  int iVar8;
   PLAYER *pPVar9;
+  undefined2 *puVar10;
+  PLAYER *pPVar11;
   undefined2 unaff_SS;
   undefined2 local_d4 [64];
   char local_54 [60];
@@ -3056,8 +3058,8 @@ void CreateRandomRace(PLAYER *pplr)
       pplr->rgEnvVarMin[i] = -1;
       pplr->rgEnvVar[i] = -1;
     }
-    sVar5 = Random(4);
-    pplr->pctIdealGrowth = (char)sVar5 + '\x02';
+    sVar6 = Random(4);
+    pplr->pctIdealGrowth = (char)sVar6 + '\x02';
   }
   else if (iVal < 7) {
     for (i = 0; i < 3; i = i + 1) {
@@ -3065,8 +3067,8 @@ void CreateRandomRace(PLAYER *pplr)
       pplr->rgEnvVarMin[i] = '\0';
       pplr->rgEnvVarMax[i] = 'd';
     }
-    sVar5 = Random(4);
-    pplr->pctIdealGrowth = (char)sVar5 + '\x03';
+    sVar6 = Random(4);
+    pplr->pctIdealGrowth = (char)sVar6 + '\x03';
   }
   else if (iVal < 9) {
     for (i = 0; i < 3; i = i + 1) {
@@ -3080,22 +3082,22 @@ void CreateRandomRace(PLAYER *pplr)
         pplr->rgEnvVarMax[i] = 'd';
       }
       else {
-        sVar5 = Random(4);
-        pplr->pctIdealGrowth = (char)sVar5 + '\x02';
+        sVar6 = Random(4);
+        pplr->pctIdealGrowth = (char)sVar6 + '\x02';
       }
     }
-    sVar5 = Random(5);
-    pplr->pctIdealGrowth = (char)sVar5 + '\x02';
+    sVar6 = Random(5);
+    pplr->pctIdealGrowth = (char)sVar6 + '\x02';
   }
   else {
     for (i = 0; i < 3; i = i + 1) {
-      sVar5 = Random(0x28);
-      j = sVar5 * 2 + 0x14;
+      sVar6 = Random(0x28);
+      j = sVar6 * 2 + 0x14;
       k = Random(0x65 - j);
-      cVar4 = (char)k;
-      pplr->rgEnvVar[i] = (char)(j / 2) + cVar4;
-      pplr->rgEnvVarMin[i] = cVar4;
-      pplr->rgEnvVarMax[i] = cVar4 + (char)j;
+      cVar5 = (char)k;
+      pplr->rgEnvVar[i] = (char)(j / 2) + cVar5;
+      pplr->rgEnvVarMin[i] = cVar5;
+      pplr->rgEnvVarMax[i] = cVar5 + (char)j;
     }
     if (iVal < 0xc) {
       i = Random(3);
@@ -3112,47 +3114,47 @@ void CreateRandomRace(PLAYER *pplr)
     else if (iVal < 0x11) {
       i = Random(3);
       j = Random(0x51);
-      cVar4 = (char)j;
-      pplr->rgEnvVar[i] = cVar4 + '\n';
-      pplr->rgEnvVarMin[i] = cVar4;
-      pplr->rgEnvVarMax[i] = cVar4 + '\x14';
+      cVar5 = (char)j;
+      pplr->rgEnvVar[i] = cVar5 + '\n';
+      pplr->rgEnvVarMin[i] = cVar5;
+      pplr->rgEnvVarMax[i] = cVar5 + '\x14';
     }
-    sVar5 = Random(9);
-    pplr->pctIdealGrowth = (char)sVar5 + '\a';
+    sVar6 = Random(9);
+    pplr->pctIdealGrowth = (char)sVar6 + '\a';
   }
   iVal = Random(3);
   for (i = 8; i < 0xe; i = i + 1) {
     if (iVal == 0) {
-      sVar5 = 1;
+      sVar6 = 1;
     }
     else {
-      sVar5 = Random(3);
+      sVar6 = Random(3);
     }
-    SetRaceStat(pplr,i,sVar5);
+    SetRaceStat(pplr,i,sVar6);
   }
-  sVar5 = Random(10);
-  SetRaceStat(pplr,rsMajorAdv,sVar5);
+  sVar6 = Random(10);
+  SetRaceStat(pplr,rsMajorAdv,sVar6);
   iVal = Random(4);
   for (i = 0; i < 0xe; i = i + 1) {
     if (iVal == 0) {
-      sVar5 = 0;
+      sVar6 = 0;
     }
     else {
-      sVar5 = Random(2);
+      sVar6 = Random(2);
     }
-    SetRaceGrbit(pplr,i,sVar5);
+    SetRaceGrbit(pplr,i,sVar6);
   }
-  sVar5 = Random(2);
-  SetRaceGrbit(pplr,ibitRaceTech3,sVar5);
-  sVar5 = Random(2);
-  SetRaceGrbit(pplr,ibitRaceCheapFact,sVar5);
+  sVar6 = Random(2);
+  SetRaceGrbit(pplr,ibitRaceTech3,sVar6);
+  sVar6 = Random(2);
+  SetRaceGrbit(pplr,ibitRaceCheapFact,sVar6);
   iVal = Random(3);
   if (iVal == 0) {
     for (i = 0; i < 7; i = i + 1) {
       pplr->rgAttr[i] = *(char *)(i + 0xde0);
     }
-    sVar5 = Random(5);
-    pplr->rgAttr[7] = (char)sVar5;
+    sVar6 = Random(5);
+    pplr->rgAttr[7] = (char)sVar6;
   }
   else {
     for (i = 0; i < 8; i = i + 1) {
@@ -3161,12 +3163,12 @@ void CreateRandomRace(PLAYER *pplr)
       pplr->rgAttr[i] = ((char *)rgRaceStatMin)[i] + (char)local_18;
     }
   }
-  pcVar6 = PszGetCompressedString(idsRandom2);
-  sVar5 = _strcmp(pplr->szName,pcVar6);
-  if (sVar5 == 0) {
-    pcVar6 = pplr->szName;
-    sVar5 = Random(0x18);
-    CchGetString(sVar5 + idsBerserker,pcVar6);
+  pcVar7 = PszGetCompressedString(idsRandom2);
+  sVar6 = _strcmp(pplr->szName,pcVar7);
+  if (sVar6 == 0) {
+    pcVar7 = pplr->szName;
+    sVar6 = Random(0x18);
+    CchGetString(sVar6 + idsBerserker,pcVar7);
   }
   cPts = CAdvantagePoints(pplr);
   if ((cPts < 0) || (0x32 < cPts)) {
@@ -3211,15 +3213,15 @@ LAB_10e0_6072:
       }
       else {
         if (8 < iVal) {
-          sVar5 = Random(2);
-          if (sVar5 == 0) {
+          sVar6 = Random(2);
+          if (sVar6 == 0) {
             iVal = Random(3);
             if (pplr->rgEnvVar[iVal] < '\0') {
               j = Random(0x1f);
-              cVar4 = (char)j;
-              pplr->rgEnvVar[iVal] = cVar4 + '#';
-              pplr->rgEnvVarMin[iVal] = cVar4;
-              pplr->rgEnvVarMax[iVal] = cVar4 + 'F';
+              cVar5 = (char)j;
+              pplr->rgEnvVar[iVal] = cVar5 + '#';
+              pplr->rgEnvVarMin[iVal] = cVar5;
+              pplr->rgEnvVarMax[iVal] = cVar5 + 'F';
               cPts = CAdvantagePoints(pplr);
               if (-(cPts + -0x32) == cPts || -cPts < cPts + -0x32) {
                 dAwayNew = cPts + -0x32;
@@ -3234,14 +3236,14 @@ LAB_10e0_6072:
               }
             }
             else {
-              puVar8 = local_d4;
+              puVar10 = local_d4;
               pPVar9 = pplr;
-              for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-                puVar3 = puVar8;
-                puVar8 = puVar8 + 1;
+              for (iVar8 = 0x60; iVar8 != 0; iVar8 = iVar8 + -1) {
+                puVar4 = puVar10;
+                puVar10 = puVar10 + 1;
                 pPVar1 = pPVar9;
                 pPVar9 = &pPVar9->cPlanet;
-                *puVar3 = *pPVar1;
+                *puVar4 = *pPVar1;
               }
               pplr->rgEnvVarMax[iVal] = -1;
               pplr->rgEnvVarMin[iVal] = -1;
@@ -3254,14 +3256,14 @@ LAB_10e0_6072:
                 dAwayNew = -cPts;
               }
               if (dAwayCur <= dAwayNew) {
-                puVar8 = local_d4;
+                puVar10 = local_d4;
                 pPVar9 = pplr;
-                for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
+                for (iVar8 = 0x60; iVar8 != 0; iVar8 = iVar8 + -1) {
                   pPVar1 = pPVar9;
                   pPVar9 = &pPVar9->cPlanet;
-                  puVar3 = puVar8;
-                  puVar8 = puVar8 + 1;
-                  uVar2 = *puVar3;
+                  puVar4 = puVar10;
+                  puVar10 = puVar10 + 1;
+                  uVar2 = *puVar4;
                   pPVar1->iPlayer = (char)uVar2;
                   pPVar1->cShDef = (char)((uint)uVar2 >> 8);
                 }
@@ -3314,26 +3316,26 @@ LAB_10e0_6072:
       }
       goto LAB_10e0_6072;
     }
-    puVar8 = local_d4;
+    puVar10 = local_d4;
     pPVar9 = pplr;
     cPass = cPass + 1;
-    for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
-      puVar3 = puVar8;
-      puVar8 = puVar8 + 1;
+    for (iVar8 = 0x60; iVar8 != 0; iVar8 = iVar8 + -1) {
+      puVar4 = puVar10;
+      puVar10 = puVar10 + 1;
       pPVar1 = pPVar9;
       pPVar9 = &pPVar9->cPlanet;
-      *puVar3 = *pPVar1;
+      *puVar4 = *pPVar1;
     }
-    puVar8 = (undefined2 *)&vrgplrDef;
-    pPVar9 = pplr;
-    for (iVar7 = 0x60; iVar7 != 0; iVar7 = iVar7 + -1) {
+    pPVar9 = (PLAYER *)vrgplrDef;
+    pPVar11 = pplr;
+    for (iVar8 = 0x60; iVar8 != 0; iVar8 = iVar8 + -1) {
+      pPVar3 = pPVar11;
+      pPVar11 = &pPVar11->cPlanet;
       pPVar1 = pPVar9;
       pPVar9 = &pPVar9->cPlanet;
-      puVar3 = puVar8;
-      puVar8 = puVar8 + 1;
-      uVar2 = *puVar3;
-      pPVar1->iPlayer = (char)uVar2;
-      pPVar1->cShDef = (char)((uint)uVar2 >> 8);
+      cVar5 = pPVar1->cShDef;
+      pPVar3->iPlayer = pPVar1->iPlayer;
+      pPVar3->cShDef = cVar5;
     }
     _strcpy(pplr->szName,local_54);
   }

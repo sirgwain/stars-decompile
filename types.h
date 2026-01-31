@@ -20,6 +20,7 @@
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #include <windows.h>
 #include <shlobj.h>
+#include <commdlg.h>
 
 #else
 #include "win_stubs.h"
@@ -32,6 +33,12 @@
 #ifndef offsetof
 #define offsetof(type, member) __builtin_offsetof(type, member)
 #endif
+
+// custom POINT because win32 point is no longer 16 bit ints
+typedef struct STARSPOINT {
+    int16_t x;
+    int16_t y;
+} STARSPOINT;
 
 /* typind 4153 (0x1039) size=4 */
 typedef struct _prod
@@ -141,7 +148,7 @@ _Static_assert(offsetof(TASKSELL, iPlrX) == 0x0, "offsetof(TASKSELL,iPlrX)");
 /* typind 4101 (0x1005) size=18 */
 typedef struct _order
 {
-    POINT pt;   /* +0x0000 */
+    STARSPOINT pt;   /* +0x0000 */
     int16_t id; /* +0x0004 */
     union
     {
@@ -1481,7 +1488,7 @@ _Static_assert(offsetof(THPACK, rgwtMin) == 0x2, "offsetof(THPACK,rgwtMin)");
 /* typind 5270 (0x1496) size=10 */
 typedef struct _thtrader
 {
-    POINT ptDest; /* +0x0000 */
+    STARSPOINT ptDest; /* +0x0000 */
     union
     {
         struct
@@ -1541,7 +1548,7 @@ typedef struct _thing
             uint16_t ith : 3;
         };
     }; /* +0x0000 */
-    POINT pt; /* +0x0002 */
+    STARSPOINT pt; /* +0x0002 */
     union
     {
         uint8_t rgb[10];
@@ -1890,7 +1897,7 @@ _Static_assert(sizeof(MDPLR) == 2, "sizeof(MDPLR)");
 /* typind 4167 (0x1047) size=16 */
 typedef struct _scan
 {
-    POINT pt;          /* +0x0000 */
+    STARSPOINT pt;          /* +0x0000 */
     int16_t grobj;     /* +0x0004 */
     int16_t grobjFull; /* +0x0006 */
     int16_t idpl;      /* +0x0008 */
@@ -1914,7 +1921,7 @@ typedef struct _sbar
 {
     int16_t grbit; /* +0x0000 */
     int16_t id;    /* +0x0002 */
-    POINT pt;      /* +0x0004 */
+    STARSPOINT pt;      /* +0x0004 */
     char *psz;     /* +0x0008 */
     SCAN *pscan;   /* +0x000a */
 } SBAR;
@@ -1929,8 +1936,8 @@ typedef struct _rpt
     int16_t icolSort;     /* +0x000a */
     int16_t fAscending;   /* +0x000c */
     int16_t irowFirst;    /* +0x000e */
-    POINT ptDlg;          /* +0x0010 */
-    POINT ptSize;         /* +0x0014 */
+    STARSPOINT ptDlg;          /* +0x0010 */
+    STARSPOINT ptSize;         /* +0x0014 */
     int16_t fCached;      /* +0x0018 */
     uint8_t rgbdx[16];    /* +0x001a */
     int16_t cRows;        /* +0x002a */
@@ -1980,7 +1987,7 @@ typedef struct _fleetsome
         uint16_t wRaw_0004;
     }; /* +0x0004 */
     int16_t idPlanet; /* +0x0006 */
-    POINT pt;         /* +0x0008 */
+    STARSPOINT pt;         /* +0x0008 */
 } FLEETSOME;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(FLEETSOME) == 12, "sizeof(FLEETSOME)");
@@ -2216,7 +2223,7 @@ typedef struct _fleet
         uint16_t wRaw_0004;
     }; /* +0x0004 */
     int16_t idPlanet;  /* +0x0006 */
-    POINT pt;          /* +0x0008 */
+    STARSPOINT pt;          /* +0x0008 */
     int16_t rgcsh[16]; /* +0x000c */
     union
     {
@@ -2444,7 +2451,7 @@ _Static_assert(offsetof(AIHIST, rgasb) == 0x4, "offsetof(AIHIST,rgasb)");
 /* typind 5422 (0x152e) size=28 */
 typedef struct _selSome
 {
-    POINT pt;          /* +0x0000 */
+    STARSPOINT pt;          /* +0x0000 */
     int16_t grobj;     /* +0x0004 */
     int16_t grobjFull; /* +0x0006 */
     int16_t id;        /* +0x0008 */
@@ -2605,7 +2612,7 @@ typedef struct _btldata
     uint16_t grfPlr;   /* +0x0004 */
     uint16_t cbData;   /* +0x0006 */
     uint16_t idPlanet; /* +0x0008 */
-    POINT pt;          /* +0x000a */
+    STARSPOINT pt;          /* +0x000a */
     TOK rgtok[0];      /* +0x000e */
 } BTLDATA;
 #ifdef STARS_LAYOUT_CHECKS
@@ -2835,7 +2842,7 @@ _Static_assert(offsetof(ZIPPRODQ, rgpq) == 0x10, "offsetof(ZIPPRODQ,rgpq)");
 /* typind 4187 (0x105b) size=226 */
 typedef struct _sel
 {
-    POINT pt;          /* +0x0000 */
+    STARSPOINT pt;          /* +0x0000 */
     int16_t grobj;     /* +0x0004 */
     int16_t grobjFull; /* +0x0006 */
     int16_t id;        /* +0x0008 */

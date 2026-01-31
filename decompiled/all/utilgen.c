@@ -3013,7 +3013,7 @@ short FCheckPassword(void)
       if (hwndTitle == 0) {
         hWndParent = hwndFrame;
       }
-      sVar1 = DialogBox(0,IDD_DLG140_140,hWndParent,lpDlgProc);
+      sVar1 = DialogBox(0,IDD_PASSWORD,hWndParent,lpDlgProc);
       FreeProcInstance(lpDlgProc);
     }
     else {
@@ -3427,8 +3427,10 @@ void ShowProgressGauge(void)
 
 {
   if (hwndProgressGauge == 0) {
-    CreateDialog(0,(LPCSTR)CONCAT22(0x189,hwndFrame),lpfnGaugeDlgProc._2_2_,
-                 (fn_lpfnGaugeDlgProc *)lpfnGaugeDlgProc);
+    CreateDialog(0,IDD_DLG393_393,hwndFrame,
+                 (fn_lpfnGaugeDlgProc *)
+                 CONCAT22(lpfnGaugeDlgProc._2_2_,
+                          (fn_lpfnGaugeDlgProc *)lpfnGaugeDlgProc));
   }
   else {
     UpdateProgressGauge(0);

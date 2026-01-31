@@ -1,18 +1,17 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
+#include "debuglog.h"
+#include "memory.h"
 #include "stars.h"
 #include "strings.h"
 #include "utilgen.h"
-#include "memory.h"
-#include "debuglog.h"
 
 /* functions */
 
-int16_t FSetUpBatchProcessing(void)
-{
-    char *pch;
+int16_t FSetUpBatchProcessing(void) {
+    char   *pch;
     MemJump env;
     ;
     int16_t fSuccess;
@@ -25,8 +24,7 @@ int16_t FSetUpBatchProcessing(void)
     return 0;
 }
 
-int16_t IPlrAlsoCheater(int16_t iplr)
-{
+int16_t IPlrAlsoCheater(int16_t iplr) {
     int16_t i;
 
     /* TODO: implement */
@@ -35,11 +33,10 @@ int16_t IPlrAlsoCheater(int16_t iplr)
 
 #ifdef _WIN32
 
-INT_PTR CALLBACK About(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    RECT rc;
+INT_PTR CALLBACK About(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    RECT     rc;
     uint16_t hdc;
-    int16_t i;
+    int16_t  i;
     int16_t (*lpProc)(void);
     HWND hwndCtl;
 
@@ -51,56 +48,46 @@ INT_PTR CALLBACK About(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK OrderInfoDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     RECT rc;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t FGetSystemColors(void)
-{
+int16_t FGetSystemColors(void) {
     /* Translated from Win16: update global brushes/colors from current theme. */
     COLORREF cr;
 
-    if (hbrButtonFace != NULL)
-    {
+    if (hbrButtonFace != NULL) {
         FreeHbr(hbrButtonFace);
         hbrButtonFace = NULL;
     }
-    if (hbrButtonHilite != NULL)
-    {
+    if (hbrButtonHilite != NULL) {
         FreeHbr(hbrButtonHilite);
         hbrButtonHilite = NULL;
     }
-    if (hbrButtonShadow != NULL)
-    {
+    if (hbrButtonShadow != NULL) {
         FreeHbr(hbrButtonShadow);
         hbrButtonShadow = NULL;
     }
-    if (hbrButtonText != NULL)
-    {
+    if (hbrButtonText != NULL) {
         FreeHbr(hbrButtonText);
         hbrButtonText = NULL;
     }
-    if (hbrWindowText != NULL)
-    {
+    if (hbrWindowText != NULL) {
         FreeHbr(hbrWindowText);
         hbrWindowText = NULL;
     }
-    if (hbrWindow != NULL)
-    {
+    if (hbrWindow != NULL) {
         FreeHbr(hbrWindow);
         hbrWindow = NULL;
     }
-    if (hbrWindowFrame != NULL)
-    {
+    if (hbrWindowFrame != NULL) {
         FreeHbr(hbrWindowFrame);
         hbrWindowFrame = NULL;
     }
-    if (hbrDesktop != NULL)
-    {
+    if (hbrDesktop != NULL) {
         FreeHbr(hbrDesktop);
         hbrDesktop = NULL;
     }
@@ -142,11 +129,9 @@ int16_t FGetSystemColors(void)
      * The offsets (0x40c..0x40e etc.) are game-specific DIB layouts.
      * We preserve the exact writes for behavior parity.
      */
-    if (hdibPlaque != NULL)
-    {
+    if (hdibPlaque != NULL) {
         BYTE *p = (BYTE *)GlobalLock(hdibPlaque);
-        if (p != NULL)
-        {
+        if (p != NULL) {
             p[0x40e] = (BYTE)(crButtonFace & 0xFF);
             p[0x40d] = (BYTE)((crButtonFace >> 8) & 0xFF);
 
@@ -160,11 +145,9 @@ int16_t FGetSystemColors(void)
         }
     }
 
-    if (hdibToolbar != NULL)
-    {
+    if (hdibToolbar != NULL) {
         BYTE *p = (BYTE *)GlobalLock(hdibToolbar);
-        if (p != NULL)
-        {
+        if (p != NULL) {
             p[0x41e] = (BYTE)(crButtonFace & 0xFF);
             p[0x41d] = (BYTE)((crButtonFace >> 8) & 0xFF);
 
@@ -180,15 +163,12 @@ int16_t FGetSystemColors(void)
     /* Screen color count */
     {
         HDC hdc = GetDC(NULL);
-        if (hdc != NULL)
-        {
+        if (hdc != NULL) {
             int planes = GetDeviceCaps(hdc, PLANES);  /* was 0x0c */
             int bits = GetDeviceCaps(hdc, BITSPIXEL); /* was 0x0e */
             vcScreenColors = (int32_t)(planes * bits);
             ReleaseDC(NULL, hdc);
-        }
-        else
-        {
+        } else {
             /* If we fail to get a DC, keep original spirit: result still success. */
             vcScreenColors = 0;
         }
@@ -199,104 +179,82 @@ int16_t FGetSystemColors(void)
     return 1;
 }
 
-void FreeStuff(void)
-{
+void FreeStuff(void) {
     int i, j;
 
     /* Solid brushes */
-    if (hbrButtonFace)
-    {
+    if (hbrButtonFace) {
         FreeHbr(hbrButtonFace);
         hbrButtonFace = NULL;
     }
-    if (hbrButtonHilite)
-    {
+    if (hbrButtonHilite) {
         FreeHbr(hbrButtonHilite);
         hbrButtonHilite = NULL;
     }
-    if (hbrButtonShadow)
-    {
+    if (hbrButtonShadow) {
         FreeHbr(hbrButtonShadow);
         hbrButtonShadow = NULL;
     }
-    if (hbrButtonText)
-    {
+    if (hbrButtonText) {
         FreeHbr(hbrButtonText);
         hbrButtonText = NULL;
     }
-    if (hbrWindowText)
-    {
+    if (hbrWindowText) {
         FreeHbr(hbrWindowText);
         hbrWindowText = NULL;
     }
-    if (hbrWindow)
-    {
+    if (hbrWindow) {
         FreeHbr(hbrWindow);
         hbrWindow = NULL;
     }
-    if (hbrWindowFrame)
-    {
+    if (hbrWindowFrame) {
         FreeHbr(hbrWindowFrame);
         hbrWindowFrame = NULL;
     }
-    if (hbrDesktop)
-    {
+    if (hbrDesktop) {
         FreeHbr(hbrDesktop);
         hbrDesktop = NULL;
     }
-    if (hbrRed)
-    {
+    if (hbrRed) {
         FreeHbr(hbrRed);
         hbrRed = NULL;
     }
-    if (hbrGreen)
-    {
+    if (hbrGreen) {
         FreeHbr(hbrGreen);
         hbrGreen = NULL;
     }
-    if (hbrBlue)
-    {
+    if (hbrBlue) {
         FreeHbr(hbrBlue);
         hbrBlue = NULL;
     }
-    if (hbrPurple)
-    {
+    if (hbrPurple) {
         FreeHbr(hbrPurple);
         hbrPurple = NULL;
     }
-    if (hbrTooltip)
-    {
+    if (hbrTooltip) {
         FreeHbr(hbrTooltip);
         hbrTooltip = NULL;
     }
 
-    for (i = 0; i < 5; i++)
-    {
-        if (rghbrMineral[i])
-        {
+    for (i = 0; i < 5; i++) {
+        if (rghbrMineral[i]) {
             FreeHbr(rghbrMineral[i]);
             rghbrMineral[i] = NULL;
         }
     }
 
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 2; j++)
-        {
-            if (rghbrPlanetAttr[i][j])
-            {
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 2; j++) {
+            if (rghbrPlanetAttr[i][j]) {
                 FreeHbr(rghbrPlanetAttr[i][j]);
                 rghbrPlanetAttr[i][j] = NULL;
             }
         }
     }
 
-    for (i = 0; i < 4; i++)
-    {
-        for (j = 0; j < 2; j++)
-        {
-            if (rghbrMinSum[i][j])
-            {
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 2; j++) {
+            if (rghbrMinSum[i][j]) {
                 FreeHbr(rghbrMinSum[i][j]);
                 rghbrMinSum[i][j] = NULL;
             }
@@ -308,13 +266,11 @@ void FreeStuff(void)
      * Win32: not used/needed (SetWindowLongPtr stores raw function pointers).
      */
 
-    if (hrgnHuge)
-    {
+    if (hrgnHuge) {
         DeleteObject(hrgnHuge);
         hrgnHuge = NULL;
     }
-    if (hrgnScratch)
-    {
+    if (hrgnScratch) {
         DeleteObject(hrgnScratch);
         hrgnScratch = NULL;
     }
@@ -322,403 +278,320 @@ void FreeStuff(void)
     /* Reset cursor to the standard arrow (Win16 0x7F00 == IDC_ARROW) */
     SetCursor(LoadCursor(NULL, IDC_ARROW));
 
-    if (hcurScanner)
-    {
+    if (hcurScanner) {
         DestroyCursor(hcurScanner);
         hcurScanner = NULL;
     }
-    if (hcurOpenGrab)
-    {
+    if (hcurOpenGrab) {
         DestroyCursor(hcurOpenGrab);
         hcurOpenGrab = NULL;
     }
-    if (hcurCloseGrab)
-    {
+    if (hcurCloseGrab) {
         DestroyCursor(hcurCloseGrab);
         hcurCloseGrab = NULL;
     }
-    if (hcurScanAdd)
-    {
+    if (hcurScanAdd) {
         DestroyCursor(hcurScanAdd);
         hcurScanAdd = NULL;
     }
-    if (hcurTrashCan)
-    {
+    if (hcurTrashCan) {
         DestroyCursor(hcurTrashCan);
         hcurTrashCan = NULL;
     }
-    if (hcurNoWay)
-    {
+    if (hcurNoWay) {
         DestroyCursor(hcurNoWay);
         hcurNoWay = NULL;
     }
-    if (hcurResizeWE)
-    {
+    if (hcurResizeWE) {
         DestroyCursor(hcurResizeWE);
         hcurResizeWE = NULL;
     }
-    if (hcurResizeNS)
-    {
+    if (hcurResizeNS) {
         DestroyCursor(hcurResizeNS);
         hcurResizeNS = NULL;
     }
-    if (hcurResize4Way)
-    {
+    if (hcurResize4Way) {
         DestroyCursor(hcurResize4Way);
         hcurResize4Way = NULL;
     }
-    if (hcurArrowHelp)
-    {
+    if (hcurArrowHelp) {
         DestroyCursor(hcurArrowHelp);
         hcurArrowHelp = NULL;
     }
-    if (hcurHand)
-    {
+    if (hcurHand) {
         DestroyCursor(hcurHand);
         hcurHand = NULL;
     }
 
-    if (hbmpScanner)
-    {
+    if (hbmpScanner) {
         DeleteObject(hbmpScanner);
         hbmpScanner = NULL;
     }
-    if (hbmpNumbers)
-    {
+    if (hbmpNumbers) {
         DeleteObject(hbmpNumbers);
         hbmpNumbers = NULL;
     }
-    if (hbmpScanShip)
-    {
+    if (hbmpScanShip) {
         DeleteObject(hbmpScanShip);
         hbmpScanShip = NULL;
     }
-    if (hbmpUnknownPlanet)
-    {
+    if (hbmpUnknownPlanet) {
         DeleteObject(hbmpUnknownPlanet);
         hbmpUnknownPlanet = NULL;
     }
 
-    if (hiconStars)
-    {
+    if (hiconStars) {
         DestroyIcon(hiconStars);
         hiconStars = NULL;
     }
-    if (hiconHost)
-    {
+    if (hiconHost) {
         DestroyIcon(hiconHost);
         hiconHost = NULL;
     }
-    if (hiconWait)
-    {
+    if (hiconWait) {
         DestroyIcon(hiconWait);
         hiconWait = NULL;
     }
 
-    for (i = 0; i < 7; i++)
-    {
-        if (rghiconVCR[i])
-        {
+    for (i = 0; i < 7; i++) {
+        if (rghiconVCR[i]) {
             DestroyIcon(rghiconVCR[i]);
             rghiconVCR[i] = NULL;
         }
     }
 
-    /* Win32 note: UnlockResource/FreeResource are obsolete; FreeResource is effectively a no-op.
-       Keep calls if you still use LoadResource()/LockResource() and want symmetry. */
-    if (hdibPlanets)
-    {
-        GlobalUnlock(hdibPlanets);
-        FreeResource(hdibPlanets);
+    if (hdibPlanets) {
+        GlobalFree(hdibPlanets);
         hdibPlanets = NULL;
     }
-    if (hdibThings)
-    {
-        GlobalUnlock(hdibThings);
-        FreeResource(hdibThings);
+    if (hdibThings) {
+        GlobalFree(hdibThings);
         hdibThings = NULL;
     }
-    if (hdibToolbar)
-    {
-        GlobalUnlock(hdibToolbar);
-        FreeResource(hdibToolbar);
+    if (hdibToolbar) {
+        GlobalFree(hdibToolbar);
         hdibToolbar = NULL;
     }
-    if (hdibRaces)
-    {
-        GlobalUnlock(hdibRaces);
-        FreeResource(hdibRaces);
+    if (hdibRaces) {
+        GlobalFree(hdibRaces);
         hdibRaces = NULL;
     }
-    if (hdibRacesT)
-    {
-        GlobalUnlock(hdibRacesT);
-        FreeResource(hdibRacesT);
+    if (hdibRacesT) {
+        GlobalFree(hdibRacesT);
         hdibRacesT = NULL;
     }
-    if (hdibRacesX)
-    {
-        GlobalUnlock(hdibRacesX);
-        FreeResource(hdibRacesX);
+    if (hdibRacesX) {
+        GlobalFree(hdibRacesX);
         hdibRacesX = NULL;
     }
 
-    if (hbmpBackBld)
-    {
+    if (hbmpBackBld) {
         DeleteObject(hbmpBackBld);
         hbmpBackBld = NULL;
     }
-    if (hbmpMsg)
-    {
+    if (hbmpMsg) {
         DeleteObject(hbmpMsg);
         hbmpMsg = NULL;
     }
-    if (hbmpMono)
-    {
+    if (hbmpMono) {
         DeleteObject(hbmpMono);
         hbmpMono = NULL;
     }
 
-    if (hdibPlaque)
-    {
+    if (hdibPlaque) {
         FreeResource(hdibPlaque);
         hdibPlaque = NULL;
     }
 
-    for (i = 0; i < 5; i++)
-    {
-        if (rghdibShips[i])
-        {
+    for (i = 0; i < 5; i++) {
+        if (rghdibShips[i]) {
             GlobalUnlock(rghdibShips[i]);
             FreeResource(rghdibShips[i]);
             rghdibShips[i] = NULL;
         }
-        if (rghdibShipsT[i])
-        {
+        if (rghdibShipsT[i]) {
             GlobalUnlock(rghdibShipsT[i]);
             FreeResource(rghdibShipsT[i]);
             rghdibShipsT[i] = NULL;
         }
     }
-    for (i = 0; i < 7; i++)
-    {
-        if (rghdibInventory[i])
-        {
+    for (i = 0; i < 7; i++) {
+        if (rghdibInventory[i]) {
             GlobalUnlock(rghdibInventory[i]);
             FreeResource(rghdibInventory[i]);
             rghdibInventory[i] = NULL;
         }
     }
 
-    if (lpLog)
-    {
+    if (lpLog) {
         FreeLp((uint8_t *)lpLog, htLog);
         lpLog = NULL;
     }
-    if (lpMsg)
-    {
+    if (lpMsg) {
         FreeLp((int16_t *)lpMsg, htMsg);
         lpMsg = NULL;
     }
 
-    if (vhpal)
-    {
+    if (vhpal) {
         DeleteObject(vhpal);
         vhpal = NULL;
     }
-    if (vhpalSplash)
-    {
+    if (vhpalSplash) {
         DeleteObject(vhpalSplash);
         vhpalSplash = NULL;
     }
 
     /* More brushes/pens */
-    if (hbrShip)
-    {
+    if (hbrShip) {
         FreeHbr(hbrShip);
         hbrShip = NULL;
     }
-    if (hbrStarbase)
-    {
+    if (hbrStarbase) {
         FreeHbr(hbrStarbase);
         hbrStarbase = NULL;
     }
-    if (hbrBBlue)
-    {
+    if (hbrBBlue) {
         FreeHbr(hbrBBlue);
         hbrBBlue = NULL;
     }
-    if (hbrEnemy)
-    {
+    if (hbrEnemy) {
         FreeHbr(hbrEnemy);
         hbrEnemy = NULL;
     }
-    if (hbrSelect)
-    {
+    if (hbrSelect) {
         FreeHbr(hbrSelect);
         hbrSelect = NULL;
     }
-    if (hbrRadar)
-    {
+    if (hbrRadar) {
         FreeHbr(hbrRadar);
         hbrRadar = NULL;
     }
-    if (hbrRadarNear)
-    {
+    if (hbrRadarNear) {
         FreeHbr(hbrRadarNear);
         hbrRadarNear = NULL;
     }
-    if (hbrLightGray)
-    {
+    if (hbrLightGray) {
         FreeHbr(hbrLightGray);
         hbrLightGray = NULL;
     }
-    if (hbrGray)
-    {
+    if (hbrGray) {
         FreeHbr(hbrGray);
         hbrGray = NULL;
     }
-    if (hbrYellow)
-    {
+    if (hbrYellow) {
         FreeHbr(hbrYellow);
         hbrYellow = NULL;
     }
-    if (hbrDkYellow)
-    {
+    if (hbrDkYellow) {
         FreeHbr(hbrDkYellow);
         hbrDkYellow = NULL;
     }
 
-    if (hbr50Screen)
-    {
+    if (hbr50Screen) {
         DeleteObject(hbr50Screen);
         hbr50Screen = NULL;
     }
-    for (i = 0; i < 3; i++)
-    {
-        if (rghbrPat[i])
-        {
+    for (i = 0; i < 3; i++) {
+        if (rghbrPat[i]) {
             DeleteObject(rghbrPat[i]);
             rghbrPat[i] = NULL;
         }
     }
-    if (hbrCargo)
-    {
+    if (hbrCargo) {
         DeleteObject(hbrCargo);
         hbrCargo = NULL;
     }
-    if (hbrDock)
-    {
+    if (hbrDock) {
         DeleteObject(hbrDock);
         hbrDock = NULL;
     }
 
-    if (hpenShip)
-    {
+    if (hpenShip) {
         DeleteObject(hpenShip);
         hpenShip = NULL;
     }
-    if (hpenDkGreen)
-    {
+    if (hpenDkGreen) {
         DeleteObject(hpenDkGreen);
         hpenDkGreen = NULL;
     }
-    if (hpenDkPurple)
-    {
+    if (hpenDkPurple) {
         DeleteObject(hpenDkPurple);
         hpenDkPurple = NULL;
     }
-    if (hpenStarbase)
-    {
+    if (hpenStarbase) {
         DeleteObject(hpenStarbase);
         hpenStarbase = NULL;
     }
-    if (hpenEnemy)
-    {
+    if (hpenEnemy) {
         DeleteObject(hpenEnemy);
         hpenEnemy = NULL;
     }
-    if (hpenMassPath)
-    {
+    if (hpenMassPath) {
         DeleteObject(hpenMassPath);
         hpenMassPath = NULL;
     }
-    if (hpenRadar)
-    {
+    if (hpenRadar) {
         DeleteObject(hpenRadar);
         hpenRadar = NULL;
     }
-    if (hpenRadarNear)
-    {
+    if (hpenRadarNear) {
         DeleteObject(hpenRadarNear);
         hpenRadarNear = NULL;
     }
-    if (hpenDkBlue)
-    {
+    if (hpenDkBlue) {
         DeleteObject(hpenDkBlue);
         hpenDkBlue = NULL;
     }
-    if (hpenYellow)
-    {
+    if (hpenYellow) {
         DeleteObject(hpenYellow);
         hpenYellow = NULL;
     }
-    if (hpenDkYellow)
-    {
+    if (hpenDkYellow) {
         DeleteObject(hpenDkYellow);
         hpenDkYellow = NULL;
     }
 
-    if (rghfontArial10[0])
-    {
+    if (rghfontArial10[0]) {
         DeleteObject(rghfontArial10[0]);
         rghfontArial10[0] = NULL;
     }
-    if (rghfontArial10[1])
-    {
+    if (rghfontArial10[1]) {
         DeleteObject(rghfontArial10[1]);
         rghfontArial10[1] = NULL;
     }
-    for (i = 0; i < 5; i++)
-    {
-        if (rghfontArial8[i])
-        {
+    for (i = 0; i < 5; i++) {
+        if (rghfontArial8[i]) {
             DeleteObject(rghfontArial8[i]);
             rghfontArial8[i] = NULL;
         }
     }
-    if (rghfontArial6[0])
-    {
+    if (rghfontArial6[0]) {
         DeleteObject(rghfontArial6[0]);
         rghfontArial6[0] = NULL;
     }
-    if (rghfontArial7[0])
-    {
+    if (rghfontArial7[0]) {
         DeleteObject(rghfontArial7[0]);
         rghfontArial7[0] = NULL;
     }
 
     /* Heap blocks (now flat pointers in Win32 build) */
-    for (i = 0; i < 12; i++)
-    {
-        if (rglphb[i])
-        {
+    for (i = 0; i < 12; i++) {
+        if (rglphb[i]) {
             FreeHb(rglphb[i]);
             rglphb[i] = NULL;
         }
     }
 }
 
-int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
-{
-    HWND hwndF;
-    int16_t i;
-    int16_t itb;
-    int16_t iWarp;
-    POINT pt;
+int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw) {
+    HWND     hwndF;
+    int16_t  i;
+    int16_t  itb;
+    int16_t  iWarp;
+    POINT    pt;
     uint16_t md;
-    int16_t iwp;
-    HWND hwndOver;
+    int16_t  iwp;
+    HWND     hwndOver;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MAIN:0x1772 */
@@ -732,16 +605,12 @@ int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)
     return 0;
 }
 
-int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam)
-{
+int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam) {
     HWND hwndF;
 
     (void)hwnd;
 
-    if ((((hwndScanner == 0) || ((ch != '+') && (ch != '-'))) &&
-         (ch != 'v') && (ch != 'V')) ||
-        ((hwndMessage != 0) && ((hwndF = GetFocus()) == hwndMsgEdit)))
-    {
+    if ((((hwndScanner == 0) || ((ch != '+') && (ch != '-'))) && (ch != 'v') && (ch != 'V')) || ((hwndMessage != 0) && ((hwndF = GetFocus()) == hwndMsgEdit))) {
         return 0;
     }
 

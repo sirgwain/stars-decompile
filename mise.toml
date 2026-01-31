@@ -404,13 +404,13 @@ cmake --preset macos-linux-win32-stubs
 cmake --build --preset build-macos-linux-win32-stubs
 '''
 
-[tasks.build-cross]
-description = "Build CrossOver (mingw-w64) with CMake presets"
+[tasks.build-wine]
+description = "Build Win32 (mingw-w64) for running under Wine"
 run = '''
 #!/bin/bash
 set -e
-cmake --preset macos-crossover
-cmake --build --preset build-macos-crossover
+cmake --preset macos-wine
+cmake --build --preset build-macos-wine
 '''
 
 [tasks.build-test]
@@ -426,39 +426,39 @@ cmake --build --preset run-tests
 description = "Build native + cross + run tests"
 run = [
     { task = "build-native" },
-    { task = "build-cross" },
+    { task = "build-wine" },
     { task = "build-test" },
 ]
 
-[tasks.crossover]
-description = "Run crossover instance"
+[tasks.wine]
+description = "Run Win32 build under Wine"
+env = { MVK_CONFIG_LOG_LEVEL = "error" }
 run = '''
 #!/bin/bash
 set -e
-cmake --preset macos-crossover
-cmake --build --preset run-crossover
+cmake --preset macos-wine
+cmake --build --preset run-wine
 '''
 
-[tasks.crossover-debug]
-description = "Run crossover instance with debug logging to stderr"
+[tasks.wine-gdb]
+description = "Run Win32 build under winedbg --gdb (attach with VS Code)"
+env = { MVK_CONFIG_LOG_LEVEL = "error" }
 run = '''
 #!/bin/bash
-set -e
+set -euo pipefail
 
-WINE_BIN="/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin/wine"
-BOTTLE_NAME="debugger"
 LOG_FILE="$PROJECT_DIR/debug.log"
 
-# Build and copy first
-cmake --preset macos-crossover
-cmake --build build-win --target copy_to_crossover
+echo "[wine-gdb] configuring..."
+cmake --preset macos-wine
 
-echo "Running with debug output -> $LOG_FILE"
-echo "Tail the log with: tail -f $LOG_FILE"
+echo "[wine-gdb] building + launching run_in_wine_gdb"
+echo "[wine-gdb] stderr -> $LOG_FILE"
+echo "[wine-gdb] attach VS Code gdb when winedbg prints the port"
 
-# Run with stderr redirected to log file
-"$WINE_BIN" --bottle "$BOTTLE_NAME" "c:\\stars\\stars_win32.exe" 2> "$LOG_FILE"
+cmake --build build-win --target run_in_wine_gdb 2> "$LOG_FILE"
 '''
+
 
 [tasks.extract-symbols]
 description = "Re-extract symbols from the NE executable (requires Python)"
@@ -714,7 +714,6 @@ set -e
 
 python3 "$PROJECT_DIR/scripts/build_implementation_plan.py" "$@"
 '''
-
 
 
 [tasks.update-progress]

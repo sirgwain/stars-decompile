@@ -363,8 +363,7 @@ void StartTutor(short fRestart)
     }
     if (tutor.hwnd == 0) {
       uVar5 = 0x14f8;
-      CreateDialog(0,(LPCSTR)CONCAT22(0x9c6,hwndFrame),lpfnTutorDlgProc._2_2_,
-                   (fn_lpfnTutorDlgProc *)lpfnTutorDlgProc);
+      CreateDialog(0,IDD_DLG2502_2502,hwndFrame,lpfnTutorDlgProc);
     }
     if (tutor.idt != 0) {
       if (((uint)tutor.wFlags >> 3 & 1) == 0) {
@@ -389,7 +388,7 @@ void StartTutor(short fRestart)
   InvalidateRect(*(HWND *)(puVar4 + -2),*(RECT **)(puVar4 + -6),*(BOOL *)(puVar4 + -8));
   pfVar6 = lpfnTutorDlgProc;
 LAB_10f8_0a29:
-  lpfnTutorDlgProc._2_2_ = (HWND)((ulong)pfVar6 >> 0x10);
+  lpfnTutorDlgProc._2_2_ = (undefined2)((ulong)pfVar6 >> 0x10);
   lpfnTutorDlgProc._0_2_ = (fn_lpfnTutorDlgProc *)pfVar6;
   return;
 }

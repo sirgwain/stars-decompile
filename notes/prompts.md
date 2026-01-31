@@ -11,8 +11,9 @@ Translate the WriteIniSettings to modern win32 C.
 Use @project_index.json to locate related globals and functions, but treat @types.h as the source of truth for all struct fields and types.
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.
 
-## tips:
+## tips and rules:
 
+- don't add extra scope blocks to functions
 - code like `lphs->grhst == hstBeam && lphs->iItem == 0x12`, the hull slot iItem should match with i<part> enums in @enums.h, i.e. hstBeam 0x12 is `ibeamMultiContainedMunition`
 - for windows api calls, swap hardcoded values for constants (i.e. WM*\*, ODC*\*) where possible
 - If locals are already renamed in the decompile (e.g., `pl`, `lMaxPop`, `pctDesire`, `ihuldef`), **preserve those names**. For ghidra autonamed vars (i.e. pcVar1), rename them to be clear.

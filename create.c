@@ -1,48 +1,242 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "create.h"
+#include "utilgen.h"
 
 /* globals */
-BTLPLAN rgbtlplanT[5] = {{.szName = "Default"}, {.szName = "Kill Starbase"}, {.szName = "Max-Defense"}, {.szName = "Sniper"}, {.szName = "Chicken"}}; /* 1078:000c */
-char rgNG3Width[9][2] = {{-3, 0}, {2, 1}, {5, 0}, {-3, 0}, {3, 0}, {3, 0}, {3, 0}, {1, 0}, {3, 0}};                                                   /* 1078:9d4c */
+BTLPLAN rgbtlplanT[5] = {
+    {.szName = "Default"}, {.szName = "Kill Starbase"}, {.szName = "Max-Defense"}, {.szName = "Sniper"}, {.szName = "Chicken"}}; /* 1078:000c */
+char   rgNG3Width[9][2] = {{-3, 0}, {2, 1}, {5, 0}, {-3, 0}, {3, 0}, {3, 0}, {3, 0}, {1, 0}, {3, 0}};                            /* 1078:9d4c */
 PLAYER vrgplrComp[6][4] = {
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {-1, -1, -1}, .rgEnvVarMin = {-1, -1, -1}, .rgEnvVarMax = {-1, -1, -1}, .pctIdealGrowth = 5, .pctResearch = 15, .rgAttr = {10, 12, 10, 16, 10, 5, 10, 0, 1, 1, 2, 1, 1, 0, 0, 0}, .grbitAttr = 0x00001341},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {-1, -1, -1}, .rgEnvVarMin = {-1, -1, -1}, .rgEnvVarMax = {-1, -1, -1}, .pctIdealGrowth = 6, .pctResearch = 15, .rgAttr = {9, 13, 9, 16, 10, 4, 11, 0, 1, 1, 2, 1, 1, 0, 0, 0}, .grbitAttr = 0x00000341},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {-1, -1, -1}, .rgEnvVarMin = {-1, -1, -1}, .rgEnvVarMax = {-1, -1, -1}, .pctIdealGrowth = 6, .pctResearch = 15, .rgAttr = {8, 13, 9, 18, 10, 4, 12, 0, 1, 2, 2, 2, 1, 0, 0, 0}, .grbitAttr = 0x80000261},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {-1, -1, -1}, .rgEnvVarMin = {-1, -1, -1}, .rgEnvVarMax = {-1, -1, -1}, .pctIdealGrowth = 7, .pctResearch = 15, .rgAttr = {8, 13, 9, 16, 10, 4, 8, 0, 1, 2, 1, 2, 1, 0, 0, 0}, .grbitAttr = 0x80000261},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {-1, -1, -1},
+         .rgEnvVarMin = {-1, -1, -1},
+         .rgEnvVarMax = {-1, -1, -1},
+         .pctIdealGrowth = 5,
+         .pctResearch = 15,
+         .rgAttr = {10, 12, 10, 16, 10, 5, 10, 0, 1, 1, 2, 1, 1, 0, 0, 0},
+         .grbitAttr = 0x00001341},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {-1, -1, -1},
+         .rgEnvVarMin = {-1, -1, -1},
+         .rgEnvVarMax = {-1, -1, -1},
+         .pctIdealGrowth = 6,
+         .pctResearch = 15,
+         .rgAttr = {9, 13, 9, 16, 10, 4, 11, 0, 1, 1, 2, 1, 1, 0, 0, 0},
+         .grbitAttr = 0x00000341},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {-1, -1, -1},
+         .rgEnvVarMin = {-1, -1, -1},
+         .rgEnvVarMax = {-1, -1, -1},
+         .pctIdealGrowth = 6,
+         .pctResearch = 15,
+         .rgAttr = {8, 13, 9, 18, 10, 4, 12, 0, 1, 2, 2, 2, 1, 0, 0, 0},
+         .grbitAttr = 0x80000261},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {-1, -1, -1},
+         .rgEnvVarMin = {-1, -1, -1},
+         .rgEnvVarMax = {-1, -1, -1},
+         .pctIdealGrowth = 7,
+         .pctResearch = 15,
+         .rgAttr = {8, 13, 9, 16, 10, 4, 8, 0, 1, 2, 1, 2, 1, 0, 0, 0},
+         .grbitAttr = 0x80000261},
     },
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {58, 35, 65}, .rgEnvVarMin = {27, 7, 35}, .rgEnvVarMax = {89, 63, 95}, .pctIdealGrowth = 14, .pctResearch = 15, .rgAttr = {10, 9, 10, 9, 9, 5, 8, 0, 1, 0, 1, 1, 1, 0, 1, 0}, .grbitAttr = 0x00002045},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {62, 33, 61}, .rgEnvVarMin = {32, 6, 26}, .rgEnvVarMax = {92, 60, 96}, .pctIdealGrowth = 14, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 5, 9, 0, 1, 1, 1, 1, 1, 1, 1, 0}, .grbitAttr = 0x80002045},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {63, 28, 62}, .rgEnvVarMin = {31, 4, 30}, .rgEnvVarMax = {95, 52, 94}, .pctIdealGrowth = 14, .pctResearch = 15, .rgAttr = {9, 11, 10, 10, 10, 5, 9, 0, 0, 1, 0, 1, 1, 1, 1, 0}, .grbitAttr = 0x80002045},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {62, 29, -1}, .rgEnvVarMin = {31, 5, -1}, .rgEnvVarMax = {93, 53, -1}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 15, 10, 25, 10, 5, 9, 0, 0, 0, 0, 0, 0, 0, 1, 0}, .grbitAttr = 0xa0002045},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {58, 35, 65},
+         .rgEnvVarMin = {27, 7, 35},
+         .rgEnvVarMax = {89, 63, 95},
+         .pctIdealGrowth = 14,
+         .pctResearch = 15,
+         .rgAttr = {10, 9, 10, 9, 9, 5, 8, 0, 1, 0, 1, 1, 1, 0, 1, 0},
+         .grbitAttr = 0x00002045},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {62, 33, 61},
+         .rgEnvVarMin = {32, 6, 26},
+         .rgEnvVarMax = {92, 60, 96},
+         .pctIdealGrowth = 14,
+         .pctResearch = 15,
+         .rgAttr = {10, 10, 10, 10, 10, 5, 9, 0, 1, 1, 1, 1, 1, 1, 1, 0},
+         .grbitAttr = 0x80002045},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {63, 28, 62},
+         .rgEnvVarMin = {31, 4, 30},
+         .rgEnvVarMax = {95, 52, 94},
+         .pctIdealGrowth = 14,
+         .pctResearch = 15,
+         .rgAttr = {9, 11, 10, 10, 10, 5, 9, 0, 0, 1, 0, 1, 1, 1, 1, 0},
+         .grbitAttr = 0x80002045},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {62, 29, -1},
+         .rgEnvVarMin = {31, 5, -1},
+         .rgEnvVarMax = {93, 53, -1},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 15, 10, 25, 10, 5, 9, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+         .grbitAttr = 0xa0002045},
     },
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {35, 60, 38}, .rgEnvVarMin = {7, 26, 5}, .rgEnvVarMax = {63, 94, 71}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {9, 11, 10, 14, 11, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0}, .grbitAttr = 0x20000f10},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {35, 60, 38}, .rgEnvVarMin = {7, 26, 5}, .rgEnvVarMax = {63, 94, 71}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 13, 9, 14, 10, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0}, .grbitAttr = 0xa0000f10},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {35, 60, 38}, .rgEnvVarMin = {7, 26, 5}, .rgEnvVarMax = {63, 94, 71}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 14, 9, 15, 14, 5, 15, 1, 0, 0, 0, 0, 0, 0, 4, 0}, .grbitAttr = 0xa0000e10},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {35, -1, 50}, .rgEnvVarMin = {7, -1, 0}, .rgEnvVarMax = {63, -1, 100}, .pctIdealGrowth = 16, .pctResearch = 15, .rgAttr = {8, 14, 9, 14, 14, 5, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0}, .grbitAttr = 0xa0000e10},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {35, 60, 38},
+         .rgEnvVarMin = {7, 26, 5},
+         .rgEnvVarMax = {63, 94, 71},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {9, 11, 10, 14, 11, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0},
+         .grbitAttr = 0x20000f10},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {35, 60, 38},
+         .rgEnvVarMin = {7, 26, 5},
+         .rgEnvVarMax = {63, 94, 71},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 13, 9, 14, 10, 6, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0},
+         .grbitAttr = 0xa0000f10},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {35, 60, 38},
+         .rgEnvVarMin = {7, 26, 5},
+         .rgEnvVarMax = {63, 94, 71},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 14, 9, 15, 14, 5, 15, 1, 0, 0, 0, 0, 0, 0, 4, 0},
+         .grbitAttr = 0xa0000e10},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {35, -1, 50},
+         .rgEnvVarMin = {7, -1, 0},
+         .rgEnvVarMax = {63, -1, 100},
+         .pctIdealGrowth = 16,
+         .pctResearch = 15,
+         .rgAttr = {8, 14, 9, 14, 14, 5, 14, 1, 0, 0, 0, 0, 0, 0, 4, 0},
+         .grbitAttr = 0xa0000e10},
     },
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {32, 31, 31}, .rgEnvVarMax = {68, 69, 69}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 5, 10, 1, 0, 0, 0, 0, 0, 2, 3, 0}, .grbitAttr = 0x20001f02},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {32, 31, 31}, .rgEnvVarMax = {68, 69, 69}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3, 0}, .grbitAttr = 0x20001e02},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {23, 24, 25}, .rgEnvVarMax = {77, 76, 75}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3, 0}, .grbitAttr = 0x20001e02},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {-1, 50, 50}, .rgEnvVarMin = {-1, 24, 25}, .rgEnvVarMax = {-1, 76, 75}, .pctIdealGrowth = 15, .pctResearch = 15, .rgAttr = {8, 15, 10, 15, 15, 5, 15, 1, 0, 0, 0, 0, 0, 2, 3, 0}, .grbitAttr = 0x20001e02},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {32, 31, 31},
+         .rgEnvVarMax = {68, 69, 69},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {10, 10, 10, 10, 10, 5, 10, 1, 0, 0, 0, 0, 0, 2, 3, 0},
+         .grbitAttr = 0x20001f02},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {32, 31, 31},
+         .rgEnvVarMax = {68, 69, 69},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3, 0},
+         .grbitAttr = 0x20001e02},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {23, 24, 25},
+         .rgEnvVarMax = {77, 76, 75},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 12, 10, 12, 14, 5, 12, 1, 0, 0, 0, 0, 0, 2, 3, 0},
+         .grbitAttr = 0x20001e02},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {-1, 50, 50},
+         .rgEnvVarMin = {-1, 24, 25},
+         .rgEnvVarMax = {-1, 76, 75},
+         .pctIdealGrowth = 15,
+         .pctResearch = 15,
+         .rgAttr = {8, 15, 10, 15, 15, 5, 15, 1, 0, 0, 0, 0, 0, 2, 3, 0},
+         .grbitAttr = 0x20001e02},
     },
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {22, 22, 22}, .rgEnvVarMax = {78, 78, 78}, .pctIdealGrowth = 12, .pctResearch = 15, .rgAttr = {10, 9, 18, 9, 9, 10, 8, 1, 1, 0, 0, 1, 0, 0, 6, 0}, .grbitAttr = 0x20000a03},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {19, 19, 19}, .rgEnvVarMax = {81, 81, 81}, .pctIdealGrowth = 17, .pctResearch = 15, .rgAttr = {10, 10, 13, 19, 10, 10, 7, 1, 1, 0, 0, 1, 1, 1, 6, 0}, .grbitAttr = 0x20000e03},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {18, 18, 18}, .rgEnvVarMax = {82, 82, 82}, .pctIdealGrowth = 17, .pctResearch = 15, .rgAttr = {10, 14, 10, 20, 10, 10, 6, 1, 1, 1, 0, 1, 1, 2, 6, 0}, .grbitAttr = 0xa0000e43},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {17, 17, 17}, .rgEnvVarMax = {83, 83, 83}, .pctIdealGrowth = 19, .pctResearch = 15, .rgAttr = {10, 15, 9, 25, 10, 10, 5, 1, 2, 2, 0, 2, 1, 1, 6, 0}, .grbitAttr = 0xa0000e43},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {22, 22, 22},
+         .rgEnvVarMax = {78, 78, 78},
+         .pctIdealGrowth = 12,
+         .pctResearch = 15,
+         .rgAttr = {10, 9, 18, 9, 9, 10, 8, 1, 1, 0, 0, 1, 0, 0, 6, 0},
+         .grbitAttr = 0x20000a03},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {19, 19, 19},
+         .rgEnvVarMax = {81, 81, 81},
+         .pctIdealGrowth = 17,
+         .pctResearch = 15,
+         .rgAttr = {10, 10, 13, 19, 10, 10, 7, 1, 1, 0, 0, 1, 1, 1, 6, 0},
+         .grbitAttr = 0x20000e03},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {18, 18, 18},
+         .rgEnvVarMax = {82, 82, 82},
+         .pctIdealGrowth = 17,
+         .pctResearch = 15,
+         .rgAttr = {10, 14, 10, 20, 10, 10, 6, 1, 1, 1, 0, 1, 1, 2, 6, 0},
+         .grbitAttr = 0xa0000e43},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {17, 17, 17},
+         .rgEnvVarMax = {83, 83, 83},
+         .pctIdealGrowth = 19,
+         .pctResearch = 15,
+         .rgAttr = {10, 15, 9, 25, 10, 10, 5, 1, 2, 2, 0, 2, 1, 1, 6, 0},
+         .grbitAttr = 0xa0000e43},
     },
     {
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {20, 20, 20}, .rgEnvVarMax = {80, 80, 80}, .pctIdealGrowth = 10, .pctResearch = 15, .rgAttr = {16, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 0, 1, 8, 0}, .grbitAttr = 0x0000011b},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {15, 15, 15}, .rgEnvVarMax = {85, 85, 85}, .pctIdealGrowth = 14, .pctResearch = 15, .rgAttr = {12, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 0, 1, 8, 0}, .grbitAttr = 0x0000001b},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {15, 15, 15}, .rgEnvVarMax = {85, 85, 85}, .pctIdealGrowth = 17, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 1, 1, 8, 0}, .grbitAttr = 0x0000007f},
-        {.iPlayer = -1, .lSalt = -1, .rgEnvVar = {50, 50, 50}, .rgEnvVarMin = {15, 15, 15}, .rgEnvVarMax = {85, 85, 85}, .pctIdealGrowth = 20, .pctResearch = 15, .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 2, 1, 1, 8, 0}, .grbitAttr = 0x0000007f},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {20, 20, 20},
+         .rgEnvVarMax = {80, 80, 80},
+         .pctIdealGrowth = 10,
+         .pctResearch = 15,
+         .rgAttr = {16, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 0, 1, 8, 0},
+         .grbitAttr = 0x0000011b},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {15, 15, 15},
+         .rgEnvVarMax = {85, 85, 85},
+         .pctIdealGrowth = 14,
+         .pctResearch = 15,
+         .rgAttr = {12, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 0, 1, 8, 0},
+         .grbitAttr = 0x0000001b},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {15, 15, 15},
+         .rgEnvVarMax = {85, 85, 85},
+         .pctIdealGrowth = 17,
+         .pctResearch = 15,
+         .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 1, 1, 1, 8, 0},
+         .grbitAttr = 0x0000007f},
+        {.iPlayer = -1,
+         .lSalt = -1,
+         .rgEnvVar = {50, 50, 50},
+         .rgEnvVarMin = {15, 15, 15},
+         .rgEnvVarMax = {85, 85, 85},
+         .pctIdealGrowth = 20,
+         .pctResearch = 15,
+         .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 2, 1, 1, 2, 1, 1, 8, 0},
+         .grbitAttr = 0x0000007f},
     },
 };
 int16_t vrgvcMax[10] = {16, 18, 4, 19, 28, 49, 29, 87, 7, 47}; /* 1078:b5a8 */
@@ -50,42 +244,177 @@ uint8_t vrgWormholeMin[5] = {0x00, 0x01, 0x01, 0x03, 0x04};    /* 1078:0000 */
 uint8_t vrgWormholeVar[5] = {0x03, 0x03, 0x05, 0x04, 0x05};    /* 1078:0006 */
 
 /* functions */
-int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef)
-{
+int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef) {
     int16_t ishMac;
-    FLEET *lpfl;
+    FLEET  *lpfl;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t GetVCCheck(GAME *pgame, int16_t vc)
-{
-    return (pgame->rgvc[vc] & 0x80) != 0;
-}
+int16_t GetVCCheck(GAME *pgame, int16_t vc) { return (pgame->rgvc[vc] & 0x80) != 0; }
 
-void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr)
-{
+void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void InitNewGame3()
-{
+void InitNewGame3() {
     // empty in decompile
 }
 
-void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi)
-{
+void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
+    int16_t sVar2;
     int16_t i;
-    int16_t c;
-    uint8_t ch;
 
-    /* TODO: implement */
+    uint8_t *plrType = (uint8_t *)vrgplrTypeNew;
+    // TODO: not tested
+    /*
+     * The original `if` used the comma operator:
+     *   (SetVCVal(...), iStepMaxSoFar < 1)
+     *
+     * Meaning:
+     *   - Only call SetVCVal() if (iStepMaxSoFar < 2 && !fRCWReadOnly)
+     *   - Enter the body only if iStepMaxSoFar < 1
+     *   - BUT still call SetVCVal() even when iStepMaxSoFar == 1 (and then skip body)
+     */
+    if ((iStepMaxSoFar < 2) && (fRCWReadOnly == 0)) {
+        SetVCVal((GAME *)&game, 9, (int16_t)(game.mdSize << 1));
+
+        if (iStepMaxSoFar >= 1)
+            return;
+    } else {
+        return;
+    }
+
+    /* Choose number of players based on universe size (mdSize) and AI level (lvlAi). */
+    if (game.mdSize == 0) {
+        if ((lvlAi == 3) && (Random(3) == 0))
+            game.cPlayer = 3;
+        else
+            game.cPlayer = 2;
+    } else if (game.mdSize == 1) {
+        if ((lvlAi == 3) && (Random(4) == 0))
+            game.cPlayer = 5;
+        else if ((lvlAi < 2) || (Random((int16_t)(6 - lvlAi)) != 0))
+            game.cPlayer = 3;
+        else
+            game.cPlayer = 4;
+    } else if (game.mdSize == 2) {
+        if ((lvlAi == 3) && (Random(10) == 0))
+            game.cPlayer = 9;
+        else if ((lvlAi == 3) && (Random(10) == 0))
+            game.cPlayer = 5;
+        else if ((lvlAi < 2) || (Random((int16_t)(7 - lvlAi)) != 0)) {
+            if ((lvlAi < 2) || (Random((int16_t)(7 - lvlAi)) != 0))
+                game.cPlayer = 7;
+            else
+                game.cPlayer = 6;
+        } else {
+            game.cPlayer = 8;
+        }
+    } else if (game.mdSize == 3) {
+        if ((lvlAi == 3) && (Random(10) == 0)) {
+            game.cPlayer = (int16_t)(Random(2) + 14);
+        } else if ((lvlAi == 3) && (Random(10) == 0)) {
+            game.cPlayer = (int16_t)(10 - Random(2));
+        } else if ((lvlAi < 2) || (Random((int16_t)(7 - lvlAi)) != 0)) {
+            if ((lvlAi < 2) || (Random((int16_t)(7 - lvlAi)) != 0))
+                game.cPlayer = 12;
+            else
+                game.cPlayer = 11;
+        } else {
+            game.cPlayer = 13;
+        }
+    } else if (game.mdSize == 4) {
+        if ((lvlAi == 3) && (Random(10) == 0)) {
+            game.cPlayer = (int16_t)(0x0d - Random(3));
+        } else if ((lvlAi < 2) || (Random((int16_t)(9 - lvlAi)) != 0)) {
+            if ((lvlAi < 2) || (Random((int16_t)(7 - lvlAi)) != 0))
+                game.cPlayer = 0x10;
+            else
+                game.cPlayer = 0x0f;
+        } else {
+            game.cPlayer = 0x0e;
+        }
+    }
+
+    /*
+     * Assign “new player type” bytes for AI players 1..cPlayer-1.
+     * Index 0 is presumably reserved (human / special slot), so it’s never written here.
+     *
+     * The thresholds are integer math with truncation (as in the original).
+     */
+    i = 1;
+    if (lvlAi == 0) {
+        for (; i < game.cPlayer; i++) {
+            if (i < (int16_t)(((game.cPlayer + 1) / 3) + 1))
+                plrType[i] = 0x0b;
+            else if (i < (int16_t)((((game.cPlayer + 1) * 2) / 3) + 1))
+                plrType[i] = 0x0f;
+            else if (i < (int16_t)((((game.cPlayer + 1) * 5) / 6) + 1))
+                plrType[i] = 0x07;
+            else
+                plrType[i] = 0x1b;
+        }
+    } else if (lvlAi == 1) {
+        for (; i < game.cPlayer; i++) {
+            if (i < (int16_t)((((game.cPlayer + 5) * 2) / 7) + 1))
+                plrType[i] = 0x27;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 3 + 6) / 7) + 1))
+                plrType[i] = 0x23;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 4 + 6) / 7) + 1))
+                plrType[i] = 0x2b;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 5 + 6) / 7) + 1))
+                plrType[i] = 0x2f;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 6 + 6) / 7) + 1))
+                plrType[i] = 0x33;
+            else
+                plrType[i] = 0x9b;
+        }
+    } else if (lvlAi == 2) {
+        for (; i < game.cPlayer; i++) {
+            if (i < (int16_t)((((game.cPlayer + 5) * 2) / 7) + 1))
+                plrType[i] = 0x53;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 3 + 6) / 7) + 1))
+                plrType[i] = 0x47;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 4 + 6) / 7) + 1))
+                plrType[i] = 0x43;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 5 + 6) / 7) + 1))
+                plrType[i] = 0x57;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 6 + 6) / 7) + 1))
+                plrType[i] = 0x5b;
+            else
+                plrType[i] = 0x9b;
+        }
+    } else if (lvlAi == 3) {
+        for (; i < game.cPlayer; i++) {
+            if (i < (int16_t)(((game.cPlayer + 1) / 3) + 1))
+                plrType[i] = 99;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 6 + 0x0b) / 0x0c) + 1))
+                plrType[i] = 0x77;
+            else if (i < (int16_t)((((game.cPlayer - 1) * 5 + 5) / 6) + 1))
+                plrType[i] = 0x73;
+            else
+                plrType[i] = 0x7b;
+        }
+    }
+
+    /*
+     * Shuffle the AI type bytes for indices 1..cPlayer-1.
+     * This is a Fisher–Yates style swap, but:
+     *   - starts at i=1 (never touches slot 0)
+     *   - uses a swap target in [i+1, cPlayer-1] (never swaps with itself)
+     *   - stops at i < cPlayer-1 (leaves the last iteration-free)
+     */
+    for (i = 1; i < (int16_t)(game.cPlayer - 1); i++) {
+        sVar2 = Random((int16_t)(game.cPlayer - i - 1)); /* 0..(cPlayer-i-2) */
+        {
+            uint8_t tmp = plrType[i];
+            plrType[i] = plrType[i + 1 + sVar2];
+            plrType[i + 1 + sVar2] = tmp;
+        }
+    }
 }
 
-int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw)
-{
+int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
     int16_t c;
     int16_t i;
     int16_t val;
@@ -94,23 +423,20 @@ int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw)
     return 0;
 }
 
-void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked)
-{
+void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
     uint8_t hi;
 
     hi = (fChecked == 0) ? 0 : 0x80;
     pgame->rgvc[vc] = (uint8_t)((pgame->rgvc[vc] & 0x7f) | hi);
 }
 
-void CreateTutorWorld(void)
-{
+void CreateTutorWorld(void) {
     int16_t i;
 
     /* TODO: implement */
 }
 
-int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val)
-{
+int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
     int16_t cur;
 
     /* debug symbols */
@@ -120,67 +446,66 @@ int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val)
     return 0;
 }
 
-int16_t GenerateWorld(int16_t fBatchMode)
-{
+int16_t GenerateWorld(int16_t fBatchMode) {
     int32_t *pl;
-    int16_t iBest;
-    int16_t cKill;
-    char grUsed[128];
+    int16_t  iBest;
+    int16_t  cKill;
+    char     grUsed[128];
     MemJump *penvMemSav;
-    POINT *ppt;
-    int16_t raMajor;
-    int16_t k;
-    POINT pt;
-    int16_t fFound;
-    int16_t iMax;
+    POINT   *ppt;
+    int16_t  raMajor;
+    int16_t  k;
+    POINT    pt;
+    int16_t  fFound;
+    int16_t  iMax;
     STARPACK starpack;
-    int16_t dy;
-    int16_t dGalMinSq;
-    int16_t iLow;
-    PLANET *lppl;
-    int16_t iMin;
-    int16_t i;
-    MemJump env;
-    int16_t xOld;
-    int16_t iplrSingle;
-    POINT *pptMax;
-    int16_t dMin;
-    int16_t ktLeft;
-    SHDEF *lpshdef;
-    int32_t lDistMax2;
-    int32_t lDistIdeal2;
-    int16_t rgi[16];
-    int16_t iNewLine;
+    int16_t  dy;
+    int16_t  dGalMinSq;
+    int16_t  iLow;
+    PLANET  *lppl;
+    int16_t  iMin;
+    int16_t  i;
+    MemJump  env;
+    int16_t  xOld;
+    int16_t  iplrSingle;
+    POINT   *pptMax;
+    int16_t  dMin;
+    int16_t  ktLeft;
+    SHDEF   *lpshdef;
+    int32_t  lDistMax2;
+    int32_t  lDistIdeal2;
+    int16_t  rgi[16];
+    int16_t  iNewLine;
     uint8_t *pb;
-    int16_t dMax;
-    int32_t lDistMin2;
-    int16_t j;
-    int16_t cPlanMax;
-    int16_t dx;
-    int16_t cKillMax;
-    POINT *pptT;
-    int32_t lBest;
-    int32_t l;
-    int16_t iT;
-    int16_t jj;
-    int16_t iTechMin;
-    int16_t pct10;
-    int16_t idHome;
-    int16_t ishRet;
-    THING *lpth;
-    char szExt[4];
+    int16_t  dMax;
+    int32_t  lDistMin2;
+    int16_t  j;
+    int16_t  cPlanMax;
+    int16_t  dx;
+    int16_t  cKillMax;
+    POINT   *pptT;
+    int32_t  lBest;
+    int32_t  l;
+    int16_t  iT;
+    int16_t  jj;
+    int16_t  iTechMin;
+    int16_t  pct10;
+    int16_t  idHome;
+    int16_t  ishRet;
+    THING   *lpth;
+    char     szExt[4];
     uint16_t idLast;
-    THING *lpthLast;
-    PART part;
-    int16_t cFit;
-    HS *lphs;
-    PLANET *lpplClosest;
-    int16_t chs;
-    int16_t cTry;
-    POINT ptHome;
-    PLANET *lpplPicked;
-    int32_t lDistCur2;
-    int16_t rgTry[5];
+    THING   *lpthLast;
+    PART     part;
+    int16_t  cFit;
+    HS      *lphs;
+    PLANET  *lpplClosest;
+    int16_t  chs;
+    int16_t  cTry;
+    POINT    ptHome;
+    PLANET  *lpplPicked;
+    int32_t  lDistCur2;
+    int16_t  rgTry[5];
 
     /* debug symbols */
     /* block (block) @ MEMORY_CREATE:0x0cae */
@@ -201,26 +526,21 @@ int16_t GenerateWorld(int16_t fBatchMode)
     return 0;
 }
 
-PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi)
-{
-    return &vrgplrComp[idAi][lvlAi];
-}
+PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
 
-int16_t FGetNewGameName(char *szFileSuggest)
-{
-    char szXY[3];
+int16_t FGetNewGameName(char *szFileSuggest) {
+    char     szXY[3];
     uint16_t i;
-    char szFileTitle[256];
-    char szFile[256];
-    char szFilter[256];
+    char     szFileTitle[256];
+    char     szFile[256];
+    char     szFilter[256];
     // OFN ofn;
 
     /* TODO: implement */
     return 0;
 }
 
-int16_t GenNewGameFromFile(char *pszFile)
-{
+int16_t GenNewGameFromFile(char *pszFile) {
     int32_t rgl[10];
     int16_t cPlr;
     int16_t rgplrbmp[16];
@@ -228,13 +548,13 @@ int16_t GenNewGameFromFile(char *pszFile)
     int16_t c;
     int16_t i;
     int16_t fSuccess;
-    char *lpbStart;
+    char   *lpbStart;
     MemJump env;
     int16_t j;
-    char *lpb;
-    char *lpbDef;
+    char   *lpb;
+    char   *lpbDef;
     int16_t cb;
-    char *pchT;
+    char   *pchT;
     int16_t idAi;
     int16_t lvlAi;
 
@@ -254,19 +574,17 @@ int16_t GenNewGameFromFile(char *pszFile)
 
 #ifdef _WIN32
 
-void SetNGWTitle(HWND hwnd, int16_t iStep)
-{
+void SetNGWTitle(HWND hwnd, int16_t iStep) {
     int16_t cch;
-    char szBuf[50];
+    char    szBuf[50];
 
     /* TODO: implement */
 }
 
-int16_t FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd)
-{
+int16_t FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd) {
     int16_t bt;
     int16_t irc;
-    BTNT btnt;
+    BTNT    btnt;
     int16_t i;
     int16_t dShift;
     int16_t iMod;
@@ -279,8 +597,7 @@ int16_t FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd)
     return 0;
 }
 
-void NewGameWizard(HWND hwnd, int16_t fReadOnly)
-{
+void NewGameWizard(HWND hwnd, int16_t fReadOnly) {
     int16_t iStepMaxSoFar;
     int16_t mdRet;
     int16_t (*lpProc)(void);
@@ -288,15 +605,15 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly)
     int16_t rgplrbmp[16];
     int16_t i;
     int16_t c;
-    char szFile[256];
+    char    szFile[256];
     int16_t idAi;
     int16_t fEasy;
-    char szFileLocal[208];
+    char    szFileLocal[208];
     int16_t j;
-    RECT rgrcStack[20];
-    PLAYER rgplrLocal[16];
+    RECT    rgrcStack[20];
+    PLAYER  rgplrLocal[16];
     int16_t lvlAi;
-    GAME gameT;
+    GAME    gameT;
 
     /* debug symbols */
     /* label Cancel @ MEMORY_CREATE:0x63a3 */
@@ -307,12 +624,11 @@ void NewGameWizard(HWND hwnd, int16_t fReadOnly)
     /* TODO: implement */
 }
 
-INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    int16_t i;
-    RECT rc;
-    HDC hdc;
-    POINT pt;
+INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    int16_t     i;
+    RECT        rc;
+    HDC         hdc;
+    POINT       pt;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -324,28 +640,27 @@ INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    int16_t i;
-    RECT rc;
-    int16_t iNewVal;
-    HDC hdc;
-    POINT pt;
-    int16_t iDiamond;
-    RECT rcT;
-    int16_t dyBut;
-    int16_t j;
-    int16_t dy;
-    char *psz;
-    int16_t dyCur;
-    int16_t tpm;
-    HWND hwndBtn;
-    int16_t iChecked;
+INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    int16_t     i;
+    RECT        rc;
+    int16_t     iNewVal;
+    HDC         hdc;
+    POINT       pt;
+    int16_t     iDiamond;
+    RECT        rcT;
+    int16_t     dyBut;
+    int16_t     j;
+    int16_t     dy;
+    char       *psz;
+    int16_t     dyCur;
+    int16_t     tpm;
+    HWND        hwndBtn;
+    int16_t     iChecked;
     PAINTSTRUCT ps;
-    uint16_t rghmenuSubPopup[14];
-    HMENU hmenuPopup;
-    int16_t iCurVal;
-    RECT *prcSav;
+    uint16_t    rghmenuSubPopup[14];
+    HMENU       hmenuPopup;
+    int16_t     iCurVal;
+    RECT       *prcSav;
 
     /* debug symbols */
     /* block (block) @ MEMORY_CREATE:0x87e1 */
@@ -361,14 +676,13 @@ INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    int16_t i;
-    RECT rc;
-    HDC hdc;
-    int16_t iRet;
-    RECT rcGBox;
-    int16_t c;
+INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    int16_t     i;
+    RECT        rc;
+    HDC         hdc;
+    int16_t     iRet;
+    RECT        rcGBox;
+    int16_t     c;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -379,16 +693,15 @@ INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    int16_t i;
-    RECT rc;
-    HWND hwndDD;
-    HDC hdc;
-    RECT *prcSav;
-    RECT rcGBox;
-    int16_t dy;
-    int16_t c;
+INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    int16_t     i;
+    RECT        rc;
+    HWND        hwndDD;
+    HDC         hdc;
+    RECT       *prcSav;
+    RECT        rcGBox;
+    int16_t     dy;
+    int16_t     c;
     PAINTSTRUCT ps;
 
     /* debug symbols */
@@ -399,40 +712,38 @@ INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
     /* TODO: implement */
     return 0;
 }
-void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw)
-{
-    int16_t yTop;
-    int16_t bt;
-    int16_t vcCur;
-    int16_t irc;
-    int16_t ids;
-    int16_t fCreatedDC;
-    int16_t i;
-    int16_t dxItem;
-    RECT rcCBox;
-    int16_t j;
+void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw) {
+    int16_t  yTop;
+    int16_t  bt;
+    int16_t  vcCur;
+    int16_t  irc;
+    int16_t  ids;
+    int16_t  fCreatedDC;
+    int16_t  i;
+    int16_t  dxItem;
+    RECT     rcCBox;
+    int16_t  j;
     uint32_t crBkSav;
-    int16_t bkMode;
-    int16_t dxDig;
-    int16_t xLeft;
-    int16_t cch;
-    RECT rc;
+    int16_t  bkMode;
+    int16_t  dxDig;
+    int16_t  xLeft;
+    int16_t  cch;
+    RECT     rc;
 
     /* TODO: implement */
 }
 
-void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw)
-{
+void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw) {
     int16_t fCreatedDC;
     int16_t yCur;
     int16_t i;
     int16_t iPlr;
     int16_t bkMode;
     int16_t cch;
-    RECT rcDiamond;
-    RECT rc;
+    RECT    rcDiamond;
+    RECT    rc;
     int16_t ids;
-    char szT[20];
+    char    szT[20];
 
     /* debug symbols */
     /* block (block) @ MEMORY_CREATE:0x977e */

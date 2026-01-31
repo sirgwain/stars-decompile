@@ -1,27 +1,26 @@
 
-#include "types.h"
 #include "globals.h"
+#include "types.h"
 
 #include "log.h"
+#include "msg.h"
 
 /* functions */
-void WriteMemRt(int16_t rt, int16_t cb, void *rg)
-{
-    HDR hdr;
+void WriteMemRt(int16_t rt, int16_t cb, void *rg) {
+    HDR      hdr;
     uint8_t *lpv;
 
     /* TODO: implement */
 }
 
-int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer)
-{
+int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
     int16_t (*penvMemSav)[9];
-    MemJump env;
-    int16_t iCur;
-    HDR *lprts;
+    MemJump  env;
+    int16_t  iCur;
+    HDR     *lprts;
     RTLOGHDR rtlh;
-    MSGPLR *lpmp;
-    int16_t cb;
+    MSGPLR  *lpmp;
+    int16_t  cb;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0xce40 */
@@ -30,27 +29,25 @@ int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer)
     return 0;
 }
 
-void LogMergeFleet(int16_t id)
-{
+void LogMergeFleet(int16_t id) {
     uint16_t idCur;
-    int16_t i;
+    int16_t  i;
     uint16_t rgid[512];
-    int16_t j;
+    int16_t  j;
 
     /* TODO: implement */
 }
 
-int16_t FLoadLogFile(char *pszLog)
-{
+int16_t FLoadLogFile(char *pszLog) {
     uint16_t hres;
     int16_t (*penvMemSav)[9];
-    MemJump env;
-    int16_t fRet;
-    int16_t cbLog;
-    int16_t iCur;
-    MSGPLR *lpmp;
+    MemJump  env;
+    int16_t  fRet;
+    int16_t  cbLog;
+    int16_t  iCur;
+    MSGPLR  *lpmp;
     uint16_t hrsrc;
-    int16_t cSkip;
+    int16_t  cSkip;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0xc855 */
@@ -63,22 +60,20 @@ int16_t FLoadLogFile(char *pszLog)
     return 0;
 }
 
-void DirtyGame(int16_t fDirty)
-{
-
-    /* TODO: implement */
+void DirtyGame(int16_t fDirty) {
+    if ((fDirty != game.fDirty) && (game.fDirty = fDirty, fAi == 0)) {
+#ifdef WIN32
+        SetMsgTitle(hwndMessage);
+#endif
+    }
+    return;
 }
 
-void LogSplitFleet(int16_t id)
-{
+void LogSplitFleet(int16_t id) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-int16_t FWriteTutorialMFile(int16_t iTurn)
-{
+int16_t FWriteTutorialMFile(int16_t iTurn) {
     uint16_t hrsrc;
-    char szT[30];
+    char     szT[30];
     uint16_t hres;
     int16_t (*penvMemSav)[9];
     MemJump env;
@@ -92,26 +87,23 @@ int16_t FWriteTutorialMFile(int16_t iTurn)
     return 0;
 }
 
-void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void *lpPass, int16_t iPass)
-{
+void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void *lpPass, int16_t iPass) {
     int16_t fLogOld;
     int16_t fRet;
     int16_t iCur;
-    HDR *lprts;
+    HDR    *lprts;
 
     /* TODO: implement */
 }
 
-int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb)
-{
+int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb) {
     uint8_t *lpv;
 
     /* TODO: implement */
     return 0;
 }
 
-void LogChangeThing(THING *lpth, THING *pthNew)
-{
+void LogChangeThing(THING *lpth, THING *pthNew) {
     int16_t i;
     int16_t fChg;
     LOGXFER lxNew;
@@ -119,11 +111,10 @@ void LogChangeThing(THING *lpth, THING *pthNew)
     /* TODO: implement */
 }
 
-void LogChangePlanet(PLANET *ppl, PLANET *pplNew)
-{
+void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
     int16_t i;
     int16_t fChg;
-    HDR hdr;
+    HDR     hdr;
     LOGXFER lxNew;
 
     /* debug symbols */
@@ -132,8 +123,7 @@ void LogChangePlanet(PLANET *ppl, PLANET *pplNew)
     /* TODO: implement */
 }
 
-int16_t FCheckLogFile(int16_t iplr, int16_t *pfError)
-{
+int16_t FCheckLogFile(int16_t iplr, int16_t *pfError) {
     int16_t (*penvMemSav)[9];
     MemJump env;
     int16_t fRet;
@@ -147,46 +137,40 @@ int16_t FCheckLogFile(int16_t iplr, int16_t *pfError)
     return 0;
 }
 
-void LogChangeBtlplan(BTLPLAN *pbtlplan)
-{
+void LogChangeBtlplan(BTLPLAN *pbtlplan) { /* TODO: implement */ }
 
-    /* TODO: implement */
-}
-
-void LogChangeRelations(void)
-{
+void LogChangeRelations(void) {
     HDR hdr;
 
     /* TODO: implement */
 }
 
-int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb)
-{
-    int16_t fExtra;
-    int32_t cXfer;
+int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb) {
+    int16_t   fExtra;
+    int32_t   cXfer;
     XFERFULL *lpxfCur;
-    PLANET *lppl;
-    int32_t rgcXfer[5];
-    XFER rgxf[2];
-    FLEET *lpfl;
-    int16_t ifl;
-    int16_t i;
-    uint16_t grbit;
-    int16_t rgifl[512];
-    SHDEF *lpshdef;
-    int16_t iPass;
-    int16_t iLook;
-    PLANET *lpplMac;
-    char ch;
-    int32_t l;
-    int16_t id;
-    int16_t iColDrop;
-    int16_t idm;
-    THING *lpth;
+    PLANET   *lppl;
+    int32_t   rgcXfer[5];
+    XFER      rgxf[2];
+    FLEET    *lpfl;
+    int16_t   ifl;
+    int16_t   i;
+    uint16_t  grbit;
+    int16_t   rgifl[512];
+    SHDEF    *lpshdef;
+    int16_t   iPass;
+    int16_t   iLook;
+    PLANET   *lpplMac;
+    char      ch;
+    int32_t   l;
+    int16_t   id;
+    int16_t   iColDrop;
+    int16_t   idm;
+    THING    *lpth;
     XFERFULL *lpxfMax;
-    COLDROP *lpcdT;
-    char szT[33];
-    int16_t cOut;
+    COLDROP  *lpcdT;
+    char      szT[33];
+    int16_t   cOut;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0xa852 */
@@ -204,17 +188,16 @@ int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb)
     return 0;
 }
 
-int16_t FWriteHistFile(int16_t iPlayer)
-{
+int16_t FWriteHistFile(int16_t iPlayer) {
     PLANET *lppl;
     int16_t i;
     int16_t (*penvMemSav)[9];
-    MemJump env;
-    uint16_t cTurnBase;
-    SHDEF *lpshdef;
-    int16_t j;
+    MemJump   env;
+    uint16_t  cTurnBase;
+    SHDEF    *lpshdef;
+    int16_t   j;
     RTHISTHDR rthh;
-    uint8_t *lpb;
+    uint8_t  *lpb;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0xd658 */
@@ -223,69 +206,64 @@ int16_t FWriteHistFile(int16_t iPlayer)
     return 0;
 }
 
-void CancelMemRt(int16_t rt)
-{
+void CancelMemRt(int16_t rt) {
     (void)rt;
     imemLogCur = (int16_t)(imemLogCur - (int16_t)((uint16_t)hdrPrev.cb + 2u));
     hdrPrev.rt = 0;
 }
 
-void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)
-{
+void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2) {
     RTXFERF *prt;
-    int16_t iOff;
-    int16_t i;
-    char rgbuf[41];
+    int16_t  iOff;
+    int16_t  i;
+    char     rgbuf[41];
     uint16_t grbit;
-    int16_t grFlag;
-    int16_t cb;
+    int16_t  grFlag;
+    int16_t  cb;
 
     /* TODO: implement */
 }
 
-int16_t FRunLogFile(void)
-{
+int16_t FRunLogFile(void) {
     int16_t fLogOld;
     int16_t fRet;
     int16_t iCur;
-    HDR *lprts;
+    HDR    *lprts;
 
     /* TODO: implement */
     return 0;
 }
 
-void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
-{
-    int32_t rgQuan[5];
-    RTXFER *prt;
-    int16_t iOff;
+void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
+    int32_t  rgQuan[5];
+    RTXFER  *prt;
+    int16_t  iOff;
     RTXFERL *prtl;
-    int16_t rt;
-    int16_t i;
-    char rgbuf[28];
-    int16_t grbit;
+    int16_t  rt;
+    int16_t  i;
+    char     rgbuf[28];
+    int16_t  grbit;
     RTXFERX *prtx;
-    int16_t grFlag;
-    int32_t iBiggest;
-    int16_t cb;
+    int16_t  grFlag;
+    int32_t  iBiggest;
+    int16_t  cb;
 
     /* TODO: implement */
 }
 
-void LogChangeFleet(FLEET *pfl, FLEET *pflNew)
-{
-    int16_t d;
-    int16_t i;
-    int16_t fChg;
-    RTWAYPT rtwp;
-    LOGXFER lxNew;
+void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
+    int16_t   d;
+    int16_t   i;
+    int16_t   fChg;
+    RTWAYPT   rtwp;
+    LOGXFER   lxNew;
     RTSHIPINT rtsi;
-    int16_t iordNew;
-    int16_t iordOld;
-    int16_t cbWp;
-    char *pbWp;
-    HDR hdr;
-    LOGXFERF lxfNew;
+    int16_t   iordNew;
+    int16_t   iordOld;
+    int16_t   cbWp;
+    char     *pbWp;
+    HDR       hdr;
+    LOGXFERF  lxfNew;
 
     /* debug symbols */
     /* block (block) @ MEMORY_PLANET:0x8edf */
@@ -298,18 +276,16 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew)
     /* TODO: implement */
 }
 
-void LogChangeName(GrobjClass grobj, int16_t id, char *szName)
-{
-    FLEET *lpfl;
-    int16_t cOut;
+void LogChangeName(GrobjClass grobj, int16_t id, char *szName) {
+    FLEET    *lpfl;
+    int16_t   cOut;
     RTCHGNAME rtchgname;
 
     /* TODO: implement */
 }
 
-void LogChangeShDef(SHDEF *lpshdefNew)
-{
-    uint8_t rgb[149];
+void LogChangeShDef(SHDEF *lpshdefNew) {
+    uint8_t  rgb[149];
     uint8_t *pb;
 
     /* TODO: implement */

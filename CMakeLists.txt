@@ -4,31 +4,20 @@ project(stars_decompile C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# Output directories
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+# Output directories (keeps build products predictable across generators)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 option(STARS_BUILD_CLI   "Build portable CLI executable (main.c)" ON)
 option(STARS_BUILD_WIN32 "Build Win32 GUI executable (winmain.c)" OFF)
 option(STARS_BUILD_TESTS "Build unit tests (acutest)" ON)
 
-
-# CrossOver helpers: useful when *host* is macOS even if *target* is Windows
-option(CROSSOVER_ENABLE "Enable CrossOver copy/run helpers (macOS host)" ON)
-
-# -------- Host vs Target --------
-set(HOST_IS_MAC OFF)
-if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-  set(HOST_IS_MAC ON)
-endif()
-
 message(STATUS "Host=${CMAKE_HOST_SYSTEM_NAME} Target=${CMAKE_SYSTEM_NAME} WIN32=${WIN32}")
 message(STATUS "STARS_BUILD_CLI=${STARS_BUILD_CLI} STARS_BUILD_WIN32=${STARS_BUILD_WIN32} STARS_BUILD_TESTS=${STARS_BUILD_TESTS}")
-message(STATUS "CROSSOVER_ENABLE=${CROSSOVER_ENABLE} HOST_IS_MAC=${HOST_IS_MAC}")
 
-# -------- Sources: flat directory --------
-file(GLOB STARSRCS "${CMAKE_SOURCE_DIR}/*.c")
+# -------- Sources --------
+file(GLOB STARSRCS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/*.c")
 
 # Do not compile entrypoints into the core library.
 list(REMOVE_ITEM STARSRCS
@@ -36,24 +25,23 @@ list(REMOVE_ITEM STARSRCS
   "${CMAKE_SOURCE_DIR}/winmain.c"
 )
 
-add_library(stars_core STATIC ${STARSRCS})
-target_include_directories(stars_core PUBLIC ${CMAKE_SOURCE_DIR})
+add_library(stars_core STATIC)
+target_sources(stars_core PRIVATE ${STARSRCS})
+target_include_directories(stars_core PUBLIC "${CMAKE_SOURCE_DIR}")
 
 # Debug logging is compiled in for Debug builds.
 target_compile_definitions(stars_core PUBLIC $<$<CONFIG:Debug>:STARS_DEBUG=1>)
 
-# Math library (sqrt, etc.)
+# Warnings
+target_compile_options(stars_core PRIVATE
+  $<$<C_COMPILER_ID:MSVC>:/W3>
+  $<$<NOT:$<C_COMPILER_ID:MSVC>>:-Wall -Wextra -Wno-unused-parameter>
+)
+
+# Math library (sqrt, etc.) - let it propagate to users of stars_core.
 if (NOT MSVC)
   target_link_libraries(stars_core PUBLIC m)
 endif()
-
-# Warnings
-if (MSVC)
-  target_compile_options(stars_core PRIVATE /W3)
-else()
-  target_compile_options(stars_core PRIVATE -Wall -Wextra -Wno-unused-parameter)
-endif()
-
 
 # -------- Unit tests (acutest) --------
 if (STARS_BUILD_TESTS)
@@ -63,26 +51,22 @@ if (STARS_BUILD_TESTS)
   file(GLOB TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/test/test_*.c")
 
   set(TEST_TARGETS "")
-
   foreach(TEST_SOURCE ${TEST_SOURCES})
     get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
 
-    add_executable(${TEST_NAME} ${TEST_SOURCE})
-    list(APPEND TEST_TARGETS ${TEST_NAME})
+    add_executable(${TEST_NAME})
+    target_sources(${TEST_NAME} PRIVATE ${TEST_SOURCE})
     target_link_libraries(${TEST_NAME} PRIVATE stars_core)
 
     target_include_directories(${TEST_NAME} PRIVATE
-      ${CMAKE_SOURCE_DIR}
-      ${CMAKE_SOURCE_DIR}/test
+      "${CMAKE_SOURCE_DIR}"
+      "${CMAKE_SOURCE_DIR}/test"
     )
 
-    # sqrt(), etc.
-    if (NOT MSVC)
-      target_link_libraries(${TEST_NAME} PRIVATE m)
-    endif()
-
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-    set_tests_properties(${TEST_NAME} PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    set_tests_properties(${TEST_NAME} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+    list(APPEND TEST_TARGETS ${TEST_NAME})
   endforeach()
 
   # Convenience target: build + run all tests
@@ -93,7 +77,6 @@ if (STARS_BUILD_TESTS)
   )
 endif()
 
-
 # -------- CLI executable: main() --------
 if (STARS_BUILD_CLI)
   add_executable(stars_cli "${CMAKE_SOURCE_DIR}/main.c")
@@ -102,7 +85,7 @@ if (STARS_BUILD_CLI)
 endif()
 
 # -------- Win32 GUI executable: WinMain() --------
-# Note: This is "target Windows" (WIN32=TRUE). On macOS you can still build this
+# This is "target Windows" (WIN32=TRUE). On macOS/Linux you can still build this
 # by using a Windows toolchain (e.g. mingw-w64) and setting CMAKE_SYSTEM_NAME=Windows.
 if (STARS_BUILD_WIN32)
   if (WIN32)
@@ -113,7 +96,6 @@ if (STARS_BUILD_WIN32)
     target_link_libraries(stars_win32 PRIVATE stars_core)
     target_compile_definitions(stars_win32 PRIVATE STARS_WIN32=1)
 
-    # Tell windres where to find resource.h and res/ includes
     target_include_directories(stars_win32 PRIVATE
       "${CMAKE_SOURCE_DIR}"
       "${CMAKE_SOURCE_DIR}/res"
@@ -126,74 +108,41 @@ if (STARS_BUILD_WIN32)
   endif()
 endif()
 
-# ---------- CrossOver convenience targets (macOS host) ----------
-# These are intentionally gated on HOST (macOS), not TARGET.
-# They copy/run the Windows build output (stars_win32.exe) in a bottle.
-set(CROSSOVER_BOTTLE_DIR
-  "$ENV{HOME}/Library/Application Support/CrossOver/Bottles/debugger/drive_c/stars"
-  CACHE PATH "Destination folder inside the bottle C: drive")
-
-set(CROSSOVER_BIN
-  "/Applications/CrossOver.app/Contents/SharedSupport/CrossOver/bin"
-  CACHE PATH "CrossOver bin dir (may contain wine)")
-
-set(CROSSOVER_APP_NAME "CrossOver" CACHE STRING "Application name for /usr/bin/open -a")
-set(CROSSOVER_BOTTLE_NAME "debugger" CACHE STRING "Bottle name to use (for wine --bottle)")
-
-# Keep the filename in the bottle stable
-set(CROSSOVER_EXE "stars_win32.exe" CACHE STRING "Executable filename to copy/run inside bottle")
-
-if (CROSSOVER_ENABLE AND HOST_IS_MAC)
-
-  add_custom_target(copy_to_crossover
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CROSSOVER_BOTTLE_DIR}"
-    COMMENT "Copying ${CROSSOVER_EXE} to CrossOver bottle: ${CROSSOVER_BOTTLE_DIR}"
+# -------- Wine convenience targets --------
+# These are host-side launch helpers for the Windows target.
+find_program(WINE_EXE wine)
+if (WINE_EXE AND TARGET stars_win32)
+  add_custom_target(run_in_wine
+    COMMAND "${WINE_EXE}" "$<TARGET_FILE:stars_win32>"
+    DEPENDS stars_win32
+    COMMENT "Launching stars_win32 under wine"
   )
 
-  if (TARGET stars_win32)
-    add_dependencies(copy_to_crossover stars_win32)
-    add_custom_command(TARGET copy_to_crossover POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-              "$<TARGET_FILE:stars_win32>"
-              "${CROSSOVER_BOTTLE_DIR}/${CROSSOVER_EXE}"
-      VERBATIM
-    )
-  else()
-    add_custom_command(TARGET copy_to_crossover POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan
-              "Note: build the 'stars_win32' target first (STARS_BUILD_WIN32=ON, targeting Windows), then re-run 'copy_to_crossover'."
-      VERBATIM
-    )
-  endif()
-
-  set(WINE_BIN "${CROSSOVER_BIN}/wine")
-  if (EXISTS "${WINE_BIN}")
-    add_custom_target(run_in_crossover
-      # Use cmd.exe so we can force the working directory to C:\stars (affects relative INI paths).
-      # Use forward slashes to avoid POSIX shell backslash-escaping (which can turn c:\stars\foo.exe into c:starsfoo.exe).
-      COMMAND "${WINE_BIN}" --bottle "${CROSSOVER_BOTTLE_NAME}" --workdir "C:\\stars" "${CROSSOVER_EXE}"
-      DEPENDS copy_to_crossover
-      COMMENT "Launching ${CROSSOVER_EXE} inside CrossOver bottle '${CROSSOVER_BOTTLE_NAME}' (CWD=C:\\stars)"
-    )
-  else()
-    add_custom_target(run_in_crossover
-      COMMAND /usr/bin/open -a "${CROSSOVER_APP_NAME}"
-      COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan
-              "In CrossOver → Bottles → ${CROSSOVER_BOTTLE_NAME} → Run Command… choose C:\\\\stars\\\\${CROSSOVER_EXE}"
-      DEPENDS copy_to_crossover
-      COMMENT "Opening CrossOver; follow GUI to run the app"
-    )
-  endif()
-
+  add_custom_target(run_in_wine_gdb
+    COMMAND "${WINE_EXE}" winedbg --gdb --no-start --port 1234 "$<TARGET_FILE:stars_win32>"
+    DEPENDS stars_win32
+    COMMENT "Launching stars_win32 under winedbg --gdb (port 1234)"
+  )
+elseif(TARGET stars_win32)
+  add_custom_target(run_in_wine
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow
+            "wine not found in PATH."
+    COMMENT "Wine run helper unavailable"
+  )
+  add_custom_target(run_in_wine_gdb
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow
+            "wine not found in PATH."
+    COMMENT "Wine gdb run helper unavailable"
+  )
 else()
-  add_custom_target(copy_to_crossover
+  add_custom_target(run_in_wine
     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow
-            "CrossOver helpers available only on macOS host with CROSSOVER_ENABLE=ON."
-    COMMENT "CrossOver copy helper unavailable"
+            "Build the 'stars_win32' target first (STARS_BUILD_WIN32=ON, targeting Windows)."
+    COMMENT "Wine run helper unavailable"
   )
-  add_custom_target(run_in_crossover
+  add_custom_target(run_in_wine_gdb
     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow
-            "CrossOver helpers available only on macOS host with CROSSOVER_ENABLE=ON."
-    COMMENT "CrossOver run helper unavailable"
+            "Build the 'stars_win32' target first (STARS_BUILD_WIN32=ON, targeting Windows)."
+    COMMENT "Wine gdb run helper unavailable"
   )
 endif()
