@@ -12,6 +12,8 @@
   "SetSzWorkFromDt": { "dt": "DtFileType" },
   "FMarkFile": { "dt": "DtFileType" },
   "FCreateFile": { "dt": "DtFileType" },
+  
+  "FRunLogRecord": { "rt": "RecordTypeLog" },
 
   "SetRaceGrbit": { "ibit": "RaceGrbit" },
   "GetRaceGrbit": { "ibit": "RaceGrbit" },

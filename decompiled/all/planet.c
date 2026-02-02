@@ -5087,7 +5087,7 @@ short FRunLogFile(void)
 /* WARNING: Removing unreachable block (ram,0x1048bb41) */
 /* WARNING: Variable defined which should be unmapped: cOut */
 
-short FRunLogRecord(short rt, short cb, byte *lpb)
+short FRunLogRecord(RecordTypeLog rt, short cb, byte *lpb)
 
 {
     uint       *puVar1;
@@ -5151,11 +5151,11 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
     uVar30 = CONCAT22(unaff_SI, unaff_DI);
     lpxfCur = (XFERFULL *)0x0;
     switch (rt) {
-    case 0:
+    case rtLogNop:
         break;
-    case 1:
-    case 2:
-    case 0x19:
+    case rtLogCargoXfer8:
+    case rtLogCargoXfer16:
+    case rtLogCargoXfer32:
         sVar11 = FLookupObject(((byte *)lpb)[4] & (grobjThing | grobjOther | grobjFleet | grobjPlanet), *lpb, &rgxf[0].u_XFER_0x0004);
         if (sVar11 == 0) {
             return 0;
@@ -5171,11 +5171,11 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
                     *(undefined2 *)(rgcXfer + i) = 0;
                     *(undefined2 *)((int)rgcXfer + i * 4 + 2) = 0;
                 } else {
-                    if (rt == 1) {
+                    if (rt == rtLogCargoXfer8) {
                         bVar6 = ((byte *)lpb)[iLook + 6];
                         *(int *)(rgcXfer + i) = (int)(char)bVar6;
                         *(int *)((int)rgcXfer + i * 4 + 2) = (int)(char)bVar6 >> 0xf;
-                    } else if (rt == 2) {
+                    } else if (rt == rtLogCargoXfer16) {
                         iVar15 = *(int *)((byte *)lpb + iLook * 2 + 6);
                         *(int *)(rgcXfer + i) = iVar15;
                         *(int *)((int)rgcXfer + i * 4 + 2) = iVar15 >> 0xf;
@@ -5386,7 +5386,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             return 0;
         }
         break;
-    case 3:
+    case rtLogFleetOrderDelete:
         pFVar24 = LpflFromId(*lpb);
         uVar21 = (undefined2)((ulong)pFVar24 >> 0x10);
         pFVar10 = (FLEET *)pFVar24;
@@ -5408,7 +5408,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
         pbVar5 = &((PLORD *)pFVar10->lpplord)->iordMac;
         *pbVar5 = *pbVar5 - (bVar22 + '\x01');
         break;
-    case 4:
+    case rtLogFleetOrderInsert:
         pFVar24 = LpflFromId(*lpb);
         uVar21 = (undefined2)((ulong)pFVar24 >> 0x10);
         pFVar10 = (FLEET *)pFVar24;
@@ -5441,7 +5441,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
         pbVar5 = &((PLORD *)pFVar10->lpplord)->iordMac;
         *pbVar5 = *pbVar5 + 1;
         break;
-    case 5:
+    case rtLogFleetOrderUpdate:
         pFVar24 = LpflFromId(*lpb);
         uVar21 = (undefined2)((ulong)pFVar24 >> 0x10);
         pFVar10 = (FLEET *)pFVar24;
@@ -5460,15 +5460,15 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
         break;
     default:
         break;
-    case 10:
-    case 0xb:
+    case rtLogFleetFlagBit9:
+    case rtLogFleetOrderAttrNib:
         pFVar24 = LpflFromId(*lpb);
         uVar21 = (undefined2)((ulong)pFVar24 >> 0x10);
         pFVar10 = (FLEET *)pFVar24;
         if (pFVar24 == (FLEET *)0x0) {
             return 0;
         }
-        if (rt == 10) {
+        if (rt == rtLogFleetFlagBit9) {
             pFVar10->wFlags_0x4 = pFVar10->wFlags_0x4 & 0xfdff | (*(uint *)((byte *)lpb + 2) & 1) << 9;
         } else {
             if (pFVar10->cord <= *(int *)((byte *)lpb + 2)) {
@@ -5481,7 +5481,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
                 *(uint *)(*(int *)&pFVar10->lpplord + *(int *)((byte *)lpb + 2) * 0x12 + 10) & 0xfff0 | *(uint *)((byte *)lpb + 4) & 0xf;
         }
         break;
-    case 0x17:
+    case rtLogFleetCargoXfer:
         sVar11 = FLookupObject(grobjFleet, *lpb, &rgxf[0].u_XFER_0x0004);
         if (sVar11 == 0) {
             return 0;
@@ -5557,13 +5557,13 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             }
         }
         break;
-    case 0x18:
-    case 0x25:
+    case rtLogFleetSplit:
+    case rtLogFleetMerge:
         sVar11 = FLookupObject(grobjFleet, *lpb, &rgxf[0].u_XFER_0x0004);
         if (sVar11 == 0) {
             return 0;
         }
-        if (rt == 0x18) {
+        if (rt == rtLogFleetSplit) {
             pFVar24 = LpflNewSplit(&rgxf[0].u_XFER_0x0004.fl);
             if (pFVar24 == (FLEET *)0x0) {
                 return 0;
@@ -5611,7 +5611,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             }
         }
         break;
-    case 0x1b:
+    case rtLogShDef:
         uVar14 = *lpb >> 8 & 0x1f;
         iLook = *lpb >> 4 & 0xf;
         if ((game.cPlayer <= iLook) || (iLook != idPlayer)) {
@@ -5682,7 +5682,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             }
         }
         break;
-    case 0x1d:
+    case rtLogPlanetProdQ:
         lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
         pPStack_546 = (PLANET *)lpPlanets;
         MStack_544 = lpPlanets._2_2_;
@@ -5759,7 +5759,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac = (byte)uVar14;
         }
         break;
-    case 0x1e:
+    case rtLogBattlePlan:
         uVar14 = *lpb >> 4 & 0xf;
         if (((*lpb & 0xf) == idPlayer) && (uVar14 <= ((byte *)rgcbtlplan)[idPlayer])) {
             if ((*lpb >> 0xe & 1) == 0) {
@@ -5789,7 +5789,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             return 0;
         }
         break;
-    case 0x22:
+    case rtLogResearch:
         bVar6 = *lpb;
         if ((-1 < (char)bVar6) && ((char)bVar6 < 'e')) {
             *(byte *)((int)&rgplr[0].pctResearch + idPlayer * 0xc0) = bVar6;
@@ -5800,7 +5800,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             }
         }
         return 0;
-    case 0x23:
+    case rtLogPlanetRouting:
         pPVar27 = LpplFromId(*lpb);
         iVar15 = (int)((ulong)pPVar27 >> 0x10);
         pPVar8 = (PLANET *)pPVar27;
@@ -5826,7 +5826,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
         uVar30 = __aFulshr(uVar30, cOut);
         pPVar8->wRouting = pPVar8->wRouting & 0xfc00 | (uint)uVar30 & 0x3ff;
         break;
-    case 0x24:
+    case rtLogPlayerSalt:
         if (((uint)gd.grBits >> 1 & 1) != 0) {
             uVar21 = *(undefined2 *)((byte *)lpb + 2);
             iVar15 = idPlayer * 0xc0;
@@ -5834,24 +5834,24 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             *(undefined2 *)((int)&rgplr[0].lSalt + 2 + iVar15) = uVar21;
         }
         break;
-    case 0x26:
+    case rtLogRelations:
         __fmemcpy((void *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0), lpb, game.cPlayer);
         break;
-    case 0x2a:
+    case rtLogFleetPlan:
         pFVar24 = LpflFromId(*lpb);
         if (pFVar24 == (FLEET *)0x0) {
             return 0;
         }
         ((FLEET *)pFVar24)->iplan = (byte) * (undefined2 *)((byte *)lpb + 2);
         break;
-    case 0x2b:
+    case rtLogThingByteParam:
         pTVar26 = LpthFromId(*lpb);
         if ((pTVar26 == (THING *)0x0) || (pTVar26->idFull >> 0xd != 0)) {
             return 0;
         }
         *(undefined1 *)((int)&((THING *)pTVar26)->u_THING_0x0006 + 7) = (char)*(undefined2 *)((byte *)lpb + 2);
         break;
-    case 0x2c:
+    case rtLogFleetName:
         cOut = 0x20;
         pFVar24 = LpflFromId(*lpb);
         uVar21 = (undefined2)((ulong)pFVar24 >> 0x10);
@@ -5886,7 +5886,7 @@ short FRunLogRecord(short rt, short cb, byte *lpb)
             __fstrcpy((char *)CONCAT22(*(undefined2 *)((int)&pFVar10->lpszName + 2), pFVar10->lpszName), local_564);
         }
         break;
-    case 0x2e:
+    case rtLogPlayerZpq1:
         if (((uint)gd.grBits >> 1 & 1) != 0) {
             if (0x1a < (uint)cb) {
                 return 0;

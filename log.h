@@ -3,6 +3,66 @@
 
 #include "types.h"
 
+typedef enum RecordTypeLog {
+    /* Log record type 0 is effectively a no-op / padding record in FRunLogRecord. */
+    rtLogNop = 0x00,
+
+    /* Cargo transfer between objects (source encoded in low nibble of lpb[4],
+       destination encoded in high nibble of lpb[4]). The three variants differ
+       by quantity encoding size. */
+    rtLogCargoXfer8 = 0x01,  /* quantities are int8  (lpb[6+iLook]) */
+    rtLogCargoXfer16 = 0x02, /* quantities are int16 (lpb[6+2*iLook]) */
+    rtLogCargoXfer32 = 0x19, /* quantities are int32 (lpb[6+4*iLook]) */
+
+    /* Fleet orders list edits (lpfl->lpplord entries are 0x12 bytes each). */
+    rtLogFleetOrderDelete = 0x03, /* delete 1 or 2 orders; index in *(u16*)(lpb+2), high bit => delete extra */
+    rtLogFleetOrderInsert = 0x04, /* insert new order at index *(i16*)(lpb+2); payload from lpb+4 */
+    rtLogFleetOrderUpdate = 0x05, /* overwrite existing order at index *(i16*)(lpb+2); payload from lpb+4 */
+
+    /* Fleet flags / small per-order attribute tweaks. */
+    rtLogFleetFlagBit9 = 0x0A,     /* lpfl->wFlags_0x4 bit 9 set/cleared by (*(u16*)(lpb+2) & 1) */
+    rtLogFleetOrderAttrNib = 0x0B, /* order[index].word10 low nibble set to (*(i16*)(lpb+4) & 0xF), value constrained <=9 */
+
+    /* Fleet↔fleet cargo balancing transfer: 16 cargo slots, bitmask + signed deltas.
+       Ends by FleetTransferCargoBalance(), marks fleets dirty, may delete emptied fleets. */
+    rtLogFleetCargoXfer = 0x17,
+
+    /* Fleet split / merge operations. */
+    rtLogFleetSplit = 0x18, /* LpflNewSplit(&fleet) */
+    rtLogFleetMerge = 0x25, /* merge all-at-location (cb==2) or merge listed fleet ids (cb>2) */
+
+    /* Ship design definition (SHDEF) create/update/delete for the current player. */
+    rtLogShDef = 0x1B,
+
+    /* Planet production queue set/clear (planet->lpplprod). */
+    rtLogPlanetProdQ = 0x1D,
+
+    /* Battle plan set/update/delete (UnpackBattlePlan / FDeleteBattlePlan). */
+    rtLogBattlePlan = 0x1E,
+
+    /* Research settings: pctResearch + iTechCur (packed nibble fields). */
+    rtLogResearch = 0x22,
+
+    /* Planet routing / starbase / infrastructure bitfields mutation. */
+    rtLogPlanetRouting = 0x23,
+
+    /* Host-only / protected-mode player fields. */
+    rtLogPlayerSalt = 0x24, /* writes rgplr[idPlayer].lSalt when host-ish bit set */
+    rtLogRelations = 0x26,  /* memcpy rgplr[idPlayer].rgmdRelation[0..cPlayer) */
+
+    /* Fleet / thing misc settings. */
+    rtLogFleetPlan = 0x2A,      /* lpfl->iplan = *(u16*)(lpb+2) truncated */
+    rtLogThingByteParam = 0x2B, /* sets 1 byte inside THING union for a restricted subtype */
+
+    /* User string (fleet rename); may be compressed via FDecompressUserString. */
+    rtLogFleetName = 0x2C,
+
+    /* Host-only opaque blob (size capped at 0x1A bytes) copied into rgplr[idPlayer].zpq1. */
+    rtLogPlayerZpq1 = 0x2E,
+
+    rtLogMax = 0x2F /* one past highest log rt observed in this function (0x2E) */
+} RecordTypeLog;
+
 /* functions */
 void    WriteMemRt(int16_t rt, int16_t cb, void *rg);                                                       /* MEMORY_PLANET:0xa130 */
 int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer);                                                  /* MEMORY_PLANET:0xcdf6 */

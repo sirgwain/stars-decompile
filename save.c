@@ -106,7 +106,7 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer) {
 
     switch (dt) {
     case dtTurn: /* Log file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".M%d", iPlayer);
+        snprintf(szWork + len, sizeof(szWork) - len, ".M%d", iPlayer+1);
         break;
 
     case dtHost:
@@ -118,11 +118,11 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer) {
         break;
 
     case dtLog: /* Turn file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".X%d", iPlayer);
+        snprintf(szWork + len, sizeof(szWork) - len, ".X%d", iPlayer+1);
         break;
 
     case dtHist: /* History file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".H%d", iPlayer);
+        snprintf(szWork + len, sizeof(szWork) - len, ".H%d", iPlayer+1);
         break;
 
     default:

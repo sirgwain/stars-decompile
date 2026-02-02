@@ -2620,7 +2620,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                             AlertSz(pcVar9, sVar7);
                             return;
                         }
-                        if (wParam == IDM_UNKNOWN_0FA1) {
+                        if (wParam == IDM_FRAME_POST_OPEN) {
                             if (hwndScanner == 0) {
                                 return;
                             }
