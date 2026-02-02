@@ -8,7 +8,7 @@
 /* globals */
 BTLDATA   *vlpbdVCR;
 BTLDATA   *vlpbdVCRNext;
-BTLPLAN   *rglpbtlplan[1];
+BTLPLAN   *rglpbtlplan[16];
 BTLPLAN    btlplan = {0};
 BTLREC    *vlpbrVCR;
 BTN       *rgbtnXfer;
@@ -16,7 +16,7 @@ char      *lpbDefMac;
 char      *lpbDefUni;
 char      *lpchBatch;
 char      *lpchBatchMac;
-char      *MPCTD;
+char      *MPCTD = "m%d";
 char      *mpdtsz[8] = {"xy", "x", "hst", "m", "h", "r", "log", "chk"};
 char      *PCTD = "%d";
 char      *PCTDKT = "%dkT";
@@ -29,12 +29,12 @@ char      *rgszMinerals[6] = {"Ironium", "Boranium", "Germanium", "Colonists", "
 char      *rgszPlanetAttr[3] = {"Gravity", "Temperature", "Radiation"};
 char      *rgszPlanetAttrAbbr[3] = {"Grav", "Temp", "Rad"};
 char      *rgszZipOrder[7] = {"QuikLoad", "QuikDrop", "WaitLoad", "Clear", "", "", ""};
-char      *szButton;
-char      *szCombobox;
-char      *szDblDash;
-char      *szEdit;
-char      *szHelpFile;
-char      *szListbox;
+char      *szButton = "BUTTON";
+char      *szCombobox = "COMBOBOX";
+char      *szDblDash = "-- ";
+char      *szEdit = "EDIT";
+char      *szHelpFile = "stars!.hlp";
+char      *szListbox = "LISTBOX";
 char      *vrgszComputerLevel[5] = {"Easy", "Standard", "Tough", "Expert", "Random"};
 char      *vrgszComputerPlayers[7] = {"Robotoids", "Turindrones", "Automitrons", "Rototills", "Cybertrons", "Macinti", "Random"};
 char      *vrgszFileNew;
@@ -47,7 +47,7 @@ char       iLastStrGet = -1;
 uint8_t    rgbCur[1024] = {0};
 char       rgszArial[4][32] = {0};
 char       rgszSpeed[30];
-char       szBackup[0]; // TODO: wut?
+char       szBackup[256];
 char       szBase[256];
 char       szCRLF[3];
 char       szStarsPath[256];
