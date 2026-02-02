@@ -7,10 +7,10 @@
 | Metric | Count |
 |--------|------:|
 | Total functions | 846 |
-| ✅ Implemented | 225 |
-| ⬜ Stub | 619 |
+| ✅ Implemented | 228 |
+| ⬜ Stub | 616 |
 | ❌ Missing | 2 |
-| **Progress** | **26.6%** |
+| **Progress** | **27.0%** |
 
 ## By File
 
@@ -26,7 +26,7 @@
 | build.c | 1 | 21 | 0 | 4.5% |
 | create.c | 5 | 17 | 0 | 22.7% |
 | file.c | 20 | 2 | 0 | 90.9% |
-| init.c | 6 | 1 | 0 | 85.7% |
+| init.c | 7 | 1 | 0 | 87.5% |
 | log.c | 4 | 19 | 0 | 17.4% |
 | mdi.c | 15 | 14 | 0 | 51.7% |
 | memory.c | 11 | 0 | 0 | 100.0% |
@@ -43,7 +43,7 @@
 | scan.c | 3 | 27 | 0 | 10.0% |
 | ship.c | 8 | 43 | 0 | 15.7% |
 | ship2.c | 3 | 18 | 0 | 14.3% |
-| stars.c | 3 | 5 | 0 | 37.5% |
+| stars.c | 2 | 5 | 0 | 28.6% |
 | strings.c | 1 | 0 | 0 | 100.0% |
 | tb.c | 0 | 12 | 0 | 0.0% |
 | thing.c | 2 | 6 | 0 | 25.0% |
@@ -52,7 +52,7 @@
 | turn3.c | 0 | 1 | 0 | 0.0% |
 | tutor.c | 3 | 30 | 0 | 9.1% |
 | tutor2.c | 1 | 0 | 0 | 100.0% |
-| util.c | 26 | 41 | 0 | 38.8% |
+| util.c | 29 | 38 | 0 | 43.3% |
 | utilgen.c | 47 | 25 | 1 | 64.4% |
 | vcr.c | 6 | 8 | 0 | 42.9% |
 | winmain.c | 1 | 0 | 0 | 100.0% |
@@ -308,16 +308,17 @@
 - ✅ **UnpackBattlePlan** — `void UnpackBattlePlan(uint8_t *32, BTLPLAN *32, int16_t)` — [file.c:392](../file.c#L392) · [decompiled](../decompiled/all/io.c#L1829)
 - ✅ **UpdateBattleRecords** — `void UpdateBattleRecords(void)` — [file.c:523](../file.c#L523) · [decompiled](../decompiled/all/io.c#L1861)
 
-### init.c (6/7)
+### init.c (7/8)
 
 
-- ✅ **FCreateFonts** — `int16_t FCreateFonts(uint16_t)` — [init.c:265](../init.c#L265) · [decompiled](../decompiled/all/init.c#L278)
-- ✅ **FCreateStuff** — `int16_t FCreateStuff(void)` — [init.c:17](../init.c#L17) · [decompiled](../decompiled/all/init.c#L7)
-- ✅ **GetIniWinRc** — `void GetIniWinRc(char *, char *, int16_t, WN *)` — [init.c:1023](../init.c#L1023) · [decompiled](../decompiled/all/init.c#L450)
-- ✅ **InitInstance** — `int16_t InitInstance(int16_t)` — [init.c:972](../init.c#L972) · [decompiled](../decompiled/all/init.c#L357)
-- ⬜ **InitTiles** — `void InitTiles(void)` — [init.c:1099](../init.c#L1099) · [decompiled](../decompiled/all/init.c#L404)
-- ✅ **ReadIniSettings** — `void ReadIniSettings(void)` — [init.c:449](../init.c#L449) · [decompiled](../decompiled/all/init.c#L523)
-- ✅ **ReadIniTileSettings** — `void ReadIniTileSettings(char *, TILE *, int16_t)` — [init.c:389](../init.c#L389) · [decompiled](../decompiled/all/init.c#L1001)
+- ✅ **FCreateFonts** — `int16_t FCreateFonts(uint16_t)` — [init.c:290](../init.c#L290) · [decompiled](../decompiled/all/init.c#L278)
+- ✅ **FCreateStuff** — `int16_t FCreateStuff(void)` — [init.c:55](../init.c#L55) · [decompiled](../decompiled/all/init.c#L7)
+- ✅ **FreeStuff** — `void FreeStuff(void)` — [init.c:385](../init.c#L385) · [decompiled](../decompiled/all/main.c#L520)
+- ✅ **GetIniWinRc** — `void GetIniWinRc(char *, char *, int16_t, WN *)` — [init.c:1437](../init.c#L1437) · [decompiled](../decompiled/all/init.c#L450)
+- ✅ **InitInstance** — `int16_t InitInstance(int16_t)` — [init.c:1386](../init.c#L1386) · [decompiled](../decompiled/all/init.c#L357)
+- ⬜ **InitTiles** — `void InitTiles(void)` — [init.c:1513](../init.c#L1513) · [decompiled](../decompiled/all/init.c#L404)
+- ✅ **ReadIniSettings** — `void ReadIniSettings(void)` — [init.c:863](../init.c#L863) · [decompiled](../decompiled/all/init.c#L523)
+- ✅ **ReadIniTileSettings** — `void ReadIniTileSettings(char *, TILE *, int16_t)` — [init.c:803](../init.c#L803) · [decompiled](../decompiled/all/init.c#L1001)
 
 ### log.c (4/23)
 
@@ -757,14 +758,13 @@
 - ⬜ **RenameZipDlg** — `int16_t RenameZipDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [ship2.c:304](../ship2.c#L304) · [decompiled](../decompiled/all/ship2.c#L327)
 - ⬜ **ZipOrderDlg** — `int16_t ZipOrderDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [ship2.c:277](../ship2.c#L277) · [decompiled](../decompiled/all/ship2.c#L7)
 
-### stars.c (3/8)
+### stars.c (2/7)
 
 
 - ⬜ **About** — `int16_t About(uint16_t, uint16_t, uint16_t, int32_t)` — [stars.c:36](../stars.c#L36) · [decompiled](../decompiled/all/main.c#L724)
 - ✅ **FGetSystemColors** — `int16_t FGetSystemColors(void)` — [stars.c:58](../stars.c#L58) · [decompiled](../decompiled/all/main.c#L424)
-- ✅ **FHandleChar** — `int16_t FHandleChar(uint16_t, uint16_t, int32_t)` — [stars.c:608](../stars.c#L608) · [decompiled](../decompiled/all/main.c#L860)
-- ⬜ **FHandleKey** — `int16_t FHandleKey(uint16_t, int16_t, int16_t, uint32_t)` — [stars.c:586](../stars.c#L586) · [decompiled](../decompiled/all/main.c#L883)
-- ✅ **FreeStuff** — `void FreeStuff(void)` — [stars.c:182](../stars.c#L182) · [decompiled](../decompiled/all/main.c#L520)
+- ✅ **FHandleChar** — `int16_t FHandleChar(uint16_t, uint16_t, int32_t)` — [stars.c:204](../stars.c#L204) · [decompiled](../decompiled/all/main.c#L860)
+- ⬜ **FHandleKey** — `int16_t FHandleKey(uint16_t, int16_t, int16_t, uint32_t)` — [stars.c:182](../stars.c#L182) · [decompiled](../decompiled/all/main.c#L883)
 - ⬜ **FSetUpBatchProcessing** — `int16_t FSetUpBatchProcessing(void)` — [stars.c:13](../stars.c#L13) · [decompiled](../decompiled/all/main.c#L345)
 - ⬜ **IPlrAlsoCheater** — `int16_t IPlrAlsoCheater(int16_t)` — [stars.c:27](../stars.c#L27) · [decompiled](../decompiled/all/main.c#L395)
 - ⬜ **OrderInfoDlg** — `int16_t OrderInfoDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [stars.c:51](../stars.c#L51) · [decompiled](../decompiled/all/main.c#L822)
@@ -891,58 +891,58 @@
 
 - ✅ **CchTutorString** — `int16_t CchTutorString(char *, int16_t)` — [tutor2.c:16](../tutor2.c#L16) · [decompiled](../decompiled/all/tutor2.c#L7)
 
-### util.c (26/67)
+### util.c (29/67)
 
 
 - ✅ **CalcPctSurvive** — `void CalcPctSurvive(PLANET *32, float *, float *)` — [util.c:624](../util.c#L624) · [decompiled](../decompiled/all/util.c#L162)
-- ⬜ **CalcPlayerScore** — `int32_t CalcPlayerScore(int16_t, SCORE *)` — [util.c:1277](../util.c#L1277) · [decompiled](../decompiled/all/util.c#L3137)
-- ⬜ **CchGetETA** — `int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)` — [util.c:1431](../util.c#L1431) · [decompiled](../decompiled/all/util.c#L2113)
-- ✅ **ChgPopFromPlanet** — `int32_t ChgPopFromPlanet(PLANET *32, int16_t)` — [util.c:1120](../util.c#L1120) · [decompiled](../decompiled/all/util.c#L3832)
+- ⬜ **CalcPlayerScore** — `int32_t CalcPlayerScore(int16_t, SCORE *)` — [util.c:1360](../util.c#L1360) · [decompiled](../decompiled/all/util.c#L3137)
+- ⬜ **CchGetETA** — `int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)` — [util.c:1541](../util.c#L1541) · [decompiled](../decompiled/all/util.c#L2113)
+- ✅ **ChgPopFromPlanet** — `int32_t ChgPopFromPlanet(PLANET *32, int16_t)` — [util.c:1203](../util.c#L1203) · [decompiled](../decompiled/all/util.c#L3832)
 - ✅ **ClearFile** — `void ClearFile(int16_t)` — [util.c:295](../util.c#L295) · [decompiled](../decompiled/all/util.c#L4341)
 - ⬜ **ComputeShdefPowers** — `void ComputeShdefPowers(void)` — [util.c:930](../util.c#L930) · [decompiled](../decompiled/all/util.c#L577)
 - ⬜ **DecorateHullName** — `void DecorateHullName(int16_t, int16_t, char *)` — [util.c:689](../util.c#L689) · [decompiled](../decompiled/all/util.c#L3332)
 - ✅ **DGetDistance** — `double DGetDistance(int16_t, int16_t, int16_t, int16_t)` — [util.c:499](../util.c#L499) · [decompiled](../decompiled/all/util.c#L2296)
 - ✅ **DpOfLpflIshdef** — `int32_t DpOfLpflIshdef(FLEET *32, int16_t)` — [util.c:848](../util.c#L848) · [decompiled](../decompiled/all/util.c#L313)
-- ⬜ **DpShieldOfShdef** — `int32_t DpShieldOfShdef(SHDEF *32, int16_t)` — [util.c:1054](../util.c#L1054) · [decompiled](../decompiled/all/util.c#L609)
-- ⬜ **DrawABunchOfStars** — `void DrawABunchOfStars(uint16_t, RECT *)` — [util.c:1449](../util.c#L1449) · [decompiled](../decompiled/all/util.c#L3380)
-- ✅ **DrawPlanetPrintDot** — `void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)` — [util.c:1462](../util.c#L1462) · [decompiled](../decompiled/all/util.c#L4319)
-- ⬜ **FCalcFleetBombDamage** — `int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)` — [util.c:1021](../util.c#L1021) · [decompiled](../decompiled/all/util.c#L785)
+- ⬜ **DpShieldOfShdef** — `int32_t DpShieldOfShdef(SHDEF *32, int16_t)` — [util.c:1137](../util.c#L1137) · [decompiled](../decompiled/all/util.c#L609)
+- ⬜ **DrawABunchOfStars** — `void DrawABunchOfStars(uint16_t, RECT *)` — [util.c:1559](../util.c#L1559) · [decompiled](../decompiled/all/util.c#L3380)
+- ✅ **DrawPlanetPrintDot** — `void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)` — [util.c:1572](../util.c#L1572) · [decompiled](../decompiled/all/util.c#L4319)
+- ⬜ **FCalcFleetBombDamage** — `int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)` — [util.c:1104](../util.c#L1104) · [decompiled](../decompiled/all/util.c#L785)
 - ⬜ **FCanBuildShdef** — `int16_t FCanBuildShdef(SHDEF *32, int16_t)` — [util.c:698](../util.c#L698) · [decompiled](../decompiled/all/util.c#L4220)
 - ⬜ **FCanFleetUseStargates** — `int16_t FCanFleetUseStargates(FLEET *32, POINT, POINT)` — [util.c:61](../util.c#L61) · [decompiled](../decompiled/all/util.c#L4010)
 - ⬜ **FDeleteFleet** — `int16_t FDeleteFleet(int16_t, int16_t, int16_t)` — [util.c:511](../util.c#L511) · [decompiled](../decompiled/all/util.c#L1667)
 - ⬜ **FDupFleet** — `int16_t FDupFleet(FLEET *32, FLEET *)` — [util.c:559](../util.c#L559) · [decompiled](../decompiled/all/util.c#L1274)
 - ⬜ **FDupPlanet** — `int16_t FDupPlanet(PLANET *32, PLANET *)` — [util.c:566](../util.c#L566) · [decompiled](../decompiled/all/util.c#L37)
-- ⬜ **FFindNearestObject** — `int16_t FFindNearestObject(POINT, int16_t, SCAN *)` — [util.c:1404](../util.c#L1404) · [decompiled](../decompiled/all/util.c#L2323)
-- ⬜ **FFleetCanJumpgate** — `int16_t FFleetCanJumpgate(FLEET *32)` — [util.c:1267](../util.c#L1267) · [decompiled](../decompiled/all/util.c#L4144)
+- ⬜ **FFindNearestObject** — `int16_t FFindNearestObject(POINT, int16_t, SCAN *)` — [util.c:1514](../util.c#L1514) · [decompiled](../decompiled/all/util.c#L2323)
+- ⬜ **FFleetCanJumpgate** — `int16_t FFleetCanJumpgate(FLEET *32)` — [util.c:1350](../util.c#L1350) · [decompiled](../decompiled/all/util.c#L4144)
 - ⬜ **FFleetMergeAll** — `int16_t FFleetMergeAll(FLEET *)` — [util.c:710](../util.c#L710) · [decompiled](../decompiled/all/util.c#L1902)
 - ⬜ **FFleetSplitAll** — `int16_t FFleetSplitAll(FLEET *)` — [util.c:864](../util.c#L864) · [decompiled](../decompiled/all/util.c#L2023)
-- ⬜ **FLookupFleet** — `int16_t FLookupFleet(int16_t, FLEET *)` — [util.c:989](../util.c#L989) · [decompiled](../decompiled/all/util.c#L1202)
-- ⬜ **FLookupObject** — `int16_t FLookupObject(int16_t, int16_t, void *)` — [util.c:1384](../util.c#L1384) · [decompiled](../decompiled/all/util.c#L1329)
-- ⬜ **FLookupOrbitingXfer** — `int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)` — [util.c:997](../util.c#L997) · [decompiled](../decompiled/all/util.c#L1350)
-- ✅ **FLookupPlanet** — `int16_t FLookupPlanet(int16_t, PLANET *)` — [util.c:1294](../util.c#L1294) · [decompiled](../decompiled/all/util.c#L220)
+- ✅ **FLookupFleet** — `int16_t FLookupFleet(int16_t, FLEET *)` — [util.c:1015](../util.c#L1015) · [decompiled](../decompiled/all/util.c#L1202)
+- ✅ **FLookupObject** — `int16_t FLookupObject(int16_t, int16_t, void *)` — [util.c:1489](../util.c#L1489) · [decompiled](../decompiled/all/util.c#L1329)
+- ⬜ **FLookupOrbitingXfer** — `int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)` — [util.c:1080](../util.c#L1080) · [decompiled](../decompiled/all/util.c#L1350)
+- ✅ **FLookupPlanet** — `int16_t FLookupPlanet(int16_t, PLANET *)` — [util.c:1377](../util.c#L1377) · [decompiled](../decompiled/all/util.c#L220)
 - ✅ **FLookupSelPlanet** — `int16_t FLookupSelPlanet(PLANET *)` — [util.c:974](../util.c#L974) · [decompiled](../decompiled/all/util.c#L7)
 - ⬜ **FLookupSelShip** — `int16_t FLookupSelShip(FLEET *)` — [util.c:281](../util.c#L281) · [decompiled](../decompiled/all/util.c#L1141)
-- ⬜ **FLookupThing** — `int16_t FLookupThing(int16_t, THING *)` — [util.c:981](../util.c#L981) · [decompiled](../decompiled/all/util.c#L341)
+- ✅ **FLookupThing** — `int16_t FLookupThing(int16_t, THING *)` — [util.c:981](../util.c#L981) · [decompiled](../decompiled/all/util.c#L341)
 - ⬜ **FMatchTarget** — `int16_t FMatchTarget(FLEET *32, int16_t, int16_t)` — [util.c:287](../util.c#L287) · [decompiled](../decompiled/all/util.c#L3566)
 - ⬜ **FValidSerialNo** — `int16_t FValidSerialNo(char *, int32_t *)` — [util.c:604](../util.c#L604) · [decompiled](../decompiled/all/util.c#L3473)
 - ⬜ **GetCachedFleetScannerRange** — `int16_t GetCachedFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)` — [util.c:268](../util.c#L268) · [decompiled](../decompiled/all/util.c#L2757)
-- ⬜ **GetFleetScannerRange** — `int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)` — [util.c:1390](../util.c#L1390) · [decompiled](../decompiled/all/util.c#L2817)
+- ⬜ **GetFleetScannerRange** — `int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)` — [util.c:1500](../util.c#L1500) · [decompiled](../decompiled/all/util.c#L2817)
 - ⬜ **GetPlanetScannerRange** — `int16_t GetPlanetScannerRange(PLANET *32, int16_t *)` — [util.c:937](../util.c#L937) · [decompiled](../decompiled/all/util.c#L2680)
-- ⬜ **GetShdefScannerRange** — `int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)` — [util.c:1075](../util.c#L1075) · [decompiled](../decompiled/all/util.c#L2872)
-- ✅ **GetTrueHullCost** — `void GetTrueHullCost(int16_t, HUL *32, uint16_t *)` — [util.c:1066](../util.c#L1066) · [decompiled](../decompiled/all/util.c#L3314)
+- ⬜ **GetShdefScannerRange** — `int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)` — [util.c:1158](../util.c#L1158) · [decompiled](../decompiled/all/util.c#L2872)
+- ✅ **GetTrueHullCost** — `void GetTrueHullCost(int16_t, HUL *32, uint16_t *)` — [util.c:1149](../util.c#L1149) · [decompiled](../decompiled/all/util.c#L3314)
 - ⬜ **ICompFleetPoint** — `int16_t ICompFleetPoint(void *, void *)` — [util.c:875](../util.c#L875) · [decompiled](../decompiled/all/util.c#L1079)
 - ✅ **ICompFleetPoint2** — `int16_t ICompFleetPoint2(void *, void *)` — [util.c:728](../util.c#L728) · [decompiled](../decompiled/all/util.c#L1113)
-- ✅ **IflFromLpfl** — `int16_t IflFromLpfl(FLEET *32)` — [util.c:1043](../util.c#L1043) · [decompiled](../decompiled/all/util.c#L1643)
+- ✅ **IflFromLpfl** — `int16_t IflFromLpfl(FLEET *32)` — [util.c:1126](../util.c#L1126) · [decompiled](../decompiled/all/util.c#L1643)
 - ✅ **IshdefPrimaryFromLpfl** — `int16_t IshdefPrimaryFromLpfl(FLEET *32, int16_t *)` — [util.c:234](../util.c#L234) · [decompiled](../decompiled/all/util.c#L2224)
 - ⬜ **IshFindSimilarDesign** — `int16_t IshFindSimilarDesign(HUL *32, int16_t)` — [util.c:680](../util.c#L680) · [decompiled](../decompiled/all/util.c#L4274)
 - ⬜ **IStargateFromLppl** — `int16_t IStargateFromLppl(PLANET *32)` — [util.c:838](../util.c#L838) · [decompiled](../decompiled/all/util.c#L680)
 - ✅ **LCalcFuelGainFromRamScoops** — `int32_t LCalcFuelGainFromRamScoops(FLEET *32, int16_t, int32_t)` — [util.c:175](../util.c#L175) · [decompiled](../decompiled/all/util.c#L3058)
 - ⬜ **LComputePower** — `int32_t LComputePower(SHDEF *32)` — [util.c:327](../util.c#L327) · [decompiled](../decompiled/all/util.c#L475)
-- ⬜ **LinkFleets** — `void LinkFleets(int16_t)` — [util.c:1007](../util.c#L1007) · [decompiled](../decompiled/all/util.c#L974)
+- ⬜ **LinkFleets** — `void LinkFleets(int16_t)` — [util.c:1090](../util.c#L1090) · [decompiled](../decompiled/all/util.c#L974)
 - ✅ **LongFromSerialCh** — `int32_t LongFromSerialCh(char)` — [util.c:449](../util.c#L449) · [decompiled](../decompiled/all/util.c#L3450)
 - ✅ **LpflFromId** — `FLEET *32 LpflFromId(int16_t)` — [util.c:84](../util.c#L84) · [decompiled](../decompiled/all/util.c#L1160)
 - ⬜ **LpflNew** — `FLEET *32 LpflNew(int16_t, int16_t)` — [util.c:949](../util.c#L949) · [decompiled](../decompiled/all/util.c#L1762)
-- ⬜ **LpflNewSplit** — `FLEET *32 LpflNewSplit(FLEET *)` — [util.c:1367](../util.c#L1367) · [decompiled](../decompiled/all/util.c#L1859)
+- ⬜ **LpflNewSplit** — `FLEET *32 LpflNewSplit(FLEET *)` — [util.c:1472](../util.c#L1472) · [decompiled](../decompiled/all/util.c#L1859)
 - ✅ **LpplFromId** — `PLANET *32 LpplFromId(int16_t)` — [util.c:129](../util.c#L129) · [decompiled](../decompiled/all/util.c#L118)
 - ✅ **LpthFromId** — `THING *32 LpthFromId(int16_t)` — [util.c:165](../util.c#L165) · [decompiled](../decompiled/all/util.c#L94)
 - ✅ **OutputSz** — `void OutputSz(int16_t, char *32)` — [util.c:883](../util.c#L883) · [decompiled](../decompiled/all/util.c#L4366)
@@ -957,8 +957,8 @@
 - ✅ **SzVersion** — `char * SzVersion(void)` — [util.c:29](../util.c#L29) · [decompiled](../decompiled/all/main.c#L702)
 - ⬜ **TurnLog** — `void TurnLog(int16_t)` — [util.c:751](../util.c#L751) · [decompiled](../decompiled/all/util.c#L4397)
 - ⬜ **UpdateShdefCost** — `void UpdateShdefCost(SHDEF *32)` — [util.c:959](../util.c#L959) · [decompiled](../decompiled/all/util.c#L2553)
-- ⬜ **ValidateWaypoints** — `void ValidateWaypoints(void)` — [util.c:1101](../util.c#L1101) · [decompiled](../decompiled/all/util.c#L3648)
-- ⬜ **WFromLpfl** — `uint16_t WFromLpfl(FLEET *32)` — [util.c:1375](../util.c#L1375) · [decompiled](../decompiled/all/util.c#L1556)
+- ⬜ **ValidateWaypoints** — `void ValidateWaypoints(void)` — [util.c:1184](../util.c#L1184) · [decompiled](../decompiled/all/util.c#L3648)
+- ⬜ **WFromLpfl** — `uint16_t WFromLpfl(FLEET *32)` — [util.c:1480](../util.c#L1480) · [decompiled](../decompiled/all/util.c#L1556)
 - ✅ **WPackLong** — `uint16_t WPackLong(int32_t)` — [util.c:485](../util.c#L485) · [decompiled](../decompiled/all/util.c#L2653)
 - ⬜ **WtFromLpfl** — `int32_t WtFromLpfl(FLEET *32)` — [util.c:525](../util.c#L525) · [decompiled](../decompiled/all/util.c#L4187)
 

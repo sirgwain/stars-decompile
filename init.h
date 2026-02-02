@@ -4,6 +4,9 @@
 #include "strings.h"
 #include "types.h"
 
+void FAllocStuff(void);
+void DeallocStuff(void);
+
 #ifdef _WIN32
 /* globals */
 extern uint8_t rgPalGray[20]; /* MEMORY_INIT:0x0000 */

@@ -8,6 +8,7 @@
 
 #include "file.h"
 #include "globals.h"
+#include "memory.h"
 
 /* ------------------------------------------------------------ */
 /* small helpers */
@@ -501,6 +502,7 @@ int StarsCli_Run(int argc, char **argv) {
         print_usage(stderr);
         return 2;
     }
+
 
     const char *cmd = argv[i++];
 

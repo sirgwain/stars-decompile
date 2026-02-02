@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 225,
-    "stub": 619,
+    "implemented": 228,
+    "stub": 616,
     "missing": 2,
-    "percent_implemented": 26.6
+    "percent_implemented": 27.0
   },
   "by_file": {
     "ai.c": {
@@ -53,7 +53,7 @@
       "missing": 0
     },
     "init.c": {
-      "implemented": 6,
+      "implemented": 7,
       "stub": 1,
       "missing": 0
     },
@@ -138,7 +138,7 @@
       "missing": 0
     },
     "stars.c": {
-      "implemented": 3,
+      "implemented": 2,
       "stub": 5,
       "missing": 0
     },
@@ -183,8 +183,8 @@
       "missing": 0
     },
     "util.c": {
-      "implemented": 26,
-      "stub": 41,
+      "implemented": 29,
+      "stub": 38,
       "missing": 0
     },
     "utilgen.c": {
@@ -586,7 +586,7 @@
       "proto": "int32_t CalcPlayerScore(int16_t, SCORE *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1277
+      "line": 1360
     },
     "CancelMemRt": {
       "addr": "1048:a108",
@@ -602,7 +602,7 @@
       "proto": "int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1431
+      "line": 1541
     },
     "CchGetString": {
       "addr": "1040:221e",
@@ -698,7 +698,7 @@
       "proto": "int32_t ChgPopFromPlanet(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1120
+      "line": 1203
     },
     "ChopLastWord": {
       "addr": "1040:2842",
@@ -1138,7 +1138,7 @@
       "proto": "int32_t DpShieldOfShdef(SHDEF *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1054
+      "line": 1137
     },
     "DrawABunchOfStars": {
       "addr": "1038:5fe2",
@@ -1146,7 +1146,7 @@
       "proto": "void DrawABunchOfStars(uint16_t, RECT *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1449
+      "line": 1559
     },
     "DrawBitmapButton": {
       "addr": "1068:078c",
@@ -1354,7 +1354,7 @@
       "proto": "void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1462
+      "line": 1572
     },
     "DrawPlanetProduction": {
       "addr": "1048:2c38",
@@ -1986,7 +1986,7 @@
       "proto": "int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1021
+      "line": 1104
     },
     "FCanBuildShdef": {
       "addr": "1038:7b40",
@@ -2290,7 +2290,7 @@
       "proto": "int16_t FCreateFonts(uint16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 265
+      "line": 290
     },
     "FCreateStuff": {
       "addr": "1000:0014",
@@ -2298,7 +2298,7 @@
       "proto": "int16_t FCreateStuff(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 17
+      "line": 55
     },
     "FDamageTok": {
       "addr": "10f0:81d4",
@@ -2522,7 +2522,7 @@
       "proto": "int16_t FFindNearestObject(POINT, int16_t, SCAN *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1404
+      "line": 1514
     },
     "FFindPlayerMessage": {
       "addr": "1030:932a",
@@ -2554,7 +2554,7 @@
       "proto": "int16_t FFleetCanJumpgate(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 1267
+      "line": 1350
     },
     "FFleetHasBombs": {
       "addr": "10f0:1e16",
@@ -2706,7 +2706,7 @@
       "proto": "int16_t FHandleChar(uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "stars.c",
-      "line": 608
+      "line": 204
     },
     "FHandleKey": {
       "addr": "1018:165a",
@@ -2714,7 +2714,7 @@
       "proto": "int16_t FHandleKey(uint16_t, int16_t, int16_t, uint32_t)",
       "status": "stub",
       "file": "stars.c",
-      "line": 586
+      "line": 182
     },
     "FHandleMeasuringTape": {
       "addr": "1058:9974",
@@ -2824,17 +2824,17 @@
       "addr": "1038:2160",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FLookupFleet(int16_t, FLEET *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
-      "line": 989
+      "line": 1015
     },
     "FLookupObject": {
       "addr": "1038:24a0",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FLookupObject(int16_t, int16_t, void *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
-      "line": 1384
+      "line": 1489
     },
     "FLookupOrbitingXfer": {
       "addr": "1038:24fa",
@@ -2842,7 +2842,7 @@
       "proto": "int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 997
+      "line": 1080
     },
     "FLookupPart": {
       "addr": "1008:524e",
@@ -2866,7 +2866,7 @@
       "proto": "int16_t FLookupPlanet(int16_t, PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1294
+      "line": 1377
     },
     "FLookupSelPlanet": {
       "addr": "1038:0000",
@@ -2888,7 +2888,7 @@
       "addr": "1038:07fe",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FLookupThing(int16_t, THING *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
       "line": 981
     },
@@ -3593,8 +3593,8 @@
       "segment": "MEMORY_MAIN",
       "proto": "void FreeStuff(void)",
       "status": "implemented",
-      "file": "stars.c",
-      "line": 182
+      "file": "init.c",
+      "line": 385
     },
     "FuelFleets": {
       "addr": "10b0:2efa",
@@ -3682,7 +3682,7 @@
       "proto": "int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1390
+      "line": 1500
     },
     "GetFuelFree": {
       "addr": "1050:6004",
@@ -3698,7 +3698,7 @@
       "proto": "void GetIniWinRc(char *, char *, int16_t, WN *)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1023
+      "line": 1437
     },
     "GetMineFieldCounts": {
       "addr": "1028:05ac",
@@ -3770,7 +3770,7 @@
       "proto": "int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1075
+      "line": 1158
     },
     "GetTechLevelCost": {
       "addr": "10d8:1dba",
@@ -3786,7 +3786,7 @@
       "proto": "void GetTrueHullCost(int16_t, HUL *32, uint16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1066
+      "line": 1149
     },
     "GetTruePartCost": {
       "addr": "1050:cd00",
@@ -4210,7 +4210,7 @@
       "proto": "int16_t IflFromLpfl(FLEET *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1043
+      "line": 1126
     },
     "IncreaseAIMinefieldSizes": {
       "addr": "1090:9c66",
@@ -4250,7 +4250,7 @@
       "proto": "int16_t InitInstance(int16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 972
+      "line": 1386
     },
     "InitMDIApp": {
       "addr": "1020:0000",
@@ -4306,7 +4306,7 @@
       "proto": "void InitTiles(void)",
       "status": "stub",
       "file": "init.c",
-      "line": 1099
+      "line": 1513
     },
     "InitializeBoard": {
       "addr": "10f0:45b4",
@@ -4570,7 +4570,7 @@
       "proto": "void LinkFleets(int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1007
+      "line": 1090
     },
     "LogChangeBtlplan": {
       "addr": "1048:93d0",
@@ -4738,7 +4738,7 @@
       "proto": "FLEET *32 LpflNewSplit(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1367
+      "line": 1472
     },
     "LphbAlloc": {
       "addr": "1060:0000",
@@ -5818,7 +5818,7 @@
       "proto": "void ReadIniSettings(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 449
+      "line": 863
     },
     "ReadIniTileSettings": {
       "addr": "1000:2b8a",
@@ -5826,7 +5826,7 @@
       "proto": "void ReadIniTileSettings(char *, TILE *, int16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 389
+      "line": 803
     },
     "ReadPlayerMessages": {
       "addr": "1030:994a",
@@ -6738,7 +6738,7 @@
       "proto": "void ValidateWaypoints(void)",
       "status": "stub",
       "file": "util.c",
-      "line": 1101
+      "line": 1184
     },
     "VerifyTurns": {
       "addr": "1020:6686",
@@ -6754,7 +6754,7 @@
       "proto": "uint16_t WFromLpfl(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 1375
+      "line": 1480
     },
     "WPackLong": {
       "addr": "1038:4ba2",

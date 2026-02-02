@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-01-31T23:02:55Z",
+  "generated_at_utc": "2026-02-02T15:11:12Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -1007,175 +1007,175 @@
     "build_fullpath": {
       "signature": "static void build_fullpath(char *out, size_t outsz, const char *base, const char *ext)",
       "file": "cli.c",
-      "line": 15,
+      "line": 16,
       "kind": "definition"
     },
     "file_size_bytes": {
       "signature": "static int64_t file_size_bytes(const char *path)",
       "file": "cli.c",
-      "line": 27,
+      "line": 28,
       "kind": "definition"
     },
     "record_type_name": {
       "signature": "static const char * record_type_name(uint16_t rt)",
       "file": "cli.c",
-      "line": 46,
+      "line": 47,
       "kind": "definition"
     },
     "print_usage": {
       "signature": "static void print_usage(FILE *out)",
       "file": "cli.c",
-      "line": 82,
+      "line": 83,
       "kind": "definition"
     },
     "parse_i32": {
       "signature": "static int32_t parse_i32(const char *s, bool *ok)",
       "file": "cli.c",
-      "line": 102,
+      "line": 103,
       "kind": "definition"
     },
     "find_planet_by_id": {
       "signature": "static const PLANET * find_planet_by_id(int16_t id)",
       "file": "cli.c",
-      "line": 123,
+      "line": 124,
       "kind": "definition"
     },
     "find_thing_by_idfull": {
       "signature": "static const THING * find_thing_by_idfull(uint16_t idFull)",
       "file": "cli.c",
-      "line": 134,
+      "line": 135,
       "kind": "definition"
     },
     "find_fleet_by_id": {
       "signature": "static const FLEET * find_fleet_by_id(int16_t id)",
       "file": "cli.c",
-      "line": 145,
+      "line": 146,
       "kind": "definition"
     },
     "print_planet_row": {
       "signature": "static void print_planet_row(const PLANET *p)",
       "file": "cli.c",
-      "line": 165,
+      "line": 166,
       "kind": "definition"
     },
     "print_planet_detail": {
       "signature": "static void print_planet_detail(const PLANET *p)",
       "file": "cli.c",
-      "line": 178,
+      "line": 179,
       "kind": "definition"
     },
     "print_thing_row": {
       "signature": "static void print_thing_row(const THING *t)",
       "file": "cli.c",
-      "line": 200,
+      "line": 201,
       "kind": "definition"
     },
     "print_thing_detail": {
       "signature": "static void print_thing_detail(const THING *t)",
       "file": "cli.c",
-      "line": 205,
+      "line": 206,
       "kind": "definition"
     },
     "print_fleet_row": {
       "signature": "static void print_fleet_row(const FLEET *f)",
       "file": "cli.c",
-      "line": 217,
+      "line": 218,
       "kind": "definition"
     },
     "print_fleet_detail": {
       "signature": "static void print_fleet_detail(const FLEET *f)",
       "file": "cli.c",
-      "line": 223,
+      "line": 224,
       "kind": "definition"
     },
     "print_shdef_row": {
       "signature": "static void print_shdef_row(const SHDEF *s, int idx)",
       "file": "cli.c",
-      "line": 245,
+      "line": 246,
       "kind": "definition"
     },
     "print_shdef_detail": {
       "signature": "static void print_shdef_detail(const SHDEF *s, int idx)",
       "file": "cli.c",
-      "line": 250,
+      "line": 251,
       "kind": "definition"
     },
     "cmd_planets": {
       "signature": "static int cmd_planets(void)",
       "file": "cli.c",
-      "line": 265,
+      "line": 266,
       "kind": "definition"
     },
     "cmd_planet": {
       "signature": "static int cmd_planet(const char *sid)",
       "file": "cli.c",
-      "line": 277,
+      "line": 278,
       "kind": "definition"
     },
     "cmd_things": {
       "signature": "static int cmd_things(void)",
       "file": "cli.c",
-      "line": 293,
+      "line": 294,
       "kind": "definition"
     },
     "cmd_thing": {
       "signature": "static int cmd_thing(const char *sidfull)",
       "file": "cli.c",
-      "line": 305,
+      "line": 306,
       "kind": "definition"
     },
     "cmd_fleets": {
       "signature": "static int cmd_fleets(void)",
       "file": "cli.c",
-      "line": 321,
+      "line": 322,
       "kind": "definition"
     },
     "cmd_fleet": {
       "signature": "static int cmd_fleet(const char *sid)",
       "file": "cli.c",
-      "line": 340,
+      "line": 341,
       "kind": "definition"
     },
     "cmd_shdefs": {
       "signature": "static int cmd_shdefs(void)",
       "file": "cli.c",
-      "line": 356,
+      "line": 357,
       "kind": "definition"
     },
     "cmd_shdef": {
       "signature": "static int cmd_shdef(const char *sidx)",
       "file": "cli.c",
-      "line": 365,
+      "line": 366,
       "kind": "definition"
     },
     "cmd_game": {
       "signature": "static int cmd_game(const StarsCli *cli)",
       "file": "cli.c",
-      "line": 376,
+      "line": 377,
       "kind": "definition"
     },
     "print_hex_bytes": {
       "signature": "static void print_hex_bytes(const uint8_t *pb, size_t cb)",
       "file": "cli.c",
-      "line": 405,
+      "line": 406,
       "kind": "definition"
     },
     "cmd_blocks": {
       "signature": "static int cmd_blocks(const StarsCli *cli)",
       "file": "cli.c",
-      "line": 411,
+      "line": 412,
       "kind": "definition"
     },
     "do_load": {
       "signature": "static int do_load(StarsCli *cli)",
       "file": "cli.c",
-      "line": 419,
+      "line": 420,
       "kind": "definition"
     },
     "StarsCli_Run": {
       "signature": "int StarsCli_Run(int argc, char **argv)",
       "file": "cli.c",
-      "line": 429,
+      "line": 430,
       "kind": "definition"
     },
     "CreateStartupShip": {
@@ -1568,58 +1568,76 @@
       "line": 39,
       "kind": "definition"
     },
+    "FAllocStuff": {
+      "signature": "void FAllocStuff(void)",
+      "file": "init.c",
+      "line": 14,
+      "kind": "definition"
+    },
+    "DeallocStuff": {
+      "signature": "void DeallocStuff(void)",
+      "file": "init.c",
+      "line": 32,
+      "kind": "definition"
+    },
     "FCreateStuff": {
       "signature": "bool FCreateStuff(void)",
       "file": "init.c",
-      "line": 17,
+      "line": 55,
       "kind": "definition"
     },
     "FCreateFonts": {
       "signature": "bool FCreateFonts(HDC hdc)",
       "file": "init.c",
-      "line": 247,
+      "line": 272,
+      "kind": "definition"
+    },
+    "FreeStuff": {
+      "signature": "void FreeStuff(void)",
+      "file": "init.c",
+      "line": 367,
       "kind": "definition"
     },
     "StrDate_MMDDYY": {
       "signature": "static void StrDate_MMDDYY(char *dst )",
       "file": "init.c",
-      "line": 343,
+      "line": 754,
       "kind": "definition"
     },
     "ReadIniTileSettings": {
       "signature": "void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)",
       "file": "init.c",
-      "line": 367,
+      "line": 778,
       "kind": "definition"
     },
     "ReadIniSettings": {
       "signature": "void ReadIniSettings(void)",
       "file": "init.c",
-      "line": 427,
+      "line": 838,
       "kind": "definition"
     },
     "InitStarsPath": {
       "signature": "void InitStarsPath()",
       "file": "init.c",
-      "line": 944,
+      "line": 1355,
       "kind": "definition"
     },
     "InitInstance": {
       "signature": "int16_t InitInstance(int16_t nCmdShow)",
       "file": "init.c",
-      "line": 950,
+      "line": 1361,
       "kind": "definition"
     },
     "GetIniWinRc": {
       "signature": "void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)",
       "file": "init.c",
-      "line": 998,
+      "line": 1409,
       "kind": "definition"
     },
     "InitTiles": {
       "signature": "void InitTiles(void)",
       "file": "init.c",
-      "line": 1074,
+      "line": 1485,
       "kind": "definition"
     },
     "WriteMemRt": {
@@ -1751,14 +1769,20 @@
     "LogSplitFleet": {
       "signature": "void LogSplitFleet(int16_t id)",
       "file": "log.h",
-      "line": 12,
+      "line": 69,
       "kind": "prototype"
     },
     "LogChangeBtlplan": {
       "signature": "void LogChangeBtlplan(BTLPLAN *pbtlplan)",
       "file": "log.h",
-      "line": 19,
+      "line": 76,
       "kind": "prototype"
+    },
+    "main": {
+      "signature": "int main(int argc, char **argv)",
+      "file": "main.c",
+      "line": 6,
+      "kind": "definition"
     },
     "VerifyTurns": {
       "signature": "void VerifyTurns(void)",
@@ -3956,22 +3980,16 @@
       "line": 58,
       "kind": "definition"
     },
-    "FreeStuff": {
-      "signature": "void FreeStuff(void)",
-      "file": "stars.c",
-      "line": 174,
-      "kind": "definition"
-    },
     "FHandleKey": {
       "signature": "int16_t FHandleKey(HWND hwnd, int16_t iMsg, int16_t iKey, uint32_t dw)",
       "file": "stars.c",
-      "line": 575,
+      "line": 174,
       "kind": "definition"
     },
     "FHandleChar": {
       "signature": "int16_t FHandleChar(HWND hwnd, uint16_t ch, LPARAM lParam)",
       "file": "stars.c",
-      "line": 597,
+      "line": 196,
       "kind": "definition"
     },
     "WinMain": {
@@ -4212,12 +4230,6 @@
       "signature": "static int acutest_under_debugger_(void)",
       "file": "test/acutest.h",
       "line": 1475,
-      "kind": "definition"
-    },
-    "main": {
-      "signature": "int main(int argc, char **argv)",
-      "file": "test/acutest.h",
-      "line": 1563,
       "kind": "definition"
     },
     "set_engine_maxwarp": {
@@ -4571,43 +4583,55 @@
     "touch_file": {
       "signature": "static void touch_file(const char *path)",
       "file": "test/test_util.c",
-      "line": 8,
+      "line": 9,
       "kind": "definition"
     },
     "file_exists": {
       "signature": "static int file_exists(const char *path)",
       "file": "test/test_util.c",
-      "line": 17,
+      "line": 18,
       "kind": "definition"
     },
     "apply_player0_env": {
       "signature": "static void apply_player0_env(const PopCase *tc, PLAYER *old_out)",
       "file": "test/test_util.c",
-      "line": 46,
+      "line": 47,
       "kind": "definition"
     },
     "make_planet_for_pop": {
       "signature": "static PLANET make_planet_for_pop(const PopCase *tc)",
       "file": "test/test_util.c",
-      "line": 58,
+      "line": 59,
       "kind": "definition"
     },
     "test_ChgPopFromPlanet_negative_desire_table": {
       "signature": "static void test_ChgPopFromPlanet_negative_desire_table(void)",
       "file": "test/test_util.c",
-      "line": 72,
+      "line": 73,
       "kind": "definition"
     },
     "test_ClearFile_creates_and_removes_expected_name": {
       "signature": "void test_ClearFile_creates_and_removes_expected_name(void)",
       "file": "test/test_util.c",
-      "line": 133,
+      "line": 134,
       "kind": "definition"
     },
     "test_DpOfLpflIshdef_basic": {
       "signature": "static void test_DpOfLpflIshdef_basic(void)",
       "file": "test/test_util.c",
-      "line": 153,
+      "line": 154,
+      "kind": "definition"
+    },
+    "test_FLookupPlanet_write_id_minus1_returns_true": {
+      "signature": "static void test_FLookupPlanet_write_id_minus1_returns_true(void)",
+      "file": "test/test_util.c",
+      "line": 184,
+      "kind": "definition"
+    },
+    "test_FLookup_layout_invariants": {
+      "signature": "static void test_FLookup_layout_invariants(void)",
+      "file": "test/test_util.c",
+      "line": 201,
       "kind": "definition"
     },
     "test_ICompLong": {
@@ -5405,121 +5429,121 @@
     "FLookupFleet": {
       "signature": "int16_t FLookupFleet(int16_t idFleet, FLEET *pfl)",
       "file": "util.c",
-      "line": 955,
+      "line": 981,
       "kind": "definition"
     },
     "FLookupOrbitingXfer": {
       "signature": "int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip)",
       "file": "util.c",
-      "line": 963,
+      "line": 1040,
       "kind": "definition"
     },
     "LinkFleets": {
       "signature": "void LinkFleets(int16_t fUnused)",
       "file": "util.c",
-      "line": 973,
+      "line": 1050,
       "kind": "definition"
     },
     "IflFromLpfl": {
       "signature": "int16_t IflFromLpfl(FLEET *lpfl)",
       "file": "util.c",
-      "line": 1009,
+      "line": 1086,
       "kind": "definition"
     },
     "DpShieldOfShdef": {
       "signature": "int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)",
       "file": "util.c",
-      "line": 1020,
+      "line": 1097,
       "kind": "definition"
     },
     "GetTrueHullCost": {
       "signature": "void GetTrueHullCost(int16_t iPlayer, HUL *lphul, uint16_t *rgCost)",
       "file": "util.c",
-      "line": 1032,
+      "line": 1109,
       "kind": "definition"
     },
     "GetShdefScannerRange": {
       "signature": "int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
       "file": "util.c",
-      "line": 1041,
+      "line": 1118,
       "kind": "definition"
     },
     "ValidateWaypoints": {
       "signature": "void ValidateWaypoints(void)",
       "file": "util.c",
-      "line": 1067,
+      "line": 1144,
       "kind": "definition"
     },
     "ChgPopFromPlanet": {
       "signature": "int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate)",
       "file": "util.c",
-      "line": 1086,
+      "line": 1163,
       "kind": "definition"
     },
     "FFleetCanJumpgate": {
       "signature": "int16_t FFleetCanJumpgate(FLEET *lpfl)",
       "file": "util.c",
-      "line": 1229,
+      "line": 1306,
       "kind": "definition"
     },
     "CalcPlayerScore": {
       "signature": "int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore)",
       "file": "util.c",
-      "line": 1239,
+      "line": 1316,
       "kind": "definition"
     },
     "FLookupPlanet": {
-      "signature": "short FLookupPlanet(int16_t iPlanet, PLANET *ppl)",
+      "signature": "int16_t FLookupPlanet(int16_t iPlanet, PLANET *ppl)",
       "file": "util.c",
-      "line": 1256,
+      "line": 1333,
       "kind": "definition"
     },
     "LpflNewSplit": {
       "signature": "FLEET * LpflNewSplit(FLEET *pfl)",
       "file": "util.c",
-      "line": 1329,
+      "line": 1419,
       "kind": "definition"
     },
     "WFromLpfl": {
       "signature": "uint16_t WFromLpfl(FLEET *lpfl)",
       "file": "util.c",
-      "line": 1337,
+      "line": 1427,
       "kind": "definition"
     },
     "FLookupObject": {
       "signature": "int16_t FLookupObject(GrobjClass grobj, int16_t id, void *pobj)",
       "file": "util.c",
-      "line": 1346,
+      "line": 1436,
       "kind": "definition"
     },
     "GetFleetScannerRange": {
       "signature": "int16_t GetFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
       "file": "util.c",
-      "line": 1352,
+      "line": 1447,
       "kind": "definition"
     },
     "FFindNearestObject": {
       "signature": "int16_t FFindNearestObject(POINT pt, GrobjClass grobj, SCAN *pscan)",
       "file": "util.c",
-      "line": 1366,
+      "line": 1461,
       "kind": "definition"
     },
     "CchGetETA": {
       "signature": "int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall)",
       "file": "util.c",
-      "line": 1393,
+      "line": 1488,
       "kind": "definition"
     },
     "DrawABunchOfStars": {
       "signature": "void DrawABunchOfStars(HDC hdc, RECT *prc)",
       "file": "util.c",
-      "line": 1411,
+      "line": 1506,
       "kind": "definition"
     },
     "DrawPlanetPrintDot": {
       "signature": "void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize)",
       "file": "util.c",
-      "line": 1424,
+      "line": 1519,
       "kind": "definition"
     },
     "NybbleFromCh": {

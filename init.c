@@ -10,6 +10,44 @@
 #include "msg.h"
 #include "utilgen.h"
 
+// engine init/lpalloc calls from FCreateStuff broken out for headless mode
+void FAllocStuff(void) {
+
+    /* (gd.grBits & 0xFB7F) clears bit7 and bit10 => fNoIdleChecks + fAisDone */
+    gd.fNoIdleChecks = 0;
+    gd.fAisDone = 0;
+
+    // copy the default player def into vplr. This was using MOVSW.REP 0x60 which really threw off ghidra...
+    memcpy(&vplr, vrgplrDef, sizeof(PLAYER));
+
+    lpLog = (uint8_t *)LpAlloc(cbLogAllocSize, htLog);
+    lpMsg = (int16_t *)LpAlloc(cbPackedMsgAllocSize, htMsg);
+
+    lpb2k = (uint8_t *)LpAlloc(0x800, htPerm);
+    vlprgidMisc = (uint16_t *)LpAlloc(0x800, htPerm);
+    vlprgidPlanet = (uint16_t *)LpAlloc(0x800, htPerm);
+    vlprgidFleet = (uint16_t *)LpAlloc(0x800, htPerm);
+}
+
+void DeallocStuff(void) {
+    if (lpLog) {
+        FreeLp((uint8_t *)lpLog, htLog);
+        lpLog = NULL;
+    }
+    if (lpMsg) {
+        FreeLp((int16_t *)lpMsg, htMsg);
+        lpMsg = NULL;
+    }
+
+    /* Heap blocks (now flat pointers in Win32 build) */
+    for (int i = 0; i < htCount; i++) {
+        if (rglphb[i]) {
+            FreeHb(rglphb[i]);
+            rglphb[i] = NULL;
+        }
+    }
+}
+
 #ifdef _WIN32
 /* globals */
 uint8_t rgPalGray[20] = {0x0a, 0x14, 0x1e, 0x28, 0x3d, 0x47, 0x51, 0x5c, 0x70, 0x7a, 0x85, 0x8f, 0xa1, 0xab, 0xb6, 0xc1, 0xd7, 0xe1, 0xeb, 0xf5};
@@ -26,6 +64,8 @@ bool FCreateStuff(void) {
 
     fFailed = false;
 
+    FAllocStuff();
+
     cx = GetSystemMetrics(SM_CXSCREEN);
     cy = GetSystemMetrics(SM_CYSCREEN);
 
@@ -39,13 +79,6 @@ bool FCreateStuff(void) {
     } else {
         gd.mdScreenSize = 3;
     }
-
-    /* (gd.grBits & 0xFB7F) clears bit7 and bit10 => fNoIdleChecks + fAisDone */
-    gd.fNoIdleChecks = 0;
-    gd.fAisDone = 0;
-
-    // copy the default player def into vplr. This was using MOVSW.REP 0x60 which really threw off ghidra...
-    memcpy(&vplr, vrgplrDef, sizeof(PLAYER));
 
     hrgnHuge = CreateRectRgn(-10, -10, 2000, 2000);
     hrgnScratch = CreateRectRgn(0, 0, 10, 10);
@@ -219,9 +252,6 @@ bool FCreateStuff(void) {
     rghiconVCR[5] = LoadIcon(hInst, MAKEINTRESOURCEA(IDI_TORP3));
     rghiconVCR[6] = LoadIcon(hInst, MAKEINTRESOURCEA(IDI_TORP4));
 
-    lpLog = (uint8_t *)LpAlloc(cbLogAllocSize, htLog);
-    lpMsg = (int16_t *)LpAlloc(cbPackedMsgAllocSize, htMsg);
-
     /*
      * Win16 required MakeProcInstance() for callback thunks.
      * In modern Win32 builds, these can be used directly (and should not be wrapped).
@@ -238,11 +268,6 @@ bool FCreateStuff(void) {
     */
 
     GetDiskSerialNumber();
-
-    lpb2k = (uint8_t *)LpAlloc(0x800, htPerm);
-    vlprgidMisc = (uint16_t *)LpAlloc(0x800, htPerm);
-    vlprgidPlanet = (uint16_t *)LpAlloc(0x800, htPerm);
-    vlprgidFleet = (uint16_t *)LpAlloc(0x800, htPerm);
 
     /* Log all critical resources for debugging */
     DBG_LOGI("Resource check: fFailed=%d", fFailed);
@@ -355,6 +380,395 @@ bool FCreateFonts(HDC hdc) {
 
     SelectObject(hdc, hfontSav);
     return 1;
+}
+
+void FreeStuff(void) {
+    int i, j;
+
+    /* Solid brushes */
+    if (hbrButtonFace) {
+        FreeHbr(hbrButtonFace);
+        hbrButtonFace = NULL;
+    }
+    if (hbrButtonHilite) {
+        FreeHbr(hbrButtonHilite);
+        hbrButtonHilite = NULL;
+    }
+    if (hbrButtonShadow) {
+        FreeHbr(hbrButtonShadow);
+        hbrButtonShadow = NULL;
+    }
+    if (hbrButtonText) {
+        FreeHbr(hbrButtonText);
+        hbrButtonText = NULL;
+    }
+    if (hbrWindowText) {
+        FreeHbr(hbrWindowText);
+        hbrWindowText = NULL;
+    }
+    if (hbrWindow) {
+        FreeHbr(hbrWindow);
+        hbrWindow = NULL;
+    }
+    if (hbrWindowFrame) {
+        FreeHbr(hbrWindowFrame);
+        hbrWindowFrame = NULL;
+    }
+    if (hbrDesktop) {
+        FreeHbr(hbrDesktop);
+        hbrDesktop = NULL;
+    }
+    if (hbrRed) {
+        FreeHbr(hbrRed);
+        hbrRed = NULL;
+    }
+    if (hbrGreen) {
+        FreeHbr(hbrGreen);
+        hbrGreen = NULL;
+    }
+    if (hbrBlue) {
+        FreeHbr(hbrBlue);
+        hbrBlue = NULL;
+    }
+    if (hbrPurple) {
+        FreeHbr(hbrPurple);
+        hbrPurple = NULL;
+    }
+    if (hbrTooltip) {
+        FreeHbr(hbrTooltip);
+        hbrTooltip = NULL;
+    }
+
+    for (i = 0; i < 5; i++) {
+        if (rghbrMineral[i]) {
+            FreeHbr(rghbrMineral[i]);
+            rghbrMineral[i] = NULL;
+        }
+    }
+
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 2; j++) {
+            if (rghbrPlanetAttr[i][j]) {
+                FreeHbr(rghbrPlanetAttr[i][j]);
+                rghbrPlanetAttr[i][j] = NULL;
+            }
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 2; j++) {
+            if (rghbrMinSum[i][j]) {
+                FreeHbr(rghbrMinSum[i][j]);
+                rghbrMinSum[i][j] = NULL;
+            }
+        }
+    }
+
+    /*
+     * Win16: FreeProcInstance(...) for thunked WndProcs/DlgProcs.
+     * Win32: not used/needed (SetWindowLongPtr stores raw function pointers).
+     */
+
+    if (hrgnHuge) {
+        DeleteObject(hrgnHuge);
+        hrgnHuge = NULL;
+    }
+    if (hrgnScratch) {
+        DeleteObject(hrgnScratch);
+        hrgnScratch = NULL;
+    }
+
+    /* Reset cursor to the standard arrow (Win16 0x7F00 == IDC_ARROW) */
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+
+    if (hcurScanner) {
+        DestroyCursor(hcurScanner);
+        hcurScanner = NULL;
+    }
+    if (hcurOpenGrab) {
+        DestroyCursor(hcurOpenGrab);
+        hcurOpenGrab = NULL;
+    }
+    if (hcurCloseGrab) {
+        DestroyCursor(hcurCloseGrab);
+        hcurCloseGrab = NULL;
+    }
+    if (hcurScanAdd) {
+        DestroyCursor(hcurScanAdd);
+        hcurScanAdd = NULL;
+    }
+    if (hcurTrashCan) {
+        DestroyCursor(hcurTrashCan);
+        hcurTrashCan = NULL;
+    }
+    if (hcurNoWay) {
+        DestroyCursor(hcurNoWay);
+        hcurNoWay = NULL;
+    }
+    if (hcurResizeWE) {
+        DestroyCursor(hcurResizeWE);
+        hcurResizeWE = NULL;
+    }
+    if (hcurResizeNS) {
+        DestroyCursor(hcurResizeNS);
+        hcurResizeNS = NULL;
+    }
+    if (hcurResize4Way) {
+        DestroyCursor(hcurResize4Way);
+        hcurResize4Way = NULL;
+    }
+    if (hcurArrowHelp) {
+        DestroyCursor(hcurArrowHelp);
+        hcurArrowHelp = NULL;
+    }
+    if (hcurHand) {
+        DestroyCursor(hcurHand);
+        hcurHand = NULL;
+    }
+
+    if (hbmpScanner) {
+        DeleteObject(hbmpScanner);
+        hbmpScanner = NULL;
+    }
+    if (hbmpNumbers) {
+        DeleteObject(hbmpNumbers);
+        hbmpNumbers = NULL;
+    }
+    if (hbmpScanShip) {
+        DeleteObject(hbmpScanShip);
+        hbmpScanShip = NULL;
+    }
+    if (hbmpUnknownPlanet) {
+        DeleteObject(hbmpUnknownPlanet);
+        hbmpUnknownPlanet = NULL;
+    }
+
+    if (hiconStars) {
+        DestroyIcon(hiconStars);
+        hiconStars = NULL;
+    }
+    if (hiconHost) {
+        DestroyIcon(hiconHost);
+        hiconHost = NULL;
+    }
+    if (hiconWait) {
+        DestroyIcon(hiconWait);
+        hiconWait = NULL;
+    }
+
+    for (i = 0; i < 7; i++) {
+        if (rghiconVCR[i]) {
+            DestroyIcon(rghiconVCR[i]);
+            rghiconVCR[i] = NULL;
+        }
+    }
+
+    if (hdibPlanets) {
+        GlobalFree(hdibPlanets);
+        hdibPlanets = NULL;
+    }
+    if (hdibThings) {
+        GlobalFree(hdibThings);
+        hdibThings = NULL;
+    }
+    if (hdibToolbar) {
+        GlobalFree(hdibToolbar);
+        hdibToolbar = NULL;
+    }
+    if (hdibRaces) {
+        GlobalFree(hdibRaces);
+        hdibRaces = NULL;
+    }
+    if (hdibRacesT) {
+        GlobalFree(hdibRacesT);
+        hdibRacesT = NULL;
+    }
+    if (hdibRacesX) {
+        GlobalFree(hdibRacesX);
+        hdibRacesX = NULL;
+    }
+
+    if (hbmpBackBld) {
+        DeleteObject(hbmpBackBld);
+        hbmpBackBld = NULL;
+    }
+    if (hbmpMsg) {
+        DeleteObject(hbmpMsg);
+        hbmpMsg = NULL;
+    }
+    if (hbmpMono) {
+        DeleteObject(hbmpMono);
+        hbmpMono = NULL;
+    }
+
+    if (hdibPlaque) {
+        FreeResource(hdibPlaque);
+        hdibPlaque = NULL;
+    }
+
+    for (i = 0; i < 5; i++) {
+        if (rghdibShips[i]) {
+            GlobalUnlock(rghdibShips[i]);
+            FreeResource(rghdibShips[i]);
+            rghdibShips[i] = NULL;
+        }
+        if (rghdibShipsT[i]) {
+            GlobalUnlock(rghdibShipsT[i]);
+            FreeResource(rghdibShipsT[i]);
+            rghdibShipsT[i] = NULL;
+        }
+    }
+    for (i = 0; i < 7; i++) {
+        if (rghdibInventory[i]) {
+            GlobalUnlock(rghdibInventory[i]);
+            FreeResource(rghdibInventory[i]);
+            rghdibInventory[i] = NULL;
+        }
+    }
+
+    if (vhpal) {
+        DeleteObject(vhpal);
+        vhpal = NULL;
+    }
+    if (vhpalSplash) {
+        DeleteObject(vhpalSplash);
+        vhpalSplash = NULL;
+    }
+
+    /* More brushes/pens */
+    if (hbrShip) {
+        FreeHbr(hbrShip);
+        hbrShip = NULL;
+    }
+    if (hbrStarbase) {
+        FreeHbr(hbrStarbase);
+        hbrStarbase = NULL;
+    }
+    if (hbrBBlue) {
+        FreeHbr(hbrBBlue);
+        hbrBBlue = NULL;
+    }
+    if (hbrEnemy) {
+        FreeHbr(hbrEnemy);
+        hbrEnemy = NULL;
+    }
+    if (hbrSelect) {
+        FreeHbr(hbrSelect);
+        hbrSelect = NULL;
+    }
+    if (hbrRadar) {
+        FreeHbr(hbrRadar);
+        hbrRadar = NULL;
+    }
+    if (hbrRadarNear) {
+        FreeHbr(hbrRadarNear);
+        hbrRadarNear = NULL;
+    }
+    if (hbrLightGray) {
+        FreeHbr(hbrLightGray);
+        hbrLightGray = NULL;
+    }
+    if (hbrGray) {
+        FreeHbr(hbrGray);
+        hbrGray = NULL;
+    }
+    if (hbrYellow) {
+        FreeHbr(hbrYellow);
+        hbrYellow = NULL;
+    }
+    if (hbrDkYellow) {
+        FreeHbr(hbrDkYellow);
+        hbrDkYellow = NULL;
+    }
+
+    if (hbr50Screen) {
+        DeleteObject(hbr50Screen);
+        hbr50Screen = NULL;
+    }
+    for (i = 0; i < 3; i++) {
+        if (rghbrPat[i]) {
+            DeleteObject(rghbrPat[i]);
+            rghbrPat[i] = NULL;
+        }
+    }
+    if (hbrCargo) {
+        DeleteObject(hbrCargo);
+        hbrCargo = NULL;
+    }
+    if (hbrDock) {
+        DeleteObject(hbrDock);
+        hbrDock = NULL;
+    }
+
+    if (hpenShip) {
+        DeleteObject(hpenShip);
+        hpenShip = NULL;
+    }
+    if (hpenDkGreen) {
+        DeleteObject(hpenDkGreen);
+        hpenDkGreen = NULL;
+    }
+    if (hpenDkPurple) {
+        DeleteObject(hpenDkPurple);
+        hpenDkPurple = NULL;
+    }
+    if (hpenStarbase) {
+        DeleteObject(hpenStarbase);
+        hpenStarbase = NULL;
+    }
+    if (hpenEnemy) {
+        DeleteObject(hpenEnemy);
+        hpenEnemy = NULL;
+    }
+    if (hpenMassPath) {
+        DeleteObject(hpenMassPath);
+        hpenMassPath = NULL;
+    }
+    if (hpenRadar) {
+        DeleteObject(hpenRadar);
+        hpenRadar = NULL;
+    }
+    if (hpenRadarNear) {
+        DeleteObject(hpenRadarNear);
+        hpenRadarNear = NULL;
+    }
+    if (hpenDkBlue) {
+        DeleteObject(hpenDkBlue);
+        hpenDkBlue = NULL;
+    }
+    if (hpenYellow) {
+        DeleteObject(hpenYellow);
+        hpenYellow = NULL;
+    }
+    if (hpenDkYellow) {
+        DeleteObject(hpenDkYellow);
+        hpenDkYellow = NULL;
+    }
+
+    if (rghfontArial10[0]) {
+        DeleteObject(rghfontArial10[0]);
+        rghfontArial10[0] = NULL;
+    }
+    if (rghfontArial10[1]) {
+        DeleteObject(rghfontArial10[1]);
+        rghfontArial10[1] = NULL;
+    }
+    for (i = 0; i < 5; i++) {
+        if (rghfontArial8[i]) {
+            DeleteObject(rghfontArial8[i]);
+            rghfontArial8[i] = NULL;
+        }
+    }
+    if (rghfontArial6[0]) {
+        DeleteObject(rghfontArial6[0]);
+        rghfontArial6[0] = NULL;
+    }
+    if (rghfontArial7[0]) {
+        DeleteObject(rghfontArial7[0]);
+        rghfontArial7[0] = NULL;
+    }
+
+    DeallocStuff();
 }
 
 /* ------------------------------------------------------------------
