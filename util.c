@@ -982,18 +982,101 @@ int16_t FLookupThing(int16_t idth, THING *pth) {
     THING  *lpth;
     int16_t fWrite;
 
-    /* TODO: implement */
-    return 0;
+    if (cThing < 1) {
+        return 0;
+    }
+
+    fWrite = (int16_t)(idth < 0);
+    if (fWrite) {
+        /* If you want strict faithfulness, assume pth != NULL here. */
+        if (pth == NULL) {
+            return 0; /* or remove this check to match original crashy behavior */
+        }
+        idth = pth->idFull;
+    }
+
+    lpth = LpthFromId(idth);
+
+    if (lpth != NULL && pth != NULL) {
+        if (fWrite) {
+            LogChangeThing(lpth, pth);
+            memcpy(lpth, pth, sizeof(THING));
+            if (gd.fTutorial && idPlayer == 0) {
+                AdvanceTutor();
+            }
+        } else {
+            memcpy(pth, lpth, sizeof(THING));
+        }
+    }
+
+    return (lpth != NULL) ? 1 : 0;
 }
 
 int16_t FLookupFleet(int16_t idFleet, FLEET *pfl) {
     FLEET  *lpfl;
     int16_t fWrite;
 
-    /* TODO: implement */
-    return 0;
-}
+    if (cFleet < 1) {
+        return 0;
+    }
 
+    /* Negative idFleet means write mode: use pfl->id as the lookup key */
+    fWrite = (int16_t)(idFleet < 0);
+    if (fWrite) {
+        if (pfl == NULL) {
+            return 0;
+        }
+        idFleet = pfl->id;
+    }
+
+    lpfl = LpflFromId(idFleet);
+
+    if (lpfl != NULL && pfl != NULL) {
+        if (fWrite) {
+            InvalidateReport(1, 0);
+            LogChangeFleet(lpfl, pfl);
+
+            /*
+             * If the order-list pointer differs, ensure destination has enough capacity
+             * and copy the orders (header already exists in dst).
+             */
+            if (lpfl->lpplord != pfl->lpplord) {
+                PLORD *dst = lpfl->lpplord;
+                PLORD *src = pfl->lpplord;
+
+                if (dst != NULL && src != NULL) {
+                    if ((int16_t)dst->iordMax < pfl->cord) {
+                        dst = (PLORD *)LpplReAlloc((PL *)dst, (int16_t)(pfl->cord + 3));
+                        lpfl->lpplord = dst;
+                    }
+
+                    memcpy((uint8_t *)dst + offsetof(PLORD, rgord), (const uint8_t *)src + offsetof(PLORD, rgord), (size_t)src->iordMac * sizeof(ORDER));
+
+                    dst->iordMac = src->iordMac;
+                }
+            }
+
+            /*
+             * Decompile copied 100 bytes: everything up to (but not including) lpplord.
+             * This preserves lpplord/lpflNext/etc. runtime pointers in the stored fleet.
+             */
+            _Static_assert(offsetof(FLEET, lpplord) == 100, "FLEET layout changed: expected lpplord at +0x64");
+            memcpy(lpfl, pfl, offsetof(FLEET, lpplord));
+
+            if (gd.fTutorial && idPlayer == 0) {
+                AdvanceTutor();
+            }
+        } else if (pfl == (FLEET *)&sel.fl) {
+            FDupFleet(lpfl, (FLEET *)&sel.fl);
+        } else {
+            /* Read mode: decompile copied the whole struct out. */
+            memcpy(pfl, lpfl, sizeof(FLEET));
+        }
+    }
+
+    /* Return true iff the fleet exists, regardless of pfl */
+    return (lpfl != NULL) ? 1 : 0;
+}
 int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip) {
     int16_t i;
     THING  *lpth;
@@ -1291,75 +1374,97 @@ int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
     return 0;
 }
 
-short FLookupPlanet(int16_t iPlanet, PLANET *ppl) {
-    bool fWrite = false;
+int16_t FLookupPlanet(int16_t iPlanet, PLANET *ppl) {
+    PLANET *lpPl;
+    int16_t fWrite;
 
     if (cPlanet < 1)
         return 0;
 
-    /* negative iPlanet means: use ppl->id, and (usually) write ppl back to master list */
+    /* Negative iPlanet means write-mode, with special handling for id == -1 */
+    fWrite = 0;
     if (iPlanet < 0) {
-        iPlanet = ppl ? ppl->id : (int16_t)-1;
+        /* Decompile assumes ppl != NULL here */
+        if (ppl == NULL) {
+            return 0;
+        }
+
+        iPlanet = ppl->id;
         if (iPlanet == -1) {
             LogChangePlanet(NULL, ppl);
             return 1;
         }
-        fWrite = true;
+        fWrite = 1;
     }
 
-    PLANET *lpPl = LpplFromId(iPlanet);
-    if (lpPl == NULL || ppl == NULL)
-        return 0;
+    lpPl = LpplFromId(iPlanet);
+
+    /* If planet doesn't exist or ppl is NULL, skip copy but return existence */
+    if (lpPl == NULL || ppl == NULL) {
+        return (lpPl != NULL) ? 1 : 0;
+    }
 
     if (!fWrite) {
-        /* read/lookup: copy master planet -> *ppl */
+        /* Read-mode: special-case selection planet */
         if (ppl == (PLANET *)&sel.pl) {
             FDupPlanet(lpPl, (PLANET *)&sel.pl);
         } else {
-            memcpy(ppl, lpPl, sizeof(*ppl));
+            /* Decompile did a word-loop copy; memcpy is equivalent here */
+            memcpy(ppl, lpPl, sizeof(PLANET));
         }
         return 1;
     }
 
-    /* write/update: copy *ppl -> master planet (with special handling for lpplprod) */
+    /* Write-mode */
     InvalidateReport(0, 0);
     LogChangePlanet(lpPl, ppl);
 
+    /*
+     * If product-list pointer differs, reconcile dst allocation with src:
+     * - allocate if dst NULL and src non-NULL
+     * - free if dst non-NULL and src NULL
+     * - else ensure capacity and copy products
+     */
     if (lpPl->lpplprod != ppl->lpplprod) {
-        PLPROD *dstProd = (PLPROD *)lpPl->lpplprod;
-        PLPROD *srcProd = (PLPROD *)ppl->lpplprod;
+        PLPROD *dst = lpPl->lpplprod;
+        PLPROD *src = ppl->lpplprod;
 
-        if (dstProd == NULL) {
-            if (srcProd != NULL) {
-                PL *p = LpplAlloc(4, (uint16_t)srcProd->iprodMac, htOrd);
-                lpPl->lpplprod = (PLPROD *)p;
-                dstProd = (PLPROD *)p;
+        if (dst == NULL) {
+            if (src != NULL) {
+                /* Decompile: LpplAlloc(4, src->iprodMac, htOrd) */
+                dst = (PLPROD *)LpplAlloc((int16_t)sizeof(PROD), (uint16_t)src->iprodMac, htOrd);
+                lpPl->lpplprod = dst;
             }
-        } else if (srcProd == NULL) {
-            FreePl((PL *)dstProd);
+        } else if (src == NULL) {
+            FreePl((PL *)dst);
             lpPl->lpplprod = NULL;
             goto UTIL_FinishCopy;
         }
 
-        if (srcProd != NULL && dstProd != NULL) {
-            if (dstProd->iprodMax < srcProd->iprodMac) {
-                PL *p = LpplReAlloc((PL *)dstProd, (uint16_t)(srcProd->iprodMac + 2));
-                lpPl->lpplprod = (PLPROD *)p;
-                dstProd = (PLPROD *)p;
+        if (dst != NULL && src != NULL) {
+            if (dst->iprodMax < src->iprodMac) {
+                dst = (PLPROD *)LpplReAlloc((PL *)dst, (int16_t)(src->iprodMac + 2));
+                lpPl->lpplprod = dst;
             }
 
-            memcpy((uint8_t *)dstProd + 4, (const uint8_t *)srcProd + 4, (uint32_t)srcProd->iprodMac * 4u);
+            memcpy((uint8_t *)dst + offsetof(PLPROD, rgprod), (const uint8_t *)src + offsetof(PLPROD, rgprod), (size_t)src->iprodMac * sizeof(PROD));
 
-            dstProd->iprodMac = srcProd->iprodMac;
+            dst->iprodMac = src->iprodMac;
         }
     }
 
 UTIL_FinishCopy:
-    /* copy everything up through turn; do NOT overwrite lpplprod pointer itself */
-    memcpy(lpPl, ppl, 0x34);
+    /*
+     * Decompile: __fmemcpy(lpPl, ppl, 0x34)
+     * In the original, this is a “prefix copy” (like fleets copying up to a pointer).
+     * Prefer copying up to the lpplprod pointer using offsetof, and assert it matches 0x34.
+     */
+    _Static_assert(offsetof(PLANET, lpplprod) == 0x34, "PLANET layout changed: expected lpplprod at +0x34");
+    memcpy(lpPl, ppl, offsetof(PLANET, lpplprod));
 
-    if ((((uint32_t)gd.grBits >> 11) & 1u) && (idPlayer == 0))
+    if (gd.fTutorial && idPlayer == 0) {
         AdvanceTutor();
+    }
 
     return 1;
 }
@@ -1382,9 +1487,14 @@ uint16_t WFromLpfl(FLEET *lpfl) {
 }
 
 int16_t FLookupObject(GrobjClass grobj, int16_t id, void *pobj) {
-
-    /* TODO: implement */
-    return 0;
+    switch (grobj) {
+    case grobjFleet:
+        return FLookupFleet(id, pobj);
+    case grobjPlanet:
+        return FLookupPlanet(id, pobj);
+    default:
+        return FLookupThing(id, pobj);
+    }
 }
 
 int16_t GetFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal) {

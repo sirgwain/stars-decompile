@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include "acutest.h"
@@ -185,9 +186,61 @@ static void test_DpOfLpflIshdef_basic(void) {
     rglpshdef[0] = old0;
 }
 
+/*
+ * FLookup* tests
+ *
+ * NOTE: The lookup helpers (LpplFromId/LpflFromId/LpthFromId) are part of the
+ * game runtime. To keep these unit tests robust and low-dependency, we focus on
+ * behaviors that do not require a populated object table.
+ */
+
+static void test_FLookupPlanet_write_id_minus1_returns_true(void) {
+    /*
+     * Decompile behavior:
+     *   if (cPlanet < 1) return 0;
+     *   if (iPlanet < 0) {
+     *     iPlanet = ppl->id;
+     *     if (iPlanet == -1) { LogChangePlanet(NULL, ppl); return 1; }
+     *   }
+     */
+    int16_t old_cPlanet = cPlanet;
+
+    PLANET pl;
+    memset(&pl, 0, sizeof(pl));
+    pl.id = -1;
+
+    cPlanet = 1;
+    {
+        int16_t got = FLookupPlanet(-1, &pl);
+        TEST_CHECK_(got == 1, "FLookupPlanet(-1, id=-1) got=%d want=1", (int)got);
+    }
+
+    cPlanet = old_cPlanet;
+}
+
+static void test_FLookup_layout_invariants(void) {
+    /*
+     * These are the copy-boundaries used by the Win16 decompile:
+     *  - Fleet: __fmemcpy(dst, src, 100) (0x64), which is up to lpplord.
+     *  - Planet: __fmemcpy(dst, src, 0x34), which is up to lpplprod.
+     *
+     * Keep them as static asserts so a struct layout change forces an explicit
+     * decision about semantics rather than silently changing behavior.
+     */
+    TEST_CHECK(offsetof(FLEET, lpplord) == 100);
+    TEST_CHECK(offsetof(PLORD, rgord) == 4);
+    TEST_CHECK(sizeof(ORDER) == 0x12);
+    /* PLANET/PLPROD are expected to exist in types.h for this build. */
+    TEST_CHECK(offsetof(PLANET, lpplprod) == 0x34);
+    TEST_CHECK(offsetof(PLPROD, rgprod) == 4);
+    TEST_CHECK(sizeof(PROD) == 4);
+}
+
 TEST_LIST = {
     {"ChgPopFromPlanet negative desire table", test_ChgPopFromPlanet_negative_desire_table},
     {"ClearFile builds expected name and removes", test_ClearFile_creates_and_removes_expected_name},
     {"DpOfLpflIshdef basic", test_DpOfLpflIshdef_basic},
+    {"FLookupPlanet write id=-1 returns true", test_FLookupPlanet_write_id_minus1_returns_true},
+    {"FLookup layout invariants", test_FLookup_layout_invariants},
     {NULL, NULL},
 };

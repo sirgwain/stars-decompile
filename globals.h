@@ -74,7 +74,7 @@ extern MemJump *penvMem; // pointer to wrapper is fine
 
 extern BTLDATA    *vlpbdVCR;
 extern BTLDATA    *vlpbdVCRNext;
-extern BTLPLAN    *rglpbtlplan[1];
+extern BTLPLAN    *rglpbtlplan[16];
 extern BTLPLAN     btlplan;
 extern BTLREC     *vlpbrVCR;
 extern BTN        *rgbtnXfer;
@@ -113,7 +113,7 @@ extern char        iLastStrGet;
 extern uint8_t     rgbCur[1024];
 extern char        rgszArial[4][32];
 extern char        rgszSpeed[30];
-extern char        szBackup[0];
+extern char        szBackup[256];
 extern char        szBase[256];
 extern char        szCRLF[3];
 extern char        szStarsPath[256];
