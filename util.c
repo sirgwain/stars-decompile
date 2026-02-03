@@ -602,14 +602,15 @@ char *PszFleetNameFromWord(uint16_t w) {
 }
 
 int16_t FValidSerialNo(char *psz, int32_t *plSerial) {
-    int32_t lBuild;
-    int16_t i;
-    int32_t lCur;
-    int32_t lSerial;
-    int32_t l;
+    // int32_t lBuild;
+    // int16_t i;
+    // int32_t lCur;
+    // int32_t lSerial;
+    // int32_t l;
 
     /* TODO: implement */
-    return 0;
+    // all serials are valid
+    return true;
 }
 
 char *PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {

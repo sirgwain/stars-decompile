@@ -364,21 +364,31 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         SetBkColor((HDC)wParam, RGB((BYTE)crButtonFace, (BYTE)((UINT)crButtonFace >> 8), (BYTE)((UINT)crButtonFace >> 16)));
         return (INT_PTR)hbrButtonFace;
 
-    case WM_SETCURSOR:
-    case WM_LBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-    LAB_1020_6db6:
+    case WM_SETCURSOR: {
+        /* Only set the hand cursor when hovering the player-mode column. */
         GetCursorPos(&ptClient);
         ScreenToClient(hwnd, &ptClient);
 
         if (((5 < ptClient.x) && (ptClient.x < dyArial8 + 7)) && (0x2f < ptClient.y) &&
             ((iPlayer = (ptClient.y - 0x30) / (dyArial8 + 4), iPlayer < game.cPlayer) && (((ptClient.y - 0x30) % (dyArial8 + 4)) < dyArial8 + 1))) {
-            PLAYER *pl = &rgplr[iPlayer];
+            SetCursor(hcurHand);
+            return 1;
+        }
+        return 0;
+    }
 
-            if (message == WM_SETCURSOR) {
-                SetCursor(hcurHand);
-                return 1;
-            }
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN: {
+        GetCursorPos(&ptClient);
+        ScreenToClient(hwnd, &ptClient);
+
+        if (!(((5 < ptClient.x) && (ptClient.x < dyArial8 + 7)) && (0x2f < ptClient.y) &&
+              ((iPlayer = (ptClient.y - 0x30) / (dyArial8 + 4), iPlayer < game.cPlayer) && (((ptClient.y - 0x30) % (dyArial8 + 4)) < dyArial8 + 1)))) {
+            return 0;
+        }
+
+        {
+            PLAYER *pl = &rgplr[iPlayer];
 
             /* determine current player mode */
             if (pl->fAi == 0)
@@ -431,11 +441,12 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 if (iNewMode == 2)
                     pl->idAi = 7;
 
-                /* salt flip (swap halves while inverting) */
+                /* salt flip: decompile shows uint* +2, but the real intent is 16-bit word ops on lSalt */
                 {
-                    UINT tmp = *(UINT *)((BYTE *)&rgplr[0].lSalt + 2 + iPlayer * 0xc0);
-                    *(UINT *)((BYTE *)&rgplr[0].lSalt + iPlayer * 0xc0) = ~*(UINT *)((BYTE *)&rgplr[0].lSalt + iPlayer * 0xc0);
-                    *(UINT *)((BYTE *)&rgplr[0].lSalt + 2 + iPlayer * 0xc0) = ~tmp;
+                    uint16_t *pSalt = (uint16_t *)&rgplr[iPlayer].lSalt; /* [0]=low, [1]=high */
+                    uint16_t  hi = pSalt[1];
+                    pSalt[0] = (uint16_t)~pSalt[0];
+                    pSalt[1] = (uint16_t)~hi;
                 }
 
                 FMarkFile(dtTurn, (short)iPlayer, 8, (UINT)(iNewMode != 0));
@@ -457,7 +468,9 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                 fProcessingTimer = 0;
             }
         }
+
         return 0;
+    }
 
     case WM_INITDIALOG:
         StickyDlgPos(hwnd, (POINT *)&ptStickyHostModeDlg, 1);
@@ -482,9 +495,17 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         uTimerId = SetTimer(hwnd, 0, 10000, NULL);
         return 1;
 
-    case WM_COMMAND:
-        if ((wParam == (WPARAM)IDC_HOST_GENERATE_NOW) || (wParam == (WPARAM)IDC_HOST_CLOSE) || (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE)) {
-            if (wParam == (WPARAM)IDC_HOST_GENERATE_NOW) {
+    case WM_COMMAND: {
+        const int id = (int)LOWORD(wParam);
+        const int code = (int)HIWORD(wParam);
+
+        /* Only treat actual activations as commands (buttons, etc.) */
+        if (code != 0 && code != BN_CLICKED)
+            return 0;
+
+        if ((id == IDC_HOST_GENERATE_NOW) || (id == IDC_HOST_CLOSE) || (id == IDC_HOST_AUTO_GENERATE) || (id == IDCANCEL)) {
+
+            if (id == IDC_HOST_GENERATE_NOW) {
                 /* Shift/Ctrl affect iPassCnt exactly as in the decompile */
                 if (GetAsyncKeyState(VK_SHIFT) < 0) {
                     if (GetAsyncKeyState(VK_CONTROL) < 0)
@@ -522,23 +543,27 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             /* persist dialog position on exit (fInit=0) */
             StickyDlgPos(hwnd, (POINT *)&ptStickyHostModeDlg, 0);
 
-            if (wParam == (WPARAM)IDC_HOST_CLOSE)
+            /*
+             * Side-effects associated with closing/auto-gen should happen
+             * BEFORE EndDialog() (modal loop exits immediately).
+             */
+            if (id == IDC_HOST_AUTO_GENERATE) {
+                EnsureAis();
+            } else if ((id == IDC_HOST_CLOSE || id == IDCANCEL) && gd.fClose && ini.fCmdLine) {
+                PostQuitMessage(vretExitValue);
+            }
+
+            if (id == IDCANCEL || id == IDC_HOST_CLOSE)
                 EndDialog(hwnd, 0);
-            else if (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE)
+            else if (id == IDC_HOST_AUTO_GENERATE)
                 EndDialog(hwnd, (INT_PTR)-1);
             else
                 EndDialog(hwnd, 1);
 
-            if (wParam == (WPARAM)IDC_HOST_AUTO_GENERATE) {
-                EnsureAis();
-            } else if ((wParam == (WPARAM)IDC_HOST_CLOSE) && (((gd.grBits2 >> 2) & 1) != 0)) {
-                PostQuitMessage(vretExitValue);
-            }
-
             return 1;
         }
 
-        if (wParam == (WPARAM)IDC_HOST_PASSWORD) {
+        if (id == IDC_HOST_PASSWORD) {
             result = FCheckPassword();
             if (result == 0)
                 return 0;
@@ -550,12 +575,12 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             return result;
         }
 
-        if (wParam == (WPARAM)IDC_HOST_HELP) {
+        if (id == IDC_HELP) {
             WinHelp(hwnd, szHelpFile, HELP_CONTEXT, 0x440);
             return 1;
         }
 
-        if (wParam == (WPARAM)IDC_HOST_OPTIONS) {
+        if (id == IDC_HOST_OPTIONS) {
             dlgProc = MakeProcInstance(HostOptionsDialog, hInst);
             result = (short)DialogBox(hInst, MAKEINTRESOURCE(IDD_HOST_OPTIONS), hwnd, (DLGPROC)dlgProc);
             FreeProcInstance(dlgProc);
@@ -578,6 +603,7 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
         }
 
         return 0;
+    }
 
     case WM_TIMER:
         if (fProcessingTimer == 0) {
@@ -587,6 +613,10 @@ INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
             fProcessingTimer = 0;
         }
         return 0;
+    case WM_CLOSE:
+        StickyDlgPos(hwnd, (POINT *)&ptStickyHostModeDlg, 0);
+        EndDialog(hwnd, 0);
+        return 1;
     }
 
     return 0;
@@ -1339,6 +1369,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     char        szTemp[256];
     MINMAXINFO *pmmi;
     HWND        hWndParent;
+    FARPROC     dlgProc;
+    int16_t     result;
 
     switch (msg) {
     case WM_CREATE:
@@ -1346,7 +1378,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         if (hdc != NULL) {
             (void)FCreateFonts(hdc);
             GetTextMetrics(hdc, &tm);
-            dySysFont = (int16_t)(tm.tmHeight + tm.tmExternalLeading);
+            dySysFont = (int16_t)tm.tmHeight;
             dySBar = (int16_t)((int32_t)(dyArial8 + 0x0c) * 2);
             ReleaseDC(hwnd, hdc);
         } else {
@@ -1356,6 +1388,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         InitTiles();
         EnsureTileSize(iWindowLayout == 2);
+        DBG_LOGD("WM_CREATE");
         return 0;
 
     case WM_SIZE:
@@ -1559,7 +1592,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                         return 1;
                     }
 
-                    SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+                    SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                     break; /* fall through to DefWindowProc */
                 }
             }
@@ -1598,7 +1631,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     }
                 }
 
-                SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+                SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
 
                 if (sel.pt.x > 1000 && sel.pt.y > 1000) {
                     CtrPointScan(sel.pt, 1);
@@ -1700,24 +1733,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 
     case WM_COMMAND:
-        if (hwndTitle != NULL) {
-            if (wParam == IDM_GAME_QUIT) {
-                DestroyWindow(hwndFrame);
-                return 0;
-            }
-            if (wParam == IDM_GAME_START) {
-                DestroyWindow(hwndTitle);
-                return 0;
-            }
-            if (wParam == IDM_GAME_HOST) {
-                PostMessage(hwndFrame, WM_STARS_HOST, 0, 0);
-                return 0;
-            }
-            if (wParam == IDM_GAME_CONTINUE) {
-                PostMessage(hwndFrame, WM_STARS_CONTINUE, 0, 0);
-                return 0;
-            }
-        }
         CommandHandler(hwnd, wParam);
         return 0;
 
@@ -1873,7 +1888,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             }
 
             CreateChildWindows();
-            SendMessage(hwndFrame, WM_COMMAND, IDM_VIEW_REPAINT, 0);
+            SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
             if (wParam == 0x09ca) {
                 SendMessage(hwndMessage, WM_KEYDOWN, VK_END, 0);
             }
@@ -1885,21 +1900,198 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
 
         fFileErrSilent = fErrSav;
-        gd.fDontDoLogFiles = 0;
-        return 0;
-
     case WM_STARS_STARTUP:
         /*
-         * Win16 behavior: if no game is currently loaded, create the full-screen
-         * title/splash window (WS_POPUP|WS_VISIBLE) as a child of the hidden frame.
+         * Original Win16 behavior: this is the “startup trampoline” that processes
+         * command-line driven modes (validate/new-game/gen), attempts auto-open,
+         * ensures the title window exists, and then enforces the serial-number check.
          */
+        idPlayer = -1;
+
+        if (ini.fCmdLine) {
+            ini.fCmdLine = 0;
+
+            /* Validate mode: produce .chk output and exit. */
+            if (ini.fValidate) {
+                fFileErrSilent = 1;
+                ClearFile(7);
+
+                if (FLoadGame(szBase, "chk") != 0) {
+                    VerifyTurns();
+                    DestroyCurGame();
+                    EnsureAis();
+
+                    snprintf(szTemp, sizeof(szTemp), "\n%s  Year %d", szBase, (int)game.turn);
+                    OutputSz(7, szTemp);
+
+                    for (i = 0; i < game.cPlayer; i++) {
+                        /* Start line with either N: or Error N: based on rgOut. */
+                        if ((int16_t)(rgOut[i] + 1) < 4) {
+                            ich = snprintf(szTemp, sizeof(szTemp), "%d", (int)(i + 1));
+                        } else {
+                            ich = snprintf(szTemp, sizeof(szTemp), "Error %d:", (int)(i + 1));
+                        }
+
+                        /* Optionally include player name (host names not hidden). */
+                        if (!gd.fNoHostNames) {
+                            (void)PszPlayerName(i, 1, 1, 1, 0, NULL);
+                            ich += snprintf(szTemp + ich, sizeof(szTemp) - (size_t)ich, " %s", szWork);
+                        }
+
+                        /* Append turned-in status string based on rgOut. */
+                        pch = PszGetCompressedString((int16_t)(rgOut[i] + idsTurned));
+                        strncat(szTemp, pch, sizeof(szTemp) - strlen(szTemp) - 1);
+
+                        /* Mark hackers. */
+                        if (rgplr[i].fHacker) {
+                            strncat(szTemp, "   HACKER", sizeof(szTemp) - strlen(szTemp) - 1);
+                        }
+
+                        OutputSz(7, szTemp);
+                    }
+                }
+
+            MDI_LExit:
+                if (!gd.fExitWindows) {
+                    PostQuitMessage(vretExitValue);
+                } else {
+                    ExitWindows((UINT)vretExitValue, 0);
+                }
+                return 0;
+            }
+
+            /* New-game-from-file mode. */
+            if (ini.fNewGame) {
+                if (vSerialNumber != 0) {
+                    GenNewGameFromFile(szBase);
+                }
+                goto MDI_LExit;
+            }
+
+            /* Autogenerate turns / batch processing mode. */
+            if (ini.fGen) {
+                while (1) {
+                    while ((!ini.fWait && !ini.fTry) || CTurnsOutSafe() == 0) {
+                        EnsureAis();
+                        FGenerateTurn();
+
+                        if (ini.fBatch && (lpchBatch < lpchBatchMac)) {
+                            goto MDI_LTryNextBatch;
+                        }
+                        if (ini.cTurnGen == 0) {
+                            goto MDI_LExit;
+                        }
+                        ini.cTurnGen--;
+                    }
+
+                    if (!ini.fTry) {
+                        goto MDI_OpenGame;
+                    }
+
+                    if (!ini.fBatch || (lpchBatchMac <= lpchBatch)) {
+                        break;
+                    }
+
+                MDI_LTryNextBatch:
+                    DestroyCurGame();
+
+                    /* Copy next batch filename line into szBase (NUL-terminated). */
+                    pch = szBase;
+                    while (1) {
+                        if ((*lpchBatch == '\n') || ((lpchBatch == lpchBatchMac) && (lpchBatch[2] == lpchBatchMac[2]))) {
+                            break;
+                        }
+                        *pch++ = *lpchBatch++;
+                    }
+                    lpchBatch++; /* skip '\n' */
+                    *(pch - 1) = '\0';
+
+                    ini.fStartupFile = 1;
+                }
+                goto MDI_LExit;
+            }
+
+        MDI_OpenGame:
+            CommandHandler(hwnd, IDM_TOOL_OPEN_GAME);
+
+            if (ini.fTry) {
+                goto MDI_LExit;
+            }
+            if (ini.fGen) {
+                goto MDI_LNop;
+            }
+
+            if (game.lid != 0) {
+                if ((idPlayer != -1) && (ini.fDumpMap || ini.fDumpPlanets || ini.fDumpFleets)) {
+                    if (ini.fDumpMap) {
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_UNIVERSE, 0);
+                    }
+                    if (ini.fDumpPlanets) {
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_PLANETS, 0);
+                    }
+                    if (ini.fDumpFleets) {
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_FLEETS, 0);
+                    }
+                    goto MDI_LExit;
+                }
+
+                ShowWindow(hwndFrame, SW_SHOW);
+                InitializeMenu(0);
+                PostMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
+
+                if (ini.fWait) {
+                    ini.fWait = 0;
+                    CommandHandler(hwnd, WMX_UNKNOWN_006A);
+                }
+                goto MDI_LNop;
+            }
+        }
+
+        /* Ensure the title window exists. */
         if (hwndTitle == NULL) {
             int cx = GetSystemMetrics(SM_CXSCREEN);
             int cy = GetSystemMetrics(SM_CYSCREEN);
-
             hwndTitle = CreateWindowA(szTitle, "Stars!", WS_POPUP | WS_VISIBLE, 0, 0, cx, cy, hwndFrame, NULL, hInst, NULL);
             fFreeingTitle = 0;
         }
+
+        ini.fStartupFile = 0;
+        DestroyCurGame();
+
+    MDI_LNop:
+        /* If the serial number is valid for this machine, do nothing. */
+        // vSerialNumber is always 0, no worries
+        if (/*vSerialNumber != 0 && */ memcmp(vrgbMachineConfig, vrgbEnvCur, 11) == 0) {
+            return 0;
+        }
+
+        /* SerialDlg uses szWork[200] as a “previously registered” flag. */
+        szWork[200] = (vSerialNumber == 0) ? '\0' : '\x01';
+
+        dlgProc = MakeProcInstance((FARPROC)SerialDlg, hInst);
+        hWndParent = (hwndTitle != NULL) ? hwndTitle : hwndFrame;
+
+        result = (int16_t)DialogBox(0, MAKEINTRESOURCE(IDD_SERIAL), hWndParent, (DLGPROC)dlgProc);
+        FreeProcInstance((FARPROC)dlgProc);
+
+        if (result == 0) {
+            vSerialNumber = 0;
+            memcpy(vrgbMachineConfig, vrgbEnvCur, 11);
+            PostQuitMessage(vretExitValue);
+        } else {
+            lSerial = 0;
+            if (!FValidSerialNo(szWork, &lSerial)) {
+                if (vSerialNumber == 0) {
+                    memcpy(vrgbMachineConfig, vrgbEnvCur, 11);
+                    PostQuitMessage(vretExitValue);
+                }
+            } else {
+                vSerialNumber = lSerial;
+                memcpy(vrgbMachineConfig, vrgbEnvCur, 11);
+            }
+        }
+
+        WriteIniSettings();
         return 0;
     }
 
@@ -1922,21 +2114,113 @@ void DrawHostDialog2(HWND hwnd, HDC hdcIn) {
     uint32_t dsec;
     HDC      hdc;
     uint16_t dhour;
-    int16_t  bkMode;
-    int16_t  yCur;
+    int      bkMode; /* Win32: SetBkMode returns int */
+    int      yCur;
     int16_t  i;
     uint16_t dmin;
     int16_t  dday;
-    int16_t  cch;
+    int      cch;
     RECT     rcDiamond;
-    uint32_t crBackSav;
+    COLORREF crBackSav; /* Win32: SetBkColor returns COLORREF */
     int16_t  x;
     char     szStat[30];
 
-    /* debug symbols */
     /* block (block) @ MEMORY_MDI:0x6300 */
 
-    /* TODO: implement */
+    if (hdcIn == NULL) {
+        hdc = GetDC(hwnd);
+    } else {
+        hdc = hdcIn;
+    }
+
+    bkMode = SetBkMode(hdc, TRANSPARENT);
+    crBackSav = SetBkColor(hdc, crButtonFace);
+
+    SelectObject(hdc, rghfontArial8[1]);
+
+    {
+        const char *psz = PszGetCompressedString(idsN16);
+        SIZE        sz;
+
+        GetTextExtentPoint32A(hdc, psz, 4, &sz);
+        x = (int16_t)(dyArial8 + 10 + sz.cx);
+    }
+
+    yCur = 48;
+    SetRect(&rcDiamond, 6, 48, dyArial8 + 7, dyArial8 + 0x31);
+
+    for (i = 0; i < game.cPlayer; i++) {
+        DrawDiamond(hdc, &rcDiamond, hbrBBlue);
+
+        {
+            const char *pszFmt = PszGetCompressedString(idsD2);
+            cch = snprintf(szWork, sizeof(szWork), pszFmt, (int)i + 1);
+            RightTextOut(hdc, x, yCur, szWork, cch, 0);
+        }
+
+        /* Win16 used raw COLORREFs 0x7F00 / 0x7F (dark green / dark red) */
+        SetTextColor(hdc, (rgOut[i] < 1) ? RGB(0, 127, 0) : RGB(127, 0, 0));
+
+        CchGetString(rgOut[i] + idsTurned, szStat);
+
+        if (!gd.fNoHostNames) {
+            const char *pszName = PszPlayerName(i, 1, 1, 1, 0, (PLAYER *)0);
+            const char *pszFmt = PszGetCompressedString(idsSS);
+            cch = snprintf(szWork, sizeof(szWork), pszFmt, pszName, szStat);
+        } else {
+            cch = snprintf(szWork, sizeof(szWork), " %s", szStat);
+        }
+
+        if (rgplr[i].fHacker) {
+            strncat(szWork, " - HACKER", sizeof(szWork));
+            cch += 9;
+        }
+
+        TextOutA(hdc, x + 4, yCur, szWork, cch);
+
+        SetTextColor(hdc, crWindowText);
+
+        OffsetRect(&rcDiamond, 0, dyArial8 + 4);
+        yCur = yCur + dyArial8 + 4;
+    }
+
+    snprintf(szWork, sizeof(szWork), PCTD, (int)game.turn + 0x961);
+    SetWindowTextA(GetDlgItem(hwnd, IDC_HOST_NEXT_YEAR_TEXT), szWork);
+
+    dsec = (uint32_t)((GetTickCount() - ctickLast) / 1000u);
+
+    if (dsec < 60u) {
+        snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsDSeconds), (unsigned)dsec);
+    } else {
+        uint32_t minutes = dsec / 60u;
+        uint32_t sec_rem = dsec - minutes * 60u;
+
+        if (minutes < 60u) {
+            snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsD02d), (unsigned)minutes, (unsigned)sec_rem);
+        } else {
+            uint32_t hours = minutes / 60u;
+            uint32_t min_rem = minutes % 60u;
+
+            if (hours < 24u) {
+                snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsD02d02d), (unsigned)hours, (unsigned)min_rem, (unsigned)sec_rem);
+            } else {
+                uint32_t days = hours / 24u;
+                uint32_t hour_rem = hours % 24u;
+
+                snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsDDaysD02d02d), (unsigned)days, (unsigned)hour_rem, (unsigned)min_rem,
+                         (unsigned)sec_rem);
+            }
+        }
+    }
+
+    SetWindowTextA(GetDlgItem(hwnd, IDC_HOST_TIME_SINCE_TEXT), szWork);
+
+    SetBkMode(hdc, bkMode);
+    SetBkColor(hdc, crBackSav);
+
+    if (hdcIn == NULL) {
+        ReleaseDC(hwnd, hdc);
+    }
 }
 
 void DrawHostOptions(HWND hwnd, HDC hdc, int16_t iDraw) {
@@ -2326,12 +2610,56 @@ void WriteIniSettings(void) {
     }
 }
 
+/*
+ * HostTimerProc
+ * -------------
+ * Timer callback that drives host-mode background work:
+ *
+ *   - Polls for newly available turns for the current player.
+ *   - Updates the frame title and host status text to reflect
+ *     how many turns are outstanding.
+ *   - Generates AI turns when no human turns are pending.
+ *   - Flashes the frame window and notifies the user when a
+ *     new turn becomes available.
+ *
+ * Original Win16 behavior:
+ *   In the 16-bit version, this routine could loop internally
+ *   and generate multiple turns in a single invocation. This
+ *   was safe under cooperative multitasking and modal UI flow.
+ *
+ * Win32 adaptation:
+ *   In the Win32 port, this function is intentionally limited
+ *   to generating at most ONE turn per timer tick. Allowing the
+ *   original tight loop would block the message pump, preventing
+ *   WM_PAINT and other UI messages from being processed, causing
+ *   the main window to never repaint.
+ *
+ * Concurrency / reentrancy:
+ *   The global flag fProcessingTimer guards against re-entrant
+ *   timer callbacks while work is in progress.
+ *
+ * Exit and suppression conditions:
+ *   - If all players are AI-controlled (gd.fAllAis), auto-
+ *     generation is disabled and the relevant UI control is
+ *     disabled.
+ *   - If ini.fGen is set, the application exits after turn
+ *     generation completes.
+ *
+ * Side effects:
+ *   - May destroy and reload the current game when a new turn
+ *     file is detected.
+ *   - Updates window text, invalidates child windows for redraw,
+ *     and may post a quit message.
+ *
+ * This function is called both by WM_TIMER events and indirectly
+ * after entering host mode to prime the UI state.
+ */
 VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
-    HWND    hwndT;
-    char    szExt[4];
-    int16_t cOut;
-    int16_t fSav;
-    int16_t idCur;
+    HWND    hwndPrev;
+    char    newTurnExt[4];
+    int     turnsOutstanding;
+    int16_t savedFileErrSilent;
+    int16_t savedIdPlayer;
 
     /* debug symbols */
     /* block (block) @ MEMORY_MDI:0x7756 */
@@ -2339,7 +2667,107 @@ VOID CALLBACK HostTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime
     /* label RedrawText @ MEMORY_MDI:0x7906 */
     /* label Loop @ MEMORY_MDI:0x784a */
 
-    /* TODO: implement */
+    (void)uMsg;
+    (void)idEvent;
+    (void)dwTime;
+
+    savedFileErrSilent = fFileErrSilent;
+
+    if (!fProcessingTimer) {
+        fProcessingTimer = 1;
+
+        if (uTimerType == 0x0E) {
+            savedIdPlayer = idPlayer;
+
+            if (FNewTurnAvail(idPlayer) != 0) {
+                KillTimer(hwnd, uTimerId);
+
+                snprintf(newTurnExt, sizeof(newTurnExt), "%s", MPCTD);
+
+                DestroyCurGame();
+
+                if (FLoadGame((char *)szBase, newTurnExt) != 0) {
+                    idPlayer = savedIdPlayer;
+                    CreateChildWindows();
+
+                    uTimerId = (uint16_t)SetTimer(hwndFrame, (UINT_PTR)0x0F, 1000, HostTimerProc);
+                    uTimerType = 0x0F;
+
+                    FlashWindow(hwndFrame, TRUE);
+                    SetWindowTextA(hwndFrame, PszGetCompressedString(idsNewTurnAvailable2));
+                    MessageBeep(MB_ICONEXCLAMATION);
+
+                    turnsOutstanding = 1;
+                    goto RedrawText;
+                }
+
+                Error(idsUnableOpenNewTurnFile);
+            }
+
+        } else if (uTimerType == 0x0F) {
+            FlashWindow(hwndFrame, TRUE);
+
+        } else {
+
+        Loop:
+            turnsOutstanding = CFindTurnsOutstanding();
+
+            /* Original: if (gd.grBits highword bit4) break; then show error/disable after loop */
+            if (gd.fAllAis) {
+                Error(idsAutoGenerateDisabledBecauseHumanPlayersDead);
+                EnableWindow(GetDlgItem(hwnd ? hwnd : hwndFrame, 0x0408), FALSE);
+                goto Done;
+            }
+
+            /* 0x031B: format string, expects cOut as the %d argument. */
+            snprintf(szWork, sizeof(szWork), PszGetCompressedString(idsHostModeDPlayer), turnsOutstanding);
+
+            /* 0x0421: "s" suffix when cOut != 1 */
+            if (turnsOutstanding != 1) {
+                strcat(szWork, "s");
+            }
+
+            /* 0x031C: trailing text, appended unconditionally */
+            strcat(szWork, PszGetCompressedString(idsOut));
+
+            SetWindowTextA(hwndFrame, szWork);
+
+        RedrawText:
+            hwndPrev = GetWindow(hwndFrame, GW_HWNDPREV);
+            if (GetWindow(hwndPrev, GW_OWNER) == hwndFrame) {
+                InvalidateRect(hwndPrev, NULL, TRUE);
+            }
+
+            if (turnsOutstanding != 0) {
+                goto Done;
+            }
+
+            if (gd.fProgressTxt) {
+                ShowProgressGauge();
+            }
+
+            EnsureAis();
+            FGenerateTurn();
+            HideProgressGauge();
+
+            if (ini.fGen) {
+                PostQuitMessage(vretExitValue);
+                goto Done;
+            }
+
+            EnsureAis();
+
+            /* IMPORTANT FIX:
+             * Do NOT goto Loop here.
+             * Let the next WM_TIMER tick continue generation.
+             */
+        }
+
+    Done:
+        fProcessingTimer = 0;
+    }
+
+    fFileErrSilent = savedFileErrSilent;
 }
 
 HMENU GetASubMenu(HWND hwnd, int16_t iMenu) {
@@ -2369,6 +2797,9 @@ int16_t FOpenGame(HWND hwnd, int16_t fRaceOnly) {
     OPENFILENAMEA ofn;
 
     if (!ini.fStartupFile) {
+        /* Manual Open Game flow: ensure host-mode "close" does not exit the app. */
+        gd.fClose = 0;
+
         szFile[0] = '\0';
 
         ids = (!fRaceOnly) ? idsStarsGameFilesMHstRStars : idsStarsGameFilesRFiles;
@@ -2734,16 +3165,127 @@ POINT InvertPaneBorder(HDC hdc, int16_t grSel, POINT dpt, POINT *pdptPrev) {
 }
 
 void BringUpHostDlg(void) {
-    POINT pt;
-    int16_t (*lpProc)(void);
-    int16_t fRet;
+    int16_t screenWidth;
+    int16_t screenHeight;
+    int16_t dlgResult;
+    POINT   pt; /* present in original frame; not directly used here */
 
-    /* debug symbols */
-    /* label LAutoMode @ MEMORY_MDI:0x60cc */
-    /* label Top @ MEMORY_MDI:0x6083 */
-    /* label LNextGen @ MEMORY_MDI:0x6120 */
+Top: /* was a default auto-label around the main dialog loop */
 
-    /* TODO: implement */
+    /* gd.grBits bit 3 => gd.fHostMode (see types.h GDATA bitfields). */
+    if (!gd.fHostMode) {
+        /* gd.grBits high-word bit 5 => bit 21 overall => gd.fReadOnly. */
+        if (!gd.fReadOnly) {
+            FMarkFile(dtHost, (int16_t)-1, (int16_t)1, (int16_t)1);
+        }
+        gd.fHostMode = 1;
+    }
+
+    ShowWindow(hwndFrame, SW_HIDE);
+
+    /* ini.wFlags bit 2 => ini.fWait (see types.h INI bitfields). */
+    if (!ini.fWait) {
+        for (;;) {
+            /*
+             * Win16 used MakeProcInstance/FreeProcInstance around the dialog proc.
+             * Win32 does not require that; pass the proc directly.
+             *
+             */
+            dlgResult = (int16_t)DialogBox(hInst, MAKEINTRESOURCEA(IDD_HOST_MODE), hwndFrame, HostModeDialog);
+
+            if (dlgResult == (int16_t)-1) {
+                break;
+            }
+
+            if (dlgResult == (int16_t)0) {
+                /* When leaving host mode (cancel/exit): mark file and teardown. */
+
+                if (!gd.fReadOnly) {
+                    /*
+                     * Decompile pushed:
+                     *   dt = 2, id = -1, fWrite = 1, fRead = 0  (ordering per FMarkFile signature)
+                     * The enum name for dt=2 wasn’t present in nb09_ghidra_globals.json.
+                     */
+                    FMarkFile((DtFileType)2, (int16_t)-1, (int16_t)1, (int16_t)0);
+                }
+
+                gd.fHostMode = 0;
+
+                DestroyCurGame();
+
+                /* ini.wFlags bit 3 => ini.fGen. */
+                if (ini.fGen) {
+                    return;
+                }
+
+                /* Recreate the title window full-screen. */
+                screenWidth = (int16_t)GetSystemMetrics(SM_CXSCREEN);
+                screenHeight = (int16_t)GetSystemMetrics(SM_CYSCREEN);
+
+                /*
+                 * Decompile built:
+                 *   class = far ptr 1120:022A  -> this *does* resolve to szTitle ("starstitle")
+                 *   style = 0x9000:0000        -> 0x90000000 (high:low 16-bit halves)
+                 *
+                 */
+                hwndTitle = CreateWindowA(szTitle, "Stars!", 0x90000000u, 0, 0, (int)screenWidth, (int)screenHeight, hwndFrame, NULL, hInst, NULL);
+
+                fFreeingTitle = 0; /* global at 1120:0354 per nb09_ghidra_globals.json */
+                return;
+            }
+
+        LAutoMode: /* was a default auto-label at the start of the batch-generate loop */
+
+            /* dlgResult != 0: generate turns (possibly multiple passes). */
+            for (;;) {
+                if (gd.fProgressTxt) {
+                    ShowProgressGauge();
+                }
+
+                EnsureAis();
+
+            LNextGen: /* was a default auto-label right before generating the next turn */
+
+                FGenerateTurn();
+
+                if (iPassCnt == 0) {
+                    break;
+                }
+                iPassCnt = (int16_t)(iPassCnt - 1);
+
+                /* Stop batch if Shift (VK_SHIFT=0x10) or Ctrl (VK_CONTROL=0x11) is pressed. */
+                if ((int16_t)GetAsyncKeyState(0x10) < 0) {
+                    break;
+                }
+                if ((int16_t)GetAsyncKeyState(0x11) < 0) {
+                    break;
+                }
+            }
+
+            iPassCnt = 0;
+            HideProgressGauge();
+        }
+    } else {
+        /* Clear ini.fWait (bit 2). */
+        ini.fWait = 0;
+    }
+
+    ShowWindow(hwndFrame, SW_SHOW);
+
+    /*
+     * Set a host timer and immediately fire it once.
+     *
+     * Globals (nb09_ghidra_globals.json):
+     *   uTimerId   at 1120:01A2
+     *   uTimerType at 1120:01A4
+     *
+     * The decompile arguments line up with:
+     *   SetTimer(NULL, 0x0D, 10000, HostTimerProc)
+     */
+    uTimerId = (uint16_t)SetTimer(NULL, (UINT_PTR)0x0D, (UINT)10000, HostTimerProc);
+    uTimerType = 0x0D;
+
+    HostTimerProc(NULL, 0, (UINT_PTR)uTimerId, 0);
 }
 
 INT_PTR CALLBACK HostOptionsDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

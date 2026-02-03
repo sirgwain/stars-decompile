@@ -10,7 +10,7 @@ FONT 8, "MS Sans Serif"
  PUSHBUTTON "Item &Up", 1081, 125, 0, 40, 14
  PUSHBUTTON "Item &Down", 1082, 125, 90, 40, 14
  PUSHBUTTON "&Clear", 1069, 125, 60, 40, 14
- PUSHBUTTON "&Help", 118, 125, 70, 40, 14
+ PUSHBUTTON "&Help", IDC_HELP, 125, 70, 40, 14
  CHECKBOX "Contribute only &leftover resources to research", 139, 6, 168, 90, 14, BS_AUTOCHECKBOX | WS_TABSTOP
  PUSHBUTTON "&Prev", 1070, 100, 168, 40, 14
  PUSHBUTTON "&Next", 1071, 147, 168, 40, 14

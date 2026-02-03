@@ -9,5 +9,5 @@ FONT 8, "MS Sans Serif"
  PUSHBUTTON "Cancel", 2, 148, 34, 45, 14
  PUSHBUTTON "Select &All", 2040, 148, 57, 45, 14
  PUSHBUTTON "&Unselect All", 2041, 148, 75, 45, 14
- PUSHBUTTON "&Help", 118, 148, 98, 45, 14
+ PUSHBUTTON "&Help", IDC_HELP, 148, 98, 45, 14
 }

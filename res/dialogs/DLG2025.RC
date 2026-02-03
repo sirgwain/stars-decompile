@@ -6,5 +6,5 @@ FONT 8, "MS Sans Serif"
  LTEXT "Do you want to save your turn before exiting?", -1, 20, 11, 153, 11
  DEFPUSHBUTTON "&Save", 1065, 96, 36, 71, 13
  PUSHBUTTON "&No, Don't Save", 1067, 96, 54, 71, 13
- PUSHBUTTON "&Help", 118, 96, 96, 71, 13
+ PUSHBUTTON "&Help", IDC_HELP, 96, 96, 71, 13
 }

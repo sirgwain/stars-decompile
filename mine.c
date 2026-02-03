@@ -328,14 +328,78 @@ int16_t HtMineWindow(HWND hwnd, int16_t x, int16_t y) {
     return 0;
 }
 
-void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbr) {
-    HBRUSH  hbrSav;
-    int16_t yTop;
-    int16_t yBot;
-    int16_t xCtr;
-    int16_t dx;
-    int16_t xCur;
+void DrawDiamond(HDC hdc, RECT *prc, HBRUSH hbrFill) {
+    int     xCenter;
+    int     xLeft;
+    int     xRight;
+    int     yTop;
+    int     yBottom;
+    int     fillWidth;
+    HGDIOBJ hbrPrev;
 
-    /* TODO: implement */
+    /* Center x of the diamond. */
+    xCenter = ((prc->right - prc->left) / 2) + prc->left;
+
+    /*
+     * The original uses PatBlt with rop 0xF00021 (PATCOPY).
+     * It relies on the currently selected brush, so we switch brushes to draw:
+     *  - highlight edges (hbrButtonHilite)
+     *  - shadow edges   (hbrButtonShadow)
+     *  - interior fill  (hbrFill)
+     */
+    hbrPrev = SelectObject(hdc, hbrButtonHilite);
+
+    /* --- Highlight edge (left-leaning) --- */
+    yTop = prc->top;
+    yBottom = prc->bottom - 2;
+    xLeft = xCenter;
+    while (1) {
+        yTop += 1;
+        xLeft -= 1;
+        if (yTop > yBottom) {
+            break;
+        }
+        PatBlt(hdc, xLeft, yTop, 2, 1, PATCOPY);
+        PatBlt(hdc, xLeft, yBottom, 2, 1, PATCOPY);
+        yBottom -= 1;
+    }
+
+    /* --- Shadow edge (center spine) --- */
+    SelectObject(hdc, hbrButtonShadow);
+    PatBlt(hdc, xCenter, prc->top, 1, 1, PATCOPY);
+    PatBlt(hdc, xCenter, prc->bottom - 1, 1, 1, PATCOPY);
+
+    /* --- Shadow edge (right-leaning) --- */
+    yTop = prc->top;
+    yBottom = prc->bottom - 2;
+    xRight = xCenter;
+    while (1) {
+        yTop += 1;
+        if (yTop > yBottom) {
+            break;
+        }
+        PatBlt(hdc, xRight, yTop, 2, 1, PATCOPY);
+        PatBlt(hdc, xRight, yBottom, 2, 1, PATCOPY);
+        xRight += 1;
+        yBottom -= 1;
+    }
+
+    /* --- Interior fill --- */
+    SelectObject(hdc, hbrFill);
+    fillWidth = 1;
+    xLeft = xCenter;
+    yTop = prc->top + 4;
+    yBottom = prc->bottom - 5;
+    while (yTop <= yBottom) {
+        PatBlt(hdc, xLeft, yTop, fillWidth, 1, PATCOPY);
+        PatBlt(hdc, xLeft, yBottom, fillWidth, 1, PATCOPY);
+        fillWidth += 2;
+        xLeft -= 1;
+        yBottom -= 1;
+        yTop += 1;
+    }
+
+    SelectObject(hdc, hbrPrev);
 }
+
 #endif /* _WIN32 */

@@ -1,5 +1,6 @@
 
 #include "globals.h"
+#include "resource.h"
 #include "types.h"
 
 #include "file.h"
@@ -1030,21 +1031,122 @@ void SetMsgTitle(HWND hwnd) {
     /* TODO: implement */
 }
 
-INT_PTR CALLBACK MsgDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    RECT        rc;
-    HDC         hdc;
-    POINT       pt;
-    RECT        rcEdit;
-    int16_t     cch;
-    char        szT[256];
-    PAINTSTRUCT ps;
+INT_PTR CALLBACK SerialDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    switch (msg) {
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC         hdc = BeginPaint(hwnd, &ps);
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x8f77 */
-    /* block (block) @ MEMORY_MSG:0x9031 */
+        RECT rcClient;
+        GetClientRect(hwnd, &rcClient);
 
-    /* TODO: implement */
-    return 0;
+        /* Position the prompt rectangle below the serial-number edit control. */
+        HWND hwndEdit = GetDlgItem(hwnd, IDC_EDITTEXT);
+
+        RECT  rcEditScreen;
+        POINT ptBR;
+        RECT  rcText;
+        char  szT[256];
+        short cch;
+
+        GetWindowRect(hwndEdit, &rcEditScreen);
+
+        /* Use the edit control's bottom-right, converted to client coords. */
+        ptBR.x = rcEditScreen.right;
+        ptBR.y = rcEditScreen.bottom;
+        ScreenToClient(hwnd, &ptBR);
+
+        rcText.left = 8;
+        rcText.right = rcClient.right - 8;
+        rcText.top = ptBR.y + 8;
+        rcText.bottom = ptBR.y + 0x6c; /* fixed height, matches original */
+
+        SelectObject(hdc, rghfontArial8[1]);
+        SetBkColor(hdc, crButtonFace);
+        SetTextColor(hdc, RGB(0, 0, 0));
+
+        cch = CchGetString((int)szWork[200] + idsPleaseEnterUniqueEightCharacterSerialNumber, szT);
+        DrawTextA(hdc, szT, (int)cch, &rcText, DT_NOPREFIX | DT_WORDBREAK);
+
+        EndPaint(hwnd, &ps);
+        return (INT_PTR)1;
+    }
+
+    case WM_ERASEBKGND: {
+        HDC  hdc = (HDC)wParam;
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        FillRect(hdc, &rc, hbrButtonFace);
+        return (INT_PTR)1;
+    }
+
+    case WM_CTLCOLORSTATIC: {
+        /* Win32: no Win16 ctl-type encoding; just color statics. */
+        HDC hdc = (HDC)wParam;
+        SetBkColor(hdc, crButtonFace);
+        SetTextColor(hdc, RGB(0, 0, 0));
+        return (INT_PTR)hbrButtonFace;
+    }
+
+    case WM_INITDIALOG: {
+        /*
+         * Decompile passes a stack temp that is effectively a sentinel (-1)
+         * into StickyDlgPos. In Win32, keep an explicit local rather than
+         * relying on stack-overlap artifacts.
+         */
+        short ySticky = -1;
+
+        szWork[0] = '\0';
+
+        /* Limit serial entry to 8 chars and clear the edit. */
+        SendDlgItemMessageA(hwnd, IDC_EDITTEXT, EM_LIMITTEXT, (WPARAM)8, (LPARAM)0);
+        SetWindowTextA(GetDlgItem(hwnd, IDC_EDITTEXT), szWork);
+
+        /*
+         * If your StickyDlgPos truly wants a Win32 POINT*, pass a dummy POINT
+         * with y initialized from the sentinel. If it only uses y (as callsite
+         * evidence suggests), this preserves behavior without UB.
+         */
+        {
+            POINT pt;
+            pt.x = 0;
+            pt.y = (LONG)ySticky;
+            StickyDlgPos(hwnd, &pt, 1);
+        }
+
+        return (INT_PTR)1;
+    }
+
+    case WM_COMMAND: {
+        UINT id = LOWORD(wParam);
+
+        if (id == IDOK || id == IDCANCEL) {
+            if (id == IDOK) {
+                GetDlgItemTextA(hwnd, IDC_EDITTEXT, szWork, 9);
+
+                if (FValidSerialNo((char *)szWork, NULL) == 0) {
+                    /* Project idiom: string id + alert + early return */
+                    Error(idsSerialNumberHaveEnteredValid);
+                    SetFocus(GetDlgItem(hwnd, IDC_EDITTEXT));
+                    return (INT_PTR)0;
+                }
+            }
+
+            EndDialog(hwnd, (INT_PTR)(id == IDOK));
+            return (INT_PTR)1;
+        }
+
+        if (id == IDC_HELP) {
+            WinHelpA(hwnd, szHelpFile, HELP_CONTEXT, (DWORD)0x0dbc);
+            return (INT_PTR)1;
+        }
+
+        return (INT_PTR)0;
+    }
+
+    default:
+        return (INT_PTR)0;
+    }
 }
 
 LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

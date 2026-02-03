@@ -5,5 +5,5 @@ FONT 8, "MS Sans Serif"
 {
  PUSHBUTTON "&Switch", 198, 15, 180, 32, 14
  DEFPUSHBUTTON "Done", 2, 65, 180, 32, 14
- PUSHBUTTON "&Help", 118, 115, 180, 32, 14
+ PUSHBUTTON "&Help", IDC_HELP, 115, 180, 32, 14
 }

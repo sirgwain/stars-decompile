@@ -1139,11 +1139,32 @@ uint32_t DibNumColors(const void *pv) {
     }
 }
 
-void RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase) {
-    int16_t dx;
-    RECT    rc;
+void RightTextOut(HDC hdc, short x, short y, char *psz, short cLen, short dxErase) {
+    RECT rcErase;
+    int  textWidth; /* pixels */
 
-    /* TODO: implement */
+    if (cLen == -1) {
+        cLen = CchGetString(idsNone2, psz);
+    } else if (cLen == 0) {
+        cLen = (short)lstrlenA(psz);
+    }
+
+    SIZE sz;
+    GetTextExtentPoint32A(hdc, psz, (int)cLen, &sz);
+    textWidth = sz.cx;
+
+    if (textWidth < (int)dxErase) {
+        SetRect(&rcErase, (int)x - (int)dxErase, (int)y, (int)x - textWidth, (int)y + (int)dyArial8);
+        FillRect(hdc, &rcErase, hbrButtonFace);
+    } else if (dxErase > 0 && (int)dxErase < textWidth) {
+        SetRect(&rcErase, (int)x - (int)dxErase, (int)y, (int)x, (int)y + (int)dyArial8);
+
+        /* Decompile used flags=6 => ETO_OPAQUE | ETO_CLIPPED */
+        ExtTextOutA(hdc, (int)x - textWidth, (int)y, (UINT)(ETO_OPAQUE | ETO_CLIPPED), &rcErase, psz, (UINT)cLen, NULL);
+        return;
+    }
+
+    TextOutA(hdc, (int)x - textWidth, (int)y, psz, (int)cLen);
 }
 
 void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
@@ -1375,6 +1396,8 @@ void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit) {
 
     GetWindowRect(hwnd, &rc);
 
+    DBG_LOGD("ppt: (%d,%d) rc: t: %d l: %d r: %d b: %d", ppt->x, ppt->y, rc.top, rc.left, rc.right, rc.bottom);
+
     /* fInit==0: capture current top-left */
     if (fInit == 0) {
         ppt->x = rc.left;
@@ -1383,44 +1406,43 @@ void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit) {
     }
 
     /* fInit!=0: restore/reposition, clamped to the monitor work area (DPI-safe) */
-    {
-        HMONITOR    hmon;
-        MONITORINFO mi;
-        RECT        rcWork;
-        int         w = rc.right - rc.left;
-        int         h = rc.bottom - rc.top;
+    HMONITOR    hmon;
+    MONITORINFO mi;
+    RECT        rcWork;
+    int         w = rc.right - rc.left;
+    int         h = rc.bottom - rc.top;
 
-        hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-        mi.cbSize = (DWORD)sizeof(mi);
-        if (!GetMonitorInfoA(hmon, &mi)) {
-            /* Fallback: primary screen work area */
-            SystemParametersInfoA(SPI_GETWORKAREA, 0, &rcWork, 0);
-        } else {
-            rcWork = mi.rcWork;
-        }
-
-        if (ppt->x == -1 && ppt->y == -1) {
-            /* center on work area */
-            rc.left = rcWork.left + ((rcWork.right - rcWork.left) - w) / 2;
-            rc.top = rcWork.top + ((rcWork.bottom - rcWork.top) - h) / 2;
-        } else {
-            /* move so top-left becomes ppt */
-            rc.left = ppt->x;
-            rc.top = ppt->y;
-        }
-
-        /* clamp so the whole dialog stays visible in the work area */
-        if (rc.left + w > rcWork.right)
-            rc.left = rcWork.right - w;
-        if (rc.top + h > rcWork.bottom)
-            rc.top = rcWork.bottom - h;
-        if (rc.left < rcWork.left)
-            rc.left = rcWork.left;
-        if (rc.top < rcWork.top)
-            rc.top = rcWork.top;
-
-        SetWindowPos(hwnd, NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    mi.cbSize = (DWORD)sizeof(mi);
+    if (!GetMonitorInfoA(hmon, &mi)) {
+        /* Fallback: primary screen work area */
+        SystemParametersInfoA(SPI_GETWORKAREA, 0, &rcWork, 0);
+    } else {
+        rcWork = mi.rcWork;
     }
+
+    if (ppt->x == -1 && ppt->y == -1) {
+        /* center on work area */
+        rc.left = rcWork.left + ((rcWork.right - rcWork.left) - w) / 2;
+        rc.top = rcWork.top + ((rcWork.bottom - rcWork.top) - h) / 2;
+    } else {
+        /* move so top-left becomes ppt */
+        rc.left = ppt->x;
+        rc.top = ppt->y;
+    }
+
+    /* clamp so the whole dialog stays visible in the work area */
+    if (rc.left + w > rcWork.right)
+        rc.left = rcWork.right - w;
+    if (rc.top + h > rcWork.bottom)
+        rc.top = rcWork.bottom - h;
+    if (rc.left < rcWork.left)
+        rc.left = rcWork.left;
+    if (rc.top < rcWork.top)
+        rc.top = rcWork.top;
+
+    DBG_LOGD("update: ppt: (%d,%d) rc: t: %d l: %d r: %d b: %d", ppt->x, ppt->y, rc.top, rc.left, rc.right, rc.bottom);
+    SetWindowPos(hwnd, NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 void UpdateProgressGauge(int16_t pctX10) {
