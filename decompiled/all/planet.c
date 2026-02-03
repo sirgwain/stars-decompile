@@ -9,7 +9,7 @@
 // Segment: MEMORY_PLANET
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -68,7 +68,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         pWVar9 = &stack0xff36;
         for (i = 0; i < 3; i = i + 1) {
             pWVar9[-1] = 0x1120;
-            pWVar9[-2] = _szCombobox;
+            pWVar9[-2] = (WMType)szCombobox;
             pWVar9[-3] = 0x1120;
             pWVar9[-4] = 0x876;
             if (i == 1) {
@@ -124,7 +124,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             SendMessage(pWVar9[-1], pWVar9[-2], pWVar9[-3], *(undefined4 *)(pWVar9 + -5));
         }
         pWVar9[-1] = 0x1120;
-        pWVar9[-2] = _szEdit;
+        pWVar9[-2] = (WMType)szEdit;
         pWVar9[-3] = 0;
         pWVar9[-4] = 0;
         pWVar9[-5] = 0x4080;
@@ -172,7 +172,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         lpfnRealEditProc = pfVar14;
         SetWindowLong(pWVar9[1], *pWVar9, *(undefined4 *)(pWVar9 + -2));
         pWVar9[1] = 0x1120;
-        *pWVar9 = _szCombobox;
+        *pWVar9 = (WMType)szCombobox;
         pWVar9[-1] = 0x1120;
         pWVar9[-2] = 0x87c;
         pWVar9[-3] = 0x4020;
@@ -199,7 +199,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         pWVar9[-3] = 0x214;
         SendMessage(pWVar9[3], pWVar9[2], pWVar9[1], *(undefined4 *)(pWVar9 + -1));
         pWVar9[3] = 0x1120;
-        pWVar9[2] = _szCombobox;
+        pWVar9[2] = (WMType)szCombobox;
         pWVar9[1] = 0x1120;
         *pWVar9 = 0x885;
         pWVar9[-1] = 0x4020;
@@ -233,7 +233,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         GetClientRect(pWVar9[5], *(RECT **)(pWVar9 + 3));
         dyShipDD = rc.bottom;
         pWVar9[5] = 0x1120;
-        pWVar9[4] = _szListbox;
+        pWVar9[4] = (WMType)szListbox;
         pWVar9[3] = 0x1120;
         pWVar9[2] = 0x88c;
         pWVar9[1] = 0x40a0;
@@ -260,7 +260,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         pWVar9[1] = 0x2e0;
         SendMessage(pWVar9[7], pWVar9[6], pWVar9[5], *(undefined4 *)(pWVar9 + 3));
         pWVar9[7] = 0x1120;
-        pWVar9[6] = _szListbox;
+        pWVar9[6] = (WMType)szListbox;
         pWVar9[5] = 0x1120;
         pWVar9[4] = 0x893;
         pWVar9[3] = 0x40a0;
@@ -287,7 +287,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         pWVar9[3] = 0x33a;
         SendMessage(pWVar9[9], pWVar9[8], pWVar9[7], *(undefined4 *)(pWVar9 + 5));
         pWVar9[9] = 0x1120;
-        pWVar9[8] = _szListbox;
+        pWVar9[8] = (WMType)szListbox;
         pWVar9[7] = 0x1120;
         pWVar9[6] = 0x89f;
         pWVar9[5] = 0x40a0;
@@ -320,7 +320,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             pWVar10[-3] = 0x3aa;
             pcVar5 = PszGetCompressedString(pWVar10[-1]);
             pWVar10[-1] = 0x1120;
-            pWVar10[-2] = _szButton;
+            pWVar10[-2] = (WMType)szButton;
             pWVar10[-3] = 0x1120;
             pWVar10[-4] = (WMType)pcVar5;
             pWVar10[-5] = 0x4000;
@@ -350,7 +350,7 @@ long PlanetWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             pWVar10 = pWVar10 + 2;
         }
         pWVar10[-1] = 0x1120;
-        pWVar10[-2] = _szButton;
+        pWVar10[-2] = (WMType)szButton;
         pWVar10[-3] = 799;
         pWVar10[-4] = 0x14f8;
         pWVar10[-5] = 0x43a;
@@ -1602,6 +1602,8 @@ void SetPlanetTitleBar(HWND hwnd)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void ChangeMainObjSel(short grobjNew, short iObjSel)
 
 {
@@ -1667,7 +1669,7 @@ void ChangeMainObjSel(short grobjNew, short iObjSel)
                 FillFleetCompLB();
                 FillBattleDD(sel.fl.iplan + 1);
                 idSkip = iObjSel;
-                SendMessage(rghwndOrderDD[0], CB_SETCURSEL, *(uint *)&((PLORD *)sel.fl.lpplord)[2].iordMax & 0xf, 0);
+                SendMessage(rghwndOrderDD[0], CB_SETCURSEL, *(WParamMessageId *)&((PLORD *)sel.fl.lpplord)[2].iordMax & 0xf, 0);
             }
         }
         sel.grobj = grobjNew;
@@ -1728,6 +1730,8 @@ void ChangeMainObjSel(short grobjNew, short iObjSel)
 // Address: 1048:42a0
 // Segment: MEMORY_PLANET
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void FillShipDD(short idSkip)
 
@@ -2664,6 +2668,8 @@ void HandleFocusState(DRAWITEMSTRUCT *lpdis, short inflate)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, short inflate)
 
 {
@@ -2903,6 +2909,7 @@ LAB_1048_6673:
 /* WARNING: Removing unreachable block (ram,0x104868f8) */
 /* WARNING: Removing unreachable block (ram,0x104868fd) */
 /* WARNING: Removing unreachable block (ram,0x104869f2) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl)
 

@@ -174,46 +174,46 @@ RACE_Step2:
 // Segment: MEMORY_RACE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    undefined2 *puVar1;
-    undefined2  uVar2;
-    PLAYER     *pPVar3;
-    POINT       PVar4;
-    POINT       PVar5;
-    POINT       PVar6;
-    WPARAM      WVar7;
-    BOOL        BVar8;
-    UINT        UVar9;
-    HWND        HVar10;
-    short       sVar11;
-    uint        uVar12;
-    char       *pcVar13;
-    HBRUSH      HVar14;
-    int         iVar15;
-    undefined2  unaff_SI;
-    undefined2 *puVar16;
-    undefined2  unaff_DI;
-    PLAYER     *pPVar17;
-    undefined2  unaff_SS;
-    ulong       uVar18;
-    LRESULT     LVar19;
-    long        lVar20;
-    ushort      in_stack_0000ffba;
-    RECT        rcGBox;
-    short       cch;
-    short       j;
-    undefined1  local_38[32];
-    int         local_18;
-    uint        local_16;
-    PLAYER     *local_14;
-    HWND        local_12;
-    PLAYER     *local_10;
-    RECT        rc;
-    short       i;
+    undefined2     *puVar1;
+    undefined2      uVar2;
+    PLAYER         *pPVar3;
+    POINT           PVar4;
+    POINT           PVar5;
+    POINT           PVar6;
+    WParamMessageId WVar7;
+    BOOL            BVar8;
+    UINT            UVar9;
+    HWND            HVar10;
+    short           sVar11;
+    uint            uVar12;
+    char           *pcVar13;
+    HBRUSH          HVar14;
+    int             iVar15;
+    undefined2      unaff_SI;
+    undefined2     *puVar16;
+    undefined2      unaff_DI;
+    PLAYER         *pPVar17;
+    undefined2      unaff_SS;
+    ulong           uVar18;
+    LRESULT         LVar19;
+    long            lVar20;
+    ushort          in_stack_0000ffba;
+    RECT            rcGBox;
+    short           cch;
+    short           j;
+    undefined1      local_38[32];
+    int             local_18;
+    uint            local_16;
+    PLAYER         *local_14;
+    HWND            local_12;
+    PLAYER         *local_10;
+    RECT            rc;
+    short           i;
 
     if (message == WM_PAINT) {
         local_12 = BeginPaint(hwnd, local_38);
@@ -355,7 +355,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
     }
     if (message == WM_COMMAND) {
         if (wParam == 0x76) {
-            WinHelp(hwnd, _szHelpFile, 1, 0x3ff);
+            WinHelp(hwnd, szHelpFile, 1, 0x3ff);
             HVar14 = 1;
             lVar20 = vplr.lSalt;
             goto LAB_10e0_1057;
@@ -386,7 +386,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
                         pPVar3->cShDef = (char)((uint)uVar2 >> 8);
                     }
                 }
-                GetDlgItemText(hwnd, IDC_U16_0x010C, vplr.szName, 0x20);
+                GetDlgItemText(hwnd, IDC_EDITTEXT, vplr.szName, 0x20);
                 GetDlgItemText(hwnd, IDC_COMBOBOX | IDOK, vplr.szNames, 0x20);
                 GetRaceStat((PLAYER *)&vplr, rsUseLeftover);
                 GetDlgItemText(hwnd, IDC_U16_0x010D, szRacePass, 0x10);
@@ -407,7 +407,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
         uVar18 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ffba);
         if ((((int)uVar18 == 0) && (0x10e < wParam)) && (wParam < 0x117)) {
             _memset((void *)vplr.szName, 0, 0x20);
-            GetDlgItemText(hwnd, IDC_U16_0x010C, vplr.szName, 0x20);
+            GetDlgItemText(hwnd, IDC_EDITTEXT, vplr.szName, 0x20);
             _memset((void *)vplr.szNames, 0, 0x20);
             GetDlgItemText(hwnd, IDC_COMBOBOX | IDOK, vplr.szNames, 0x20);
             GetDlgItemText(hwnd, wParam, (LPSTR)(local_38 + 8), 0x20);
@@ -512,7 +512,7 @@ LAB_10e0_1057:
 // Segment: MEMORY_RACE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RaceWizardDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -645,7 +645,7 @@ short RaceWizardDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x41d);
+                    WinHelp(hwnd, szHelpFile, 1, 0x41d);
                     return 1;
                 }
                 i = 0;
@@ -1106,26 +1106,26 @@ short FTrackRaceDlg2(HWND hwnd, POINT pt, short kbd)
 // Segment: MEMORY_RACE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RaceWizardDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    POINT      pt;
-    POINT      pt_00;
-    WPARAM     WVar1;
-    HWND       HVar2;
-    short      sVar3;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    undefined2 unaff_SS;
-    ulong      uVar4;
-    LRESULT    LVar5;
-    WMType     WVar6;
-    ushort     in_stack_0000ffd0;
-    POINT      local_12;
-    RECT       rc;
-    short      i;
+    POINT           pt;
+    POINT           pt_00;
+    WParamMessageId WVar1;
+    HWND            HVar2;
+    short           sVar3;
+    undefined2      unaff_SI;
+    undefined2      unaff_DI;
+    undefined2      unaff_SS;
+    ulong           uVar4;
+    LRESULT         LVar5;
+    WMType          WVar6;
+    ushort          in_stack_0000ffd0;
+    POINT           local_12;
+    RECT            rc;
+    short           i;
 
     uVar4 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
@@ -1171,7 +1171,7 @@ short RaceWizardDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x420);
+                    WinHelp(hwnd, szHelpFile, 1, 0x420);
                     return 1;
                 }
                 i = 0;
@@ -1486,7 +1486,6 @@ void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, short fSet)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rcGBox */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -1591,7 +1590,7 @@ short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x408);
+                    WinHelp(hwnd, szHelpFile, 1, 0x408);
                     return 1;
                 }
                 i = 0;
@@ -1633,7 +1632,7 @@ short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rcGBox */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -1735,7 +1734,7 @@ short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
                     *(undefined2 *)(puVar4 + -0x10) = 0;
                     *(undefined2 *)(puVar4 + -0x12) = 0x10e0;
                     *(undefined2 *)(puVar4 + -0x14) = 0x380b;
-                    SendMessage(*(HWND *)(puVar4 + -8), *(WMType *)(puVar4 + -10), *(WPARAM *)(puVar4 + -0xc), *(LPARAM *)(puVar4 + -0x10));
+                    SendMessage(*(HWND *)(puVar4 + -8), *(WMType *)(puVar4 + -10), *(WParamMessageId *)(puVar4 + -0xc), *(LPARAM *)(puVar4 + -0x10));
                     if (fRCWReadOnly != 0) {
                         *(HWND *)(puVar4 + -8) = HVar2;
                         *(undefined2 *)(puVar4 + -10) = 0;
@@ -1756,7 +1755,7 @@ short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x411);
+                    WinHelp(hwnd, szHelpFile, 1, 0x411);
                     return 1;
                 }
                 i = 0;
@@ -1790,31 +1789,31 @@ short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rcGBox */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RaceWizardDlg6(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    int         iVar1;
-    int         iVar2;
-    char       *pcVar3;
-    WPARAM      WVar4;
-    HDC         hdc_00;
-    HWND        HVar5;
-    short       sVar6;
-    short       sVar7;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    undefined2  unaff_SS;
-    ulong       uVar8;
-    LRESULT     LVar9;
-    WMType      WVar10;
-    RECT        rcGBox;
-    short       cch;
-    PAINTSTRUCT ps;
-    HDC         hdc;
-    RECT        rc;
-    short       i;
+    int             iVar1;
+    int             iVar2;
+    char           *pcVar3;
+    WParamMessageId WVar4;
+    HDC             hdc_00;
+    HWND            HVar5;
+    short           sVar6;
+    short           sVar7;
+    undefined2      unaff_SI;
+    undefined2      unaff_DI;
+    undefined2      unaff_SS;
+    ulong           uVar8;
+    LRESULT         LVar9;
+    WMType          WVar10;
+    RECT            rcGBox;
+    short           cch;
+    PAINTSTRUCT     ps;
+    HDC             hdc;
+    RECT            rc;
+    short           i;
 
     uVar8 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
@@ -1890,7 +1889,7 @@ short RaceWizardDlg6(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x421);
+                    WinHelp(hwnd, szHelpFile, 1, 0x421);
                     return 1;
                 }
                 i = 0;

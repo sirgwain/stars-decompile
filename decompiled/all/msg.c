@@ -11,6 +11,7 @@
 
 /* WARNING: Variable defined which should be unmapped: lpmsgplr */
 /* WARNING: Type propagation algorithm not settling */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -404,7 +405,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         break;
                     case 3:
                         uVar5 = 0x14f8;
-                        PostMessage(hwndFrame, WM_COMMAND, 0x7e, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RESEARCH, 0);
                         puVar16 = &stack0xff84;
                         break;
                     case 4:
@@ -414,7 +415,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         FLookupPart((PART *)&vpartBrowser);
                         if (hwndBrowser == 0) {
                             fBrowserValid = 1;
-                            PostMessage(hwndFrame, WM_COMMAND, 0x100, 0);
+                            PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0);
                             puVar16 = &stack0xff84;
                         } else {
                             InvalidateRect(hwndBrowserChild, (RECT *)0x0, 1);
@@ -424,7 +425,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         break;
                     case 5:
                         uVar5 = 0x14f8;
-                        PostMessage(hwndFrame, WM_COMMAND, 0x7d, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SHIP_BUILDER, 0);
                         puVar16 = &stack0xff84;
                         break;
                     case 6:
@@ -441,12 +442,12 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         break;
                     case 7:
                         uVar5 = 0x14f8;
-                        PostMessage(hwndFrame, WM_COMMAND, 0x7de, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_RELATIONS2, 0);
                         puVar16 = &stack0xff84;
                         break;
                     case 8:
                         uVar5 = 0x14f8;
-                        PostMessage(hwndFrame, WM_COMMAND, 0x5f, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, IDM_GAME_SCORE, 0);
                         puVar16 = &stack0xff84;
                         break;
                     case 9:
@@ -496,7 +497,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                     case 0xb:
                         if ((hwndReportDlg == 0) || (vprptCur != (RPT *)&vrptBattle)) {
                             uVar5 = 0x14f8;
-                            PostMessage(hwndFrame, WM_COMMAND, 0x901, 0);
+                            PostMessage(hwndFrame, WM_COMMAND, IDM_REPORT_BATTLE, 0);
                         }
                         puVar16 = &stack0xff84;
                     }
@@ -823,6 +824,8 @@ LAB_1030_6a4b:
 // Address: 1030:7218
 // Segment: MEMORY_MSG
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void SetMsgTitle(HWND hwnd)
 
@@ -1817,7 +1820,6 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: ps */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -1839,7 +1841,7 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_PAINT) {
         local_e = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
-        HVar1 = GetDlgItem(hwnd, IDC_U16_0x010C);
+        HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
         GetWindowRect(HVar1, local_16);
         ScreenToClient(hwnd, local_16 + 4);
         local_16._0_2_ = 8;
@@ -1867,7 +1869,7 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 local_e = 0xffff;
                 szWork[0] = '\0';
                 SendDlgItemMessage(hwnd, 0x10c, 0x415, 8, 0);
-                HVar1 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
                 SetWindowText(HVar1, szWork);
                 StickyDlgPos(hwnd, local_16 + 6, 1);
                 return 1;
@@ -1875,13 +1877,13 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if (message == WM_COMMAND) {
                 if ((wParam == 1) || (wParam == 2)) {
                     if (wParam == 1) {
-                        GetDlgItemText(hwnd, IDC_U16_0x010C, szWork, 9);
+                        GetDlgItemText(hwnd, IDC_EDITTEXT, szWork, 9);
                         sVar2 = FValidSerialNo((char *)szWork, (long *)0x0);
                         if (sVar2 == 0) {
                             sVar2 = 0x10;
                             sz = PszFormatIds(idsSerialNumberHaveEnteredValid, (short *)0x0);
                             AlertSz(sz, sVar2);
-                            HVar1 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                            HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
                             SetFocus(HVar1);
                             return 0;
                         }
@@ -1890,7 +1892,7 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     return 1;
                 }
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0xdbc);
+                    WinHelp(hwnd, szHelpFile, 1, 0xdbc);
                     return 1;
                 }
             }
@@ -2244,6 +2246,8 @@ void ReadPlayerMessages(void)
 // Segment: MEMORY_MSG
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 short FFinishPlrMsgEntry(short dInc)
 
 {
@@ -2349,7 +2353,7 @@ short FFinishPlrMsgEntry(short dInc)
     *(undefined2 *)(puVar5 + -0xc) = 0x1118;
     uVar7 = 0x14f8;
     *(undefined2 *)(puVar5 + -0xe) = 0x9d7c;
-    LVar8 = SendMessage(*(HWND *)(puVar5 + -2), *(WMType *)(puVar5 + -4), *(WPARAM *)(puVar5 + -6), *(LPARAM *)(puVar5 + -10));
+    LVar8 = SendMessage(*(HWND *)(puVar5 + -2), *(WMType *)(puVar5 + -4), *(WParamMessageId *)(puVar5 + -6), *(LPARAM *)(puVar5 + -10));
     if ((pMVar1 == (MSGPLR *)0x0) && (iVar2 == 0)) {
         *(undefined2 *)(puVar5 + -2) = 1;
         *(undefined2 *)(puVar5 + -4) = 0x14f8;

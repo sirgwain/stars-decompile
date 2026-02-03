@@ -9,6 +9,8 @@
 // Segment: MEMORY_MAIN
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 short WinMain(HINSTANCE param_1, HINSTANCE param_2, LPSTR param_3, short param_4)
 
 {
@@ -862,6 +864,8 @@ short OrderInfoDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_MAIN
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 short FHandleChar(HWND hwnd, ushort ch, long lParam)
 
 {
@@ -884,6 +888,8 @@ short FHandleChar(HWND hwnd, ushort ch, long lParam)
 // Address: 1018:165a
 // Segment: MEMORY_MAIN
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short FHandleKey(HWND hwnd, short iMsg, short iKey, ulong dw)
 
@@ -1068,7 +1074,7 @@ LAB_1018_175f:
                 *(undefined2 *)(puVar6 + -10) = (undefined2)dw;
                 *(undefined2 *)(puVar6 + -0xc) = 0x14f8;
                 *(undefined2 *)(puVar6 + -0xe) = 0x1a9e;
-                SendMessage(*(HWND *)(puVar6 + -2), *(WMType *)(puVar6 + -4), *(WPARAM *)(puVar6 + -6), *(LPARAM *)(puVar6 + -10));
+                SendMessage(*(HWND *)(puVar6 + -2), *(WMType *)(puVar6 + -4), *(WParamMessageId *)(puVar6 + -6), *(LPARAM *)(puVar6 + -10));
                 return 1;
             }
             return 0;

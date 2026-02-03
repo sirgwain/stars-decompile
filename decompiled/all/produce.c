@@ -701,8 +701,7 @@ short ProductionDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 /* WARNING: Removing unreachable block (ram,0x10d03237) */
 /* WARNING: Removing unreachable block (ram,0x10d02222) */
 /* WARNING: Removing unreachable block (ram,0x10d03098) */
-/* WARNING: Type propagation algorithm not settling */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
 
@@ -770,7 +769,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
         return;
     }
     if (wParam == 0x76) {
-        WinHelp(hwnd, _szHelpFile, 1, 0x423);
+        WinHelp(hwnd, szHelpFile, 1, 0x423);
         return;
     }
     if (wParam == 0x8b) {
@@ -782,9 +781,9 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
         sel.pl.rgbImp._6_2_ = sel.pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar28 >> 0x10);
         LVar29 = SendMessage(HVar12, CB_GETLBTEXTLEN, 0, 0);
         FillPlanetProdLB(HVar12, lpplProdGlob, (PLANET *)0x0);
-        lSel._0_2_ = (uint)LVar29;
+        lSel._0_2_ = (WParamMessageId)LVar29;
         uVar22 = 0x14f8;
-        SendMessage(HVar12, CB_GETCURSEL, (uint)lSel, 0);
+        SendMessage(HVar12, CB_GETCURSEL, (WParamMessageId)lSel, 0);
         psVar21 = &stack0xffbe;
         goto PRODUCE_RedrawText;
     }
@@ -812,9 +811,10 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
             iSrc = 0;
             while (true) {
                 lSel._2_2_ = (int)((ulong)lVar28 >> 0x10);
-                lSel._0_2_ = (uint)lVar28;
-                if ((cProdGlob <= iSrc) || ((((pProdGlob + iSrc)->dwFlags & 0x3ff) != 0 &&
-                                             (bVar23 = lVar28 == 0, lVar28 = CONCAT22(lSel._2_2_ - (uint)((uint)lSel == 0), (uint)lSel + -1), bVar23))))
+                lSel._0_2_ = (WParamMessageId)lVar28;
+                if ((cProdGlob <= iSrc) ||
+                    ((((pProdGlob + iSrc)->dwFlags & 0x3ff) != 0 &&
+                      (bVar23 = lVar28 == 0, lVar28 = CONCAT22(lSel._2_2_ - (uint)((WParamMessageId)lSel == 0), (WParamMessageId)lSel + -1), bVar23))))
                     break;
                 iSrc = iSrc + 1;
             }
@@ -1164,7 +1164,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
                 HVar12 = GetDlgItem(hwnd, IDC_U16_0x008B);
                 WVar35 = CB_LIMITTEXT;
                 uVar24 = __aFulshr(CONCAT22(HVar12, 0x401), uVar36);
-                SendMessage(HVar12, WVar35, (uint)uVar24 & 1, 0);
+                SendMessage(HVar12, WVar35, (WParamMessageId)uVar24 & 1, 0);
             } else {
                 ((PLPROD *)lpplProdGlob)->iprodMac = 0;
             }
@@ -1276,9 +1276,9 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
     uVar34 = lpplProdGlob._2_2_;
     lVar28 = __aFlshl(CONCAT22(uVar36, uVar22), uVar16);
     if ((*(uint *)((int)&pPVar18[1].wFlags + (int)lVar28) & 0x3ff) == 0) {
-        iVar15 = lSel._2_2_ + (uint)(0xfffe < (uint)lSel);
+        iVar15 = lSel._2_2_ + (uint)(0xfffe < (WParamMessageId)lSel);
         if ((iVar15 < 1) && ((iVar15 < 0 || (uVar9 < uVar10)))) {
-            uVar16 = ((uVar10 - (uint)lSel) + -1) * 4;
+            uVar16 = ((uVar10 - (WParamMessageId)lSel) + -1) * 4;
             pPVar18 = (PLPROD *)lpplProdGlob;
             uVar34 = lpplProdGlob._2_2_;
             lVar28 = __aFlshl(CONCAT22(uVar22, uVar16), uVar36);
@@ -1288,7 +1288,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
             lVar28 = __aFlshl((long)CONCAT22(uVar34, pvVar30), uVar16);
             __fmemmove((void *)CONCAT22(uVar22, (void *)((int)&pPVar18[1].wFlags + (int)lVar28)), (void *)CONCAT22(uVar34, pvVar30), uVar16);
         } else {
-            bVar23 = (uint)lSel == 0;
+            bVar23 = (WParamMessageId)lSel == 0;
             lSel._0_2_ = uVar9 - 2;
             lSel._2_2_ = lSel._2_2_ - (uint)bVar23;
         }
@@ -1305,7 +1305,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
     if (-1 < lSel._2_2_) {
         HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
         uVar22 = 0x14f8;
-        SendMessage(HVar12, CB_GETCURSEL, (uint)lSel + 1, 0);
+        SendMessage(HVar12, CB_GETCURSEL, (WParamMessageId)lSel + 1, 0);
     }
     if ((uVar24 & 0x3ff) == 0) {
         sVar33 = -1;
@@ -1350,6 +1350,7 @@ PRODUCE_RedrawText:
 /* WARNING: Removing unreachable block (ram,0x10d0353f) */
 /* WARNING: Removing unreachable block (ram,0x10d0351f) */
 /* WARNING: Removing unreachable block (ram,0x10d03544) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void InitializeProductionDlg(HWND hwnd)
 
@@ -1405,7 +1406,7 @@ void InitializeProductionDlg(HWND hwnd)
     HVar4 = GetDlgItem(hwnd, IDC_U16_0x008B);
     WVar8 = CB_LIMITTEXT;
     uVar6 = __aFulshr(CONCAT22(HVar4, 0x401), (ushort)pcVar1);
-    SendMessage(HVar4, WVar8, (uint)uVar6 & 1, 0);
+    SendMessage(HVar4, WVar8, (WParamMessageId)uVar6 & 1, 0);
     return;
 }
 
@@ -1418,6 +1419,7 @@ void InitializeProductionDlg(HWND hwnd)
 /* WARNING: Removing unreachable block (ram,0x10d036d8) */
 /* WARNING: Removing unreachable block (ram,0x10d0372f) */
 /* WARNING: Variable defined which should be unmapped: szT */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, short iDraw)
 
@@ -1603,6 +1605,7 @@ void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, short iDraw)
 /* WARNING: Removing unreachable block (ram,0x10d03bf6) */
 /* WARNING: Removing unreachable block (ram,0x10d03c3f) */
 /* WARNING: Variable defined which should be unmapped: psz */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void FillProdSrcLB(HWND hwndLB, short mdFill)
 
@@ -2335,7 +2338,6 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, short iItem, short *p
 /* WARNING: Removing unreachable block (ram,0x10d05b29) */
 /* WARNING: Removing unreachable block (ram,0x10d05b63) */
 /* WARNING: Variable defined which should be unmapped: pszT */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -2433,7 +2435,7 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if (*(char *)((int)&vrgZipProd[0].fValid + (i + -0x431) * 0x28) == '\0') {
                 *(undefined2 *)(puVar7 + -2) = 0x4be;
                 *(undefined2 *)(puVar7 + -4) = uVar9;
-                *(undefined2 *)(puVar7 + -6) = 0x5614;
+                *(char **)(puVar7 + -6) = (char *)szBackup + 0x9a;
                 pcVar4 = PszGetCompressedString(*(StringId *)(puVar7 + -2));
                 *(short *)(puVar7 + -2) = i + -0x430;
                 *(undefined2 *)(puVar7 + -4) = 0x1120;
@@ -2442,7 +2444,7 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 *(char **)(puVar7 + -10) = (char *)szWork;
                 *(undefined2 *)(puVar7 + -0xc) = 0x1010;
                 uVar9 = 0x14f8;
-                *(undefined2 *)(puVar7 + -0xe) = 0x5634;
+                *(char **)(puVar7 + -0xe) = (char *)szBackup + 0xba;
                 _wsprintf(*(char **)(puVar7 + -10), *(char **)(puVar7 + -6));
             } else {
                 pszT = (char *)szWork;
@@ -2464,14 +2466,14 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             *(HWND *)(puVar7 + -2) = hwnd;
             *(short *)(puVar7 + -4) = i;
             *(undefined2 *)(puVar7 + -6) = uVar9;
-            *(undefined2 *)(puVar7 + -8) = 0x5647;
+            *(char **)(puVar7 + -8) = (char *)szBackup + 0xcd;
             HVar5 = GetDlgItem(*(HWND *)(puVar7 + -2), *(ControlId *)(puVar7 + -4));
             *(HWND *)(puVar7 + -2) = HVar5;
             *(undefined2 *)(puVar7 + -4) = 0x1120;
             *(char **)(puVar7 + -6) = (char *)szWork;
             *(undefined2 *)(puVar7 + -8) = 0x14f8;
             uVar9 = 0x14f8;
-            *(undefined2 *)(puVar7 + -10) = 0x5659;
+            *(char **)(puVar7 + -10) = (char *)szBackup + 0xdf;
             SetWindowText(*(HWND *)(puVar7 + -2), *(LPCSTR *)(puVar7 + -6));
             puVar7 = puVar7 + -6;
         }
@@ -2479,7 +2481,7 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         *(undefined2 *)(puVar7 + -4) = 0xd00;
         *(HWND *)(puVar7 + -6) = hwnd;
         *(undefined2 *)(puVar7 + -8) = uVar9;
-        *(undefined2 *)(puVar7 + -10) = 0x5677;
+        *(char **)(puVar7 + -10) = (char *)szBackup + 0xfd;
         StickyDlgPos(*(HWND *)(puVar7 + -6), *(POINT **)(puVar7 + -4), *(short *)(puVar7 + -2));
         if (((uint)gd.grBits >> 0xb & 1) != 0) {
             *(undefined2 *)(puVar7 + -2) = 0x1040;
@@ -2521,7 +2523,7 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         if (wParam != 0x76) {
             return 0;
         }
-        WinHelp(hwnd, _szHelpFile, 1, 0x452);
+        WinHelp(hwnd, szHelpFile, 1, 0x452);
         return 1;
     }
     if (*(char *)((int)&vrgZipProd[0].fValid + iResTechNow * 0x28) == '\0') {
@@ -2657,19 +2659,21 @@ void EnableZipProdBtns(HWND hwnd, short iSel)
 // Segment: MEMORY_PRODUCE
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq)
 
 {
-    HWND       HVar1;
-    char      *pcVar2;
-    undefined2 unaff_SS;
-    WPARAM     WVar3;
-    WMType     WVar4;
-    RECT       rc;
-    char       szFormat[15];
-    char       szAuto[40];
-    HWND       hwndLB;
-    short      i;
+    HWND            HVar1;
+    char           *pcVar2;
+    undefined2      unaff_SS;
+    WParamMessageId WVar3;
+    WMType          WVar4;
+    RECT            rc;
+    char            szFormat[15];
+    char            szAuto[40];
+    HWND            hwndLB;
+    short           i;
 
     HVar1 = GetDlgItem(hwndDlg, IDC_U16_0x0417);
     GetClientRect(hwndDlg, &rc);

@@ -351,6 +351,7 @@ void DrawPopup(HWND hwnd, HDC hdc)
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x10c00d16) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void Popup(HWND hwnd, short x, short y)
 

@@ -59,6 +59,7 @@ void InitBattlePlan(BTLPLAN *lpbtlplan, short iplan, short iplr)
 /* WARNING: Removing unreachable block (ram,0x107814e6) */
 /* WARNING: Removing unreachable block (ram,0x10783577) */
 /* WARNING: Removing unreachable block (ram,0x10781528) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short GenerateWorld(short fBatchMode)
 
@@ -1250,7 +1251,7 @@ CREATE_RetryAll:
                         }
                         *(short *)&idPlayer = iplrSingle;
                         CreateChildWindows();
-                        SendMessage(*(HWND *)&hwndFrame, WM_COMMAND, 0xfa1, 0);
+                        SendMessage(*(HWND *)&hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                     }
                     return 1;
                 }
@@ -2209,7 +2210,7 @@ void CreateTutorWorld(void)
     }
     rgplr[1].wMdPlr = rgplr[1].wMdPlr & 0x1ff | 0x2200;
     CchGetString(idsBerserker, (char *)rgplr[1].szName);
-    Randomize(0x499602d2);
+    Randomize(1234567890);
     for (i = 1; i < 3; i = i + 1) {
         uVar10 = CONCAT22(i, 0x1120);
         pcVar9 = (char *)szBase;
@@ -2873,38 +2874,38 @@ short FGetNewGameName(char *szFileSuggest)
 
 /* WARNING: Variable defined which should be unmapped: ps */
 /* WARNING: Removing unreachable block (ram,0x10787db7) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    undefined2 *puVar1;
-    PLAYER     *pPVar2;
-    undefined2  uVar3;
-    PLAYER     *pPVar4;
-    char        cVar5;
-    char       *pcVar6;
-    HWND        HVar7;
-    short       sVar8;
-    UINT        UVar9;
-    int         iVar10;
-    undefined2  unaff_SI;
-    undefined2 *puVar11;
-    PLAYER     *pPVar12;
-    undefined2  unaff_DI;
-    PLAYER     *pPVar13;
-    undefined2  unaff_SS;
-    ulong       uVar14;
-    LRESULT     LVar15;
-    WPARAM      WVar16;
-    WMType      WVar17;
-    PAINTSTRUCT ps;
-    short       c;
-    short       dy;
-    RECT        local_18;
-    HWND        local_10;
-    RECT        rc;
-    short       i;
+    undefined2     *puVar1;
+    PLAYER         *pPVar2;
+    undefined2      uVar3;
+    PLAYER         *pPVar4;
+    char            cVar5;
+    char           *pcVar6;
+    HWND            HVar7;
+    short           sVar8;
+    UINT            UVar9;
+    int             iVar10;
+    undefined2      unaff_SI;
+    undefined2     *puVar11;
+    PLAYER         *pPVar12;
+    undefined2      unaff_DI;
+    PLAYER         *pPVar13;
+    undefined2      unaff_SS;
+    ulong           uVar14;
+    LRESULT         LVar15;
+    WParamMessageId WVar16;
+    WMType          WVar17;
+    PAINTSTRUCT     ps;
+    short           c;
+    short           dy;
+    RECT            local_18;
+    HWND            local_10;
+    RECT            rc;
+    short           i;
 
     uVar14 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
@@ -3084,7 +3085,7 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     vrgrcRCW = (RECT *)local_18.bottom;
                     SetFocus(hwnd);
                 } else if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x3ea);
+                    WinHelp(hwnd, szHelpFile, 1, 0x3ea);
                     return 1;
                 }
             }
@@ -3101,7 +3102,7 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: ps */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -3197,25 +3198,25 @@ short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 SendDlgItemMessage(hwnd, 0x406, 0x415, 0x1f, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3f8);
                 uVar6 = CONCAT22(0x401, game.wCrap) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3f9);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 1) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3fa);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 5) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3fb);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 7) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3fc);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 4) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, 0x3fd);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 6) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 HVar1 = GetDlgItem(hwnd, IDC_U16_0x041A);
                 uVar6 = CONCAT22(0x401, game.wCrap >> 8) & 0xffff0001;
-                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WPARAM)uVar6, 0);
+                SendMessage(HVar1, (WMType)(uVar6 >> 0x10), (WParamMessageId)uVar6, 0);
                 if (fRCWReadOnly != 0) {
                     for (i = 1000; i < 0x3ed; i = i + 1) {
                         HVar1 = GetDlgItem(hwnd, i);
@@ -3251,7 +3252,7 @@ short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x3f4);
+                    WinHelp(hwnd, szHelpFile, 1, 0x3f4);
                     return 1;
                 }
                 local_10 = 0;
@@ -3446,7 +3447,7 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     }
     if (message == WM_COMMAND) {
         if (wParam == 0x76) {
-            WinHelp(hwnd, _szHelpFile, 1, 0x3fc);
+            WinHelp(hwnd, szHelpFile, 1, 0x3fc);
             return 1;
         }
         i = 0;
@@ -3928,26 +3929,26 @@ void DrawNewGame2(HWND hwnd, HDC hdc, short iDraw)
 // Segment: MEMORY_CREATE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short NewGameDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    POINT      pt;
-    POINT      pt_00;
-    WPARAM     WVar1;
-    HWND       HVar2;
-    short      sVar3;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    undefined2 unaff_SS;
-    ulong      uVar4;
-    LRESULT    LVar5;
-    WMType     WVar6;
-    ushort     in_stack_0000ffd0;
-    POINT      local_12;
-    RECT       rc;
-    short      i;
+    POINT           pt;
+    POINT           pt_00;
+    WParamMessageId WVar1;
+    HWND            HVar2;
+    short           sVar3;
+    undefined2      unaff_SI;
+    undefined2      unaff_DI;
+    undefined2      unaff_SS;
+    ulong           uVar4;
+    LRESULT         LVar5;
+    WMType          WVar6;
+    ushort          in_stack_0000ffd0;
+    POINT           local_12;
+    RECT            rc;
+    short           i;
 
     uVar4 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
@@ -3999,7 +4000,7 @@ short NewGameDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             if (message == WM_COMMAND) {
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x3fd);
+                    WinHelp(hwnd, szHelpFile, 1, 0x3fd);
                     return 1;
                 }
                 i = 0;

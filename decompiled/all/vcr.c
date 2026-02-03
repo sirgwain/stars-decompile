@@ -510,8 +510,6 @@ short SetVCRBoard(short iStep)
 // Segment: MEMORY_VCR
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
@@ -617,7 +615,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 if (wParam != 0x76) {
                     return 0;
                 }
-                WinHelp(hwnd, _szHelpFile, 1, 0x43a);
+                WinHelp(hwnd, szHelpFile, 1, 0x43a);
                 return 1;
             }
             if (((uint)gd.grBits >> 0xd & 1) != 0) {

@@ -348,8 +348,6 @@
 #define IDC_VCR_FWD        164 /* > */
 #define IDC_VCR_FWD_ALL    165 /* >>| */
 
-#define IDC_VCR_HELP 118
-
 #define IDC_PASSWORD_NEW         268  // EDITTEXT: new password
 #define IDC_PASSWORD_RETYPE      269  // EDITTEXT: retype password
 #define IDC_PASSWORD_STATUS_TEXT 2018 // LTEXT: status/help text
@@ -368,35 +366,31 @@
 #define IDC_HOST_GENERATE_NOW  1031 // "&Generate Now"
 #define IDC_HOST_AUTO_GENERATE 1032 // "&Auto Generate"
 #define IDC_HOST_PASSWORD      2015 // "&Password..."
-#define IDC_HOST_HELP          118  // "&Help" (alias of IDC_HELP)
 #define IDC_HOST_CLOSE         2    // "&Close" (IDCANCEL in this dialog)
 
 // HostModeDialog WM_COMMAND IDs referenced in the proc but not shown in your RC snippet
 #define IDC_HOST_OPTIONS 0x0405 // HostOptionsDialog button/command (in proc)
 
-// Optional: keep your existing numeric aliases consistent (no behavior change)
-#define IDC_U16_0x0407 IDC_HOST_GENERATE_NOW
-#define IDC_U16_0x0408 IDC_HOST_AUTO_GENERATE
-#define IDC_U16_0x0409 IDC_HOST_GAME_NAME_TEXT
-#define IDC_U16_0x040A IDC_HOST_FILE_TEXT
-#define IDC_U16_0x07DF IDC_HOST_PASSWORD
-#define IDC_U16_0x07E0 IDC_HOST_NEXT_YEAR_TEXT
-#define IDC_U16_0x07E1 IDC_HOST_TIME_SINCE_TEXT
+// // Optional: keep your existing numeric aliases consistent (no behavior change)
+// #define IDC_U16_0x0407 IDC_HOST_GENERATE_NOW
+// #define IDC_U16_0x0408 IDC_HOST_AUTO_GENERATE
+// #define IDC_U16_0x0409 IDC_HOST_GAME_NAME_TEXT
+// #define IDC_U16_0x040A IDC_HOST_FILE_TEXT
+// #define IDC_U16_0x07DF IDC_HOST_PASSWORD
+// #define IDC_U16_0x07E0 IDC_HOST_NEXT_YEAR_TEXT
+// #define IDC_U16_0x07E1 IDC_HOST_TIME_SINCE_TEXT
 
 // ---------------- Tutorial blocks (RCDATA) ----------
 #define IDR_TUTORIAL_HST 10001 // res/tutorial/10001-tutorail.hst
 #define IDR_TUTORIAL_M1  10003 // res/tutorial/10003-tutorail.m1
 #define IDR_TUTORIAL_M2  10005 // res/tutorial/10005-tutorail.m2
 
-// ---------------- Custom Stars Messages ----------
-
-#define WM_STARS_STARTUP  0x464
-#define WM_STARS_HOST     0x465
-#define WM_STARS_CONTINUE 0x466
+// ---------------- Common Controls ----------
+#define IDC_HELP     118
+#define IDC_EDITTEXT 268
 
 // ---------------- Auto generated, could be dupes ----------
 
-#define IDC_HELP                  118
 #define IDC_IMMUNE_TO_TEMPERATURE 292
 #define IDC_IMMUNE_TO_RADIATION   293
 #define IDC_RENAME                1051
@@ -459,3 +453,9 @@
 #define IDC_U16_0x07E2 0x07E2 /* 2018 */
 
 #define IDC_U16_0x080C 0x080C /* 2060 */
+
+// ---------------- Custom Stars Messages ----------
+
+#define WM_STARS_STARTUP  0x464
+#define WM_STARS_HOST     0x465
+#define WM_STARS_CONTINUE 0x466

@@ -3421,6 +3421,7 @@ typedef enum ControlId {
     IDC_DOWN = 2069,
 
     IDC_SHIPLIST = 1035,
+    IDC_EDITTEXT = 0x010C, /* 268 */
 
     IDC_U16_0x0051 = 0x0051, /* 81 */
     IDC_U16_0x008B = 0x008B, /* 139 */
@@ -3431,7 +3432,6 @@ typedef enum ControlId {
     IDC_U16_0x00D3 = 0x00D3, /* 211 */
 
     IDC_U16_0x010B = 0x010B, /* 267 */
-    IDC_U16_0x010C = 0x010C, /* 268 */
     IDC_U16_0x010D = 0x010D, /* 269 */
     IDC_U16_0x010F = 0x010F, /* 271 */
     IDC_U16_0x0116 = 0x0116, /* 278 */

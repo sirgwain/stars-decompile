@@ -9,7 +9,7 @@
 // Segment: MEMORY_RESEARCH
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -159,7 +159,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     *(undefined2 *)(puVar10 + -0x10) = 0;
                     *(undefined2 *)(puVar10 + -0x12) = 0x14f8;
                     *(undefined2 *)(puVar10 + -0x14) = 0x110;
-                    SendMessage(*(HWND *)(puVar10 + -8), *(WMType *)(puVar10 + -10), *(WPARAM *)(puVar10 + -0xc), *(LPARAM *)(puVar10 + -0x10));
+                    SendMessage(*(HWND *)(puVar10 + -8), *(WMType *)(puVar10 + -10), *(WParamMessageId *)(puVar10 + -0xc), *(LPARAM *)(puVar10 + -0x10));
                     puVar10 = puVar10 + -6;
                 }
                 dxResRadio = dxResRadio + 0x40;
@@ -200,7 +200,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     *(char **)(puVar10 + -10) = pcVar4;
                     *(undefined2 *)(puVar10 + -0xc) = 0x1010;
                     *(undefined2 *)(puVar10 + -0xe) = 0x1d5;
-                    SendMessage(*(HWND *)(puVar10 + -2), *(WMType *)(puVar10 + -4), *(WPARAM *)(puVar10 + -6), *(LPARAM *)(puVar10 + -10));
+                    SendMessage(*(HWND *)(puVar10 + -2), *(WMType *)(puVar10 + -4), *(WParamMessageId *)(puVar10 + -6), *(LPARAM *)(puVar10 + -10));
                 }
                 i = (int)*(char *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) >> 4;
                 if (i == 6) {
@@ -215,7 +215,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 *(undefined2 *)(puVar10 + -10) = 0;
                 *(undefined2 *)(puVar10 + -0xc) = 0x14f8;
                 *(undefined2 *)(puVar10 + -0xe) = 0x233;
-                SendMessage(*(HWND *)(puVar10 + -2), *(WMType *)(puVar10 + -4), *(WPARAM *)(puVar10 + -6), *(LPARAM *)(puVar10 + -10));
+                SendMessage(*(HWND *)(puVar10 + -2), *(WMType *)(puVar10 + -4), *(WParamMessageId *)(puVar10 + -6), *(LPARAM *)(puVar10 + -10));
                 dxResLeft = dxResRadio + (int)DVar15 + 0x28;
                 dxResRight = 0;
                 for (i = 0x4c; i < 0x52; i = i + 1) {
@@ -409,7 +409,8 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 *(undefined2 *)(puVar11 + -3) = 0x14f8;
                 uVar13 = 0x14f8;
                 *(undefined2 *)((int)puVar11 + -0xe) = 0x6eb;
-                LVar18 = SendMessage(*(HWND *)((int)puVar11 + -2), *(WMType *)(puVar11 + -1), *(WPARAM *)((int)puVar11 + -6), *(LPARAM *)((int)puVar11 + -10));
+                LVar18 = SendMessage(*(HWND *)((int)puVar11 + -2), *(WMType *)(puVar11 + -1), *(WParamMessageId *)((int)puVar11 + -6),
+                                     *(LPARAM *)((int)puVar11 + -10));
                 local_38.y = (short)LVar18;
                 if (local_38.y == 0) {
                     local_38.y = 6;
@@ -463,7 +464,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if (wParam == 0x76) {
                 *(HWND *)((int)puVar11 + -2) = hwnd;
                 *(undefined2 *)(puVar11 + -1) = 0x1120;
-                *(undefined2 *)((int)puVar11 + -6) = _szHelpFile;
+                *(undefined2 *)((int)puVar11 + -6) = szHelpFile;
                 *(undefined2 *)(puVar11 + -2) = 1;
                 *(undefined2 *)((int)puVar11 + -10) = 0;
                 *(undefined2 *)(puVar11 + -3) = 0x42e;
@@ -1053,7 +1054,7 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, short grbitDraw)
         *(int *)((int)plVar15 + -10) = iVar12;
         *(HDC *)(plVar15 + -3) = hdc;
         *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        *(undefined2 *)(plVar15 + -4) = 0x15c9;
+        *(char **)(plVar15 + -4) = (char *)s____1120_15c6 + 3;
         RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
                      *(short *)((int)plVar15 + -2));
         *(undefined2 *)((int)plVar15 + -2) = lResTotal._2_2_;
@@ -1556,50 +1557,51 @@ long GetTechLevelCost(short iTech, short iLevel, short iplr)
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x10d824c3) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    bool        bVar1;
-    short       sVar2;
-    int         iVar3;
-    short       sVar4;
-    HDC         HVar5;
-    HGDIOBJ     HVar6;
-    int         iVar7;
-    char       *pcVar8;
-    HWND        HVar9;
-    ushort      uVar10;
-    uint        uVar11;
-    UINT        UVar12;
-    uint        uVar13;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    undefined2  unaff_SS;
-    DWORD       DVar14;
-    ulong       uVar15;
-    ulong       uVar16;
-    long        lVar17;
-    LRESULT     LVar18;
-    short       sVar19;
-    short       sVar20;
-    HWND        HVar21;
-    WPARAM      WVar22;
-    WMType      WVar23;
-    ushort      in_stack_0000ffb4;
-    short       iOff;
-    short       fShowAll;
-    short       cIter;
-    short       md;
-    short       iStart;
-    RECT        rc;
-    short       dx;
-    HFONT       hfontSav;
-    PAINTSTRUCT ps;
-    short       c;
-    short       i;
-    HMENU       hmenu;
-    HDC         hdc;
+    bool            bVar1;
+    short           sVar2;
+    int             iVar3;
+    short           sVar4;
+    HDC             HVar5;
+    HGDIOBJ         HVar6;
+    int             iVar7;
+    char           *pcVar8;
+    HWND            HVar9;
+    ushort          uVar10;
+    uint            uVar11;
+    UINT            UVar12;
+    uint            uVar13;
+    undefined2      unaff_SI;
+    undefined2      unaff_DI;
+    undefined2      unaff_SS;
+    DWORD           DVar14;
+    ulong           uVar15;
+    ulong           uVar16;
+    long            lVar17;
+    LRESULT         LVar18;
+    short           sVar19;
+    short           sVar20;
+    HWND            HVar21;
+    WParamMessageId WVar22;
+    WMType          WVar23;
+    ushort          in_stack_0000ffb4;
+    short           iOff;
+    short           fShowAll;
+    short           cIter;
+    short           md;
+    short           iStart;
+    RECT            rc;
+    short           dx;
+    HFONT           hfontSav;
+    PAINTSTRUCT     ps;
+    short           c;
+    short           i;
+    HMENU           hmenu;
+    HDC             hdc;
 
     uVar15 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_DESTROY) {

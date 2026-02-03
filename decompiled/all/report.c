@@ -501,7 +501,6 @@ void DrawReport(HWND hwnd, HDC hdc, RECT *prc)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: cch */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short ScoreXDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -579,7 +578,7 @@ short ScoreXDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     return 1;
                 }
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x455);
+                    WinHelp(hwnd, szHelpFile, 1, 0x455);
                     return 1;
                 }
                 if (wParam == 0xc6) {
@@ -1525,7 +1524,6 @@ LAB_1108_337d:
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x11083d76) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 void DrawReportItem(HDC hdc, RECT *prc, short irpt, short irow, short icol)
 
@@ -1639,7 +1637,7 @@ void DrawReportItem(HDC hdc, RECT *prc, short irpt, short irow, short icol)
             return;
         case 1:
             if ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) == 0) {
-                lpsz._0_2_ = _szDblDash;
+                lpsz._0_2_ = szDblDash;
                 lpsz._2_2_ = 0x1120;
             } else {
                 lpsz._2_2_ = *(undefined2 *)(idPlayer * 4 + rglpshdefSB_0x2);
@@ -1816,7 +1814,7 @@ void DrawReportItem(HDC hdc, RECT *prc, short irpt, short irow, short icol)
             return;
         case 0xd:
             if ((*(uint *)((int)&((PLANET *)lppl)->lStarbase + 2) & 0x3ff) == 0) {
-                psz = _szDblDash;
+                psz = szDblDash;
             } else {
                 psz = PszGetPlanetName((*(uint *)((int)&((PLANET *)lppl)->lStarbase + 2) & 0x3ff) - 1);
             }
@@ -1831,7 +1829,7 @@ void DrawReportItem(HDC hdc, RECT *prc, short irpt, short irow, short icol)
             return;
         case 0xe:
             if ((((PLANET *)lppl)->wRouting & 0x3ff) == 0) {
-                psz = _szDblDash;
+                psz = szDblDash;
             } else {
                 psz = PszGetPlanetName((((PLANET *)lppl)->wRouting & 0x3ff) - 1);
             }
@@ -1983,8 +1981,8 @@ void DrawReportItem(HDC hdc, RECT *prc, short irpt, short irow, short icol)
         case 9:
             i = PctCloakFromLpfl(lpfl);
             if (i == 0) {
-                cch = _strlen(_szDblDash);
-                psz = _szDblDash;
+                cch = _strlen(szDblDash);
+                psz = szDblDash;
             } else {
                 psz = szT;
                 cch = _wsprintf(psz, PCTDPCTPCT, i);
@@ -2291,7 +2289,6 @@ LAB_1108_422c:
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x11084f0e) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 void DrawMineralItem(HDC hdc, short x, short y, short iMineral, long l)
 
@@ -2305,8 +2302,8 @@ void DrawMineralItem(HDC hdc, short x, short y, short iMineral, long l)
         SetTextColor(hdc, CONCAT22(*(undefined2 *)(iMineral * 4 + rgcrMinerals_0x2), *(undefined2 *)(iMineral * 4 + rgcrMinerals)));
     }
     if (l < 0) {
-        cch = _strlen(_szDblDash);
-        psz = _szDblDash;
+        cch = _strlen(szDblDash);
+        psz = szDblDash;
     } else {
         psz = PszFromLongK(l, &cch);
     }
@@ -2319,8 +2316,6 @@ void DrawMineralItem(HDC hdc, short x, short y, short iMineral, long l)
 // Address: 1108:4f60
 // Segment: MEMORY_REPORT
 // ======================================================================
-
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 char *PszGetDestName(FLEET *lpfl, HDC hdc)
 
@@ -2352,7 +2347,7 @@ char *PszGetDestName(FLEET *lpfl, HDC hdc)
         (pOVar2->pt).x = *psVar1;
     }
     if (pFVar7->cord < 2) {
-        return _szDblDash;
+        return szDblDash;
     }
     if ((ord.wFlags_0x6 >> 0xc & 1) != 0) {
         uVar4 = ord.wFlags_0x6 & 0xf;
@@ -2363,14 +2358,14 @@ char *PszGetDestName(FLEET *lpfl, HDC hdc)
             }
         } else if (uVar4 == 2) {
             if ((ord.wFlags_0x6 >> 8 & 0xf) == 1) {
-                return _szDblDash;
+                return szDblDash;
             }
         } else {
             if (uVar4 == 4) {
-                return _szDblDash;
+                return szDblDash;
             }
             if (uVar4 == 5) {
-                return _szDblDash;
+                return szDblDash;
             }
             if (uVar4 == 6) {
             REPORT_LDelayed:
@@ -2466,8 +2461,6 @@ short FDestIsWP0(FLEET *lpfl)
 // Segment: MEMORY_REPORT
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 char *PszGetETA(HDC hdc, FLEET *lpfl, short *pcYears)
 
 {
@@ -2514,10 +2507,10 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, short *pcYears)
             if ((ord.wFlags_0x6 >> 8 & 0xf) == 1) {
             REPORT_LNoETA:
                 if (pcYears == (short *)0x0) {
-                    return _szDblDash;
+                    return szDblDash;
                 }
                 *pcYears = 0;
-                return _szDblDash;
+                return szDblDash;
             }
         } else if (((uVar4 == 4) || (uVar4 == 5)) || (uVar4 == 6))
             goto REPORT_LNoETA;
@@ -2559,8 +2552,6 @@ char *PszGetETA(HDC hdc, FLEET *lpfl, short *pcYears)
 // Address: 1108:53b8
 // Segment: MEMORY_REPORT
 // ======================================================================
-
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 char *PszGetTaskName(FLEET *lpfl, short *picr)
 
@@ -2633,7 +2624,7 @@ char *PszGetTaskName(FLEET *lpfl, short *picr)
         }
     }
 REPORT_LShowTask:
-    pcVar7 = _szDblDash;
+    pcVar7 = szDblDash;
     if ((ord.wFlags_0x6 >> 0xc & 1) != 0) {
         ids_00 = (ord.wFlags_0x6 & 0xf) + idsTaskHere;
         uVar5 = ord.wFlags_0x6 & 0xf;
@@ -2679,7 +2670,7 @@ REPORT_LShowTask:
                 bVar4 = false;
                 switch (uVar5 >> 0xc) {
                 default:
-                    pcVar7 = _szDblDash;
+                    pcVar7 = szDblDash;
                     break;
                 case 5:
                 case 6:
@@ -3890,6 +3881,7 @@ void InvalidateReport(short irpt, short fReload)
 
 /* WARNING: Removing unreachable block (ram,0x11087ea5) */
 /* WARNING: Variable defined which should be unmapped: scan */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void ExecuteReportClick(POINT pt, short irpt, short icol, short irow)
 
@@ -4851,7 +4843,7 @@ void DumpFleets(void)
 // Segment: MEMORY_REPORT
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short PrintMapDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
@@ -4898,7 +4890,7 @@ short PrintMapDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 *(undefined2 *)(puVar3 + -10) = 0;
                 *(undefined2 *)(puVar3 + -0xc) = 0x14f8;
                 *(undefined2 *)(puVar3 + -0xe) = 0xa203;
-                SendMessage(*(HWND *)(puVar3 + -2), *(WMType *)(puVar3 + -4), *(WPARAM *)(puVar3 + -6), *(LPARAM *)(puVar3 + -10));
+                SendMessage(*(HWND *)(puVar3 + -2), *(WMType *)(puVar3 + -4), *(WParamMessageId *)(puVar3 + -6), *(LPARAM *)(puVar3 + -10));
                 *(HWND *)(puVar3 + -2) = HVar1;
                 *(undefined2 *)(puVar3 + -4) = 0x30;
                 *(ushort *)(puVar3 + -6) = rghfontArial8[1];
@@ -4906,7 +4898,7 @@ short PrintMapDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 *(undefined2 *)(puVar3 + -10) = 0;
                 *(undefined2 *)(puVar3 + -0xc) = 0x14f8;
                 *(undefined2 *)(puVar3 + -0xe) = 0xa21b;
-                SendMessage(*(HWND *)(puVar3 + -2), *(WMType *)(puVar3 + -4), *(WPARAM *)(puVar3 + -6), *(LPARAM *)(puVar3 + -10));
+                SendMessage(*(HWND *)(puVar3 + -2), *(WMType *)(puVar3 + -4), *(WParamMessageId *)(puVar3 + -6), *(LPARAM *)(puVar3 + -10));
                 szWork[0] = (char)((short *)vrgcPrintMapPage)[i] + '0';
                 szWork[1] = '\0';
                 *(HWND *)(puVar3 + -2) = HVar1;
@@ -4982,7 +4974,7 @@ short PrintMapDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0xc3c);
+                WinHelp(hwnd, szHelpFile, 1, 0xc3c);
                 return 1;
             }
             if (((wParam == 0x10c) || (wParam == 0x10d)) && (uVar6 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000fff0), (int)uVar6 == 0x400)) {

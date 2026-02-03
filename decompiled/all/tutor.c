@@ -9,21 +9,21 @@
 // Segment: MEMORY_TUTOR
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short TutorDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    WPARAM     WVar1;
-    char      *sz;
-    ushort     uVar2;
-    short      sVar3;
-    undefined2 unaff_SS;
-    FARPROC    lpDlgProc;
-    short      fRet;
-    fn_lpProc *lpProc;
-    RECT       rc;
-    HMENU      hmenu;
+    WParamMessageId WVar1;
+    char           *sz;
+    ushort          uVar2;
+    short           sVar3;
+    undefined2      unaff_SS;
+    FARPROC         lpDlgProc;
+    short           fRet;
+    fn_lpProc      *lpProc;
+    RECT            rc;
+    HMENU           hmenu;
 
     if (message == WM_DESTROY) {
         StickyDlgPos(hwnd, (POINT *)&ptStickyTutorDlg, 0);
@@ -70,7 +70,7 @@ short TutorDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     return 1;
                 }
                 if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, (long)tutor.idh);
+                    WinHelp(hwnd, szHelpFile, 1, (long)tutor.idh);
                     return 1;
                 }
             }
@@ -87,7 +87,6 @@ short TutorDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rc */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short PanicDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -115,7 +114,7 @@ short PanicDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             return 1;
         }
         if (wParam == 0x76) {
-            WinHelp(hwnd, _szHelpFile, 1, (long)tutor.idh);
+            WinHelp(hwnd, szHelpFile, 1, (long)tutor.idh);
             return 1;
         }
         if ((wParam == 0x9c9) || (wParam == 0x9ca)) {
@@ -229,6 +228,8 @@ void DrawTutorText(HWND hwnd)
 // Segment: MEMORY_TUTOR
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void StartTutor(short fRestart)
 
 {
@@ -310,7 +311,7 @@ void StartTutor(short fRestart)
                 gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffdf | 0x20;
             }
             InitializeMenu(0);
-            PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+            PostMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
             if (fFreeingTitle == 0) {
                 fFreeingTitle = 1;
                 DestroyWindow(hwndTitle);
@@ -629,6 +630,8 @@ short FAskKillTutor(void)
 // Address: 10f8:0fbc
 // Segment: MEMORY_TUTOR
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short FTutorTaskDone(void)
 
@@ -4229,6 +4232,8 @@ TUTOR_BadCnt:
 // Address: 10f8:7964
 // Segment: MEMORY_TUTOR
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short FCheckShipBuilder(short iCategory, short iShip)
 

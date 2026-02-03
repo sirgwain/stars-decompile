@@ -13,6 +13,7 @@
 /* WARNING: Removing unreachable block (ram,0x1050029b) */
 /* WARNING: Removing unreachable block (ram,0x10500866) */
 /* WARNING: Restarted to delay deadcode elimination for space: ram */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj)
 
@@ -276,6 +277,7 @@ SHIP_DoCheckBox:
 
 /* WARNING: Removing unreachable block (ram,0x1050155f) */
 /* WARNING: Removing unreachable block (ram,0x10501311) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)
 
@@ -674,7 +676,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)
         *(undefined2 *)(puVar14 + -10) = 0;
         *(undefined2 *)(puVar14 + -0xc) = uVar15;
         *(undefined2 *)(puVar14 + -0xe) = 0xfdf;
-        LVar16 = SendMessage(*(HWND *)(puVar14 + -2), *(WMType *)(puVar14 + -4), *(WPARAM *)(puVar14 + -6), *(LPARAM *)(puVar14 + -10));
+        LVar16 = SendMessage(*(HWND *)(puVar14 + -2), *(WMType *)(puVar14 + -4), *(WParamMessageId *)(puVar14 + -6), *(LPARAM *)(puVar14 + -10));
         if ((int)LVar16 == 0) {
             i = 4;
         } else {
@@ -728,7 +730,7 @@ void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)
         *(undefined2 *)(puVar14 + -10) = 0;
         *(undefined2 *)(puVar14 + -0xc) = 0x14f8;
         *(undefined2 *)(puVar14 + -0xe) = 0x1091;
-        LVar16 = SendMessage(*(HWND *)(puVar14 + -2), *(WMType *)(puVar14 + -4), *(WPARAM *)(puVar14 + -6), *(LPARAM *)(puVar14 + -10));
+        LVar16 = SendMessage(*(HWND *)(puVar14 + -2), *(WMType *)(puVar14 + -4), *(WParamMessageId *)(puVar14 + -6), *(LPARAM *)(puVar14 + -10));
         fActive = 1;
         if (((LVar16 == 0) || (LVar16 == 1)) || (LVar16 == 2)) {
         LAB_1050_10a5:
@@ -1286,6 +1288,7 @@ short FCanMerge(FLEET *pfl)
 
 /* WARNING: Removing unreachable block (ram,0x10502a10) */
 /* WARNING: Removing unreachable block (ram,0x10502a4a) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
 
@@ -1704,7 +1707,7 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
         *(undefined2 *)((int)plVar13 + -10) = 0;
         *(undefined2 *)(plVar13 + -3) = uVar14;
         *(undefined2 *)((int)plVar13 + -0xe) = 0x3c47;
-        LVar19 = SendMessage(*(HWND *)((int)plVar13 + -2), *(WMType *)(plVar13 + -1), *(WPARAM *)((int)plVar13 + -6), *(LPARAM *)((int)plVar13 + -10));
+        LVar19 = SendMessage(*(HWND *)((int)plVar13 + -2), *(WMType *)(plVar13 + -1), *(WParamMessageId *)((int)plVar13 + -6), *(LPARAM *)((int)plVar13 + -10));
         iVar8 = sel.fl.lpplord._2_2_;
         pPVar2 = (PLORD *)sel.fl.lpplord;
         if (LVar19 == 0) {
@@ -1839,6 +1842,8 @@ void SelectAdjFleet(short dInc, short idFleet)
 // Address: 1050:400e
 // Segment: MEMORY_SHIP
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void SetFleetDropDownSel(short id)
 
@@ -2459,7 +2464,7 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
                 *(undefined2 *)(puVar6 + -6) = 0;
                 *(undefined2 *)(puVar6 + -8) = 0;
                 *(undefined2 *)(puVar6 + -10) = 0x10e0;
-                *(undefined2 *)(puVar6 + -0xc) = 0x55a3;
+                *(char **)(puVar6 + -0xc) = (char *)szBackup + 0x29;
                 InvalidateRect(*(HWND *)(puVar6 + -2), *(RECT **)(puVar6 + -6), *(BOOL *)(puVar6 + -8));
                 mdXferDlg = -1;
                 return 0;
@@ -2470,7 +2475,7 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
             pt.y = sel.pt.y;
             *(POINT **)(puVar6 + -2) = &pt;
             *(undefined2 *)(puVar6 + -4) = uVar9;
-            *(undefined2 *)(puVar6 + -6) = 0x55e1;
+            *(char **)(puVar6 + -6) = (char *)szBackup + 0x67;
             LogicalToScan(*(POINT **)(puVar6 + -2));
             rc.right = pt.x;
             rc.bottom = pt.y;
@@ -2481,7 +2486,7 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
             *(undefined2 *)(puVar6 + -6) = 0x14;
             *(undefined2 *)(puVar6 + -8) = 0x14;
             *(undefined2 *)(puVar6 + -10) = 0x1058;
-            *(undefined2 *)(puVar6 + -0xc) = 0x5611;
+            *(char **)(puVar6 + -0xc) = (char *)szBackup + 0x97;
             InflateRect(*(RECT **)(puVar6 + -4), *(short *)(puVar6 + -6), *(short *)(puVar6 + -8));
             rc.top = rc.top + -0x14;
             *(HWND *)(puVar6 + -2) = hwndScanner;
@@ -2489,7 +2494,7 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
             *(RECT **)(puVar6 + -6) = &rc;
             *(undefined2 *)(puVar6 + -8) = 0;
             *(undefined2 *)(puVar6 + -10) = 0x14f8;
-            *(undefined2 *)(puVar6 + -0xc) = 0x562b;
+            *(char **)(puVar6 + -0xc) = (char *)szBackup + 0xb1;
             InvalidateRect(*(HWND *)(puVar6 + -2), *(RECT **)(puVar6 + -6), *(BOOL *)(puVar6 + -8));
         }
     }
@@ -2502,8 +2507,6 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
 // Address: 1050:5686
 // Segment: MEMORY_SHIP
 // ======================================================================
-
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short TransferDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -2610,7 +2613,7 @@ short TransferDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 } else {
                     uVar6 = 0x433;
                 }
-                WinHelp(hwnd, _szHelpFile, 1, (ulong)uVar6);
+                WinHelp(hwnd, szHelpFile, 1, (ulong)uVar6);
                 return 1;
             }
         } else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
@@ -3662,6 +3665,7 @@ void DrawPlanetXferSide(HDC hdc, RECT *prc, PLANET *ppl, short iSupply)
 /* WARNING: Removing unreachable block (ram,0x10508d23) */
 /* WARNING: Removing unreachable block (ram,0x10508d4d) */
 /* WARNING: Removing unreachable block (ram,0x10508d77) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
 
@@ -4263,6 +4267,8 @@ LAB_1050_8f9c:
 // Segment: MEMORY_SHIP
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void FillFleetCompLB(void)
 
 {
@@ -4298,6 +4304,8 @@ void FillFleetCompLB(void)
 // Address: 1050:928c
 // Segment: MEMORY_SHIP
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void FillOrdersLB(void)
 
@@ -4340,6 +4348,8 @@ void FillOrdersLB(void)
 // Segment: MEMORY_SHIP
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void SetOrdersLbSel(short iSel)
 
 {
@@ -4370,30 +4380,32 @@ void SetOrdersLbSel(short iSel)
 // Segment: MEMORY_SHIP
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void UpdateOrdersDDs(short iLevel)
 
 {
-    undefined2 uVar1;
-    int        iVar2;
-    char      *pcVar3;
-    undefined2 unaff_SS;
-    long       lVar4;
-    LRESULT    LVar5;
-    WPARAM     WVar6;
-    WMType     WVar7;
-    ushort     uVar8;
-    undefined1 local_68;
-    char       local_67[77];
-    int        local_1a;
-    short      iSel;
-    char      *psz;
-    short      i;
-    short      iMin;
-    long       rglSel[3];
+    undefined2      uVar1;
+    int             iVar2;
+    char           *pcVar3;
+    undefined2      unaff_SS;
+    long            lVar4;
+    LRESULT         LVar5;
+    WParamMessageId WVar6;
+    WMType          WVar7;
+    ushort          uVar8;
+    undefined1      local_68;
+    char            local_67[77];
+    int             local_1a;
+    short           iSel;
+    char           *psz;
+    short           i;
+    short           iMin;
+    long            rglSel[3];
 
     iSel = -1;
     if (iLevel == 0) {
-        rglSel[0] = SendMessage(rghwndOrderDD[0], CB_SETCURSEL, *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf, 0);
+        rglSel[0] = SendMessage(rghwndOrderDD[0], CB_SETCURSEL, *(WParamMessageId *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf, 0);
     } else {
         rglSel[0] = SendMessage(rghwndOrderDD[0], CB_GETCURSEL, 0, 0);
     }
@@ -4447,7 +4459,7 @@ void UpdateOrdersDDs(short iLevel)
         }
         psz = PszGetCompressedString(idsAnyEnemy);
         SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0, (LPARAM)psz);
-        iSel = *(WPARAM *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xe);
+        iSel = *(WParamMessageId *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xe);
         LVar5 = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, iSel, 0);
         rglSel[1] = LVar5;
     } else if (rglSel[0] == 9) {
@@ -4459,7 +4471,7 @@ void UpdateOrdersDDs(short iLevel)
                 SendMessage(rghwndOrderDD[1], CB_ADDSTRING, 0, (LPARAM)&local_68);
             }
         }
-        iSel = *(WPARAM *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
+        iSel = *(WParamMessageId *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
         LVar5 = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, iSel, 0);
         rglSel[1] = LVar5;
     } else if (rglSel[0] == 6) {
@@ -4479,7 +4491,7 @@ void UpdateOrdersDDs(short iLevel)
         uVar8 = rghwndOrderDD[1];
         pcVar3 = PszGetCompressedString(idsIindefinitely);
         SendMessage(uVar8, WVar7, WVar6, (LPARAM)pcVar3);
-        LVar5 = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, *(WPARAM *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc), 0);
+        LVar5 = SendMessage(rghwndOrderDD[1], CB_SETCURSEL, *(WParamMessageId *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc), 0);
         rglSel[1] = LVar5;
     }
 LAB_1050_987f:
@@ -4521,6 +4533,8 @@ LAB_1050_987f:
 // Address: 1050:9a36
 // Segment: MEMORY_SHIP
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void FillBattleDD(short iSel)
 

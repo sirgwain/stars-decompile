@@ -397,6 +397,8 @@ short FLookupThing(short idth, THING *pth)
 // Segment: MEMORY_UTIL
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void SelectOursAtObject(POINT *ppt)
 
 {

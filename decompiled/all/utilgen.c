@@ -212,7 +212,7 @@ short RandomSeedDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         }
         if ((message == WM_COMMAND) && ((wParam == 1 || (wParam == 2)))) {
             if (wParam == 1) {
-                GetDlgItemText(hwnd, IDC_U16_0x010C, szValue, 0x20);
+                GetDlgItemText(hwnd, IDC_EDITTEXT, szValue, 0x20);
                 pch = szValue;
                 uVar3 = 0;
                 while ((*(byte *)(*pch + 0x175f) & 4) != 0) {
@@ -2758,7 +2758,6 @@ long LSaltFromSz(char *psz)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: lSalt */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -2797,7 +2796,7 @@ short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         if (message == WM_COMMAND) {
             if ((wParam == 1) || (wParam == 2)) {
                 if (wParam == 1) {
-                    GetDlgItemText(hwnd, IDC_U16_0x010C, szPass, 0x3c);
+                    GetDlgItemText(hwnd, IDC_EDITTEXT, szPass, 0x3c);
                     lVar4 = LSaltFromSz(szPass);
                     if (lVar4 != CONCAT22(lSaltCur._2_2_, (undefined2)lSaltCur)) {
                         vcPasswordFailures = vcPasswordFailures + 1;
@@ -2812,7 +2811,7 @@ short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         mbType = 0x10;
                         pcVar2 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, (short *)0x0);
                         AlertSz(pcVar2, mbType);
-                        HVar1 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                        HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar1);
                         SendDlgItemMessage(hwnd, 0x10c, 0x401, 0, -0x10000);
                         return 0;
@@ -2827,7 +2826,7 @@ short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x441);
+                WinHelp(hwnd, szHelpFile, 1, 0x441);
                 return 1;
             }
         }
@@ -2842,7 +2841,6 @@ short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: lSalt */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -2907,7 +2905,7 @@ short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if ((wParam == 1) || (wParam == 2)) {
                 lVar1 = lSaltLast;
                 if (wParam == 1) {
-                    HVar3 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                    HVar3 = GetDlgItem(hwnd, IDC_EDITTEXT);
                     GetWindowText(HVar3, szPass, 0x12);
                     lSalt = LSaltFromSz(szPass);
                     HVar3 = GetDlgItem(hwnd, IDC_U16_0x010D);
@@ -2917,7 +2915,7 @@ short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         sVar9 = 0x10;
                         pcVar4 = PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, (short *)0x0);
                         AlertSz(pcVar4, sVar9);
-                        HVar3 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                        HVar3 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar3);
                         SendDlgItemMessage(hwnd, 0x10c, 0x401, 0, -0x10000);
                         goto LAB_1040_5fb1;
@@ -2956,7 +2954,7 @@ short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 goto LAB_1040_5fb7;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x43c);
+                WinHelp(hwnd, szHelpFile, 1, 0x43c);
                 HVar5 = 1;
                 lVar1 = lSaltLast;
                 lVar2 = lSaltCur;

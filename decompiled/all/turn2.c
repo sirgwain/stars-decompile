@@ -3141,10 +3141,10 @@ void CreateBackupDir(void)
     char *pcVar1;
     char *pchT;
 
-    _strcpy((char *)&szBackup, (char *)szBase);
-    pcVar1 = _strrchr((char *)&szBackup, 0x5c);
+    _strcpy((char *)szBackup, (char *)szBase);
+    pcVar1 = _strrchr((char *)szBackup, 0x5c);
     if (pcVar1 == (char *)0x0) {
-        pchT = (char *)&szBackup;
+        pchT = (char *)szBackup;
     } else {
         pchT = pcVar1 + 1;
     }
@@ -3156,8 +3156,8 @@ void CreateBackupDir(void)
     } else {
         _wsprintf(pchT, s_backup__03d_1120_09f0, game.turn % (uint)vcBackupDirs);
     }
-    __mkdir((char *)&szBackup);
-    _strcat((char *)&szBackup, (char *)0x9fc);
+    __mkdir((char *)szBackup);
+    _strcat((char *)szBackup, (char *)0x9fc);
     return;
 }
 

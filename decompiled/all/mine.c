@@ -9,7 +9,7 @@
 // Segment: MEMORY_MINE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long MineWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -54,7 +54,7 @@ long MineWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
     puVar5 = &stack0xffba;
     if (message == WM_CREATE) {
         uVar10 = 0x1120;
-        pcVar9 = _szButton;
+        pcVar9 = szButton;
         pcVar2 = PszGetCompressedString(idsDetonateMineFieldYear);
         hwndMineCB = CreateWindow((LPCSTR)CONCAT22(uVar10, pcVar9), pcVar2, 0x40000003, 100, 100, 0x96, dyArial8, hwnd, 0, hInst, (void *)0x0);
         SendMessage(hwndMineCB, WM_SETFONT, rghfontArial8[1], 0);
@@ -1716,6 +1716,8 @@ void MineClick(short x, short y, short msg, short sks)
 // Address: 1028:47dc
 // Segment: MEMORY_MINE
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void SetMineralTitleBar(HWND hwnd)
 

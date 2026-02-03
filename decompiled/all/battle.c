@@ -9,23 +9,23 @@
 // Segment: MEMORY_BATTLE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RelationsDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    char       *pcVar1;
-    HDC         hdc;
-    HWND        HVar2;
-    short       sVar3;
-    undefined2  unaff_SS;
-    LRESULT     LVar4;
-    WPARAM      WVar5;
-    WMType      WVar6;
-    RECT        rcGBox;
-    PAINTSTRUCT ps;
-    RECT        rc;
-    short       i;
+    char           *pcVar1;
+    HDC             hdc;
+    HWND            HVar2;
+    short           sVar3;
+    undefined2      unaff_SS;
+    LRESULT         LVar4;
+    WParamMessageId WVar5;
+    WMType          WVar6;
+    RECT            rcGBox;
+    PAINTSTRUCT     ps;
+    RECT            rc;
+    short           i;
 
     if (message == WM_DESTROY) {
         if (fDirtyPlan != 0) {
@@ -105,7 +105,7 @@ short RelationsDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         }
                         CheckRadioButton(hwnd, 0x7d4, 0x7d6, *(char *)(idPlayer * 0xc0 + 0x5a12 + i) + 0x7d4);
                     } else if (wParam == 0x76) {
-                        WinHelp(hwnd, _szHelpFile, 1, 0x43b);
+                        WinHelp(hwnd, szHelpFile, 1, 0x43b);
                         return 1;
                     }
                 } else {
@@ -131,7 +131,6 @@ short RelationsDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rc */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short NewPlanNameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -163,14 +162,14 @@ short NewPlanNameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         if (message == WM_COMMAND) {
             if ((wParam == 1) || (wParam == 2)) {
                 if (wParam == 1) {
-                    GetDlgItemText(hwnd, IDC_U16_0x010C, btlplan.szName, 0x20);
+                    GetDlgItemText(hwnd, IDC_EDITTEXT, btlplan.szName, 0x20);
                     fDirtyPlan = 1;
                 }
                 EndDialog(hwnd, (uint)(wParam == 1));
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x439);
+                WinHelp(hwnd, szHelpFile, 1, 0x439);
                 return 1;
             }
         }
@@ -184,39 +183,39 @@ short NewPlanNameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_BATTLE
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 /* WARNING: Restarted to delay deadcode elimination for space: ram */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short BattlePlansDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    char      *pcVar1;
-    ushort    *puVar2;
-    BTLPLAN   *pBVar3;
-    undefined2 uVar4;
-    char      *pcVar5;
-    HWND       HVar6;
-    short      sVar7;
-    ushort     uVar8;
-    int        iVar9;
-    int        iVar10;
-    undefined2 unaff_SI;
-    ushort    *puVar11;
-    undefined2 unaff_DI;
-    BTLPLAN   *pBVar12;
-    undefined2 unaff_SS;
-    ulong      uVar13;
-    FARPROC    lpDlgProc;
-    LRESULT    LVar14;
-    WPARAM     WVar15;
-    WMType     WVar16;
-    ushort     in_stack_0000ffe6;
-    short      cLen;
-    RECT       rc;
-    short      fRet;
-    short      i;
-    short      idc;
-    fn_lpProc *lpProc;
+    char           *pcVar1;
+    ushort         *puVar2;
+    BTLPLAN        *pBVar3;
+    undefined2      uVar4;
+    char           *pcVar5;
+    HWND            HVar6;
+    short           sVar7;
+    ushort          uVar8;
+    int             iVar9;
+    int             iVar10;
+    undefined2      unaff_SI;
+    ushort         *puVar11;
+    undefined2      unaff_DI;
+    BTLPLAN        *pBVar12;
+    undefined2      unaff_SS;
+    ulong           uVar13;
+    FARPROC         lpDlgProc;
+    LRESULT         LVar14;
+    WParamMessageId WVar15;
+    WMType          WVar16;
+    ushort          in_stack_0000ffe6;
+    short           cLen;
+    RECT            rc;
+    short           fRet;
+    short           i;
+    short           idc;
+    fn_lpProc      *lpProc;
 
     uVar13 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_ERASEBKGND) {
@@ -511,7 +510,7 @@ short BattlePlansDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     if (wParam != 0x76) {
                         return 0;
                     }
-                    WinHelp(hwnd, _szHelpFile, 1, 0x439);
+                    WinHelp(hwnd, szHelpFile, 1, 0x439);
                     return 1;
                 }
                 goto BATTLE_LSelectName;

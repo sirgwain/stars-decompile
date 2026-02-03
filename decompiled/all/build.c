@@ -215,8 +215,8 @@ short FCheckQueuedShip(HWND hwnd, SHDEF *lpshdef, short fEdit)
 /* WARNING: Removing unreachable block (ram,0x10c81192) */
 /* WARNING: Removing unreachable block (ram,0x10c812a2) */
 /* WARNING: Removing unreachable block (ram,0x10c81c54) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 /* WARNING: Restarted to delay deadcode elimination for space: ram */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short SlotDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -459,7 +459,8 @@ short SlotDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         *(undefined2 *)(long *)((int)pCVar18 + -0xc) = 0x14f8;
         uVar23 = 0x14f8;
         *(undefined2 *)((int)pCVar18 + -0xe) = 0x1004;
-        lVar26 = SendMessage(*(HWND *)((int)pCVar18 + -2), *(WMType *)((int)pCVar18 + -4), *(WPARAM *)((int)pCVar18 + -6), *(LPARAM *)((int)pCVar18 + -10));
+        lVar26 =
+            SendMessage(*(HWND *)((int)pCVar18 + -2), *(WMType *)((int)pCVar18 + -4), *(WParamMessageId *)((int)pCVar18 + -6), *(LPARAM *)((int)pCVar18 + -10));
         if ((mdBuild == 3) || (mdBuild == 4)) {
             if (lVar26 == -1) {
                 lSel._0_2_ = 0;
@@ -1341,7 +1342,7 @@ short SlotDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     } else {
                         uVar14 = 0x42a;
                     }
-                    WinHelp(hwnd, _szHelpFile, 1, (ulong)uVar14);
+                    WinHelp(hwnd, szHelpFile, 1, (ulong)uVar14);
                     pfVar5 = (fn_lpfnRealListProc *)CONCAT22(lpfnRealListProc._2_2_, (fn_lpfnRealListProc *)lpfnRealListProc);
                     HVar15 = 1;
                     goto LAB_10c8_2647;
@@ -1625,6 +1626,8 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, short iDraw)
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 short FTrackSlot(HWND hwnd, short x, short y, short fkb, short fListBox, short fRightBtn)
 
 {
@@ -1753,10 +1756,10 @@ short FTrackSlot(HWND hwnd, short x, short y, short fkb, short fListBox, short f
                 rcStart.bottom = *(short *)((int)&vrgrcSlot[0].bottom + iVar9);
             } else {
                 LVar19 = SendMessage(hwnd, CB_GETLBTEXTLEN, 0, 0);
-                if ((WPARAM)LVar19 == 0xffff) {
+                if ((WParamMessageId)LVar19 == 0xffff) {
                     return 0;
                 }
-                SendMessage(hwnd, CB_INSERTSTRING, (WPARAM)LVar19, 0x112057a4);
+                SendMessage(hwnd, CB_INSERTSTRING, (WParamMessageId)LVar19, 0x112057a4);
                 ibmp = szWork[2] + -0x41 + (szWork[3] + -0x41) * 0x1a;
                 iSrc = -1;
                 hs.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
@@ -1936,6 +1939,8 @@ short FTrackSlot(HWND hwnd, short x, short y, short fkb, short fListBox, short f
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void DrawBuildSelComp(HWND hwnd, HDC hdc, short iDraw)
 
 {
@@ -2000,10 +2005,10 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, short iDraw)
     if (iselSlot == -1) {
         HVar1 = GetDlgItem(hwndSlotDlg, IDC_U16_0x080C);
         LVar13 = SendMessage(HVar1, CB_GETLBTEXTLEN, 0, 0);
-        if ((WPARAM)LVar13 == 0xffff)
+        if ((WParamMessageId)LVar13 == 0xffff)
             goto BUILD_Restore;
         HVar1 = GetDlgItem(hwndSlotDlg, IDC_U16_0x080C);
-        SendMessage(HVar1, CB_INSERTSTRING, (WPARAM)LVar13, 0x112057a4);
+        SendMessage(HVar1, CB_INSERTSTRING, (WParamMessageId)LVar13, 0x112057a4);
         hsShip.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
         hsShip.wFlags_0x2 = (int)szWork[1] - 0x41U & 0xff | 0x100;
     } else {
@@ -2873,6 +2878,8 @@ short IDropPart(POINT pt, HS hsSrc, short iSrc, short fNoModify)
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void DrawDlgLBEntireItem(DRAWITEMSTRUCT *lpdis, short inflate)
 
 {
@@ -3027,31 +3034,33 @@ LAB_10c8_5e79:
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void FillBuildDD(HWND hwndDD, short md)
 
 {
-    BOOL       BVar1;
-    HWND       HVar2;
-    int        iVar3;
-    ushort     uVar4;
-    short      sVar5;
-    int        iVar6;
-    int        iVar7;
-    undefined2 unaff_SS;
-    LRESULT    LVar8;
-    char      *pcVar9;
-    undefined2 uVar10;
-    WPARAM     WVar11;
-    WMType     WVar12;
-    int        iVar13;
-    PART       part;
-    RECT       rc;
-    SHDEF     *lpshdef;
-    short      j;
-    short      i;
-    short      fAdded;
-    short      fProgress;
-    short      ishdefMac;
+    BOOL            BVar1;
+    HWND            HVar2;
+    int             iVar3;
+    ushort          uVar4;
+    short           sVar5;
+    int             iVar6;
+    int             iVar7;
+    undefined2      unaff_SS;
+    LRESULT         LVar8;
+    char           *pcVar9;
+    undefined2      uVar10;
+    WParamMessageId WVar11;
+    WMType          WVar12;
+    int             iVar13;
+    PART            part;
+    RECT            rc;
+    SHDEF          *lpshdef;
+    short           j;
+    short           i;
+    short           fAdded;
+    short           fProgress;
+    short           ishdefMac;
 
     SendMessage(hwndDD, CB_RESETCONTENT, 0, 0);
     if (md != 0) {
@@ -3194,6 +3203,8 @@ LAB_10c8_632a:
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void FillBuildPartsLB(HWND hwndLB, short grbit)
 
 {
@@ -3319,6 +3330,8 @@ short IEmptyBmpFromGrhst(HullSlotType grhst)
 // Segment: MEMORY_BUILD
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 long FakeListProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
 {
@@ -3357,8 +3370,8 @@ long FakeListProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
             return 0;
         }
         LVar5 = SendMessage(hwnd, CB_GETLBTEXTLEN, 0, 0);
-        if ((WPARAM)LVar5 != 0xffff) {
-            SendMessage(hwnd, CB_INSERTSTRING, (WPARAM)LVar5, 0x112057a4);
+        if ((WParamMessageId)LVar5 != 0xffff) {
+            SendMessage(hwnd, CB_INSERTSTRING, (WParamMessageId)LVar5, 0x112057a4);
             GlobalPD.u_POPUPDATA_0x0002.part.hs.grhst = 1 << (szWork[0] + 0xbfU & 0x1f);
             uVar1 = (int)szWork[1] - 0x41;
             GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 = GlobalPD.u_POPUPDATA_0x0002.part.hs.wFlags_0x2 & 0xff00 | uVar1 & 0xff;

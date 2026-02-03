@@ -10,7 +10,6 @@
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: iAction */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 /* WARNING: Restarted to delay deadcode elimination for space: ram */
 
 short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
@@ -291,7 +290,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         InvalidateRect(hwnd, (RECT *)0x0, 1);
                         gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffef | 0x10;
                     } else if (wParam == 0x76) {
-                        WinHelp(hwnd, _szHelpFile, 1, 0x44a);
+                        WinHelp(hwnd, szHelpFile, 1, 0x44a);
                         return 1;
                     }
                 }
@@ -330,7 +329,6 @@ void EnableZipBtns(HWND hwnd, short iSel)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rc */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short RenameZipDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -368,7 +366,7 @@ short RenameZipDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             SetWindowText(HVar2, pcVar1);
             SetWindowPos(hwnd, 0, ptStickyRenameDlg.x + 0x46, ptStickyRenameDlg.y + 0x46, 0, 0, 0x15);
             SendDlgItemMessage(hwnd, 0x10c, 0x415, 0xc, 0);
-            HVar2 = GetDlgItem(hwnd, IDC_U16_0x010C);
+            HVar2 = GetDlgItem(hwnd, IDC_EDITTEXT);
             SetWindowText(HVar2, szWork);
             StickyDlgPos(hwnd, (POINT *)&ptStickyRenameDlg, 1);
             return 1;
@@ -376,7 +374,7 @@ short RenameZipDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         if (message == WM_COMMAND) {
             if ((wParam == 1) || (wParam == 2)) {
                 if (wParam == 1) {
-                    GetDlgItemText(hwnd, IDC_U16_0x010C, szWork, 0xe);
+                    GetDlgItemText(hwnd, IDC_EDITTEXT, szWork, 0xe);
                 }
                 StickyDlgPos(hwnd, (POINT *)&ptStickyRenameDlg, 0);
                 EndDialog(hwnd, (uint)(wParam == 1));
@@ -388,7 +386,7 @@ short RenameZipDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 } else {
                     uVar3 = 0xc1f;
                 }
-                WinHelp(hwnd, _szHelpFile, 1, (ulong)uVar3);
+                WinHelp(hwnd, szHelpFile, 1, (ulong)uVar3);
                 return 1;
             }
         }
@@ -403,7 +401,7 @@ short RenameZipDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: lSel */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short RenameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -437,7 +435,7 @@ short RenameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 SetWindowText(HVar2, pcVar1);
                 SetWindowPos(hwnd, 0, ptStickyRenameDlg.x + 0x46, ptStickyRenameDlg.y + 0x46, 0, 0, 0x15);
                 SendDlgItemMessage(hwnd, 0x10c, 0x415, 0x1f, 0);
-                HVar2 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                HVar2 = GetDlgItem(hwnd, IDC_EDITTEXT);
                 SetWindowText(HVar2, szWork);
                 StickyDlgPos(hwnd, (POINT *)&ptStickyRenameDlg, 1);
                 return 1;
@@ -445,7 +443,7 @@ short RenameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if (message == WM_COMMAND) {
                 if ((wParam == 1) || (wParam == 2)) {
                     if (wParam == 1) {
-                        GetDlgItemText(hwnd, IDC_U16_0x010C, szWork, 0x20);
+                        GetDlgItemText(hwnd, IDC_EDITTEXT, szWork, 0x20);
                         FStringFitsScreen(szWork, 0xa0);
                     }
                     StickyDlgPos(hwnd, (POINT *)&ptStickyRenameDlg, 0);
@@ -463,7 +461,7 @@ short RenameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     }
                     fInEditUpdate = 0;
                 } else if (wParam == 0x76) {
-                    WinHelp(hwnd, _szHelpFile, 1, 0x447);
+                    WinHelp(hwnd, szHelpFile, 1, 0x447);
                     return 1;
                 }
             }
@@ -1797,21 +1795,21 @@ short CPtsCloakFromLphs(HS *lphs)
 // Segment: MEMORY_SHIP2
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short MergeFleetsDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
 {
-    char      *pcVar1;
-    WPARAM     WVar2;
-    HWND       HVar3;
-    short      sVar4;
-    undefined2 unaff_SS;
-    LRESULT    LVar5;
-    char      *psz;
-    char       szT[80];
-    RECT       rc;
-    short      i;
+    char           *pcVar1;
+    WParamMessageId WVar2;
+    HWND            HVar3;
+    short           sVar4;
+    undefined2      unaff_SS;
+    LRESULT         LVar5;
+    char           *psz;
+    char            szT[80];
+    RECT            rc;
+    short           i;
 
     if (msg == WM_ERASEBKGND) {
         GetClientRect(hwnd, &rc);
@@ -1867,7 +1865,7 @@ short MergeFleetsDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x453);
+                WinHelp(hwnd, szHelpFile, 1, 0x453);
                 return 1;
             }
             if ((wParam == 0x7f8) || (wParam == 0x7f9)) {

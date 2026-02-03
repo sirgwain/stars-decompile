@@ -90,7 +90,7 @@ short FGenerateTurn(void)
     hcurSav = SetCursor(HVar14);
     DestroyCurGame();
     if (((uint)gd.grBits >> 0xb & 1) != 0) {
-        Randomize(0x499602d2);
+        Randomize(1234567890);
     }
     sVar16 = fFileErrSilent;
     fFileErrSilent = 1;
@@ -477,7 +477,7 @@ short FGenerateTurn(void)
             uVar18 = _strlen((char *)szBase);
             pcVar22 = (char *)szBase + uVar18;
             pcVar19 = _strrchr((char *)szBase, 0x5c);
-            _strcpy(szT, (char *)&szBackup);
+            _strcpy(szT, (char *)szBackup);
             if (pcVar19 == (char *)0x0) {
                 _strcat(szT, (char *)szBase);
             } else {

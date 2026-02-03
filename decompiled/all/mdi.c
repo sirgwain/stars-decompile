@@ -662,12 +662,12 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                         if (local_12._2_2_ == 0) {
                             PostMessage(hwndFrame, WM_SYSCOMMAND, 0xf020, 0);
                         } else {
-                            PostMessage(hwndFrame, WM_COMMAND, 0x6a, 0);
+                            PostMessage(hwndFrame, WM_COMMAND, WMX_UNKNOWN_006A, 0);
                         }
                         return 1;
                     }
                     uVar12 = 0x14f8;
-                    SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+                    SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                     puVar11 = &stack0xff9a;
                     goto MDI_Default_5;
                 }
@@ -698,12 +698,12 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                             CreateChildWindows();
                         }
                     } else if (local_12._4_2_ == 2) {
-                        PostMessage(hwndFrame, WM_COMMAND, 0x6a, 0);
+                        PostMessage(hwndFrame, WM_COMMAND, WMX_UNKNOWN_006A, 0);
                         return 1;
                     }
                 }
                 uVar12 = 0x14f8;
-                SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+                SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                 if ((1000 < sel.pt.x) && (1000 < sel.pt.y)) {
                     uVar12 = 0x1058;
                     pt_00.y = sel.pt.y;
@@ -850,7 +850,7 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                     gd.grBits._0_2_ = (uint)gd.grBits & 0xfffd;
                 }
                 CreateChildWindows();
-                SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+                SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                 if (wParam == 0x9ca) {
                     SendMessage(hwndMessage, WM_KEYDOWN, 0x23, 0);
                 }
@@ -956,19 +956,19 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
         if (((int)game.lid != 0) || (game.lid._2_2_ != 0)) {
             if ((idPlayer != -1) && ((((ini.wFlags >> 0xc & 1) != 0 || ((ini.wFlags >> 0xb & 1) != 0)) || ((ini.wFlags >> 0xd & 1) != 0)))) {
                 if ((ini.wFlags >> 0xd & 1) != 0) {
-                    PostMessage(hwndFrame, WM_COMMAND, 0x55, 0);
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_UNIVERSE, 0);
                 }
                 if ((ini.wFlags >> 0xc & 1) != 0) {
-                    PostMessage(hwndFrame, WM_COMMAND, 0x54, 0);
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_PLANETS, 0);
                 }
                 if ((ini.wFlags >> 0xb & 1) != 0) {
-                    PostMessage(hwndFrame, WM_COMMAND, 0x53, 0);
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_DEBUG_DUMP_FLEETS, 0);
                 }
                 goto MDI_LExit;
             }
             ShowWindow(hwndFrame, 5);
             InitializeMenu(0);
-            PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+            PostMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
             if ((ini.wFlags >> 2 & 1) != 0) {
                 ini.wFlags = ini.wFlags & 0xfffb;
                 CommandHandler(hwnd, WMX_UNKNOWN_006A);
@@ -1589,7 +1589,6 @@ short FFindSomethingAndSelectIt(void)
 /* WARNING: Removing unreachable block (ram,0x10203499) */
 /* WARNING: Removing unreachable block (ram,0x102034e8) */
 /* WARNING: Removing unreachable block (ram,0x10203583) */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 void CommandHandler(HWND hwnd, WParamMessageId wParam)
@@ -1772,8 +1771,8 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                 return;
             }
             ShowTutor(0);
-            if (game.turn < 0x24) {
-                Randomize(0x499602d2);
+            if (game.turn < 36) {
+                Randomize(1234567890);
                 FWriteHistFile((short)local_22);
                 sVar7 = FWriteTutorialMFile(game.turn + 1);
                 if (sVar7 == 0) {
@@ -1782,7 +1781,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                     AlertSz(pcVar9, sVar7);
                     return;
                 }
-                if ((game.turn == 0x23) && (sVar7 = FWriteTutorialMFile(0x25), sVar7 == 0)) {
+                if ((game.turn == 35) && (sVar7 = FWriteTutorialMFile(0x25), sVar7 == 0)) {
                     sVar7 = 0x10;
                     pcVar9 = PszFormatIds(idsFileError, (short *)0x0);
                     AlertSz(pcVar9, sVar7);
@@ -1925,7 +1924,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                 *(undefined2 *)(puVar21 + -10) = 0;
                 *(undefined2 *)(puVar21 + -0xc) = 0x1020;
                 *(undefined2 *)(puVar21 + -0xe) = 0x43d1;
-                SendMessage(*(HWND *)(puVar21 + -2), *(WMType *)(puVar21 + -4), *(WPARAM *)(puVar21 + -6), *(LPARAM *)(puVar21 + -10));
+                SendMessage(*(HWND *)(puVar21 + -2), *(WMType *)(puVar21 + -4), *(WParamMessageId *)(puVar21 + -6), *(LPARAM *)(puVar21 + -10));
                 *(PLANET **)(puVar21 + -2) = local_24;
                 *(undefined2 *)(puVar21 + -4) = 0x14f8;
                 *(undefined2 *)(puVar21 + -6) = 0x43d9;
@@ -1966,7 +1965,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                 }
                 InitializeMenu(0);
                 if (uTimerId == 0) {
-                    PostMessage(hwnd, WM_COMMAND, 0xfa1, 0);
+                    PostMessage(hwnd, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                 }
                 if ((game.wCrap >> 3 & 1) == 0) {
                     return;
@@ -2013,7 +2012,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                         return;
                     }
                     local_24 = (PLANET *)0x262;
-                    local_22 = (PLANET *)0x1c2;
+                    local_22 = s_m_d_1120_01c2;
                     if (hwndPopup != 0) {
                         SendMessage(hwndPopup, WM_RBUTTONUP, 0, 0);
                     }
@@ -2096,7 +2095,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                     goto LAB_1020_4df3;
                 if (wParam == IDM_HELP_CONTENTS) {
                 LAB_1020_47b3:
-                    WinHelp(hwnd, _szHelpFile, 3, 0);
+                    WinHelp(hwnd, szHelpFile, 3, 0);
                     return;
                 }
                 if ((wParam == IDM_RACE_EDIT1) || (wParam == IDM_RACE_EDIT2)) {
@@ -2563,7 +2562,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                         } else {
                             uVar11 = 0x32ca;
                         }
-                        WinHelp(hwnd, _szHelpFile, 1, (ulong)uVar11);
+                        WinHelp(hwnd, szHelpFile, 1, (ulong)uVar11);
                         return;
                     }
                     if ((wParam == IDM_UNKNOWN_09C4) || (wParam == IDM_UNKNOWN_09C5)) {
@@ -2674,7 +2673,7 @@ void CommandHandler(HWND hwnd, WParamMessageId wParam)
                             InitializeMenu(0);
                             CreateChildWindows();
                             if (uTimerId == 0) {
-                                PostMessage(hwnd, WM_COMMAND, 0xfa1, 0);
+                                PostMessage(hwnd, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                             }
                             if ((game.wCrap >> 3 & 1) == 0) {
                                 return;
@@ -2761,7 +2760,7 @@ MDI_LNewTurnAvail:
         AlertSz(pcVar9, sVar7);
     } else {
         CreateChildWindows();
-        SendMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+        SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
     }
     return;
 }
@@ -2891,7 +2890,7 @@ void EnsureAis(void)
         uVar4 = (uint)gd.grBits >> 3;
         if (((uint)gd.grBits >> 3 & 1) == 0) {
             DestroyCurGame();
-            FLoadGame((char *)szBase, (char *)0x3f0);
+            FLoadGame((char *)szBase, (char *)s_hst_1120_03f0);
         }
         sVar2 = fFileErrSilent;
         for (iPlayer = 0; iPlayer < game.cPlayer; iPlayer = iPlayer + 1) {
@@ -2917,7 +2916,7 @@ void EnsureAis(void)
         gd.grBits._0_2_ = (uint)gd.grBits & 0xffef | (uVar3 & 1) << 4;
         if (bVar1) {
             DestroyCurGame();
-            FLoadGame((char *)szBase, (char *)0x3f4);
+            FLoadGame((char *)szBase, (char *)s_hst_1120_03f4);
         }
         gd.grBits._0_2_ = (uint)gd.grBits & 0xfbff | 0x400;
         fFileErrSilent = sVar2;
@@ -2979,6 +2978,7 @@ LAB_1020_58c7:
 
 /* WARNING: Variable defined which should be unmapped: ofn */
 /* WARNING: Removing unreachable block (ram,0x10205d80) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short FOpenGame(HWND hwnd, short fRaceOnly)
 
@@ -3145,7 +3145,7 @@ short FOpenGame(HWND hwnd, short fRaceOnly)
                     *(undefined2 *)(puVar5 + -10) = 0;
                     *(undefined2 *)(puVar5 + -0xc) = 0x1020;
                     *(undefined2 *)(puVar5 + -0xe) = 0x5d00;
-                    SendMessage(*(HWND *)(puVar5 + -2), *(WMType *)(puVar5 + -4), *(WPARAM *)(puVar5 + -6), *(LPARAM *)(puVar5 + -10));
+                    SendMessage(*(HWND *)(puVar5 + -2), *(WMType *)(puVar5 + -4), *(WParamMessageId *)(puVar5 + -6), *(LPARAM *)(puVar5 + -10));
                     if (((uVar4 & 0xf) == 0) || ((ini.wFlags >> 5 & 0xf) != 0)) {
                         ini.wFlags = ini.wFlags & 0xfe1f;
                         if (cPlanet != 0) {
@@ -3837,7 +3837,6 @@ short CFindTurnsOutstanding(void)
 // ======================================================================
 
 /* WARNING: Type propagation algorithm not settling */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short HostModeDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
 
@@ -4094,7 +4093,7 @@ short HostModeDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
                 if (wParam != 0x76) {
                     return 0;
                 }
-                WinHelp(hwnd, _szHelpFile, 1, 0x440);
+                WinHelp(hwnd, szHelpFile, 1, 0x440);
                 return 1;
             }
             pvVar9 = MakeProcInstance(HostOptionsDialog, hInst);
@@ -4144,8 +4143,6 @@ short HostModeDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_MDI
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 short HostOptionsDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
@@ -4178,7 +4175,7 @@ short HostOptionsDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
                         return 1;
                     }
                     if (wParam == 0x76) {
-                        WinHelp(hwnd, _szHelpFile, 1, 0x440);
+                        WinHelp(hwnd, szHelpFile, 1, 0x440);
                         return 1;
                     }
                 }
@@ -4901,6 +4898,8 @@ void RefitFrameChildren(void)
 // Segment: MEMORY_MDI
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 long TitleWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
 {
@@ -5199,7 +5198,7 @@ long TitleWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                         ShowWindow(hwndFrame, 5);
                     }
                     InitializeMenu(0);
-                    PostMessage(hwndFrame, WM_COMMAND, 0xfa1, 0);
+                    PostMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                     if (((game.wCrap >> 3 & 1) != 0) && (idPlayer == 0)) {
                         StartTutor(0);
                     }

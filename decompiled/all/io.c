@@ -1928,8 +1928,6 @@ void UpdateBattleRecords(void)
 // Segment: MEMORY_IO
 // ======================================================================
 
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
-
 short AskSaveDialog(HWND hwnd, ushort message, ushort wParam, long lParam)
 
 {
@@ -1952,7 +1950,7 @@ short AskSaveDialog(HWND hwnd, ushort message, ushort wParam, long lParam)
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x442);
+                WinHelp(hwnd, szHelpFile, 1, 0x442);
                 return 1;
             }
         }

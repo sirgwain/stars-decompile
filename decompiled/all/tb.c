@@ -10,6 +10,7 @@
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: pct */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
@@ -861,6 +862,8 @@ switchD_1068_161b_default:
 // Segment: MEMORY_TB
 // ======================================================================
 
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
+
 void TerminateToolbarFocus(short fCancel)
 
 {
@@ -902,7 +905,7 @@ void TerminateToolbarFocus(short fCancel)
     *(undefined2 *)(puVar1 + -10) = 0;
     *(undefined2 *)(puVar1 + -0xc) = uVar4;
     *(undefined2 *)(puVar1 + -0xe) = 0x1764;
-    SendMessage(*(HWND *)(puVar1 + -2), *(WMType *)(puVar1 + -4), *(WPARAM *)(puVar1 + -6), *(LPARAM *)(puVar1 + -10));
+    SendMessage(*(HWND *)(puVar1 + -2), *(WMType *)(puVar1 + -4), *(WParamMessageId *)(puVar1 + -6), *(LPARAM *)(puVar1 + -10));
     *(short *)(puVar1 + -2) = pct;
     *(undefined2 *)(puVar1 + -4) = 0x1120;
     *(char **)(puVar1 + -6) = PCTDPCTPCT;

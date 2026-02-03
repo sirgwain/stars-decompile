@@ -1,10 +1,13 @@
-#include <winres.h>         // gives VK_* etc. (preferred for RC)
-#include "resource.h"   // or "../resource.h" if that’s where it is
+#include <winres.h>      // gives VK_* etc. (preferred for RC)
+#include "resource.h"    // your generated/maintained IDs
 
 // ------------ Icons ------------
 IDI_STARS   ICON "icons/stars.ico"
 IDI_WAIT    ICON "icons/wait.ico"
 IDI_HOST    ICON "icons/host.ico"
+
+/* Alias expected by dialogs/hostmode.rc ("HostIco") */
+HostIco     ICON "icons/host.ico"
 
 IDI_BANG1   ICON "icons/bang1.ico"
 IDI_BANG2   ICON "icons/bang2.ico"
@@ -72,7 +75,14 @@ IDDIB_SPLASH                    BITMAP "bitmaps/splash.bmp"
 #include "menu/menu.rc"
 
 // ------------ Dialogs ------------
+// Keep these in one place so you can add/remove as you port dialogs.
 #include "dialogs/about.rc"
+#include "dialogs/serial.rc"
+#include "dialogs/browser.rc"
+#include "dialogs/hostmode.rc"
+#include "dialogs/password.rc"
+#include "dialogs/simplenewgame.rc"
+#include "dialogs/vcr.rc"
 
 // ------------ Accelerators ------------
 #include "accelerators/main.rc"

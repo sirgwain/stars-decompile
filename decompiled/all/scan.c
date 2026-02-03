@@ -12,6 +12,7 @@
 /* WARNING: Removing unreachable block (ram,0x105809f8) */
 /* WARNING: Removing unreachable block (ram,0x1058094a) */
 /* WARNING: Removing unreachable block (ram,0x1058014f) */
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
@@ -75,7 +76,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     if (msg == WM_SIZE) {
         SetScanScrollBars(hwnd);
         uVar15 = 0x14f8;
-        PostMessage(hwndFrame, WM_COMMAND, iScanZoom + 0xf41, 0);
+        PostMessage(hwndFrame, WM_COMMAND, iScanZoom + IDM_SCAN_ZOOM_4, 0);
         puVar14 = &stack0xfdd6;
     SCAN_Default_2:
         *(HWND *)(puVar14 + -2) = hwnd;
@@ -140,7 +141,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                     }
                 }
                 if (local_6a.lpplprod._2_2_ != iScanZoom) {
-                    SendMessage(hwndFrame, WM_COMMAND, local_6a.lpplprod._2_2_ + 0xf41, 0);
+                    SendMessage(hwndFrame, WM_COMMAND, local_6a.lpplprod._2_2_ + IDM_SCAN_ZOOM_4, 0);
                 }
             }
         } else if ((msg == WM_HSCROLL) || (msg == WM_VSCROLL)) {
@@ -4413,7 +4414,6 @@ short FGetNextObjHere(SCAN *pscan, short fOnlyOurs)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: rc */
-/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
 
 short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
@@ -4448,13 +4448,13 @@ short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
         if (msg == WM_COMMAND) {
             if ((wParam == 1) || (wParam == 2)) {
                 if (wParam == 1) {
-                    GetDlgItemText(hwnd, IDC_U16_0x010C, szName, 0x28);
+                    GetDlgItemText(hwnd, IDC_EDITTEXT, szName, 0x28);
                     sVar1 = FSelectSz(szName);
                     if (sVar1 == 0) {
                         sVar1 = 0x10;
                         sz = PszFormatIds(idsSorryCantFindPlanetFleetName, (short *)0x0);
                         AlertSz(sz, sVar1);
-                        HVar2 = GetDlgItem(hwnd, IDC_U16_0x010C);
+                        HVar2 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar2);
                         SendDlgItemMessage(hwnd, 0x10c, 0x401, 0, -0x10000);
                         return 0;
@@ -4465,7 +4465,7 @@ short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 return 1;
             }
             if (wParam == 0x76) {
-                WinHelp(hwnd, _szHelpFile, 1, 0x43d);
+                WinHelp(hwnd, szHelpFile, 1, 0x43d);
                 return 1;
             }
         }
@@ -4478,6 +4478,8 @@ short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
 // Address: 1058:945a
 // Segment: MEMORY_SCAN
 // ======================================================================
+
+/* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short FSelectSz(char *szName)
 
