@@ -4,25 +4,9 @@
 #include "strings.h"
 #include "types.h"
 
-#include <stddef.h>
-
 #define cbPlayerSome ((uint16_t)offsetof(PLAYER, idPlanetHome))
 #define cbPlayerAll  ((uint16_t)offsetof(PLAYER, rgmdRelation))
-
-#define cbrtshdefB (2 * sizeof(uint8_t) + 2 * sizeof(uint16_t)) // ihuldef + wFlags + ibmp + wtEmpty
-
-/* =========================================================================
- * Portable file handle wrapper (replaces Win16 HFILE + _lread/_lclose/_lseek)
- * =========================================================================
- *
- * Keep the global name `hf` so callers don't change.
- */
-typedef struct StarsFile {
-    FILE *fp;
-    int   last_errno; /* capture errno from last open attempt */
-} StarsFile;
-
-extern StarsFile hf;
+#define cbrtshdefB   (2 * sizeof(uint8_t) + 2 * sizeof(uint16_t)) // ihuldef + wFlags + ibmp + wtEmpty
 
 typedef enum MdCheckType {
     mdInUse = 0x0001,      /* BOF.fInUse */
@@ -30,12 +14,6 @@ typedef enum MdCheckType {
     mdMulti = 0x0004,      /* BOF.fMulti */
     mdPlayerType = 0x0008, /* PLAYER.fAi */
 } MdCheckType;
-
-/* mdOpen flags (passed to StreamOpen / FOpenFile) */
-typedef enum MdOpenFlags {
-    mdRead = 0x0020,
-    mdNoOpenErr = 0x4000,
-} MdOpenFlags;
 
 typedef enum DtFileType {
     dtXY = 0,   /* Universe file: .xy */
@@ -141,7 +119,7 @@ bool FNewTurnAvail(int16_t idPlayer);                                           
 void GetFileStatus(int16_t dt, int16_t iPlayer);                                 /* MEMORY_IO:0x4a60 */
 bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited); /* MEMORY_IO:0x3206 */
 void PromptSaveGame(void);                                                       /* MEMORY_IO:0x43ee */
-bool FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md);                    /* MEMORY_IO:0x4fb2 */
+bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md);                 /* MEMORY_IO:0x4fb2 */
 bool FValidSerialLong(uint32_t lSerial);                                         /* MEMORY_IO:0x48c4 */
 void DestroyCurGame(void);                                                       /* MEMORY_IO:0x44b0 */
 void RgFromStream(void *rg, uint16_t cb);                                        /* MEMORY_IO:0x53f4 */

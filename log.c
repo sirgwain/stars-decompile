@@ -57,7 +57,7 @@ int16_t FLoadLogFile(char *pszLog) {
     /* label Done @ MEMORY_PLANET:0xcc76 */
 
     /* TODO: implement */
-    return 0;
+    return true;
 }
 
 void DirtyGame(int16_t fDirty) {
@@ -273,7 +273,7 @@ int16_t FRunLogFile(void) {
     HDR    *lprts;
 
     /* TODO: implement */
-    return 0;
+    return true;
 }
 
 void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {

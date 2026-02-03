@@ -2,6 +2,7 @@
 
 #include "port.h"
 
+#include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,9 +18,115 @@
 #include <unistd.h>
 #endif
 
+// global file handle
+StarsFile hf = {0};
+
+/* ------------------------------------------------------------------ */
+/* String utilities.                                                  */
+/* ------------------------------------------------------------------ */
+
+/* The original used the MSVCRT case-insensitive helpers. Keep local shims to
+ * avoid pulling platform headers.
+ */
+int Stars_stricmp(const char *a, const char *b) {
+    unsigned char ca;
+    unsigned char cb;
+    while (*a && *b) {
+        ca = (unsigned char)tolower((unsigned char)*a++);
+        cb = (unsigned char)tolower((unsigned char)*b++);
+        if (ca != cb)
+            return (int)ca - (int)cb;
+    }
+    return (int)tolower((unsigned char)*a) - (int)tolower((unsigned char)*b);
+}
+
+int Stars_strnicmp(const char *a, const char *b, size_t n) {
+    size_t i;
+    for (i = 0; i < n; i++) {
+        unsigned char ca = (unsigned char)tolower((unsigned char)a[i]);
+        unsigned char cb = (unsigned char)tolower((unsigned char)b[i]);
+        if (ca != cb)
+            return (int)ca - (int)cb;
+        if (a[i] == '\0' || b[i] == '\0')
+            break;
+    }
+    return 0;
+}
+
 /* ====================================================================== */
 /* Small internal helpers                                                  */
 /* ====================================================================== */
+
+int Stars_Seek(StarsFile *h, long offset, int whence) {
+    if (h == NULL || h->fp == NULL) {
+        return -1;
+    }
+    return fseek(h->fp, offset, whence);
+}
+
+/* mdOpen mapping:
+ * - original passed mdOpen & 0xbfff to OpenFile()
+ * - we map common cases you likely use in Stars:
+ *     0 => "rb"
+ *     1 => "r+b" (read/write existing)
+ *     2 => "wb"  (truncate/create)
+ * If your project already has an mdOpen enum, adjust here.
+ */
+static inline const char *stars_mode_from_md(int16_t mdOpen) {
+    mdOpen = (int16_t)(mdOpen & (int16_t)0xbfff);
+
+    switch (mdOpen) {
+    case 2:
+        return "wb";
+    case 1:
+        return "r+b";
+    default:
+        return "rb";
+    }
+}
+
+/* Portable "OpenFile": returns 0 on success, nonzero on failure (like hf == -1 check). */
+int Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen) {
+    const char *mode = stars_mode_from_md(mdOpen);
+
+    errno = 0;
+    h->fp = fopen(path, mode);
+    if (!h->fp) {
+        h->last_errno = errno;
+
+        fprintf(stderr,
+                "Stars_OpenFile: fopen failed\n"
+                "  path: \"%s\"\n"
+                "  mode: \"%s\"\n"
+                "  errno: %d (%s)\n",
+                path, mode ? mode : "(null)", errno, strerror(errno));
+
+        return 1;
+    }
+
+    h->last_errno = 0;
+    return 0;
+}
+
+void Stars_CloseFile(StarsFile *h) {
+    if (h->fp) {
+        fclose(h->fp);
+        h->fp = NULL;
+    }
+    h->last_errno = 0;
+}
+
+size_t Stars_Read(StarsFile *h, void *dst, size_t cb) {
+    if (!h->fp)
+        return 0;
+    return fread(dst, 1, cb, h->fp);
+}
+
+uint16_t Stars_ReadU16Unaligned(const void *p) {
+    uint16_t v;
+    memcpy(&v, p, sizeof(v));
+    return v;
+}
 
 static char Port_PathSep(void) {
 #if defined(_WIN32)
@@ -63,7 +170,7 @@ static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
 /* Path utilities                                                          */
 /* ====================================================================== */
 
-bool Port_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf) {
+bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf) {
     if (!out || out_sz == 0 || !base || !leaf)
         return false;
 
@@ -90,7 +197,7 @@ bool Port_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf)
     return true;
 }
 
-bool Port_PathExists(const char *path) {
+bool Stars_PathExists(const char *path) {
     if (!path || !*path)
         return false;
 
@@ -127,7 +234,7 @@ static bool Port_MkdirOne(const char *path) {
 #endif
 }
 
-bool Port_EnsureDirRecursive(const char *path) {
+bool Stars_EnsureDirRecursive(const char *path) {
     if (!path || !*path)
         return false;
 
@@ -168,8 +275,7 @@ bool Port_EnsureDirRecursive(const char *path) {
     return true;
 }
 
-bool Port_PathSplitExt(const char *path, char *base_out, size_t base_sz,
-                       char *ext_out, size_t ext_sz) {
+bool Stars_PathSplitExt(const char *path, char *base_out, size_t base_sz, char *ext_out, size_t ext_sz) {
     if (!path || !base_out || base_sz == 0 || !ext_out || ext_sz == 0)
         return false;
 
@@ -209,7 +315,7 @@ bool Port_PathSplitExt(const char *path, char *base_out, size_t base_sz,
     return true;
 }
 
-const char *Port_PathBasename(const char *path) {
+const char *Stars_PathBasename(const char *path) {
     if (!path || !*path)
         return path;
 
@@ -222,7 +328,7 @@ const char *Port_PathBasename(const char *path) {
     return last_sep ? (last_sep + 1) : path;
 }
 
-bool Port_PathDirname(const char *path, char *out, size_t out_sz) {
+bool Stars_PathDirname(const char *path, char *out, size_t out_sz) {
     if (!path || !out || out_sz == 0)
         return false;
 
@@ -257,7 +363,7 @@ bool Port_PathDirname(const char *path, char *out, size_t out_sz) {
 /* File I/O                                                                */
 /* ====================================================================== */
 
-bool Port_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len) {
+bool Stars_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len) {
     if (!out_buf || !out_len)
         return false;
     *out_buf = NULL;
@@ -358,7 +464,7 @@ static bool Port_MkTempSibling(const char *target, char *out, size_t out_sz) {
 }
 #endif
 
-bool Port_WriteFileAtomic(const char *path, const void *buf, size_t len) {
+bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
     if (!path || !*path)
         return false;
     if (len && !buf)
@@ -471,7 +577,7 @@ static void Cli_ParseDumpModes(StarsCli *cli, const char *modes) {
     }
 }
 
-bool Port_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli) {
+bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli) {
     if (!out_cli)
         return false;
     memset(out_cli, 0, sizeof(*out_cli));

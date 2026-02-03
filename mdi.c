@@ -1,9 +1,9 @@
 
 #include "debuglog.h"
 #include "globals.h"
-#include "types.h"
-
+#include "port.h"
 #include "resource.h"
+#include "types.h"
 
 #include "create.h"
 #include "file.h"
@@ -27,17 +27,6 @@
 #include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
-
-/* file existence check used by TitleWndProc (matches file.c portability) */
-#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
-#include <io.h>
-#define stars_access      _access
-#define stars_access_mode 0
-#else
-#include <unistd.h>
-#define stars_access      access
-#define stars_access_mode 0
-#endif
 
 /* globals */
 char    rgTOWidth[2][2] = {{-3, 0}, {2, 1}}; /* 1020:7702 */
@@ -784,8 +773,8 @@ LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 bool enable = false;
 
                 if (szBase[0] != '\0') {
-                    int acc = stars_access(szBase, stars_access_mode); /* mode should be 0 like __access(path,0) */
-                    DBG_LOGD("WM_CREATE: stars_access('%s', mode=%d) -> %d", szBase, (int)stars_access_mode, (int)acc);
+                    int acc = Stars_Access(szBase, STARS_ACCESS_OK); /* mode should be 0 like __access(path,0) */
+                    DBG_LOGD("WM_CREATE: Stars_Access('%s', mode=%d) -> %d", szBase, (int)STARS_ACCESS_OK, (int)acc);
 
                     if (acc != -1) {
                         enable = true; /* file exists -> keep enabled */

@@ -19,6 +19,19 @@
 #define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))
 #endif
 
+/* Planets are stored in a flat array lpPlanets[0..cPlanet-1]. */
+#define FORPLANETS(lppl, lpplMac) for ((lppl) = lpPlanets, (lpplMac) = lpPlanets + cPlanet; (lppl) < (lpplMac); ++(lppl))
+
+/* Things are stored in a flat array lpThings[0..cThing-1]. */
+#define FORTHINGS(lpth, lpthMac) for ((lpth) = lpThings, (lpthMac) = lpThings + cThing; (lpth) < (lpthMac); ++(lpth))
+
+/* Fleets are stored as an array of pointers rglpfl[0..cFleet-1]. */
+#define FORFLEETS(lpfl, i) for ((i) = 0; (i) < cFleet && ((lpfl) = rglpfl[(i)]) != NULL; ++(i))
+
+/* Production queue iterator: assumes PLPROD has a PROD array and mac count. */
+#define FORPROD(lpplprod, lpprod, iprod)                                                                                                                       \
+    for ((iprod) = 0; (lpplprod) != NULL && (iprod) < (int16_t)(lpplprod)->iprodMac && (((lpprod) = &(lpplprod)->rgprod[(iprod)]), 1); ++(iprod))
+
 /* These are constants in the original; keep them header-only without creating
  * multiple definitions across TUs.
  */

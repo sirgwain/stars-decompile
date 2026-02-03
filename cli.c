@@ -376,7 +376,7 @@ static int cmd_shdef(const char *sidx) {
 }
 
 static int cmd_game(const CliContext *cli) {
-    int64_t sz;
+    int64_t     sz;
     const char *path = cli ? cli->file : "(null)";
 
     sz = file_size_bytes(path);
@@ -409,9 +409,7 @@ static void print_hex_bytes(const uint8_t *pb, size_t cb) {
     }
 }
 
-static int cmd_blocks(const CliContext *cli) {
-    return DumpGameFileBlocks(cli ? cli->file : NULL);
-}
+static int cmd_blocks(const CliContext *cli) { return DumpGameFileBlocks(cli ? cli->file : NULL); }
 
 /* ------------------------------------------------------------ */
 
@@ -427,7 +425,7 @@ static int do_load(CliContext *cli) {
 
 int StarsCli_Run(int argc, char **argv) {
     CliContext cli;
-    int      i = 1;
+    int        i = 1;
 
     memset(&cli, 0, sizeof(cli));
     cli.iPlayer = 0;
@@ -456,8 +454,7 @@ int StarsCli_Run(int argc, char **argv) {
     cli.file = argv[i++];
 
     /* Split file path into base and extension */
-    if (!Port_PathSplitExt(cli.file, cli.path_base, sizeof(cli.path_base),
-                           cli.ext, sizeof(cli.ext))) {
+    if (!Stars_PathSplitExt(cli.file, cli.path_base, sizeof(cli.path_base), cli.ext, sizeof(cli.ext))) {
         fprintf(stderr, "Invalid file path: %s\n", cli.file);
         return 2;
     }
@@ -489,7 +486,6 @@ int StarsCli_Run(int argc, char **argv) {
         print_usage(stderr);
         return 2;
     }
-
 
     const char *cmd = argv[i++];
 

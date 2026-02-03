@@ -3,37 +3,26 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-/* io.h is Windows-specific; use unistd.h on other platforms or when using stubs */
-#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
-#include <io.h>
-#define stars_access _access
-#define modeWrite    2 /* MSVCRT _access: 2 == write permission check */
-#else
-#include <unistd.h>
-#define stars_access access
-#define modeWrite    W_OK /* POSIX access(): W_OK checks write permission */
-#endif
-
+#include "debuglog.h"
 #include "globals.h"
+#include "port.h"
 #include "strings.h"
 #include "types.h"
 
-#include "debuglog.h"
-
 #include "file.h"
-#include "platform.h"
-
+#include "log.h"
 #include "mdi.h"
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
 #include "planet.h"
+#include "platform.h"
+#include "produce.h"
+#include "race.h"
 #include "save.h"
 #include "util.h"
 #include "utilgen.h"
 #include "vcr.h"
-
-static inline uint16_t rd_u16le(const uint8_t *p) { return (uint16_t)p[0] | ((uint16_t)p[1] << 8); }
 
 /* ------------------------------------------------------------------------- */
 /* Debug/diagnostic block dump helpers                                       */
@@ -222,123 +211,6 @@ int DumpGameFileBlocks(const char *szPath) {
     StreamClose();
     return 0;
 }
-#include "log.h"
-#include "produce.h"
-#include "race.h"
-
-/* Planets are stored in a flat array lpPlanets[0..cPlanet-1]. */
-#define FORPLANETS(lppl, lpplMac) for ((lppl) = lpPlanets, (lpplMac) = lpPlanets + cPlanet; (lppl) < (lpplMac); ++(lppl))
-
-/* Things are stored in a flat array lpThings[0..cThing-1]. */
-#define FORTHINGS(lpth, lpthMac) for ((lpth) = lpThings, (lpthMac) = lpThings + cThing; (lpth) < (lpthMac); ++(lpth))
-
-/* Fleets are stored as an array of pointers rglpfl[0..cFleet-1]. */
-#define FORFLEETS(lpfl, i) for ((i) = 0; (i) < cFleet && ((lpfl) = rglpfl[(i)]) != NULL; ++(i))
-
-/* Production queue iterator: assumes PLPROD has a PROD array and mac count. */
-#define FORPROD(lpplprod, lpprod, iprod)                                                                                                                       \
-    for ((iprod) = 0; (lpplprod) != NULL && (iprod) < (int16_t)(lpplprod)->iprodMac && (((lpprod) = &(lpplprod)->rgprod[(iprod)]), 1); ++(iprod))
-
-StarsFile hf = {0};
-
-int stars_seek(StarsFile *h, long offset, int whence) {
-    if (h == NULL || h->fp == NULL) {
-        return -1;
-    }
-    return fseek(h->fp, offset, whence);
-}
-
-/* mdOpen mapping:
- * - original passed mdOpen & 0xbfff to OpenFile()
- * - we map common cases you likely use in Stars:
- *     0 => "rb"
- *     1 => "r+b" (read/write existing)
- *     2 => "wb"  (truncate/create)
- * If your project already has an mdOpen enum, adjust here.
- */
-static inline const char *stars_mode_from_md(int16_t mdOpen) {
-    mdOpen = (int16_t)(mdOpen & (int16_t)0xbfff);
-
-    switch (mdOpen) {
-    case 2:
-        return "wb";
-    case 1:
-        return "r+b";
-    default:
-        return "rb";
-    }
-}
-
-/* Portable "OpenFile": returns 0 on success, nonzero on failure (like hf == -1 check). */
-static inline int stars_open_file(StarsFile *h, const char *path, int16_t mdOpen) {
-    const char *mode = stars_mode_from_md(mdOpen);
-
-    errno = 0;
-    h->fp = fopen(path, mode);
-    if (!h->fp) {
-        h->last_errno = errno;
-
-        fprintf(stderr,
-                "stars_open_file: fopen failed\n"
-                "  path: \"%s\"\n"
-                "  mode: \"%s\"\n"
-                "  errno: %d (%s)\n",
-                path, mode ? mode : "(null)", errno, strerror(errno));
-
-        return 1;
-    }
-
-    h->last_errno = 0;
-    return 0;
-}
-
-static inline void stars_close_file(StarsFile *h) {
-    if (h->fp) {
-        fclose(h->fp);
-        h->fp = NULL;
-    }
-    h->last_errno = 0;
-}
-
-static inline size_t stars_read(StarsFile *h, void *dst, size_t cb) {
-    if (!h->fp)
-        return 0;
-    return fread(dst, 1, cb, h->fp);
-}
-
-static inline uint16_t read_u16_unaligned(const void *p) {
-    uint16_t v;
-    memcpy(&v, p, sizeof(v));
-    return v;
-}
-
-/* The original used the MSVCRT case-insensitive helpers. Keep local shims to
- * avoid pulling platform headers.
- */
-static int stars_stricmp(const char *a, const char *b) {
-    unsigned char ca;
-    unsigned char cb;
-    while (*a && *b) {
-        ca = (unsigned char)tolower((unsigned char)*a++);
-        cb = (unsigned char)tolower((unsigned char)*b++);
-        if (ca != cb)
-            return (int)ca - (int)cb;
-    }
-    return (int)tolower((unsigned char)*a) - (int)tolower((unsigned char)*b);
-}
-
-static int stars_strnicmp(const char *a, const char *b, size_t n) {
-    size_t i;
-    for (i = 0; i < n; i++) {
-        unsigned char ca = (unsigned char)tolower((unsigned char)a[i]);
-        unsigned char cb = (unsigned char)tolower((unsigned char)b[i]);
-        if (ca != cb)
-            return (int)ca - (int)cb;
-        if (a[i] == '\0' || b[i] == '\0')
-            break;
-    }
-    return 0;
-}
 
 static inline uint32_t read_u32_unaligned(const void *p) {
     uint32_t v;
@@ -366,7 +238,7 @@ void StreamOpen(const char *szFile, int16_t mdOpen) {
     Assert(hf.fp == NULL); /* faithful to Assert(hf == HFILE_ERROR) */
 
     for (;;) {
-        if (stars_open_file(&hf, szFile, mdOpen) == 0)
+        if (Stars_OpenFile(&hf, szFile, mdOpen) == 0)
             return;
 
         if (!gd.fRetryOpens)
@@ -469,13 +341,6 @@ void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn) {
     pplrRaw = (PLAYER *)pbIn;
     memset(pplr, 0, sizeof(*pplr));
 
-    DBG_HEXDUMP(DBGLOG_TRACE, pbIn, 128, 128, "Player record bytes (first 128)");
-    DBG_LOGD("Player raw: iPlayer=%u cShDef=%u cPlanet=%u wFleetSB=0x%04x wMdPlr=0x%04x env=%u/%u/%u min=%u/%u/%u max=%u/%u/%u", (unsigned)pbIn[0],
-             (unsigned)pbIn[1], (unsigned)rd_u16le(pbIn + 2), (unsigned)rd_u16le(pbIn + 4), (unsigned)rd_u16le(pbIn + 6), (unsigned)(uint8_t)pbIn[16],
-             (unsigned)(uint8_t)pbIn[17], (unsigned)(uint8_t)pbIn[18], (unsigned)(uint8_t)pbIn[19], (unsigned)(uint8_t)pbIn[20], (unsigned)(uint8_t)pbIn[21],
-             (unsigned)(uint8_t)pbIn[22], (unsigned)(uint8_t)pbIn[23], (unsigned)(uint8_t)pbIn[24]);
-
-    DBG_LOGD("Player raw: cbPlayerAll=%u, cbPlayerSome=%u", cbPlayerAll, cbPlayerSome);
     if (pplrRaw->det == detAll) {
         /* Full player record up to relations, 112 bytes */
         memmove(pplr, pbIn, cbPlayerAll);
@@ -546,7 +411,7 @@ bool FReadFleet(FLEET *lpfl) {
     /* Load rgcsh, saved as byte or word values depending on fByteCsh. */
     fByte = (((FLEETSOME *)lpfl)->fByteCsh != 0);
 
-    us = read_u16_unaligned(rgbCur + sizeof(FLEETSOME));
+    us = Stars_ReadU16Unaligned(rgbCur + sizeof(FLEETSOME));
     pb = rgbCur + sizeof(FLEETSOME) + sizeof(uint16_t);
 
     if (fByte) {
@@ -578,7 +443,7 @@ bool FReadFleet(FLEET *lpfl) {
 
     if (lpfl->det >= detMore) {
         /* Read rgwtMin, packed by size. */
-        us = read_u16_unaligned(pb);
+        us = Stars_ReadU16Unaligned(pb);
         pb += sizeof(uint16_t);
 
         for (i = 0; i < 5; i++, us >>= 2) {
@@ -588,7 +453,7 @@ bool FReadFleet(FLEET *lpfl) {
                 break;
             case 2: /* word */
             {
-                uint16_t v = read_u16_unaligned(pb);
+                uint16_t v = Stars_ReadU16Unaligned(pb);
                 lpfl->rgwtMin[i] = v;
                 pb += sizeof(uint16_t);
                 break;
@@ -623,7 +488,7 @@ bool FReadFleet(FLEET *lpfl) {
     }
 
     /* rgdv saved as small as possible. */
-    us = read_u16_unaligned(pb);
+    us = Stars_ReadU16Unaligned(pb);
     pb += sizeof(uint16_t);
 
     pus = (uint16_t *)pb;
@@ -1548,7 +1413,7 @@ LNextTurn:
         }
     }
 
-    if (stars_strnicmp(pszExt, "hst", 3) == 0) {
+    if (Stars_strnicmp(pszExt, "hst", 3) == 0) {
         goto DoneNow;
     }
 
@@ -1657,9 +1522,9 @@ DoneNow:
             strcat(szT, ".");
             strcat(szT, pszExt);
 
-            if (stars_stricmp(szT, vrgszMRU) != 0) {
+            if (Stars_stricmp(szT, vrgszMRU) != 0) {
                 for (i = 1; i < 8; i++) {
-                    if (stars_stricmp(szT, vrgszMRU + 256 * i) == 0)
+                    if (Stars_stricmp(szT, vrgszMRU + 256 * i) == 0)
                         break;
                 }
 
@@ -1894,7 +1759,7 @@ bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
             /* Hist file will always seem to be one turn out of date! */
             if (fCheckMulti && rtbof.fMulti) {
                 /* Multi-part file. Let's check the rest of it. */
-                stars_seek(&hf, -4, SEEK_END);
+                Stars_Seek(&hf, -4, SEEK_END);
                 ReadRt();
                 if (hdrCur.rt != rtEOF && hdrCur.cb != 2) {
                     goto LBadFile;
@@ -1927,7 +1792,7 @@ bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
     }
 
     if (fRewind) {
-        stars_seek(&hf, 0, SEEK_SET);
+        Stars_Seek(&hf, 0, SEEK_SET);
         ReadRt();
     }
 
@@ -1949,7 +1814,7 @@ int16_t AskSaveDialog(void) {
     return 0;
 }
 
-void StreamClose(void) { stars_close_file(&hf); }
+void StreamClose(void) { Stars_CloseFile(&hf); }
 
 bool FNewTurnAvail(int16_t idPlayer) {
     bool     fNew;
@@ -1982,7 +1847,7 @@ void GetFileStatus(int16_t dt, int16_t iPlayer) {
     SetSzWorkFromDt((uint16_t)dt, (int16_t)iPlayer);
 
     /* fReadOnly is true if we cannot open/write the file. */
-    gd.fReadOnly = (stars_access(szWork, modeWrite) != 0);
+    gd.fReadOnly = (Stars_Access(szWork, STARS_ACCESS_WRITE) != 0);
 }
 
 bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) {
@@ -2080,7 +1945,7 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) 
 
     /* Population guess if occupied */
     if (prtplan->iPlayer != -1) {
-        lppl->uGuesses = read_u16_unaligned(pb);
+        lppl->uGuesses = Stars_ReadU16Unaligned(pb);
         pb += 2;
     }
 
@@ -2100,7 +1965,7 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) 
                 lppl->rgwtMin[i] = *pb++;
                 break;
             case 2:
-                lppl->rgwtMin[i] = read_u16_unaligned(pb);
+                lppl->rgwtMin[i] = Stars_ReadU16Unaligned(pb);
                 pb += 2;
                 break;
             case 3:
@@ -2120,7 +1985,7 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) 
         }
 
         if (fHistory) {
-            lppl->turn = (uint16_t)read_u16_unaligned(pb);
+            lppl->turn = (uint16_t)Stars_ReadU16Unaligned(pb);
             pb += 2;
         } else if (fFirstYear) {
             if (lppl->iPlayer != -1) {
@@ -2178,7 +2043,7 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) 
         }
 
         if (fRouting) {
-            lppl->wRouting = read_u16_unaligned(pb);
+            lppl->wRouting = Stars_ReadU16Unaligned(pb);
             pb += 2;
         }
     }
@@ -2193,7 +2058,7 @@ void PromptSaveGame(void) {
     /* TODO: implement */
 }
 
-bool FCheckFile(DtFileType dt, int16_t iPlayer, uint16_t md) {
+bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md) {
     bool     fReturn = false;
     bool     fOpened;
     bool     fErrSav = fFileErrSilent;
@@ -2472,7 +2337,7 @@ void RgFromStream(void *rg, uint16_t cb) {
 
     Assert(hf.fp != NULL);
 
-    if (stars_read(&hf, rg, (size_t)cb) != (size_t)cb) {
+    if (Stars_Read(&hf, rg, (size_t)cb) != (size_t)cb) {
         FileError(idsGameFileAppearsCorruptUnableLoadFile);
         Assert(penvMem != NULL);
         longjmp(penvMem->env, -1);
