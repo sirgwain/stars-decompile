@@ -9,25 +9,10 @@
 #include "file.h"
 #include "globals.h"
 #include "memory.h"
+#include "port.h"
 
 /* ------------------------------------------------------------ */
 /* small helpers */
-
-static void build_fullpath(char *out, size_t outsz, const char *base, const char *ext) {
-    /*
-     * CLI convention: <base> is a path without extension, <ext> may be:
-     *   - ".HST" (with dot)
-     *   - "HST"  (without dot)
-     */
-    const char *e = (ext != NULL) ? ext : "";
-    if (e[0] == '.') {
-        snprintf(out, outsz, "%s%s", base ? base : "", e);
-    } else if (e[0] != '\0') {
-        snprintf(out, outsz, "%s.%s", base ? base : "", e);
-    } else {
-        snprintf(out, outsz, "%s", base ? base : "");
-    }
-}
 
 static int64_t file_size_bytes(const char *path) {
     FILE *fp;
@@ -91,10 +76,9 @@ static const char *record_type_name(uint16_t rt) {
 static void print_usage(FILE *out) {
     fprintf(out, "stars_cli - inspect Stars! save files\n\n"
                  "Usage:\n"
-                 "  stars_cli load <base> <ext> [--player N] <cmd> [cmd-args]\n\n"
+                 "  stars_cli load <file> [--player N] <cmd> [cmd-args]\n\n"
                  "Where:\n"
-                 "  <base> is the path without extension (e.g. test/data/tiny/2400)\n"
-                 "  <ext>  is the extension including dot (e.g. .m1, .p1, .hst)\n\n"
+                 "  <file> is the path to a Stars! file (e.g. game/TEST.HST, game/TEST.M1)\n\n"
                  "Commands:\n"
                  "  planets                List planets\n"
                  "  planet <id>            Show a planet\n"
@@ -391,11 +375,10 @@ static int cmd_shdef(const char *sidx) {
     return 0;
 }
 
-static int cmd_game(const StarsCli *cli) {
-    char    path[1024];
+static int cmd_game(const CliContext *cli) {
     int64_t sz;
+    const char *path = cli ? cli->file : "(null)";
 
-    build_fullpath(path, sizeof(path), cli ? cli->path_base : NULL, cli ? cli->ext : NULL);
     sz = file_size_bytes(path);
 
     printf("File: %s", path);
@@ -426,18 +409,16 @@ static void print_hex_bytes(const uint8_t *pb, size_t cb) {
     }
 }
 
-static int cmd_blocks(const StarsCli *cli) {
-    char path[1024];
-    build_fullpath(path, sizeof(path), cli ? cli->path_base : NULL, cli ? cli->ext : NULL);
-    return DumpGameFileBlocks(path);
+static int cmd_blocks(const CliContext *cli) {
+    return DumpGameFileBlocks(cli ? cli->file : NULL);
 }
 
 /* ------------------------------------------------------------ */
 
-static int do_load(StarsCli *cli) {
-    int16_t ok = FLoadGame((char *)cli->path_base, (char *)cli->ext);
+static int do_load(CliContext *cli) {
+    int16_t ok = FLoadGame(cli->path_base, cli->ext);
     if (!ok) {
-        fprintf(stderr, "FLoadGame failed for base='%s' ext='%s'\n", cli->path_base ? cli->path_base : "(null)", cli->ext ? cli->ext : "(null)");
+        fprintf(stderr, "FLoadGame failed for file='%s'\n", cli->file ? cli->file : "(null)");
         return 1;
     }
     cli->loaded = true;
@@ -445,7 +426,7 @@ static int do_load(StarsCli *cli) {
 }
 
 int StarsCli_Run(int argc, char **argv) {
-    StarsCli cli;
+    CliContext cli;
     int      i = 1;
 
     memset(&cli, 0, sizeof(cli));
@@ -467,13 +448,19 @@ int StarsCli_Run(int argc, char **argv) {
         return 2;
     }
     i++;
-    if (i + 1 >= argc) {
-        fprintf(stderr, "load requires <base> and <ext>.\n\n");
+    if (i >= argc) {
+        fprintf(stderr, "load requires <file>.\n\n");
         print_usage(stderr);
         return 2;
     }
-    cli.path_base = argv[i++];
-    cli.ext = argv[i++];
+    cli.file = argv[i++];
+
+    /* Split file path into base and extension */
+    if (!Port_PathSplitExt(cli.file, cli.path_base, sizeof(cli.path_base),
+                           cli.ext, sizeof(cli.ext))) {
+        fprintf(stderr, "Invalid file path: %s\n", cli.file);
+        return 2;
+    }
 
     /* optional flags */
     while (i < argc && strncmp(argv[i], "--", 2) == 0) {

@@ -12,12 +12,13 @@
  * read-only inspection commands.
  */
 
-typedef struct StarsCli {
-    const char *path_base; /* e.g. "test/data/tiny/2400" */
-    const char *ext;       /* e.g. ".m1" or ".p1"; may be "" */
+typedef struct CliContext {
+    const char *file;      /* original file path, e.g. "test/data/tiny/2400/TEST.HST" */
+    char        path_base[1024]; /* parsed: path without extension */
+    char        ext[32];         /* parsed: extension without dot */
     int16_t     iPlayer;   /* -1 for "host"/no-player loads when supported */
     bool        loaded;
-} StarsCli;
+} CliContext;
 
 int StarsCli_Run(int argc, char **argv);
 
