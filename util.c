@@ -1,5 +1,6 @@
 
 #include "util.h"
+#include "enums.h"
 #include "globals.h"
 #include "log.h"
 #include "memory.h"
@@ -7,6 +8,7 @@
 #include "planet.h"
 #include "race.h"
 #include "report.h"
+#include "ship.h"
 #include "strings.h"
 #include "tutor.h"
 #include "types.h"
@@ -957,19 +959,94 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     return NULL;
 }
 
-void UpdateShdefCost(SHDEF *lpshdef) {
-    int16_t  dpT;
-    uint32_t wt;
-    int16_t  k;
-    int16_t  c;
-    uint16_t rgCosts[4];
-    int16_t  fWeakArmor;
-    HUL     *lphul;
-    uint32_t resCost;
-    uint32_t rgMin[3];
+void UpdateShdefCost(SHDEF *shdef) {
+    bool     fRegenArmorHalved;
     PART     part;
+    HULDEF  *huldef;
+    uint32_t rgMin[3];
+    uint16_t rgCosts[4];
+    uint16_t resCost;
+    uint16_t wtEmpty;
+    int16_t  c;
+    int16_t  k;
 
-    /* TODO: implement */
+    /* det == 7 enables the regenerating-shields race behavior */
+    if (shdef->det == 7) {
+        fRegenArmorHalved = GetRaceGrbit((PLAYER *)rgplr + idPlayer, ibitRaceRegeneratingShields) != 0;
+    } else {
+        fRegenArmorHalved = false;
+    }
+
+    huldef = LphuldefFromId(shdef->hul.ihuldef);
+    part.hs.grhst = hstNone;
+    part.phul = (HUL *)huldef;
+
+    GetTruePartCost(idPlayer, &part, rgCosts);
+
+    for (c = 0; c < 3; c++) {
+        rgMin[c] = rgCosts[c];
+    }
+
+    resCost = rgCosts[Resources];
+
+    wtEmpty = huldef->hul.wtEmpty;
+    shdef->hul.dp = huldef->hul.dp;
+
+    /* Installed slot parts */
+    for (c = 0; c < shdef->hul.chs; c++) {
+        HS          *hs;
+        uint16_t     count;
+        HullSlotType grhst;
+
+        hs = &shdef->hul.rghs[c];
+
+        if (hs->cItem == 0)
+            continue;
+
+        count = hs->cItem;
+
+        part.hs.grhst = hs->grhst;
+        part.hs.iItem = hs->iItem;
+        part.hs.cItem = hs->cItem;
+
+        FLookupPart(&part);
+        GetTruePartCost(idPlayer, &part, rgCosts);
+
+        for (k = 0; k < 3; k++) {
+            rgMin[k] += (uint32_t)count * rgCosts[k];
+        }
+
+        resCost += count * rgCosts[Resources];
+        wtEmpty += count * part.pcom->cMass;
+
+        grhst = hs->grhst;
+
+        if (grhst == hstShield) {
+            if (hs->iItem == ishieldCrobySharmor || hs->iItem == ishieldLangstonShell) {
+                shdef->hul.dp += count * 65;
+            }
+        } else if (grhst == hstArmor) {
+            int32_t dpT = count * part.parmor->dp;
+            if (fRegenArmorHalved) {
+                dpT >>= 1;
+            }
+            shdef->hul.dp += dpT;
+        } else if (grhst == hstSpecialM) {
+            if (hs->iItem == ispecialMMultiCargoPod) {
+                shdef->hul.dp += count * 50;
+            }
+        }
+    }
+
+    for (c = 0; c < 3; c++) {
+        shdef->hul.rgwtOreCost[c] = rgMin[c];
+    }
+
+    shdef->hul.resCost = resCost;
+    shdef->hul.wtEmpty = wtEmpty;
+
+    /* Original wrote -1 (0xFFFFFFFF) */
+    shdef->lPower = -1;
 }
 
 int16_t FLookupSelPlanet(PLANET *ppl) {

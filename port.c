@@ -8,10 +8,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #define WIN32_LEAN_AND_MEAN
 #include <direct.h> /* _mkdir */
 #include <windows.h>
+#elif defined(_WIN32) && defined(STARS_USE_WIN_STUBS)
+/* When building with the Win32 stub layer on non-Windows hosts, avoid pulling
+ * Windows system headers. The stub headers provide the Windows-like API.
+ */
+#include "win_stubs.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -128,6 +136,26 @@ uint16_t Stars_ReadU16Unaligned(const void *p) {
     return v;
 }
 
+/* Stream helper: treat EOF like the Win16 macro. */
+bool Stars_AtEOF(StarsFile *h) {
+    FILE *fp = h->fp;
+    long  pos = ftell(fp);
+    if (pos < 0)
+        return true;
+
+    if (fseek(fp, 0, SEEK_END) != 0)
+        return true;
+
+    long end = ftell(fp);
+    if (end < 0)
+        return true;
+
+    /* Restore position */
+    fseek(fp, pos, SEEK_SET);
+
+    return pos >= end;
+}
+
 static char Port_PathSep(void) {
 #if defined(_WIN32)
     return '\\';
@@ -142,7 +170,7 @@ static bool Port_IsOptPrefix(char c) { return (c == '-') || (c == '/'); }
 
 static bool Port_StrEq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     *out_wide = NULL;
     if (!u8)
@@ -159,6 +187,25 @@ static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     if (MultiByteToWideChar(CP_UTF8, 0, u8, -1, w, needed) <= 0) {
         free(w);
         return false;
+    }
+
+    *out_wide = w;
+    return true;
+}
+#elif defined(_WIN32) && defined(STARS_USE_WIN_STUBS)
+static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
+    /* Stub build: best-effort ASCII/UTF-8 widening (sufficient for tests). */
+    *out_wide = NULL;
+    if (!u8)
+        return false;
+
+    size_t n = strlen(u8);
+    wchar_t *w = (wchar_t *)malloc((n + 1) * sizeof(wchar_t));
+    if (!w)
+        return false;
+
+    for (size_t i = 0; i <= n; i++) {
+        w[i] = (wchar_t)(uint8_t)u8[i];
     }
 
     *out_wide = w;
@@ -201,7 +248,7 @@ bool Stars_PathExists(const char *path) {
     if (!path || !*path)
         return false;
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     wchar_t *w = NULL;
     if (!Port_Utf8ToWide(path, &w))
         return false;
@@ -215,7 +262,7 @@ bool Stars_PathExists(const char *path) {
 }
 
 static bool Port_MkdirOne(const char *path) {
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Use _mkdir for narrow paths; for full UTF-8 correctness, use CreateDirectoryW.
        Here we do UTF-8 -> wide and call CreateDirectoryW. */
     wchar_t *w = NULL;
@@ -372,7 +419,7 @@ bool Stars_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len) {
     if (!path || !*path)
         return false;
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Use _wfopen for UTF-8 path correctness */
     wchar_t *wpath = NULL;
     if (!Port_Utf8ToWide(path, &wpath))
@@ -437,7 +484,7 @@ static bool Port_WriteAll(FILE *f, const void *buf, size_t len) {
     return true;
 }
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 static bool Port_TempPathForTarget(const char *target_u8, char *out, size_t out_sz) {
     /* Create sibling temp file: <target>.tmp */
     size_t      tl = strlen(target_u8);
@@ -470,7 +517,7 @@ bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
     if (len && !buf)
         return false;
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Write to sibling <path>.tmp then MoveFileExW(tmp, path, REPLACE_EXISTING). */
     char tmp_u8[4096];
     if (!Port_TempPathForTarget(path, tmp_u8, sizeof(tmp_u8)))

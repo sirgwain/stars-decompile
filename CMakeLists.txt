@@ -35,7 +35,7 @@ target_compile_definitions(stars_core PUBLIC $<$<CONFIG:Debug>:STARS_DEBUG=1>)
 # Warnings
 target_compile_options(stars_core PRIVATE
   $<$<C_COMPILER_ID:MSVC>:/W3>
-  $<$<NOT:$<C_COMPILER_ID:MSVC>>:-Wall -Wextra -Wno-unused-parameter>
+  $<$<NOT:$<C_COMPILER_ID:MSVC>>:-Wall -Wextra -Wno-unused-parameter -Werror=incompatible-pointer-types>
 )
 
 # Math library (sqrt, etc.) - let it propagate to users of stars_core.

@@ -541,8 +541,8 @@ void SetFileXorStream(int32_t lid, int16_t lSalt, int16_t turn, int16_t iPlayer,
     lFileSeed1 = (int32_t)rgPrimes[a];
     lFileSeed2 = (int32_t)rgPrimes[b];
 
-    DBG_LOGD("SetFileXorStream: lid=%ld salt=%d turn=%d iPlayer=%d crippled=%d -> idx a=%u b=%u seeds=(%ld,%ld)", (long)lid, (int)lSalt, (int)turn,
-             (int)iPlayer, (int)fCrippled, (unsigned)a, (unsigned)b, (long)lFileSeed1, (long)lFileSeed2);
+    // DBG_LOGD("SetFileXorStream: lid=%ld salt=%d turn=%d iPlayer=%d crippled=%d -> idx a=%u b=%u seeds=(%ld,%ld)", (long)lid, (int)lSalt, (int)turn,
+    //          (int)iPlayer, (int)fCrippled, (unsigned)a, (unsigned)b, (long)lFileSeed1, (long)lFileSeed2);
 
     /* Advance the stream a small, deterministic number of steps. */
     {
@@ -1619,6 +1619,9 @@ void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly) {
 #else
 
 // special case because this is called everywhere, do nothing outside of win32
-int16_t AlertSz(const char *sz, uint16_t mbType) { return 0; }
+int16_t AlertSz(const char *sz, uint16_t mbType) {
+    DBG_LOGE(sz);
+    return 0;
+}
 
 #endif

@@ -69,6 +69,7 @@ typedef enum GrobjClass {
 } GrobjClass;
 
 typedef enum HullSlotType {
+    hstNone = 0x0000,
     hstEngine = 0x0001,
     hstScanner = 0x0002,
     hstShield = 0x0004,

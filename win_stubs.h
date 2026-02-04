@@ -1138,6 +1138,73 @@ LONG WINAPI     DispatchMessage(const MSG FAR *lpMsg);
 BOOL WINAPI     DrawIcon(HDC hDC, int x, int y, HICON hIcon);
 void WINAPI     DrawMenuBar(HWND hWnd);
 int WINAPI      DrawText(HDC hdc, LPCSTR lpchText, int cchText, RECT FAR *lprc, UINT format);
+
+/* Common Win32 "A" aliases used throughout the codebase. */
+#define DrawTextA DrawText
+#define SendDlgItemMessageA SendDlgItemMessage
+#define ExtTextOutA ExtTextOut
+#define WinHelpA WinHelp
+
+/* DrawText() format flags (subset used by Stars!). */
+#ifndef DT_NOPREFIX
+#define DT_NOPREFIX 0x00000800u
+#endif
+#ifndef DT_WORDBREAK
+#define DT_WORDBREAK 0x00000010u
+#endif
+
+/* Common window/message/flag constants used by Stars!. */
+#ifndef EM_LIMITTEXT
+#define EM_LIMITTEXT 0x00C5u
+#endif
+
+#ifndef BN_CLICKED
+#define BN_CLICKED 0u
+#endif
+
+#ifndef MB_TASKMODAL
+#define MB_TASKMODAL 0x00002000u
+#endif
+
+#ifndef PM_REMOVE
+#define PM_REMOVE 0x0001u
+#endif
+
+#ifndef TPM_LEFTBUTTON
+#define TPM_LEFTBUTTON 0x0000u
+#endif
+#ifndef TPM_RIGHTBUTTON
+#define TPM_RIGHTBUTTON 0x0002u
+#endif
+#ifndef TPM_LEFTALIGN
+#define TPM_LEFTALIGN 0x0000u
+#endif
+
+#ifndef ETO_OPAQUE
+#define ETO_OPAQUE 0x0002u
+#endif
+#ifndef ETO_CLIPPED
+#define ETO_CLIPPED 0x0004u
+#endif
+
+#ifndef CP_UTF8
+#define CP_UTF8 65001u
+#endif
+
+#ifndef INVALID_FILE_ATTRIBUTES
+#define INVALID_FILE_ATTRIBUTES 0xFFFFFFFFu
+#endif
+
+#ifndef ERROR_ALREADY_EXISTS
+#define ERROR_ALREADY_EXISTS 183u
+#endif
+
+#ifndef MOVEFILE_REPLACE_EXISTING
+#define MOVEFILE_REPLACE_EXISTING 0x00000001u
+#endif
+#ifndef MOVEFILE_COPY_ALLOWED
+#define MOVEFILE_COPY_ALLOWED 0x00000002u
+#endif
 BOOL WINAPI     EnableMenuItem(HMENU hMenu, UINT uIDEnableItem, UINT uEnable);
 BOOL WINAPI     EnableWindow(HWND hWnd, BOOL bEnable);
 void WINAPI     EndDialog(HWND hDlg, int nResult);

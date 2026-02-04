@@ -76,6 +76,7 @@ void     Stars_CloseFile(StarsFile *h);
 size_t   Stars_Read(StarsFile *h, void *dst, size_t cb);
 int      Stars_Seek(StarsFile *h, long offset, int whence);
 uint16_t Stars_ReadU16Unaligned(const void *p);
+bool     Stars_AtEOF(StarsFile *h);
 
 /* Atomic write (temp + rename/replace). Creates parent dirs if you do that separately. */
 bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len);

@@ -41,47 +41,45 @@ typedef enum RecordType {
      * (cb=2, data=0000). The original code treats "rt==0" as a terminator while
      * reading, so we keep rtEOF=0 for that behavior.
      */
-    rtEOF = 0x00,
+    rtEOF = 0,
 
-    rtPlr = 0x06,  /* Player */
-    rtGame = 0x07, /* Game */
-    rtBOF = 0x08,  /* FileHeader / BOF */
-    rtMsg = 0x0C,  /* Message */
+    rtPlr = 6,  /* Player */
+    rtGame = 7, /* Game */
+    rtBOF = 8,  /* FileHeader / BOF */
+    rtMsg = 12, /* Message */
 
     /* Common .HST records (matches Houston blocks output). */
-    rtPlanet = 0x0D,
-    rtFleet = 0x10,
-    rtWaypoint = 0x14,
-    rtDesign = 0x1A,
-    rtBattlePlan = 0x1E,
+    rtPlanet = 13,
+    rtPlanetB = 14,
+    rtFleet = 16,
+    rtWaypoint = 20,
+    rtBattlePlan = 30,
 
     /* Legacy/internal aliases observed in decompilation. */
     rtFleetA = rtFleet,
-    rtOrderA = 0x13, /* other order-like record type seen in decompile */
+    rtOrderA = 19, /* other order-like record type seen in decompile */
     rtOrderB = rtWaypoint,
-    rtString = 0x15, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
+    rtString = 21, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
 
-    rtSel = 0x16, /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
+    rtSel = 22, /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
 
-    rtShDef = rtDesign, /* decompile: while (rt == 0x1a) { ... FReadShDef(...) } */
-
-    rtPlanetB = 0x1c, /* decompile: after FReadPlanet(...), if (rt == 0x1c) { ...planet extra... } */
+    rtShDef = 26,
+    rtProdQ = 28,
 
     rtBtlPlan = rtBattlePlan, /* decompile: while (rt == 0x1e) { ...battle plan... } */
-    rtBtlData = 0x1f,         /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
-    rtContinue = 0x27,        /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
+    rtBtlData = 31,           /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
+    rtContinue = 39,          /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
 
-    rtHistHdr = 0x20, /* decompile: after opening dtHist, expects rt == 0x20 */
-    rtMsgFilt = 0x21, /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
-    rtProdQ = 0x21,
+    rtHistHdr = 32, /* decompile: after opening dtHist, expects rt == 0x20 */
+    rtMsgFilt = 33, /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
 
-    rtChgPassword = 0x24, /* file.c: if (hdrCur.rt == rtChgPassword) { lSaltCur = *(long*)rgbCur; } */
+    rtChgPassword = 36, /* file.c: if (hdrCur.rt == rtChgPassword) { lSaltCur = *(long*)rgbCur; } */
 
-    rtPlrMsg = 0x28,
-    rtAiData = 0x29, /* decompile: loop skips/reads while (rt == 0x29) around vlpbAiData */
+    rtPlrMsg = 40,
+    rtAiData = 41, /* decompile: loop skips/reads while (rt == 0x29) around vlpbAiData */
 
-    rtThing = 0x2b, /* decompile: if (rt == 0x2b) { cThing = rgbCur; alloc things } */
-    rtScore = 0x2d, /* decompile: loop `if (rt != 0x2d) break;` in score load path */
+    rtThing = 43, /* decompile: if (rt == 0x2b) { cThing = rgbCur; alloc things } */
+    rtScore = 45, /* decompile: loop `if (rt != 0x2d) break;` in score load path */
 
     rtMax = 46 /* one past highest observed (0x2d) */
 } RecordType;
@@ -107,14 +105,6 @@ bool    FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);             /* ME
 int16_t AskSaveDialog(void); /* PASCAL */                                  /* MEMORY_IO:0x432a */
 void    StreamClose(void);                                                 /* MEMORY_IO:0x53cc */
 
-/*
- * Debug/diagnostic helper: dump raw record blocks from a Stars! file.
- *
- * Opens the file at `path`, iterates records with ReadRt(), prints each block
- * (type name, numeric type, size, and hex data), then closes the file.
- * Returns 0 on success, non-zero on failure.
- */
-int  DumpGameFileBlocks(const char *path);
 bool FNewTurnAvail(int16_t idPlayer);                                            /* MEMORY_IO:0x4f22 */
 void GetFileStatus(int16_t dt, int16_t iPlayer);                                 /* MEMORY_IO:0x4a60 */
 bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited); /* MEMORY_IO:0x3206 */

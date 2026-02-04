@@ -1,10 +1,12 @@
-### Good prompt (best practice)
+# Zip Prompt
 
 I have attached a zip of my project source files.
 
 See @notes/implementation.md for locations of various functions and their decompiles
 
-Translate the next 20 functions in notes/implementation-plan.md, one at a time and place them in their proper location in the root. After implementing each function, run the build steps and add tests to tests/test_* where applicable. Everything must build and tests must succeed.
+Translate the FRunLogRecord function from decompiled/all/planet.c and put it in the empty function signature in log.c. Make sure builds and tests run. After translating, compare against the original and note any differences in logic flow. Resolve those fixes and test again.
+
+When complete, add a test to test_log.c and make it similar to the FLoadGame tests in test_file.c.
 
 Use @project_index.json to locate related globals and functions, but treat @types.h as the source of truth for all struct fields and types.
 Preserve 16-bit math behavior. Convert bitwise operations to flags referencing the bitfields in @types.h.
@@ -32,3 +34,8 @@ cmake --build --preset build-macos-linux-win32-stubs
 ```
 
 Give me a download zip with any changed files.
+
+# Copy/Paste Prompt
+Translate this decompiled function to modern c. Don't change the general flow. Account for every instruction. Don't add bounds checking or extra functions. Rename ghidra generated locals to have sensible names. Update types to standard c types. Only add casting that is absolutely necessary.
+
+After the first pass, go through the translated function and convert bitwise operations to bitfields where possible, referencing types.h in this project for struct definitions.

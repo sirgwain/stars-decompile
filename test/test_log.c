@@ -4,8 +4,11 @@
 #include <string.h>
 
 #include "globals.h"
+#include "init.h"
 #include "log.h"
 #include "types.h"
+
+#include "file.h" /* FLoadGame */
 
 static int16_t cb_seen;
 static int16_t rt_seen;
@@ -176,8 +179,46 @@ cleanup:
     imemLogPrev = old_imemLogPrev;
 }
 
+static void test_FLoadLogFile_tiny_2400(void) {
+    MemJump env;
+    int     j;
+
+    /* Ensure we have the heap blocks Stars expects (lpLog, lpMsg, etc.). */
+    FAllocStuff();
+
+    DestroyCurGame();
+    gd.fGeneratingTurn = 0;
+
+    penvMem = &env;
+    j = setjmp(env.env);
+    if (j != 0) {
+        DeallocStuff();
+        TEST_MSG("FLoadLogFile longjmp'd (fatal file error)");
+        TEST_ASSERT(false);
+        return;
+    }
+
+    /* Load a known tiny game first (so GAME/PLAYER globals match the log file). */
+    TEST_CHECK(FLoadGame("./test/data/tiny/2400/TEST", "HST"));
+
+    /* Now load the corresponding player-1 log. */
+    TEST_CHECK(FLoadLogFile("./test/data/tiny/2400/TEST.X1") == 1);
+
+    /* We should have parsed at least some log bytes into lpLog. */
+    TEST_CHECK(imemLogCur > 0);
+    {
+        HDR hdr0;
+        memcpy(&hdr0, lpLog, sizeof(hdr0));
+        TEST_CHECK(hdr0.rt != 0);
+    }
+
+    DestroyCurGame();
+    DeallocStuff();
+}
+
 TEST_LIST = {
     {"LOG/EnumLogRts stops on callback 0", test_EnumLogRts_stops_on_zero},
     {"LOG/FGetPrevLogRt reads previous record", test_FGetPrevLogRt_reads_prev_record},
+    {"LOG/FLoadLogFile loads tiny 2400 log", test_FLoadLogFile_tiny_2400},
     {NULL, NULL},
 };

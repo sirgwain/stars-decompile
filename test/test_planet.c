@@ -363,9 +363,87 @@ static void test_CalcPlanetMaxPop_race_modifiers_smoke(void) {
     rgplr[iplr] = old;
 }
 
+static void test_PctPlanetOptValue_restores_env_and_not_worse_than_base(void) {
+    const int16_t iplr = 0;
+    PLAYER        old = rgplr[iplr];
+
+    /* Stars-ish defaults: pref=50, hab window 15..85 on all axes. */
+    rgplr[iplr] = vrgplrDef[0];
+    rgplr[iplr].rgEnvVar[0] = 50;
+    rgplr[iplr].rgEnvVar[1] = 50;
+    rgplr[iplr].rgEnvVar[2] = 50;
+    rgplr[iplr].rgEnvVarMin[0] = 15;
+    rgplr[iplr].rgEnvVarMin[1] = 15;
+    rgplr[iplr].rgEnvVarMin[2] = 15;
+    rgplr[iplr].rgEnvVarMax[0] = 85;
+    rgplr[iplr].rgEnvVarMax[1] = 85;
+    rgplr[iplr].rgEnvVarMax[2] = 85;
+
+    /* A planet far from the player's center, so terraforming (if possible) can only help. */
+    PLANET pl;
+    memset(&pl, 0, sizeof(pl));
+    pl.rgEnvVar[0] = 1;
+    pl.rgEnvVar[1] = 100;
+    pl.rgEnvVar[2] = 50;
+
+    const PLANET pl_before = pl;
+
+    int16_t base = PctPlanetDesirability(&pl, iplr);
+    int16_t opt = PctPlanetOptValue(&pl, iplr);
+
+    /* Must restore rgEnvVar[] unconditionally. */
+    TEST_CHECK_(memcmp(&pl.rgEnvVar[0], &pl_before.rgEnvVar[0], sizeof(pl.rgEnvVar)) == 0, "rgEnvVar should be restored: before={%d,%d,%d} after={%d,%d,%d}",
+                (int)pl_before.rgEnvVar[0], (int)pl_before.rgEnvVar[1], (int)pl_before.rgEnvVar[2], (int)pl.rgEnvVar[0], (int)pl.rgEnvVar[1],
+                (int)pl.rgEnvVar[2]);
+
+    /* Optimal value should never be worse than the current desirability. */
+    TEST_CHECK_(opt >= base, "opt should be >= base: opt=%d base=%d", (int)opt, (int)base);
+
+    rgplr[iplr] = old;
+}
+
+static void test_FCanTerraformLppl_no_parts_returns_0_and_restores_idPlayer(void) {
+    const int16_t idPlayer_old = idPlayer;
+
+    /* Force the "idPlayer == -1" path so the function sets it from lppl->iPlayer,
+     * then verify it restores the global on exit.
+     */
+    idPlayer = -1;
+
+    PLANET pl;
+    memset(&pl, 0, sizeof(pl));
+    pl.iPlayer = 0;
+    pl.rgEnvVarOrig[0] = 50;
+    pl.rgEnvVarOrig[1] = 50;
+    pl.rgEnvVarOrig[2] = 50;
+    pl.rgEnvVar[0] = 50;
+    pl.rgEnvVar[1] = 50;
+    pl.rgEnvVar[2] = 50;
+
+    /* Sentinel outputs: when no terraform parts are available, the decompile
+     * returns 0 without touching these arrays.
+     */
+    int16_t envMin[3] = {1234, 1234, 1234};
+    int16_t envMax[3] = {2345, 2345, 2345};
+    int16_t envCost[3] = {3456, 3456, 3456};
+
+    int16_t got = FCanTerraformLppl(&pl, envMin, envMax, envCost, 0);
+    TEST_CHECK_(got == 0, "no parts: got=%d want=0", (int)got);
+
+    TEST_CHECK_(envMin[0] == 1234 && envMin[1] == 1234 && envMin[2] == 1234, "no parts: envMin should be unchanged");
+    TEST_CHECK_(envMax[0] == 2345 && envMax[1] == 2345 && envMax[2] == 2345, "no parts: envMax should be unchanged");
+    TEST_CHECK_(envCost[0] == 3456 && envCost[1] == 3456 && envCost[2] == 3456, "no parts: envCost should be unchanged");
+
+    TEST_CHECK_(idPlayer == -1, "idPlayer should be restored to -1: got=%d", (int)idPlayer);
+
+    idPlayer = idPlayer_old;
+}
+
 TEST_LIST = {{"PctPlanetDesirability table (Stars defaults)", test_PctPlanetDesirability_table_stars_defaults},
+             {"PctPlanetOptValue restores env + not worse", test_PctPlanetOptValue_restores_env_and_not_worse_than_base},
              {"IWarpMAFromLppl visibility + pfTwo", test_IWarpMAFromLppl_visibility_and_two_at_top_warp},
              {"CMaxOperableFactories clamp + raMacintosh", test_CMaxOperableFactories_clamps_and_mac_zero},
              {"CMaxOperableMines clamp + raMacintosh", test_CMaxOperableMines_clamps_and_mac_zero},
              {"CalcPlanetMaxPop race modifiers smoke", test_CalcPlanetMaxPop_race_modifiers_smoke},
+             {"FCanTerraformLppl no parts restores idPlayer", test_FCanTerraformLppl_no_parts_returns_0_and_restores_idPlayer},
              {NULL, NULL}};

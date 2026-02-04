@@ -18,6 +18,7 @@ typedef struct CliContext {
     char        ext[32];         /* parsed: extension without dot */
     int16_t     iPlayer;   /* -1 for "host"/no-player loads when supported */
     bool        loaded;
+    bool        fVerbose;  /* -v: verbose output for list commands */
 } CliContext;
 
 int StarsCli_Run(int argc, char **argv);

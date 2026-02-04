@@ -78,7 +78,7 @@ void    LogChangePlanet(PLANET *ppl, PLANET *pplNew);                           
 int16_t FCheckLogFile(int16_t iplr, int16_t *pfError);                                                      /* MEMORY_PLANET:0xcccc */
 void    LogChangeBtlplan(BTLPLAN *pbtlplan);                                                                /* MEMORY_PLANET:0x93d0 */
 void    LogChangeRelations(void);                                                                           /* MEMORY_PLANET:0x9340 */
-int16_t FRunLogRecord(int16_t rt, int16_t cb, uint8_t *lpb);                                                /* MEMORY_PLANET:0xa38c */
+int16_t FRunLogRecord(RecordTypeLog rt, int16_t cb, uint8_t *lpb);                                          /* MEMORY_PLANET:0xa38c */
 int16_t FWriteHistFile(int16_t iPlayer);                                                                    /* MEMORY_PLANET:0xd29e */
 void    CancelMemRt(int16_t rt);                                                                            /* MEMORY_PLANET:0xa108 */
 void    LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2);                                                /* MEMORY_PLANET:0x9fa6 */

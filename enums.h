@@ -1,3 +1,6 @@
+#ifndef ENUMS_H_
+#define ENUMS_H_
+
 #define fFalse 0
 #define fTrue  1
 
@@ -9,9 +12,9 @@
 
 typedef enum CostType {
     Ironium = 0,
-    Boranium = 0,
-    Germanium = 0,
-    Resources = 0,
+    Boranium = 1,
+    Germanium = 2,
+    Resources = 3,
 } CostType;
 
 typedef enum RaceAttribute {
@@ -84,6 +87,7 @@ typedef enum GrobjClass {
 } GrobjClass;
 
 typedef enum HullSlotType {
+    hstNone = 0x0000,
     hstEngine = 0x0001,
     hstScanner = 0x0002,
     hstShield = 0x0004,
@@ -486,3 +490,5 @@ typedef enum GrbitTrader {
 } GrbitTrader;
 
 typedef enum LookupResult { LookupInvalid = 0, LookupDisallowed = -1, LookupOk = 1, LookupNear = 2, LookupNeedMany = 99 } LookupResult;
+
+#endif /* ENUMS_H_ */

@@ -381,6 +381,10 @@
 // #define IDC_U16_0x07E1 IDC_HOST_TIME_SINCE_TEXT
 
 // ---------------- Tutorial blocks (RCDATA) ----------
+/* In the original Win16 build, the tutorial blobs are stored under a custom
+ * resource type 0x2710 (10000). Keep that numeric constant named.
+ */
+#define IDT_TUTORIAL_BLOB 10000
 #define IDR_TUTORIAL_HST 10001 // res/tutorial/10001-tutorail.hst
 #define IDR_TUTORIAL_M1  10003 // res/tutorial/10003-tutorail.m1
 #define IDR_TUTORIAL_M2  10005 // res/tutorial/10005-tutorail.m2

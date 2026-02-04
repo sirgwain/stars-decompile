@@ -40,7 +40,7 @@ void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet) {
     }
 }
 
-int16_t GetRaceGrbit(PLAYER *pplr, RaceGrbit ibit) {
+int16_t GetRaceGrbit(const PLAYER *pplr, const RaceGrbit ibit) {
     uint32_t grMask;
 
     if (pplr == NULL) {
@@ -111,7 +111,7 @@ int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr) {
     return 0;
 }
 
-int16_t GetRaceStat(PLAYER *pplr, int16_t iStat) { return pplr->rgAttr[iStat]; }
+int16_t GetRaceStat(const PLAYER *pplr, const int16_t iStat) { return pplr->rgAttr[iStat]; }
 
 uint16_t IRaceChecksum(PLAYER *pplr) {
     uint16_t        ick = 0;

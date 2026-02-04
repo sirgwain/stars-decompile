@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "types.h"
 
+#include "parts.h"
 #include "planet.h"
 #include "race.h"
 #include "util.h"
@@ -24,19 +25,58 @@ int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal) {
 }
 
 int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr) {
+    int16_t canTerraform;
+    int16_t newEnvVal;
+    int16_t savedEnvVar[3];
+    int16_t terraformCost[3];
+    int16_t rgMin[3];
     int16_t rgMax[3];
     int16_t i;
-    int16_t rgMin[3];
-    int16_t pctDesire;
-    int16_t rgCost[3];
-    int16_t rgiValSav[3];
-    int16_t iNewVal;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x6c50 */
+    canTerraform = FCanTerraformLppl(lppl, rgMin, rgMax, terraformCost, 1);
+    if (canTerraform == 0) {
+        canTerraform = PctPlanetDesirability(lppl, iPlr);
+    } else {
+        for (i = 0; i < 3; i = i + 1) {
+            int16_t curEnv = lppl->rgEnvVar[i];
+            int16_t plrEnv = rgplr[iPlr].rgEnvVar[i];
+            int16_t plrMin = rgplr[iPlr].rgEnvVarMin[i];
 
-    /* TODO: implement */
-    return 0;
+            savedEnvVar[i] = curEnv;
+
+            if ((plrMin != -1) && (curEnv != plrEnv)) {
+                newEnvVal = -1;
+
+                if (curEnv < plrEnv) {
+                    if (curEnv < rgMax[i]) {
+                        if (plrEnv < rgMax[i]) {
+                            newEnvVal = plrEnv;
+                        } else {
+                            newEnvVal = rgMax[i];
+                        }
+                    }
+                } else if ((rgMin[i] != -1) && (rgMin[i] < curEnv)) {
+                    if (rgMin[i] < plrEnv) {
+                        newEnvVal = plrEnv;
+                    } else {
+                        newEnvVal = rgMin[i];
+                    }
+                }
+
+                if (newEnvVal != -1) {
+                    lppl->rgEnvVar[i] = (int8_t)newEnvVal;
+                }
+            }
+        }
+
+        canTerraform = PctPlanetDesirability(lppl, iPlr);
+
+        for (i = 0; i < 3; i = i + 1) {
+            lppl->rgEnvVar[i] = (int8_t)savedEnvVar[i];
+        }
+    }
+
+    return canTerraform;
 }
 
 // Returns the highest warp speed of any Mass Accelerator on the planet's starbase
@@ -293,7 +333,7 @@ char *PszProductionETA(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *e
 
 int16_t FCanTerraformLppl(PLANET *lppl, int16_t *rgEnvMin, int16_t *rgEnvMax, int16_t *rgEnvCost, int16_t fHelp) {
     int16_t fRet;
-    int16_t i;
+    int     i;
     int16_t rgMove[3];
     int16_t iPlrSav;
     PART    part;
@@ -302,11 +342,170 @@ int16_t FCanTerraformLppl(PLANET *lppl, int16_t *rgEnvMin, int16_t *rgEnvMax, in
     int16_t dCur;
     int16_t ienvIdeal;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x85bd */
+    iPlrSav = idPlayer;
+    if (idPlayer == -1) {
+        idPlayer = lppl->iPlayer;
+    }
 
-    /* TODO: implement */
-    return 0;
+    part.hs.grhst = hstTerra;
+
+    /* Find best "base" terra part in slots 0..7 (search descending). */
+    for (i = iterraTotalTerraform30; i >= iterraTotalTerraform3; i = i - 1) {
+        part.hs.iItem = i;
+        fRet = FLookupPart(&part);
+        if (fRet == 1) {
+            break;
+        }
+    }
+
+    if (i < 0) {
+        fRet = 0;
+        for (i = 0; i < 3; i = i + 1) {
+            rgMove[i] = 0;
+        }
+    } else {
+        fRet = 1;
+        for (i = 0; i < 3; i = i + 1) {
+            rgMove[i] = part.pterra->grAbility;
+            rgEnvCost[i] = part.pterra->resCost;
+        }
+    }
+
+    /* Check slots 8..11, potentially improving move[0] and cost[0]. */
+    for (i = 3; i >= 0; i = i - 1) {
+        part.hs.iItem = i + iterraGravityTerraform3;
+        dCur = FLookupPart(&part);
+        if (dCur == 1) {
+            break;
+        }
+    }
+    if (i >= 0) {
+        if (rgMove[0] < part.pterra->grAbility) {
+            fRet = 1;
+            rgMove[0] = part.pterra->grAbility;
+            rgEnvCost[0] = part.pterra->resCost;
+        }
+    }
+
+    /* Check slots 12..15, potentially improving move[1] and cost[1]. */
+    for (i = 3; i >= 0; i = i - 1) {
+        part.hs.iItem = i + iterraTempTerraform3;
+        dCur = FLookupPart(&part);
+        if (dCur == 1) {
+            break;
+        }
+    }
+    if (i >= 0) {
+        if (rgMove[1] < part.pterra->grAbility) {
+            fRet = 1;
+            rgMove[1] = part.pterra->grAbility;
+            rgEnvCost[1] = part.pterra->resCost;
+        }
+    }
+
+    /* Check slots 16..19, potentially improving move[2] and cost[2]. */
+    for (i = 3; i >= 0; i = i - 1) {
+        part.hs.iItem = i + iterraRadiationTerraform3;
+        dCur = FLookupPart(&part);
+        if (dCur == 1) {
+            break;
+        }
+    }
+    if (i >= 0) {
+        if (rgMove[2] < part.pterra->grAbility) {
+            fRet = 1;
+            rgMove[2] = part.pterra->grAbility;
+            rgEnvCost[2] = part.pterra->resCost;
+        }
+    }
+
+    if (fRet) {
+        for (i = 0; i < 3; i = i + 1) {
+            /* Decompile: (rgMove[i] == 0) || (player->rgEnvVarMin[i] == -1) */
+            if ((rgMove[i] == 0) || (rgplr[idPlayer].rgEnvVarMin[i] == -1)) {
+                rgEnvMax[i] = -1;
+                rgEnvMin[i] = -1;
+            } else {
+                /* Compute candidate min/max reach around original env. */
+                rgEnvMin[i] = (int16_t)(lppl->rgEnvVarOrig[i] - rgMove[i]);
+                rgEnvMax[i] = (int16_t)(lppl->rgEnvVarOrig[i] + rgMove[i]);
+
+                /* Clamp min side vs current env var. */
+                if (rgEnvMin[i] < lppl->rgEnvVar[i]) {
+                    rgEnvMin[i] = (rgEnvMin[i] < 1) ? 1 : rgEnvMin[i];
+                } else {
+                    rgEnvMin[i] = -1;
+                }
+
+                /* Clamp max side vs current env var. */
+                if (lppl->rgEnvVar[i] < rgEnvMax[i]) {
+                    rgEnvMax[i] = (rgEnvMax[i] < 100) ? rgEnvMax[i] : 99;
+                } else {
+                    rgEnvMax[i] = -1;
+                }
+
+                /*
+                 * Normalize to int once to avoid a pile of (uint8_t)/(int8_t) casts.
+                 * This keeps the decompile’s signed/unsigned intent while staying clean.
+                 */
+                {
+                    int envCur = lppl->rgEnvVar[i];
+                    int envIdeal = rgplr[idPlayer].rgEnvVar[i];
+
+                    if (fHelp == 0) {
+                        dCur = (int16_t)abs(envCur - envIdeal);
+
+                        if (rgEnvMin[i] == -1) {
+                            dMin = 0;
+                        } else {
+                            dMin = (int16_t)abs((int)rgEnvMin[i] - envIdeal);
+                        }
+
+                        if (rgEnvMax[i] == -1) {
+                            dMax = 0;
+                        } else {
+                            dMax = (int16_t)abs((int)rgEnvMax[i] - envIdeal);
+                        }
+
+                        if ((dCur < dMin) || (dCur < dMax)) {
+                            if (dMin < dMax) {
+                                rgEnvMin[i] = -1;
+                            } else {
+                                rgEnvMax[i] = -1;
+                            }
+                        } else {
+                            rgEnvMax[i] = -1;
+                            rgEnvMin[i] = -1;
+                        }
+                    } else if (envCur == envIdeal) {
+                        rgEnvMax[i] = -1;
+                        rgEnvMin[i] = -1;
+                    } else if (envIdeal < envCur) {
+                        rgEnvMax[i] = -1;
+                        if (rgEnvMin[i] != -1) {
+                            /* rgEnvMin = max(rgEnvMin, envIdeal) */
+                            rgEnvMin[i] = ((int)rgEnvMin[i] < envIdeal) ? (int16_t)envIdeal : rgEnvMin[i];
+                        }
+                    } else {
+                        rgEnvMin[i] = -1;
+                        if (rgEnvMax[i] != -1) {
+                            /* rgEnvMax = min(rgEnvMax, envIdeal) */
+                            rgEnvMax[i] = (rgEnvMax[i] < envIdeal) ? rgEnvMax[i] : (int16_t)envIdeal;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (i = 0; (i < 3) && (rgEnvMax[i] == -1) && (rgEnvMin[i] == -1); i = i + 1) {
+        }
+        dCur = (int16_t)(i != 3);
+    } else {
+        dCur = 0;
+    }
+
+    idPlayer = iPlrSav;
+    return dCur;
 }
 
 char *PszCalcEnvVar(int16_t iEnv, int16_t iVar) {

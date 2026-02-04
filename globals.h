@@ -50,25 +50,6 @@
 #define cbPackedMsgAllocSize 65480
 #define cbLogAllocSize       32000
 
-/* Stream helper: treat EOF like the Win16 macro. */
-static bool AtEOF(FILE *fp) {
-    long pos = ftell(fp);
-    if (pos < 0)
-        return true;
-
-    if (fseek(fp, 0, SEEK_END) != 0)
-        return true;
-
-    long end = ftell(fp);
-    if (end < 0)
-        return true;
-
-    /* Restore position */
-    fseek(fp, pos, SEEK_SET);
-
-    return pos >= end;
-}
-
 /* UI helper used in a few places in the original. */
 #ifndef MessageSz
 #define MessageSz(sz) ((void)AlertSz((char *)(sz), MB_OK))

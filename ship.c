@@ -463,7 +463,7 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat) {
 
         /* Add-ons from certain hull slots. */
         for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
-            HS *hs = &lpshdef->hul.rghs[j];
+            const HS *hs = &lpshdef->hul.rghs[j];
             if (hs->grhst == hstSpecialM) {
                 if (hs->iItem == ispecialMFuelTank) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 250);
@@ -484,7 +484,7 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat) {
         wt = lphul->wtCargoMax;
 
         for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
-            HS *hs = &lpshdef->hul.rghs[j];
+            const HS *hs = &lpshdef->hul.rghs[j];
             if (hs->grhst == hstSpecialM) {
                 if (hs->iItem == ispecialMCargoPod) {
                     wt = (int16_t)(wt + (int16_t)hs->cItem * 50);
@@ -521,7 +521,7 @@ void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr) {
     /* TODO: implement */
 }
 
-void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts) {
+void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t rgCosts[static 4]) {
     const COMPART *lpcom = ppart->pcom;
 
     // 1) Base costs
@@ -537,51 +537,57 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts) {
 
     PLAYER *plr = &rgplr[iPlayer];
 
-    // 2) Tech-based discount (skip certain categories/items per original)
-    const uint16_t grhst_hi = ppart->hs.grhst & 0xFF00;
-    const uint16_t iItem = ppart->hs.iItem;
+    /* 2) Tech-based discount */
+    HullSlotType grhst = ppart->hs.grhst;
+    uint8_t      iItem = ppart->hs.iItem;
 
-    const bool skipTechDiscount =
-        ((grhst_hi & hstTorp) != 0) || (((grhst_hi & hstMining) != 0) && (iItem < 9 || iItem > 13)) || (((grhst_hi & hstMining) != 0) && (iItem <= 8));
+    bool allowTechDiscount =
+        ((grhst & hstTerra) == hstNone) && (((grhst & hstPlanetary) == hstNone) || (iItem >= iplanetarySDI && iItem <= iplanetaryNeutronShield));
 
-    int pctDiscount = 0; // % to subtract (0..75 normal, 0..80 with BET)
+    int16_t cExcess = 0; /* mirrors decompile’s later use (cExcess < 1) */
 
-    if (!skipTechDiscount) {
-        // Find smallest positive (have-req) across 6 techs; if none, use min(have)
-        int bestGap = 100;
-        for (int t = 0; t < 6; ++t) {
-            const int req = (int)(signed char)lpcom->rgTech[t];
-            const int have = (int)(signed char)plr->rgTech[t];
-            const int gap = have - req;
-            if (req > 0 && gap < bestGap)
-                bestGap = gap;
-        }
-        if (bestGap == 100) {
-            for (int t = 0; t < 6; ++t) {
-                const int have = (int)(signed char)plr->rgTech[t];
-                if (have < bestGap)
-                    bestGap = have;
+    if (allowTechDiscount) {
+        cExcess = 100;
+
+        /* Find smallest gap (have - req) among req > 0 */
+        for (int t = 0; t < 6; t++) {
+            int req = (int8_t)lpcom->rgTech[t];
+            int have = (int8_t)plr->rgTech[t];
+            int gap = have - req;
+
+            if (req > 0 && gap < cExcess) {
+                cExcess = (int16_t)gap;
             }
         }
-        if (bestGap > 19)
-            bestGap = 19;
 
-        if (bestGap > 0) {
-            const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
-            if (!fBET) {
-                pctDiscount = bestGap * 4;
-                if (pctDiscount > 75)
-                    pctDiscount = 75;
+        /* If no req > 0, use min(have) */
+        if (cExcess == 100) {
+            for (int t = 0; t < 6; t++) {
+                int have = (int8_t)plr->rgTech[t];
+                if (have < cExcess)
+                    cExcess = (int16_t)have;
+            }
+        }
+
+        if (cExcess > 0) {
+            if (cExcess > 0x13)
+                cExcess = 0x13;
+
+            if (GetRaceGrbit(plr, ibitRaceBleedingEdgeTech) == 0) {
+                cExcess = (int16_t)(cExcess << 2);
+                if (cExcess > 0x4b)
+                    cExcess = 0x4b;
             } else {
-                pctDiscount = bestGap * 5;
-                if (pctDiscount > 80)
-                    pctDiscount = 80;
+                cExcess = (int16_t)(cExcess * 5);
+                if (cExcess > 0x50)
+                    cExcess = 0x50;
             }
 
-            for (int k = 0; k < 4; ++k) {
+            for (int k = 0; k < 4; k++) {
                 if (rgCosts[k] != 0) {
-                    const int cut = (rgCosts[k] * pctDiscount) / 100;
-                    rgCosts[k] -= cut;
+                    /* Decompile uses MulDiv for rounding */
+                    int16_t cut = (int16_t)MulDiv((int32_t)rgCosts[k], (int32_t)cExcess, 100);
+                    rgCosts[k] = (uint16_t)(rgCosts[k] - (uint16_t)cut);
                     if (rgCosts[k] == 0)
                         rgCosts[k] = 1;
                 }
@@ -589,65 +595,24 @@ void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t *rgCosts) {
         }
     }
 
-    // 3) Race modifiers
+    /* 4) Bleeding Edge Tech surcharge (matches decompile gating) */
+    if (cExcess < 1 && GetRaceGrbit(plr, ibitRaceBleedingEdgeTech) != 0 && !gd.fDontCalcBleed) {
 
-    // Stargate PRT: small starbase items cheaper
-    if (ppart->hs.grhst == hstSpecialSB) {
-        if (GetRaceStat(plr, rsMajorAdv) == raStargate && ppart->hs.iItem <= ispecialSBStargateAnyAny) {
-            for (int k = 0; k < 4; ++k)
-                rgCosts[k] -= rgCosts[k] / 4; // -25%
+        int t;
+        for (t = 0; t < 6 && (int8_t)lpcom->rgTech[t] < 1; t++) {
         }
-    }
 
-    // Weapons: Attack -25%, Defend +25%
-    if (ppart->hs.grhst == hstBeam || ppart->hs.grhst == hstTorp || ppart->hs.grhst == hstBomb) {
-        const int ra = GetRaceStat(plr, rsMajorAdv);
-        if (ra == raAttack) {
-            for (int k = 0; k < 4; ++k)
-                rgCosts[k] -= rgCosts[k] / 4;
-        } else if (ra == raDefend) {
-            for (int k = 0; k < 4; ++k)
-                rgCosts[k] += rgCosts[k] / 4;
-        }
-    }
-    // Terraformers: Terra halves resource cost only
-    else if (ppart->hs.grhst == hstTerra) {
-        if (GetRaceStat(plr, rsMajorAdv) == raTerra) {
-            rgCosts[Resources] = rgCosts[Resources] / 2;
-        }
-    }
-    // Cheap Engines LRT: engines -50% (all four slots)
-    else if (ppart->hs.grhst == hstEngine) {
-        if (GetRaceGrbit(plr, ibitRaceCheapEngines)) {
-            for (int k = 0; k < 4; ++k)
-                rgCosts[k] -= rgCosts[k] / 2;
-        }
-    }
-
-    // 4) Bleeding Edge Tech surcharge:
-    // only if no tech discount was applied, BET is on, not suppressed, and some req > 0
-    const bool fBET = GetRaceGrbit(plr, ibitRaceBleedingEdgeTech);
-    const bool fSuppressBET = gd.fDontCalcBleed ? true : false;
-
-    if (pctDiscount < 1 && fBET && !fSuppressBET) {
-        bool requiresTech = false;
-        for (int t = 0; t < 6; ++t) {
-            if ((int)(signed char)lpcom->rgTech[t] > 0) {
-                requiresTech = true;
-                break;
+        if (t < 6) {
+            gd.fBleedingEdge = 1;
+            for (int k = 0; k < 4; k++) {
+                rgCosts[k] <<= 1;
             }
+        } else {
+            gd.fBleedingEdge = 0;
         }
-        if (requiresTech) {
-            gd.fBleedingEdge = 1; // mark applied
-            for (int k = 0; k < 4; ++k) {
-                rgCosts[k] = rgCosts[k] * 2; // double all costs
-            }
-            return;
-        }
+    } else {
+        gd.fBleedingEdge = 0;
     }
-
-    // If we didn’t apply the surcharge, ensure the flag is clear
-    gd.fBleedingEdge = 0;
 }
 
 void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks) {

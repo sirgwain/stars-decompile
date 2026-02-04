@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "dump.h"
 #include "file.h"
 #include "globals.h"
 #include "memory.h"
@@ -33,63 +34,28 @@ static int64_t file_size_bytes(const char *path) {
     return (end < 0) ? -1 : (int64_t)end;
 }
 
-static const char *record_type_name(uint16_t rt) {
-    /*
-     * Note: the file format uses 6-bit record types. Some of our internal enum
-     * names are still being reconciled; here we bias toward common Stars!
-     * .HST record meanings (and match Houston output where possible).
-     */
-    switch (rt) {
-    case 0x00:
-        return "FileFooter";
-    case 0x06:
-        return "Player";
-    case 0x07:
-        return "Game";
-    case 0x08:
-        return "FileHeader";
-    case 0x0C:
-        return "Message";
-    case 0x0D:
-        return "Planet";
-    case 0x10:
-        return "Fleet";
-    case 0x14:
-        return "Waypoint";
-    case 0x15:
-        return "String";
-    case 0x1A:
-        return "Design";
-    case 0x1E:
-        return "BattlePlan";
-    case 0x1F:
-        return "BattleData";
-    case 0x2B:
-        return "Thing";
-    case 0x2D:
-        return "Score";
-    default:
-        return "Unknown";
-    }
-}
-
 static void print_usage(FILE *out) {
     fprintf(out, "stars_cli - inspect Stars! save files\n\n"
                  "Usage:\n"
-                 "  stars_cli load <file> [--player N] <cmd> [cmd-args]\n\n"
+                 "  stars_cli load <file> [options] <cmd> [cmd-args]\n\n"
                  "Where:\n"
-                 "  <file> is the path to a Stars! file (e.g. game/TEST.HST, game/TEST.M1)\n\n"
+                 "  <file> is the path to a Stars! file (e.g. game/TEST.HST, game/TEST.M1)\n"
+                 "         For 'dump' command, use base path without extension (e.g. game/TEST)\n\n"
+                 "Options:\n"
+                 "  --player N             Set player index (-1..15)\n"
+                 "  -v                     Verbose output for list commands\n\n"
                  "Commands:\n"
-                 "  planets                List planets\n"
+                 "  planets                List planets (use -v for full details)\n"
                  "  planet <id>            Show a planet\n"
                  "  things                 List things\n"
                  "  thing <idfull>         Show a thing (decimal or hex like 0x1234)\n"
-                 "  fleets                 List fleets (all players)\n"
+                 "  fleets                 List fleets (use -v for full details)\n"
                  "  fleet <id>             Show a fleet (id/ifl packed field)\n"
-                 "  shdefs                 List ship designs (best-effort)\n"
-                 "  shdef <index>          Show a ship design by index (best-effort)\n"
+                 "  shdefs                 List ship designs (use -v for full details)\n"
+                 "  shdef <index>          Show a ship design by index\n"
                  "  game                   Dump loaded game summary\n"
-                 "  blocks                 Dump raw record blocks (type/size/data)\n");
+                 "  blocks                 Dump raw record blocks (type/size/data)\n"
+                 "  dump                   Dump blocks for all files (.XY, .HST, .M*, .H*)\n");
 }
 
 static int32_t parse_i32(const char *s, bool *ok) {
@@ -173,27 +139,6 @@ static void print_planet_row(const PLANET *p) {
            (int)p->fHomeworld, (int)p->fStarbase, (unsigned)p->uPopGuess, (unsigned)p->cFactories, (unsigned)p->cMines);
 }
 
-static void print_planet_detail(const PLANET *p) {
-    STARSPOINT pt = {0, 0};
-    if (p->id >= 0 && p->id < (int16_t)(sizeof(rgptPlan) / sizeof(rgptPlan[0]))) {
-        pt = rgptPlan[p->id];
-    }
-
-    printf("Planet %d\n", p->id);
-    printf("  owner iPlayer: %d\n", p->iPlayer);
-    printf("  pos: (%d,%d)\n", (int)pt.x, (int)pt.y);
-    printf("  det: %u\n", (unsigned)p->det);
-    printf("  flags: include=%d starbase=%d homeworld=%d firstyear=%d wasinhabited=%d artifact=%d noresearch=%d\n", (int)p->fInclude, (int)p->fStarbase,
-           (int)p->fHomeworld, (int)p->fFirstYear, (int)p->fWasInhabited, (int)p->fArtifact, (int)p->fNoResearch);
-    printf("  env: cur=(%d,%d,%d) orig=(%d,%d,%d)\n", (int)p->rgEnvVar[0], (int)p->rgEnvVar[1], (int)p->rgEnvVar[2], (int)p->rgEnvVarOrig[0],
-           (int)p->rgEnvVarOrig[1], (int)p->rgEnvVarOrig[2]);
-    printf("  guesses: pop=%u def=%u\n", (unsigned)p->uPopGuess, (unsigned)p->uDefGuess);
-    printf("  imp: deltaPop=%u mines=%u factories=%u defenses=%u\n", (unsigned)p->iDeltaPop, (unsigned)p->cMines, (unsigned)p->cFactories,
-           (unsigned)p->cDefenses);
-    printf("  scanner=%u  turn=%d\n", (unsigned)p->iScanner, (int)p->turn);
-    printf("  minerals (surf) iron=%" PRId32 " bor=%" PRId32 " ger=%" PRId32 "\n", p->rgwtMin[0], p->rgwtMin[1], p->rgwtMin[2]);
-    printf("  minerals (conc) iron=%d bor=%d ger=%d\n", (int)p->rgMinConc[0], (int)p->rgMinConc[1], (int)p->rgMinConc[2]);
-}
 
 static void print_thing_row(const THING *t) {
     printf("0x%04x  id=%3u  iplr=%2u  ith=%u  (%5d,%5d)  turn=%u\n", (unsigned)t->idFull, (unsigned)t->id, (unsigned)t->iplr, (unsigned)t->ith, (int)t->pt.x,
@@ -218,56 +163,28 @@ static void print_fleet_row(const FLEET *f) {
            (int)f->pt.y, (int)f->idPlanet, (unsigned)f->iplan, name);
 }
 
-static void print_fleet_detail(const FLEET *f) {
-    printf("Fleet %d\n", f->id);
-    printf("  iPlayer: %d\n", f->iPlayer);
-    printf("  pos: (%d,%d)\n", (int)f->pt.x, (int)f->pt.y);
-    printf("  idPlanet: %d\n", (int)f->idPlanet);
-    printf("  det: %u\n", (unsigned)f->det);
-    printf("  flags: include=%d reporders=%d dead=%d done=%d bombed=%d hereAllTurn=%d noheal=%d mark=%d\n", (int)f->fInclude, (int)f->fRepOrders, (int)f->fDead,
-           (int)f->fDone, (int)f->fBombed, (int)f->fHereAllTurn, (int)f->fNoHeal, (int)f->fMark);
-    printf("  plan: %u  cord: %d\n", (unsigned)f->iplan, (int)f->cord);
-    printf("  move: left=%d used=%d fuel=%" PRId32 "\n", (int)f->dMoveLeft, (int)f->dMoveUsed, f->lFuelUsed);
-    printf("  name: %s\n", (f->lpszName != NULL) ? f->lpszName : "(null)");
-
-    /* ship counts */
-    printf("  rgcsh:");
-    for (int i = 0; i < 16; i++) {
-        if (f->rgcsh[i] != 0) {
-            printf(" [%d]=%d", i, (int)f->rgcsh[i]);
-        }
-    }
-    printf("\n");
-}
 
 static void print_shdef_row(const SHDEF *s, int idx) {
     printf("%3d  ishdef=%u  free=%d  gift=%d  det=%u  class=\"%s\"  ihuldef=%d  chs=%u  built=%" PRIu32 " exist=%" PRIu32 "\n", idx, (unsigned)s->ishdef,
            (int)s->fFree, (int)s->fGift, (unsigned)s->det, s->hul.szClass, (int)s->hul.ihuldef, (unsigned)s->hul.chs, (uint32_t)s->cBuilt, (uint32_t)s->cExist);
 }
 
-static void print_shdef_detail(const SHDEF *s, int idx) {
-    printf("ShDef[%d]\n", idx);
-    printf("  ishdef=%u det=%u include=%d free=%d gift=%d\n", (unsigned)s->ishdef, (unsigned)s->det, (int)s->fInclude, (int)s->fFree, (int)s->fGift);
-    printf("  class: %s\n", s->hul.szClass);
-    printf("  ihuldef=%d chs=%u wtEmpty=%u dp=%u\n", (int)s->hul.ihuldef, (unsigned)s->hul.chs, (unsigned)s->hul.wtEmpty, (unsigned)s->hul.dp);
-    printf("  costs: res=%u ore=(%u,%u,%u)\n", (unsigned)s->hul.resCost, (unsigned)s->hul.rgwtOreCost[0], (unsigned)s->hul.rgwtOreCost[1],
-           (unsigned)s->hul.rgwtOreCost[2]);
-    printf("  built=%" PRIu32 " exist=%" PRIu32 " grbitPlr=0x%04x\n", (uint32_t)s->cBuilt, (uint32_t)s->cExist, (unsigned)s->grbitPlr);
-    printf("  scan: range=%u range2=%u pctDetect=%u iSteal=%u\n", (unsigned)s->dScanRange, (unsigned)s->dScanRange2, (unsigned)s->pctDetect,
-           (unsigned)s->iSteal);
-}
-
 /* ------------------------------------------------------------ */
 /* command handlers */
 
-static int cmd_planets(void) {
+static int cmd_planets(bool fVerbose) {
     if (lpPlanets == NULL) {
         fprintf(stderr, "No planets loaded (lpPlanets == NULL).\n");
         return 2;
     }
     printf("Planets: cPlanet=%d\n", (int)cPlanet);
     for (int16_t i = 0; i < cPlanet; i++) {
-        print_planet_row(&lpPlanets[i]);
+        if (fVerbose) {
+            DumpPlanet(&lpPlanets[i]);
+            printf("\n");
+        } else {
+            print_planet_row(&lpPlanets[i]);
+        }
     }
     return 0;
 }
@@ -284,7 +201,7 @@ static int cmd_planet(const char *sid) {
         fprintf(stderr, "planet: not found: %d\n", (int)id32);
         return 2;
     }
-    print_planet_detail(p);
+    DumpPlanet(p);
     return 0;
 }
 
@@ -316,7 +233,7 @@ static int cmd_thing(const char *sidfull) {
     return 0;
 }
 
-static int cmd_fleets(void) {
+static int cmd_fleets(bool fVerbose) {
     if (rglpfl == NULL) {
         fprintf(stderr, "No fleets loaded (rglpfl == NULL).\n");
         return 2;
@@ -328,7 +245,12 @@ static int cmd_fleets(void) {
             continue;
         printf("-- player %d --\n", (int)iplr);
         while (f != NULL) {
-            print_fleet_row(f);
+            if (fVerbose) {
+                DumpFleet(f);
+                printf("\n");
+            } else {
+                print_fleet_row(f);
+            }
             f = f->lpflNext;
         }
     }
@@ -347,11 +269,11 @@ static int cmd_fleet(const char *sid) {
         fprintf(stderr, "fleet: not found: %d\n", (int)id32);
         return 2;
     }
-    print_fleet_detail(f);
+    DumpFleet(f);
     return 0;
 }
 
-static int cmd_shdefs(void) {
+static int cmd_shdefs(bool fVerbose) {
     /*
      * Today we only have a reliable global: c_common::rgshdef[16].
      * The real game also has per-player shdef tables (rglpshdef / rglpshdefSB)
@@ -359,7 +281,12 @@ static int cmd_shdefs(void) {
      */
     printf("Ship designs (rgshdef[16]):\n");
     for (int i = 0; i < 16; i++) {
-        print_shdef_row(&rgshdef[i], i);
+        if (fVerbose) {
+            DumpShDef(&rgshdef[i], i);
+            printf("\n");
+        } else {
+            print_shdef_row(&rgshdef[i], i);
+        }
     }
     return 0;
 }
@@ -371,7 +298,7 @@ static int cmd_shdef(const char *sidx) {
         fprintf(stderr, "shdef: index must be 0..15\n");
         return 2;
     }
-    print_shdef_detail(&rgshdef[idx], (int)idx);
+    DumpShDef(&rgshdef[idx], (int)idx);
     return 0;
 }
 
@@ -388,6 +315,11 @@ static int cmd_game(const CliContext *cli) {
 
     printf("Game ID: %" PRIu32 ", Turn: %u (Year %u)\n", (uint32_t)game.lid, (unsigned)game.turn, (unsigned)(2400u + (uint16_t)game.turn));
 
+    if (cli != NULL && cli->fVerbose) {
+        printf("\n");
+        DumpGameStruct(&game);
+    }
+
     printf("\nPlayers found:\n");
     for (int16_t iplr = 0; iplr < game.cPlayer; iplr++) {
         const PLAYER *p = &rgplr[iplr];
@@ -398,6 +330,10 @@ static int cmd_game(const CliContext *cli) {
         printf("  Player %d: %s (%s)\n", (int)iplr, (p->szName[0] != '\0') ? p->szName : "(unnamed)", (p->szNames[0] != '\0') ? p->szNames : "(unnamed)");
         printf("    Ships: %u designs, Starbases: %u designs\n", (unsigned)(uint8_t)p->cShDef, (unsigned)p->cshdefSB);
         printf("    Planets: %u, Fleets: %u\n", (unsigned)(uint16_t)p->cPlanet, (unsigned)p->cFleet);
+
+        if (cli != NULL && cli->fVerbose) {
+            DumpPlayerStruct(p);
+        }
     }
 
     return 0;
@@ -409,7 +345,83 @@ static void print_hex_bytes(const uint8_t *pb, size_t cb) {
     }
 }
 
-static int cmd_blocks(const CliContext *cli) { return DumpGameFileBlocks(cli ? cli->file : NULL); }
+static int dump_try_file(const CliContext *cli, const char *path_lower, const char *path_upper, int *pFound, int *pErrors) {
+    const char *path_use = NULL;
+
+    if (Stars_Access(path_lower, STARS_ACCESS_OK) == 0)
+        path_use = path_lower;
+    else if (path_upper != NULL && Stars_Access(path_upper, STARS_ACCESS_OK) == 0)
+        path_use = path_upper;
+    else
+        return 0;
+
+    if (pFound)
+        (*pFound)++;
+    printf("=== %s ===\n", path_use);
+    if (DumpGameFileBlocksEx(path_use, cli ? cli->fVerbose : false) != 0) {
+        if (pErrors)
+            (*pErrors)++;
+    }
+    printf("\n");
+    return 1;
+}
+
+static int cmd_blocks(const CliContext *cli) { return DumpGameFileBlocksEx(cli ? cli->file : NULL, cli ? cli->fVerbose : false); }
+
+static int cmd_dump(const CliContext *cli) {
+    char path[512];
+    char path_up[512];
+    int  found = 0;
+    int  errors = 0;
+
+    if (cli == NULL || cli->path_base[0] == '\0') {
+        fprintf(stderr, "dump: missing base path\n");
+        return 2;
+    }
+
+    /* .XY file (universe definition) */
+    snprintf(path, sizeof(path), "%s.xy", cli->path_base);
+    snprintf(path_up, sizeof(path_up), "%s.XY", cli->path_base);
+    dump_try_file(cli, path, path_up, &found, &errors);
+
+    /* .HST file (host file) */
+    snprintf(path, sizeof(path), "%s.hst", cli->path_base);
+    snprintf(path_up, sizeof(path_up), "%s.HST", cli->path_base);
+    dump_try_file(cli, path, path_up, &found, &errors);
+
+    /* .M1 - .M16 files (turn files per player) */
+    for (int i = 1; i <= 16; i++) {
+        snprintf(path, sizeof(path), "%s.m%d", cli->path_base, i);
+        snprintf(path_up, sizeof(path_up), "%s.M%d", cli->path_base, i);
+        dump_try_file(cli, path, path_up, &found, &errors);
+    }
+
+    /* .H1 - .H16 files (history files per player) */
+    for (int i = 1; i <= 16; i++) {
+        snprintf(path, sizeof(path), "%s.h%d", cli->path_base, i);
+        snprintf(path_up, sizeof(path_up), "%s.H%d", cli->path_base, i);
+        dump_try_file(cli, path, path_up, &found, &errors);
+    }
+
+    /* .X1 - .X16 files (log files per player) */
+    for (int i = 1; i <= 16; i++) {
+        snprintf(path, sizeof(path), "%s.x%d", cli->path_base, i);
+        snprintf(path_up, sizeof(path_up), "%s.X%d", cli->path_base, i);
+        dump_try_file(cli, path, path_up, &found, &errors);
+    }
+
+    if (found == 0) {
+        fprintf(stderr, "dump: no Stars! files found with base path '%s'\n", cli->path_base);
+        return 2;
+    }
+
+    printf("Dumped %d file(s)", found);
+    if (errors > 0)
+        printf(" (%d error(s))", errors);
+    printf("\n");
+
+    return errors > 0 ? 1 : 0;
+}
 
 /* ------------------------------------------------------------ */
 
@@ -453,6 +465,60 @@ int StarsCli_Run(int argc, char **argv) {
     }
     cli.file = argv[i++];
 
+    /* Peek ahead to see if the command is 'dump' - it uses base path without extension.
+     * This special-case also accepts "-v" after "dump" (mirrors your invocation:
+     *   stars_cli load <base> dump -v
+     */
+    {
+        int cmd_idx = i;
+        /* Skip optional flags to find the command (we only support --player VALUE here) */
+        while (cmd_idx < argc && strncmp(argv[cmd_idx], "--", 2) == 0) {
+            if (strcmp(argv[cmd_idx], "--player") == 0)
+                cmd_idx += 2;
+            else
+                break;
+        }
+        if (cmd_idx < argc && strcmp(argv[cmd_idx], "dump") == 0) {
+            /* For dump command, treat file as base path (no extension required) */
+            strncpy(cli.path_base, cli.file, sizeof(cli.path_base) - 1);
+            cli.path_base[sizeof(cli.path_base) - 1] = '\0';
+            cli.ext[0] = '\0';
+            /* Consume --player here if present (matches normal option parsing). */
+            while (i < argc && strncmp(argv[i], "--", 2) == 0) {
+                if (strcmp(argv[i], "--player") == 0) {
+                    if (i + 1 >= argc) {
+                        fprintf(stderr, "--player needs a value\n");
+                        return 2;
+                    }
+                    bool    ok;
+                    int32_t v = parse_i32(argv[i + 1], &ok);
+                    if (!ok || v < -1 || v > 15) {
+                        fprintf(stderr, "--player must be -1..15\n");
+                        return 2;
+                    }
+                    cli.iPlayer = (int16_t)v;
+                    i += 2;
+                    continue;
+                }
+                break;
+            }
+            if (i < argc && strcmp(argv[i], "dump") == 0) {
+                i++;
+                /* Accept optional -v after dump for convenience. */
+                while (i < argc) {
+                    if (strcmp(argv[i], "-v") == 0) {
+                        cli.fVerbose = true;
+                        i++;
+                        continue;
+                    }
+                    fprintf(stderr, "Unknown option after dump: %s\n", argv[i]);
+                    return 2;
+                }
+                return cmd_dump(&cli);
+            }
+        }
+    }
+
     /* Split file path into base and extension */
     if (!Stars_PathSplitExt(cli.file, cli.path_base, sizeof(cli.path_base), cli.ext, sizeof(cli.ext))) {
         fprintf(stderr, "Invalid file path: %s\n", cli.file);
@@ -460,7 +526,7 @@ int StarsCli_Run(int argc, char **argv) {
     }
 
     /* optional flags */
-    while (i < argc && strncmp(argv[i], "--", 2) == 0) {
+    while (i < argc && argv[i][0] == '-') {
         if (strcmp(argv[i], "--player") == 0) {
             if (i + 1 >= argc) {
                 fprintf(stderr, "--player needs a value\n");
@@ -474,6 +540,12 @@ int StarsCli_Run(int argc, char **argv) {
             }
             cli.iPlayer = (int16_t)v;
             i += 2;
+            continue;
+        }
+
+        if (strcmp(argv[i], "-v") == 0) {
+            cli.fVerbose = true;
+            i++;
             continue;
         }
 
@@ -507,7 +579,7 @@ int StarsCli_Run(int argc, char **argv) {
     }
 
     if (strcmp(cmd, "planets") == 0) {
-        return cmd_planets();
+        return cmd_planets(cli.fVerbose);
     } else if (strcmp(cmd, "planet") == 0) {
         if (i >= argc) {
             fprintf(stderr, "planet requires <id>\n");
@@ -523,7 +595,7 @@ int StarsCli_Run(int argc, char **argv) {
         }
         return cmd_thing(argv[i]);
     } else if (strcmp(cmd, "fleets") == 0) {
-        return cmd_fleets();
+        return cmd_fleets(cli.fVerbose);
     } else if (strcmp(cmd, "fleet") == 0) {
         if (i >= argc) {
             fprintf(stderr, "fleet requires <id>\n");
@@ -531,7 +603,7 @@ int StarsCli_Run(int argc, char **argv) {
         }
         return cmd_fleet(argv[i]);
     } else if (strcmp(cmd, "shdefs") == 0) {
-        return cmd_shdefs();
+        return cmd_shdefs(cli.fVerbose);
     } else if (strcmp(cmd, "shdef") == 0) {
         if (i >= argc) {
             fprintf(stderr, "shdef requires <index>\n");
