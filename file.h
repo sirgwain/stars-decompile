@@ -32,58 +32,6 @@ enum {
 /* mask to extract the base dt value */
 enum { grbitDtBase = 0x00FF };
 
-typedef enum RecordType {
-    /*
-     * NOTE: Stars! file records encode a 6-bit "record type" (rt) plus a 10-bit
-     * byte count (cb) in a 16-bit header word.
-     *
-     * In .HST files (and others), record type 0x00 is used for the footer record
-     * (cb=2, data=0000). The original code treats "rt==0" as a terminator while
-     * reading, so we keep rtEOF=0 for that behavior.
-     */
-    rtEOF = 0,
-
-    rtPlr = 6,  /* Player */
-    rtGame = 7, /* Game */
-    rtBOF = 8,  /* FileHeader / BOF */
-    rtMsg = 12, /* Message */
-
-    /* Common .HST records (matches Houston blocks output). */
-    rtPlanet = 13,
-    rtPlanetB = 14,
-    rtFleet = 16,
-    rtWaypoint = 20,
-    rtBattlePlan = 30,
-
-    /* Legacy/internal aliases observed in decompilation. */
-    rtFleetA = rtFleet,
-    rtOrderA = 19, /* other order-like record type seen in decompile */
-    rtOrderB = rtWaypoint,
-    rtString = 21, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
-
-    rtSel = 22, /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
-
-    rtShDef = 26,
-    rtProdQ = 28,
-
-    rtBtlPlan = rtBattlePlan, /* decompile: while (rt == 0x1e) { ...battle plan... } */
-    rtBtlData = 31,           /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
-    rtContinue = 39,          /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
-
-    rtHistHdr = 32, /* decompile: after opening dtHist, expects rt == 0x20 */
-    rtMsgFilt = 33, /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
-
-    rtChgPassword = 36, /* file.c: if (hdrCur.rt == rtChgPassword) { lSaltCur = *(long*)rgbCur; } */
-
-    rtPlrMsg = 40,
-    rtAiData = 41, /* decompile: loop skips/reads while (rt == 0x29) around vlpbAiData */
-
-    rtThing = 43, /* decompile: if (rt == 0x2b) { cThing = rgbCur; alloc things } */
-    rtScore = 45, /* decompile: loop `if (rt != 0x2d) break;` in score load path */
-
-    rtMax = 46 /* one past highest observed (0x2d) */
-} RecordType;
-
 enum {
     MAJORVER = 2,
     MINORVERMin = 48, /* 0x30 */

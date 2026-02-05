@@ -3089,65 +3089,61 @@ typedef enum LookupResult {
     LookupNeedMany = 99    // multiple tech deficits
 } LookupResult;
 
-typedef enum RecordTypeLog {
-    /* Log record type 0 is effectively a no-op / padding record in FRunLogRecord. */
-    rtLogNop = 0x00,
-
-    /* Cargo transfer between objects (source encoded in low nibble of lpb[4],
-       destination encoded in high nibble of lpb[4]). The three variants differ
-       by quantity encoding size. */
-    rtLogCargoXfer8 = 0x01,  /* quantities are int8  (lpb[6+iLook]) */
-    rtLogCargoXfer16 = 0x02, /* quantities are int16 (lpb[6+2*iLook]) */
-    rtLogCargoXfer32 = 0x19, /* quantities are int32 (lpb[6+4*iLook]) */
-
-    /* Fleet orders list edits (lpfl->lpplord entries are 0x12 bytes each). */
-    rtLogFleetOrderDelete = 0x03, /* delete 1 or 2 orders; index in *(u16*)(lpb+2), high bit => delete extra */
-    rtLogFleetOrderInsert = 0x04, /* insert new order at index *(i16*)(lpb+2); payload from lpb+4 */
-    rtLogFleetOrderUpdate = 0x05, /* overwrite existing order at index *(i16*)(lpb+2); payload from lpb+4 */
-
-    /* Fleet flags / small per-order attribute tweaks. */
-    rtLogFleetFlagBit9 = 0x0A,     /* lpfl->wFlags_0x4 bit 9 set/cleared by (*(u16*)(lpb+2) & 1) */
-    rtLogFleetOrderAttrNib = 0x0B, /* order[index].word10 low nibble set to (*(i16*)(lpb+4) & 0xF), value constrained <=9 */
-
-    /* Fleet↔fleet cargo balancing transfer: 16 cargo slots, bitmask + signed deltas.
-       Ends by FleetTransferCargoBalance(), marks fleets dirty, may delete emptied fleets. */
-    rtLogFleetCargoXfer = 0x17,
-
-    /* Fleet split / merge operations. */
-    rtLogFleetSplit = 0x18, /* LpflNewSplit(&fleet) */
-    rtLogFleetMerge = 0x25, /* merge all-at-location (cb==2) or merge listed fleet ids (cb>2) */
-
-    /* Ship design definition (SHDEF) create/update/delete for the current player. */
-    rtLogShDef = 0x1B,
-
-    /* Planet production queue set/clear (planet->lpplprod). */
-    rtLogPlanetProdQ = 0x1D,
-
-    /* Battle plan set/update/delete (UnpackBattlePlan / FDeleteBattlePlan). */
-    rtLogBattlePlan = 0x1E,
-
-    /* Research settings: pctResearch + iTechCur (packed nibble fields). */
-    rtLogResearch = 0x22,
-
-    /* Planet routing / starbase / infrastructure bitfields mutation. */
-    rtLogPlanetRouting = 0x23,
-
-    /* Host-only / protected-mode player fields. */
-    rtLogPlayerSalt = 0x24, /* writes rgplr[idPlayer].lSalt when host-ish bit set */
-    rtLogRelations = 0x26,  /* memcpy rgplr[idPlayer].rgmdRelation[0..cPlayer) */
-
-    /* Fleet / thing misc settings. */
-    rtLogFleetPlan = 0x2A,      /* lpfl->iplan = *(u16*)(lpb+2) truncated */
-    rtLogThingByteParam = 0x2B, /* sets 1 byte inside THING union for a restricted subtype */
-
-    /* User string (fleet rename); may be compressed via FDecompressUserString. */
-    rtLogFleetName = 0x2C,
-
-    /* Host-only opaque blob (size capped at 0x1A bytes) copied into rgplr[idPlayer].zpq1. */
-    rtLogPlayerZpq1 = 0x2E,
-
-    rtLogMax = 0x2F /* one past highest log rt observed in this function (0x2E) */
-} RecordTypeLog;
+typedef enum RecordType {
+    /*
+     * NOTE: Stars! file records encode a 6-bit "record type" (rt) plus a 10-bit
+     * byte count (cb) in a 16-bit header word.
+     *
+     * In .HST files (and others), record type 0x00 is used for the footer record
+     * (cb=2, data=0000). The original code treats "rt==0" as a terminator while
+     * reading, so we keep rtEOF=0 for that behavior.
+     */
+    rtEOF = 0,
+    rtLogCargoXfer8 = 1,         /* quantities are int8  (lpb[6+iLook]) */
+    rtLogCargoXfer16 = 2,        /* quantities are int16 (lpb[6+2*iLook]) */
+    rtLogFleetOrderDelete = 3,   /* delete 1 or 2 orders; index in *(u16*)(lpb+2), high bit => delete extra */
+    rtLogFleetOrderInsert = 4,   /* insert new order at index *(i16*)(lpb+2); payload from lpb+4 */
+    rtLogFleetOrderUpdate = 5,   /* overwrite existing order at index *(i16*)(lpb+2); payload from lpb+4 */
+    rtPlr = 6,                   /* Player */
+    rtGame = 7,                  /* Game */
+    rtBOF = 8,                   /* FileHeader / BOF */
+    rtLogFleetFlagBit9 = 10,     /* lpfl->wFlags_0x4 bit 9 set/cleared by (*(u16*)(lpb+2) & 1) */
+    rtLogFleetOrderAttrNib = 11, /* order[index].word10 low nibble set to (*(i16*)(lpb+4) & 0xF), value constrained <=9 */
+    rtMsg = 12,                  /* Message */
+    rtPlanet = 13,
+    rtPlanetB = 14,
+    rtFleetA = 16,
+    rtOrderA = 19, /* other order-like record type seen in decompile */
+    rtOrderB = 20, // waypoint only
+    rtString = 21, /* decompile: alloc/copy string from rgbCur when rt == 0x15 */
+    rtSel = 22,    /* decompile: after things, if (rt == 0x16) ReadRt(); matches file.c rtSel */
+    rtLogFleetCargoXfer = 23,
+    rtLogFleetSplit = 24,  /* LpflNewSplit(&fleet) */
+    rtLogCargoXfer32 = 25, /* quantities are int32 (lpb[6+4*iLook]) */
+    rtShDef = 26,
+    rtLogShDef = 27, /* Ship design definition (SHDEF) create/update/delete for the current player. */
+    rtProdQ = 28,
+    rtLogPlanetProdQ = 29,   /* Planet production queue set/clear (planet->lpplprod). */
+    rtBtlPlan = 30,          /* decompile: while (rt == 0x1e) { ...battle plan... } */
+    rtBtlData = 31,          /* decompile: while (rt == 0x1f || rt == 0x27) { ... } */
+    rtContinue = 39,         /* decompile: inside loop: if (rt != 0x27) { ... } matches `rt != rtContinue` */
+    rtHistHdr = 32,          /* decompile: after opening dtHist, expects rt == 0x20 */
+    rtMsgFilt = 33,          /* decompile: checks cbbitfMsg vs cb and memcpy(bitfMsgFiltered, ...) */
+    rtLogResearch = 34,      /* Research settings: pctResearch + iTechCur (packed nibble fields). */
+    rtLogPlanetRouting = 35, /* Planet routing / starbase / infrastructure bitfields mutation. */
+    rtLogRelations = 38,     /* memcpy rgplr[idPlayer].rgmdRelation[0..cPlayer) */
+    rtChgPassword = 36,      /* file.c: if (hdrCur.rt == rtChgPassword) { lSaltCur = *(long*)rgbCur; } */
+    rtLogFleetMerge = 37,    /* merge all-at-location (cb==2) or merge listed fleet ids (cb>2) */
+    rtPlrMsg = 40,
+    rtAiData = 41,            /* decompile: loop skips/reads while (rt == 0x29) around vlpbAiData */
+    rtThing = 43,             /* decompile: if (rt == 0x2b) { cThing = rgbCur; alloc things } */
+    rtLogFleetPlan = 42,      /* lpfl->iplan = *(u16*)(lpb+2) truncated */
+    rtLogThingByteParam = 43, /* sets 1 byte inside THING union for a restricted subtype */
+    rtLogFleetName = 44,      /* User string (fleet rename); may be compressed via FDecompressUserString. */
+    rtScore = 45,             /* decompile: loop `if (rt != 0x2d) break;` in score load path */
+    rtLogPlayerZpq1 = 46,     /* Host-only opaque blob (size capped at 0x1A bytes) copied into rgplr[idPlayer].zpq1. */
+    rtMax = 47                /* one past highest observed (0x2d) */
+} RecordType;
 
 typedef enum cbStructSize {
     cbABC = 6,

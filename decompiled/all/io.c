@@ -2630,6 +2630,8 @@ void RgFromStream(void *rg, ushort cb)
 // Segment: MEMORY_IO
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 void WriteOrders(FLEET *lpfl)
 
 {
@@ -2646,9 +2648,9 @@ void WriteOrders(FLEET *lpfl)
         for (; cord != 0; cord = cord + -1) {
             uVar2 = (undefined2)((ulong)lpord >> 0x10);
             if ((((ORDER *)lpord)->wFlags_0x6 & 0xf) == 0) {
-                WriteRt(0x14, 8, lpord);
+                WriteRt(rtOrderB, 8, lpord);
             } else {
-                WriteRt(0x13, 0x12, lpord);
+                WriteRt(rtOrderA, 0x12, lpord);
             }
             lpord = (ORDER *)CONCAT22(uVar2, (ORDER *)lpord + 1);
         }
@@ -2661,6 +2663,8 @@ void WriteOrders(FLEET *lpfl)
 // Address: 1070:551c
 // Segment: MEMORY_IO
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void WriteRtPlr(PLAYER *pplr, byte *pbStore)
 
@@ -2710,7 +2714,7 @@ void WriteRtPlr(PLAYER *pplr, byte *pbStore)
         *pb = (byte)cOut;
         pb = pb + cOut + 1;
     }
-    WriteRt(6, (int)pb - (int)pbStore, pbStore);
+    WriteRt(rtPlr, (int)pb - (int)pbStore, pbStore);
     return;
 }
 
@@ -2719,6 +2723,8 @@ void WriteRtPlr(PLAYER *pplr, byte *pbStore)
 // Address: 1070:574e
 // Segment: MEMORY_IO
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void WriteRtShDef(SHDEF *lpshdef, byte **ppbStore)
 
@@ -2771,7 +2777,7 @@ void WriteRtShDef(SHDEF *lpshdef, byte **ppbStore)
         pb = pb + cOut + 1;
     }
     if (ppbStore == (byte **)0x0) {
-        WriteRt(0x1a, (int)pb - (int)rgb, rgb);
+        WriteRt(rtShDef, (int)pb - (int)rgb, rgb);
     } else {
         _memmove(*ppbStore, rgb, (int)pb - (int)rgb);
         *ppbStore = *ppbStore + ((int)pb - (int)rgb);
@@ -2787,6 +2793,7 @@ void WriteRtShDef(SHDEF *lpshdef, byte **ppbStore)
 
 /* WARNING: Removing unreachable block (ram,0x10705d1f) */
 /* WARNING: Removing unreachable block (ram,0x10705e4f) */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
 
@@ -3118,7 +3125,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             }
         }
         if ((iPlayer == -1) && (((int)lSaltCur != 0 || (lSaltCur._2_2_ != 0)))) {
-            WriteRt(0x24, 4, &lSaltCur);
+            WriteRt(rtChgPassword, 4, &lSaltCur);
         }
         WritePlayerMessages(iPlayer);
         lpplT = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
@@ -3127,9 +3134,9 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             pPVar18 = (PLANET *)lpplT;
             if ((pPVar18->wFlags_0x4 >> 8 & 1) != 0) {
                 if ((pPVar18->wFlags_0x4 & 0xff) == 7) {
-                    WritePlanet(lpplT, 0xd, 0);
+                    WritePlanet(lpplT, rtPlanet, 0);
                     if ((*(int *)&pPVar18->lpplprod != 0) || (*(int *)((int)&pPVar18->lpplprod + 2) != 0)) {
-                        WriteRt(0x1c, (uint)((PLPROD *)pPVar18->lpplprod)->iprodMac << 2,
+                        WriteRt(rtProdQ, (uint)((PLPROD *)pPVar18->lpplprod)->iprodMac << 2,
                                 (void *)CONCAT22(*(undefined2 *)((int)&pPVar18->lpplprod + 2), (void *)(*(int *)&pPVar18->lpplprod + 4)));
                     }
                 } else if ((pPVar18->wFlags_0x4 & 0xff) == 2) {
@@ -3144,7 +3151,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                     }
                     pPVar18->wFlags_0x4 = pPVar18->wFlags_0x4 & 0xfdff;
                     pPVar18->wFlags_0x4 = pPVar18->wFlags_0x4 & 0xff00 | 3;
-                    WritePlanet(lpplT, 0xe, 0);
+                    WritePlanet(lpplT, rtPlanetB, 0);
                     psVar20 = local_8c;
                     pPVar19 = pPVar18;
                     for (iVar15 = 0x1c; iVar15 != 0; iVar15 = iVar15 + -1) {
@@ -3155,7 +3162,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                         pPVar3->id = *psVar5;
                     }
                 } else {
-                    WritePlanet(lpplT, 0xe, 0);
+                    WritePlanet(lpplT, rtPlanetB, 0);
                 }
             }
             lpplT = (PLANET *)CONCAT22(uVar22, pPVar18 + 1);
@@ -3197,7 +3204,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 if (((((gd.grBits._2_2_ & 1) != 0) || (i == iPlayer)) || ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 1) != 0)) ||
                     (((game.wCrap >> 6 & 1) != 0 && (0x13 < game.turn)))) {
-                    WriteRt(0x2d, 0x18, (SCOREX *)CONCAT22(vlprgScoreX._2_2_, (SCOREX *)vlprgScoreX + i));
+                    WriteRt(rtScore, 0x18, (SCOREX *)CONCAT22(vlprgScoreX._2_2_, (SCOREX *)vlprgScoreX + i));
                 }
             }
         }
@@ -3217,7 +3224,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             lpth = (THING *)lpth + 1;
         }
         if (0 < i) {
-            WriteRt(0x2b, 2, &i);
+            WriteRt(rtLogThingByteParam, 2, &i);
             local_56 = lpThings._2_2_;
             local_5a = (FLEET *)CONCAT22((THING *)lpThings, (FLEET *)local_5a);
             pTVar16 = (THING *)lpThings + cThing;
@@ -3229,7 +3236,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                        (((lpth->idFull >> 0xd == 1 && (((&((THING *)lpth)->u_THING_0x0006)->tht).ptDest.x < 0)) ||
                          ((lpth->idFull >> 0xd == 3 && ((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 4) >> 4 & 1) != 0)))))))) ||
                     ((lpth->idFull >> 0xd == 2 && ((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 0xd & 1) != 0)))) {
-                    WriteRt(0x2b, 0x12, lpth);
+                    WriteRt(rtLogThingByteParam, 0x12, lpth);
                 }
                 lpth = (THING *)lpth + 1;
             }
@@ -3250,7 +3257,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                 lpbtlplan._0_2_ = (BTLPLAN *)lpbtlplan + 1;
             }
         }
-        WriteRt(0, 2, &game.turn);
+        WriteRt(rtEOF, 2, &game.turn);
         StreamClose();
     } else {
     IO_LFail_2:
@@ -3301,6 +3308,8 @@ short FAppendFile(short iPlayer)
 // Address: 1070:709c
 // Segment: MEMORY_IO
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void WriteBattles(short iPlayer)
 
@@ -3429,14 +3438,14 @@ void WriteBattles(short iPlayer)
                     MarkPlanet(lppl_00, iPlayer, 1);
                 }
                 if (pBVar10->cbData < 0x400) {
-                    WriteRt(0x1f, pBVar10->cbData, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                    WriteRt(rtBtlData, pBVar10->cbData, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                     lpbBattle._0_2_ = (byte *)lpbBattle + pBVar10->cbData;
                 } else {
                     uVar6 = (uint)pBVar10->ctok * 0x1d + 0xe;
                     pBVar7 = (byte *)lpbBattle + uVar6;
                     lpbtlrec = (BTLREC *)CONCAT22(lpbBattle._2_2_, pBVar7);
                     if (uVar6 < 0x400) {
-                        WriteRt(0x1f, uVar6, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                        WriteRt(rtBtlData, uVar6, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                         lpbBattle._0_2_ = (byte *)lpbBattle + uVar6;
                     } else {
                         if (pBVar10->ctok < 0x23) {
@@ -3447,16 +3456,16 @@ void WriteBattles(short iPlayer)
                         if ((uint)pBVar10->ctok < (uint)ctok) {
                             ctok = (short)pBVar10->ctok;
                         }
-                        WriteRt(0x1f, ctok * 0x1d + 0xe, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                        WriteRt(rtBtlData, ctok * 0x1d + 0xe, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                         lpbBattle._0_2_ = (byte *)lpbBattle + ctok * 0x1d + 0xe;
                         ctok = (uint)pBVar10->ctok - ctok;
                         while (0 < ctok) {
                             if ((uint)ctok < 0x24) {
-                                WriteRt(0x27, ctok * 0x1d, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                                WriteRt(rtContinue, ctok * 0x1d, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                                 lpbBattle._0_2_ = (byte *)lpbBattle + ctok * 0x1d;
                                 ctok = 0;
                             } else {
-                                WriteRt(0x27, 0x3f7, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                                WriteRt(rtContinue, 0x3f7, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                                 lpbBattle._0_2_ = (byte *)lpbBattle + 0x3f7;
                                 ctok = ctok + -0x23;
                             }
@@ -3464,7 +3473,7 @@ void WriteBattles(short iPlayer)
                     }
                     cb = (pBVar10->cbData - 0xe) + (uint)pBVar10->ctok * -0x1d;
                     if (cb < 0x400) {
-                        WriteRt(0x27, cb, (BTLREC *)CONCAT22(lpbBattle._2_2_, pBVar7));
+                        WriteRt(rtContinue, cb, (BTLREC *)CONCAT22(lpbBattle._2_2_, pBVar7));
                         lpbBattle._0_2_ = (byte *)lpbBattle + cb;
                     } else {
                         while (cb != 0) {
@@ -3480,18 +3489,18 @@ void WriteBattles(short iPlayer)
                                         break;
                                     cbRec = (pbVar5 + cbRec)->ctok * 8 + 6;
                                 } while (cbT + cbRec < 0x400);
-                                WriteRt(0x27, cbT, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
+                                WriteRt(rtContinue, cbT, (byte *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle));
                             } else {
                                 cb = cb - cbRec;
                                 while (true) {
                                     if (cbRec < 0x400)
                                         break;
-                                    WriteRt(0x27, 0x3ff, lpbtlrec);
+                                    WriteRt(rtContinue, 0x3ff, lpbtlrec);
                                     lpbtlrec = (BTLREC *)CONCAT22(lpbtlrec._2_2_, (BTLREC *)((int)&((BTLREC *)lpbtlrec)[0xaa].ctok + 1));
                                     cbRec = cbRec + -0x3ff;
                                 }
                                 if (cbRec != 0) {
-                                    WriteRt(0x27, cbRec, lpbtlrec);
+                                    WriteRt(rtContinue, cbRec, lpbtlrec);
                                     lpbtlrec = (BTLREC *)CONCAT22(lpbtlrec._2_2_, &((BTLREC *)lpbtlrec)->itok + cbRec);
                                 }
                             }
@@ -3518,8 +3527,9 @@ void WriteBattles(short iPlayer)
 /* WARNING: Removing unreachable block (ram,0x107080c6) */
 /* WARNING: Removing unreachable block (ram,0x10708110) */
 /* WARNING: Removing unreachable block (ram,0x1070804b) */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
-void WritePlanet(PLANET *lppl, short rt, short fHistory)
+void WritePlanet(PLANET *lppl, RecordType rt, short fHistory)
 
 {
     int        iVar1;
@@ -3548,7 +3558,7 @@ void WritePlanet(PLANET *lppl, short rt, short fHistory)
     rgb._0_2_ = lppl->id & 0x7ffU | pPVar7->iPlayer << 0xb;
     uVar5 = rgb._2_2_ & 0xff80;
     rgb._2_2_ = uVar5 | pPVar7->wFlags_0x4 & 0x7f;
-    if ((rt == 0xe) && (3 < (pPVar7->wFlags_0x4 & 0xff))) {
+    if ((rt == rtPlanetB) && (3 < (pPVar7->wFlags_0x4 & 0xff))) {
         if (fHistory == 0) {
             uVar4 = 4;
         } else {
@@ -3631,7 +3641,7 @@ void WritePlanet(PLANET *lppl, short rt, short fHistory)
                 pbVar3 = pb;
             }
             pb = pbVar3;
-            if (rt != 0xe) {
+            if (rt != rtPlanetB) {
                 uVar9 = __aFulshr(uVar10, uVar4);
                 uVar5 = (uint)uVar9 & 1;
                 rgb._2_2_ = rgb._2_2_ & 0xefff | uVar5 << 0xc;
@@ -3655,7 +3665,7 @@ void WritePlanet(PLANET *lppl, short rt, short fHistory)
                         pb = pb + 2;
                     }
                 }
-                WriteRt(0xd, (int)pb - (int)rgb, rgb);
+                WriteRt(rtPlanet, (int)pb - (int)rgb, rgb);
                 return;
             }
         }
@@ -3668,7 +3678,7 @@ void WritePlanet(PLANET *lppl, short rt, short fHistory)
         *(short *)pb = pPVar7->turn;
         pb = pb + 2;
     }
-    WriteRt(0xe, (int)pb - (int)rgb, rgb);
+    WriteRt(rtPlanetB, (int)pb - (int)rgb, rgb);
     return;
 }
 
@@ -3677,6 +3687,8 @@ void WritePlanet(PLANET *lppl, short rt, short fHistory)
 // Address: 1070:81c6
 // Segment: MEMORY_IO
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void WriteFleet(FLEET *lpfl)
 
@@ -3785,7 +3797,7 @@ void WriteFleet(FLEET *lpfl)
         }
         *(undefined2 *)(pb + 4) = (undefined2)wt;
         *(undefined2 *)(pb + 6) = wt._2_2_;
-        WriteRt(0x11, (short)(pb + (8 - (int)rgb)), rgb);
+        WriteRt(rtFleetA | rtLogCargoXfer8, (short)(pb + (8 - (int)rgb)), rgb);
     } else {
         grMask = 1;
         us = 0;
@@ -3805,7 +3817,7 @@ void WriteFleet(FLEET *lpfl)
         }
         *(byte *)pus = ((FLEET *)lpfl)->iplan;
         *(undefined1 *)((int)pus + 1) = (char)((FLEET *)lpfl)->cord;
-        WriteRt(0x10, (int)pus + (2 - (int)rgb), rgb);
+        WriteRt(rtFleetA, (int)pus + (2 - (int)rgb), rgb);
         WriteOrders(lpfl);
         if ((*(int *)&((FLEET *)lpfl)->lpszName != 0) || (*(int *)((int)&((FLEET *)lpfl)->lpszName + 2) != 0)) {
             /* WARNING: Load size is inaccurate */
@@ -3820,6 +3832,8 @@ void WriteFleet(FLEET *lpfl)
 // Address: 1070:87b4
 // Segment: MEMORY_IO
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void WriteRtString(char *lpsz)
 
@@ -3841,7 +3855,7 @@ void WriteRtString(char *lpsz)
         } else {
             rgb[0] = (byte)cOut;
         }
-        WriteRt(0x15, cOut + 1, rgb);
+        WriteRt(rtString, cOut + 1, rgb);
     }
     return;
 }
@@ -3896,6 +3910,8 @@ void MarkFleet(FLEET *lpfl, short det)
 // Segment: MEMORY_IO
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 void WriteBattlePlan(BTLPLAN *lpbtlplan, short fLog)
 
 {
@@ -3924,7 +3940,7 @@ void WriteBattlePlan(BTLPLAN *lpbtlplan, short fLog)
         pb = rgb + 2;
     }
     if (fLog == 0) {
-        WriteRt(0x1e, (int)pb - (int)rgb, rgb);
+        WriteRt(rtBtlPlan, (int)pb - (int)rgb, rgb);
     } else {
         WriteMemRt(0x1e, (int)pb - (int)rgb, rgb);
     }
@@ -4068,6 +4084,8 @@ short FCreateFile(DtFileType dt, short iPlayer, char *szForceName)
 // Segment: MEMORY_IO
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 void WriteBOF(short iPlayer, short dt, short fMulti)
 
 {
@@ -4094,7 +4112,7 @@ void WriteBOF(short iPlayer, short dt, short fMulti)
         iVar2 = 0;
     }
     rtbof.wFlags_0xe = rtbof.wFlags_0xe & 0xf400 | dt & 0xffU | ((uint)gd.grBits >> 4 & 1) << 8 | ((uint)gd.grBits >> 3 & 1) << 9 | iVar2 << 0xb;
-    WriteRt(8, 0x10, &rtbof);
+    WriteRt(rtBOF, 0x10, &rtbof);
     return;
 }
 
@@ -4106,6 +4124,7 @@ void WriteBOF(short iPlayer, short dt, short fMulti)
 
 /* WARNING: Variable defined which should be unmapped: lSeedSav1 */
 /* WARNING: Removing unreachable block (ram,0x107090a4) */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
 
@@ -4115,7 +4134,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
     short (*pasVar3)[9];
     short       sVar4;
     int         iVar5;
-    long       *plVar6;
+    RecordType *pRVar6;
     undefined1 *puVar7;
     char       *pcVar8;
     RTBOF      *pRVar9;
@@ -4172,7 +4191,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                             fChange = 1;
                         }
                         fChange = (short)bVar10;
-                        plVar6 = &stack0xffc4;
+                        pRVar6 = &stack0xffc4;
                     } else if (mdMark == 2) {
                         bVar10 = (rtbof.wFlags_0xe >> 8 & 1) != f;
                         if (bVar10) {
@@ -4181,7 +4200,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                             fChange = 1;
                         }
                         fChange = (short)bVar10;
-                        plVar6 = &stack0xffc4;
+                        pRVar6 = &stack0xffc4;
                     } else if (mdMark == 4) {
                         bVar10 = (rtbof.wFlags_0xe >> 10 & 1) != f;
                         if (bVar10) {
@@ -4190,9 +4209,9 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                             fChange = 1;
                         }
                         fChange = (short)bVar10;
-                        plVar6 = &stack0xffc4;
+                        pRVar6 = &stack0xffc4;
                     } else {
-                        plVar6 = &stack0xffc4;
+                        pRVar6 = &stack0xffc4;
                         if (mdMark == 8) {
                             do {
                                 do {
@@ -4200,7 +4219,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                                     ReadRt();
                                 } while ((uint)hdrCur >> 10 != 6);
                             } while (rgbCur[0] != iPlayer);
-                            plVar6 = &stack0xffc4;
+                            pRVar6 = &stack0xffc4;
                             if (((uint)rgbCur._6_2_ >> 9 & 1) != f) {
                                 if (((uint)rgbCur._6_2_ >> 9 & 1) == 0) {
                                     rgbCur._6_2_ = rgbCur._6_2_ & 0x1dff | 0xe200;
@@ -4216,32 +4235,32 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                                 lSeedSav1 = CONCAT22(lSeedSav2._2_2_, (undefined2)lSeedSav2);
                                 SetFileSeeds(CONCAT22(lSeedSav2._2_2_, (undefined2)lSeedSav2), lSeedSav1);
                                 lSeedSav1 = (long)rgbCur;
-                                WriteRt(6, (uint)hdrCur & 0x3ff, rgbCur);
+                                WriteRt(rtPlr, (uint)hdrCur & 0x3ff, rgbCur);
                                 fChange = (uint)(dt == dtTurn);
                                 rtbof.wFlags_0xe = rtbof.wFlags_0xe & 0xfeff;
-                                plVar6 = &lSeedSav2;
+                                pRVar6 = &lSeedSav2;
                             }
                         }
                     }
                     if (fChange != 0) {
-                        *(short *)((int)plVar6 + -2) = 0;
-                        *(short *)((int)plVar6 + -4) = 0;
-                        *(short *)((int)plVar6 + -6) = 0;
-                        *(short *)((int)plVar6 + -8) = hf;
-                        *(short *)((int)plVar6 + -10) = 0x1070;
-                        *(short *)((int)plVar6 + -0xc) = 0x9413;
-                        __lseek(*(short *)((int)plVar6 + -8), *(long *)((int)plVar6 + -6), *(short *)((int)plVar6 + -2));
-                        *(short *)((int)plVar6 + 6) = unaff_SS;
-                        *(int *)((int)plVar6 + 4) = (int)&rtbof;
-                        *(short *)((int)plVar6 + 2) = 0x10;
-                        *(undefined2 *)plVar6 = 8;
-                        *(short *)((int)plVar6 + -2) = 0x1118;
-                        *(short *)((int)plVar6 + -4) = 0x942a;
-                        WriteRt(*(short *)plVar6, *(short *)((int)plVar6 + 2), *(void **)(short *)((int)plVar6 + 4));
-                        plVar6 = (long *)((int)plVar6 + 8);
+                        pRVar6[-1] = 0;
+                        pRVar6[-2] = 0;
+                        pRVar6[-3] = 0;
+                        pRVar6[-4] = hf;
+                        pRVar6[-5] = 0x1070;
+                        pRVar6[-6] = 0x9413;
+                        __lseek(pRVar6[-4], *(undefined4 *)(pRVar6 + -3), pRVar6[-1]);
+                        pRVar6[3] = unaff_SS;
+                        pRVar6[2] = (RecordType)&rtbof;
+                        pRVar6[1] = 0x10;
+                        *pRVar6 = 8;
+                        pRVar6[-1] = 0x1118;
+                        pRVar6[-2] = 0x942a;
+                        WriteRt(*pRVar6, pRVar6[1], *(void **)(pRVar6 + 2));
+                        pRVar6 = pRVar6 + 4;
                     }
                     fSuccess = 1;
-                    puVar7 = plVar6;
+                    puVar7 = pRVar6;
                 } else {
                     FileError(idsFileGame);
                     puVar7 = &stack0xffc4;
@@ -4279,17 +4298,19 @@ IO_LBadFile_3:
 // Segment: MEMORY_IO
 // ======================================================================
 
-void WriteRt(short rt, short cb, void *rg)
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
+void WriteRt(RecordType rt, short cb, void *rg)
 
 {
     undefined2 unaff_SS;
     HDR        hdr;
 
     __fmemmove(rgbCur, rg, cb);
-    if (rt == 8) {
+    if (rt == rtBOF) {
         SetFileXorStream(CONCAT22(rgbCur._6_2_, rgbCur._4_2_), (int)rgbCur._12_2_ >> 5, rgbCur._10_2_, (int)(rgbCur._12_2_ << 0xb) >> 0xb,
                          (uint)rgbCur._14_2_ >> 0xc & 1);
-    } else if (rt != 0) {
+    } else if (rt != rtEOF) {
         XorFileBuf((char *)rgbCur, cb);
     }
     hdr = (HDR)(cb & 0x3ffU | rt << 10);

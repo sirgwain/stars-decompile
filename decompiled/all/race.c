@@ -2697,6 +2697,7 @@ ushort IRaceChecksum(PLAYER *pplr)
 // ======================================================================
 
 /* WARNING: Variable defined which should be unmapped: ofn */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 short FSaveRace(char *szFileSuggest, PLAYER *pplr)
 
@@ -2756,7 +2757,7 @@ short FSaveRace(char *szFileSuggest, PLAYER *pplr)
         } else {
             WriteRtPlr(pplr, (byte *)0x0);
             icksum = IRaceChecksum(pplr);
-            WriteRt(0, 2, &icksum);
+            WriteRt(rtEOF, 2, &icksum);
             StreamClose();
             _strcpy((char *)szRaceFile, szFile + ofn.nFileOffset);
             sVar2 = 1;

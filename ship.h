@@ -23,7 +23,7 @@ int16_t FCanSplit(int32_t cBoat);
 int16_t FCanMerge(FLEET *pfl);
 void    DestroyAllIshdef(int16_t ishdef, int16_t iplr);
 int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat);
-int16_t FEnumCalcJettison(void *lprt, int16_t rt, int16_t cb, PLANET *lppl, int16_t iFleet);
+int16_t FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet);
 void    DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr);
 void    GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t rgCosts[static 4]);
 void    RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks);

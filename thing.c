@@ -138,7 +138,6 @@ THING *LpthNew(int16_t iplr, ThingType ith) {
 
 int16_t IValidateWormholePos(THING *lpthWorm) {
     int16_t iRet;
-    POINT   pt;
     int32_t dy;
     THING  *lpthMac;
     FLEET  *lpfl;
@@ -148,7 +147,90 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
     int16_t dUni;
     int32_t dx;
     int32_t l;
+    int16_t x, y;
 
-    /* TODO: implement */
-    return 0;
+    iRet = 0;
+    dUni = game.mdSize * 400;
+    x = lpthWorm->pt.x;
+    y = lpthWorm->pt.y;
+
+    if (x < 1000 || y < 1000) {
+        iRet = 0xf;
+    } else if (dUni + 1400 < x || dUni + 1400 < y) {
+        iRet = 0xf;
+    } else {
+        FORTHINGS(lpth, lpthMac) {
+            if (x == lpth->pt.x && y == lpth->pt.y && lpthWorm != lpth) {
+                return 0xf;
+            }
+        }
+
+        for (i = 0; i < game.cPlanMax; i++) {
+            if (x == rgptPlan[i].x && y == rgptPlan[i].y) {
+                return 0xf;
+            }
+        }
+
+        FORFLEETS(lpfl, ifl) {
+            if (x == lpfl->pt.x && y == lpfl->pt.y) {
+                return 0xf;
+            }
+        }
+
+        if (x < 1010 || y < 1010 || dUni + 1390 < x || dUni + 1390 < y) {
+            iRet = 4;
+        }
+
+        FORTHINGS(lpth, lpthMac) {
+            if (lpth->ith == ithWormhole && lpthWorm != lpth) {
+                dx = x - lpth->pt.x;
+                dy = y - lpth->pt.y;
+                l = dx * dx + dy * dy;
+
+                if (lpth->idFull == lpthWorm->thw.idPartner) {
+                    if (l < 70 * 70) {
+                        if (l < 5 * 5) {
+                            iRet = iRet | 8;
+                        } else if (l < 10 * 10) {
+                            iRet = iRet | 4;
+                        } else if (l < 30 * 30) {
+                            iRet = iRet | 2;
+                        } else {
+                            iRet = iRet | 1;
+                        }
+                    }
+                } else if (l < 30 * 30) {
+                    if (l < 4 * 4) {
+                        iRet = iRet | 8;
+                    } else if (l < 8 * 8) {
+                        iRet = iRet | 4;
+                    } else if (l < 15 * 15) {
+                        iRet = iRet | 2;
+                    } else {
+                        iRet = iRet | 1;
+                    }
+                }
+            }
+        }
+
+        for (i = 0; i < game.cPlanMax; i++) {
+            dx = x - rgptPlan[i].x;
+            dy = y - rgptPlan[i].y;
+            l = dx * dx + dy * dy;
+
+            if (l < 28 * 28) {
+                if (l < 5 * 5) {
+                    iRet = iRet | 8;
+                } else if (l < 10 * 10) {
+                    iRet = iRet | 4;
+                } else if (l < 20 * 20) {
+                    iRet = iRet | 2;
+                } else {
+                    iRet = iRet | 1;
+                }
+            }
+        }
+    }
+
+    return iRet;
 }

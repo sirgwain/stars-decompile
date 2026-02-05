@@ -2180,7 +2180,9 @@ void DrawFleetBitmap(FLEET *lpfl, HDC hdc, short x, short y, short fFrame, short
 // Segment: MEMORY_SHIP
 // ======================================================================
 
-short FEnumCalcJettison(void *lprt, short rt, short cb, PLANET *lppl, short iFleet)
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
+short FEnumCalcJettison(void *lprt, RecordType rt, short cb, PLANET *lppl, short iFleet)
 
 {
     uint    *puVar1;
@@ -2199,7 +2201,7 @@ short FEnumCalcJettison(void *lprt, short rt, short cb, PLANET *lppl, short iFle
     short    i;
     POINT    pt;
 
-    if ((rt == 1) || (rt == 2)) {
+    if ((rt == rtLogCargoXfer8) || (rt == rtLogCargoXfer16)) {
         pvVar3 = (void *)lprt;
         if ((((*(byte *)((int)pvVar3 + 4) & 0xf) == 2) &&
              ((((int)(uint) * (byte *)((int)pvVar3 + 4) >> 4 == 4 && (sVar7 = FLookupFleet(iFleet, &fl), sVar6 = fl.pt.y, sVar5 = fl.pt.x, sVar7 != 0)) &&
@@ -2207,7 +2209,7 @@ short FEnumCalcJettison(void *lprt, short rt, short cb, PLANET *lppl, short iFle
             ((fl.pt.x == sVar5 && (fl.pt.y == sVar6)))) {
             grbit = (short)*(byte *)((int)pvVar3 + 5);
             pRVar4 = lprt;
-            if (rt != 2) {
+            if (rt != rtLogCargoXfer16) {
                 pRVar4 = (RTXFERX *)CONCAT22(prtxferx._2_2_, (RTXFERX *)prtxferx);
             }
             prtxferx._2_2_ = (undefined2)((ulong)pRVar4 >> 0x10);
@@ -2215,7 +2217,7 @@ short FEnumCalcJettison(void *lprt, short rt, short cb, PLANET *lppl, short iFle
             j = 0;
             for (i = 0; i < 5; i = i + 1) {
                 if ((grbit & 1U) != 0) {
-                    if (rt == 1) {
+                    if (rt == rtLogCargoXfer8) {
                         uVar8 = (uint) * (char *)((int)pvVar3 + j + 6);
                         puVar1 = (uint *)(((PLANET *)lppl)->rgwtMin + i);
                         uVar2 = *puVar1;
@@ -2244,6 +2246,8 @@ short FEnumCalcJettison(void *lprt, short rt, short cb, PLANET *lppl, short iFle
 // Address: 1050:4faa
 // Segment: MEMORY_SHIP
 // ======================================================================
+
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXfer)
 
@@ -2349,7 +2353,7 @@ short TransferStuff(short id1, short grobj1, short id2, short grobj2, short mdXf
         }
     SHIP_CancelSplit:
         FDeleteFleet(xfer[1].u_XFER_0x0004.fl.id, 0, 0);
-        CancelMemRt(0x18);
+        CancelMemRt(rtLogFleetSplit);
     } else {
         iDelFleet = -1;
         if (mdXfer == 1) {

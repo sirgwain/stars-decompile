@@ -59,6 +59,7 @@ void InitBattlePlan(BTLPLAN *lpbtlplan, short iplan, short iplr)
 /* WARNING: Removing unreachable block (ram,0x107814e6) */
 /* WARNING: Removing unreachable block (ram,0x10783577) */
 /* WARNING: Removing unreachable block (ram,0x10781528) */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short GenerateWorld(short fBatchMode)
@@ -508,6 +509,7 @@ CREATE_RetryAll:
         sVar13 = MulDiv(*(short *)&dGal, 0x13, 0x14);
         dMax = sVar13 + 1000;
     }
+    // ------------------- Place player homeworlds -----------------
     for (i = 1; i < *(int *)&game.cPlayer; i = i + 1) {
         for (j = 0; j < 0x32; j = j + 1) {
             sVar13 = Random(cPlanMax);
@@ -563,6 +565,9 @@ CREATE_RetryAll:
                 goto LAB_1078_157c;
         }
     }
+
+    // ------------------- Player tech levels -----------------
+
     for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
         sVar13 = Random(*(int *)&game.cPlayer - i);
         j = sVar13 + i;
@@ -649,6 +654,8 @@ CREATE_RetryAll:
             FSendPlrMsg(i, j + idmTipCanHideUnimportantMessagesClickingCheckmark, -1, 0, 0, 0, 0, 0, 0, 0);
         }
     }
+
+    // homeworld
     for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
         iMin = rgi[i];
         *(short *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 2) = i;
@@ -1086,15 +1093,34 @@ CREATE_RetryAll:
             }
         }
     }
+
+    // starting fleets
+    /* ----------- Setup / globals initialization ----------- */
+
+    /* Reset “current fleet count” (or a temporary fleet counter). */
     *(short *)&cFleet = 0;
+
+    /* Allocate space for a far-pointer array (4 bytes = 16:16 far pointer). */
     pvVar32 = LpAlloc(4, htMisc);
+
+    /* Store far pointer into rglpfl (Ghidra showing split seg:off writes). */
     *(void **)(FLEET ***)&rglpfl = (void *)pvVar32;
     *(undefined2 *)((int)(FLEET ***)&rglpfl + 2) = (int)((ulong)pvVar32 >> 0x10);
+
+    /* Begin outer loop: per-player initialization, then “finalize universe” path when i==cPlayer. */
     i = 0;
     do {
+
+        /* ----------- “After last player” sentinel branch ----------- */
+        /* When i reaches game.cPlayer, we stop per-player setup and finalize the universe/game files. */
         if (*(int *)&game.cPlayer <= i) {
+
+            /* We are in “no current player context” mode for shared setup. */
             *(short *)&idPlayer = -1;
+
+            /* ----------- Special-case: if first planet is unowned, clear some per-planet fields ----------- */
             if (((PLANET *)*(PLANET **)&lpPlanets)->iPlayer == -1) {
+                /* Zero 3 entries of a 32-bit-per-entry array at lpPlanets + 0x1c (j * 4). */
                 for (j = 0; j < 3; j = j + 1) {
                     uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
                     puVar25 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
@@ -1102,54 +1128,94 @@ CREATE_RetryAll:
                     puVar25[1] = 0;
                 }
             }
+
+            /* ----------- Allocate and initialize per-player battle plans ----------- */
             for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
+                /* Default: each player starts with 5 battle plans (?) */
                 ((byte *)rgcbtlplan)[i] = 5;
+
+                /* Allocate one BTLPLAN block per player (0x240 bytes). */
                 pvVar32 = LpAlloc(0x240, htShips);
                 *(void **)((BTLPLAN **)rglpbtlplan + i) = (void *)pvVar32;
                 *(undefined2 *)((int)(BTLPLAN **)rglpbtlplan + i * 4 + 2) = (int)((ulong)pvVar32 >> 0x10);
+
+                /* Initialize 5 individual plans within that block; each plan is 0x24 bytes. */
                 for (j = 0; j < 5; j = j + 1) {
                     InitBattlePlan((BTLPLAN *)CONCAT22(*(undefined2 *)((int)(BTLPLAN **)rglpbtlplan + i * 4 + 2),
                                                        (BTLPLAN *)(*(int *)((BTLPLAN **)rglpbtlplan + i) + j * 0x24)),
-                                   j, i);
+                                   j, /* plan index */
+                                   i  /* player index */
+                    );
                 }
             }
+
+            /* Record max planet count into the GAME struct. */
             *(short *)&game.cPlanMax = cPlanMax;
+
+            /* ----------- Optional wormhole count selection ----------- */
+            /* If a particular game flag bit (wCrap bit 7) is NOT set, choose random count based on mdSize table. */
             if ((*(uint *)&game.wCrap >> 7 & 1) == 0) {
                 sVar13 = Random((uint) * (byte *)(*(int *)&game.mdSize + 6));
                 local_11a = (THING *)CONCAT22(sVar13, (THING *)local_11a);
                 iBest = (uint) * (byte *)*(undefined2 *)&game.mdSize + sVar13;
             } else {
+                /* Otherwise: no wormholes. */
                 iBest = 0;
             }
+
+            /* ----------- Wormhole creation loop ----------- */
             if (0 < iBest) {
                 for (i = 0; i < iBest; i = i + 1) {
+
+                    /* Each wormhole is made of a pair of THINGs that link to each other. */
                     for (j = 0; j < 2; j = j + 1) {
+
+                        /* Allocate a new THING of type wormhole. */
                         local_11a = LpthNew(0, ithWormhole);
+
+                        /* Randomize a small attribute (0..2). Likely scanner/engine or endpoint type. */
                         local_122._0_2_ = Random(3);
+
+                        /* Preserve segment for later far-pointer writes. */
                         uVar39 = (undefined2)((ulong)local_11a >> 0x10);
+
+                        /* Clear/set specific bits in a flags field, then OR in local_122 bits masked to (scanner|engine). */
                         ((&((THING *)local_11a)->u_THING_0x0006)->thp).wFlags =
                             ((&((THING *)local_11a)->u_THING_0x0006)->thp).wFlags &
                                 (hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
                                  hstTorp | hstBeam | hstArmor | hstShield) |
                             local_122._0_2_ & (hstScanner | hstEngine);
+
+                        /* If this is the second endpoint, link endpoints together by idFull. */
                         if (j == 1) {
                             local_122._2_4_ = LpthFromId(local_122._6_2_);
                             *(ushort *)((int)&((THING *)local_11a)->u_THING_0x0006 + 6) = ((THING *)local_122._2_4_)->idFull;
                             *(ushort *)((int)&((THING *)local_122._2_4_)->u_THING_0x0006 + 6) = local_11a->idFull;
                         } else {
+                            /* First endpoint: remember its id for the second endpoint to use. */
                             local_122._6_2_ = local_11a->idFull;
                         }
+
+                        /* ----------- Place wormhole: random attempts with “best-so-far” fallback ----------- */
                         k = 0;
                         iMax = 0x10;
                         while (iVar15 = k + 1, k < 100) {
+
+                            /* Random position in galaxy, then bias by +1000. */
                             sVar13 = Random(*(short *)&dGal);
                             (&((THING *)local_11a)->pt)->x = sVar13 + 1000;
+
                             sVar13 = Random(*(short *)&dGal);
                             (((THING *)local_11a)->pt).y = sVar13 + 1000;
+
+                            /* Validate position; returns 0 if OK, otherwise “badness” score. */
                             iLow = IValidateWormholePos(local_11a);
                             if (iLow == 0)
                                 break;
+
                             k = iVar15;
+
+                            /* Track best (lowest badness) candidate location. */
                             if (iLow < iMax) {
                                 uVar39 = (undefined2)((ulong)local_11a >> 0x10);
                                 pt.x = (&((THING *)local_11a)->pt)->x;
@@ -1157,6 +1223,8 @@ CREATE_RetryAll:
                                 iMax = iLow;
                             }
                         }
+
+                        /* If never found a valid location, revert to the best candidate. */
                         if (iLow != 0) {
                             uVar39 = (undefined2)((ulong)local_11a >> 0x10);
                             (&((THING *)local_11a)->pt)->x = pt.x;
@@ -1165,34 +1233,51 @@ CREATE_RetryAll:
                     }
                 }
             }
+
+            /* ----------- Race tampering detection / notifications ----------- */
             for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
+                /* If player i has “tampered” flag set (wFlags bit 4), notify them and (some) others. */
                 if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1) != 0) {
                     FSendPlrMsg2(i, idmRaceDefinitionHasTamperedStatisticsHaveAltered, -1, 0, 0);
                     for (j = 0; j < *(int *)&game.cPlayer; j = j + 1) {
+                        /* Notify other players who are NOT AI (wMdPlr bit 9 == 0). */
                         if ((i != j) && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0)) {
                             FSendPlrMsg2(j, idmHackedRaceDiscoveredRaceStatisticsHaveAltered, -1, i, 0);
                         }
                     }
                 }
             }
+
+            /* ----------- Detect “single human” mode and seed AI salts ----------- */
             iplrSingle = -1;
             for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
+
+                /* If player is human OR special AI level (>>13 == 7), consider for “single player” selection. */
                 if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0) || (*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 0xd == 7)) {
+
                     if (iplrSingle != -1)
-                        break;
+                        break; /* more than one qualifies => not single-player */
+
                     iplrSingle = i;
                 } else {
+                    /* AI players: seed per-player salt with fixed constants. */
                     *(undefined2 *)((int)&rgplr[0].lSalt + i * 0xc0) = 0xabee;
                     *(undefined2 *)((int)&rgplr[0].lSalt + 2 + i * 0xc0) = 0x94d;
                 }
             }
+
+            /* If loop reached end and found exactly one qualifying player => single-player mode enabled. */
             if ((i == *(int *)&game.cPlayer) && (iplrSingle != -1)) {
                 iVar15 = 1;
             } else {
                 iVar15 = 0;
             }
+
+            /* Stash flag and also set game.wCrap bit 2. */
             local_11a = (THING *)CONCAT22(iVar15, (THING *)local_11a);
             *(uint *)&game.wCrap = *(uint *)&game.wCrap & 0xfffb | iVar15 << 2;
+
+            /* ----------- If single-player, initialize player relation matrix to “2” (neutral?) ----------- */
             if ((*(uint *)&game.wCrap >> 2 & 1) != 0) {
                 for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
                     for (j = 0; j < *(int *)&game.cPlayer; j = j + 1) {
@@ -1202,17 +1287,28 @@ CREATE_RetryAll:
                     }
                 }
             }
+
+            /* ----------- Seed GAME.lid with GetTickCount unless wCrap bit 3 is set ----------- */
             if ((*(uint *)&game.wCrap >> 3 & 1) == 0) {
                 DVar38 = GetTickCount();
                 *&((GAME *)&game)->lid = (int)DVar38;
                 *(undefined2 *)((int)&game.lid + 2) = (int)(DVar38 >> 0x10);
             }
+
+            /* ----------- Create the universe definition file (.XY?) ----------- */
             _wsprintf((char *)szWork, (char *)0xa24, (char *)szBase, unaff_DS);
+
             sVar13 = FCreateFile(dtXY, -1, (char *)0x0);
             if (sVar13 != 0) {
-                WriteRt(7, 0x40, (GAME *)&game);
+
+                /* Write GAME record (rt=7? size=0x40). */
+                WriteRt(rtGame, 0x40, (GAME *)&game);
+
+                /* ----------- Serialize starpack / planet positions ----------- */
                 xOld = 1000;
                 for (i = 0; i < cPlanMax; i = i + 1) {
+
+                    /* This section packs planet data into “starpack.dwFlags” bitfields using shifts. */
                     local_11a = (THING *)(long)*(int *)((int)&rgptPlan[0].y + i * 4);
                     lVar31 = __aFlshl(lVar41, in_stack_0000fec6);
                     starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0x3ff | (uint)lVar31;
@@ -1221,19 +1317,29 @@ CREATE_RetryAll:
                     lVar31 = __aFlshl(lVar41, in_stack_0000fec6);
                     starpack.dwFlags._0_2_ = (uint)starpack.dwFlags | (uint)lVar31;
                     starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ & 0x3f | (uint)((ulong)lVar31 >> 0x10);
+
+                    /* Delta-x encoding relative to previous xOld. */
                     dx = ((POINT *)rgptPlan + i)->x - xOld;
                     lVar31 = __aFlshl(lVar41, in_stack_0000fec6);
                     starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0xfc00 | (uint)lVar31;
                     starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ | (uint)((ulong)lVar31 >> 0x10);
+
+                    /* Emit 4 bytes to stream. */
                     RgToStream(&starpack, 4);
                     xOld = ((POINT *)rgptPlan + i)->x;
                 }
+
+                /* ----------- Finalize XY stream: write player count, close ----------- */
                 i = *(short *)&game.cPlayer;
-                WriteRt(0, 2, &i);
+                WriteRt(rtEOF, 2, &i);
                 StreamClose();
+
+                /* ----------- Write per-player data files (-1 then each player) ----------- */
                 for (i = -1; i < *(int *)&game.cPlayer; i = i + 1) {
                     FWriteDataFile((char *)szBase, i, 0);
                 }
+
+                /* ----------- If not batch mode, launch UI / load single-player turn ----------- */
                 if (fBatchMode == 0) {
                     if ((*(uint *)&game.wCrap >> 2 & 1) == 0) {
                         *(short *)&idPlayer = -1;
@@ -1257,25 +1363,46 @@ CREATE_RetryAll:
                 }
                 return 1;
             }
+
+            /* ----------- Error path: couldn’t create universe definition file ----------- */
             sVar13 = 0x10;
             pcVar19 = PszFormatIds(idsUnableCreateUniverseDefinitionFile, (short *)0x0);
             AlertSz(pcVar19, sVar13);
             DestroyCurGame();
             return 0;
         }
+
+        /* ===================================================================== */
+        /* ------------------- Player i starting ships ------------------------- */
+        /* ===================================================================== */
+
+        /* Set global current-player context for per-player ship design creation. */
         *(short *)&idPlayer = i;
+
+        /* Allocate per-player ship definitions / starting hull slots (0x930 bytes). */
         pvVar32 = LpAlloc(0x930, htShips);
         uVar39 = (undefined2)((ulong)pvVar32 >> 0x10);
         pvVar7 = (void *)pvVar32;
         __fmemset(pvVar32, 0, 0x930);
+
+        /* Mark 16 shipdef entries with a particular flag bit (0x0200_0000?) at offset 0x7b within each 0x93 entry. */
         for (j = 0; j < 0x10; j = j + 1) {
             local_126 = (HullSlotType *)(CONCAT22(*(undefined2 *)((int)pvVar7 + j * 0x93 + 0x7b), (HullSlotType *)local_126) & 0xfdffffff | 0x2000000);
             *(undefined2 *)((int)pvVar7 + j * 0x93 + 0x7b) = local_126._2_2_;
         }
+
+        /* Store far pointer to this player's SHDEF array. */
         *(int *)(i * 4 + rglpshdef) = (int)pvVar7;
         *(undefined2 *)(i * 4 + rglpshdef_0x2) = uVar39;
+
+        /* Home planet id for this player. */
         local_11a = (THING *)CONCAT22(local_11a._2_2_, (THING *)*(undefined2 *)((int)&rgplr[0].idPlanetHome + i * 0xc0));
+
+        /* ----------- Starting fleet composition depends on race “major advantage” ----------- */
         sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+
+        /* Many branches follow: each calls CreateStartupShip with different ship types/counts,
+           and sometimes modifies planet flags/tech-dependent extras. */
         if (sVar13 == 6) {
             CreateStartupShip(i, (short)(THING *)local_11a, 4, 1);
             local_126 =
@@ -1319,6 +1446,8 @@ CREATE_RetryAll:
             sVar18 = CreateStartupShip(i, (short)(THING *)local_11a, 9, 1);
             local_11a = (THING *)CONCAT22(sVar18, (THING *)local_11a);
         }
+
+        /* ----------- More conditional spawns and possible “second planet” grant ----------- */
         if (sVar13 == 5) {
             CreateStartupShip(i, (short)(THING *)local_11a, 0x10, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, 0x12, 1);
@@ -1587,7 +1716,10 @@ CREATE_RetryAll:
         }
         i = i + 1;
     } while (true);
+
+/* ----------- Retry/cleanup labels after loop ----------- */
 LAB_1078_157c:
+    /* Adjust distance thresholds and retry galaxy generation (CREATE_RetryAll). */
     lVar34 = __aFldiv(uVar30, 0x23);
     lDistMin2 = lDistMin2 - lVar34;
     lVar34 = __aFldiv(uVar30, 0x23);

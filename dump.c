@@ -43,7 +43,7 @@ static DtFileType DumpGetFileType(const char *szPath) {
     return dtXY; /* fallback */
 }
 
-static const char *DumpRecordTypeNameFile(uint16_t rt) {
+static const char *DumpRecordTypeNameFile(RecordType rt) {
     /* Names for RecordType (file.h) - used by .xy, .hst, .m*, .h* files */
     switch (rt) {
     case rtEOF:
@@ -60,11 +60,11 @@ static const char *DumpRecordTypeNameFile(uint16_t rt) {
         return "Planet";
     case rtPlanetB:
         return "PlanetB";
-    case rtFleet:
-        return "Fleet";
+    case rtFleetA:
+        return "FleetA";
     case rtOrderA:
         return "OrderA";
-    case rtWaypoint:
+    case rtOrderB:
         return "Waypoint";
     case rtString:
         return "String";
@@ -74,7 +74,7 @@ static const char *DumpRecordTypeNameFile(uint16_t rt) {
         return "Ship Definition";
     case rtProdQ:
         return "Production Queue";
-    case rtBattlePlan:
+    case rtBtlPlan:
         return "BattlePlan";
     case rtBtlData:
         return "BattleData";
@@ -102,10 +102,10 @@ static const char *DumpRecordTypeNameFile(uint16_t rt) {
 /* Log header record type - not in log.h enum but used for RTLOGHDR */
 #define rtLogHdr 9
 
-static const char *DumpRecordTypeNameLog(uint16_t rt) {
-    /* Names for RecordTypeLog (log.h) - used by .x* (log) files */
+static const char *DumpRecordTypeNameLog(RecordType rt) {
+    /* Names for RecordType - used by .x* (log) files */
     switch (rt) {
-    case rtLogNop:
+    case rtEOF:
         return "LogNop";
     case rtLogHdr:
         return "LogHeader";
@@ -139,7 +139,7 @@ static const char *DumpRecordTypeNameLog(uint16_t rt) {
         return "LogResearch";
     case rtLogPlanetRouting:
         return "LogPlanetRouting";
-    case rtLogPlayerSalt:
+    case rtChgPassword:
         return "LogPlayerSalt";
     case rtLogFleetMerge:
         return "LogFleetMerge";
@@ -162,7 +162,6 @@ static const char *DumpRecordTypeName(uint16_t rt, DtFileType dt) {
     const char *name = NULL;
 
     if (dt == dtLog) {
-        /* Log files use RecordTypeLog, but BOF/EOF are still standard */
         if (rt == rtBOF)
             return "FileHeader";
         if (rt == rtEOF)
@@ -295,11 +294,11 @@ void DumpPlayerStruct(const PLAYER *p) {
     printf("    salt: lSalt=%" PRId32 "\n", (int32_t)p->lSalt);
 
     printf("    env: cur=[%d,%d,%d] min=[%d,%d,%d] max=[%d,%d,%d] idealGrowth=%d\n", (int)p->rgEnvVar[0], (int)p->rgEnvVar[1], (int)p->rgEnvVar[2],
-           (int)p->rgEnvVarMin[0], (int)p->rgEnvVarMin[1], (int)p->rgEnvVarMin[2], (int)p->rgEnvVarMax[0], (int)p->rgEnvVarMax[1],
-           (int)p->rgEnvVarMax[2], (int)p->pctIdealGrowth);
+           (int)p->rgEnvVarMin[0], (int)p->rgEnvVarMin[1], (int)p->rgEnvVarMin[2], (int)p->rgEnvVarMax[0], (int)p->rgEnvVarMax[1], (int)p->rgEnvVarMax[2],
+           (int)p->pctIdealGrowth);
 
-    printf("    tech: lvl=[%d,%d,%d,%d,%d,%d] pctResearch=%d iTechCur=%d\n", (int)p->rgTech[0], (int)p->rgTech[1], (int)p->rgTech[2],
-           (int)p->rgTech[3], (int)p->rgTech[4], (int)p->rgTech[5], (int)p->pctResearch, (int)p->iTechCur);
+    printf("    tech: lvl=[%d,%d,%d,%d,%d,%d] pctResearch=%d iTechCur=%d\n", (int)p->rgTech[0], (int)p->rgTech[1], (int)p->rgTech[2], (int)p->rgTech[3],
+           (int)p->rgTech[4], (int)p->rgTech[5], (int)p->pctResearch, (int)p->iTechCur);
 
     printf("    resSpent: [");
     for (int i = 0; i < 6; i++) {
@@ -432,9 +431,9 @@ static void DumpVerbose_LogRtFleetName(const uint8_t *pb, uint16_t cb) {
     printf("  id=%d  (cb=%u; not RTCHGNAME)\n", (int)rd_i16(pb + 0), (unsigned)cb);
 }
 
-static void DumpVerbose_LogRecord(uint16_t rt, const uint8_t *pb, uint16_t cb) {
+static void DumpVerbose_LogRecord(RecordType rt, const uint8_t *pb, uint16_t cb) {
     switch (rt) {
-    case rtLogNop:
+    case rtEOF:
         printf("  (nop)\n");
         break;
     case rtLogHdr:
@@ -508,32 +507,26 @@ void DumpPlanet(const PLANET *p) {
     printf("  turn: %d\n", (int)p->turn);
 
     /* Flags */
-    printf("  flags: include=%d starbase=%d homeworld=%d firstyear=%d wasinhabited=%d artifact=%d noresearch=%d\n",
-           (int)p->fInclude, (int)p->fStarbase, (int)p->fHomeworld, (int)p->fFirstYear,
-           (int)p->fWasInhabited, (int)p->fArtifact, (int)p->fNoResearch);
+    printf("  flags: include=%d starbase=%d homeworld=%d firstyear=%d wasinhabited=%d artifact=%d noresearch=%d\n", (int)p->fInclude, (int)p->fStarbase,
+           (int)p->fHomeworld, (int)p->fFirstYear, (int)p->fWasInhabited, (int)p->fArtifact, (int)p->fNoResearch);
 
     /* Environment */
-    printf("  env cur:  grav=%d temp=%d rad=%d\n",
-           (int)p->rgEnvVar[0], (int)p->rgEnvVar[1], (int)p->rgEnvVar[2]);
-    printf("  env orig: grav=%d temp=%d rad=%d\n",
-           (int)p->rgEnvVarOrig[0], (int)p->rgEnvVarOrig[1], (int)p->rgEnvVarOrig[2]);
+    printf("  env cur:  grav=%d temp=%d rad=%d\n", (int)p->rgEnvVar[0], (int)p->rgEnvVar[1], (int)p->rgEnvVar[2]);
+    printf("  env orig: grav=%d temp=%d rad=%d\n", (int)p->rgEnvVarOrig[0], (int)p->rgEnvVarOrig[1], (int)p->rgEnvVarOrig[2]);
 
     /* Mineral concentrations */
-    printf("  mineral conc: iron=%d bor=%d ger=%d\n",
-           (int)p->rgMinConc[0], (int)p->rgMinConc[1], (int)p->rgMinConc[2]);
-    printf("  mineral lvl%%: iron=%d bor=%d ger=%d\n",
-           (int)p->rgpctMinLevel[0], (int)p->rgpctMinLevel[1], (int)p->rgpctMinLevel[2]);
+    printf("  mineral conc: iron=%d bor=%d ger=%d\n", (int)p->rgMinConc[0], (int)p->rgMinConc[1], (int)p->rgMinConc[2]);
+    printf("  mineral lvl%%: iron=%d bor=%d ger=%d\n", (int)p->rgpctMinLevel[0], (int)p->rgpctMinLevel[1], (int)p->rgpctMinLevel[2]);
 
     /* Surface minerals */
-    printf("  surface: iron=%" PRId32 " bor=%" PRId32 " ger=%" PRId32 " col=%" PRId32 "\n",
-           p->rgwtMin[0], p->rgwtMin[1], p->rgwtMin[2], p->rgwtMin[3]);
+    printf("  surface: iron=%" PRId32 " bor=%" PRId32 " ger=%" PRId32 " col=%" PRId32 "\n", p->rgwtMin[0], p->rgwtMin[1], p->rgwtMin[2], p->rgwtMin[3]);
 
     /* Population/defense guesses */
     printf("  guesses: pop=%u def=%u\n", (unsigned)p->uPopGuess, (unsigned)p->uDefGuess);
 
     /* Improvements */
-    printf("  improvements: deltaPop=%u mines=%u factories=%u defenses=%u\n",
-           (unsigned)p->iDeltaPop, (unsigned)p->cMines, (unsigned)p->cFactories, (unsigned)p->cDefenses);
+    printf("  improvements: deltaPop=%u mines=%u factories=%u defenses=%u\n", (unsigned)p->iDeltaPop, (unsigned)p->cMines, (unsigned)p->cFactories,
+           (unsigned)p->cDefenses);
     printf("  scanner: %u\n", (unsigned)p->iScanner);
 
     /* Starbase info */
@@ -542,8 +535,7 @@ void DumpPlanet(const PLANET *p) {
     }
 
     /* Fling gate info */
-    printf("  fling: idFling=%u iWarpFling=%u fNoHeal=%d\n",
-           (unsigned)p->idFling, (unsigned)p->iWarpFling, (int)p->fNoHeal);
+    printf("  fling: idFling=%u iWarpFling=%u fNoHeal=%d\n", (unsigned)p->idFling, (unsigned)p->iWarpFling, (int)p->fNoHeal);
 
     /* Routing */
     printf("  routing: idRoute=%u\n", (unsigned)p->idRoute);
@@ -566,22 +558,18 @@ void DumpFleet(const FLEET *f) {
     printf("  det: %u\n", (unsigned)f->det);
 
     /* Flags */
-    printf("  flags: include=%d reporders=%d dead=%d done=%d bombed=%d hereAllTurn=%d noheal=%d mark=%d\n",
-           (int)f->fInclude, (int)f->fRepOrders, (int)f->fDead, (int)f->fDone,
-           (int)f->fBombed, (int)f->fHereAllTurn, (int)f->fNoHeal, (int)f->fMark);
+    printf("  flags: include=%d reporders=%d dead=%d done=%d bombed=%d hereAllTurn=%d noheal=%d mark=%d\n", (int)f->fInclude, (int)f->fRepOrders, (int)f->fDead,
+           (int)f->fDone, (int)f->fBombed, (int)f->fHereAllTurn, (int)f->fNoHeal, (int)f->fMark);
 
     /* Orders */
-    printf("  plan: %u  cord: %d  lpplord: %s\n",
-           (unsigned)f->iplan, (int)f->cord, f->lpplord ? "present" : "none");
+    printf("  plan: %u  cord: %d  lpplord: %s\n", (unsigned)f->iplan, (int)f->cord, f->lpplord ? "present" : "none");
 
     /* Movement */
-    printf("  move: left=%d used=%d fuel=%" PRId32 "\n",
-           (int)f->dMoveLeft, (int)f->dMoveUsed, f->lFuelUsed);
+    printf("  move: left=%d used=%d fuel=%" PRId32 "\n", (int)f->dMoveLeft, (int)f->dMoveUsed, f->lFuelUsed);
 
     /* Direction */
-    printf("  dir: iwarpFlt=%u dirValid=%d compChg=%d targeted=%d skipped=%d\n",
-           (unsigned)f->iwarpFlt, (int)f->fdirValid, (int)f->fCompChg,
-           (int)f->fTargeted, (int)f->fSkipped);
+    printf("  dir: iwarpFlt=%u dirValid=%d compChg=%d targeted=%d skipped=%d\n", (unsigned)f->iwarpFlt, (int)f->fdirValid, (int)f->fCompChg, (int)f->fTargeted,
+           (int)f->fSkipped);
     printf("  dir xy: (%u,%u)\n", (unsigned)f->dirFltX, (unsigned)f->dirFltY);
 
     /* Ship counts */
@@ -611,8 +599,8 @@ void DumpFleet(const FLEET *f) {
     printf("\n");
 
     /* Cargo */
-    printf("  cargo: iron=%" PRId32 " bor=%" PRId32 " ger=%" PRId32 " col=%" PRId32 " fuel=%" PRId32 "\n",
-           f->rgwtMin[0], f->rgwtMin[1], f->rgwtMin[2], f->rgwtMin[3], f->rgwtMin[4]);
+    printf("  cargo: iron=%" PRId32 " bor=%" PRId32 " ger=%" PRId32 " col=%" PRId32 " fuel=%" PRId32 "\n", f->rgwtMin[0], f->rgwtMin[1], f->rgwtMin[2],
+           f->rgwtMin[3], f->rgwtMin[4]);
 
     /* Name */
     printf("  name: %s\n", (f->lpszName != NULL) ? f->lpszName : "(null)");
@@ -630,35 +618,26 @@ void DumpShDef(const SHDEF *s, int idx) {
     printf("ShDef[%d]\n", idx);
 
     /* Basic flags and identifiers */
-    printf("  ishdef=%u det=%u include=%d free=%d gift=%d\n",
-           (unsigned)s->ishdef, (unsigned)s->det, (int)s->fInclude,
-           (int)s->fFree, (int)s->fGift);
+    printf("  ishdef=%u det=%u include=%d free=%d gift=%d\n", (unsigned)s->ishdef, (unsigned)s->det, (int)s->fInclude, (int)s->fFree, (int)s->fGift);
     printf("  turn=%u wFlags=0x%04x\n", (unsigned)s->turn, (unsigned)s->wFlags);
 
     /* Build/existence stats */
-    printf("  built=%" PRIu32 " exist=%" PRIu32 "\n",
-           (uint32_t)s->cBuilt, (uint32_t)s->cExist);
-    printf("  lPower=%" PRId32 " grbitPlr=0x%04x\n",
-           (int32_t)s->lPower, (unsigned)s->grbitPlr);
+    printf("  built=%" PRIu32 " exist=%" PRIu32 "\n", (uint32_t)s->cBuilt, (uint32_t)s->cExist);
+    printf("  lPower=%" PRId32 " grbitPlr=0x%04x\n", (int32_t)s->lPower, (unsigned)s->grbitPlr);
 
     /* Scanner info */
-    printf("  scan: range=%u range2=%u pctDetect=%u iSteal=%u\n",
-           (unsigned)s->dScanRange, (unsigned)s->dScanRange2,
-           (unsigned)s->pctDetect, (unsigned)s->iSteal);
+    printf("  scan: range=%u range2=%u pctDetect=%u iSteal=%u\n", (unsigned)s->dScanRange, (unsigned)s->dScanRange2, (unsigned)s->pctDetect,
+           (unsigned)s->iSteal);
 
     /* Hull info */
     printf("  hul.ihuldef=%d\n", (int)s->hul.ihuldef);
     printf("  hul.szClass: \"%s\"\n", s->hul.szClass);
-    printf("  hul.rgTech: [%d,%d,%d,%d,%d,%d]\n",
-           (int)s->hul.rgTech[0], (int)s->hul.rgTech[1], (int)s->hul.rgTech[2],
-           (int)s->hul.rgTech[3], (int)s->hul.rgTech[4], (int)s->hul.rgTech[5]);
-    printf("  hul.wtEmpty=%u hul.dp=%u\n",
-           (unsigned)s->hul.wtEmpty, (unsigned)s->hul.dp);
-    printf("  hul.costs: res=%u ore=(%u,%u,%u)\n",
-           (unsigned)s->hul.resCost, (unsigned)s->hul.rgwtOreCost[0],
-           (unsigned)s->hul.rgwtOreCost[1], (unsigned)s->hul.rgwtOreCost[2]);
-    printf("  hul.ibmp=%d wtCargoMax=%u wtFuelMax=%u\n",
-           (int)s->hul.ibmp, (unsigned)s->hul.wtCargoMax, (unsigned)s->hul.wtFuelMax);
+    printf("  hul.rgTech: [%d,%d,%d,%d,%d,%d]\n", (int)s->hul.rgTech[0], (int)s->hul.rgTech[1], (int)s->hul.rgTech[2], (int)s->hul.rgTech[3],
+           (int)s->hul.rgTech[4], (int)s->hul.rgTech[5]);
+    printf("  hul.wtEmpty=%u hul.dp=%u\n", (unsigned)s->hul.wtEmpty, (unsigned)s->hul.dp);
+    printf("  hul.costs: res=%u ore=(%u,%u,%u)\n", (unsigned)s->hul.resCost, (unsigned)s->hul.rgwtOreCost[0], (unsigned)s->hul.rgwtOreCost[1],
+           (unsigned)s->hul.rgwtOreCost[2]);
+    printf("  hul.ibmp=%d wtCargoMax=%u wtFuelMax=%u\n", (int)s->hul.ibmp, (unsigned)s->hul.wtCargoMax, (unsigned)s->hul.wtFuelMax);
     printf("  hul.chs=%u\n", (unsigned)s->hul.chs);
 
     /* Hull slots */
@@ -666,9 +645,7 @@ void DumpShDef(const SHDEF *s, int idx) {
     int has_slots = 0;
     for (int i = 0; i < 16; i++) {
         if (s->hul.rghs[i].grhst != 0 || s->hul.rghs[i].iItem != 0 || s->hul.rghs[i].cItem != 0) {
-            printf(" [%d]={grhst=%u,iItem=%u,cItem=%u}",
-                   i, (unsigned)s->hul.rghs[i].grhst,
-                   (unsigned)s->hul.rghs[i].iItem, (unsigned)s->hul.rghs[i].cItem);
+            printf(" [%d]={grhst=%u,iItem=%u,cItem=%u}", i, (unsigned)s->hul.rghs[i].grhst, (unsigned)s->hul.rghs[i].iItem, (unsigned)s->hul.rghs[i].cItem);
             has_slots = 1;
         }
     }
@@ -763,8 +740,8 @@ int DumpGameFileBlocksEx(const char *szPath, bool fVerbose) {
                    (int)bof.iPlayer);
             printf("  Version: %u.%u, Crippled: %d\n", (unsigned)bof.verMajor, (unsigned)bof.verMinor, (int)bof.fCrippled);
             if (fVerbose) {
-                printf("  dt=%u  flags: done=%d inuse=%d multi=%d gameover=%d gen=%u\n", (unsigned)bof.dt, (int)bof.fDone, (int)bof.fInUse,
-                       (int)bof.fMulti, (int)bof.fGameOverMan, (unsigned)bof.wGen);
+                printf("  dt=%u  flags: done=%d inuse=%d multi=%d gameover=%d gen=%u\n", (unsigned)bof.dt, (int)bof.fDone, (int)bof.fInUse, (int)bof.fMulti,
+                       (int)bof.fGameOverMan, (unsigned)bof.wGen);
             }
             printf("\n");
         } else if (fVerbose) {

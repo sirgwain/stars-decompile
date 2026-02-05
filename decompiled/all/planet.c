@@ -4758,6 +4758,7 @@ void LogChangeThing(THING *lpth, THING *pthNew)
 /* WARNING: Removing unreachable block (ram,0x10489e18) */
 /* WARNING: Removing unreachable block (ram,0x10489d0a) */
 /* WARNING: Removing unreachable block (ram,0x10489e97) */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
 void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
 
@@ -4953,7 +4954,9 @@ void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
-void CancelMemRt(short rt)
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
+void CancelMemRt(RecordType rt)
 
 {
     imemLogCur = imemLogCur - (((uint)hdrPrev & 0x3ff) + 2);
@@ -5054,6 +5057,8 @@ short FGetPrevLogRt(HDR *phdr, byte *pb)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 short FRunLogFile(void)
 
 {
@@ -5093,8 +5098,9 @@ short FRunLogFile(void)
 /* WARNING: Removing unreachable block (ram,0x1048af96) */
 /* WARNING: Removing unreachable block (ram,0x1048bb41) */
 /* WARNING: Variable defined which should be unmapped: cOut */
+/* WARNING: Enum "RecordType": Some values do not have unique names */
 
-short FRunLogRecord(RecordTypeLog rt, short cb, byte *lpb)
+short FRunLogRecord(RecordType rt, short cb, byte *lpb)
 
 {
     uint       *puVar1;
@@ -5158,7 +5164,7 @@ short FRunLogRecord(RecordTypeLog rt, short cb, byte *lpb)
     uVar30 = CONCAT22(unaff_SI, unaff_DI);
     lpxfCur = (XFERFULL *)0x0;
     switch (rt) {
-    case rtLogNop:
+    case rtEOF:
         break;
     case rtLogCargoXfer8:
     case rtLogCargoXfer16:
@@ -5766,7 +5772,7 @@ short FRunLogRecord(RecordTypeLog rt, short cb, byte *lpb)
             ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac = (byte)uVar14;
         }
         break;
-    case rtLogBattlePlan:
+    case rtBtlPlan:
         uVar14 = *lpb >> 4 & 0xf;
         if (((*lpb & 0xf) == idPlayer) && (uVar14 <= ((byte *)rgcbtlplan)[idPlayer])) {
             if ((*lpb >> 0xe & 1) == 0) {
@@ -5833,7 +5839,7 @@ short FRunLogRecord(RecordTypeLog rt, short cb, byte *lpb)
         uVar30 = __aFulshr(uVar30, cOut);
         pPVar8->wRouting = pPVar8->wRouting & 0xfc00 | (uint)uVar30 & 0x3ff;
         break;
-    case rtLogPlayerSalt:
+    case rtChgPassword:
         if (((uint)gd.grBits >> 1 & 1) != 0) {
             uVar21 = *(undefined2 *)((byte *)lpb + 2);
             iVar15 = idPlayer * 0xc0;
@@ -6145,6 +6151,8 @@ short FCheckLogFile(short iplr, short *pfError)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 short FWriteLogFile(char *pszFileBase, short iPlayer)
 
 {
@@ -6187,7 +6195,7 @@ short FWriteLogFile(char *pszFileBase, short iPlayer)
             rtlh.lSerialNumber._0_2_ = (undefined2)vSerialNumber;
             rtlh.lSerialNumber._2_2_ = vSerialNumber._2_2_;
             _memcpy(rtlh.rgbConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
-            WriteRt(9, 0x11, &rtlh);
+            WriteRt(rtBOF | rtLogCargoXfer8, 0x11, &rtlh);
             for (; iCur < imemLogCur; iCur = iCur + ((uint)*lprts & 0x3ff) + 2) {
                 lprts = (HDR *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur);
                 WriteRt((uint)*lprts >> 10, (uint)*lprts & 0x3ff, (byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2));
@@ -6198,12 +6206,12 @@ short FWriteLogFile(char *pszFileBase, short iPlayer)
                 pMVar3 = (MSGPLR *)lpmp;
                 uVar4 = lpmp._2_2_;
                 sVar2 = _abs(((MSGPLR *)lpmp)->cLen);
-                WriteRt(0x28, sVar2 + 0xc, (MSGPLR *)CONCAT22(uVar4, pMVar3));
+                WriteRt(rtPlrMsg, sVar2 + 0xc, (MSGPLR *)CONCAT22(uVar4, pMVar3));
                 /* WARNING: Load size is inaccurate */
                 lpmp = (MSGPLR *)CONCAT22(*(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2), lpmp->lpmsgplrNext);
                 iCur = iCur + -1;
             }
-            WriteRt(0, 0, (void *)0x0);
+            WriteRt(rtEOF, 0, (void *)0x0);
             StreamClose();
             penvMem = pasVar1;
             DirtyGame(0);
@@ -6316,6 +6324,8 @@ short FWriteTutorialMFile(short iTurn)
 // Segment: MEMORY_PLANET
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 short FWriteHistFile(short iPlayer)
 
 {
@@ -6323,6 +6333,7 @@ short FWriteHistFile(short iPlayer)
     short (*pasVar2)[9];
     short      sVar3;
     char      *sz;
+    RecordType rt;
     undefined2 uVar4;
     undefined2 unaff_SS;
     byte      *lpb;
@@ -6348,19 +6359,19 @@ short FWriteHistFile(short iPlayer)
         if (sVar3 == 0) {
             rthh.cPlanet = cPlanet;
             rthh.cPlanetExtra = *(uint *)((int)&rgplr[0].wFlags_0x4 + iPlayer * 0xc0) & 0xfff;
-            WriteRt(0x20, 4, &rthh);
+            WriteRt(rtHistHdr, 4, &rthh);
             lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
             for (i = 0; i < cPlanet; i = i + 1) {
                 uVar4 = (undefined2)((ulong)lppl >> 0x10);
                 if ((((PLANET *)lppl)->wFlags_0x4 & 0xff) < 3) {
-                    sVar3 = 0xf;
+                    rt = rtPlanetB | rtLogCargoXfer8;
                 } else {
-                    sVar3 = 0xe;
+                    rt = rtPlanetB;
                 }
-                WritePlanet(lppl, sVar3, 1);
+                WritePlanet(lppl, rt, 1);
                 lppl = (PLANET *)CONCAT22(uVar4, (PLANET *)lppl + 1);
             }
-            WriteRt(0x21, cbbitfMsg, bitfMsgFiltered);
+            WriteRt(rtMsgFilt, cbbitfMsg, bitfMsgFiltered);
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 if ((i != iPlayer) && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 7) != 0)) {
                     WriteRtPlr((PLAYER *)rgplr + i, (byte *)0x0);
@@ -6398,7 +6409,7 @@ short FWriteHistFile(short iPlayer)
                     for (j = 0; j < ((short *)rgcsxPlr)[i]; j = j + 1) {
                         if (cTurnBase <= *(uint *)(*(int *)((SCOREX **)rgsxPlr + i) + j * 0x18 + 2)) {
                             WriteRt(
-                                0x2d, 0x18,
+                                rtScore, 0x18,
                                 (void *)CONCAT22(*(undefined2 *)((int)(SCOREX **)rgsxPlr + i * 4 + 2), (void *)(*(int *)((SCOREX **)rgsxPlr + i) + j * 0x18)));
                         }
                     }
@@ -6409,12 +6420,12 @@ short FWriteHistFile(short iPlayer)
                 i = *vlpbAiData;
                 lpb._0_2_ = (byte *)vlpbAiData;
                 for (; 0x3ff < i; i = i + -0x3ff) {
-                    WriteRt(0x29, 0x3ff, (byte *)CONCAT22(iVar1, (byte *)lpb));
+                    WriteRt(rtAiData, 0x3ff, (byte *)CONCAT22(iVar1, (byte *)lpb));
                     lpb._0_2_ = (byte *)lpb + 0x3ff;
                 }
-                WriteRt(0x29, i, (byte *)CONCAT22(iVar1, (byte *)lpb));
+                WriteRt(rtAiData, i, (byte *)CONCAT22(iVar1, (byte *)lpb));
             }
-            WriteRt(0, 0, (void *)0x0);
+            WriteRt(rtEOF, 0, (void *)0x0);
             StreamClose();
             sVar3 = 1;
             penvMem = pasVar2;

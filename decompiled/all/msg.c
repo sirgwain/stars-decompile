@@ -2074,6 +2074,8 @@ void MarkPlayersThatSentMsgs(short iPlayer)
 // Segment: MEMORY_MSG
 // ======================================================================
 
+/* WARNING: Enum "RecordType": Some values do not have unique names */
+
 void WritePlayerMessages(short iPlayer)
 
 {
@@ -2095,7 +2097,7 @@ void WritePlayerMessages(short iPlayer)
         for (lpb = (byte *)CONCAT22(lpMsg._2_2_, (short *)lpMsg); (byte *)lpb < pbVar2;
              lpb = (byte *)CONCAT22(uVar3, (byte *)lpb + ((int)(uint)*lpb >> 4) + 5)) {
             if (0x3ff < cbMsg + 0x14) {
-                WriteRt(0xc, cbMsg, rgb);
+                WriteRt(rtMsg, cbMsg, rgb);
                 cbMsg = 0;
             }
             uVar3 = (undefined2)((ulong)lpb >> 0x10);
@@ -2105,7 +2107,7 @@ void WritePlayerMessages(short iPlayer)
             }
         }
         if (cbMsg != 0) {
-            WriteRt(0xc, cbMsg, rgb);
+            WriteRt(rtMsg, cbMsg, rgb);
         }
         lpmp = (MSGPLR *)CONCAT22(vlpmsgplrOut._2_2_, (MSGPLR *)vlpmsgplrOut);
         while (true) {
@@ -2115,7 +2117,7 @@ void WritePlayerMessages(short iPlayer)
                 pMVar4 = (MSGPLR *)lpmp;
                 iVar5 = lpmp._2_2_;
                 sVar1 = _abs(((MSGPLR *)lpmp)->cLen);
-                WriteRt(0x28, sVar1 + 0xc, (MSGPLR *)CONCAT22(iVar5, pMVar4));
+                WriteRt(rtPlrMsg, sVar1 + 0xc, (MSGPLR *)CONCAT22(iVar5, pMVar4));
             }
             /* WARNING: Load size is inaccurate */
             lpmp = (MSGPLR *)CONCAT22(*(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2), lpmp->lpmsgplrNext);

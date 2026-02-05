@@ -3,6 +3,18 @@
 #include "types.h"
 
 #include "create.h"
+#include "file.h"
+#include "mdi.h"
+#include "memory.h"
+#include "msg.h"
+#include "parts.h"
+#include "race.h"
+#include "resource.h"
+#include "save.h"
+#include "ship.h"
+#include "thing.h"
+#include "turn.h"
+#include "util.h"
 #include "utilgen.h"
 
 /* globals */
@@ -245,16 +257,38 @@ uint8_t vrgWormholeVar[5] = {0x03, 0x03, 0x05, 0x04, 0x05};    /* 1078:0006 */
 
 /* functions */
 int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef) {
-    int16_t ishMac;
-    FLEET  *lpfl;
+    SHDEF *lpshdef;
+    FLEET *lpfl;
 
-    /* TODO: implement */
-    return 0;
+    if (fAddShdef) {
+        int16_t ishMac = rgplr[iplr].cShDef++;
+        SHDEF  *lpshdefT = LpshdefT();
+        rglpshdef[iplr][ishMac] = lpshdefT[ishdef];
+        rglpshdef[iplr][ishMac].ishdef = ishMac;
+        ishdef = ishMac;
+    }
+
+    lpshdef = &rglpshdef[iplr][ishdef];
+    lpshdef->cExist++;
+    lpshdef->cBuilt++;
+
+    lpfl = LpflNew(iplr, idPlanet);
+    lpfl->rgcsh[ishdef] = 1;
+    lpfl->rgwtMin[4] = LGetFleetStat(lpfl, grStatFuel);
+    lpfl->iplan = 0;
+
+    return ishdef;
 }
 
 int16_t GetVCCheck(GAME *pgame, int16_t vc) { return (pgame->rgvc[vc] & 0x80) != 0; }
 
-void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) { /* TODO: implement */ }
+void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) {
+    *lpbtlplan = rgbtlplanT[iplan];
+    lpbtlplan->iplr = iplr;
+    if (game.fSinglePlr && iplan == 0) {
+        lpbtlplan->iplrAttack = 3;
+    }
+}
 
 void InitNewGame3() {
     // empty in decompile

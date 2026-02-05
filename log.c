@@ -389,7 +389,7 @@ void LogChangeRelations(void) {
     /* TODO: implement */
 }
 
-int16_t FRunLogRecord(RecordTypeLog rt, int16_t cb, uint8_t *lpb) {
+int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
     int16_t   fExtra;
     int32_t   cXfer;
     XFERFULL *lpxfCur;
@@ -417,7 +417,7 @@ int16_t FRunLogRecord(RecordTypeLog rt, int16_t cb, uint8_t *lpb) {
     lppl = &pl;
 
     switch (rt) {
-    case rtLogNop:
+    case rtEOF:
         break;
 
     case rtLogCargoXfer8:
@@ -899,7 +899,7 @@ int16_t FRunLogRecord(RecordTypeLog rt, int16_t cb, uint8_t *lpb) {
 
     } break;
 
-    case rtLogPlayerSalt:
+    case rtChgPassword:
         if (gd.fHostMode) {
             uint16_t lo = *(const uint16_t *)(lpb + 0);
             uint16_t hi = *(const uint16_t *)(lpb + 2);

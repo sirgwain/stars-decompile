@@ -6,7 +6,7 @@
 #include "types.h"
 
 /* functions */
-void    WriteRt(int16_t rt, int16_t cb, void *rg);                            /* MEMORY_IO:0x947c */
+void    WriteRt(RecordType rt, int16_t cb, void *rg);                            /* MEMORY_IO:0x947c */
 void    WriteRtString(char *lpsz);                                            /* MEMORY_IO:0x87b4 */
 void    WriteBOF(int16_t iPlayer, int16_t dt, int16_t fMulti);                /* MEMORY_IO:0x8ea4 */
 void    WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore);                     /* MEMORY_IO:0x574e */
@@ -24,7 +24,7 @@ void    SetVisPFFinish(int16_t iPlr);                                         /*
 int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName);       /* MEMORY_IO:0x8e16 */
 void    SetVisPFPlanets(int16_t iPlr);                                        /* MEMORY_IO:0xabde */
 void    SetVisPFFleets(int16_t iPlr);                                         /* MEMORY_IO:0xa100 */
-void    WritePlanet(PLANET *lppl, int16_t rt, int16_t fHistory);              /* MEMORY_IO:0x7a6a */
+void    WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory);              /* MEMORY_IO:0x7a6a */
 void    MarkFleet(FLEET *lpfl, int16_t det);                                  /* MEMORY_IO:0x885e */
 void    MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det);                 /* MEMORY_IO:0x8adc */
 void    SetVisPFThings(int16_t iPlr);                                         /* MEMORY_IO:0xb9ee */
