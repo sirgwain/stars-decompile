@@ -977,9 +977,7 @@ short FHullHasTeeth(HUL *lphul)
         if ((int)(uint)((HUL *)lphul)->chs <= ihs) {
             return 0;
         }
-        if (((lphs->grhst & (hstTorp | hstBeam)) != ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                      hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) &&
-            (((HS *)lphs)->wFlags_0x2 >> 8 != 0))
+        if (((lphs->grhst & (hstTorp | hstBeam)) != hstNone) && (((HS *)lphs)->wFlags_0x2 >> 8 != 0))
             break;
         ihs = ihs + 1;
         lphs = (HS *)lphs + 1;
@@ -1889,11 +1887,8 @@ short InitFromHuldef(HUL *lphul, short *ppctBC)
         part.hs.grhst = pHVar3->grhst;
         part.hs.wFlags_0x2 = pHVar3->wFlags_0x2;
         if (part.hs.wFlags_0x2 >> 8 != 0) {
-            if ((part.hs.grhst & hstSpecialE) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                   hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
-                if (((part.hs.grhst & hstBeam) != ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                    hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) &&
-                    ((part.hs.wFlags_0x2 & 0xff) == 0x12)) {
+            if ((part.hs.grhst & hstSpecialE) == hstNone) {
+                if (((part.hs.grhst & hstBeam) != hstNone) && ((part.hs.wFlags_0x2 & 0xff) == 0x12)) {
                     for (i = 0; i < (int)(part.hs.wFlags_0x2 >> 8); i = i + 1) {
                         pct = pct + ((100 - pct) * 10) / 100;
                     }
@@ -2007,16 +2002,14 @@ void CheckWeapons(TOK *ptok, short *pfDampeningField, byte *pinit)
         if ((int)(uint)(pSVar4->hul).chs <= ihs)
             break;
         if (((((pSVar4->hul).rghs + ihs)->grhst & (hstSpecialM | hstSpecialE | hstMining | hstTorp | hstBeam | hstArmor | hstShield | hstScanner)) !=
-             ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp | hstBeam |
-               hstArmor | hstShield | hstScanner | hstEngine)) &&
+             hstNone) &&
             ((pSVar4->hul).rghs[ihs].wFlags_0x2 >> 8 != 0)) {
             pctJam = 100;
             dxyPart = -1;
             pHVar5 = (pSVar4->hul).rghs + ihs;
             part.hs.grhst = pHVar5->grhst;
             part.hs.wFlags_0x2 = pHVar5->wFlags_0x2;
-            if ((part.hs.grhst & (hstTorp | hstBeam)) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                           hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
+            if ((part.hs.grhst & (hstTorp | hstBeam)) == hstNone) {
                 init = -1;
             } else {
                 idPlayer = (short)pTVar3->iplr;
@@ -2469,10 +2462,7 @@ long DpFromPtokBrcToBrc(TOK *ptok, byte brcSrc, byte brcTarget, TOK *ptokTarget,
             pSVar7 = (SHDEF *)pSVar10;
             if ((int)(uint)(pSVar7->hul).chs <= ihs)
                 break;
-            if (((((pSVar7->hul).rghs + ihs)->grhst & (hstTorp | hstBeam)) !=
-                 ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp |
-                   hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) &&
-                ((pSVar7->hul).rghs[ihs].wFlags_0x2 >> 8 != 0)) {
+            if (((((pSVar7->hul).rghs + ihs)->grhst & (hstTorp | hstBeam)) != hstNone) && ((pSVar7->hul).rghs[ihs].wFlags_0x2 >> 8 != 0)) {
                 pHVar8 = (pSVar7->hul).rghs + ihs;
                 part.hs.grhst = pHVar8->grhst;
                 part.hs.wFlags_0x2 = pHVar8->wFlags_0x2;
@@ -3498,10 +3488,7 @@ short FAttack(short itokAttacker, short init, BTLREC *lpbtlrec, ushort grfAttack
             pBVar8->ctok = ctokDamaged;
             return (uint)(ctokDamaged != 0);
         }
-        if ((((pHVar7->rghs + ihs)->grhst & (hstTorp | hstBeam)) !=
-             ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp | hstBeam |
-               hstArmor | hstShield | hstScanner | hstEngine)) &&
-            (pHVar7->rghs[ihs].wFlags_0x2 >> 8 != 0)) {
+        if ((((pHVar7->rghs + ihs)->grhst & (hstTorp | hstBeam)) != hstNone) && (pHVar7->rghs[ihs].wFlags_0x2 >> 8 != 0)) {
             part.hs.grhst = (pHVar7->rghs + ihs)->grhst;
             part.hs.wFlags_0x2 = pHVar7->rghs[ihs].wFlags_0x2;
             idPlayer = (short)((TOK *)ptok)->iplr;

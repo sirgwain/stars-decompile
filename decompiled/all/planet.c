@@ -4529,7 +4529,7 @@ void LogChangeRelations(void)
     HDR   hdr;
 
     sVar1 = FGetPrevLogRt(&hdr, (byte *)rgbCur);
-    if ((sVar1 != 0) && (hdr.wFlags >> 10 == 0x26)) {
+    if ((sVar1 != 0) && ((uint)hdr >> 10 == 0x26)) {
         imemLogCur = imemLogPrev;
     }
     WriteMemRt(0x26, game.cPlayer, (void *)((int)rgplr[0].rgmdRelation + idPlayer * 0xc0));
@@ -4654,7 +4654,7 @@ LAB_1048_9573:
                                       (uint)((PLPROD *)((PLANET *)ppl)->lpplprod)->iprodMac << 2),
                         sVar6 != 0)))))) {
             sVar6 = FGetPrevLogRt(&hdr, (byte *)rgbCur);
-            if ((sVar6 != 0) && ((hdr.wFlags >> 10 == 0x1d && (rgbCur._0_2_ == ppl->id)))) {
+            if ((sVar6 != 0) && (((uint)hdr >> 10 == 0x1d && (rgbCur._0_2_ == ppl->id)))) {
                 imemLogCur = imemLogPrev;
             }
             rgbCur._0_2_ = ppl->id;
@@ -4798,9 +4798,9 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
     rgQuan[3]._2_2_ = 0;
     rgQuan[4]._0_2_ = 0;
     rgQuan[4]._2_2_ = 0;
-    uVar7 = hdrPrev.wFlags >> 10;
+    uVar7 = (uint)hdrPrev >> 10;
     if (((uVar7 == 1) || (uVar7 == 2)) || (uVar7 == 0x19)) {
-        prt = (RTXFER *)CONCAT22(lpLog._2_2_, (byte *)lpLog + (imemLogCur - (hdrPrev.wFlags & 0x3ff)));
+        prt = (RTXFER *)CONCAT22(lpLog._2_2_, (byte *)lpLog + (imemLogCur - ((uint)hdrPrev & 0x3ff)));
     } else {
         prt = (RTXFER *)0x0;
     }
@@ -4810,7 +4810,7 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
         (((RTXFER *)prt)->id2 == plx2->id)) {
         uVar7 = (uint)((RTXFER *)prt)->grbitItems;
         iOff = 0;
-        uVar8 = hdrPrev.wFlags >> 10;
+        uVar8 = (uint)hdrPrev >> 10;
         if (uVar8 == 1) {
             for (i = 0; i < 5; i = i + 1) {
                 if ((1 << ((byte)i & 0x1f) & uVar7) != 0) {
@@ -4839,7 +4839,7 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2)
                 }
             }
         }
-        CancelMemRt(hdrPrev.wFlags >> 10);
+        CancelMemRt((uint)hdrPrev >> 10);
     }
     grbit = 0;
     for (i = 0; i < 5; i = i + 1) {
@@ -4956,8 +4956,8 @@ void LogMakeValidXferf(LOGXFERF *plxf1, LOGXFERF *plxf2)
 void CancelMemRt(short rt)
 
 {
-    imemLogCur = imemLogCur - ((hdrPrev.wFlags & 0x3ff) + 2);
-    hdrPrev.wFlags = hdrPrev.wFlags & 0x3ff;
+    imemLogCur = imemLogCur - (((uint)hdrPrev & 0x3ff) + 2);
+    hdrPrev = (HDR)((uint)hdrPrev & 0x3ff);
     return;
 }
 
@@ -4978,7 +4978,7 @@ void WriteMemRt(short rt, short cb, void *rg)
     byte      *lpv;
     HDR        hdr;
 
-    HVar3.wFlags = hdrPrev.wFlags;
+    HVar3 = hdrPrev;
     if (fLogOff == 0) {
         if (32000 < imemLogCur + cb + 2) {
             mbType = 0x10;
@@ -4988,19 +4988,19 @@ void WriteMemRt(short rt, short cb, void *rg)
         DirtyGame(1);
         uVar2 = lpLog._2_2_;
         imemLogPrev = imemLogCur;
-        HVar3.wFlags = cb & 0x3ffU | rt << 10;
+        HVar3 = (HDR)(cb & 0x3ffU | rt << 10);
         pbVar1 = (byte *)lpLog + imemLogCur;
         lpv = (byte *)CONCAT22(lpLog._2_2_, pbVar1);
-        *lpv = HVar3.wFlags;
+        *lpv = HVar3;
         if (0 < cb) {
             __fmemcpy((byte *)CONCAT22(uVar2, pbVar1 + 2), rg, cb);
         }
         imemLogCur = imemLogCur + cb + 2;
         if (rt == 0) {
-            HVar3.wFlags = hdrPrev.wFlags;
+            HVar3 = hdrPrev;
         }
     }
-    hdrPrev.wFlags = HVar3.wFlags;
+    hdrPrev = HVar3;
     return;
 }
 
@@ -5039,9 +5039,9 @@ short FGetPrevLogRt(HDR *phdr, byte *pb)
     } else {
         pbVar3 = (byte *)lpLog + imemLogPrev;
         lpv = (byte *)CONCAT22(lpLog._2_2_, pbVar3);
-        phdr->wFlags = *lpv;
-        if ((phdr->wFlags & 0x3ff) != 0) {
-            __fmemcpy(pb, (byte *)CONCAT22(uVar1, pbVar3 + 2), phdr->wFlags & 0x3ff);
+        *phdr = *lpv;
+        if (((uint)*phdr & 0x3ff) != 0) {
+            __fmemcpy(pb, (byte *)CONCAT22(uVar1, pbVar3 + 2), (uint)*phdr & 0x3ff);
         }
         sVar2 = 1;
     }
@@ -5071,9 +5071,9 @@ short FRunLogFile(void)
         fRet = 1;
     } else {
         fLogOff = 1;
-        for (; iCur < imemLogCur; iCur = iCur + (lprts->wFlags & 0x3ff) + 2) {
+        for (; iCur < imemLogCur; iCur = iCur + ((uint)*lprts & 0x3ff) + 2) {
             lprts = (HDR *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur);
-            uVar2 = FRunLogRecord(lprts->wFlags >> 10, lprts->wFlags & 0x3ff, (byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2));
+            uVar2 = FRunLogRecord((uint)*lprts >> 10, (uint)*lprts & 0x3ff, (byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2));
             fRet = fRet & uVar2;
         }
         gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfbff;
@@ -5972,16 +5972,16 @@ short FLoadLogFile(char *pszLog)
                     uVar3 = rgbCur._0_2_;
                     if ((((uint)gd.grBits >> 1 & 1) != 0) && ((((TURNSERIAL *)vrgts != (TURNSERIAL *)0x0 || (vrgts._2_2_ != 0)) &&
                                                                (__fmemset((TURNSERIAL *)CONCAT22(vrgts._2_2_, (TURNSERIAL *)vrgts + idPlayer), 0, 0x10),
-                                                                uVar8 = rgbCur._4_2_, iVar6 = vrgts._2_2_, (hdrCur.wFlags & 0x3ff) == 0x11)))) {
+                                                                uVar8 = rgbCur._4_2_, iVar6 = vrgts._2_2_, ((uint)hdrCur & 0x3ff) == 0x11)))) {
                         pTVar7 = (TURNSERIAL *)vrgts + idPlayer;
                         *&pTVar7->lSerialNumber = rgbCur._2_2_;
                         *(undefined2 *)(char *)((int)&pTVar7->lSerialNumber + 2) = uVar8;
                         __fmemcpy((byte *)CONCAT22(vrgts._2_2_, ((TURNSERIAL *)vrgts)[idPlayer].rgbConfig), rgbCur + 6, 0xb);
                     }
-                    for (iCur = 0; iCur < (int)uVar3; iCur = iCur + (hdrCur.wFlags & 0x3ff) + 2) {
+                    for (iCur = 0; iCur < (int)uVar3; iCur = iCur + ((uint)hdrCur & 0x3ff) + 2) {
                         ReadRt();
                         __fmemmove((byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur), &hdrCur, 2);
-                        __fmemmove((byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2), rgbCur, hdrCur.wFlags & 0x3ff);
+                        __fmemmove((byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2), rgbCur, (uint)hdrCur & 0x3ff);
                     }
                     ReadRt();
                     lpmp = &vlpmsgplrOut;
@@ -5992,8 +5992,8 @@ short FLoadLogFile(char *pszLog)
                         /* WARNING: Load size is inaccurate */
                         lpmp = (MSGPLR *)CONCAT22(*(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2), lpmp->lpmsgplrNext);
                     }
-                    while (uVar8 = rgbCur._0_2_, hdrCur.wFlags >> 10 == 0x28) {
-                        pvVar10 = LpAlloc(hdrCur.wFlags & 0x3ff, htPlrMsg);
+                    while (uVar8 = rgbCur._0_2_, (uint)hdrCur >> 10 == 0x28) {
+                        pvVar10 = LpAlloc((uint)hdrCur & 0x3ff, htPlrMsg);
                         uVar8 = (undefined2)((ulong)lpmp >> 0x10);
                         *&lpmp->lpmsgplrNext = (void *)pvVar10;
                         *(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2) = (int)((ulong)pvVar10 >> 0x10);
@@ -6001,13 +6001,13 @@ short FLoadLogFile(char *pszLog)
                         pMVar1 = lpmp->lpmsgplrNext;
                         uVar8 = *(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2);
                         lpmp = (MSGPLR *)CONCAT22(uVar8, pMVar1);
-                        __fmemcpy((MSGPLR *)CONCAT22(uVar8, pMVar1), rgbCur, hdrCur.wFlags & 0x3ff);
+                        __fmemcpy((MSGPLR *)CONCAT22(uVar8, pMVar1), rgbCur, (uint)hdrCur & 0x3ff);
                         *&lpmp->lpmsgplrNext = 0;
                         *(undefined2 *)((int)&pMVar1->lpmsgplrNext + 2) = 0;
                         vcmsgplrOut = vcmsgplrOut + 1;
                         ReadRt();
                     }
-                    bVar9 = hdrCur.wFlags >> 10 == 0;
+                    bVar9 = (uint)hdrCur >> 10 == 0;
                     if (bVar9) {
                         rgbCur[0] = (char)uVar3;
                         rgbCur[1] = SUB21(uVar3, 1);
@@ -6106,14 +6106,14 @@ short FCheckLogFile(short iplr, short *pfError)
         } else {
             ReadRt();
             uVar2 = rgbCur._0_2_;
-            for (iCur = 0; iCur < (int)uVar2; iCur = iCur + (hdrCur.wFlags & 0x3ff) + 2) {
+            for (iCur = 0; iCur < (int)uVar2; iCur = iCur + ((uint)hdrCur & 0x3ff) + 2) {
                 ReadRt();
             }
             ReadRt();
-            while (uVar3 = rgbCur._0_2_, hdrCur.wFlags >> 10 == 0x28) {
+            while (uVar3 = rgbCur._0_2_, (uint)hdrCur >> 10 == 0x28) {
                 ReadRt();
             }
-            bVar5 = hdrCur.wFlags >> 10 != 0;
+            bVar5 = (uint)hdrCur >> 10 != 0;
             if (bVar5) {
                 *pfError = 3;
             } else {
@@ -6164,7 +6164,7 @@ short FWriteLogFile(char *pszFileBase, short iPlayer)
     short (*penvMemSav)[9];
 
     iCur = 0;
-    if (((iPlayer == idPlayer) && ((*(uint *)((int)&rgplr[0].wMdPlr + iPlayer * 0xc0) >> 9 & 1) == 0)) && (hdrPrev.wFlags >> 10 != 0x2e)) {
+    if (((iPlayer == idPlayer) && ((*(uint *)((int)&rgplr[0].wMdPlr + iPlayer * 0xc0) >> 9 & 1) == 0)) && ((uint)hdrPrev >> 10 != 0x2e)) {
         cb_00 = (0xc - (uint)(byte)vrgZipProd[0].u_ZIPPRODQ_0x000e._1_1_) * -2 + 0x1a;
         sVar2 = _memcmp((void *)((int)&rgplr[0].zpq1 + iPlayer * 0xc0), (ZIPPRODQ1 *)&vrgZipProd[0].u_ZIPPRODQ_0x000e.zpq1, cb_00);
         if (sVar2 != 0) {
@@ -6188,9 +6188,9 @@ short FWriteLogFile(char *pszFileBase, short iPlayer)
             rtlh.lSerialNumber._2_2_ = vSerialNumber._2_2_;
             _memcpy(rtlh.rgbConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
             WriteRt(9, 0x11, &rtlh);
-            for (; iCur < imemLogCur; iCur = iCur + (lprts->wFlags & 0x3ff) + 2) {
+            for (; iCur < imemLogCur; iCur = iCur + ((uint)*lprts & 0x3ff) + 2) {
                 lprts = (HDR *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur);
-                WriteRt(lprts->wFlags >> 10, lprts->wFlags & 0x3ff, (byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2));
+                WriteRt((uint)*lprts >> 10, (uint)*lprts & 0x3ff, (byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur + 2));
             }
             iCur = vcmsgplrOut;
             lpmp = (MSGPLR *)CONCAT22(vlpmsgplrOut._2_2_, (MSGPLR *)vlpmsgplrOut);
@@ -6444,10 +6444,10 @@ void EnumLogRts(fn_pfn_conflict1 *pfn, void *lpPass, short iPass)
 
     iCur = 0;
     if (imemLogCur != 0) {
-        for (; iCur < imemLogCur; iCur = iCur + (lprts->wFlags & 0x3ff) + 2) {
+        for (; iCur < imemLogCur; iCur = iCur + ((uint)*lprts & 0x3ff) + 2) {
             lprts = (HDR *)CONCAT22(lpLog._2_2_, (byte *)lpLog + iCur);
-            sVar1 = (*(fn_pfn_conflict1 *)pfn)((byte *)lpLog + iCur + 2, lpLog._2_2_, (void *)(lprts->wFlags >> 10), (void *)(lprts->wFlags & 0x3ff),
-                                               (void *)lpPass);
+            sVar1 =
+                (*(fn_pfn_conflict1 *)pfn)((byte *)lpLog + iCur + 2, lpLog._2_2_, (void *)((uint)*lprts >> 10), (void *)((uint)*lprts & 0x3ff), (void *)lpPass);
             if (sVar1 == 0) {
                 return;
             }

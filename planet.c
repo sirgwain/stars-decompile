@@ -673,14 +673,28 @@ int16_t IBestTerraform(PLANET *lppl, int16_t fHelp) {
 }
 
 int16_t IpctCanTerraformLppl(PLANET *lppl) {
+    int16_t fCanTerraform;
     int16_t rgMax[3];
     int16_t i;
     int16_t rgMin[3];
     int16_t rgCost[3];
     int16_t ipct;
 
-    /* TODO: implement */
-    return 0;
+    fCanTerraform = FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, 1);
+    if (fCanTerraform == 0) {
+        ipct = 0;
+    } else {
+        ipct = 0;
+        for (i = 0; i < 3; i++) {
+            if (rgMin[i] != -1) {
+                ipct = ipct + (lppl->rgEnvVar[i] - rgMin[i]);
+            }
+            if (rgMax[i] != -1) {
+                ipct = ipct + (rgMax[i] - lppl->rgEnvVar[i]);
+            }
+        }
+    }
+    return ipct;
 }
 
 int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr) {

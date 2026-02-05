@@ -17,10 +17,41 @@
 
 /* functions */
 void WriteMemRt(int16_t rt, int16_t cb, void *rg) {
-    HDR      hdr;
-    uint8_t *lpv;
+    HDR hdr = hdrPrev;
 
-    /* TODO: implement */
+    if (fLogOff == 0) {
+        if ((int32_t)imemLogCur + (int32_t)cb + (int32_t)sizeof(uint16_t) > 32000) {
+            int16_t mbType = 0x10;
+            char   *sz = PszFormatIds(idsLogFileHasReachedMaximumAllowableSize, NULL);
+            AlertSz(sz, mbType);
+        }
+
+        DirtyGame(1);
+
+        imemLogPrev = imemLogCur;
+
+        /* Bitfield assignment truncates like the original mask/shift pack. */
+        hdr.cb = cb;
+        hdr.rt = rt;
+
+        /* Serialize exactly one 16-bit word: cb(10) | rt(6)<<10 */
+        uint16_t hdrWord = (uint16_t)((cb & 0x03FF) | ((uint16_t)rt << 10));
+
+        uint8_t *dst = (uint8_t *)lpLog + imemLogCur;
+        memcpy(dst, &hdrWord, sizeof(hdrWord));
+
+        if (cb > 0) {
+            memcpy(dst + sizeof(hdrWord), rg, (size_t)cb);
+        }
+
+        imemLogCur = (int16_t)(imemLogCur + cb + (int16_t)sizeof(hdrWord));
+
+        if (rt == 0) {
+            hdr = hdrPrev;
+        }
+    }
+
+    hdrPrev = hdr;
 }
 
 int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
@@ -300,19 +331,18 @@ void EnumLogRts(int16_t (*pfn)(void *, int16_t, int16_t, void *, int16_t), void 
  */
 int16_t FGetPrevLogRt(HDR *phdr, uint8_t *pb) {
     const uint8_t *lpv;
-    uint16_t       wRaw;
 
     if (imemLogPrev == (int16_t)-1)
         return 0;
 
     lpv = (const uint8_t *)lpLog + (uint16_t)imemLogPrev;
 
-    /* Packed log header is 16 bits; load raw then use bitfield overlay. */
-    memcpy(&wRaw, lpv, sizeof(wRaw));
-    phdr->wRaw_0000 = wRaw;
+    /* Original is effectively a 2-byte copy: *phdr = *(HDR*)lpv */
+    memcpy(phdr, lpv, sizeof(*phdr));
 
-    if (phdr->cb != 0)
+    if (phdr->cb != 0) {
         memcpy(pb, lpv + 2, (size_t)phdr->cb);
+    }
 
     return 1;
 }

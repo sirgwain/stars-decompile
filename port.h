@@ -75,6 +75,7 @@ int      Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen);
 void     Stars_CloseFile(StarsFile *h);
 size_t   Stars_Read(StarsFile *h, void *dst, size_t cb);
 int      Stars_Seek(StarsFile *h, long offset, int whence);
+size_t   Stars_Write(StarsFile *h, const void *src, size_t cb);
 uint16_t Stars_ReadU16Unaligned(const void *p);
 bool     Stars_AtEOF(StarsFile *h);
 

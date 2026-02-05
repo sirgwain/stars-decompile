@@ -1181,8 +1181,7 @@ short FBuildObject(PLANET *lppl, GrobjClass grobj, short iItem, short cBuilt, lo
         if ((int)(local_1e.hs.wFlags_0x2 + fTwoMAs) < iWarpAsked) {
             local_1e.hs.grhst = (iWarpAsked - local_1e.hs.wFlags_0x2) - fTwoMAs;
         } else {
-            local_1e.hs.grhst = ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
-                                  hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine);
+            local_1e.hs.grhst = hstNone;
         }
         if ((sVar9 == 7) && ((int)local_1e.hs.grhst < 3)) {
             local_1e.hs.grhst = local_1e.hs.grhst + hstEngine;

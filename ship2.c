@@ -206,19 +206,36 @@ void KillUsedWaypoints(void) {
 
 int32_t CMineFromLpfl(FLEET *lpfl) {
     int32_t cMine;
-    int16_t j;
-    int16_t i;
     HUL    *lphuldef;
     PART    part;
     int32_t cMineTot;
     int16_t chs;
     HS     *lphs;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_SHIP2:0x260a */
-
-    /* TODO: implement */
-    return 0;
+    cMineTot = 0;
+    for (int i = 0; i < ishdefMax; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphuldef = &rglpshdef[lpfl->iPlayer][i].hul;
+            chs = lphuldef->chs;
+            lphs = lphuldef->rghs;
+            cMine = 0;
+            for (int j = 0; j < chs; j++) {
+                if ((lphs->grhst == hstMining) && (lphs->iItem < iminingOrbitalAdjuster)) {
+                    part.hs.grhst = lphs->grhst;
+                    part.hs.iItem = lphs->iItem;
+                    part.hs.cItem = lphs->cItem;
+                    FLookupPart(&part);
+                    cMine += (uint32_t)lphs->cItem * (uint32_t)part.pmining->grAbility;
+                }
+                lphs++;
+            }
+            cMineTot += cMine * lpfl->rgcsh[i];
+        }
+    }
+    if (cMineTot > 3999) {
+        cMineTot = 4000;
+    }
+    return cMineTot;
 }
 
 void MarkTechsSeen(HUL *lphul, int16_t iplr) {

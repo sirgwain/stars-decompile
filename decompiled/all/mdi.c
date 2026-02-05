@@ -3231,19 +3231,19 @@ short FWasRaceFile(char *szFile, short fChkPass)
     if (sVar8 == 0) {
         StreamOpen(szFile, 0x20);
         ReadRt();
-        if ((((hdrCur.wFlags >> 10 == 8) && ((uint)rgbCur._8_2_ >> 0xc == 2)) && (0x30 < ((uint)rgbCur._8_2_ >> 5 & 0x7f))) &&
+        if (((((uint)hdrCur >> 10 == 8) && ((uint)rgbCur._8_2_ >> 0xc == 2)) && (0x30 < ((uint)rgbCur._8_2_ >> 5 & 0x7f))) &&
             (((uint)rgbCur._8_2_ >> 5 & 0x7f) < 0x54)) {
             uVar7._0_1_ = rgbCur[8];
             uVar7._1_1_ = rgbCur[9];
             wVersFile._0_1_ = rgbCur[8];
             wVersFile._1_1_ = rgbCur[9];
-            if (((rgbCur._14_2_ & 0xff) == 5) && (ReadRt(), uVar7 = wVersFile, hdrCur.wFlags >> 10 == 6)) {
+            if (((rgbCur._14_2_ & 0xff) == 5) && (ReadRt(), uVar7 = wVersFile, (uint)hdrCur >> 10 == 6)) {
                 idsError = 3;
                 ReadRtPlr(&plr, (byte *)rgbCur);
                 ReadRt();
                 uVar7 = wVersFile;
-                if ((hdrCur.wFlags >> 10 == 0) && (uVar9 = IRaceChecksum(&plr), uVar6 = lSaltCur._2_2_, uVar5 = (int)lSaltCur, lSaltCur._0_2_ = uVar5,
-                                                   lSaltCur._2_2_ = uVar6, uVar7 = wVersFile, rgbCur._0_2_ == uVar9)) {
+                if (((uint)hdrCur >> 10 == 0) && (uVar9 = IRaceChecksum(&plr), uVar6 = lSaltCur._2_2_, uVar5 = (int)lSaltCur, lSaltCur._0_2_ = uVar5,
+                                                  lSaltCur._2_2_ = uVar6, uVar7 = wVersFile, rgbCur._0_2_ == uVar9)) {
                     lSaltCur._0_2_ = (int)plr.lSalt;
                     lSaltCur._2_2_ = plr.lSalt._2_2_;
                     if ((fChkPass == 0) || (sVar8 = FCheckPassword(), sVar8 != 0)) {

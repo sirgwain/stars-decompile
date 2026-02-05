@@ -662,7 +662,11 @@ void OffsetRc(RECT *prc, int16_t dx, int16_t dy) {
     prc->bottom = (int16_t)(prc->bottom + dy);
 }
 
-int16_t ICompLong(void *arg1, void *arg2) { return *(int32_t *)arg1 - *(int32_t *)arg2; }
+int ICompLong(const void *arg1, const void *arg2) {
+    int32_t a = *(const int32_t *)arg1;
+    int32_t b = *(const int32_t *)arg2;
+    return (a > b) - (a < b);
+}
 
 char *PszFromInt(int16_t i, int16_t *pcch) {
     int16_t cch;
@@ -747,6 +751,35 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
 
     /* TODO: implement */
     return 0;
+}
+
+void UpdateProgressGauge(int16_t pctX10) {
+    int16_t iNum;
+
+#ifdef _WIN32
+    if (hwndProgressGauge != NULL) {
+        iNum = 0;
+
+        /* Special sentinels from the original. */
+        if (pctX10 == (int16_t)pctProgressStepLarge) {
+            pctX10 = (int16_t)(vpctProgressGauge + 4);
+        } else if (pctX10 == (int16_t)pctProgressStepSmall) {
+            pctX10 = (int16_t)(vpctProgressGauge + 1);
+        } else if (pctX10 < 0) {
+            pctX10 = 0;
+        } else if (pctX10 > 1000) {
+            /* Original gate: allow "over-100%" only when progress text is enabled. */
+            if (!gd.fProgressTxt) {
+                return;
+            }
+            iNum = pctX10; /* pass the >1000 value through separately */
+            pctX10 = vpctProgressGauge;
+        }
+
+        vpctProgressGauge = pctX10;
+        DrawProgressGauge(0, 0, iNum);
+    }
+#endif
 }
 
 #ifdef _WIN32
@@ -1443,15 +1476,6 @@ void StickyDlgPos(HWND hwnd, POINT *ppt, int16_t fInit) {
 
     DBG_LOGD("update: ppt: (%d,%d) rc: t: %d l: %d r: %d b: %d", ppt->x, ppt->y, rc.top, rc.left, rc.right, rc.bottom);
     SetWindowPos(hwnd, NULL, rc.left, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
-void UpdateProgressGauge(int16_t pctX10) {
-    int16_t iNum;
-
-    /* debug symbols */
-    /* block (block) @ MEMORY_UTILGEN:0x63ed */
-
-    /* TODO: implement */
 }
 
 uint32_t PaletteSize(const void *pv) {

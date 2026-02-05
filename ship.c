@@ -10,17 +10,22 @@
 /* functions */
 
 int32_t GetFuelFree(FLEET *lpfl) {
+    int32_t lCapacity;
 
-    /* TODO: implement */
-    return 0;
+    lCapacity = LGetFleetStat(lpfl, grStatFuel);
+    return lCapacity - lpfl->rgwtMin[4];
 }
 
 int32_t GetCargoFree(FLEET *lpfl) {
     int32_t cHave;
-    int16_t i;
+    int32_t lCapacity;
 
-    /* TODO: implement */
-    return 0;
+    cHave = 0;
+    for (int i = 0; i < 4; i++) {
+        cHave += lpfl->rgwtMin[i];
+    }
+    lCapacity = LGetFleetStat(lpfl, grStatCargo);
+    return lCapacity - cHave;
 }
 
 int32_t XferSupply(int16_t iSupply, int32_t cQuan) {
@@ -386,18 +391,176 @@ void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
 }
 
 int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj) {
-    THING  *pth;
-    XFER    xfer;
-    int16_t i;
-    FLEET  *pfl;
-    PLANET *ppl;
-    int32_t wtFree;
+    uint32_t *pLo;
+    uint32_t  loOld;
+    int32_t   hiSum;
+    uint32_t  capTimes10;
+    int32_t   wtFree;
+    PLANET   *ppl;
+    FLEET    *pfl;
+    int16_t   i;
+    XFER      xfer;
+    THING    *pth;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_SHIP:0x61db */
+    if ((grobj == grobjPlanet) || (grobj == grobjOther)) {
+        if (pobj == NULL) {
+            if (grobj == grobjPlanet) {
+                FLookupPlanet(id, &xfer.pl);
+                ppl = &xfer.pl;
+            } else {
+                memset(&xfer.pl, 0, sizeof(PLANET));
+                ppl = &xfer.pl;
+            }
+        } else {
+            ppl = pobj;
+        }
 
-    /* TODO: implement */
-    return 0;
+        if (iSupply < 5) {
+            if (iSupply == 4) {
+                dChg = 0;
+                goto Done;
+            }
+
+            if (dChg == 0) {
+                dChg = ppl->rgwtMin[iSupply];
+                goto Done;
+            }
+
+            /* replicate: high(min)+high(dChg)+carry(low) */
+            {
+                uint32_t minLo = (uint32_t)ppl->rgwtMin[iSupply];
+                uint32_t chgLo = (uint32_t)dChg;
+                uint32_t carry = (minLo + chgLo) < minLo;
+                hiSum = (int32_t)(minLo >> 16) + (int32_t)(chgLo >> 16) + (int32_t)carry;
+            }
+
+            if ((hiSum < 1) && (hiSum < 0)) {
+                dChg = -ppl->rgwtMin[iSupply];
+            }
+
+            pLo = (uint32_t *)&ppl->rgwtMin[iSupply];
+            loOld = *pLo;
+            *pLo = loOld + (uint32_t)dChg;
+            ((uint32_t *)&ppl->rgwtMin[iSupply])[1] = ((uint32_t *)&ppl->rgwtMin[iSupply])[1] + ((uint32_t)dChg >> 16) + (uint32_t)((*pLo) < loOld);
+        }
+
+        if ((dChg != 0) && (pobj == NULL) && (grobj != grobjOther)) {
+            FLookupPlanet(-1, &xfer.pl);
+        }
+    } else if (grobj == grobjThing) {
+        if (pobj == NULL) {
+            FLookupThing(id, &xfer.th);
+            pth = &xfer.th;
+        } else {
+            pth = pobj;
+        }
+
+        /* Packets only: 3 cargo slots (0..2). */
+        if (2 < iSupply) {
+            dChg = 0;
+            goto Done;
+        }
+
+        if (iSupply < 5) {
+            int16_t *pwt = &pth->thp.rgwtMin[iSupply];
+
+            if (dChg == 0) {
+                /* decompile sign-extends the 16-bit slot into a 32-bit long */
+                dChg = (int32_t)*pwt;
+                goto Done;
+            }
+
+            /* compute "high word" after add: sign(cur16) + high(dChg) + carry(low16) */
+            {
+                uint16_t curLo = (uint16_t)*pwt;
+                uint16_t chgLo = (uint16_t)dChg;
+                uint32_t carry = (uint16_t)(curLo + chgLo) < curLo;
+
+                hiSum = ((int32_t)*pwt >> 15) + (int32_t)((uint32_t)dChg >> 16) + (int32_t)carry;
+            }
+
+            if ((hiSum < 1) && (hiSum < 0)) {
+                /* clamp so we don't go negative: dChg = -current */
+                dChg = -(int32_t)*pwt;
+            }
+
+            /* uVar4 = ( (thp.wRaw_0008 & 0x3fff) * 10 ) == (wtMax * 10) */
+            capTimes10 = (uint32_t)(pth->thp.wtMax) * 10U;
+
+            i = 0;
+            while (true) {
+                wtFree = (int32_t)capTimes10;
+                if (2 < i)
+                    break;
+
+                capTimes10 = capTimes10 - (uint32_t)(int32_t)pth->thp.rgwtMin[i];
+                i++;
+            }
+
+            /* if (wtFree <= dChg) then clamp dChg to remaining free (uVar4/capTimes10) */
+            if ((wtFree <= dChg) && ((wtFree < dChg) || ((uint32_t)wtFree < (uint32_t)dChg))) {
+                dChg = (int32_t)capTimes10;
+            }
+
+            *pwt = (int16_t)((int32_t)*pwt + (int16_t)dChg);
+        }
+
+        if ((dChg != 0) && (pobj == NULL)) {
+            FLookupThing(-1, pth);
+        }
+    } else {
+        if (pobj == NULL) {
+            FLookupFleet(id, &xfer.fl);
+            pfl = &xfer.fl;
+        } else {
+            pfl = pobj;
+        }
+
+        if (iSupply < 5) {
+            if (dChg == 0) {
+                dChg = pfl->rgwtMin[iSupply];
+                goto Done;
+            }
+
+            {
+                uint32_t minLo = (uint32_t)pfl->rgwtMin[iSupply];
+                uint32_t chgLo = (uint32_t)dChg;
+                uint32_t carry = (minLo + chgLo) < minLo;
+                hiSum = (int32_t)(minLo >> 16) + (int32_t)(chgLo >> 16) + (int32_t)carry;
+            }
+
+            if ((hiSum < 1) && (hiSum < 0)) {
+                dChg = -pfl->rgwtMin[iSupply];
+            }
+
+            /* bitfield: det (types.h) */
+            if ((iSupply == 3) && (pfl->det != 7)) {
+                dChg = 0;
+            }
+
+            /* clamp to free space (original flow) */
+            {
+                int32_t freeSpace = (iSupply == 4) ? GetFuelFree(pfl) : GetCargoFree(pfl);
+                int32_t freeHi = (int32_t)((uint32_t)freeSpace >> 16);
+
+                if ((freeHi < (int32_t)((uint32_t)dChg >> 16)) || ((freeHi == (int32_t)((uint32_t)dChg >> 16)) && ((uint32_t)freeSpace <= (uint32_t)dChg))) {
+                    dChg = freeSpace;
+                }
+            }
+
+            pLo = (uint32_t *)&pfl->rgwtMin[iSupply];
+            loOld = *pLo;
+            *pLo = loOld + (uint32_t)dChg;
+            ((uint32_t *)&pfl->rgwtMin[iSupply])[1] = ((uint32_t *)&pfl->rgwtMin[iSupply])[1] + ((uint32_t)dChg >> 16) + (uint32_t)((*pLo) < loOld);
+        }
+
+        if ((dChg != 0) && (pobj == NULL)) {
+            FLookupFleet(-1, pfl);
+        }
+    }
+
+Done:
+    return dChg;
 }
 
 int16_t FCanSplit(int32_t cBoat) {

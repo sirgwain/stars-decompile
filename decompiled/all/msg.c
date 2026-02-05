@@ -2180,10 +2180,10 @@ void ReadPlayerMessages(void)
     imemMsgT = 0;
     bVar2 = false;
     lpb._0_2_ = (byte *)((int)(short *)lpMsg + imemMsgCur);
-    while (hdrCur.wFlags >> 10 == 0xc) {
-        if (((hdrCur.wFlags & 0x3ff) != 0) && (imemMsgCur + imemMsgT < -(hdrCur.wFlags & 0x3ff) - 0x38)) {
-            __fmemmove((byte *)CONCAT22(uVar6, (byte *)lpb + imemMsgT), rgbCur, hdrCur.wFlags & 0x3ff);
-            imemMsgT = imemMsgT + (hdrCur.wFlags & 0x3ff);
+    while ((uint)hdrCur >> 10 == 0xc) {
+        if ((((uint)hdrCur & 0x3ff) != 0) && (imemMsgCur + imemMsgT < -((uint)hdrCur & 0x3ff) - 0x38)) {
+            __fmemmove((byte *)CONCAT22(uVar6, (byte *)lpb + imemMsgT), rgbCur, (uint)hdrCur & 0x3ff);
+            imemMsgT = imemMsgT + ((uint)hdrCur & 0x3ff);
         }
         ReadRt();
     }
@@ -2218,10 +2218,10 @@ void ReadPlayerMessages(void)
     while (true) {
         ReadRt();
     LAB_1030_9b3a:
-        if (hdrCur.wFlags >> 10 != 0x28)
+        if ((uint)hdrCur >> 10 != 0x28)
             break;
         if (!bVar2) {
-            pvVar7 = LpAlloc(hdrCur.wFlags & 0x3ff, htPlrMsg);
+            pvVar7 = LpAlloc((uint)hdrCur & 0x3ff, htPlrMsg);
             uVar6 = (undefined2)((ulong)lpmp >> 0x10);
             *&lpmp->lpmsgplrNext = (void *)pvVar7;
             *(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2) = (int)((ulong)pvVar7 >> 0x10);
@@ -2229,7 +2229,7 @@ void ReadPlayerMessages(void)
             pMVar1 = lpmp->lpmsgplrNext;
             uVar6 = *(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2);
             lpmp = (MSGPLR *)CONCAT22(uVar6, pMVar1);
-            __fmemcpy((MSGPLR *)CONCAT22(uVar6, pMVar1), rgbCur, hdrCur.wFlags & 0x3ff);
+            __fmemcpy((MSGPLR *)CONCAT22(uVar6, pMVar1), rgbCur, (uint)hdrCur & 0x3ff);
             *&lpmp->lpmsgplrNext = 0;
             *(undefined2 *)((int)&pMVar1->lpmsgplrNext + 2) = 0;
             vcmsgplrIn = vcmsgplrIn + 1;

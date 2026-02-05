@@ -4,6 +4,13 @@
 #include <assert.h>
 #include "types.h"
 
+#ifndef min
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 #ifdef NDEBUG
 #define Assert(expr) ((void)0)
 #else
@@ -49,6 +56,10 @@
 #define cbPackedMsgSize      20
 #define cbPackedMsgAllocSize 65480
 #define cbLogAllocSize       32000
+
+// progress guage sentinels
+#define pctProgressStepSmall (-927)
+#define pctProgressStepLarge (-926)
 
 /* UI helper used in a few places in the original. */
 #ifndef MessageSz

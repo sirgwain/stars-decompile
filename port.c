@@ -16,10 +16,10 @@
 /* When building with the Win32 stub layer on non-Windows hosts, avoid pulling
  * Windows system headers. The stub headers provide the Windows-like API.
  */
-#include "win_stubs.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "win_stubs.h"
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -64,13 +64,6 @@ int Stars_strnicmp(const char *a, const char *b, size_t n) {
 /* ====================================================================== */
 /* Small internal helpers                                                  */
 /* ====================================================================== */
-
-int Stars_Seek(StarsFile *h, long offset, int whence) {
-    if (h == NULL || h->fp == NULL) {
-        return -1;
-    }
-    return fseek(h->fp, offset, whence);
-}
 
 /* mdOpen mapping:
  * - original passed mdOpen & 0xbfff to OpenFile()
@@ -128,6 +121,39 @@ size_t Stars_Read(StarsFile *h, void *dst, size_t cb) {
     if (!h->fp)
         return 0;
     return fread(dst, 1, cb, h->fp);
+}
+
+int Stars_Seek(StarsFile *h, long offset, int whence) {
+    if (h == NULL || h->fp == NULL) {
+        return -1;
+    }
+    return fseek(h->fp, offset, whence);
+}
+
+size_t Stars_Write(StarsFile *h, const void *src, size_t cb) {
+    if (h == NULL || h->fp == NULL) {
+        return 0;
+    }
+    if (cb == 0) {
+        return 0;
+    }
+    if (src == NULL) {
+        return 0;
+    }
+
+    const uint8_t *p = (const uint8_t *)src;
+    size_t         written = 0;
+
+    while (written < cb) {
+        size_t n = fwrite(p + written, 1, cb - written, h->fp);
+        if (n == 0) {
+            /* fwrite wrote nothing: error or inability to progress */
+            break;
+        }
+        written += n;
+    }
+
+    return written;
 }
 
 uint16_t Stars_ReadU16Unaligned(const void *p) {
@@ -199,7 +225,7 @@ static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     if (!u8)
         return false;
 
-    size_t n = strlen(u8);
+    size_t   n = strlen(u8);
     wchar_t *w = (wchar_t *)malloc((n + 1) * sizeof(wchar_t));
     if (!w)
         return false;

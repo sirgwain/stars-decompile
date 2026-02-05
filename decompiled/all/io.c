@@ -121,10 +121,7 @@ short FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, short iplrLoad)
                 if (idPlayer == -1) {
                     local_ca = 0;
                 }
-                if ((((part.hs.grhst & ((pHVar4->hul).rghs + c)->grhst) ==
-                      ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp |
-                        hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) ||
-                     ((1 < (int)local_ca && (-1 < (int)shdef.wFlags)))) ||
+                if ((((part.hs.grhst & ((pHVar4->hul).rghs + c)->grhst) == hstNone) || ((1 < (int)local_ca && (-1 < (int)shdef.wFlags)))) ||
                     ((pHVar4->hul).rghs[c].wFlags_0x2 >> 8 < part.hs.wFlags_0x2 >> 8)) {
                     (pSVar8->hul).rghs[c].wFlags_0x2 = (pSVar8->hul).rghs[c].wFlags_0x2 & 0xff;
                 }
@@ -295,7 +292,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
         sVar14 = FOpenFile(dtXY, -1, 0x20);
         if (sVar14 != 0) {
             ReadRt();
-            if (hdrCur.wFlags >> 10 == 7) {
+            if ((uint)hdrCur >> 10 == 7) {
                 pcVar21 = (char *)rgbCur;
                 pGVar27 = (GAME *)&game;
                 for (iVar19 = 0x20; iVar19 != 0; iVar19 = iVar19 + -1) {
@@ -321,7 +318,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                         goto IO_XYCorrupt;
                 }
                 ReadRt();
-                if (hdrCur.wFlags >> 10 == 0) {
+                if ((uint)hdrCur >> 10 == 0) {
                     StreamClose();
                     if (((*pszExt == 'h') || (*pszExt == 'H')) && ((pszExt[1] == 's' || (pszExt[1] == 'S')))) {
                         dt = 2;
@@ -356,7 +353,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                         vlpbAiData = (byte *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
                         lpThings = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
                         local_4c = (PLANET *)CONCAT22(local_4c._2_2_, (PLANET *)local_4c);
-                        if (hdrCur.wFlags >> 10 != 0x20) {
+                        if ((uint)hdrCur >> 10 != 0x20) {
                         IO_CorruptHist:
                             StreamClose();
                             sVar15 = 0x10;
@@ -381,7 +378,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                         while (true) {
                             if ((int)uVar28 <= i)
                                 break;
-                            if (hdrCur.wFlags >> 10 != 0xe)
+                            if ((uint)hdrCur >> 10 != 0xe)
                                 goto IO_CorruptHist;
                             sVar15 = FReadPlanet(iPlayer, lppl, 1, 0);
                             if (sVar15 == 0)
@@ -394,16 +391,16 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             i = i + 1;
                             lppl = (PLANET *)lppl + 1;
                         }
-                        if (hdrCur.wFlags >> 10 == 0x21) {
+                        if ((uint)hdrCur >> 10 == 0x21) {
                             vlpbAiData = (byte *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
                             lpThings = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
                             local_4c = (PLANET *)CONCAT22(local_4c._2_2_, (PLANET *)local_4c);
-                            if ((uint)cbbitfMsg < (hdrCur.wFlags & 0x3ff))
+                            if ((uint)cbbitfMsg < ((uint)hdrCur & 0x3ff))
                                 goto IO_CorruptHist;
-                            _memcpy((byte *)bitfMsgFiltered, (char *)rgbCur, hdrCur.wFlags & 0x3ff);
+                            _memcpy((byte *)bitfMsgFiltered, (char *)rgbCur, (uint)hdrCur & 0x3ff);
                             ReadRt();
                         }
-                        while (hdrCur.wFlags >> 10 == 6) {
+                        while ((uint)hdrCur >> 10 == 6) {
                             iVar19 = (int)rgbCur[0];
                             ReadRtPlr((PLAYER *)rgplr + iVar19, (byte *)rgbCur);
                             *(undefined2 *)((int)&rgplr[0].cPlanet + iVar19 * 0xc0) = 0;
@@ -412,7 +409,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             ReadRt();
                         }
                         i = 0;
-                        while (hdrCur.wFlags >> 10 == 0x1a) {
+                        while ((uint)hdrCur >> 10 == 0x1a) {
                             for (; (*(char *)((int)&rgplr[0].cShDef + i * 0xc0) == '\0' && (i < game.cPlayer)); i = i + 1) {
                             }
                             if (i == game.cPlayer)
@@ -446,7 +443,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             ReadRt();
                         }
                         i = 0;
-                        while (hdrCur.wFlags >> 10 == 0x1a) {
+                        while ((uint)hdrCur >> 10 == 0x1a) {
                             for (; (*(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) >> 0xc == 0 && (i < game.cPlayer)); i = i + 1) {
                             }
                             if (i == game.cPlayer)
@@ -485,7 +482,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                         while (true) {
                             pPVar9 = (PLANET *)CONCAT22(local_4c._2_2_, (PLANET *)local_4c);
                             pPVar29 = (PLANET *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
-                            if (hdrCur.wFlags >> 10 != 0x2d)
+                            if ((uint)hdrCur >> 10 != 0x2d)
                                 break;
                             local_4c._2_2_ = rgbCur._0_2_ & 0x1f;
                             piVar22 = (int *)rgbCur;
@@ -554,12 +551,12 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             }
                             ReadRt();
                         }
-                        if (hdrCur.wFlags >> 10 == 0x29) {
+                        if ((uint)hdrCur >> 10 == 0x29) {
                             if ((*(uint *)((int)&rgplr[0].wMdPlr + idPlayer * 0xc0) >> 9 & 1) == 0) {
                                 while (true) {
                                     pPVar9 = (PLANET *)CONCAT22(local_4c._2_2_, (PLANET *)local_4c);
                                     pPVar29 = (PLANET *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
-                                    if (hdrCur.wFlags >> 10 != 0x29)
+                                    if ((uint)hdrCur >> 10 != 0x29)
                                         break;
                                     ReadRt();
                                 }
@@ -572,16 +569,16 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     if (vlpbAiData == (PLANET *)0x0)
                                         goto IO_CorruptHist;
                                 }
-                                while (pPVar29 = vlpbAiData, hdrCur.wFlags >> 10 == 0x29) {
+                                while (pPVar29 = vlpbAiData, (uint)hdrCur >> 10 == 0x29) {
                                     local_4c = pPVar9;
-                                    __fmemmove(pPVar9, rgbCur, hdrCur.wFlags & 0x3ff);
-                                    local_4c._0_2_ = ((PLANET *)local_4c)->rgpctMinLevel + ((hdrCur.wFlags & 0x3ff) - 6);
+                                    __fmemmove(pPVar9, rgbCur, (uint)hdrCur & 0x3ff);
+                                    local_4c._0_2_ = ((PLANET *)local_4c)->rgpctMinLevel + (((uint)hdrCur & 0x3ff) - 6);
                                     ReadRt();
                                     pPVar9 = (PLANET *)CONCAT22(local_4c._2_2_, (PLANET *)local_4c);
                                 }
                             }
                         }
-                        if (hdrCur.wFlags >> 10 == 0x2b) {
+                        if ((uint)hdrCur >> 10 == 0x2b) {
                             cThing._0_1_ = rgbCur[0];
                             cThing._1_1_ = rgbCur[1];
                             cThingAlloc = rgbCur._0_2_ + 10;
@@ -599,9 +596,9 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             pPVar9 = local_4c;
                             for (i = 0; pPVar29 = vlpbAiData, i < cThing; i = i + 1) {
                                 local_4c = pPVar9;
-                                if (hdrCur.wFlags >> 10 != 0x2b)
+                                if ((uint)hdrCur >> 10 != 0x2b)
                                     goto IO_CorruptHist;
-                                __fmemcpy(lpth, rgbCur, hdrCur.wFlags & 0x3ff);
+                                __fmemcpy(lpth, rgbCur, (uint)hdrCur & 0x3ff);
                                 ReadRt();
                                 lpth = (THING *)lpth + 1;
                                 pPVar9 = local_4c;
@@ -624,8 +621,8 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             cPlanet = 0;
                             cFleet = 0;
                             ReadRt();
-                            while ((hdrCur.wFlags >> 10 == 0x1f || (hdrCur.wFlags >> 10 == 0x27))) {
-                                if (hdrCur.wFlags >> 10 != 0x27) {
+                            while (((uint)hdrCur >> 10 == 0x1f || ((uint)hdrCur >> 10 == 0x27))) {
+                                if ((uint)hdrCur >> 10 != 0x27) {
                                     if (lpbBattleLog == (byte *)0x0) {
                                         lpbBattleCur = LpAlloc(0xffc8, htBattle);
                                         lpbBattleLog = lpbBattleCur;
@@ -637,15 +634,15 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                         lpbBattleCur = LpAlloc(0xffc8, htBattle);
                                     }
                                 }
-                                __fmemmove(lpbBattleCur, rgbCur, hdrCur.wFlags & 0x3ff);
-                                lpbBattleCur = (byte *)CONCAT22(lpbBattleCur._2_2_, (byte *)lpbBattleCur + (hdrCur.wFlags & 0x3ff));
+                                __fmemmove(lpbBattleCur, rgbCur, (uint)hdrCur & 0x3ff);
+                                lpbBattleCur = (byte *)CONCAT22(lpbBattleCur._2_2_, (byte *)lpbBattleCur + ((uint)hdrCur & 0x3ff));
                                 ReadRt();
                             }
                             if ((((byte *)lpbBattleCur != (byte *)0x0) || (lpbBattleCur._2_2_ != 0)) &&
                                 (pbVar10 = lpbBattleCur, pbVar10[0] = 0xff, pbVar10[1] = 0xff, (wVersFile >> 5 & 0x7f) < 0x50)) {
                                 UpdateBattleRecords();
                             }
-                            while (hdrCur.wFlags >> 10 == 6) {
+                            while ((uint)hdrCur >> 10 == 6) {
                                 iVar19 = (int)rgbCur[0];
                                 ReadRtPlr((PLAYER *)rgplr + iVar19, (byte *)rgbCur);
                                 cPlanet = cPlanet + *(int *)((int)&rgplr[0].cPlanet + iVar19 * 0xc0);
@@ -656,7 +653,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 ReadRt();
                             }
                             if (dt == 2) {
-                                if (hdrCur.wFlags >> 10 == 0x24) {
+                                if ((uint)hdrCur >> 10 == 0x24) {
                                     lSaltCur._0_1_ = rgbCur[0];
                                     lSaltCur._1_1_ = rgbCur[1];
                                     lSaltCur._2_1_ = rgbCur[2];
@@ -736,13 +733,13 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     *piVar1 = *piVar1 + 1;
                                 }
                                 ReadRt();
-                                if (hdrCur.wFlags >> 10 == 0x1c) {
+                                if ((uint)hdrCur >> 10 == 0x1c) {
                                     if ((*(int *)&((PLANET *)lppl)->lpplprod != 0) ||
                                         (pPVar29 = local_4c, *(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)) {
                                         bVar7 = ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMax;
                                         local_4c._2_2_ = (uint)bVar7;
                                         pPVar29 = (PLANET *)(ulong)CONCAT12(bVar7, (PLANET *)local_4c);
-                                        if (local_4c._2_2_ <= (hdrCur.wFlags & 0x3ff) / 4) {
+                                        if (local_4c._2_2_ <= ((uint)hdrCur & 0x3ff) / 4) {
                                             FreePl((PL *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2), *(PL **)&((PLANET *)lppl)->lpplprod));
                                             *(undefined2 *)&((PLANET *)lppl)->lpplprod = 0;
                                             *(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2) = 0;
@@ -751,7 +748,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     }
                                     if ((*(int *)&((PLANET *)lppl)->lpplprod == 0) && (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) == 0)) {
                                         local_4c = pPVar29;
-                                        pPVar30 = LpplAlloc(4, (hdrCur.wFlags & 0x3ff) / 4 + 2, htOrd);
+                                        pPVar30 = LpplAlloc(4, ((uint)hdrCur & 0x3ff) / 4 + 2, htOrd);
                                         *(PL **)&((PLANET *)lppl)->lpplprod = (PL *)pPVar30;
                                         *(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2) = (int)((ulong)pPVar30 >> 0x10);
                                         pPVar29 = local_4c;
@@ -759,8 +756,8 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     local_4c = pPVar29;
                                     __fmemmove((void *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2),
                                                                 (void *)(*(int *)&((PLANET *)lppl)->lpplprod + 4)),
-                                               rgbCur, hdrCur.wFlags & 0x3ff);
-                                    ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac = (byte)((ulong)(hdrCur.wFlags & 0x3ff) / 4);
+                                               rgbCur, (uint)hdrCur & 0x3ff);
+                                    ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac = (byte)((ulong)((uint)hdrCur & 0x3ff) / 4);
                                     ReadRt();
                                 }
                                 if (cPlanetHist == 0) {
@@ -798,7 +795,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     local_4c = pPVar29;
                                     for (j = 0; pPVar29 = local_4c, j < *(char *)((int)&rgplr[0].cShDef + i * 0xc0); j = j + 1) {
                                         sVar14 = sVar15;
-                                        if (hdrCur.wFlags >> 10 != 0x1a)
+                                        if ((uint)hdrCur >> 10 != 0x1a)
                                             goto IO_Corrupt_2;
                                         sVar17 = FReadShDef(
                                             rgbCur, (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + rglpshdef_0x2), (SHDEF *)*(undefined2 *)(i * 4 + rglpshdef)),
@@ -885,7 +882,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     }
                                     for (j = 0; j < (int)(*(uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) >> 0xc); j = j + 1) {
                                         sVar14 = sVar15;
-                                        if (hdrCur.wFlags >> 10 != 0x1a)
+                                        if ((uint)hdrCur >> 10 != 0x1a)
                                             goto IO_Corrupt_2;
                                         sVar17 = FReadShDef(
                                             rgbCur, (SHDEF *)CONCAT22(*(undefined2 *)(i * 4 + rglpshdefSB_0x2), (SHDEF *)*(undefined2 *)(i * 4 + rglpshdefSB)),
@@ -931,7 +928,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 uVar28 = vlprgScoreX._2_2_;
                                 vlprgScoreX._0_2_ = (SCOREX *)pSVar31;
                                 vlprgScoreX = pSVar31;
-                                if (hdrCur.wFlags >> 10 != 0x2d)
+                                if ((uint)hdrCur >> 10 != 0x2d)
                                     break;
                                 local_4c._2_2_ = rgbCur._0_2_ & 0x1f;
                                 pSVar26 = (SCOREX *)vlprgScoreX + local_4c._2_2_;
@@ -1027,7 +1024,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 pSVar31 = vlprgScoreX;
                             }
                             vlprgScoreX = pSVar31;
-                            if (hdrCur.wFlags >> 10 == 0x2b) {
+                            if ((uint)hdrCur >> 10 == 0x2b) {
                                 local_4c._0_2_ = (PLANET *)(uint)(0 < cThing);
                                 local_4c._2_1_ = rgbCur[0];
                                 local_4c._3_1_ = rgbCur[1];
@@ -1076,7 +1073,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                             goto LAB_1070_270b;
                                         }
                                     }
-                                    __fmemcpy(lpth, rgbCur, hdrCur.wFlags & 0x3ff);
+                                    __fmemcpy(lpth, rgbCur, (uint)hdrCur & 0x3ff);
                                     ((THING *)lpth)->turn = game.turn;
                                     lpth = (THING *)lpth + 1;
                                     j = j + 1;
@@ -1091,10 +1088,10 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 /* WARNING: Ignoring partial resolution of indirect */
                                 lpThings._2_2_ = (int)((ulong)pTVar32 >> 0x10);
                             }
-                            if (hdrCur.wFlags >> 10 == 0x16) {
+                            if ((uint)hdrCur >> 10 == 0x16) {
                                 ReadRt();
                             }
-                            while (sVar14 = idPlayer, hdrCur.wFlags >> 10 == 0x1e) {
+                            while (sVar14 = idPlayer, (uint)hdrCur >> 10 == 0x1e) {
                                 idPlayer = rgbCur._0_2_ & 0xf;
                                 local_4c._2_2_ = idPlayer;
                                 if ((*(int *)((BTLPLAN **)rglpbtlplan + idPlayer) == 0) && (*(int *)((int)(BTLPLAN **)rglpbtlplan + idPlayer * 4 + 2) == 0)) {
@@ -1111,7 +1108,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 ReadRt();
                                 idPlayer = sVar14;
                             }
-                            if (hdrCur.wFlags >> 10 != 0) {
+                            if ((uint)hdrCur >> 10 != 0) {
                             IO_Corrupt_2:
                                 idPlayer = sVar14;
                                 sVar14 = 0x10;
@@ -1124,7 +1121,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             if (pPVar29 == local_4c)
                                 goto LAB_1070_2a56;
                             ReadRt();
-                            if (hdrCur.wFlags >> 10 != 8)
+                            if ((uint)hdrCur >> 10 != 8)
                                 goto LAB_1070_2a35;
                             game.turn._0_1_ = rgbCur[10];
                             game.turn._1_1_ = rgbCur[0xb];
@@ -1545,7 +1542,7 @@ short FReadPlanet(short iPlayer, PLANET *lppl, short fHistory, short fPreInited)
                     bMask = (byte)((int)(uint)bMask >> 2);
                 }
             }
-            if (hdrCur.wFlags >> 10 != 0xe) {
+            if ((uint)hdrCur >> 10 != 0xe) {
                 if (((uint)rgbCur._2_2_ >> 0xb & 1) == 0) {
                     lVar8 = __aFlshl(lVar8, in_stack_0000ffea);
                     uVar1 = *(uint *)(((PLANET *)lppl)->rgbImp + 6);
@@ -1731,7 +1728,7 @@ short FReadFleet(FLEET *lpfl)
         ReadRt();
         return 1;
     }
-    if (hdrCur.wFlags >> 10 == 0x10) {
+    if ((uint)hdrCur >> 10 == 0x10) {
         us = *(ushort *)pb;
         pus = pb + 2;
         i = 0;
@@ -1758,7 +1755,7 @@ short FReadFleet(FLEET *lpfl)
         for (; cord != 0; cord = cord + -1) {
             _memset((char *)rgbCur, 0, 0x12);
             ReadRt();
-            if ((hdrCur.wFlags >> 10 != 0x13) && (hdrCur.wFlags >> 10 != 0x14))
+            if (((uint)hdrCur >> 10 != 0x13) && ((uint)hdrCur >> 10 != 0x14))
                 goto IO_Corrupt;
             psVar9 = (short *)rgbCur;
             uVar12 = (undefined2)((ulong)lpord >> 0x10);
@@ -1789,7 +1786,7 @@ short FReadFleet(FLEET *lpfl)
             }
         }
         ReadRt();
-        if (hdrCur.wFlags >> 10 == 0x15) {
+        if ((uint)hdrCur >> 10 == 0x15) {
             if (rgbCur[0] == 0) {
                 HVar15 = htString;
                 uVar6 = _strlen((char *)rgbCur + 1);
@@ -2273,7 +2270,7 @@ short FOpenFile(DtFileType dt, short iPlayer, short md)
     fFileErrSilent = sVar5;
     ReadRt();
     psVar7 = &stack0xffca;
-    if ((((hdrCur.wFlags >> 10 == 8) && ((uint)rgbCur._8_2_ >> 0xc == 2)) && (0x30 < ((uint)rgbCur._8_2_ >> 5 & 0x7f))) &&
+    if (((((uint)hdrCur >> 10 == 8) && ((uint)rgbCur._8_2_ >> 0xc == 2)) && (0x30 < ((uint)rgbCur._8_2_ >> 5 & 0x7f))) &&
         (((uint)rgbCur._8_2_ >> 5 & 0x7f) < 0x54)) {
         pcVar9 = (char *)rgbCur;
         pRVar10 = &rtbof;
@@ -2300,7 +2297,7 @@ short FOpenFile(DtFileType dt, short iPlayer, short md)
                         uVar11 = 0x1070;
                         ReadRt();
                         psVar7 = env + 1;
-                        if ((hdrCur.wFlags >> 10 != 0) && ((hdrCur.wFlags & 0x3ff) != 2))
+                        if (((uint)hdrCur >> 10 != 0) && (((uint)hdrCur & 0x3ff) != 2))
                             goto IO_LBadFile_2;
                         rtbof.turn._0_1_ = rgbCur[0];
                         rtbof.turn._1_1_ = rgbCur[1];
@@ -2375,7 +2372,7 @@ short FOpenFile(DtFileType dt, short iPlayer, short md)
             FileError(idsGameFileAppearsCorruptUnableLoadFile);
             psVar7 = &stack0xffca;
         }
-    } else if (hdrCur.wFlags >> 10 == 8) {
+    } else if ((uint)hdrCur >> 10 == 8) {
         if (((uint)rgbCur._8_2_ >> 0xc < 3) && (((uint)rgbCur._8_2_ >> 0xc != 2 || (((uint)rgbCur._8_2_ >> 5 & 0x7f) < 0x55)))) {
             ids_00 = idsSorryFileCreatedOlderVersionStarsIncompatible;
         } else {
@@ -2479,7 +2476,7 @@ short FCheckFile(DtFileType dt, short iPlayer, ushort md)
         } else {
             do {
                 ReadRt();
-                if (hdrCur.wFlags >> 10 == 6)
+                if ((uint)hdrCur >> 10 == 6)
                     break;
             } while (rgbCur[0] != iPlayer);
             fReturn = (uint)rgbCur._6_2_ >> 9 & 1;
@@ -2506,14 +2503,14 @@ void ReadRt(void)
 
 {
     RgFromStream(&hdrCur, 2);
-    if ((hdrCur.wFlags & 0x3ff) != 0) {
-        RgFromStream(rgbCur, hdrCur.wFlags & 0x3ff);
+    if (((uint)hdrCur & 0x3ff) != 0) {
+        RgFromStream(rgbCur, (uint)hdrCur & 0x3ff);
     }
-    if (hdrCur.wFlags >> 10 == 8) {
+    if ((uint)hdrCur >> 10 == 8) {
         SetFileXorStream(CONCAT22(rgbCur._6_2_, rgbCur._4_2_), (int)rgbCur._12_2_ >> 5, rgbCur._10_2_, (int)(rgbCur._12_2_ << 0xb) >> 0xb,
                          (uint)rgbCur._14_2_ >> 0xc & 1);
-    } else if (hdrCur.wFlags >> 10 != 0) {
-        XorFileBuf((char *)rgbCur, hdrCur.wFlags & 0x3ff);
+    } else if ((uint)hdrCur >> 10 != 0) {
+        XorFileBuf((char *)rgbCur, (uint)hdrCur & 0x3ff);
     }
     return;
 }
@@ -4081,7 +4078,7 @@ void WriteBOF(short iPlayer, short dt, short fMulti)
     RTBOF      rtbof;
 
     _memset(&rtbof, 0, 0x10);
-    _strncpy(rtbof.rgid, (char *)0xa1c, 4);
+    _strncpy(rtbof.rgid, (char *)s_J3J3_1120_0a1c, 4);
     rtbof.lidGame._0_2_ = (undefined2)game.lid;
     rtbof.lidGame._2_2_ = game.lid._2_2_;
     rtbof.wVersion = 0x2a60;
@@ -4150,7 +4147,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
     StreamOpen((char *)szWork, 0x12);
     fFileErrSilent = fSilentSav;
     ReadRt();
-    if (hdrCur.wFlags >> 10 == 8) {
+    if ((uint)hdrCur >> 10 == 8) {
         if (((uint)rgbCur._8_2_ >> 0xc < 2) || (((uint)rgbCur._8_2_ >> 0xc == 2 && (((uint)rgbCur._8_2_ >> 5 & 0x7f) < 0x31)))) {
             FileError(idsSorryFileCreatedOlderVersionStarsIncompatible);
             puVar7 = &stack0xffc4;
@@ -4201,7 +4198,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                                 do {
                                     GetFileSeeds(&lSeedSav1, &lSeedSav2);
                                     ReadRt();
-                                } while (hdrCur.wFlags >> 10 != 6);
+                                } while ((uint)hdrCur >> 10 != 6);
                             } while (rgbCur[0] != iPlayer);
                             plVar6 = &stack0xffc4;
                             if (((uint)rgbCur._6_2_ >> 9 & 1) != f) {
@@ -4215,11 +4212,11 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
                                 }
                                 rgbCur._12_2_ = ~rgbCur._12_2_;
                                 rgbCur._14_2_ = ~rgbCur._14_2_;
-                                __lseek(hf, (long)(int)-((hdrCur.wFlags & 0x3ff) + 2), 1);
+                                __lseek(hf, (long)(int)-(((uint)hdrCur & 0x3ff) + 2), 1);
                                 lSeedSav1 = CONCAT22(lSeedSav2._2_2_, (undefined2)lSeedSav2);
                                 SetFileSeeds(CONCAT22(lSeedSav2._2_2_, (undefined2)lSeedSav2), lSeedSav1);
                                 lSeedSav1 = (long)rgbCur;
-                                WriteRt(6, hdrCur.wFlags & 0x3ff, rgbCur);
+                                WriteRt(6, (uint)hdrCur & 0x3ff, rgbCur);
                                 fChange = (uint)(dt == dtTurn);
                                 rtbof.wFlags_0xe = rtbof.wFlags_0xe & 0xfeff;
                                 plVar6 = &lSeedSav2;
@@ -4295,7 +4292,7 @@ void WriteRt(short rt, short cb, void *rg)
     } else if (rt != 0) {
         XorFileBuf((char *)rgbCur, cb);
     }
-    hdr.wFlags = cb & 0x3ffU | rt << 10;
+    hdr = (HDR)(cb & 0x3ffU | rt << 10);
     RgToStream(&hdr, 2);
     RgToStream(rgbCur, cb);
     return;

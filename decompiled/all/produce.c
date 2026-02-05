@@ -1824,8 +1824,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, ulong *rgCost, short iplr, s
             GetTrueHullCost(iplr, (HUL *)CONCAT22(uVar15, pHVar7), rgCostsCur);
             if (lphulCur->ihuldef == lphulNew->ihuldef) {
                 part.u_PART_0x0004.parmor = LphuldefFromId(lphulCur->ihuldef);
-                part.hs.grhst = ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
-                                  hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine);
+                part.hs.grhst = hstNone;
                 GetTruePartCost(iplr, &part, rgCostsPartCur);
                 for (i = 0; i < 4; i = i + 1) {
                     rgCosts[i] = rgCosts[i] - rgCostsPartCur[i];

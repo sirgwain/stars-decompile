@@ -970,13 +970,8 @@ _Static_assert(offsetof(MSGHDR, wGoto) == 0x2, "offsetof(MSGHDR,wGoto)");
 
 /* typind 4844 (0x12ec) size=2 */
 typedef struct _hdr {
-    union {
-        struct {
-            uint16_t cb : 10;
-            uint16_t rt : 6;
-        };
-        uint16_t wRaw_0000;
-    }; /* +0x0000 */
+    uint16_t cb : 10;
+    uint16_t rt : 6;
 } HDR;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(HDR) == 2, "sizeof(HDR)");
@@ -984,14 +979,9 @@ _Static_assert(sizeof(HDR) == 2, "sizeof(HDR)");
 
 /* typind 4854 (0x12f6) size=4 */
 typedef struct _starpack {
-    union {
-        struct {
-            uint32_t dx : 10;
-            uint32_t y : 12;
-            uint32_t id : 10;
-        };
-        uint32_t dwRaw_0000;
-    }; /* +0x0000 */
+    uint32_t dx : 10;
+    uint32_t y : 12;
+    uint32_t id : 10;
 } STARPACK;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(STARPACK) == 4, "sizeof(STARPACK)");
@@ -1010,25 +1000,8 @@ typedef struct _rtbof {
         };
     }; /* +0x0008 */
     uint16_t turn; /* +0x000a */
-    union {
-        struct {
-            int16_t iPlayer : 5;
-            int16_t lSaltTime : 11;
-        };
-        int16_t wRaw_000c;
-    }; /* +0x000c */
-    union {
-        struct {
-            uint16_t dt : 8;
-            uint16_t fDone : 1;
-            uint16_t fInUse : 1;
-            uint16_t fMulti : 1;
-            uint16_t fGameOverMan : 1;
-            uint16_t fCrippled : 1;
-            uint16_t wGen : 3;
-        };
-        uint16_t wRaw_000e;
-    }; /* +0x000e */
+    int16_t  iPlayer : 5, lSaltTime : 11;
+    uint16_t dt : 8, fDone : 1, fInUse : 1, fMulti : 1, fGameOverMan : 1, fCrippled : 1, wGen : 3;
 } RTBOF;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(RTBOF) == 16, "sizeof(RTBOF)");
@@ -2574,15 +2547,15 @@ _Static_assert(offsetof(ZIPPRODQ, rgpq) == 0x10, "offsetof(ZIPPRODQ,rgpq)");
 
 /* typind 4187 (0x105b) size=226 */
 typedef struct _sel {
-    POINT pt;        /* +0x0000 */
-    int16_t    grobj;     /* +0x0004 */
-    int16_t    grobjFull; /* +0x0006 */
-    int16_t    id;        /* +0x0008 */
-    int16_t    iwpAct;    /* +0x000a */
-    SCAN       scan;      /* +0x000c */
-    FLEET      fl;        /* +0x001c */
-    PLANET     pl;        /* +0x0098 */
-    THING      th;        /* +0x00d0 */
+    POINT   pt;        /* +0x0000 */
+    int16_t grobj;     /* +0x0004 */
+    int16_t grobjFull; /* +0x0006 */
+    int16_t id;        /* +0x0008 */
+    int16_t iwpAct;    /* +0x000a */
+    SCAN    scan;      /* +0x000c */
+    FLEET   fl;        /* +0x001c */
+    PLANET  pl;        /* +0x0098 */
+    THING   th;        /* +0x00d0 */
 } SEL;
 #ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(SEL) == 226, "sizeof(SEL)");

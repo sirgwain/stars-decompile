@@ -559,17 +559,83 @@ char *PszGetPlanetName(int16_t id) {
 }
 
 int16_t FDupFleet(FLEET *lpfl, FLEET *pfl) {
-    PLORD *lpplordT;
+    PLORD *savedLpplord;
+    PLORD *srcPlord;
+    PLORD *dstPlord;
 
-    /* TODO: implement */
-    return 0;
+    savedLpplord = pfl->lpplord;
+
+    /* REP MOVSW (0x3e words) == struct copy */
+    *pfl = *lpfl;
+
+    if (lpfl->lpplord == NULL) {
+        if (savedLpplord != NULL) {
+            FreePl((PL *)savedLpplord);
+        }
+    } else {
+        /* restore destination's old order block pointer before resize/copy */
+        pfl->lpplord = savedLpplord;
+
+        srcPlord = lpfl->lpplord;
+
+        if (pfl->lpplord == NULL) {
+            dstPlord = (PLORD *)LpplAlloc(sizeof(ORDER), (uint16_t)srcPlord->iordMax, htOrd);
+            pfl->lpplord = dstPlord;
+        } else {
+            dstPlord = pfl->lpplord;
+            if (dstPlord->iordMax < srcPlord->iordMac) {
+                dstPlord = (PLORD *)LpplReAlloc((PL *)dstPlord, (uint16_t)srcPlord->iordMax);
+                pfl->lpplord = dstPlord;
+            }
+        }
+
+        memcpy((uint8_t *)pfl->lpplord + 4, (uint8_t *)lpfl->lpplord + 4, (size_t)srcPlord->iordMac * sizeof(ORDER));
+
+        pfl->lpplord->iordMac = srcPlord->iordMac;
+    }
+
+    return 1;
 }
 
 int16_t FDupPlanet(PLANET *lppl, PLANET *ppl) {
-    PLPROD *lpplprodT;
+    PLPROD *savedLpplprod;
+    PLPROD *srcPlprod;
+    PLPROD *dstPlprod;
 
-    /* TODO: implement */
-    return 0;
+    savedLpplprod = ppl->lpplprod;
+
+    /* REP MOVSW (0x1c words) == struct copy */
+    // memcpy(ppl, lppl, offsetof(PLANET, lpplprod));
+    *ppl = *lppl;
+
+    /* restore destination's lpplprod */
+    ppl->lpplprod = savedLpplprod;
+
+    if (lppl->lpplprod == NULL) {
+        if (ppl->lpplprod != NULL) {
+            FreePl((PL *)ppl->lpplprod);
+            ppl->lpplprod = NULL;
+        }
+    } else {
+        srcPlprod = lppl->lpplprod;
+
+        if (ppl->lpplprod == NULL) {
+            dstPlprod = (PLPROD *)LpplAlloc(sizeof(PROD), (uint16_t)srcPlprod->iprodMax, htOrd);
+            ppl->lpplprod = dstPlprod;
+        } else {
+            dstPlprod = ppl->lpplprod;
+            if (dstPlprod->iprodMax < srcPlprod->iprodMac) {
+                dstPlprod = (PLPROD *)LpplReAlloc((PL *)dstPlprod, (uint16_t)srcPlprod->iprodMax);
+                ppl->lpplprod = dstPlprod;
+            }
+        }
+
+        // copy production queue entries to duplicate planet
+        memcpy(ppl->lpplprod->rgprod, srcPlprod->rgprod, (size_t)srcPlprod->iprodMac * sizeof(PROD));
+        ppl->lpplprod->iprodMac = srcPlprod->iprodMac;
+    }
+
+    return 1;
 }
 
 char *PszFleetNameFromWord(uint16_t w) {

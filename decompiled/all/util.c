@@ -2595,8 +2595,7 @@ void UpdateShdefCost(SHDEF *lpshdef)
     part.u_PART_0x0004.parmor = LphuldefFromId((lpshdef->hul).ihuldef);
     uVar9 = part.u_PART_0x0004._2_2_;
     pHVar5 = (HULDEF *)part.u_PART_0x0004.pbeam;
-    part.hs.grhst = ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp |
-                      hstBeam | hstArmor | hstShield | hstScanner | hstEngine);
+    part.hs.grhst = hstNone;
     GetTruePartCost(idPlayer, &part, rgCosts);
     for (c = 0; c < 3; c = c + 1) {
         *(ushort *)(rgMin + c) = rgCosts[c];

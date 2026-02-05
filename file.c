@@ -2136,8 +2136,6 @@ void RgFromStream(void *rg, uint16_t cb) {
 
     Assert(rg != NULL);
 
-    DBG_LOGT("RgFromStream: cb=%u (mem=%s)", (unsigned)cb, (vlpMemStream != NULL) ? "yes" : "no");
-
     if (vlpMemStream != NULL) {
         /* Read from memory */
         memcpy(rg, vlpMemStream, cb);
@@ -2152,8 +2150,6 @@ void RgFromStream(void *rg, uint16_t cb) {
         Assert(penvMem != NULL);
         longjmp(penvMem->env, -1);
     }
-
-    DBG_LOGT("RgFromStream: read %u bytes", (unsigned)cb);
 }
 
 bool FBogusLong(uint32_t lSerial) {

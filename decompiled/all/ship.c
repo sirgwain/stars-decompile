@@ -5933,15 +5933,9 @@ void GetTruePartCost(short iPlayer, PART *ppart, ushort *rgCost)
     }
     rgCost[3] = *(ushort *)(iVar1 + lpfnTutorDlgProc);
     if (iPlayer != -1) {
-        if (((((ppart->hs).grhst & hstTerra) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                  hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) &&
-             (((((ppart->hs).grhst & hstPlanetary) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                        hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine) ||
-                (((ppart->hs).wFlags_0x2 & 0xff) < 9)) ||
-               (0xd < ((ppart->hs).wFlags_0x2 & 0xff))))) &&
-            ((((ppart->hs).grhst & hstPlanetary) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                      hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine) ||
-              (8 < ((ppart->hs).wFlags_0x2 & 0xff))))) {
+        if (((((ppart->hs).grhst & hstTerra) == hstNone) &&
+             (((((ppart->hs).grhst & hstPlanetary) == hstNone || (((ppart->hs).wFlags_0x2 & 0xff) < 9)) || (13 < ((ppart->hs).wFlags_0x2 & 0xff))))) &&
+            ((((ppart->hs).grhst & hstPlanetary) == hstNone || (8 < ((ppart->hs).wFlags_0x2 & 0xff))))) {
             cExcess = 100;
             for (i = 0; i < 6; i = i + 1) {
                 iVar3 = (int)*(char *)(iPlayer * 0xc0 + 0x59bc + i) - (int)*(char *)(iVar1 + 2 + i);

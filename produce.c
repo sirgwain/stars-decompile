@@ -5,7 +5,11 @@
 
 #include "produce.h"
 
+#include "parts.h"
+#include "race.h"
 #include "resource.h"
+#include "ship.h"
+#include "util.h"
 
 char *PszNameProdItem(PROD *lpprod) {
     uint32_t iItem;
@@ -21,31 +25,351 @@ char *PszNameProdItem(PROD *lpprod) {
 
 void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne) {
     uint16_t rgCostsCur[4];
-    uint32_t iItem;
+    uint16_t iItem;
     uint16_t rgCosts[4];
-    int16_t  i;
-    int16_t  j;
+    int      i;
+    int      j;
     SHDEF   *lpshdef;
     int16_t  raMajor;
-    uint32_t cItem;
-    int16_t  fStarbase;
+    bool     fStarbase;
     PART     part;
-    int16_t  cost;
-    int16_t  chs;
     HUL     *lphulNew;
     HUL     *lphulCur;
-    int16_t  costUpg;
-    int16_t  costHalf;
-    HUL     *lphulT;
     int16_t  rgCostsPartCur[4];
     int16_t  rgCostsPartNew[4];
+    int16_t  costDiff;
+    uint16_t costSub;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PRODUCE:0x40a4 */
-    /* block (block) @ MEMORY_PRODUCE:0x4111 */
-    /* block (block) @ MEMORY_PRODUCE:0x418e */
+    raMajor = GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv);
+    iItem = lpprod->iItem;
 
-    /* TODO: implement */
+    if (lpprod->grobj == grobjFleet) {
+        /* Ship or starbase production */
+        fStarbase = iItem > 15;
+        if (fStarbase) {
+            lpshdef = rglpshdefSB[iplr];
+            iItem = iItem - 16;
+        } else {
+            lpshdef = rglpshdef[iplr];
+        }
+
+        /* Check if design is marked as free */
+        if (lpshdef[iItem].fFree) {
+            for (i = 0; i < 4; i++) {
+                rgCost[i] = 0;
+            }
+            return;
+        }
+
+        GetTrueHullCost(iplr, &lpshdef[iItem].hul, rgCosts);
+
+        /* Starbase upgrade cost calculation */
+        if (fStarbase && lppl->fStarbase) {
+            lphulCur = &rglpshdefSB[iplr][lppl->isb].hul;
+            lphulNew = &lpshdef[iItem].hul;
+
+            GetTrueHullCost(iplr, lphulCur, rgCostsCur);
+
+            if (lphulCur->ihuldef == lphulNew->ihuldef) {
+                /* Same hull type - calculate part-by-part upgrade costs */
+                part.parmor = (ARMOR *)LphuldefFromId(lphulCur->ihuldef);
+                part.hs.grhst = hstNone;
+                GetTruePartCost(iplr, &part, (uint16_t *)rgCostsPartCur);
+
+                for (i = 0; i < 4; i++) {
+                    rgCosts[i] = rgCosts[i] - rgCostsPartCur[i];
+                }
+
+                for (int i = 0; i < lphulCur->chs; i++) {
+                    if (lphulCur->rghs[i].cItem != 0 && lphulNew->rghs[i].cItem != 0) {
+                        /* Get current slot part cost */
+                        part.hs.grhst = lphulCur->rghs[i].grhst;
+                        part.hs.wRaw_0002 = lphulCur->rghs[i].wRaw_0002;
+                        FLookupPart(&part);
+                        GetTruePartCost(iplr, &part, (uint16_t *)rgCostsPartCur);
+
+                        /* Get new slot part cost */
+                        part.hs.grhst = lphulNew->rghs[i].grhst;
+                        part.hs.wRaw_0002 = lphulNew->rghs[i].wRaw_0002;
+                        FLookupPart(&part);
+                        GetTruePartCost(iplr, &part, (uint16_t *)rgCostsPartNew);
+
+                        if (lphulCur->rghs[i].grhst == lphulNew->rghs[i].grhst) {
+                            if (lphulCur->rghs[i].iItem == lphulNew->rghs[i].iItem) {
+                                /* Same part type and item - full credit for matching parts */
+                                for (j = 0; j < 4; j++) {
+                                    rgCostsPartCur[j] = rgCostsPartCur[j] * lphulCur->rghs[i].cItem;
+                                    rgCostsPartNew[j] = rgCostsPartNew[j] * lphulNew->rghs[i].cItem;
+                                    if ((uint16_t)(rgCostsPartNew[j] - rgCostsPartCur[j]) < 0x8000) {
+                                        costDiff = rgCostsPartNew[j] - rgCostsPartCur[j];
+                                    } else {
+                                        costDiff = 0;
+                                    }
+                                    if (rgCosts[j] < (uint16_t)(rgCostsPartNew[j] - costDiff)) {
+                                        costSub = rgCosts[j];
+                                    } else {
+                                        costSub = rgCostsPartNew[j] - costDiff;
+                                    }
+                                    rgCosts[j] = rgCosts[j] - costSub;
+                                }
+                            } else {
+                                /* Same part type, different item - 80% credit */
+                                for (j = 0; j < 4; j++) {
+                                    rgCostsPartCur[j] = rgCostsPartCur[j] * lphulCur->rghs[i].cItem;
+                                    rgCostsPartNew[j] = rgCostsPartNew[j] * lphulNew->rghs[i].cItem;
+                                    if (rgCostsPartNew[j] - (rgCostsPartCur[j] * 8) / 10 < (rgCostsPartNew[j] * 2) / 10) {
+                                        costDiff = (rgCostsPartNew[j] * 2) / 10;
+                                    } else {
+                                        costDiff = rgCostsPartNew[j] - (rgCostsPartCur[j] * 8) / 10;
+                                    }
+                                    if (rgCosts[j] < (uint16_t)(rgCostsPartNew[j] - costDiff)) {
+                                        costSub = rgCosts[j];
+                                    } else {
+                                        costSub = rgCostsPartNew[j] - costDiff;
+                                    }
+                                    rgCosts[j] = rgCosts[j] - costSub;
+                                }
+                            }
+                        } else {
+                            /* Different part type - 70% credit */
+                            for (j = 0; j < 4; j++) {
+                                rgCostsPartCur[j] = rgCostsPartCur[j] * lphulCur->rghs[i].cItem;
+                                rgCostsPartNew[j] = rgCostsPartNew[j] * lphulNew->rghs[i].cItem;
+                                if (rgCostsPartNew[j] - (rgCostsPartCur[j] * 7) / 10 < (rgCostsPartNew[j] * 3) / 10) {
+                                    costDiff = (rgCostsPartNew[j] * 3) / 10;
+                                } else {
+                                    costDiff = rgCostsPartNew[j] - (rgCostsPartCur[j] * 7) / 10;
+                                }
+                                if (rgCosts[j] < (uint16_t)(rgCostsPartNew[j] - costDiff)) {
+                                    costSub = rgCosts[j];
+                                } else {
+                                    costSub = rgCostsPartNew[j] - costDiff;
+                                }
+                                rgCosts[j] = rgCosts[j] - costSub;
+                            }
+                        }
+                    }
+                }
+            } else {
+                /* Different hull type - 50% credit */
+                for (i = 0; i < 4; i++) {
+                    costSub = rgCosts[i] - (int16_t)rgCostsCur[i] / 2;
+                    if ((int16_t)costSub < (int16_t)(rgCosts[i] / 2)) {
+                        rgCosts[i] = rgCosts[i] / 2;
+                    } else {
+                        rgCosts[i] = costSub;
+                    }
+                }
+            }
+        }
+
+        /* ISB (Improved Starbases) or AR bonus - 20% discount */
+        if (fStarbase && (GetRaceGrbit(&rgplr[iplr], ibitRaceISB) != 0 || GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)) {
+            for (i = 0; i < 4; i++) {
+                rgCosts[i] = rgCosts[i] - rgCosts[i] / 5;
+            }
+        }
+
+        /* Starbase costs are halved (resources counted per year) */
+        if (fStarbase) {
+            for (i = 0; i < 4; i++) {
+                rgCost[i] = (rgCosts[i] + 1) / 2;
+            }
+        } else {
+            for (i = 0; i < 4; i++) {
+                rgCost[i] = rgCosts[i];
+            }
+        }
+        goto LMultiply;
+    }
+
+    /* Non-ship production items */
+    if (iItem == 0) {
+    LMine:
+        /* Mine */
+        for (i = 0; i < 3; i++) {
+            rgCost[i] = 0;
+        }
+        rgCost[3] = GetRaceStat(&rgplr[iplr], rsMineBuild);
+        goto LMultiply;
+    }
+
+    if (iItem == 1) {
+    LFactory:
+        /* Factory */
+        if (GetRaceGrbit(&rgplr[iplr], ibitRaceCheapFact) != 0) {
+            costDiff = 1;
+        } else {
+            costDiff = 0;
+        }
+
+        if (!gd.fTutorial) {
+            rgCost[0] = 0;
+            rgCost[1] = 0;
+            rgCost[2] = 4 - costDiff;
+        } else {
+            for (i = 0; i < 3; i++) {
+                rgCost[i] = 2 - costDiff;
+            }
+        }
+        rgCost[3] = GetRaceStat(&rgplr[iplr], rsFactBuild);
+        goto LMultiply;
+    }
+
+    if (iItem == 2) {
+    LDefense:
+        /* Defense */
+        part.hs.grhst = hstPlanetary;
+        part.hs.iItem = 9; /* iplanetaryDefense */
+        FLookupPart(&part);
+
+        for (i = 0; i < 3; i++) {
+            rgCost[i] = part.pplanetary->rgwtOreCost[i];
+        }
+        rgCost[3] = part.pplanetary->resCost;
+
+        if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raDefend) {
+            /* IS (Inner Strength) gets 60% defense cost */
+            for (i = 0; i < 4; i++) {
+                rgCost[i] = (uint32_t)((int32_t)rgCost[i] * 3) / 5;
+            }
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 3) {
+    LAlchemy:
+        /* Mineral Alchemy */
+        for (i = 0; i < 3; i++) {
+            rgCost[i] = 0;
+        }
+        if (GetRaceGrbit(&rgplr[iplr], ibitRaceMineralAlchemy) != 0) {
+            rgCost[3] = 25;
+        } else {
+            rgCost[3] = 100;
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 4 || iItem == 5) {
+    LTerraform:
+        /* Terraform */
+        rgCost[0] = 0;
+        rgCost[1] = 0;
+        rgCost[2] = 0;
+        if (GetRaceGrbit(&rgplr[iplr], ibitRaceTT) != 0) {
+            rgCost[3] = 70;
+        } else {
+            rgCost[3] = 100;
+        }
+        if (raMajor == 3) { /* raTerra / CA */
+            rgCost[3] = rgCost[3] / 2;
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 6 || iItem == 0x11) {
+        /* Packet or MT Genesis */
+        if (raMajor == 6) { /* raMassAccel / PP */
+            costSub = 25;
+        } else if (raMajor == 7) { /* raStargate / IT */
+            costSub = 48;
+        } else {
+            costSub = 44;
+        }
+        for (i = 0; i < 3; i++) {
+            rgCost[i] = costSub;
+        }
+        if (raMajor == 6) {
+            rgCost[i] = 5;
+        } else {
+            rgCost[i] = 10;
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 7) {
+        goto LFactory;
+    }
+    if (iItem == 8) {
+        goto LMine;
+    }
+    if (iItem == 9) {
+        goto LDefense;
+    }
+    if (iItem == 0xb) {
+        goto LAlchemy;
+    }
+    if (iItem == 0xc) {
+        goto LTerraform;
+    }
+
+    if (iItem == 0xd) {
+        /* Scanner */
+        part.hs.grhst = hstPlanetary;
+        part.hs.iItem = 14; /* iplanetaryScanner */
+        FLookupPart(&part);
+        GetTruePartCost(iplr, &part, rgCosts);
+        for (i = 0; i < 4; i++) {
+            rgCost[i] = rgCosts[i];
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 0xe || iItem == 0xf || iItem == 0x10) {
+        /* Single mineral packet (Iron/Bor/Germ) */
+        if (raMajor == 6) { /* raMassAccel / PP */
+            costSub = 70;
+        } else if (raMajor == 7) { /* raStargate / IT */
+            costSub = 120;
+        } else {
+            costSub = 110;
+        }
+        for (i = 0; i < 3; i++) {
+            if (iItem - 0xe == i && iItem >= 0xe) {
+                rgCost[i] = costSub;
+            } else {
+                rgCost[i] = 0;
+            }
+        }
+        if (raMajor == 6) {
+            rgCost[i] = 5;
+        } else {
+            rgCost[i] = 10;
+        }
+        goto LMultiply;
+    }
+
+    /* Planetary installations (stargate, mass driver, etc.) */
+    if (iItem >= 0x12 && iItem <= 0x1a) {
+        part.hs.grhst = hstPlanetary;
+        part.hs.iItem = (iItem - 0x12) & 0xff;
+        FLookupPart(&part);
+        GetTruePartCost(iplr, &part, rgCosts);
+        for (i = 0; i < 4; i++) {
+            rgCost[i] = rgCosts[i];
+        }
+        goto LMultiply;
+    }
+
+    if (iItem == 0x1b) {
+        /* Stargate (alternate index) */
+        part.hs.grhst = hstPlanetary;
+        part.hs.iItem = 0;
+        FLookupPart(&part);
+        GetTruePartCost(iplr, &part, rgCosts);
+        for (i = 0; i < 4; i++) {
+            rgCost[i] = rgCosts[i];
+        }
+        goto LMultiply;
+    }
+
+LMultiply:
+    if (fOnlyOne == 0) {
+        for (i = 0; i < 4; i++) {
+            rgCost[i] = rgCost[i] * lpprod->cItem;
+        }
+    }
 }
 
 void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *piFirst, int16_t *piLast) {

@@ -1531,9 +1531,7 @@ void DrawSlotDlg(HWND hwnd, HDC hdc, RECT *prc, short iDraw)
                 uVar4 = IEmptyBmpFromGrhst(((pHVar1->hul).rghs + i)->grhst);
                 BitBlt(hdc, ((RECT *)vrgrcSlot + i)->left, *(short *)((int)&vrgrcSlot[0].top + i * 8), 0x40, 0x40, HVar2, (uVar4 & 7) << 6,
                        ((int)uVar4 >> 3 & 3U) << 6, 0xcc0020);
-                if ((((pHVar1->hul).rghs + i)->grhst & hstEngine) ==
-                    ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp |
-                      hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
+                if ((((pHVar1->hul).rghs + i)->grhst & hstEngine) == hstNone) {
                     uVar4 = (pHVar1->hul).rghs[i].wFlags_0x2 >> 8;
                     pcVar12 = PszGetCompressedString(idsD3);
                     c = _wsprintf(szWork, pcVar12, uVar4);
@@ -2023,8 +2021,7 @@ void DrawBuildSelComp(HWND hwnd, HDC hdc, short iDraw)
         grhst = pHVar9->grhst;
         uVar6 = pHVar9->wFlags_0x2;
         if (hsShip.wFlags_0x2 >> 8 == 0) {
-            if ((grhst & hstEngine) == ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining |
-                                         hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
+            if ((grhst & hstEngine) == hstNone) {
                 ids = idsCanHold;
             } else {
                 ids = idsRequiresExactly;
@@ -2725,11 +2722,8 @@ short IDropPart(POINT pt, HS hsSrc, short iSrc, short fNoModify)
     if (i == uVar5) {
         if (pt.x < rc.right >> 1) {
             if ((fNoModify == 0) && (-1 < iSrc)) {
-                if ((((((SHDEF *)lpshdefBuild)->hul).rghs + iSrc)->grhst & hstEngine) !=
-                    ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb | hstTorp |
-                      hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
-                    hsSrc.grhst = ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
-                                    hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine);
+                if ((((((SHDEF *)lpshdefBuild)->hul).rghs + iSrc)->grhst & hstEngine) != hstNone) {
+                    hsSrc.grhst = hstNone;
                     hsSrc.wFlags_0x2 = 0x6400;
                 }
                 if (((((SHDEF *)lpshdefBuild)->hul).rghs[iSrc].wFlags_0x2 >> 8) - (hsSrc.wFlags_0x2 >> 8) < 0x8000) {
@@ -2799,8 +2793,7 @@ short IDropPart(POINT pt, HS hsSrc, short iSrc, short fNoModify)
         pHVar10 = (((HULDEF *)pHVar13)->hul).rghs + i;
         HVar3 = pHVar10->grhst;
         uVar9 = pHVar10->wFlags_0x2;
-        if ((HVar3 & hstEngine) != ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
-                                     hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine)) {
+        if ((HVar3 & hstEngine) != hstNone) {
             hsSrc = (HS)((ulong)hsSrc & 0xffffff | 0x64000000);
         }
         if (i == iSrc) {
@@ -2808,9 +2801,7 @@ short IDropPart(POINT pt, HS hsSrc, short iSrc, short fNoModify)
         } else {
             if (uVar5 >> 8 < uVar9 >> 8) {
                 if (((uVar5 >> 8 == 0) || ((HVar2 == hsSrc.grhst && ((uVar5 & 0xff) == (hsSrc.wFlags_0x2 & 0xff))))) &&
-                    ((uVar5 >> 8 != 0 ||
-                      ((hsSrc.grhst & HVar3) != ~(hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines |
-                                                  hstMining | hstBomb | hstTorp | hstBeam | hstArmor | hstShield | hstScanner | hstEngine))))) {
+                    ((uVar5 >> 8 != 0 || ((hsSrc.grhst & HVar3) != hstNone)))) {
                     if (fNoModify == 0) {
                         if ((uVar5 >> 8) + (hsSrc.wFlags_0x2 >> 8) < uVar9 >> 8) {
                             uVar9 = (uVar5 >> 8) + (hsSrc.wFlags_0x2 >> 8);

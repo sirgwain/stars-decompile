@@ -3,6 +3,10 @@
 #include "types.h"
 
 #include "mine.h"
+#include "planet.h"
+#include "race.h"
+#include "ship2.h"
+#include "utilgen.h"
 
 /*
  * GetMineFieldCounts
@@ -66,22 +70,167 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
     int32_t lQuan;
     int16_t fMacintosh;
     int16_t fRemote;
-    int32_t lMine;
     int32_t lMineEff;
     int32_t lConc;
-    int32_t lLeft;
     int32_t lLevel;
     int32_t rglQuan[3];
     int16_t ifl;
     FLEET  *lpfl;
-    int32_t lLength;
+    int32_t lDecayAmt;
+    int32_t lThreshold;
+    int32_t lLevelDecay;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MINE:0x5498 */
-    /* block (block) @ MEMORY_MINE:0x5666 */
-    /* block (block) @ MEMORY_MINE:0x58ae */
+    fRemote = (cMines != -1);
 
-    /* TODO: implement */
+    /* Check if planet owner is Alternate Reality (AR/Macintosh) race */
+    if (lppl->iPlayer == -1 || GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
+        fMacintosh = 0;
+    } else {
+        fMacintosh = 1;
+    }
+
+    if (cMines == -1) {
+        /* Local mining: calculate from planet's mines */
+        if (lppl->iPlayer == -1 || lppl->rgwtMin[3] == 0) {
+            /* No owner or no population - return -1 for all minerals */
+            for (i = 0; i < 3; i++) {
+                plQuan[i] = -1;
+            }
+            return;
+        }
+        cMines = (int32_t)CMinesOperating(lppl);
+        if (fMacintosh == 0) {
+            lMineEff = (int32_t)GetRaceStat(&rgplr[lppl->iPlayer], rsMineProd);
+        } else {
+            lMineEff = 10;
+        }
+    } else {
+        /* Remote mining: efficiency is always 10 */
+        lMineEff = 10;
+    }
+
+    i = 0;
+    do {
+        if (i > 2) {
+            /* After processing all 3 minerals, handle AR fleet mining */
+            if (fMacintosh != 0 && fRemote == 0) {
+                for (ifl = 0; ifl < cFleet; ifl++) {
+                    lpfl = rglpfl[ifl];
+                    if (lpfl == NULL) {
+                        return;
+                    }
+
+                    /* Check fleet is at this planet, owned by planet owner, not dead, orbiting, with Remote Mining task (grTask == 3) */
+                    if (lpfl->idPlanet == lppl->id &&
+                        lpfl->iPlayer == lppl->iPlayer &&
+                        !lpfl->fDead &&
+                        lpfl->cord < 2 &&
+                        lpfl->lpplord->rgord[0].grTask == 3) {
+
+                        int32_t lFleetMines = CMineFromLpfl(lpfl);
+                        if (lFleetMines >= 0 && lFleetMines > 0) {
+                            EstMineralsMined(lppl, rglQuan, lFleetMines, fApply);
+
+                            /* Add fleet's mining to output */
+                            for (i = 0; i < 3; i++) {
+                                plQuan[i] += rglQuan[i];
+                            }
+
+                            if (fApply) {
+                                /* Clear the fHereAllTurn flag */
+                                lpfl->wRaw_0004 &= 0xdfff;
+                            }
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        lConc = (int32_t)lppl->rgMinConc[i];
+
+        /* If concentration < 30 and planet is homeworld, boost to 30 for local mining or AR */
+        if (lConc < 30 && lppl->fHomeworld && (fRemote == 0 || fMacintosh != 0)) {
+            lConc = 30;
+        }
+
+        /* Calculate raw quantity: cMines * concentration */
+        lQuanAct = cMines * lConc;
+
+        if (fRemote == 0) {
+            /* Local mining: apply mine efficiency */
+            lQuan = (lQuanAct * lMineEff) / 10;
+        } else {
+            lQuan = lQuanAct;
+        }
+
+        /* Divide by 100 to get actual minerals, keeping remainder */
+        lQuanRem = lQuan % 100;
+        lQuan = lQuan / 100;
+
+        /* Probabilistic rounding based on remainder if generating turn */
+        if (lQuanRem != 0 && gd.fGeneratingTurn) {
+            if (Random(100) < (int16_t)lQuanRem) {
+                lQuan++;
+            }
+        }
+
+        plQuan[i] = lQuan;
+
+        if (fApply) {
+            /* Add mined minerals to planet surface */
+            lppl->rgwtMin[i] += lQuan;
+
+            /* Calculate concentration decay based on raw mining amount */
+            lDecayAmt = lQuanAct / 100;
+            while (lDecayAmt >= 1 && lppl->rgMinConc[i] >= 2) {
+                lLevel = (int32_t)lppl->rgpctMinLevel[i];
+                lConc = (int32_t)lppl->rgMinConc[i];
+
+                if (lLevel == 0) {
+                    lLevel = 256;
+                }
+
+                /* Clamp concentration for decay calculation */
+                if (lConc >= 101) {
+                    lConc = 100;
+                } else if (lConc < 5) {
+                    lConc = 10;
+                } else if (lConc < 25) {
+                    lConc = 25;
+                }
+
+                /* Calculate threshold: 0x30d4 (12500) * level / 256 / concentration */
+                lThreshold = (12500L * lLevel) / 256 / lConc;
+
+                if (lDecayAmt < lThreshold) {
+                    /* Not enough mining to fully decay - update sub-level */
+                    lLevelDecay = 12500L / lConc;
+                    /* Convert remaining decay amount to sub-level (0-255) */
+                    lLevel = (lDecayAmt * 256) / lLevelDecay;
+                    if (lLevel < 1) {
+                        lLevel = 1;
+                    }
+                    /* Ensure we don't exceed current level */
+                    if (lLevel >= (lppl->rgpctMinLevel[i] == 0 ? 256 : lppl->rgpctMinLevel[i])) {
+                        lLevel = (lppl->rgpctMinLevel[i] == 0 ? 256 : lppl->rgpctMinLevel[i]) - 1;
+                    }
+                    lppl->rgpctMinLevel[i] = (uint8_t)lLevel;
+                    if (lLevel == 0) {
+                        lppl->rgMinConc[i]--;
+                    }
+                    break;
+                }
+
+                /* Enough mining to decay concentration by 1 */
+                lDecayAmt -= lThreshold;
+                lppl->rgMinConc[i]--;
+                lppl->rgpctMinLevel[i] = 0;
+            }
+        }
+
+        i++;
+    } while (1);
 }
 
 #ifdef _WIN32

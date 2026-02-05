@@ -13,7 +13,7 @@ void    WriteRtShDef(SHDEF *lpshdef, uint8_t **ppbStore);                     /*
 void    WriteBattles(int16_t iPlayer);                                        /* MEMORY_IO:0x709c */
 void    WriteFleet(FLEET *lpfl);                                              /* MEMORY_IO:0x81c6 */
 void    WriteOrders(FLEET *lpfl);                                             /* MEMORY_IO:0x547e */
-void    RgToStream(void *rg, uint16_t cb);                                    /* MEMORY_IO:0x9554 */
+void    RgToStream(const void *rg, uint16_t cb);                                    /* MEMORY_IO:0x9554 */
 void    SetSzWorkFromDt(DtFileType dt, int16_t iPlayer);                      /* MEMORY_IO:0x8cfe */
 int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f); /* MEMORY_IO:0x904a */
 void    SetVisPFInit(int16_t iPlr);                                           /* MEMORY_IO:0x9654 */
