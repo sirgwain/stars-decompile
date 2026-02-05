@@ -664,7 +664,7 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat) {
     return 0;
 }
 
-int16_t FEnumCalcJettison(void *lprt, int16_t rt, int16_t cb, PLANET *lppl, int16_t iFleet) {
+int16_t FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet) {
     POINT    pt;
     int16_t  i;
     int16_t  grbit;

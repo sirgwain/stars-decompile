@@ -43,17 +43,35 @@ static DtFileType DumpGetFileType(const char *szPath) {
     return dtXY; /* fallback */
 }
 
-static const char *DumpRecordTypeNameFile(RecordType rt) {
-    /* Names for RecordType (file.h) - used by .xy, .hst, .m*, .h* files */
+/* Log header record type (value 9) - not in RecordType enum */
+#define rtLogHdr 9
+
+static const char *DumpRecordTypeName(RecordType rt, DtFileType dt) {
     switch (rt) {
     case rtEOF:
         return "FileFooter";
+    case rtLogCargoXfer8:
+        return "LogCargoXfer8";
+    case rtLogCargoXfer16:
+        return "LogCargoXfer16";
+    case rtLogFleetOrderDelete:
+        return "LogFleetOrderDelete";
+    case rtLogFleetOrderInsert:
+        return "LogFleetOrderInsert";
+    case rtLogFleetOrderUpdate:
+        return "LogFleetOrderUpdate";
     case rtPlr:
         return "Player";
     case rtGame:
         return "Game";
     case rtBOF:
         return "FileHeader";
+    case rtLogHdr:
+        return "LogHeader";
+    case rtLogFleetFlagBit9:
+        return "LogFleetFlagBit9";
+    case rtLogFleetOrderAttrNib:
+        return "LogFleetOrderAttrNib";
     case rtMsg:
         return "Message";
     case rtPlanet:
@@ -70,108 +88,57 @@ static const char *DumpRecordTypeNameFile(RecordType rt) {
         return "String";
     case rtSel:
         return "Selection";
-    case rtShDef:
-        return "Ship Definition";
-    case rtProdQ:
-        return "Production Queue";
-    case rtBtlPlan:
-        return "BattlePlan";
-    case rtBtlData:
-        return "BattleData";
-    case rtHistHdr:
-        return "HistHeader";
-    case rtMsgFilt:
-        return "MsgFilter";
-    case rtChgPassword:
-        return "ChgPassword";
-    case rtContinue:
-        return "Continue";
-    case rtPlrMsg:
-        return "PlayerMsg";
-    case rtAiData:
-        return "AiData";
-    case rtThing:
-        return "Thing";
-    case rtScore:
-        return "Score";
-    default:
-        return NULL;
-    }
-}
-
-/* Log header record type - not in log.h enum but used for RTLOGHDR */
-#define rtLogHdr 9
-
-static const char *DumpRecordTypeNameLog(RecordType rt) {
-    /* Names for RecordType - used by .x* (log) files */
-    switch (rt) {
-    case rtEOF:
-        return "LogNop";
-    case rtLogHdr:
-        return "LogHeader";
-    case rtLogCargoXfer8:
-        return "LogCargoXfer8";
-    case rtLogCargoXfer16:
-        return "LogCargoXfer16";
-    case rtLogFleetOrderDelete:
-        return "LogFleetOrderDelete";
-    case rtLogFleetOrderInsert:
-        return "LogFleetOrderInsert";
-    case rtLogFleetOrderUpdate:
-        return "LogFleetOrderUpdate";
-    case rtLogFleetFlagBit9:
-        return "LogFleetFlagBit9";
-    case rtLogFleetOrderAttrNib:
-        return "LogFleetOrderAttrNib";
     case rtLogFleetCargoXfer:
         return "LogFleetCargoXfer";
     case rtLogFleetSplit:
         return "LogFleetSplit";
     case rtLogCargoXfer32:
         return "LogCargoXfer32";
+    case rtShDef:
+        return "Ship Definition";
     case rtLogShDef:
         return "LogShDef";
+    case rtProdQ:
+        return "Production Queue";
     case rtLogPlanetProdQ:
         return "LogPlanetProdQ";
-    case rtLogBattlePlan:
-        return "LogBattlePlan";
+    case rtBtlPlan:
+        return (dt == dtLog) ? "LogBattlePlan" : "BattlePlan";
+    case rtBtlData:
+        return "BattleData";
+    case rtHistHdr:
+        return "HistHeader";
+    case rtMsgFilt:
+        return "MsgFilter";
     case rtLogResearch:
         return "LogResearch";
     case rtLogPlanetRouting:
         return "LogPlanetRouting";
     case rtChgPassword:
-        return "LogPlayerSalt";
+        return (dt == dtLog) ? "LogPlayerSalt" : "ChgPassword";
     case rtLogFleetMerge:
         return "LogFleetMerge";
     case rtLogRelations:
         return "LogRelations";
+    case rtContinue:
+        return "Continue";
+    case rtPlrMsg:
+        return "PlayerMsg";
+    case rtAiData:
+        return "AiData";
     case rtLogFleetPlan:
         return "LogFleetPlan";
-    case rtLogThingByteParam:
-        return "LogThingByteParam";
+    case rtThing: /* also rtLogThingByteParam in log context */
+        return (dt == dtLog) ? "LogThingByteParam" : "Thing";
     case rtLogFleetName:
         return "LogFleetName";
+    case rtScore:
+        return "Score";
     case rtLogPlayerZpq1:
         return "LogPlayerZpq1";
     default:
-        return NULL;
+        return "Unknown";
     }
-}
-
-static const char *DumpRecordTypeName(uint16_t rt, DtFileType dt) {
-    const char *name = NULL;
-
-    if (dt == dtLog) {
-        if (rt == rtBOF)
-            return "FileHeader";
-        if (rt == rtEOF)
-            return "FileFooter";
-        name = DumpRecordTypeNameLog(rt);
-    } else {
-        name = DumpRecordTypeNameFile(rt);
-    }
-
-    return name ? name : "Unknown";
 }
 
 static void DumpPrintHexBytes(const uint8_t *pb, size_t cb) {
@@ -369,7 +336,7 @@ static void DumpVerbose_Message(const uint8_t *pb, uint16_t cb) {
     }
 }
 
-static void DumpVerbose_LogRtCargoXfer(uint16_t rt, const uint8_t *pb, uint16_t cb) {
+static void DumpVerbose_LogRtCargoXfer(RecordType rt, const uint8_t *pb, uint16_t cb) {
     /* Base layout: id1,u16 id2,u16 grobjnibble,u8 grbitItems,u8 then quantities. */
     uint16_t id1, id2;
     uint8_t  grobjnib;

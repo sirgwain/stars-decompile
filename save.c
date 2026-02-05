@@ -18,7 +18,7 @@ static inline void put_u16(uint8_t *dst, uint16_t v) { memcpy(dst, &v, sizeof(v)
 static inline void put_u32(uint8_t *dst, uint32_t v) { memcpy(dst, &v, sizeof(v)); }
 
 /* functions */
-void WriteRt(int16_t rt, int16_t cb, void *rg) {
+void WriteRt(RecordType rt, int16_t cb, void *rg) {
     HDR    hdr;
     RTBOF *lprtbof;
 
@@ -1209,7 +1209,7 @@ void SetVisPFFleets(int16_t iPlr) {
     /* TODO: implement */
 }
 
-void WritePlanet(PLANET *lppl, int16_t rt, int16_t fHistory) {
+void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     uint8_t  bMask;
     uint8_t  rgb[80];
     uint8_t *pbBase;

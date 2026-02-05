@@ -16,7 +16,7 @@
 #endif
 
 /* functions */
-void WriteMemRt(int16_t rt, int16_t cb, void *rg) {
+void WriteMemRt(RecordType rt, int16_t cb, void *rg) {
     HDR hdr = hdrPrev;
 
     if (fLogOff == 0) {
@@ -863,7 +863,7 @@ int16_t FRunLogRecord(RecordType rt, int16_t cb, uint8_t *lpb) {
 
     } break;
 
-    case rtLogBattlePlan:
+    case rtBtlPlan:
         UnpackBattlePlan(lpb, NULL, 0);
         break;
 
@@ -994,7 +994,7 @@ int16_t FWriteHistFile(int16_t iPlayer) {
     return 0;
 }
 
-void CancelMemRt(int16_t rt) {
+void CancelMemRt(RecordType rt) {
     (void)rt;
     imemLogCur = (int16_t)(imemLogCur - (int16_t)((uint16_t)hdrPrev.cb + 2u));
     hdrPrev.rt = 0;
