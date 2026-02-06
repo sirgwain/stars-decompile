@@ -6,10 +6,12 @@
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
+#include "planet.h"
 #include "port.h"
 #include "race.h"
 #include "save.h"
 #include "ship.h"
+#include "ship2.h"
 #include "util.h"
 #include "utilgen.h"
 
@@ -458,7 +460,7 @@ void WriteFleet(FLEET *lpfl) {
         }
 
         put_u32(pb + 4, (uint32_t)wt);
-        WriteRt(0x11, (int16_t)(pb + 8 - rgb), rgb);
+        WriteRt(rtFleetB, (int16_t)(pb + 8 - rgb), rgb);
     } else {
         /* Starbase fleet */
         /* Build mask for secondary ship counts (starbase designs in rgdv area) */
@@ -484,7 +486,7 @@ void WriteFleet(FLEET *lpfl) {
         *(uint8_t *)pus = lpfl->iplan;
         *((uint8_t *)pus + 1) = (uint8_t)lpfl->cord;
 
-        WriteRt(0x10, (int16_t)((uint8_t *)pus + 2 - rgb), rgb);
+        WriteRt(rtFleetA, (int16_t)((uint8_t *)pus + 2 - rgb), rgb);
         WriteOrders(lpfl);
 
         if (lpfl->lpszName != NULL) {
@@ -597,23 +599,150 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer) {
 }
 
 int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
-    int16_t  ids;
     RTBOF    rtbof;
     MemJump *penvMemSav;
     MemJump  env;
-    ;
-    int16_t fChange;
-    int16_t fSuccess;
-    int16_t fSilentSav;
-    int32_t lSeedSav2;
-    int32_t lSeedSav1;
+    int16_t  fChange;
+    int16_t  fSuccess;
+    int16_t  fSilentSav;
+    int32_t  lSeedSav2;
+    int32_t  lSeedSav1;
+    uint16_t cbRec;
+    PLAYER  *pplr;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0x92b1 */
-    /* label LBadFile @ MEMORY_IO:0x9432 */
+    fSilentSav = fFileErrSilent;
+    fSuccess = 0;
+    SetSzWorkFromDt(dt & 0xff, iPlayer);
 
-    /* TODO: implement */
-    return 0;
+    penvMemSav = penvMem;
+    penvMem = &env;
+
+    if (setjmp(env.env) != 0) {
+        fFileErrSilent = fSilentSav;
+        StreamClose();
+        penvMem = penvMemSav;
+        return 0;
+    }
+
+    fFileErrSilent = 1;
+    StreamOpen((char *)szWork, 0x12);
+    fFileErrSilent = fSilentSav;
+
+    ReadRt();
+
+    /* Validate BOF record */
+    if (hdrCur.rt != rtBOF) {
+        FileError(idsFileDoesBelongVersionStars);
+        goto LBadFile;
+    }
+
+    /* Check version: wVersion is at rgbCur[8..9] */
+    {
+        RTBOF *lpBof = (RTBOF *)rgbCur;
+        if (lpBof->verMajor < MAJORVER || (lpBof->verMajor == MAJORVER && lpBof->verMinor < MINORVERMin)) {
+            FileError(idsSorryFileCreatedOlderVersionStarsIncompatible);
+            goto LBadFile;
+        }
+        if (lpBof->verMajor > MAJORVER || (lpBof->verMajor == MAJORVER && lpBof->verMinor >= MINORVERMax)) {
+            FileError(idsFileCreatedNewerVersionStarsMustUpgrade);
+            goto LBadFile;
+        }
+    }
+
+    /* Copy BOF record */
+    memcpy(&rtbof, rgbCur, sizeof(RTBOF));
+
+    /* Verify game ID matches */
+    if (game.lid == 0) {
+        goto LBadFile;
+    }
+    if (rtbof.lidGame != game.lid) {
+        FileError(idsFileGame);
+        goto LBadFile;
+    }
+
+    fChange = 0;
+
+    if (mdMark == mdInUse) {
+        /* Toggle fInUse (bit 9 of +0x0e word) */
+        fChange = (rtbof.fInUse != f) ? 1 : 0;
+        if (fChange) {
+            rtbof.fInUse = f & 1;
+        }
+    } else if (mdMark == mdDone) {
+        /* Toggle fDone (bit 8 of +0x0e word) */
+        fChange = (rtbof.fDone != f) ? 1 : 0;
+        if (fChange) {
+            rtbof.fDone = f & 1;
+        }
+    } else if (mdMark == mdMulti) {
+        /* Toggle fMulti (bit 10 of +0x0e word) */
+        fChange = (rtbof.fMulti != f) ? 1 : 0;
+        if (fChange) {
+            rtbof.fMulti = f & 1;
+        }
+    } else if (mdMark == mdPlayerType) {
+        /* Find the player record */
+        do {
+            do {
+                GetFileSeeds(&lSeedSav1, &lSeedSav2);
+                ReadRt();
+            } while (hdrCur.rt != rtPlr);
+        } while (rgbCur[0] != (uint8_t)iPlayer);
+
+        cbRec = hdrCur.cb;
+        pplr = (PLAYER *)rgbCur;
+
+        if (pplr->fAi != f) {
+            if (pplr->fAi == 0) {
+                /* Turning AI on: set fAi=1, lvlAi=1, idAi=7 */
+                pplr->fAi = 1;
+                pplr->lvlAi = 1;
+                pplr->idAi = 7;
+            } else {
+                /* Turning AI off: only allowed if idAi==7 */
+                if (pplr->idAi != 7) {
+                    goto LBadFile;
+                }
+                pplr->fAi = 0;
+            }
+
+            /* Flip salt bytes for re-encryption */
+            {
+                uint16_t *pSalt0 = (uint16_t *)(rgbCur + offsetof(PLAYER, lSalt));
+                uint16_t *pSalt1 = (uint16_t *)(rgbCur + offsetof(PLAYER, lSalt) + 2);
+                *pSalt0 = ~(*pSalt0);
+                *pSalt1 = ~(*pSalt1);
+            }
+
+            /* Seek back to start of this record and rewrite */
+            Stars_Seek(&hf, -(int32_t)(cbRec + 2), SEEK_CUR);
+            SetFileSeeds(lSeedSav2, lSeedSav2);
+            WriteRt(rtPlr, cbRec, rgbCur);
+
+            fChange = (dt == dtTurn) ? 1 : 0;
+            rtbof.fDone = 0;
+        }
+    }
+
+    if (fChange != 0) {
+        /* Rewrite BOF at start of file */
+        Stars_Seek(&hf, 0, SEEK_SET);
+        WriteRt(rtBOF, sizeof(RTBOF), &rtbof);
+    }
+
+    fSuccess = 1;
+
+LBadFile:
+    if ((dt & bitfMulti) == 0 || fSuccess == 0) {
+        StreamClose();
+    } else {
+        /* Position at end for appending */
+        Stars_Seek(&hf, 0, SEEK_END);
+    }
+
+    penvMem = penvMemSav;
+    return fSuccess;
 }
 
 void SetVisPFInit(int16_t iPlr) {
@@ -630,10 +759,141 @@ void SetVisPFInit(int16_t iPlr) {
     uint16_t grbitPlr;
     int16_t  iSteal;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0x9d66 */
+    raMajor = GetRaceStat(&rgplr[iPlr], rsMajorAdv);
+    if (iPlr == -1) {
+        grbitPlr = 0;
+    } else {
+        grbitPlr = 1 << (iPlr & 0x1f);
+    }
 
-    /* TODO: implement */
+    /* Clear planet counts */
+    for (i = 0; i < game.cPlayer; i++) {
+        rgplr[i].cPlanet = 0;
+    }
+
+    /* Initialize player visibility and ship design counts */
+    for (i = 0; i < game.cPlayer; i++) {
+        if (iPlr == -1 || iPlr == i || rgplr[i].fDead) {
+            rgplr[i].fInclude = 1;
+            rgplr[i].det = detAll;
+        } else {
+            rgplr[i].fInclude = 0;
+        }
+
+        rgplr[i].cFleet = 0;
+        rgplr[i].cShDef = 0;
+        rgplr[i].cshdefSB = 0;
+
+        /* Ship designs (regular hulls) */
+        for (j = 0; j < cShdefMax; j++) {
+            SHDEF *lpshdef = &rglpshdef[i][j];
+            if ((iPlr == -1 || iPlr == i) && !lpshdef->fFree) {
+                lpshdef->fInclude = 1;
+                lpshdef->det = detAll;
+                lpshdef->cExist = 0;
+                rgplr[i].cShDef++;
+            } else {
+                lpshdef->fInclude = 0;
+            }
+        }
+
+        /* Ship designs (starbase hulls) */
+        for (j = 0; j < ishdefSBMax; j++) {
+            SHDEF *lpshdefSB = &rglpshdefSB[i][j];
+            if ((iPlr == -1 || iPlr == i) && !lpshdefSB->fFree) {
+                lpshdefSB->fInclude = 1;
+                lpshdefSB->det = detAll;
+                lpshdefSB->cExist = 0;
+                rgplr[i].cshdefSB++;
+            } else {
+                lpshdefSB->fInclude = 0;
+            }
+        }
+    }
+
+    /* Planet visibility */
+    FORPLANETS(lppl, lpplMac) {
+        if (iPlr == -1 || iPlr == lppl->iPlayer) {
+            lppl->fInclude = 1;
+            lppl->det = detAll;
+            if (iPlr != -1) {
+                rgplr[iPlr].cPlanet++;
+            }
+            if (lppl->fStarbase) {
+                SHDEF *lpshdefSB = &rglpshdefSB[lppl->iPlayer][lppl->isb];
+                lpshdefSB->cExist++;
+            }
+        } else {
+            lppl->fInclude = 0;
+        }
+    }
+
+    /* Fleet visibility */
+    FORFLEETS(lpfl, ifl) {
+        lpfl->fTargeted = 0;
+        lpfl->fMark = 0;
+        if ((iPlr == -1 || iPlr == lpfl->iPlayer) && !lpfl->fDead) {
+            lpfl->fInclude = 1;
+            lpfl->det = detAll;
+            rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 1) & 0xfff;
+
+            /* Accumulate ship counts into ship designs */
+            for (j = 0; j < cShdefMax; j++) {
+                if (lpfl->rgcsh[j] != 0) {
+                    SHDEF *lpshdef = &rglpshdef[lpfl->iPlayer][j];
+                    lpshdef->cExist += (uint16_t)lpfl->rgcsh[j];
+                }
+            }
+
+            /* Check scanner range for fleet at planet */
+            if (iPlr != -1 && lpfl->idPlanet != -1) {
+                lppl = &lpPlanets[lpfl->idPlanet];
+                int16_t scanRange = GetCachedFleetScannerRange(lpfl, NULL, NULL, &iSteal);
+                if (scanRange < 0) {
+                    detNew = detMinimal;
+                } else {
+                    detNew = detSome;
+                }
+                if (iSteal > 1) {
+                    detNew = detMore;
+                }
+                if (lpfl->fHereAllTurn && lppl->iPlayer == -1 && lpfl->lpplord->rgord[0].grTask == 3 && CMineFromLpfl(lpfl) > 0) {
+                    detNew = detMore;
+                }
+                MarkPlanet(lppl, iPlr, detNew);
+            }
+        } else {
+            lpfl->fInclude = 0;
+        }
+    }
+
+    /* Thing visibility */
+    FORTHINGS(lpth, lpthMac) {
+        if (lpth->ith == ithMineralPacket) {
+            /* Mineral packets */
+            if (iPlr == -1 || raMajor == raMassAccel) {
+                lpth->thp.fInclude = 1;
+                if (!rgplr[lpth->iplr].fInclude) {
+                    rgplr[lpth->iplr].fInclude = 1;
+                    rgplr[lpth->iplr].det = detSome;
+                }
+            } else {
+                lpth->thp.fInclude = 0;
+            }
+        } else if (lpth->ith == ithWormhole) {
+            /* Wormholes */
+            lpth->thw.fInclude = (iPlr == -1) ? 1 : 0;
+        } else if (lpth->ith == ithMysteryTrader) {
+            /* Mystery traders */
+            lpth->tht.fInclude = 1;
+        } else if (lpth->ith == ithMinefield) {
+            /* Minefields */
+            if ((lpth->thm.grbitPlrNow & grbitPlr) != 0 && !rgplr[lpth->iplr].fInclude) {
+                rgplr[lpth->iplr].fInclude = 1;
+                rgplr[lpth->iplr].det = detSome;
+            }
+        }
+    }
 }
 
 void WriteBattlePlan(BTLPLAN *lpbtlplan, int16_t fLog) {
@@ -958,7 +1218,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
 
         /* Write salt for host mode */
         if (iPlayer == -1 && lSaltCur != 0) {
-            WriteRt(0x24, 4, &lSaltCur);
+            WriteRt(rtChgPassword, 4, &lSaltCur);
         }
 
         WritePlayerMessages(iPlayer);
@@ -970,7 +1230,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                 if (lpplT->det == 7) {
                     WritePlanet(lpplT, 0xd, 0);
                     if (lpplT->lpplprod != NULL) {
-                        WriteRt(0x1c, lpplT->lpplprod->iprodMac << 2, &lpplT->lpplprod->rgprod[0]);
+                        WriteRt(rtProdQ, lpplT->lpplprod->iprodMac << 2, &lpplT->lpplprod->rgprod[0]);
                     }
                 } else if (lpplT->det == 2) {
                     /* Save and restore planet data for minimal write */
@@ -1024,7 +1284,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         if (iPlayer != -1 && vlprgScoreX != NULL) {
             for (i = 0; i < game.cPlayer; i++) {
                 if (gd.fGameOverMan || i == iPlayer || rgplr[i].fDead || (game.fVisScores && game.turn > 0x13)) {
-                    WriteRt(0x2d, 0x18, &vlprgScoreX[i]);
+                    WriteRt(rtScore, 0x18, &vlprgScoreX[i]);
                 }
             }
         }
@@ -1042,13 +1302,13 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         }
 
         if (i > 0) {
-            WriteRt(0x2b, 2, &i);
+            WriteRt(rtLogThingByteParam, 2, &i);
             lpth = lpThings;
             while (lpth < lpThings + cThing) {
                 if (iPlayer == -1 || (iPlayer == lpth->iplr && lpth->ith != 1 && lpth->ith != 3 && lpth->ith != 2) ||
                     (lpth->ith == 0 && ((1 << iPlayer) & lpth->thm.grbitPlr) != 0) || (lpth->ith == 1 && lpth->tht.ptDest.x < 0) ||
                     (lpth->ith == 3 && lpth->tht.fInclude) || (lpth->ith == 2 && lpth->thw.fInclude)) {
-                    WriteRt(0x2b, 0x12, lpth);
+                    WriteRt(rtLogThingByteParam, 0x12, lpth);
                 }
                 lpth++;
             }
@@ -1070,7 +1330,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
             }
         }
 
-        WriteRt(0, 2, &game.turn);
+        WriteRt(rtEOF, 2, &game.turn);
         StreamClose();
     } else {
     LAB_Fail:
@@ -1098,21 +1358,75 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
 }
 
 int16_t FAppendFile(int16_t iPlayer) {
+    int16_t fOk;
 
-    /* TODO: implement */
-    return 0;
+    fOk = FMarkFile(dtTurn | bitfMulti, iPlayer, mdMulti, 1);
+    if (fOk != 0) {
+        WriteBOF(iPlayer, dtTurn, 1);
+    }
+    return (int16_t)(fOk != 0);
 }
 
 void SetVisPFFinish(int16_t iPlr) {
-    int16_t detMajor;
-    int16_t j;
-    int16_t i;
+    uint16_t detMajor;
+    int16_t  j;
+    int16_t  i;
+    SHDEF   *lpshdef;
 
-    /* debug symbols */
-    /* label LFinShdef @ MEMORY_IO:0xc5ce */
-    /* label LFinShdefSB @ MEMORY_IO:0xc7ae */
+    if (GetRaceStat(&rgplr[iPlr], rsMajorAdv) == raAttack) {
+        detMajor = detAll;
+    } else {
+        detMajor = detSome;
+    }
 
-    /* TODO: implement */
+    for (i = 0; i < game.cPlayer; i++) {
+        if (i == iPlr)
+            continue;
+
+        /* Regular ship designs */
+        rgplr[i].cShDef = 0;
+        for (j = 0; j < cShdefMax; j++) {
+            lpshdef = &rglpshdef[i][j];
+            if ((lpshdef->grbitPlr & (1 << (iPlr & 0x1f))) == 0) {
+                /* Player hasn't seen this design before */
+                if (lpshdef->fInclude) {
+                    /* Was marked visible this pass - cap det level */
+                    lpshdef->det = detMajor;
+                    goto LFinShdef;
+                }
+            } else {
+                /* Player has seen this design before - full include */
+                lpshdef->fInclude = 1;
+                lpshdef->det = detAll;
+            LFinShdef:
+                rgplr[i].det = detSome;
+                rgplr[i].fInclude = 1;
+                rgplr[i].cShDef++;
+            }
+        }
+
+        /* Starbase ship designs */
+        rgplr[i].cshdefSB = 0;
+        for (j = 0; j < ishdefSBMax; j++) {
+            lpshdef = &rglpshdefSB[i][j];
+            if ((lpshdef->grbitPlr & (1 << (iPlr & 0x1f))) == 0) {
+                /* Player hasn't seen this design before */
+                if (lpshdef->fInclude) {
+                    /* Was marked visible this pass - cap det level */
+                    lpshdef->det = detMajor;
+                    goto LFinShdefSB;
+                }
+            } else {
+                /* Player has seen this design before - full include */
+                lpshdef->fInclude = 1;
+                lpshdef->det = detAll;
+            LFinShdefSB:
+                rgplr[i].fInclude = 1;
+                rgplr[i].det = detSome;
+                rgplr[i].cshdefSB++;
+            }
+        }
+    }
 }
 
 int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName) {
@@ -1144,8 +1458,6 @@ int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName) {
 void SetVisPFPlanets(int16_t iPlr) {
     int32_t  lRadPlanet2;
     int16_t  iRadPlanet;
-    PLANET  *lpplMac;
-    POINT    pt;
     int16_t  pctCloak;
     PLANET  *lppl2;
     int16_t  dy;
@@ -1158,55 +1470,494 @@ void SetVisPFPlanets(int16_t iPlr) {
     int16_t  i;
     THING   *lpthMac;
     int16_t  iRadius;
-    int16_t  fStargateView;
+    bool     fStargateView;
     int16_t  dx;
-    int32_t  l;
-    PLANET  *lpplMac2;
     uint16_t grbitPlr;
     int16_t  rgStargateRange[16];
-    int32_t  lVis2;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0xb674 */
-    /* block (block) @ MEMORY_IO:0xb90e */
-    /* label LMarkStargate @ MEMORY_IO:0xb6f7 */
-    /* label LMark102 @ MEMORY_IO:0xb9af */
-    /* label LThIncPlr2 @ MEMORY_IO:0xb230 */
+    if (iPlr == -1) {
+        grbitPlr = 0;
+    } else {
+        grbitPlr = 1 << (iPlr & 0x1f);
+    }
 
-    /* TODO: implement */
+    /* Check for IT stargate scanning ability */
+    fStargateView = false;
+    if (GetRaceStat(&rgplr[iPlr], rsMajorAdv) == raStargate) {
+        for (i = 0; i < ishdefSBMax; i++) {
+            rgStargateRange[i] = 0;
+            if (!rglpshdefSB[iPlr][i].fFree) {
+                rgStargateRange[i] = StargateRangeFromLppl(NULL, iPlr, i);
+                if (rgStargateRange[i] > 0) {
+                    fStargateView = true;
+                }
+            }
+        }
+    }
+
+    if (iPlr != -1) {
+        UpdateProgressGauge(pctProgressStepSmall);
+    }
+
+    /* Pass 1: Planet scans fleets */
+    for (lppl = lpPlanets; lppl < lpPlanets + cPlanet; lppl++) {
+        if (lppl->iPlayer != iPlr)
+            continue;
+
+        iRadius = GetPlanetScannerRange(lppl, &iRadPlanet);
+        lRadius2 = (uint32_t)iRadius * (uint32_t)iRadius;
+        lRadPlanet2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+        int16_t ptx = rgptPlan[lppl->id].x;
+        int16_t pty = rgptPlan[lppl->id].y;
+
+        for (j = 0; j < cFleet; j++) {
+            lpfl2 = rglpfl[j];
+            if (lpfl2 == NULL)
+                break;
+
+            if (lpfl2->fInclude || lpfl2->fDead)
+                continue;
+
+            dx = abs(ptx - lpfl2->pt.x);
+            if (dx > iRadius)
+                continue;
+            dy = abs(pty - lpfl2->pt.y);
+            if (dy > iRadius)
+                continue;
+
+            d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+            if (d2 > lRadius2)
+                continue;
+            if (lpfl2->idPlanet != -1 && d2 > lRadPlanet2)
+                continue;
+
+            pctCloak = PctCloakFromLpfl(lpfl2);
+            if (pctCloak == 0) {
+                MarkFleet(lpfl2, detSome);
+            } else {
+                int32_t lEffective = (uint32_t)lRadius2 * (uint32_t)(100 - pctCloak) / 100;
+                lEffective = (uint32_t)lEffective * (uint32_t)(100 - pctCloak) / 100;
+                if (d2 <= lEffective) {
+                    if (lpfl2->idPlanet != -1) {
+                        int32_t lEffPlanet = (uint32_t)lRadPlanet2 * (uint32_t)(100 - pctCloak) / 100;
+                        lEffPlanet = (uint32_t)lEffPlanet * (uint32_t)(100 - pctCloak) / 100;
+                        if (lEffPlanet < d2)
+                            continue;
+                    }
+                    MarkFleet(lpfl2, detSome);
+                }
+            }
+        }
+    }
+
+    if (iPlr != -1) {
+        UpdateProgressGauge(pctProgressStepSmall);
+    }
+
+    /* Pass 2: Stargate scanning of other planets */
+    for (lppl = lpPlanets; lppl < lpPlanets + cPlanet; lppl++) {
+        if (lppl->iPlayer != iPlr)
+            continue;
+
+        iRadius = GetPlanetScannerRange(lppl, &iRadPlanet);
+        lRadPlanet2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+        int16_t ptx = rgptPlan[lppl->id].x;
+        int16_t pty = rgptPlan[lppl->id].y;
+
+        if (fStargateView && lppl->fStarbase && rgStargateRange[lppl->isb] > 0) {
+            int16_t sgRange = rgStargateRange[lppl->isb];
+            int32_t lSgRange2 = (uint32_t)sgRange * (uint32_t)sgRange;
+
+            for (lppl2 = lpPlanets; lppl2 < lpPlanets + cPlanet; lppl2++) {
+                if (lppl2->fInclude && lppl2->det >= detSome)
+                    continue;
+                if (!lppl2->fStarbase)
+                    continue;
+
+                if (StargateRangeFromLppl(lppl2, 0, 0) == 0)
+                    continue;
+
+                if (sgRange > 9999) {
+                    goto LMarkStargate;
+                }
+
+                dx = abs(rgptPlan[lppl2->id].x - ptx);
+                if (dx > sgRange)
+                    continue;
+                dy = abs(rgptPlan[lppl2->id].y - pty);
+                if (dy > sgRange)
+                    continue;
+
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                if (d2 > lSgRange2)
+                    continue;
+
+                /* Check starbase cloak */
+                if (lppl2->iPlayer != -1) {
+                    SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                    int32_t lVisible = lpshdefSB->lVisible;
+                    int16_t hiVis = (int16_t)(lVisible >> 16);
+                    if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
+                        int32_t lEffSg = (uint32_t)lSgRange2 * (uint32_t)lVisible / 10000;
+                        if (lEffSg < d2)
+                            continue;
+                    }
+                }
+
+            LMarkStargate:
+                MarkPlanet(lppl2, iPlr, detSome);
+            }
+        }
+    }
+
+    if (iPlr != -1) {
+        UpdateProgressGauge(pctProgressStepSmall);
+    }
+
+    /* Pass 3: Planet scans things */
+    for (lppl = lpPlanets; lppl < lpPlanets + cPlanet; lppl++) {
+        if (lppl->iPlayer != iPlr)
+            continue;
+
+        iRadius = GetPlanetScannerRange(lppl, &iRadPlanet);
+        lRadius2 = (uint32_t)iRadius * (uint32_t)iRadius;
+        lRadPlanet2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+        int16_t ptx = rgptPlan[lppl->id].x;
+        int16_t pty = rgptPlan[lppl->id].y;
+
+        lpthMac = lpThings + cThing;
+        for (lpth = lpThings; lpth < lpthMac; lpth++) {
+            if (iPlr == -1)
+                continue;
+            if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket &&
+                lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
+                continue;
+            if (lpth->ith == ithMinefield && (lpth->thm.grbitPlrNow & grbitPlr) != 0)
+                continue;
+            if (lpth->ith == ithMysteryTrader && lpth->tht.fInclude)
+                continue;
+            if (lpth->ith == ithMineralPacket && lpth->tht.ptDest.x < 0)
+                continue;
+            if (lpth->ith == ithWormhole && lpth->thw.fInclude)
+                continue;
+
+            dx = abs(ptx - lpth->pt.x);
+            if (dx > iRadius)
+                continue;
+            dy = abs(pty - lpth->pt.y);
+            if (dy > iRadius)
+                continue;
+
+            d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+            if (d2 > lRadius2)
+                continue;
+
+            if (lpth->ith == ithMineralPacket) {
+                lpth->thp.fInclude = 1;
+            LThIncPlr2:
+                if (!rgplr[lpth->iplr].fInclude) {
+                    rgplr[lpth->iplr].fInclude = 1;
+                    rgplr[lpth->iplr].det = detSome;
+                }
+            } else if (lpth->ith == ithMysteryTrader) {
+                lpth->tht.fInclude = 1;
+            } else if (lpth->ith == ithWormhole) {
+                if ((lpth->thw.grbitPlr & grbitPlr) == 0) {
+                    /* Check minefield-like range */
+                    if (d2 > lRadPlanet2) {
+                        int32_t lMineRad = lpth->thm.cMines;
+                        if (lMineRad < d2 && lRadPlanet2 < d2)
+                            continue;
+                    }
+                }
+                lpth->thw.grbitPlrTrav |= grbitPlr;
+                lpth->thw.fInclude = 1;
+            } else {
+                /* Minefield */
+                if ((lpth->thm.grbitPlr & grbitPlr) == 0 && d2 > lRadPlanet2) {
+                    int32_t lMineRad = lpth->thm.cMines;
+                    if (lMineRad < d2)
+                        continue;
+                }
+                lpth->thm.grbitPlr |= grbitPlr;
+                lpth->thm.grbitPlrNow |= grbitPlr;
+                goto LThIncPlr2;
+            }
+        }
+    }
+
+    if (iPlr != -1) {
+        UpdateProgressGauge(pctProgressStepSmall);
+    }
+
+    /* Pass 4: Planet pen scans other planets */
+    for (lppl = lpPlanets; lppl < lpPlanets + cPlanet; lppl++) {
+        if (lppl->iPlayer != iPlr)
+            continue;
+
+        iRadius = GetPlanetScannerRange(lppl, &iRadPlanet);
+        lRadius2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+        int16_t ptx = rgptPlan[lppl->id].x;
+        int16_t pty = rgptPlan[lppl->id].y;
+
+        if (iRadPlanet <= 0)
+            continue;
+
+        for (lppl2 = lpPlanets; lppl2 < lpPlanets + cPlanet; lppl2++) {
+            if (lppl2->fInclude && lppl2->det >= detSome)
+                continue;
+
+            dx = abs(rgptPlan[lppl2->id].x - ptx);
+            if (dx > iRadPlanet)
+                continue;
+            dy = abs(rgptPlan[lppl2->id].y - pty);
+            if (dy > iRadPlanet)
+                continue;
+
+            d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+            if (d2 > lRadius2)
+                continue;
+
+            /* Check starbase cloak on target */
+            if (lppl2->fStarbase && lppl2->iPlayer != -1) {
+                SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                int32_t lVisible = lpshdefSB->lVisible;
+                int16_t hiVis = (int16_t)(lVisible >> 16);
+                if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
+                    int32_t lEffPlanet = (uint32_t)lRadius2 * (uint32_t)lVisible / 10000;
+                    if (lEffPlanet < d2) {
+                        MarkPlanet(lppl2, iPlr, detObscure);
+                        continue;
+                    }
+                }
+            }
+
+            MarkPlanet(lppl2, iPlr, detSome);
+        }
+    }
 }
 
 void SetVisPFFleets(int16_t iPlr) {
-    PLANET  *lpplMac;
-    POINT    pt;
-    int16_t  pctCloak;
-    int16_t  dy;
-    FLEET   *lpfl2;
-    int32_t  d2;
-    PLANET  *lppl;
-    int16_t  j;
-    FLEET   *lpfl;
-    THING   *lpth;
-    int32_t  lRadius2;
-    int16_t  ifl;
-    THING   *lpthMac;
-    int16_t  iRadius;
-    int16_t  dx;
-    uint16_t grbitPlr;
-    int32_t  lRadPlanet2;
-    int16_t  iRadPlanet;
-    int16_t  iSteal;
-    int16_t  pctDetect;
-    int32_t  l;
-    int32_t  lVis2;
+    STARSPOINT pt;
+    int16_t    pctCloak;
+    int16_t    dy;
+    FLEET     *lpfl2;
+    int32_t    d2;
+    PLANET    *lppl;
+    int16_t    j;
+    FLEET     *lpfl;
+    THING     *lpth;
+    int32_t    lRadius2;
+    int16_t    ifl;
+    THING     *lpthMac;
+    int16_t    iRadius;
+    int16_t    dx;
+    uint16_t   grbitPlr;
+    int32_t    lRadPlanet2;
+    int16_t    iRadPlanet;
+    int16_t    iSteal;
+    int16_t    pctDetect;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0xa16a */
-    /* block (block) @ MEMORY_IO:0xab0c */
-    /* label LThIncPlr @ MEMORY_IO:0xa759 */
-    /* label LMark101 @ MEMORY_IO:0xabad */
+    if (iPlr == -1) {
+        grbitPlr = 0;
+    } else {
+        grbitPlr = 1 << (iPlr & 0x1f);
+    }
 
-    /* TODO: implement */
+    for (ifl = 0; ifl < cFleet; ifl++) {
+        lpfl = rglpfl[ifl];
+        if (lpfl == NULL)
+            return;
+
+        if (lpfl->fDead)
+            continue;
+
+        if (lpfl->iPlayer == iPlr) {
+            /* Own fleet - scan for other fleets and things */
+
+            /* Mark planet if fleet has been orbiting all turn */
+            if (lpfl->fHereAllTurn && lpfl->idPlanet != -1) {
+                MarkPlanet(&lpPlanets[lpfl->idPlanet], iPlr, detSome);
+            }
+
+            iRadius = GetCachedFleetScannerRange(lpfl, &iRadPlanet, &pctDetect, &iSteal);
+            if (iRadius < 0) {
+                iRadius = 0;
+            }
+            lRadius2 = (uint32_t)iRadius * (uint32_t)iRadius;
+            lRadPlanet2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+
+            pt.x = lpfl->pt.x;
+            pt.y = lpfl->pt.y;
+
+            /* Scan for other fleets */
+            for (j = 0; j < cFleet; j++) {
+                lpfl2 = rglpfl[j];
+                if (lpfl2 == NULL)
+                    break;
+
+                if (lpfl2->fDead)
+                    continue;
+
+                /* Steal tech: mark fleets at same location */
+                if ((iSteal & 1) && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y &&
+                    (!lpfl2->fInclude || lpfl2->det < detMore)) {
+                    MarkFleet(lpfl2, detMore);
+                }
+
+                if (lpfl2->fInclude)
+                    continue;
+
+                dx = abs(pt.x - lpfl2->pt.x);
+                if (dx > iRadius)
+                    continue;
+                dy = abs(pt.y - lpfl2->pt.y);
+                if (dy > iRadius)
+                    continue;
+
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                if (d2 > lRadius2)
+                    continue;
+
+                /* If fleet is at a planet, use planet scan range */
+                if (lpfl2->idPlanet != -1 && d2 > lRadPlanet2)
+                    continue;
+
+                pctCloak = PctCloakFromLpfl(lpfl2);
+                if (pctDetect != 100) {
+                    pctCloak = (int16_t)((int16_t)(pctCloak * pctDetect) / 100);
+                }
+
+                if (pctCloak == 0) {
+                    MarkFleet(lpfl2, detSome);
+                } else {
+                    /* Reduce scan range by cloak percentage */
+                    int32_t lEffective = (int32_t)((uint32_t)lRadius2 * (uint32_t)(100 - pctCloak) / 100);
+                    lEffective = (int32_t)((uint32_t)lEffective * (uint32_t)(100 - pctCloak) / 100);
+                    if (d2 <= lEffective) {
+                        if (lpfl2->idPlanet != -1) {
+                            int32_t lEffPlanet = (int32_t)((uint32_t)lRadPlanet2 * (uint32_t)(100 - pctCloak) / 100);
+                            lEffPlanet = (int32_t)((uint32_t)lEffPlanet * (uint32_t)(100 - pctCloak) / 100);
+                            if (lEffPlanet < d2)
+                                continue;
+                        }
+                        MarkFleet(lpfl2, detSome);
+                    }
+                }
+            }
+
+            /* Scan for things */
+            lpthMac = lpThings + cThing;
+            for (lpth = lpThings; lpth < lpthMac; lpth++) {
+                /* Skip things already visible or not applicable */
+                if (iPlr == -1)
+                    continue;
+                if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket &&
+                    lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
+                    continue;
+                /* Skip minefields already known to this player */
+                if (lpth->ith == ithMinefield && (lpth->thm.grbitPlrNow & grbitPlr) != 0)
+                    continue;
+                /* Skip mystery traders already included */
+                if (lpth->ith == ithMysteryTrader && lpth->tht.fInclude)
+                    continue;
+                /* Skip mineral packets with negative dest (already visible) */
+                if (lpth->ith == ithMineralPacket && lpth->tht.ptDest.x < 0)
+                    continue;
+                /* Skip wormholes already included */
+                if (lpth->ith == ithWormhole && lpth->thw.fInclude)
+                    continue;
+
+                dx = abs(pt.x - lpth->pt.x);
+                dy = abs(pt.y - lpth->pt.y);
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+
+                if (d2 <= lRadius2 || lpth->ith == ithMinefield) {
+                    if (lpth->ith == ithMineralPacket) {
+                        /* Mark packet as visible */
+                        lpth->thp.fInclude = 1;
+                    LThIncPlr:
+                        if (!rgplr[lpth->iplr].fInclude) {
+                            rgplr[lpth->iplr].fInclude = 1;
+                            rgplr[lpth->iplr].det = detSome;
+                        }
+                    } else if (lpth->ith == ithMysteryTrader) {
+                        lpth->tht.fInclude = 1;
+                    } else if (lpth->ith == ithWormhole) {
+                        /* Check if wormhole is in range */
+                        if ((lpth->thw.grbitPlrTrav & grbitPlr) == 0) {
+                            if (d2 > lRadPlanet2 && lRadPlanet2 < d2)
+                                continue;
+                        }
+                        lpth->thw.grbitPlrTrav |= grbitPlr;
+                        lpth->thw.fInclude = 1;
+                    } else {
+                        /* Minefield */
+                        if ((lpth->thm.grbitPlr & grbitPlr) == 0 || d2 > lRadius2) {
+                            if (d2 > lRadPlanet2) {
+                                /* Check minefield's own radius */
+                                if (lpth->thm.cMines < d2)
+                                    continue;
+                            }
+                        }
+                        lpth->thm.grbitPlr |= grbitPlr;
+                        lpth->thm.grbitPlrNow |= grbitPlr;
+                        goto LThIncPlr;
+                    }
+                }
+            }
+
+            /* Steal tech: mark planet if fleet has iSteal >= 2 */
+            if ((iSteal & 2) && lpfl->idPlanet != -1) {
+                MarkPlanet(&lpPlanets[lpfl->idPlanet], iPlr, detMore);
+            }
+
+            /* Scan for planets with pen scanner */
+            if (iRadPlanet > 0) {
+                iRadius = iRadPlanet;
+                lRadius2 = (uint32_t)iRadPlanet * (uint32_t)iRadPlanet;
+                pt.x = lpfl->pt.x;
+                pt.y = lpfl->pt.y;
+
+                for (lppl = lpPlanets; lppl < lpPlanets + cPlanet; lppl++) {
+                    if (lppl->fInclude && lppl->det >= detSome)
+                        continue;
+
+                    dx = abs(rgptPlan[lppl->id].x - pt.x);
+                    if (dx > iRadius)
+                        continue;
+                    dy = abs(rgptPlan[lppl->id].y - pt.y);
+                    if (dy > iRadius)
+                        continue;
+
+                    d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                    if (d2 > lRadius2)
+                        continue;
+
+                    /* Check starbase cloak */
+                    if (lppl->fStarbase && lppl->iPlayer != -1) {
+                        SHDEF *lpshdefSB = &rglpshdefSB[lppl->iPlayer][lppl->isb];
+                        int32_t lVisible = lpshdefSB->lVisible;
+                        int16_t hiVis = (int16_t)(lVisible >> 16);
+                        if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
+                            int32_t lEffPlanet = (uint32_t)lRadius2 * (uint32_t)lVisible / 10000;
+                            if (lEffPlanet < d2) {
+                                MarkPlanet(lppl, iPlr, detObscure);
+                                continue;
+                            }
+                        }
+                    }
+
+                    MarkPlanet(lppl, iPlr, detSome);
+                }
+            }
+        } else {
+            /* Not our fleet - check if it's at one of our planets */
+            if (!lpfl->fInclude && lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].iPlayer == iPlr) {
+                MarkFleet(lpfl, detSome);
+            }
+        }
+    }
 }
 
 void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
@@ -1390,50 +2141,266 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
     WriteRt(rtPlanetB, (int16_t)(pb - rgb), rgb);
 }
 
+/* Mark a fleet as visible to the current player at the given detail level.
+   On first inclusion, registers the fleet and its ship designs as visible
+   and increments the owner's fleet count. Upgrades detail if det exceeds
+   the current level. */
 void MarkFleet(FLEET *lpfl, int16_t det) {
     int16_t i;
-    SHDEF  *lpshdef;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0x887e */
+    if (!lpfl->fInclude) {
+        lpfl->fInclude = 1;
+        lpfl->det = 0;
+        lpfl->fTargeted = 1;
+        rgplr[lpfl->iPlayer].cFleet = (rgplr[lpfl->iPlayer].cFleet + 1) & 0xfff;
 
-    /* TODO: implement */
+        for (i = 0; i < cShdefMax; i++) {
+            if (lpfl->rgcsh[i] != 0) {
+                rglpshdef[lpfl->iPlayer][i].fInclude = 1;
+            }
+        }
+    }
+    if (lpfl->det < (uint16_t)det) {
+        lpfl->det = det;
+    }
 }
 
+/* Mark a planet as visible to the current player at the given detail level.
+   On first inclusion, increments the player's planet count. Upgrades detail
+   if det exceeds current level. Also marks the planet owner and any starbase
+   ship design as visible. */
 void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
     SHDEF *lpshdef;
 
-    /* TODO: implement */
+    if (!lppl->fInclude) {
+        lppl->fInclude = 1;
+        lppl->det = 0;
+        rgplr[iPlr].cPlanet++;
+    }
+    if (lppl->det < det) {
+        lppl->det = det;
+    }
+
+    /* Mark planet owner as known */
+    if (lppl->iPlayer != -1 && !rgplr[lppl->iPlayer].fInclude) {
+        rgplr[lppl->iPlayer].fInclude = 1;
+        rgplr[lppl->iPlayer].det = detSome;
+    }
+
+    /* Mark starbase design as visible */
+    if (det != detObscure && lppl->iPlayer != -1 && lppl->fStarbase) {
+        lpshdef = &rglpshdefSB[lppl->iPlayer][lppl->isb];
+        if (!lpshdef->fInclude) {
+            lpshdef->fInclude = 1;
+            lpshdef->det = 0;
+            rgplr[lppl->iPlayer].cshdefSB++;
+        }
+        if (lpshdef->det < detSome) {
+            lpshdef->det = detSome;
+        }
+    }
 }
 
 void SetVisPFThings(int16_t iPlr) {
-    POINT    pt;
-    int16_t  pctCloak;
-    int16_t  dy;
-    FLEET   *lpfl2;
-    int32_t  d2;
-    int16_t  j;
-    THING   *lpth;
-    int32_t  lRadius2;
-    THING   *lpthMac;
-    int16_t  iRadius;
-    int16_t  dx;
-    uint16_t grbitPlr;
-    PLANET  *lppl2;
-    int32_t  l;
-    THING   *lpthMac2;
-    THING   *lpth2;
-    PLANET  *lpplMac2;
-    int32_t  lVis2;
+    int16_t    pctCloak;
+    int16_t    dy;
+    FLEET     *lpfl2;
+    int32_t    d2;
+    int16_t    j;
+    THING     *lpth;
+    int32_t    lRadius2;
+    THING     *lpthMac;
+    int16_t    dx;
+    uint16_t   grbitPlr;
+    PLANET    *lppl2;
+    THING     *lpth2;
+    int16_t    raMajor;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_IO:0xba5c */
-    /* block (block) @ MEMORY_IO:0xc11c */
-    /* block (block) @ MEMORY_IO:0xc244 */
-    /* label LThIncPlr3 @ MEMORY_IO:0xbe8e */
-    /* label LMark103 @ MEMORY_IO:0xc1bd */
+    if (iPlr == -1) {
+        grbitPlr = 0;
+    } else {
+        grbitPlr = 1 << (iPlr & 0x1f);
+    }
 
-    /* TODO: implement */
+    raMajor = GetRaceStat(&rgplr[iPlr], rsMajorAdv);
+
+    if (raMajor == raMassAccel) {
+        /* PP (Packet Physics): mineral packets act as scanners */
+        lpthMac = lpThings + cThing;
+        for (lpth = lpThings; lpth < lpthMac; lpth++) {
+            if (lpth->ith != ithMineralPacket || lpth->iplr != iPlr)
+                continue;
+
+            /* Packet must have warp speed set (bits 10-13 of thp.wRaw_0000) */
+            int16_t iWarp = lpth->thp.iWarp;
+            if (iWarp == 0)
+                continue;
+
+            lpth->thp.fInclude = 1;
+
+            /* Scanner range = (iWarp + 4)^2 squared */
+            int16_t scanBase = iWarp + 4;
+            int16_t scanRange = scanBase * scanBase;
+            lRadius2 = (uint32_t)scanRange * (uint32_t)scanRange;
+
+            int16_t ptx = lpth->pt.x;
+            int16_t pty = lpth->pt.y;
+
+            /* Scan fleets */
+            for (j = 0; j < cFleet; j++) {
+                lpfl2 = rglpfl[j];
+                if (lpfl2 == NULL)
+                    break;
+
+                if (lpfl2->fInclude || lpfl2->fDead)
+                    continue;
+
+                dx = abs(ptx - lpfl2->pt.x);
+                if (dx > scanRange)
+                    continue;
+                dy = abs(pty - lpfl2->pt.y);
+                if (dy > scanRange)
+                    continue;
+
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                if (d2 > lRadius2)
+                    continue;
+
+                pctCloak = PctCloakFromLpfl(lpfl2);
+                if (pctCloak == 0) {
+                    MarkFleet(lpfl2, detSome);
+                } else {
+                    int32_t lEffective = (uint32_t)lRadius2 * (uint32_t)(100 - pctCloak) / 100;
+                    lEffective = (uint32_t)lEffective * (uint32_t)(100 - pctCloak) / 100;
+                    if (d2 <= lEffective) {
+                        MarkFleet(lpfl2, detSome);
+                    }
+                }
+            }
+
+            /* Scan things */
+            for (lpth2 = lpThings; lpth2 < lpthMac; lpth2++) {
+                if (iPlr == -1)
+                    continue;
+                if (lpth2->ith != ithMinefield && lpth2->ith != ithMineralPacket &&
+                    lpth2->ith != ithMysteryTrader && lpth2->ith != ithWormhole)
+                    continue;
+                if (lpth2->ith == ithMinefield && (lpth2->thm.grbitPlrNow & grbitPlr) != 0)
+                    continue;
+                if (lpth2->ith == ithMysteryTrader && lpth2->tht.fInclude)
+                    continue;
+                if (lpth2->ith == ithMineralPacket && lpth2->tht.ptDest.x < 0)
+                    continue;
+                if (lpth2->ith == ithWormhole && lpth2->thw.fInclude)
+                    continue;
+
+                dx = abs(ptx - lpth2->pt.x);
+                if (dx > scanRange)
+                    continue;
+                dy = abs(pty - lpth2->pt.y);
+                if (dy > scanRange)
+                    continue;
+
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                if (d2 > lRadius2)
+                    continue;
+
+                if (lpth2->ith == ithMineralPacket) {
+                    lpth2->thp.fInclude = 1;
+                LThIncPlr3:
+                    if (!rgplr[lpth2->iplr].fInclude) {
+                        rgplr[lpth2->iplr].fInclude = 1;
+                        rgplr[lpth2->iplr].det = detSome;
+                    }
+                } else if (lpth2->ith == ithMysteryTrader) {
+                    lpth2->tht.fInclude = 1;
+                } else if (lpth2->ith == ithWormhole) {
+                    if ((lpth2->thw.grbitPlr & grbitPlr) != 0 || d2 <= lRadius2) {
+                        lpth2->thw.grbitPlrTrav |= grbitPlr;
+                        lpth2->thw.fInclude = 1;
+                    }
+                } else {
+                    /* Minefield */
+                    lpth2->thm.grbitPlr |= grbitPlr;
+                    lpth2->thm.grbitPlrNow |= grbitPlr;
+                    goto LThIncPlr3;
+                }
+            }
+
+            /* Scan planets */
+            for (lppl2 = lpPlanets; lppl2 < lpPlanets + cPlanet; lppl2++) {
+                if (lppl2->fInclude && lppl2->det >= detSome)
+                    continue;
+
+                dx = abs(rgptPlan[lppl2->id].x - ptx);
+                if (dx > scanRange)
+                    continue;
+                dy = abs(rgptPlan[lppl2->id].y - pty);
+                if (dy > scanRange)
+                    continue;
+
+                d2 = (int32_t)dy * dy + (int32_t)dx * dx;
+                if (d2 > lRadius2)
+                    continue;
+
+                /* Check starbase cloak */
+                if (lppl2->fStarbase && lppl2->iPlayer != -1) {
+                    SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                    int32_t lVisible = lpshdefSB->lVisible;
+                    int16_t hiVis = (int16_t)(lVisible >> 16);
+                    if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
+                        int32_t lEffPlanet = (uint32_t)lRadius2 * (uint32_t)lVisible / 10000;
+                        if (lEffPlanet < d2) {
+                            MarkPlanet(lppl2, iPlr, detObscure);
+                            continue;
+                        }
+                    }
+                }
+
+                MarkPlanet(lppl2, iPlr, detSome);
+            }
+        }
+    } else if (raMajor == raMines) {
+        /* SD (Space Demolition): minefields detect fleets */
+        lpthMac = lpThings + cThing;
+        for (lpth = lpThings; lpth < lpthMac; lpth++) {
+            if (lpth->ith != ithMinefield || lpth->iplr != iPlr)
+                continue;
+
+            /* Use the minefield's radius as detection range */
+            uint16_t wRadius = (uint16_t)lpth->thm.cMines;
+            int16_t  hiRadius = (int16_t)(lpth->thm.cMines >> 16);
+            int32_t  lMineRadius2 = lpth->thm.cMines;
+
+            int16_t ptx = lpth->pt.x;
+            int16_t pty = lpth->pt.y;
+
+            for (j = 0; j < cFleet; j++) {
+                lpfl2 = rglpfl[j];
+                if (lpfl2 == NULL)
+                    break;
+
+                if (lpfl2->fInclude || lpfl2->fDead || lpfl2->idPlanet != -1)
+                    continue;
+
+                dx = abs(ptx - lpfl2->pt.x);
+                if ((int16_t)(dx >> 15) > hiRadius || ((int16_t)(dx >> 15) == hiRadius && dx > wRadius))
+                    continue;
+                dy = abs(pty - lpfl2->pt.y);
+                if ((int16_t)(dy >> 15) > hiRadius || ((int16_t)(dy >> 15) == hiRadius && dy > wRadius))
+                    continue;
+
+                d2 = (int32_t)(uint32_t)dy * (uint32_t)dy + (int32_t)(uint32_t)dx * (uint32_t)dx;
+                if (d2 > lMineRadius2)
+                    continue;
+
+                pctCloak = PctCloakFromLpfl(lpfl2);
+                if (pctCloak == 0 || Random(100) >= pctCloak) {
+                    MarkFleet(lpfl2, detSome);
+                }
+            }
+        }
+    }
 }
 
 void WriteRtPlr(PLAYER *pplr, uint8_t *pbStore) {

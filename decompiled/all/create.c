@@ -655,7 +655,7 @@ CREATE_RetryAll:
         }
     }
 
-    // homeworld
+    // ------------------- Player homeworld minerals -----------------
     for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
         iMin = rgi[i];
         *(short *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 2) = i;
@@ -708,6 +708,8 @@ CREATE_RetryAll:
             *(undefined2 *)(iVar15 + hbrBlue) = 0xaf;
             *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = 0;
         }
+
+        // setup min conc
         local_122._6_2_ =
             *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) & 0xf000 | *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x28) / 4 & 0xfff;
         *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) = local_122._6_2_;
@@ -743,6 +745,8 @@ CREATE_RetryAll:
         *(undefined2 *)(iVar15 + 0x18) = (THING *)local_11a;
         *(undefined2 *)(iVar15 + 0x1a) = local_11a._2_2_;
         FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
+
+        // do leftover points
         sVar13 = CAdvantagePoints((PLAYER *)rgplr + i);
         if (sVar13 < 0x33) {
             iT = CAdvantagePoints((PLAYER *)rgplr + i);
@@ -788,6 +792,7 @@ CREATE_RetryAll:
             *puVar1 = *puVar1 | uVar17;
         }
         j = GetRaceStat((PLAYER *)rgplr + i, rsUseLeftover);
+
         if (j == 0) {
         LAB_1078_2167:
             iVar15 = iT * 10;
@@ -911,6 +916,8 @@ CREATE_RetryAll:
                 *puVar35 = *puVar35;
             }
         }
+
+        // AR has no mines/factories
         sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
         if (sVar13 == 8) {
             uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
@@ -937,6 +944,7 @@ CREATE_RetryAll:
             *(uint *)(iVar15 + 0x18) = uVar17 & 0xf000;
             *(undefined2 *)(iVar15 + 0x1a) = uVar39;
         }
+
         local_11a = (THING *)CONCAT22(i, (THING *)local_11a);
         ((PLAYER *)rgplr + i)->iPlayer = (char)i;
         *(short *)((int)&rgplr[0].idPlanetHome + i * 0xc0) = iMin;
@@ -979,9 +987,13 @@ CREATE_RetryAll:
         *(undefined2 *)((int)&rgplr[0].lResLastYear + i * 0xc0) = 0;
         *(undefined2 *)((int)&rgplr[0].lResLastYear + 2 + i * 0xc0) = 0;
         *(undefined2 *)((int)&rgplr[0].wScore + i * 0xc0) = 0;
+
+        // zero relations
         for (j = 0; j < *(int *)&game.cPlayer; j = j + 1) {
             *(undefined1 *)(i * 0xc0 + 0x5a12 + j) = 0;
         }
+
+        // starting starbases
         local_11a._0_2_ = (THING *)uVar30;
         local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0), (THING *)local_11a) & 0xfffffff | 0x10000000);
         *(undefined2 *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) = local_11a._2_2_;
@@ -1002,6 +1014,7 @@ CREATE_RetryAll:
             local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)puVar25 + j * 0x93 + 0x7b), (THING *)local_11a) & 0xfdffffff | 0x2000000);
             *(undefined2 *)((int)puVar25 + j * 0x93 + 0x7b) = local_11a._2_2_;
         }
+
         sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
         if (sVar13 == 6) {
             puVar25[0x1e] = puVar25[0x1e] & 0xff00 | 7;
@@ -1854,19 +1867,41 @@ short GenNewGameFromFile(char *pszFile)
     short      cPlr;
     long       rgl[10];
 
+    /* ------------------------------------------------------------
+     * High-level purpose:
+     *   Parse a “universe definition” text file, fill out `game` and `rgplr[]`,
+     *   parse victory conditions, normalize player names/bitmaps, then call
+     *   GenerateWorld(batch=1). Returns 1 on success, 0 on failure.
+     *
+     * Error handling model:
+     *   Uses setjmp/longjmp via global `penvMem`. Many helper routines can
+     *   longjmp back here. All exits funnel through CREATE_LError_3 for cleanup.
+     * ------------------------------------------------------------ */
+
     fSuccess = 0;
+
+    /* ---- Setup filename scratch + install error trampoline ---- */
     _strcpy((char *)szWork, pszFile);
     penvMem = &env;
     sVar6 = __setjmp(env);
     if (sVar6 != 0)
         goto CREATE_LError_3;
+
+    /* ---- If INI flags indicate logging: compute base name and log “Generating…” ---- */
     if ((int)ini.wFlags < 0) {
         _strcpy((char *)szBase, pszFile);
         pcVar8 = _strrchr((char *)szBase, 0x2e);
         *pcVar8 = '\0';
         TurnLog(idsGeneratingYearD);
     }
+
+    /* ---- Reset game struct (0x40 bytes in this build) ---- */
     _memset((GAME *)&game, 0, 0x40);
+
+    /* ------------------------------------------------------------
+     * Read entire definition file into memory (size-checked).
+     * lpbDefMac is set to “end pointer” for bounds checks.
+     * ------------------------------------------------------------ */
     StreamOpen(pszFile, 0x20);
     lVar14 = __filelength(hf);
     uVar7 = (ushort)lVar14;
@@ -1881,7 +1916,15 @@ short GenNewGameFromFile(char *pszFile)
     RgFromStream(pcVar15, uVar7);
     StreamClose();
     ((char *)pcVar15)[uVar7] = '\0';
+
+    /* lpb is the moving cursor through the in-memory file text. */
     lpb = pcVar15;
+
+    /* ------------------------------------------------------------
+     * Line 1: Game title
+     *   - must be non-empty and <= 31 chars
+     *   - stored in game.szName
+     * ------------------------------------------------------------ */
     pcVar15 = PszGetLine(&lpb);
     if ((*pcVar15 == '\0') || (uVar7 = __fstrlen(pcVar15), 0x1f < uVar7)) {
         sVar6 = 0x10;
@@ -1890,6 +1933,16 @@ short GenNewGameFromFile(char *pszFile)
         goto CREATE_LError_3;
     }
     __fstrcpy(game.szName, pcVar15);
+
+    /* ------------------------------------------------------------
+     * Line 2: Universe core parameters (up to 4 numbers)
+     *   rgl[0] -> game.mdSize
+     *   rgl[1] -> game.mdDensity
+     *   rgl[2] -> game.mdStartDist
+     *   rgl[3] -> Randomize(seed)
+     *
+     * Includes validation rules for first 3 fields.
+     * ------------------------------------------------------------ */
     if ((char *)lpb < (char *)lpbDefMac) {
         pcVar15 = PszGetLine(&lpb);
         sVar6 = CParseNumbers(pcVar15, rgl, 4);
@@ -1900,6 +1953,8 @@ short GenNewGameFromFile(char *pszFile)
             AlertSz(pcVar8, sVar6);
             goto CREATE_LError_3;
         }
+
+        /* Validate parameters 0..2 with custom constraints. */
         for (i = 0; i < sVar6; i = i + 1) {
             if (i < 3) {
                 if (*(int *)((int)rgl + i * 4 + 2) < 0)
@@ -1910,6 +1965,8 @@ short GenNewGameFromFile(char *pszFile)
                     goto CREATE_LUniDefError;
             }
         }
+
+        /* Commit parsed values into game. */
         if (0 < sVar6) {
             game.mdSize = (uint)rgl[0];
         }
@@ -1922,6 +1979,11 @@ short GenNewGameFromFile(char *pszFile)
         if (3 < sVar6) {
             Randomize(CONCAT22(rgl[3]._2_2_, (uint)rgl[3]));
         }
+
+        /* ------------------------------------------------------------
+         * Line 3: Universe option bits (up to 7 booleans)
+         * Each parsed value must be 0/1 and non-negative; packed into game.wCrap.
+         * ------------------------------------------------------------ */
         if ((char *)lpb < (char *)lpbDefMac) {
             pcVar15 = PszGetLine(&lpb);
             sVar6 = CParseNumbers(pcVar15, rgl, 7);
@@ -1932,6 +1994,8 @@ short GenNewGameFromFile(char *pszFile)
                 AlertSz(pcVar8, sVar6);
                 goto CREATE_LError_3;
             }
+
+            /* Validate each parsed flag is 0/1. */
             for (i = 0; i < sVar6; i = i + 1) {
                 if (*(int *)((int)rgl + i * 4 + 2) < 0)
                     goto CREATE_LUniDefError3;
@@ -1939,6 +2003,8 @@ short GenNewGameFromFile(char *pszFile)
                 if ((-1 < iVar10) && ((0 < iVar10 || (1 < *(uint *)(rgl + i)))))
                     goto CREATE_LUniDefError3;
             }
+
+            /* Pack flags into game.wCrap bit positions. */
             if (0 < sVar6) {
                 game.wCrap = game.wCrap & 0xfffe | (uint)rgl[0] & 1;
             }
@@ -1960,6 +2026,10 @@ short GenNewGameFromFile(char *pszFile)
             if (6 < sVar6) {
                 game.wCrap = game.wCrap & 0xfeff | ((uint)rgl[6] & 1) << 8;
             }
+
+            /* ------------------------------------------------------------
+             * Line 4: number of players (1..16), stored into game.cPlayer.
+             * ------------------------------------------------------------ */
             pcVar15 = PszGetLine(&lpb);
             sVar6 = CParseNumbers(pcVar15, rgl, 1);
             uVar4 = (uint)rgl[0];
@@ -1970,19 +2040,37 @@ short GenNewGameFromFile(char *pszFile)
                 AlertSz(pcVar8, sVar6);
                 goto CREATE_LError_3;
             }
+
             if ((char *)lpb < (char *)lpbDefMac) {
                 game.cPlayer = (uint)rgl[0];
+
+                /* ------------------------------------------------------------
+                 * Next game.cPlayer lines: per-player definition.
+                 *
+                 * Two formats:
+                 *   (A) "RaceFilePath"  -> load via FWasRaceFile into vplr, copy to rgplr[i]
+                 *   (B) "#<raceId> <ai>" -> pick computer race via LpplrComp, copy to rgplr[i],
+                 *                          then set AI bits/fields in rgplr[i].wMdPlr
+                 *
+                 * Special: player 0 (i < 1) is forced into (A) even if line begins '#'.
+                 * ------------------------------------------------------------ */
                 for (i = 0; i < (int)uVar4; i = i + 1) {
                     pcVar15 = PszGetLine(&lpb);
                     if ((char *)lpbDefMac <= (char *)lpb)
                         goto CREATE_LUniDefShort;
+
+                    /* Save start of the raw line (used for error formatting). */
                     lpbStart._0_2_ = (char *)pcVar15;
                     lpbStart._2_2_ = (undefined2)((ulong)pcVar15 >> 0x10);
+
                     if ((i < 1) || (*pcVar15 != '#')) {
+                        /* ---- (A) Load a race file into vplr, copy it into rgplr[i]. ---- */
                         __fstrcpy(szWork, pcVar15);
                         sVar6 = FWasRaceFile((char *)szWork, 0);
                         if (sVar6 == 0)
                             goto CREATE_LCantGetRace;
+
+                        /* 0x60 iterations copies 0xC0 bytes (PLAYER is 192 bytes in this build). */
                         pPVar13 = (PLAYER *)rgplr + i;
                         pPVar12 = (PLAYER *)&vplr;
                         for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
@@ -1995,8 +2083,11 @@ short GenNewGameFromFile(char *pszFile)
                             pPVar2->cShDef = cVar3;
                         }
                     } else {
+                        /* ---- (B) Computer player spec "#race ai" ---- */
                         sVar6 = CParseNumbers((char *)CONCAT22(lpbStart._2_2_, (char *)lpbStart + 1), rgl, 2);
                         uVar5 = (uint)rgl[0];
+
+                        /* Validate ranges; on failure produce “line unable load race file” style error. */
                         if ((((sVar6 < 2) || ((int)(uint)rgl[0] < 0)) || (6 < (int)(uint)rgl[0])) || (((int)(char *)rgl[1] < 0 || (4 < (int)(char *)rgl[1])))) {
                             __fstrcpy(szWork, pcVar15);
                         CREATE_LCantGetRace:
@@ -2006,16 +2097,22 @@ short GenNewGameFromFile(char *pszFile)
                             AlertSz((char *)szWork, 0x10);
                             goto CREATE_LError_3;
                         }
+
+                        /* ai: 0 means random [0..3]; otherwise 1..4 maps to [0..3]. */
                         if ((char *)rgl[1] == (char *)0x0) {
                             lvlAi = Random(4);
                         } else {
                             lvlAi = (short)((char *)rgl[1] + -1);
                         }
+
+                        /* race: 0 means random [0..5]; otherwise 1..6 maps to [0..5]. */
                         if (uVar5 == 0) {
                             local_7a = Random(6);
                         } else {
                             local_7a = uVar5 - 1;
                         }
+
+                        /* Get computer player template and copy to rgplr[i]. */
                         pPVar16 = LpplrComp(local_7a, lvlAi);
                         pPVar12 = (PLAYER *)pPVar16;
                         pPVar13 = (PLAYER *)rgplr + i;
@@ -2028,15 +2125,28 @@ short GenNewGameFromFile(char *pszFile)
                             pPVar1->iPlayer = pPVar2->iPlayer;
                             pPVar1->cShDef = cVar3;
                         }
+
+                        /* Mark AI + stash AI race id and AI level in wMdPlr bitfields. */
                         *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) = *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xfdff | 0x200;
                         *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) = *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0x1fff | local_7a << 0xd;
                         *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) = *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xe3ff | (lvlAi & 7U) << 10;
                     }
                 }
+
+                /* ------------------------------------------------------------
+                 * Victory Conditions section:
+                 *   A sequence of lines; each block parses numbers into rgl[]
+                 *   and then calls SetVCCheck / SetVCVal to configure game.rgvc[].
+                 *
+                 * This is implemented as a long ladder, tracking `i` as “which VC
+                 * block we are parsing” to give the correct error line number.
+                 * ------------------------------------------------------------ */
                 pcVar15 = PszGetLine(&lpb);
                 sVar6 = CParseNumbers(pcVar15, rgl, 2);
                 if ((char *)lpb < (char *)lpbDefMac) {
                     i = 0;
+
+                    /* VC block 0 */
                     if (((0 < sVar6) && (-1 < rgl[0]._2_2_)) && ((rgl[0]._2_2_ < 0 || ((rgl[0]._2_2_ < 1 && ((uint)rgl[0] < 2)))))) {
                         if (((uint)rgl[0] == 1) && (rgl[0]._2_2_ == 0)) {
                             if ((((sVar6 < 2) || (rgl[1]._2_2_ < 0)) || ((rgl[1]._2_2_ < 1 && ((char *)rgl[1] < hbrButtonHilite)))) ||
@@ -2045,6 +2155,8 @@ short GenNewGameFromFile(char *pszFile)
                             SetVCCheck((GAME *)&game, 0, 1);
                             SetVCVal((GAME *)&game, 0, (int)((char *)rgl[1] + -0x14) / 5);
                         }
+
+                        /* VC block 1/2 */
                         pcVar15 = PszGetLine(&lpb);
                         sVar6 = CParseNumbers(pcVar15, rgl, 3);
                         if ((char *)lpbDefMac <= (char *)lpb)
@@ -2062,6 +2174,8 @@ short GenNewGameFromFile(char *pszFile)
                                 SetVCVal((GAME *)&game, 1, (short)((char *)rgl[1] + -8));
                                 SetVCVal((GAME *)&game, 2, (uint)rgl[2] - 2);
                             }
+
+                            /* VC block 3 */
                             pcVar15 = PszGetLine(&lpb);
                             sVar6 = CParseNumbers(pcVar15, rgl, 2);
                             if ((char *)lpbDefMac <= (char *)lpb)
@@ -2075,6 +2189,8 @@ short GenNewGameFromFile(char *pszFile)
                                     SetVCCheck((GAME *)&game, 3, 1);
                                     SetVCVal((GAME *)&game, 3, (int)((char *)rgl[1] + -1000) / 1000);
                                 }
+
+                                /* VC block 4 */
                                 pcVar15 = PszGetLine(&lpb);
                                 sVar6 = CParseNumbers(pcVar15, rgl, 2);
                                 if ((char *)lpbDefMac <= (char *)lpb)
@@ -2088,6 +2204,8 @@ short GenNewGameFromFile(char *pszFile)
                                         SetVCCheck((GAME *)&game, 4, 1);
                                         SetVCVal((GAME *)&game, 4, (int)((char *)rgl[1] + -0x14) / 10);
                                     }
+
+                                    /* VC block 5 */
                                     pcVar15 = PszGetLine(&lpb);
                                     sVar6 = CParseNumbers(pcVar15, rgl, 2);
                                     if ((char *)lpbDefMac <= (char *)lpb)
@@ -2101,6 +2219,8 @@ short GenNewGameFromFile(char *pszFile)
                                             SetVCCheck((GAME *)&game, 5, 1);
                                             SetVCVal((GAME *)&game, 5, (int)((char *)rgl[1] + -10) / 10);
                                         }
+
+                                        /* VC block 6 */
                                         pcVar15 = PszGetLine(&lpb);
                                         sVar6 = CParseNumbers(pcVar15, rgl, 2);
                                         if ((char *)lpbDefMac <= (char *)lpb)
@@ -2115,6 +2235,8 @@ short GenNewGameFromFile(char *pszFile)
                                                 SetVCCheck((GAME *)&game, 6, 1);
                                                 SetVCVal((GAME *)&game, 6, (int)((char *)rgl[1] + -10) / 10);
                                             }
+
+                                            /* VC block 7 */
                                             pcVar15 = PszGetLine(&lpb);
                                             sVar6 = CParseNumbers(pcVar15, rgl, 2);
                                             if ((char *)lpbDefMac <= (char *)lpb)
@@ -2129,6 +2251,8 @@ short GenNewGameFromFile(char *pszFile)
                                                     SetVCCheck((GAME *)&game, 7, 1);
                                                     SetVCVal((GAME *)&game, 7, (int)((char *)rgl[1] + -0x1e) / 10);
                                                 }
+
+                                                /* VC block 8/9 */
                                                 pcVar15 = PszGetLine(&lpb);
                                                 sVar6 = CParseNumbers(pcVar15, rgl, 2);
                                                 if ((char *)lpbDefMac <= (char *)lpb)
@@ -2143,6 +2267,12 @@ short GenNewGameFromFile(char *pszFile)
                                                         SetVCVal((GAME *)&game, 8, (uint)rgl[0]);
                                                         SetVCVal((GAME *)&game, 9, (int)((char *)rgl[1] + -0x1e) / 10);
                                                     }
+
+                                                    /* --------------------------------------------------------
+                                                     * Next line: base filename / scenario name.
+                                                     * If it ends in ".xyx" (case-sensitive here), strip the ".xyx".
+                                                     * Store into szBase; also set lpbDefUni if there’s remaining data.
+                                                     * -------------------------------------------------------- */
                                                     pcVar15 = PszGetLine(&lpb);
                                                     uVar11 = (undefined2)((ulong)pcVar15 >> 0x10);
                                                     pcVar8 = (char *)pcVar15;
@@ -2157,6 +2287,13 @@ short GenNewGameFromFile(char *pszFile)
                                                         lpbDefUni._0_2_ = (char *)lpb;
                                                         lpbDefUni._2_2_ = lpb._2_2_;
                                                     }
+
+                                                    /* --------------------------------------------------------
+                                                     * Post-parse player normalization:
+                                                     *  1) For non-AI players: if advantage points invalid (<0),
+                                                     *     replace player with default template and set a flag in wFlags.
+                                                     *  2) Ensure every player has a name (random default if missing).
+                                                     * -------------------------------------------------------- */
                                                     for (i = 0; i < game.cPlayer; i = i + 1) {
                                                         if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0) &&
                                                             (sVar6 = CAdvantagePoints((PLAYER *)rgplr + i), sVar6 < 0)) {
@@ -2181,6 +2318,13 @@ short GenNewGameFromFile(char *pszFile)
                                                             _wsprintf((char *)((int)rgplr[0].szNames + i * 0xc0), s_ss_1120_0a2e, i * 0xc0 + 0x5a22, 0x1120);
                                                         }
                                                     }
+
+                                                    /* --------------------------------------------------------
+                                                     * Ensure unique player names:
+                                                     *  For each i, if name duplicates any prior j<i, pick a new random
+                                                     *  Berserker-name that isn’t used by any player, then update szName
+                                                     *  and szNames (adds suffix 0x0a32).
+                                                     * -------------------------------------------------------- */
                                                     for (i = 1; i < game.cPlayer; i = i + 1) {
                                                         j = 0;
                                                         while ((j < i && (sVar6 = _strcmp((char *)((int)rgplr[0].szName + i * 0xc0),
@@ -2209,6 +2353,15 @@ short GenNewGameFromFile(char *pszFile)
                                                             _strcat((char *)((int)rgplr[0].szNames + i * 0xc0), (char *)0xa32);
                                                         }
                                                     }
+
+                                                    /* --------------------------------------------------------
+                                                     * Player bitmap assignment:
+                                                     *  - Extract iPlrBmp field (bits 3..7) into rgplrbmp[i]
+                                                     *  - Clamp invalid -> -1
+                                                     *  - If duplicates among i>=1, randomly invalidate one of the pair
+                                                     *  - Fill all -1 with unique values 0..31 (wrapping search)
+                                                     *  - Write back into wMdPlr bits 3..7
+                                                     * -------------------------------------------------------- */
                                                     for (i = 0; i < game.cPlayer; i = i + 1) {
                                                         rgplrbmp[i] = *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 3 & 0x1f;
                                                         if ((rgplrbmp[i] < 0) || (0x1f < rgplrbmp[i])) {
@@ -2249,6 +2402,8 @@ short GenNewGameFromFile(char *pszFile)
                                                         *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) =
                                                             *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xff07 | (rgplrbmp[i] & 0x1fU) << 3;
                                                     }
+
+                                                    /* ---- All parsing done: generate the actual world and succeed. ---- */
                                                     GenerateWorld(1);
                                                     fSuccess = 1;
                                                     goto CREATE_LError_3;
@@ -2260,6 +2415,8 @@ short GenNewGameFromFile(char *pszFile)
                             }
                         }
                     }
+
+                /* Any VC parse/validation failure jumps here (line number uses i + players + 5). */
                 CREATE_LBadDefVc:
                     iVar10 = i + uVar4 + 5;
                     pcVar8 = PszGetCompressedString(idsLineDHasImproperVictoryConditionDefinition);
@@ -2270,10 +2427,20 @@ short GenNewGameFromFile(char *pszFile)
             }
         }
     }
+
+    /* Ran out of file before expected sections. */
 CREATE_LUniDefShort:
     sVar6 = 0x10;
     pcVar8 = PszFormatIds(idsUniverseDefinitionFileAppearsTooShort, (short *)0x0);
     AlertSz(pcVar8, sVar6);
+
+    /* ------------------------------------------------------------
+     * Unified cleanup/exit:
+     *   - clear global penvMem (disarm longjmp target)
+     *   - close stream (safe even if already closed)
+     *   - clear lpbDefUni (definition pointer)
+     *   - log “Failed/Success?” (idsFailed offset by fSuccess)
+     * ------------------------------------------------------------ */
 CREATE_LError_3:
     penvMem = (short (*)[9])0x0;
     StreamClose();

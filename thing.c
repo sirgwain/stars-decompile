@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include "globals.h"
+#include "memory.h"
 #include "thing.h"
 
 /* functions */
@@ -132,8 +133,51 @@ THING *LpthNew(int16_t iplr, ThingType ith) {
     THING  *lpth;
     THING   thNew;
 
-    /* TODO: implement */
-    return NULL;
+    if (cThing >= cThingAbsMax) {
+        return NULL;
+    }
+
+    memset(&thNew, 0, sizeof(THING));
+    thNew.idFull = (thNew.idFull & 0x1ff) | ((iplr & 0xf) << 9) | (ith << 0xd);
+
+    i = 0;
+    lpth = lpThings;
+    while (i < cThing && lpth->idFull < thNew.idFull) {
+        i++;
+        lpth++;
+    }
+
+    if (i < cThing && thNew.idFull == lpth->idFull) {
+        iItem = lpth->idFull & 0x1ff;
+        for (; i < cThing; i++) {
+            if (iItem > 0x1fe) {
+                return NULL;
+            }
+            if (lpth->idFull != thNew.idFull)
+                break;
+            thNew.idFull = (thNew.idFull & 0xfe00) | ((thNew.idFull + 1) & 0x1ff);
+            lpth++;
+            iItem++;
+        }
+    }
+
+    if (cThingAlloc <= cThing) {
+        cThingAlloc += 10;
+        if (lpThings == NULL) {
+            lpThings = LpAlloc(cThingAlloc * sizeof(THING), htThings);
+        } else {
+            lpThings = LpReAlloc(lpThings, cThingAlloc * sizeof(THING), htThings);
+        }
+        lpth = &lpThings[i];
+    }
+
+    if (i < cThing) {
+        memmove(lpth + 1, lpth, (cThing - i) * sizeof(THING));
+    }
+    cThing++;
+    memcpy(lpth, &thNew, sizeof(THING));
+
+    return lpth;
 }
 
 int16_t IValidateWormholePos(THING *lpthWorm) {

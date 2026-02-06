@@ -8,6 +8,7 @@
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
+#include "planet.h"
 #include "race.h"
 #include "resource.h"
 #include "save.h"
@@ -261,6 +262,7 @@ int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_
     FLEET *lpfl;
 
     if (fAddShdef) {
+        // grab a starter ship from the templates
         int16_t ishMac = rgplr[iplr].cShDef++;
         SHDEF  *lpshdefT = LpshdefT();
         rglpshdef[iplr][ishMac] = lpshdefT[ishdef];
@@ -451,10 +453,50 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
 int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
     int16_t c;
     int16_t i;
-    int16_t val;
+    uint16_t val;
 
-    /* TODO: implement */
-    return 0;
+    val = pgame->rgvc[vc] & 0x7f;
+    if (fRaw == 0) {
+        switch (vc) {
+        case 0:
+            val = val * 5 + 20;
+            break;
+        case 1:
+            val = val + 8;
+            break;
+        case 2:
+            val = val + 2;
+            break;
+        case 3:
+            val = val * 1000 + 1000;
+            break;
+        case 4:
+            val = val * 10 + 20;
+            break;
+        case 5:
+        case 6:
+            val = val * 10 + 10;
+            break;
+        case 7:
+            val = val * 10 + 30;
+            break;
+        case 9:
+            val = val * 10 + 30;
+            break;
+        default:
+            c = 0;
+            for (i = 0; i < 8; i++) {
+                if (i != 2 && (pgame->rgvc[i] & 0x80) != 0) {
+                    c++;
+                }
+            }
+            if (c < (int16_t)val) {
+                val = c;
+            }
+            break;
+        }
+    }
+    return val;
 }
 
 void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
@@ -473,90 +515,1347 @@ void CreateTutorWorld(void) {
 int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
     int16_t cur;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_CREATE:0xb6ba */
+    if (val < 0) {
+        val = 0;
+    } else if (vrgvcMax[vc] < val) {
+        val = vrgvcMax[vc];
+    }
+    pgame->rgvc[vc] = (pgame->rgvc[vc] & 0x80) | (uint8_t)val;
 
-    /* TODO: implement */
-    return 0;
+    if (vc == 8) {
+        cur = GetVCVal(pgame, 8, 0);
+        if (cur != val) {
+            pgame->rgvc[8] = (pgame->rgvc[8] & 0x80) | (uint8_t)cur;
+            val = cur;
+        }
+    }
+    return val;
 }
 
 int16_t GenerateWorld(int16_t fBatchMode) {
-    int32_t *pl;
-    int16_t  iBest;
-    int16_t  cKill;
-    char     grUsed[128];
-    MemJump *penvMemSav;
-    POINT   *ppt;
-    int16_t  raMajor;
-    int16_t  k;
-    POINT    pt;
-    int16_t  fFound;
-    int16_t  iMax;
-    STARPACK starpack;
-    int16_t  dy;
-    int16_t  dGalMinSq;
-    int16_t  iLow;
-    PLANET  *lppl;
-    int16_t  iMin;
-    int16_t  i;
-    MemJump  env;
-    int16_t  xOld;
-    int16_t  iplrSingle;
-    POINT   *pptMax;
-    int16_t  dMin;
-    int16_t  ktLeft;
-    SHDEF   *lpshdef;
-    int32_t  lDistMax2;
-    int32_t  lDistIdeal2;
-    int16_t  rgi[16];
-    int16_t  iNewLine;
-    uint8_t *pb;
-    int16_t  dMax;
-    int32_t  lDistMin2;
-    int16_t  j;
-    int16_t  cPlanMax;
-    int16_t  dx;
-    int16_t  cKillMax;
-    POINT   *pptT;
-    int32_t  lBest;
-    int32_t  l;
-    int16_t  iT;
-    int16_t  jj;
-    int16_t  iTechMin;
-    int16_t  pct10;
-    int16_t  idHome;
-    int16_t  ishRet;
-    THING   *lpth;
-    char     szExt[4];
-    uint16_t idLast;
-    THING   *lpthLast;
-    PART     part;
-    int16_t  cFit;
-    HS      *lphs;
-    PLANET  *lpplClosest;
-    int16_t  chs;
-    int16_t  cTry;
-    POINT    ptHome;
-    PLANET  *lpplPicked;
-    int32_t  lDistCur2;
-    int16_t  rgTry[5];
+    int32_t    *pl;
+    int16_t     iBest;
+    int16_t     cKill;
+    char        grUsed[128];
+    MemJump    *penvMemSav;
+    STARSPOINT *ppt;
+    int16_t     raMajor;
+    int16_t     k;
+    STARSPOINT  pt;
+    int16_t     fFound;
+    int16_t     iMax;
+    STARPACK    starpack;
+    int16_t     dy;
+    int16_t     dGalMinSq;
+    int16_t     iLow;
+    PLANET     *lppl;
+    int16_t     iMin;
+    int16_t     i;
+    MemJump     env;
+    int16_t     xOld;
+    int16_t     iplrSingle;
+    STARSPOINT *pptMax;
+    int16_t     dMin;
+    int16_t     ktLeft;
+    SHDEF      *lpshdef;
+    int32_t     lDistMax2;
+    int32_t     lDistIdeal2;
+    int16_t     rgi[16];
+    int16_t     iNewLine;
+    uint8_t    *pb;
+    int16_t     dMax;
+    int32_t     lDistMin2;
+    int16_t     j;
+    int16_t     cPlanMax;
+    int16_t     dx;
+    int16_t     cKillMax;
+    STARSPOINT *pptT;
+    int32_t     lBest;
+    int32_t     l;
+    int16_t     iT;
+    int16_t     jj;
+    int16_t     iTechMin;
+    int16_t     pct10;
+    int16_t     idHome; // shares stackspace with lpth, szExt
+    int16_t     ishRet;
+    THING      *lpth;     // shares stackspace with szExt, idhome
+    char        szExt[4]; // shares stackspace with lpth, idhome
+    uint16_t    idLast;
+    THING      *lpthLast;
+    PART        part;
+    int16_t     cFit;
+    HS         *lphs;
+    PLANET     *lpplClosest;
+    int16_t     chs;
+    int16_t     cTry;
+    POINT       ptHome;
+    PLANET     *lpplPicked;
+    int32_t     lDistCur2;
+    int16_t     rgTry[5];
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_CREATE:0x0cae */
-    /* block (block) @ MEMORY_CREATE:0x0cf8 */
-    /* block (block) @ MEMORY_CREATE:0x18c3 */
-    /* block (block) @ MEMORY_CREATE:0x2028 */
-    /* block (block) @ MEMORY_CREATE:0x2d93 */
-    /* block (block) @ MEMORY_CREATE:0x2f1f */
-    /* block (block) @ MEMORY_CREATE:0x330e */
-    /* block (block) @ MEMORY_CREATE:0x3a7a */
-    /* block (block) @ MEMORY_CREATE:0x4040 */
-    /* block (block) @ MEMORY_CREATE:0x45e6 */
-    /* label RetryAll @ MEMORY_CREATE:0x0f9e */
-    /* label LConcentrations @ MEMORY_CREATE:0x22d4 */
-    /* label LGive2ndPlanet @ MEMORY_CREATE:0x330e */
+    // ------------------- Create Planets -----------------
+    dGal = (int16_t)(game.mdSize * 400 + 400);
+    dGalInv = (int16_t)(dGal + 2 * dGalOff);
 
-    /* TODO: implement */
+    cPlanMax = (int16_t)((int32_t)dGal * (int32_t)dGal / 5000L);
+    cPlanMax = (int16_t)(cPlanMax + (cPlanMax / 4) * (game.mdDensity - 1));
+    if (game.mdDensity >= 3)
+        cPlanMax = (int16_t)(cPlanMax + cPlanMax / 4);
+    cPlanMax = min(cPlanMax, cPlanetAbsMax);
+
+    dGalMinSq = (int16_t)(dGalMinDist * dGalMinDist);
+    iMax = min((int16_t)(cPlanMax + cPlanMax / 7), cPlanetAbsMax);
+    dx = (int16_t)(dGalOff + 10);
+    dy = (int16_t)(dGal + 1 - 20);
+    for (i = 0; i < iMax; i++) {
+        rgptPlan[i].x = (int16_t)(dx + Random(dy));
+        rgptPlan[i].y = (int16_t)(dx + Random(dy));
+    }
+    qsort((void *)rgptPlan, iMax, sizeof(STARSPOINT), ICompLong);
+
+    pptMax = &rgptPlan[iMax];
+    cKill = 0;
+    for (ppt = rgptPlan; ppt < pptMax; ppt++) {
+        if (ppt->y < 0)
+            continue;
+
+        pptT = ppt + 1;
+        iNewLine = (int16_t)(ppt->x + dGalMinDist);
+
+        for (; pptT < pptMax && pptT->x <= iNewLine; pptT++) {
+            dy = (int16_t)abs(ppt->y - pptT->y);
+            if (dy > dGalMinDist)
+                continue;
+            dx = (int16_t)(ppt->x - pptT->x);
+            if (dx * dx + dy * dy <= dGalMinSq) {
+                pptT->y = -100;
+                cKill++;
+            }
+        }
+    }
+
+    cKillMax = (int16_t)(iMax - cPlanMax);
+    while (cKill < cKillMax) {
+        i = Random(iMax);
+        if (rgptPlan[i].y < 0)
+            continue;
+        rgptPlan[i].y = -100;
+        cKill++;
+    }
+
+    for (ppt = pptT = rgptPlan; ppt < pptMax; ppt++) {
+        if (ppt->y >= 0)
+            *pptT++ = *ppt;
+    }
+
+    cPlanMax = (int16_t)(iMax - cKill);
+
+    // ------------------- Cluster Planets -----------------
+    if (game.fClumping) {
+        for (i = 0; i < cPlanMax; i++) {
+            lBest = 10000000L;
+            iBest = 0;
+
+            j = Random(cPlanMax);
+            pt.x = rgptPlan[j].x;
+            pt.y = rgptPlan[j].y;
+
+            for (k = 0; k < cPlanMax; k++) {
+                if (k == j)
+                    continue;
+                dx = (int16_t)(pt.x - rgptPlan[k].x);
+                dy = (int16_t)(pt.y - rgptPlan[k].y);
+                l = (int32_t)dx * (int32_t)dx + (int32_t)dy * (int32_t)dy;
+                if (l < lBest) {
+                    lBest = l;
+                    iBest = k;
+                }
+            }
+
+            if (lBest > 12 * 12) {
+                if (lBest > 40 * 40) {
+                    rgptPlan[j].x = (int16_t)((rgptPlan[j].x + 2 * rgptPlan[iBest].x) / 3);
+                    rgptPlan[j].y = (int16_t)((rgptPlan[j].y + 2 * rgptPlan[iBest].y) / 3);
+                } else if (lBest > 25 * 25) {
+                    rgptPlan[j].x = (int16_t)((rgptPlan[j].x + rgptPlan[iBest].x) / 2);
+                    rgptPlan[j].y = (int16_t)((rgptPlan[j].y + rgptPlan[iBest].y) / 2);
+                } else if (lBest > 18 * 18) {
+                    rgptPlan[j].x = (int16_t)((2 * rgptPlan[j].x + rgptPlan[iBest].x) / 3);
+                    rgptPlan[j].y = (int16_t)((2 * rgptPlan[j].y + rgptPlan[iBest].y) / 3);
+                } else {
+                    rgptPlan[j].x = (int16_t)((4 * rgptPlan[j].x + rgptPlan[iBest].x) / 5);
+                    rgptPlan[j].y = (int16_t)((4 * rgptPlan[j].y + rgptPlan[iBest].y) / 5);
+                }
+            }
+        }
+
+        qsort((void *)rgptPlan, cPlanMax, sizeof(STARSPOINT), ICompLong);
+    }
+
+    // ------------------- Planet Names -----------------
+
+    memset(grUsed, 0, 1024 / 8);
+    Assert(cPlanMax < 1000);
+    for (i = 0; i < cPlanMax; i++) {
+        dx = Random(999);
+        while (grUsed[dx >> 3] & bitTbl[dx & 7]) {
+            dx++;
+            if (dx >= 999 + (int16_t)game.fTutorial)
+                dx = 0;
+        }
+        grUsed[dx >> 3] |= (char)bitTbl[dx & 7];
+        rgidPlan[i] = dx;
+    }
+
+    // ------------------- Planet Stats -----------------
+
+    cPlanet = cPlanMax;
+    penvMemSav = penvMem;
+    penvMem = &env;
+    if (setjmp(env.env)) {
+        DestroyCurGame();
+        return 0;
+    }
+    lpPlanets = (PLANET *)LpAlloc((uint16_t)(sizeof(PLANET) * cPlanMax), htPlanets);
+    memset(lpPlanets, 0, sizeof(PLANET) * cPlanMax);
+
+    Assert(lpPlanets != NULL);
+
+    for (i = 0, lppl = lpPlanets; i < cPlanMax; i++, lppl++) {
+        lppl->id = i;
+        lppl->iPlayer = iPlayerNil;
+        lppl->det = detAll;
+        lppl->iScanner = iPlanetPartNone;
+        if (!game.fNoRandom)
+            lppl->fArtifact = (Random(3) == 0);
+        lppl->rgEnvVar[0] = (uint8_t)(1 + Random(90));
+        lppl->rgEnvVar[0] = (uint8_t)(lppl->rgEnvVar[0] + Random(10));
+        lppl->rgEnvVarOrig[0] = lppl->rgEnvVar[0];
+        lppl->rgEnvVar[1] = (uint8_t)(1 + Random(90));
+        lppl->rgEnvVar[1] = (uint8_t)(lppl->rgEnvVar[1] + Random(10));
+        lppl->rgEnvVarOrig[1] = lppl->rgEnvVar[1];
+        lppl->rgEnvVar[2] = lppl->rgEnvVarOrig[2] = (uint8_t)(1 + Random(99));
+        if (game.fTutorial) {
+            switch (i) {
+            case 11: // Hack to make sure the AI has a relativly near by habitable planet.
+                lppl->rgEnvVar[0] = (uint8_t)(lppl->rgEnvVar[0] + 20);
+                lppl->rgEnvVarOrig[0] = lppl->rgEnvVar[0];
+                break;
+            case 5: // Hack to make sure the AI has a relativly near by habitable planet.
+                for (j = 0; j < 3; j++) {
+                    lppl->rgEnvVar[j] = (uint8_t)(lppl->rgEnvVar[j] - 5);
+                    lppl->rgEnvVarOrig[j] = lppl->rgEnvVar[j];
+                }
+                break;
+            }
+        }
+        for (j = 0; j < 3; j++) {
+            if (game.fExtraFuel) // fExtraFuel is now 'unlimited minerals'
+                lppl->rgMinConc[j] = 100;
+            else {
+                lppl->rgwtMin[j] = 0;
+                lppl->rgMinConc[j] = (uint8_t)(Random(45) + Random(45) + 31);
+
+                if (lppl->rgEnvVar[2] >= 90)
+                    lppl->rgMinConc[j] = (uint8_t)(lppl->rgMinConc[j] + Random(99 - lppl->rgMinConc[j]) / 2);
+            }
+
+            lppl->rgpctMinLevel[j] = 0;
+            lppl->rgwtMin[j] = 0;
+
+            if (game.fBBSPlay && lppl->rgMinConc[j] < 40)
+                lppl->rgMinConc[j] = (uint8_t)(lppl->rgMinConc[j] + 5);
+        }
+
+        if (game.fExtraFuel)
+            iT = 100;
+        else
+            iT = Random(27);
+
+        if (iT < 18) // Limit at least one mineral
+        {
+            if (iT >= 9) {
+                jj = Random(30); // Gets around compiler wierdnesses
+                j = Random(3);
+                lppl->rgMinConc[j] = (uint8_t)(1 + jj);
+            } else {
+                iT++;
+                while (iT < 16) {
+                    jj = Random(30); // Gets around compiler wierdnesses
+                    j = Random(3);
+                    lppl->rgMinConc[j] = (uint8_t)(1 + jj);
+                    iT = (int16_t)(iT << 1);
+                }
+            }
+        }
+    }
+
+    // ------------------- Surface Minerals -----------------
+    for (j = 0; j < 3; j++) {
+        lpPlanets[0].rgwtMin[j] = (uint16_t)(Random((int16_t)lpPlanets[0].rgMinConc[j] * 10) + 10);
+        if (lpPlanets[0].rgwtMin[j] < 200)
+            lpPlanets[0].rgwtMin[j] = (uint16_t)(lpPlanets[0].rgwtMin[j] + 155 + Random(150));
+
+        if (game.fBBSPlay)
+            lpPlanets[0].rgwtMin[j] = (uint16_t)(lpPlanets[0].rgwtMin[j] + lpPlanets[0].rgwtMin[j] / 4);
+    }
+
+    // ------------------- Place players -----------------
+
+    l = (int32_t)dGal * 6L; // Minimum distance allowed
+    lDistIdeal2 = (int32_t)dGal * (int32_t)dGal / (int32_t)game.cPlayer - l;
+    if (lDistIdeal2 < 0)
+        lDistIdeal2 = 0;
+    else
+        lDistIdeal2 = lDistIdeal2 * 9 / 10; // Shave a bit off
+    lDistIdeal2 = lDistIdeal2 * (int32_t)game.mdStartDist / 3L + l;
+    lDistMin2 = lDistIdeal2 * 9 / 10;
+    lDistMax2 = lDistIdeal2 * 7 / 6;
+
+RetryAll:
+    // Find a starting planet for player 0, preferring one near center of galaxy
+    lBest = 100000000L;
+    iMin = (int16_t)(dGal / 4 + dGalOff);
+    dMax = (int16_t)((dGal * 3) / 4 + dGalOff);
+    for (i = 0; i < 50; i++) {
+        rgi[0] = Random(cPlanMax);
+        pt.x = rgptPlan[rgi[0]].x;
+        pt.y = rgptPlan[rgi[0]].y;
+
+        if (pt.x < iMin)
+            dx = (int16_t)(iMin - pt.x);
+        else if (dMax < pt.x)
+            dx = (int16_t)(pt.x - dMax);
+        else
+            dx = 0;
+
+        if (pt.y < iMin)
+            dy = (int16_t)(iMin - pt.y);
+        else if (dMax < pt.y)
+            dy = (int16_t)(pt.y - dMax);
+        else
+            dy = 0;
+
+        if (dx == 0 && dy == 0)
+            break;
+
+        l = (int32_t)dy * (int32_t)dy + (int32_t)dx * (int32_t)dx;
+        if (l < lBest) {
+            iBest = rgi[0];
+            lBest = l;
+        }
+    }
+    if (i == 50) {
+        rgi[0] = iBest;
+    }
+
+    // Set bounds for other player homeworlds based on player count
+    if (game.cPlayer < 5) {
+        if (game.cPlayer < 3) {
+            dMin = (int16_t)(MulDiv(dGal, 3, 20) + dGalOff);
+            dMax = (int16_t)(MulDiv(dGal, 17, 20) + dGalOff);
+        } else {
+            dMin = (int16_t)(dGal / 10 + dGalOff);
+            dMax = (int16_t)(MulDiv(dGal, 9, 10) + dGalOff);
+        }
+    } else {
+        dMin = (int16_t)(dGal / 20 + dGalOff);
+        dMax = (int16_t)(MulDiv(dGal, 19, 20) + dGalOff);
+    }
+
+    // ------------------- Place player homeworlds -----------------
+    for (i = 1; i < game.cPlayer; i++) {
+        // Try random positions first
+        for (j = 0; j < 50; j++) {
+            rgi[i] = Random(cPlanMax);
+            pt.x = rgptPlan[rgi[i]].x;
+            pt.y = rgptPlan[rgi[i]].y;
+
+            // Check if within bounds
+            if (dMin <= pt.x && dMin <= pt.y && pt.x <= dMax && pt.y <= dMax) {
+                fFound = 0;
+
+                // Check distance from all previously placed players
+                for (k = 0; k < i; k++) {
+                    dx = (int16_t)(pt.x - rgptPlan[rgi[k]].x);
+                    dy = (int16_t)(pt.y - rgptPlan[rgi[k]].y);
+                    l = (int32_t)dy * (int32_t)dy + (int32_t)dx * (int32_t)dx;
+
+                    if (l < 1 || l < lDistMin2)
+                        break; // Too close
+                    if (l <= lDistMax2)
+                        fFound = 1; // Within acceptable range
+                }
+
+                if (k == i && fFound)
+                    break; // Found valid position
+            }
+        }
+
+        // If random search failed, try sequential search
+        if (j == 50) {
+            int16_t start = rgi[i];
+
+            for (;;) {
+                /* find a candidate point index within bounds */
+                for (;;) {
+                    rgi[i]++;
+
+                    if (rgi[i] == start) {
+                        break; /* no progress -> widen + RetryAll */
+                    }
+                    if (rgi[i] >= cPlanMax) {
+                        rgi[i] = 0;
+                        if (start == 0) {
+                            break; /* no progress -> widen + RetryAll */
+                        }
+                    }
+
+                    pt = rgptPlan[rgi[i]];
+                    if (pt.x >= dMin && pt.y >= dMin && pt.x <= dMax && pt.y <= dMax) {
+                        break; /* have in-bounds pt; now check distances */
+                    }
+                    /* else keep incrementing rgi[i] */
+                }
+
+                /* this corresponds to LAB_1078_1566 */
+                if (rgi[i] == start) {
+                    int32_t delta = (int32_t)(lDistIdeal2 / 0x23L);
+                    lDistMin2 -= delta;
+                    lDistMax2 += delta;
+                    goto RetryAll;
+                }
+
+                fFound = 0;
+                for (k = 0; k < i; k++) {
+                    dx = (int16_t)(pt.x - rgptPlan[rgi[k]].x);
+                    dy = (int16_t)(pt.y - rgptPlan[rgi[k]].y);
+
+                    /* keep original “unsigned mul then add” behavior:
+                       dx,dy are sign-extended to 32-bit, then treated as unsigned by __aFulmul.
+                       In practice squaring gives same bits; the important part is 32-bit wrap. */
+                    l = (int32_t)((uint32_t)(dx * dx) + (uint32_t)(dy * dy));
+
+                    if (l < 1 || l < lDistMin2)
+                        break;
+                    if (l <= lDistMax2)
+                        fFound = 1;
+                }
+
+                if (k == i && fFound)
+                    break; /* success */
+                /* else retry (jump back to LAB_1078_13a1 equivalent) */
+            }
+        }
+    }
+
+    // ------------------- Player tech levels -----------------
+
+    for (i = 0; i < game.cPlayer; i = i + 1) {
+        int16_t pick;
+        int16_t iMajorAdv;
+        int16_t minTech;
+        PLAYER *pplr;
+
+        /* Shuffle rgi[] (Fisher–Yates style, forward) */
+        pick = Random(game.cPlayer - i);
+        j = pick + i;
+        pick = rgi[j];
+        rgi[j] = rgi[i];
+        rgi[i] = pick;
+
+        pplr = &rgplr[i];
+
+        /* If AI player, generate a random race */
+        if (GetRaceGrbit(pplr, ibitRaceAIPlayer) != 0) {
+            CreateRandomRace(pplr);
+        }
+
+        /* Clear specific player flags */
+        pplr->fDead = 0;    /* mask 0xfffeffff -> clears bit 16 => wFlags bit 0 */
+        pplr->fLearned = 0; /* mask 0xfff7ffff -> clears bit 19 => wFlags bit 3 */
+
+        /* Reset trader bits */
+        pplr->grbitTrader = 0;
+
+        /* Zero starting tech levels + spent resources */
+        for (j = 0; j < 6; j = j + 1) {
+            pplr->rgTech[j] = 0;
+            pplr->rgResSpent[j] = 0;
+        }
+
+        /* Apply major advantage starting tech */
+        iMajorAdv = GetRaceStat(pplr, rsMajorAdv);
+        switch (iMajorAdv) {
+        case raStealth:
+            pplr->rgTech[Electronics] = 5;
+            break;
+        case raAttack:
+            pplr->rgTech[Weapons] = 6;
+            pplr->rgTech[Propulsion] = 1;
+            pplr->rgTech[Energy] = 1;
+            break;
+        case raTerra:
+            pplr->rgTech[Biotechnology] = 6;
+            pplr->rgTech[Construction] = 2;
+            pplr->rgTech[Energy] = 1;
+            pplr->rgTech[Weapons] = 1;
+            pplr->rgTech[Propulsion] = 1;
+            break;
+        case raMines:
+            pplr->rgTech[Propulsion] = 2;
+            pplr->rgTech[Biotechnology] = 2;
+            break;
+        case raMassAccel:
+            pplr->rgTech[Energy] = 4;
+            break;
+        case raStargate:
+            pplr->rgTech[Propulsion] = 5;
+            pplr->rgTech[Construction] = 5;
+            break;
+        case raMacintosh:
+            pplr->rgTech[Energy] = 1;
+            break;
+        case raNone:
+            for (j = 0; j < 6; j = j + 1) {
+                pplr->rgTech[j] = 3;
+            }
+            break;
+        default:
+            break;
+        }
+
+        /* Tech 3: raise lows to minTech when no per-field bonus is present */
+        if (GetRaceGrbit(pplr, ibitRaceTech3) != 0) {
+            iMajorAdv = GetRaceStat(pplr, rsMajorAdv);
+            minTech = (int16_t)(((iMajorAdv == 9) ? 1 : 0) + 3); /* 3 normally, 4 if MA==9 */
+
+            for (j = 0; j < 6; j = j + 1) {
+                if ((int16_t)pplr->rgTech[j] < minTech) {
+                    if (GetRaceStat(pplr, (int16_t)(j + rsTechBonus1)) == 0) {
+                        pplr->rgTech[j] = (int8_t)minTech;
+                    }
+                }
+            }
+        }
+
+        /* Cheap Engines: +1 Propulsion (rgTech[2]) */
+        if (GetRaceGrbit(pplr, ibitRaceCheapEngines) != 0) {
+            pplr->rgTech[Propulsion] = (int8_t)(pplr->rgTech[Propulsion] + 1);
+        }
+
+        /* IFE: +1 Propulsion unless tutorial game */
+        if ((GetRaceGrbit(pplr, ibitRaceIFE) != 0) && (game.fTutorial == 0)) {
+            pplr->rgTech[Propulsion] = (int8_t)(pplr->rgTech[Propulsion] + 1);
+        }
+
+        /* Send startup tips */
+        for (j = 0; j < 4; j = j + 1) {
+            FSendPlrMsg(i, (int16_t)(j + idmTipCanHideUnimportantMessagesClickingCheckmark), -1, 0, 0, 0, 0, 0, 0, 0);
+        }
+    }
+
+    // ------------------- Player homeworld minerals -----------------
+
+    for (i = 0; i < game.cPlayer; i = i + 1) {
+        PLANET *plHome;
+        PLAYER *pplr;
+        int16_t ap;
+
+        iMin = rgi[i];
+        plHome = &lpPlanets[iMin];
+        pplr = &rgplr[i];
+
+        /* assign owner */
+        plHome->iPlayer = i;
+
+        /* wRaw_0004: set starbase flag */
+        plHome->fStarbase = 1;
+
+        /* lStarbase union: clear low 4 bits (isb) */
+        plHome->isb = 0;
+
+        /* clear artifact bit in dwRaw_0014 */
+        plHome->fArtifact = 0;
+
+        /* set factories/mines/defenses via bitfields */
+        plHome->cFactories = 10;
+        plHome->cMines = 10;
+        plHome->cDefenses = 10;
+
+        /* setup pop guess amount */
+        plHome->uPopGuess = plHome->rgwtMin[3] / 4;
+
+        for (j = 0; j < 3; j = j + 1) {
+            /* copy mineral weights from planet 0 template into this homeworld */
+            plHome->rgwtMin[j] = lpPlanets[0].rgwtMin[j];
+
+            /* clamp minimum concentrations on homeworld */
+            if (game.fTutorial == 0) {
+                plHome->rgMinConc[j] = (lpPlanets[0].rgMinConc[j] < 30) ? 30 : lpPlanets[0].rgMinConc[j];
+            } else {
+                plHome->rgMinConc[j] = (lpPlanets[0].rgMinConc[j] < 25) ? 25 : lpPlanets[0].rgMinConc[j];
+            }
+        }
+
+        /* decompile did (&0xfffe0fff) on dwRaw_0014: this is "clear iScanner bitfield" */
+        plHome->iScanner = 0;
+
+        FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
+
+        // cap advantage points at 50
+        iT = max(50, CAdvantagePoints(pplr));
+
+        // boost pop for hard ai players
+        if ((pplr->fAi != 0) && (pplr->lvlAi > 2)) {
+            iT = 50;
+            plHome->rgwtMin[3] = plHome->rgwtMin[3] + (plHome->rgwtMin[3] / 10);
+        }
+
+        if (game.fBBSPlay) {
+            int16_t pctGrowth = PctTrueMaxGrowth(i);
+            int16_t scale10 = (int16_t)(pctGrowth * 2 + 10);
+
+            plHome->rgwtMin[3] = (plHome->rgwtMin[3] * scale10) / 10;
+
+            plHome->uPopGuess <<= 2;
+        }
+
+        j = GetRaceStat(pplr, rsUseLeftover);
+
+        switch (j) {
+        case 0: /* Surface minerals */
+        default: {
+            int16_t  iLow;
+            int16_t  ktLeft16;
+            int16_t  shareAll16;
+            uint16_t rem2;
+
+            if (plHome->rgwtMin[0] < plHome->rgwtMin[1]) {
+                iLow = (plHome->rgwtMin[0] < plHome->rgwtMin[2]) ? 0 : 2;
+            } else {
+                iLow = (plHome->rgwtMin[1] < plHome->rgwtMin[2]) ? 1 : 2;
+            }
+
+            ktLeft16 = (int16_t)(iT * 10);
+            rem2 = (uint16_t)ktLeft16 & 3u;
+            shareAll16 = (int16_t)(ktLeft16 >> 2);
+
+            plHome->rgwtMin[iLow] += (int32_t)(shareAll16 + (int16_t)rem2);
+
+            ktLeft16 = shareAll16;
+            plHome->rgwtMin[0] += ktLeft16;
+            plHome->rgwtMin[1] += ktLeft16;
+            plHome->rgwtMin[2] += ktLeft16;
+
+            /* Explicit jump, matching original JMP CREATE::LConcentrations */
+            if (pplr->fAi && pplr->lvlAi >= 2)
+                goto LConcentrations;
+
+            break;
+        }
+
+        case 1: /* Mineral concentrations */
+        LConcentrations: {
+            int16_t ktLeft;
+
+            if (iT > 0 && iT < 3)
+                ktLeft = 1;
+            else
+                ktLeft = (int16_t)(iT / 2);
+
+            iLow = 0;
+            for (jj = 1; jj < 3; jj++) {
+                if (plHome->rgMinConc[jj] < plHome->rgMinConc[iLow])
+                    iLow = jj;
+            }
+
+            plHome->rgMinConc[iLow] = (uint8_t)(plHome->rgMinConc[iLow] + ktLeft);
+
+            ktLeft = (int16_t)((ktLeft + 1) / 2);
+
+            plHome->rgMinConc[0] = (uint8_t)(plHome->rgMinConc[0] + ktLeft);
+            plHome->rgMinConc[1] = (uint8_t)(plHome->rgMinConc[1] + ktLeft);
+            plHome->rgMinConc[2] = (uint8_t)(plHome->rgMinConc[2] + ktLeft);
+
+            break;
+        }
+
+        case 2: /* Mines */
+            plHome->cMines += (uint32_t)(int16_t)(iT >> 1);
+            break;
+
+        case 3: /* Factories */
+            plHome->cFactories += (uint32_t)(iT / 5);
+            break;
+
+        case 4: /* Defenses */
+            plHome->cDefenses += (uint32_t)((iT + 5) / 10);
+            break;
+        }
+
+        // zero out mines/factories/defenses for
+        if (GetRaceStat(pplr, rsMajorAdv) == raMacintosh) {
+            plHome->cMines = 0;
+            plHome->cFactories = 0;
+            plHome->cDefenses = 0;
+        }
+
+        /* Assign player index and home planet */
+        pplr->iPlayer = (int8_t)i;
+        pplr->idPlanetHome = iMin;
+
+        /* Initialize planet environmental variables (current + original) */
+        for (jj = 0; jj < 3; jj++) {
+            int16_t v;
+
+            if (pplr->rgEnvVarMax[jj] == -1) {
+                /* Random(99) returns 0..98, then +1 => 1..99 */
+                v = (int16_t)(Random(99) + 1);
+            } else {
+                /* midpoint = min + (max - min)/2, signed truncation */
+                v = (int16_t)pplr->rgEnvVarMin[jj] + (int16_t)(((int16_t)pplr->rgEnvVarMax[jj] - (int16_t)pplr->rgEnvVarMin[jj]) / 2);
+            }
+
+            plHome->rgEnvVar[jj] = (uint8_t)v;
+            plHome->rgEnvVarOrig[jj] = (uint8_t)v;
+        }
+
+        /* Non-AI players start with fixed research allocation */
+        if (!pplr->fAi) {
+            pplr->pctResearch = 0x0F;
+        }
+
+        /*
+         * Initialize current research tech.
+         *
+         * The Win16 code:
+         *   - clears low nibble
+         *   - clears high nibble
+         *   - ORs 0x60
+         *
+         * Net result is always exactly 0x60, regardless of prior value.
+         */
+        pplr->iTechCur = 0x60;
+
+        /* Clear per-player yearly resources and score */
+        pplr->lResLastYear = 0;
+        pplr->wScore = 0;
+
+        for (j = 0; j < game.cPlayer; j++) {
+            pplr->rgmdRelation[j] = 0;
+        }
+
+        /* Player i starts with exactly 1 starbase design slot in use. (Preserve cFleet.) */
+        pplr->cshdefSB = 1;
+
+        /* Allocate 10 SHDEF entries for this player's starbase designs. */
+        lpshdef = (SHDEF *)LpAlloc((uint16_t)(10 * (int16_t)sizeof(SHDEF)), htShips);
+
+        /* Copy the built-in SBT template for the first 4 entries (0x24c == 4 * 0x93). */
+        memmove(lpshdef, LpshdefSBT(), (size_t)(4 * sizeof(SHDEF)));
+
+        /* Zero the remaining 6 entries (0x372 == 6 * 0x93). */
+        memset((uint8_t *)lpshdef + 4 * sizeof(SHDEF), 0, (size_t)(6 * sizeof(SHDEF)));
+
+        /* Entry 0 starts as "built/exist = 1". */
+        lpshdef[0].cBuilt = 1;
+        lpshdef[0].cExist = 1;
+
+        /* Publish the per-player starbase design list pointer. */
+        rglpshdefSB[i] = lpshdef;
+
+        /* Mark entries 1..9 as free (sets bit 0x0200 in wFlags => fFree). */
+        for (j = 1; j < 10; j++) {
+            lpshdef[j].fFree = 1;
+        }
+
+        raMajor = GetRaceStat(pplr, rsMajorAdv);
+
+        if (raMajor == raMassAccel) {
+            /* Set slot0 iItem = 7; and set cItem bit0 (matches OR 0x100). */
+            lpshdef[0].hul.rghs[0].iItem = ispecialSBMassDriver5;
+            lpshdef[0].hul.rghs[0].cItem = 1;
+
+            if (game.mdSize > 0) {
+                /* Clear fFree on design #1. */
+                lpshdef[1].fFree = 0;
+
+                /* Increment player's cshdefSB nibble (upper 4 bits in wRaw_0004). */
+                pplr->cshdefSB++;
+
+                /* Mark design #1 as built/existing (low word set to 1; high word was already 0). */
+                lpshdef[1].cBuilt = 1;
+                lpshdef[1].cExist = 1;
+            }
+        } else if (raMajor == raStargate && !game.fTutorial) {
+            /* Set slot0 iItem = 0; and set cItem bit0 (matches OR 0x100). */
+            lpshdef[0].hul.rghs[0].iItem = ispecialSBStargate100250;
+            lpshdef[0].hul.rghs[0].cItem = 1;
+
+            if (game.mdSize > 0) {
+                /* Copy design 0 -> design 1 (REP MOVSW/MOVSB of 0x93 bytes). */
+                memcpy(&lpshdef[1], &lpshdef[0], sizeof(SHDEF));
+
+                /* Set design #1 ishdef to 0x11 and clear fFree. (mask 0x83ff | 0x4400, then &~0x200) */
+                lpshdef[1].ishdef = 17; // starbase 2
+                lpshdef[1].fFree = 0;
+
+                pplr->cshdefSB++;
+
+                lpshdef[1].cBuilt = 1;
+                lpshdef[1].cExist = 1;
+            }
+        } else if (raMajor == raMacintosh) { /* raMacintosh */
+            if (game.mdSize > 0) {
+                /* Save home id before we start shuffling designs (ASM reads [player+0x8]). */
+                idHome = pplr->idPlanetHome;
+
+                /* Copy design 0 -> -> design 1. */
+                memcpy(&lpshdef[1], &lpshdef[0], sizeof(SHDEF));
+                lpshdef[1].ishdef = 17; /* 0x4400 */
+                /* (No fFree clear here in the first mask; ASM doesn't do it until later on shdef[0]). */
+
+                /* Copy design 3 -> design 0. (offset 0x1b9 == 3 * 0x93) */
+                memcpy(&lpshdef[0], &lpshdef[3], sizeof(SHDEF));
+
+                /* Set design #0 ishdef to 0x10 and clear fFree. (mask 0x83ff | 0x4000, then &~0x200) */
+                lpshdef[0].ishdef = 16;
+                lpshdef[0].fFree = 0;
+
+                /* Increment player's cshdefSB nibble. */
+                pplr->cshdefSB++;
+
+                /* Clear built/exist on design #0 (writes both words to 0). */
+                lpshdef[0].cBuilt = 0;
+                lpshdef[0].cExist = 0;
+
+                /* Home planet: set starbase design index (isb) to 1, keep pctDp. */
+                lpPlanets[idHome].isb = 1;
+            }
+        }
+    }
+
+    for (i = 0; i < game.cPlayer; i++) {
+        PLAYER *pplr;
+        int16_t idHome;
+        int16_t ishdef;
+        PLANET *lpplHome = &lpPlanets[idHome];
+
+        /* Set global current-player context for per-player ship design creation. */
+        idPlayer = i;
+
+        pplr = &rgplr[i];
+        idHome = pplr->idPlanetHome;
+
+        /* Allocate and clear 16 ship designs (0x930 == 16 * 0x93). */
+        lpshdef = (SHDEF *)LpAlloc((uint16_t)(cShdefMax * (int16_t)sizeof(SHDEF)), htShips);
+        memset(lpshdef, 0, (size_t)(cShdefMax * sizeof(SHDEF)));
+
+        /* Mark all 16 entries as free (same 0x0200 bit at +0x7b in each 0x93 entry). */
+        for (j = 0; j < cShdefMax; j++) {
+            lpshdef[j].fFree = 1;
+        }
+
+        /* Store pointer to this player's ship-design array. */
+        rglpshdef[i] = lpshdef;
+
+        raMajor = GetRaceStat(pplr, rsMajorAdv);
+
+        /* ----------- initial “main” startup ship(s) ----------- */
+        if (raMajor == raMassAccel) {
+            CreateStartupShip(i, idHome, LongRangeScout, 1);
+
+            /* The decompile masks 0xC3FFFFFF | 0x04000000 at planet+0x2e.
+               That’s bit 10 of the high word of PLANET.lStarbase => iWarpFling = 1. */
+            lpPlanets[idHome].iWarpFling = 1;
+
+        } else if (raMajor == raAttack) {
+            CreateStartupShip(i, idHome, ArmedProbe, 1);
+
+            /* rgTech[3] gate from decompile: if > 2, spawn two more. */
+            if (pplr->rgTech[Construction] > 2) {
+                CreateStartupShip(i, idHome, StalwartDefender, 1);
+                CreateStartupShip(i, idHome, Gadfly, 1);
+            }
+
+        } else if (raMajor == raNone) {
+            CreateStartupShip(i, idHome, ArmedProbe, 1);
+            CreateStartupShip(i, idHome, LongRangeScout, 1);
+
+        } else if (raMajor == raStealth) {
+            /* tech gate uses rgTech[0] < 2 ? 2 : 5 */
+            ishdef = (pplr->rgTech[Energy] < 2) ? SmaugarianPeepingTom : ShadowSleuth;
+            CreateStartupShip(i, idHome, ishdef, 1);
+
+            /* If not AI, create extra ship type 1 */
+            if (!pplr->fAi) {
+                CreateStartupShip(i, idHome, ShadowTransport, 1);
+            }
+
+        } else {
+            CreateStartupShip(i, idHome, SmaugarianPeepingTom, 1);
+        }
+
+        /* ----------- secondary ship (or special chaining) ----------- */
+        if (raMajor == raCheapCol) {
+            ishdef = CreateStartupShip(i, idHome, SporeCloud, 1);
+            for (j = 1; j < 3; j++) {
+                CreateStartupShip(i, idHome, ishdef, 0);
+            }
+        } else if (raMajor == raStargate) {
+            CreateStartupShip(i, idHome, Mayflower, 1);
+        } else if (raMajor == raMacintosh) {
+            CreateStartupShip(i, idHome, Pinta, 1);
+        } else {
+            ishdef = CreateStartupShip(i, idHome, SantaMaria, 1);
+        }
+
+        /* ----------- additional conditional spawns / possible 2nd planet ----------- */
+        if (raMajor == raMines) {
+            CreateStartupShip(i, idHome, LittleHen, 1);
+            CreateStartupShip(i, idHome, SpeedTurtle, 1);
+
+        } else if (raMajor == raTerra) {
+            CreateStartupShip(i, idHome, ChangeofHeart, 1);
+
+        } else if (raMajor == raStargate) {
+            CreateStartupShip(i, idHome, StalwartDefender, 1);
+            CreateStartupShip(i, idHome, Swashbuckler, 1);
+
+            if (game.mdSize > 0) {
+                goto LGive2ndPlanet;
+            }
+        } else if ((raMajor == raMassAccel) && game.mdSize > 0) {
+        LGive2ndPlanet:
+
+            lpplClosest = lpplPicked = NULL;
+            STARSPOINT ptHome = rgptPlan[idHome];
+            cFit = 0;
+
+            lDistMin2 = (long)dGal * 15 / 100;
+            lDistMin2 *= lDistMin2;
+
+            lDistMax2 = (long)dGal * 23 / 100;
+            lDistMax2 *= lDistMax2;
+
+            lDistIdeal2 = (long)dGal * 20 / 100;
+            lDistIdeal2 *= lDistIdeal2; /* your snippet had a typo; ASM squares it */
+
+            lBest = 10000000;
+
+            pptMax = &rgptPlan[cPlanMax];
+            for (ppt = rgptPlan, lppl = lpPlanets; ppt < pptMax; ppt++, lppl++) {
+                if (lppl->iPlayer == -1) {
+                    dx = ppt->x - ptHome.x;
+                    dy = ppt->y - ptHome.y;
+
+                    lDistCur2 = (long)dx * dx + (long)dy * dy;
+
+                    if (lDistCur2 >= lDistMin2 && lDistCur2 <= lDistMax2) {
+                        if (Random(++cFit) == 0)
+                            lpplPicked = lppl;
+                    } else if (lpplPicked == NULL && lDistCur2 < lBest) {
+                        lBest = lDistCur2;
+                        lpplClosest = lppl;
+                    }
+                }
+            }
+
+            /* Fallback if no in-range planet found */
+            if (lpplPicked == NULL)
+                lpplPicked = lpplClosest;
+
+            /* Mark: planet has been “given as 2nd planet” (ASM touches word at +0x2E) */
+            lpplPicked->iWarpFling |= 1;
+
+            /* Try up to 100 times to get desirability >= 10 by randomizing env vars */
+            cTry = 0;
+            while (PctPlanetDesirability(lpplPicked, i) < 10) {
+                if (cTry++ >= 100)
+                    break;
+
+                for (j = 0; j < 3; j++) {
+                    uint8_t v = Random(97) + 2; /* 2..98 */
+                    lpplPicked->rgEnvVar[j] = v;
+                    lpplPicked->rgEnvVarOrig[j] = v;
+                }
+            }
+
+            /* If we failed 100 tries, copy env vars from the home planet */
+            if (cTry >= 100) {
+                for (j = 0; j < 3; j++) {
+                    lpplPicked->rgEnvVar[j] = lpplHome->rgEnvVar[j];
+                    lpplPicked->rgEnvVarOrig[j] = lpplHome->rgEnvVarOrig[j];
+                }
+            }
+
+            /* Claim the planet */
+            lpplPicked->iScanner = 0;
+            lpplPicked->iPlayer = i;
+
+            /* Give it a starbase: set planet flag + set starbase slot index */
+            lpplPicked->fStarbase = 1;
+            lpplPicked->isb = 1;
+
+            /* Split the original home population: picked gets 2/5, home keeps 4/5 */
+            {
+                int32_t pop0 = lpplHome->rgwtMin[3];
+                lpplPicked->rgwtMin[3] = (pop0 << 1) / 5;
+                lpplHome->rgwtMin[3] = (pop0 << 2) / 5;
+            }
+
+            /* Update population guesses (low 12 bits) */
+            lpplPicked->uPopGuess = (uint16_t)(lpplPicked->rgwtMin[3] / 4);
+            lpplHome->uPopGuess = (uint16_t)(lpplHome->rgwtMin[3] / 4);
+
+            /* Seed surface minerals: Random(200)+100 in each bucket */
+            for (j = 0; j < 3; j++) {
+                lpplPicked->rgwtMin[j] = (int32_t)(Random(200) + 100);
+            }
+
+            /* Give the player a startup ship at the new planet */
+            CreateStartupShip(i, lpplPicked->id, 0, 0);
+
+            /* (then it JMPs back out of the label) */
+        } else if (raMajor == raNone) {
+            int16_t ishdefFreighter;
+
+            /* If propulsion(?) tech byte [3] < 4 => type 6 else type 8. */
+            ishdefFreighter = (pplr->rgTech[3] < 4) ? Teamster : Swashbuckler;
+
+            CreateStartupShip(i, idHome, ishdefFreighter, 1);
+            CreateStartupShip(i, idHome, StalwartDefender, 1);
+            CreateStartupShip(i, idHome, CottonPicker, 1);
+        }
+
+        /* If NOT OBRM, and ARM is set create two potato bugs*/
+        if (GetRaceGrbit(pplr, ibitRaceARM) && !GetRaceGrbit(pplr, ibitRaceOBRM)) {
+            int16_t ishdef;
+
+            ishdef = CreateStartupShip(i, idHome, PotatoBug, 1);
+            CreateStartupShip(i, idHome, ishdef, 0);
+        }
+
+        SHDEF  *pshdef = rglpshdef[i]; /* per-player SHDEF array (count = rgplr[i].cShDef) */
+        int16_t cShDef = rgplr[i].cShDef;
+
+        for (j = 0; j < cShDef; j++) {
+            SHDEF  *sh = &pshdef[j];
+            uint8_t cSlots = sh->hul.chs;
+
+            for (k = 0; k < (int16_t)cSlots; k++) {
+                HS     *hs = &sh->hul.rghs[k];
+                PART    part;
+                uint8_t candidates[6];
+                int16_t nCand = 0;
+
+                /* start from the current slot */
+                part.hs = *hs;
+
+                switch ((HullSlotType)part.hs.grhst) {
+                case hstEngine:
+                    if (part.hs.iItem == iengineQuickJump5) {
+                        /* gate matches decompile/asm: envVar[2] == -1 OR ihuldef != 0x0F OR envVar[2] < 0x55 */
+                        if (rgplr[i].rgEnvVar[Radiation] == -1 || rgplr[i].rgEnvVar[Radiation] < 85 || sh->hul.ihuldef != ihuldefColonyShip) {
+                            candidates[nCand++] = iengineRadiatingHydroRamScoop;
+                        }
+                        candidates[nCand++] = iengineAlphaDrive8;
+                        candidates[nCand++] = iengineDaddyLongLegs7;
+                        candidates[nCand++] = iengineFuelMizer;
+                        candidates[nCand++] = iengineLongHump6;
+                    }
+                    break;
+
+                case hstScanner:
+                    if (part.hs.iItem == iscannerBatScanner || part.hs.iItem == iscannerRhinoScanner) {
+                        candidates[nCand++] = iscannerPossumScanner;
+                        candidates[nCand++] = iscannerMoleScanner;
+                    }
+                    break;
+
+                case hstShield:
+                case hstArmor:
+                    if (part.hs.iItem == ishieldMoleSkinShield || part.hs.iItem == ishieldCowHideShield) {
+                        candidates[nCand++] = ishieldWolverineDiffuseShield;
+                        candidates[nCand++] = ishieldCowHideShield;
+                    }
+                    break;
+
+                case hstBeam:
+                    if (part.hs.iItem == ibeamLaser || part.hs.iItem == ibeamXRayLaser) {
+                        candidates[nCand++] = ibeamYakimoraLightPhaser;
+                        candidates[nCand++] = ibeamXRayLaser;
+                    }
+                    break;
+
+                case hstTorp:
+                case hstBomb:
+                    if (part.hs.iItem == itorpAlphaTorpedo) {
+                        candidates[nCand++] = itorpBetaTorpedo;
+                    }
+                    break;
+
+                case hstMining:
+                    if (part.hs.iItem == iminingRoboMidgetMiner || part.hs.iItem == iminingRoboMiniMiner) {
+                        candidates[nCand++] = iminingRoboMiner;
+                        candidates[nCand++] = iminingRoboMidgetMiner;
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+
+                for (l = 0; l < nCand; l++) {
+                    part.hs.iItem = candidates[l]; /* ONLY low byte changes; cItem preserved automatically */
+                    if (FLookupPart(&part) == 1) {
+                        hs->iItem = candidates[l]; /* same: preserve hs->cItem */
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (GetRaceStat(&rgplr[i], rsMajorAdv) == raMacintosh) {
+            PLANET *lppl = &lpPlanets[idHome];
+            lppl->iScanner = 31; /* sets the 5-bit field to 0x1F (matches asm) */
+        }
+    }
+
+    /* ----------- “After last player” sentinel branch ----------- */
+    /* When i reaches game.cPlayer, we stop per-player setup and finalize the universe/game files. */
+    if (game.cPlayer <= i) {
+
+        /* We are in “no current player context” mode for shared setup. */
+        idPlayer = -1;
+
+        /* ----------- Special-case: if first planet is unowned, clear some per-planet fields ----------- */
+        if (lpPlanets->iPlayer == -1) {
+            /* Zero 3 entries of a 32-bit-per-entry array at lpPlanets + 0x1c (j * 4). */
+            for (j = 0; j < 3; j = j + 1) {
+                lpPlanets->rgwtMin[j] = 0;
+            }
+        }
+
+        /* ----------- Allocate and initialize per-player battle plans ----------- */
+        for (i = 0; i < game.cPlayer; i = i + 1) {
+
+            /* Default: each player starts with 5 battle plans (?) */
+            rgcbtlplan[i] = 5;
+
+            /* Allocate one BTLPLAN block per player (0x240 bytes). */
+            rglpbtlplan[i] = (BTLPLAN *)LpAlloc(sizeof(BTLPLAN) * BTLPLANMAX, htShips);
+
+            /* Initialize 5 individual plans within that block; each plan is 0x24 bytes. */
+            for (j = 0; j < 5; j = j + 1) {
+                InitBattlePlan(&rglpbtlplan[i][j], j, i);
+            }
+        }
+
+        /* Record max planet count into the GAME struct. */
+        game.cPlanMax = cPlanMax;
+
+        /* ----------- Optional wormhole count selection ----------- */
+        /* If fNoRandom is NOT set, choose random count based on mdSize table. */
+        if (!game.fNoRandom) {
+            iBest = (int16_t)(vrgWormholeMin[game.mdSize] + Random(vrgWormholeVar[game.mdSize]));
+        } else {
+            /* Otherwise: no wormholes. */
+            iBest = 0;
+        }
+
+        /* ----------- Wormhole creation loop ----------- */
+        if (iBest > 0) {
+            for (i = 0; i < iBest; i = i + 1) {
+
+                uint16_t   idFirstEndpoint = 0;
+                THING     *lpthPartner;
+                STARSPOINT ptBest;
+                int16_t    bestBadness;
+                int16_t    badness;
+
+                /* Each wormhole is made of a pair of THINGs that link to each other. */
+                for (j = 0; j < 2; j = j + 1) {
+
+                    /* Allocate a new THING of type wormhole. */
+                    lpth = LpthNew(0, ithWormhole);
+
+                    /* Randomize a small attribute (0..2). Stored in THWORM.iStable (2 bits). */
+                    lpth->thw.iStable = (uint16_t)Random(3);
+
+                    /* If this is the second endpoint, link endpoints together by idFull. */
+                    if (j == 1) {
+                        lpthPartner = LpthFromId(idFirstEndpoint);
+                        lpth->thw.idPartner = lpthPartner->idFull;
+                        lpthPartner->thw.idPartner = lpth->idFull;
+                    } else {
+                        /* First endpoint: remember its id for the second endpoint to use. */
+                        idFirstEndpoint = lpth->idFull;
+                    }
+
+                    /* ----------- Place wormhole: random attempts with “best-so-far” fallback ----------- */
+                    k = 0;
+                    bestBadness = 16;
+
+                    while (k < 100) {
+
+                        /* Random position in galaxy, then bias by +1000. */
+                        lpth->pt.x = (int16_t)(Random(dGal) + 1000);
+                        lpth->pt.y = (int16_t)(Random(dGal) + 1000);
+
+                        /* Validate position; returns 0 if OK, otherwise “badness” score. */
+                        badness = IValidateWormholePos(lpth);
+                        if (badness == 0)
+                            break;
+
+                        k = (int16_t)(k + 1);
+
+                        /* Track best (lowest badness) candidate location. */
+                        if (badness < bestBadness) {
+                            ptBest.x = lpth->pt.x;
+                            ptBest.y = lpth->pt.y;
+                            bestBadness = badness;
+                        }
+                    }
+
+                    /* If never found a valid location, revert to the best candidate. */
+                    if (badness != 0) {
+                        lpth->pt.x = ptBest.x;
+                        lpth->pt.y = ptBest.y;
+                    }
+                }
+            }
+        }
+
+        /* ----------- Race tampering detection / notifications ----------- */
+        for (i = 0; i < game.cPlayer; i = i + 1) {
+            /* If player i has “tampered” flag set, notify them and (some) others. */
+            if (rgplr[i].fHacker) {
+                FSendPlrMsg2(i, idmRaceDefinitionHasTamperedStatisticsHaveAltered, -1, 0, 0);
+
+                for (j = 0; j < game.cPlayer; j = j + 1) {
+                    /* Notify other players who are NOT AI. */
+                    if ((i != j) && !rgplr[j].fAi) {
+                        FSendPlrMsg2(j, idmHackedRaceDiscoveredRaceStatisticsHaveAltered, -1, i, 0);
+                    }
+                }
+            }
+        }
+
+        /* ----------- Detect “single human” mode and seed AI salts ----------- */
+        iplrSingle = -1;
+
+        for (i = 0; i < game.cPlayer; i = i + 1) {
+
+            /* If player is human OR has special idAi==7, consider for “single player” selection. */
+            if ((rgplr[i].fAi == 0) || (rgplr[i].idAi == 7)) {
+
+                if (iplrSingle != -1)
+                    break; /* more than one qualifies => not single-player */
+
+                iplrSingle = i;
+
+            } else {
+                /* AI players: seed per-player salt with fixed constants. */
+                rgplr[i].lSalt = (int32_t)0x094DABEE;
+            }
+        }
+
+        /* If loop reached end and found exactly one qualifying player => single-player mode enabled. */
+        if ((i == game.cPlayer) && (iplrSingle != -1)) {
+            iNewLine = 1;
+        } else {
+            iNewLine = 0;
+        }
+
+        /* Stash flag and also set game.fSinglePlr. */
+        game.fSinglePlr = (uint16_t)iNewLine;
+
+        /* ----------- If single-player, initialize player relation matrix to “2” (neutral?) ----------- */
+        if (game.fSinglePlr != 0) {
+            for (i = 0; i < game.cPlayer; i = i + 1) {
+                for (j = 0; j < game.cPlayer; j = j + 1) {
+                    if (i != j) {
+                        rgplr[i].rgmdRelation[j] = 2;
+                    }
+                }
+            }
+        }
+
+        /* ----------- Seed GAME.lid with GetTickCount unless tutorial flag is set ----------- */
+        if (game.fTutorial == 0) {
+            game.lid = (int32_t)GetTickCount();
+        }
+
+        /* ----------- Create the universe definition file (.XY?) ----------- */
+        snprintf(szWork, sizeof(szWork), "%s.xy", szBase);
+
+        ishRet = FCreateFile(dtXY, -1, NULL);
+        if (ishRet != 0) {
+
+            /* Write GAME record (rt=7? size=0x40). */
+            WriteRt(7, 0x40, &game);
+
+            /* ----------- Serialize starpack / planet positions ----------- */
+            xOld = 1000;
+            for (i = 0; i < cPlanMax; i = i + 1) {
+
+                /* Pack directly into STARPACK bitfields (types.h). */
+                starpack.y = (uint32_t)(uint16_t)rgptPlan[i].y;
+                starpack.id = (uint32_t)(uint16_t)rgidPlan[i];
+
+                /* Delta-x encoding relative to previous xOld (10-bit field, wrap matches original). */
+                dx = (int16_t)(rgptPlan[i].x - xOld);
+                starpack.dx = (uint32_t)(uint16_t)dx;
+
+                /* Emit 4 bytes to stream. */
+                RgToStream(&starpack, 4);
+
+                xOld = rgptPlan[i].x;
+            }
+
+            /* ----------- Finalize XY stream: write player count, close ----------- */
+            i = game.cPlayer;
+            WriteRt(0, 2, &i);
+            StreamClose();
+
+            /* ----------- Write per-player data files (-1 then each player) ----------- */
+            for (i = -1; i < game.cPlayer; i = i + 1) {
+                FWriteDataFile(szBase, i, 0);
+            }
+
+/* ----------- If not batch mode, launch UI / load single-player turn ----------- */
+#ifdef _WIN32
+            if (fBatchMode == 0) {
+                if (game.fSinglePlr == 0) {
+                    idPlayer = -1;
+                    imemLogCur = 0;
+                    CreateChildWindows();
+                } else {
+                    DestroyCurGame();
+                    snprintf(szExt, sizeof(szExt), MPCTD, iplrSingle + 1);
+                    ishRet = FLoadGame(szBase, szExt);
+                    if (ishRet == 0) {
+                        Error(idsUnableOpenNewTurnFile);
+                        return 0;
+                    }
+                    idPlayer = iplrSingle;
+                    CreateChildWindows();
+                    SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
+                }
+                return 1;
+            }
+#endif
+            return 1;
+        }
+
+        /* ----------- Error path: couldn’t create universe definition file ----------- */
+        Error(idsUnableCreateUniverseDefinitionFile);
+        DestroyCurGame();
+        return 0;
+    }
+
     return 0;
 }
 

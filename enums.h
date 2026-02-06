@@ -17,6 +17,12 @@ typedef enum CostType {
     Resources = 3,
 } CostType;
 
+typedef enum EnvType {
+    Gravity = 0,
+    Temperature = 1,
+    Radiation = 2,
+} EnvType;
+
 typedef enum TechFieldType {
     Energy = 0,
     Weapons = 1,
@@ -524,6 +530,7 @@ typedef enum RecordType {
     rtPlanet = 13,
     rtPlanetB = 14,
     rtFleetA = 16,
+    rtFleetB = 17,
     rtOrderA = 19, // other order-like record type seen in decompile
     rtOrderB = 20, // waypoint only
     rtString = 21, // decompile: alloc/copy string from rgbCur when rt == 0x15

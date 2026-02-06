@@ -73,29 +73,43 @@ short FGenerateTurn(void)
     char *pchT;
     short fErrSav;
 
-    /* Segment:    23
-       Offset:     0009e840
-       Length:     9eb8
-       Min Alloc:  9eb8
-       Flags:      1d10
-           Code
-           Discardable
-           Moveable
-           LoadOnCall
-           Impure (Non-shareable)
-        */
+    /* --------------------------------------------------------------------
+       Function prologue / setup:
+       - Save current player context
+       - Switch cursor to “busy”
+       - Clear any previous in-memory game state
+       -------------------------------------------------------------------- */
     idCur = idPlayer;
     fSuccess = 0;
     HVar14 = LoadCursor(0, (LPCSTR)0x7f02);
     hcurSav = SetCursor(HVar14);
     DestroyCurGame();
+
+    /* --------------------------------------------------------------------
+       Optional deterministic RNG seed for “fixed” / reproducible generation.
+       (Triggered by a bit in gd.grBits.)
+       -------------------------------------------------------------------- */
     if (((uint)gd.grBits >> 0xb & 1) != 0) {
         Randomize(1234567890);
     }
+
+    /* --------------------------------------------------------------------
+       Load the host/base game file:
+       - Temporarily silence file errors
+       - Kick progress gauge
+       - Attempt FLoadGame(szBase, <host extension>)
+       -------------------------------------------------------------------- */
     sVar16 = fFileErrSilent;
     fFileErrSilent = 1;
     UpdateProgressGauge(0x168);
     sVar15 = FLoadGame((char *)szBase, (char *)0x9c4);
+
+    /* --------------------------------------------------------------------
+       Early failure path:
+       - Restore silent flag/cursor
+       - Log failure (“can’t find host file”)
+       - Re-stitch far-ish globals back into locals (decompiler artifacts)
+       -------------------------------------------------------------------- */
     if (sVar15 == 0) {
         fFileErrSilent = sVar16;
         SetCursor(hcurSav);
@@ -106,8 +120,20 @@ short FGenerateTurn(void)
         pTVar1 = (TURNSERIAL *)CONCAT22(vrgts._2_2_, (TURNSERIAL *)vrgts);
         fSuccess = 0;
     } else {
+
+        /* ----------------------------------------------------------------
+           Main success path entry:
+           - Announce “Generating Year …”
+           - Restore silent flag
+           ---------------------------------------------------------------- */
         TurnLog(idsGeneratingYearD);
         fFileErrSilent = sVar16;
+
+        /* ----------------------------------------------------------------
+           Backward-compat / version-migration hack:
+           If file version indicates older layout, possibly initialize or
+           normalize per-player md bits/fields (bit twiddling on wMdPlr).
+           ---------------------------------------------------------------- */
         if (wVersFile >> 0xc == 0) {
             i = 0;
             while ((i < game.cPlayer && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 3 & 0x1f) == 0))) {
@@ -122,19 +148,47 @@ short FGenerateTurn(void)
                 }
             }
         }
+
+        /* ----------------------------------------------------------------
+           Establish a longjmp “escape hatch” for out-of-memory / fatal errors
+           during turn generation. (penvMem / __setjmp pattern.)
+           ---------------------------------------------------------------- */
         penvMem = &env;
         sVar16 = __setjmp(env);
+
+        /* ----------------------------------------------------------------
+           Main generation body executes only on the initial setjmp return.
+           If a longjmp happens, control will skip into cleanup below.
+           ---------------------------------------------------------------- */
         if (sVar16 == 0) {
+
+            /* ------------------------------------------------------------
+               Allocate per-turn working buffers:
+               - colonist drop list
+               - full transfer list
+               - extra planet resources (per planet)
+               - per-player turn-serial records
+               ------------------------------------------------------------ */
             lpcd = LpAlloc(12000, htMisc);
             lpxf = LpAlloc(25000, htMisc);
             vrgPlanResExtra = LpAlloc(game.cPlanMax << 1, htMisc);
             __fmemset(vrgPlanResExtra, 0, game.cPlanMax << 1);
             vrgts = LpAlloc(game.cPlayer << 4, htMisc);
+
+            /* ------------------------------------------------------------
+               Initialize counters/flags for the upcoming turn processing.
+               ------------------------------------------------------------ */
             UpdateProgressGauge(0x172);
             cColDrop = 0;
             cXferFull = 0;
             gd.grBits._0_2_ = (uint)gd.grBits & 0xfdfd | 0x202;
             imemMsgCur = 0;
+
+            /* ------------------------------------------------------------
+               Build a shuffled player processing order (mpiplr2):
+               - Start with identity mapping
+               - Fisher–Yates-ish shuffle using Random()
+               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 mpiplr2[i] = (byte)i;
             }
@@ -148,6 +202,15 @@ short FGenerateTurn(void)
                     mpiplr2[i] = bVar5;
                 }
             }
+
+            /* ------------------------------------------------------------
+               Per-player input pass:
+               For each player in shuffled order:
+               - Build that player's log filename (X file)
+               - Initialize their TURNSERIAL entry to -1/-1
+               - Load and run their log records (if present)
+               - Update progress gauge
+               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 uVar21 = (uint)mpiplr2[i];
                 _wsprintf(szWork, s_s_x_d_1120_09c8, (char *)szBase, 0x1120, uVar21 + 1);
@@ -169,6 +232,13 @@ short FGenerateTurn(void)
                 sVar16 = MulDiv(0x3c, i + 1, game.cPlayer);
                 UpdateProgressGauge(sVar16 + 0x172);
             }
+
+            /* ------------------------------------------------------------
+               Post-load validation / anti-cheat preparation:
+               - idPlayer = -1 (no current player context)
+               - Walk players and validate serials / detect duplicates
+               - Mutate rgplr flags when suspicious
+               ------------------------------------------------------------ */
             idPlayer = -1;
             i = 0;
             pTVar1 = vrgts;
@@ -178,8 +248,12 @@ short FGenerateTurn(void)
                 if (game.cPlayer <= i)
                     break;
                 vrgts = pTVar1;
+
+                /* Skip inactive/AI/etc combinations based on rgplr flags and gd.grBits */
                 if ((((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 1 & 1) == 0) && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0)) &&
                     ((((uint)gd.grBits >> 0xb & 1) == 0 || (i != 0)))) {
+
+                    /* If serial present, validate it; if invalid, mark the player as suspicious */
                     if (((int)((TURNSERIAL *)vrgts + i)->lSerialNumber != -1) || (*(int *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2) != -1)) {
                         pTVar1 = (TURNSERIAL *)vrgts + i;
                         puVar3 = (undefined2 *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2);
@@ -192,6 +266,8 @@ short FGenerateTurn(void)
                             goto LAB_10b0_03c3;
                         }
                     }
+
+                    /* If serial present, compare against earlier players for duplicates with mismatched config */
                     vrgts._2_2_ = (undefined2)((ulong)pTVar1 >> 0x10);
                     vrgts._0_2_ = (TURNSERIAL *)pTVar1;
                     if (((int)((TURNSERIAL *)vrgts + i)->lSerialNumber != -1) || (*(int *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2) != -1)) {
@@ -230,6 +306,7 @@ short FGenerateTurn(void)
                         }
                     }
                 } else {
+                    /* If player excluded from checking, clear the “suspicious” bit in flags */
                     local_15a = (FLEET *)(CONCAT22(*(undefined2 *)((int)&rgplr[0].wFlags + i * 0xc0), (FLEET *)local_15a) & 0xfffbffff);
                     *(undefined2 *)((int)&rgplr[0].wFlags + i * 0xc0) = local_15a._2_2_;
                     pTVar1 = vrgts;
@@ -237,6 +314,12 @@ short FGenerateTurn(void)
             LAB_10b0_03c3:
                 i = i + 1;
             }
+
+            /* ------------------------------------------------------------
+               If any players were flagged as cheaters:
+               - Notify them (and potentially others)
+               - Trigger additional periodic “strike” message logic
+               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 2 & 1) != 0) {
                     vrgts = pTVar1;
@@ -249,6 +332,11 @@ short FGenerateTurn(void)
                     }
                 }
             }
+
+            /* ------------------------------------------------------------
+               Ensure each non-deleted ship design is in a “valid” state for
+               the turn (force some fields/flags when missing).
+               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 for (ish = 0; ish < 0x10; ish = ish + 1) {
                     if (((*(uint *)(*(int *)(i * 4 + rglpshdef) + ish * 0x93 + 0x7b) >> 9 & 1) == 0) &&
@@ -269,6 +357,12 @@ short FGenerateTurn(void)
                     }
                 }
             }
+
+            /* ------------------------------------------------------------
+               “Follow fleet” orders preprocessing:
+               - Scan all fleets; mark those that are in follow mode
+               - Validate basic preconditions and send warnings if needed
+               ------------------------------------------------------------ */
             fFollow = 0;
             for (ifl = 0; vrgts = pTVar1, ifl < cFleet; ifl = ifl + 1) {
                 /* WARNING: Load size is inaccurate */
@@ -290,7 +384,17 @@ short FGenerateTurn(void)
                     pTVar1 = vrgts;
                 }
             }
+
+            /* ------------------------------------------------------------
+               Waypoint validation pass before movement/orders resolution.
+               ------------------------------------------------------------ */
             ValidateWaypoints();
+
+            /* ------------------------------------------------------------
+               Follow-chain resolution:
+               Up to 8 passes to propagate follow targets and copy waypoints
+               from leaders to followers, reallocating order arrays as needed.
+               ------------------------------------------------------------ */
             if (fFollow != 0) {
                 fFollow = 1;
                 i = 0;
@@ -303,7 +407,11 @@ short FGenerateTurn(void)
                         lpfl = (FLEET *)CONCAT22(iVar23, pFVar17);
                         if ((pFVar17 == (FLEET *)0x0) && (iVar23 == 0))
                             break;
+
+                        /* Only fleets marked “follow” and currently in orbit (?) are processed */
                         if (((int)pFVar17->wFlags_0x4 < 0) && (pFVar17->cord == 1)) {
+
+                            /* Copy current follow-order block into locals for inspection */
                             uVar6 = *(undefined2 *)((int)&pFVar17->lpplord + 2);
                             puVar26 = (undefined2 *)(*(int *)&pFVar17->lpplord + 4);
                             puVar27 = local_16c;
@@ -314,6 +422,8 @@ short FGenerateTurn(void)
                                 puVar26 = puVar26 + 1;
                                 *puVar4 = *puVar3;
                             }
+
+                            /* If order is “follow fleet”, resolve leader by id and sync orders */
                             if ((local_166 >> 8 & 0xf) == 2) {
                                 local_15a = LpflFromId(local_168);
                                 iVar25 = (int)((ulong)local_15a >> 0x10);
@@ -322,6 +432,8 @@ short FGenerateTurn(void)
                                     ((pFVar10->cord != 1 || ((*(uint *)&((PLORD *)pFVar10->lpplord)[2].iordMax >> 8 & 0xf) == 2)))) {
                                     if (pFVar10->cord != 1) {
                                         fFollow = 1;
+
+                                        /* Ensure follower has enough order slots, then copy leader orders */
                                         if (((PLORD *)pFVar17->lpplord)->iordMax < 2) {
                                             pPVar29 = LpplReAlloc((PL *)CONCAT22(*(undefined2 *)((int)&pFVar17->lpplord + 2), *(PL **)&pFVar17->lpplord), 2);
                                             *(PL **)&pFVar17->lpplord = (PL *)pPVar29;
@@ -355,8 +467,12 @@ short FGenerateTurn(void)
                                     }
                                     goto LAB_10b0_09f2;
                                 }
+
+                                /* Leader invalid / didn’t move: warn player */
                                 FSendPlrMsg(pFVar17->iPlayer, idmHadOrdersFollowFleetWhichDidntMove, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                             }
+
+                            /* Clear follow flag if not a valid follow order */
                             pFVar17->wFlags_0x4 = pFVar17->wFlags_0x4 & 0x7fff;
                         }
                     LAB_10b0_09f2:
@@ -364,16 +480,28 @@ short FGenerateTurn(void)
                     i = i + 1;
                 }
             }
+
+            /* ------------------------------------------------------------
+               Primary turn execution pipeline (high-level):
+               - DoOrders(0) (pre-move / planning stage)
+               - Validate & clamp player race settings
+               - Detect race-tampering and apply penalties / notifications
+               ------------------------------------------------------------ */
             UpdateProgressGauge(0x1b8);
             DoOrders(0);
             UpdateProgressGauge(0x212);
+
             for (i = 0; i < game.cPlayer; i = i + 1) {
+
+                /* Re-assert stored race stats (may normalize/repair) */
                 local_15a = (FLEET *)((ulong)local_15a & 0xffff0000);
                 while ((int)(FLEET *)local_15a < 0x10) {
                     sVar16 = GetRaceStat((PLAYER *)rgplr + i, (RaceStat)(FLEET *)local_15a);
                     SetRaceStat((PLAYER *)rgplr + i, (RaceStat)(FLEET *)local_15a, sVar16);
                     local_15a = (FLEET *)((int)(FLEET *)local_15a + 1);
                 }
+
+                /* Clamp research and growth percent settings into allowed ranges */
                 if ((*(char *)((int)&rgplr[0].pctResearch + i * 0xc0) < '\0') || ('d' < *(char *)((int)&rgplr[0].pctResearch + i * 0xc0))) {
                     *(undefined1 *)((int)&rgplr[0].pctResearch + i * 0xc0) = 0xf;
                 }
@@ -383,12 +511,17 @@ short FGenerateTurn(void)
                 if ('\x14' < *(char *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0)) {
                     *(undefined1 *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0) = 0x14;
                 }
+
+                /* Check “advantage points” and detect tampered race files */
                 local_15a = (FLEET *)(CONCAT22(local_15a._2_2_, *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4) & 0xffff0001);
                 sVar16 = CAdvantagePoints((PLAYER *)rgplr + i);
                 local_15a = (FLEET *)CONCAT22(sVar16, (FLEET *)local_15a);
                 pFVar30 = local_15a;
+
                 if (((sVar16 < 0) || ((FLEET *)local_15a != (FLEET *)(*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1))) &&
                     ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0)) {
+
+                    /* Notify hacked player and all other non-excluded players */
                     FSendPlrMsg2(i, idmRaceDefinitionHasTamperedStatisticsHaveAltered, -1, 0, 0);
                     local_15a = (FLEET *)((ulong)local_15a & 0xffff0000);
                     while ((int)(FLEET *)local_15a < game.cPlayer) {
@@ -397,9 +530,12 @@ short FGenerateTurn(void)
                         }
                         local_15a = (FLEET *)CONCAT22(local_15a._2_2_, (FLEET *)((int)&((FLEET *)local_15a)->id + 1));
                     }
+
+                    /* Mark player flagged and then try to “repair” advantage points under cap */
                     local_15c = *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 0xffef | 0x10;
                     *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) = local_15c;
                     pFVar30 = local_15a;
+
                     iVar23 = local_15a._2_2_;
                     while ((iVar23 < 500 && (*(char *)((int)rgplr[0].rgAttr + i * 0xc0) < '\x19'))) {
                         pcVar2 = (char *)((int)rgplr[0].rgAttr + i * 0xc0);
@@ -409,6 +545,7 @@ short FGenerateTurn(void)
                         local_15a = (FLEET *)CONCAT22(iVar23, (FLEET *)local_15a);
                         pFVar30 = local_15a;
                     }
+
                     local_15a._2_2_ = (uint)((ulong)pFVar30 >> 0x10);
                     iVar23 = local_15a._2_2_;
                     while ((iVar23 < 500 && ('\x01' < *(char *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0)))) {
@@ -419,6 +556,8 @@ short FGenerateTurn(void)
                         local_15a = (FLEET *)CONCAT22(iVar23, (FLEET *)local_15a);
                         pFVar30 = local_15a;
                     }
+
+                    /* As last resort, zero some attributes until advantage points under cap */
                     local_15a._2_2_ = (uint)((ulong)pFVar30 >> 0x10);
                     if ((int)local_15a._2_2_ < 500) {
                         local_15a = (FLEET *)CONCAT22(local_15a._2_2_, (FLEET *)0x8);
@@ -435,10 +574,17 @@ short FGenerateTurn(void)
                 }
                 local_15a = pFVar30;
             }
+
+            /* ------------------------------------------------------------
+               World simulation steps (movement/production/etc):
+               Order here matters; this is the meat of “advance one year”.
+               ------------------------------------------------------------ */
             UnmarkMineFields();
             MoveThings(0);
             UpdateProgressGauge(0x226);
             MoveFleets();
+
+            /* Clear a planet flag on all planets, then set it on each homeworld */
             uVar21 = lpPlanets._2_2_;
             local_15c = lpPlanets._2_2_;
             local_15e = (PLANET *)lpPlanets + cPlanet;
@@ -452,6 +598,7 @@ short FGenerateTurn(void)
                 ((PLANET *)lpPlanets)[*(int *)((int)&rgplr[0].idPlanetHome + i * 0xc0)].wFlags_0x4 = local_160;
             }
             local_15a._2_2_ = local_15c;
+
             UpdateProgressGauge(0x28a);
             ThingDecay();
             BreedColonistsInTransit();
@@ -470,6 +617,14 @@ short FGenerateTurn(void)
             SpankTheCheaters();
             ValidateWaypoints();
             UpdateGuesses();
+
+            /* ------------------------------------------------------------
+               End-of-turn bookkeeping:
+               - Mark host file dirty/updated
+               - Backup directory creation
+               - Increment year/turn
+               - Build backup filename tail pointers (pchBak, pcVar22)
+               ------------------------------------------------------------ */
             UpdateProgressGauge(0x354);
             FMarkFile(dtHost, -1, 1, 0);
             CreateBackupDir();
@@ -485,9 +640,16 @@ short FGenerateTurn(void)
             }
             uVar20 = _strlen(szT);
             pchBak = szT + uVar20;
+
+            /* ------------------------------------------------------------
+               Update player scores and refresh per-design cached values
+               (cloak %, scanner ranges, buildability flags, etc.)
+               ------------------------------------------------------------ */
             UpdateProgressGauge(0x356);
             UpdatePlayerScores();
             for (i = 0; i < game.cPlayer; i = i + 1) {
+
+                /* Recompute starbase design cloak (and square it?) for SB list */
                 for (j = 0; j < 10; j = j + 1) {
                     if ((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
                         sVar16 = PctCloakFromHuldef(
@@ -512,6 +674,8 @@ short FGenerateTurn(void)
                         *(uint *)(iVar23 + 0x89) = local_15a._2_2_;
                     }
                 }
+
+                /* Recompute ship design scanner range/buildability and cache results */
                 for (j = 0; j < 0x10; j = j + 1) {
                     if ((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
                         local_15a._0_2_ = (FLEET *)GetShdefScannerRange(
@@ -531,6 +695,13 @@ short FGenerateTurn(void)
                     }
                 }
             }
+
+            /* ------------------------------------------------------------
+               Rotate/rename/copy per-player output files:
+               - Build backup names
+               - Track missing X files (rgfNoXFile)
+               - Rename .x/.m etc across host and per-player variants
+               ------------------------------------------------------------ */
             j = 0x358;
             fDone = 0;
             _memset(rgfNoXFile, 0, 0x10);
@@ -567,6 +738,12 @@ short FGenerateTurn(void)
                 *pcVar22 = '\0';
                 i = i + 1;
             }
+
+            /* ------------------------------------------------------------
+               Write data files for host and for each player:
+               - Randomize a small “crap” field in game.wCrap
+               - For each player and host sentinel (-1), call FWriteDataFile
+               ------------------------------------------------------------ */
             j = 0x36b;
             fDone = 0;
             uVar21 = Random(8);
@@ -588,10 +765,26 @@ short FGenerateTurn(void)
                 FWriteDataFile((char *)szBase, i, sVar16);
                 i = i + 1;
             }
+
+            /* ------------------------------------------------------------
+               Success epilogue:
+               - Progress to near-complete
+               - Reset in-memory log cursor
+               - Flag success for caller
+               ------------------------------------------------------------ */
             UpdateProgressGauge(0x3e6);
             imemLogCur = 0;
             fSuccess = 1;
         }
+
+    /* --------------------------------------------------------------------
+       Unified cleanup / epilogue (both error and success paths):
+       - Progress to 100%
+       - Free per-turn allocations
+       - Reset globals/flags and restore cursor
+       - Log success/failure
+       - Restore far-ish globals from locals (decompiler artifacts)
+       -------------------------------------------------------------------- */
     TURN_FreeStuffUp:
         UpdateProgressGauge(1000);
         FreeLp(vrgPlanResExtra, htMisc);

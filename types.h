@@ -232,19 +232,8 @@ typedef struct _planet {
     union {
         uint8_t rgbImp[8];
         struct {
-            uint32_t iDeltaPop : 8;
-            uint32_t cMines : 12;
-            uint32_t cFactories : 12;
+            unsigned long iDeltaPop : 8, cMines : 12, cFactories : 12, cDefenses : 12, iScanner : 5, unused5 : 5, fArtifact : 1, fNoResearch : 1, unused2 : 8;
         };
-        struct {
-            uint32_t cDefenses : 12;
-            uint32_t iScanner : 5;
-            uint32_t unused5 : 5;
-            uint32_t fArtifact : 1;
-            uint32_t fNoResearch : 1;
-            uint32_t unused2 : 8;
-        };
-        uint32_t dwRaw_0014;
     }; /* +0x0014 */
     int32_t rgwtMin[4]; /* +0x001c */
     union {

@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "log.h"
 #include "memory.h"
+#include "msg.h"
 #include "parts.h"
 #include "planet.h"
 #include "race.h"
@@ -268,7 +269,6 @@ int16_t IshdefPrimaryFromLpfl(FLEET *lpfl, int16_t *pcDiff) {
 }
 
 int16_t GetCachedFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal) {
-    int16_t dT;
     int16_t dPlanRange;
     int16_t i;
     int16_t iPlr;
@@ -276,8 +276,42 @@ int16_t GetCachedFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *p
     int16_t iSteal;
     int16_t pctDetect;
 
-    /* TODO: implement */
-    return 0;
+    iPlr = lpfl->iPlayer;
+    dRange = -1;
+    dPlanRange = 0;
+    iSteal = 0;
+    pctDetect = 100;
+
+    if (!gd.fGeneratingTurn) {
+        dRange = GetFleetScannerRange(lpfl, pdPlanRange, ppctDetect, piSteal);
+    } else {
+        for (i = 0; i < cShdefMax; i++) {
+            if (lpfl->rgcsh[i] > 0) {
+                SHDEF  *lpshdef = &rglpshdef[iPlr][i];
+                int16_t scanRange = lpshdef->dScanRange;
+                if (scanRange != 0x7ff && scanRange > dRange) {
+                    dRange = scanRange;
+                }
+                if (lpshdef->dScanRange2 > dPlanRange) {
+                    dPlanRange = lpshdef->dScanRange2;
+                }
+                if (lpshdef->pctDetect < (uint16_t)pctDetect) {
+                    pctDetect = lpshdef->pctDetect;
+                }
+                iSteal |= lpshdef->iSteal;
+            }
+        }
+        if (pdPlanRange != NULL) {
+            *pdPlanRange = dPlanRange;
+        }
+        if (ppctDetect != NULL) {
+            *ppctDetect = pctDetect;
+        }
+        if (piSteal != NULL) {
+            *piSteal = iSteal;
+        }
+    }
+    return dRange;
 }
 
 int16_t FLookupSelShip(FLEET *pfl) {
@@ -820,7 +854,12 @@ int16_t ICompFleetPoint2(void *arg1, void *arg2) {
 void TurnLog(StringId ids) {
     char szTemp[256];
 
-    /* TODO: implement */
+    if (ini.fLogging) {
+        int16_t year = game.turn + 2401;
+        char   *psz = PszFormatIds(ids, NULL);
+        snprintf(szTemp, sizeof(szTemp), psz, year);
+        OutputSz(6, szTemp);
+    }
 }
 
 char *PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t fThe, int16_t grWord, PLAYER *pplr) {
@@ -1021,8 +1060,64 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     FLEET  *lpfl;
     int16_t iflPrev;
 
-    /* TODO: implement */
-    return NULL;
+    iflPrev = -1;
+    for (i = 0; i < cFleet; i++) {
+        lpfl = rglpfl[i];
+        if (lpfl == NULL)
+            break;
+        if (iPlr <= lpfl->iPlayer) {
+            if (iPlr < lpfl->iPlayer || (lpfl->id & 0x1ff) != iflPrev + 1)
+                break;
+            iflPrev = lpfl->id & 0x1ff;
+        }
+    }
+
+    rglpfl = LpReAlloc(rglpfl, (cFleet + 1) * 4, htMisc);
+    if (cFleet != i) {
+        memmove(&rglpfl[i + 1], &rglpfl[i], (cFleet - i) * 4);
+    }
+
+    lpfl = LpAlloc(sizeof(FLEET), htFleets);
+    rglpfl[i] = lpfl;
+    cFleet++;
+    rgplr[iPlr].cFleet = (rgplr[iPlr].cFleet + 1) & 0xfff;
+
+    memset(lpfl, 0, sizeof(FLEET));
+    lpfl->ifl = (iflPrev + 1) & 0x1ff;
+    lpfl->iPlayer = iPlr;
+    lpfl->iplr = iPlr & 0xf;
+    lpfl->det = detAll;
+    lpfl->idPlanet = idPl;
+    if (idPl != -1) {
+        lpfl->pt.x = rgptPlan[idPl].x;
+        lpfl->pt.y = rgptPlan[idPl].y;
+    }
+    lpfl->cord = 1;
+    lpfl->fRepOrders = 0;
+
+    lpfl->lpplord = (PLORD *)LpplAlloc(sizeof(ORDER), 3, htOrd);
+    lpfl->lpplord->iordMac = 1;
+    lpfl->fTargeted = 0;
+
+    lpord = &lpfl->lpplord->rgord[0];
+    lpord->pt.x = lpfl->pt.x;
+    lpord->pt.y = lpfl->pt.y;
+    lpord->id = lpfl->idPlanet;
+    if (lpfl->idPlanet == -1) {
+        lpord->iWarp = 4;
+    } else {
+        lpord->iWarp = 1;
+    }
+    lpord->grobj = grobjNone;
+    lpord->fValidTask = 1;
+    lpord->grTask = 0;
+
+    if (sel.scan.ifl != -1 && i <= sel.scan.ifl) {
+        sel.scan.ifl++;
+    }
+    gd.fFleetLinkValid = 0;
+
+    return lpfl;
 }
 
 void UpdateShdefCost(SHDEF *shdef) {

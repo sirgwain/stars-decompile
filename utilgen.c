@@ -285,13 +285,42 @@ int16_t FCheckPassword(void) {
     return 1;
 }
 
+/* Parse space-delimited decimal numbers from a string into an array.
+   Returns the count of numbers parsed, or -1 if a non-digit/non-space
+   character is encountered. */
 int16_t CParseNumbers(char *psz, int32_t *pl, int16_t cMax) {
     int16_t iRead;
-    int16_t fValid;
+    bool    fValid;
     int32_t lNum;
 
-    /* TODO: implement */
-    return 0;
+    iRead = 0;
+    lNum = 0;
+    fValid = false;
+
+    for (;;) {
+        if (cMax <= iRead || *psz == '\0') {
+            if (fValid) {
+                pl[iRead] = lNum;
+                iRead++;
+            }
+            return iRead;
+        }
+        if (*psz != ' ' && (*psz < '0' || *psz > '9'))
+            return -1;
+
+        if (*psz == ' ') {
+            if (fValid) {
+                pl[iRead] = lNum;
+                lNum = 0;
+                fValid = false;
+                iRead++;
+            }
+        } else {
+            fValid = true;
+            lNum = (uint32_t)lNum * 10 + (*psz - '0');
+        }
+        psz++;
+    }
 }
 
 void ExpandRc(RECT *prc, int16_t dx, int16_t dy) {
@@ -577,12 +606,35 @@ void XorFileBuf(uint8_t *rgb, int16_t cb) {
     }
 }
 
+/* Extract the next line from a multi-line string buffer. Strips leading
+   spaces, null-terminates the line in place, and advances *ppszBeg past
+   the line terminator (\r\n or \n). Returns the start of the trimmed line. */
 char *PszGetLine(char **ppszBeg) {
     char *pszStart;
     char *psz;
 
-    /* TODO: implement */
-    return NULL;
+    psz = *ppszBeg;
+
+    /* Skip leading spaces */
+    while (*psz == ' ') {
+        psz++;
+    }
+    pszStart = psz;
+
+    /* Advance to end of line */
+    while (*psz != '\0' && *psz != '\n' && *psz != '\r') {
+        psz++;
+    }
+
+    /* Advance past line terminator */
+    if (*psz == '\r' && psz[1] == '\n') {
+        *ppszBeg = psz + 2;
+    } else {
+        *ppszBeg = psz + 1;
+    }
+
+    *psz = '\0';
+    return pszStart;
 }
 
 int16_t Random(int16_t c) {
