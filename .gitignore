@@ -70,3 +70,4 @@ ghidra_project.*/
 decompiled/asm
 debug.log
 Stars.ini
+test/data/generated/

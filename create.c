@@ -18,6 +18,16 @@
 #include "util.h"
 #include "utilgen.h"
 
+/* On Win16, ICompLong used *(int*) which was 16-bit, so qsort on
+ * STARSPOINT sorted by x only (the first field). On 32-bit platforms,
+ * ICompLong reads 32 bits, giving a y-primary sort on little-endian.
+ * This comparator preserves the original x-sort behavior. */
+static int ICompStarsPointX(const void *a, const void *b) {
+    int16_t xa = ((const STARSPOINT *)a)->x;
+    int16_t xb = ((const STARSPOINT *)b)->x;
+    return (xa > xb) - (xa < xb);
+}
+
 /* globals */
 BTLPLAN rgbtlplanT[5] = {
     {.szName = "Default"}, {.szName = "Kill Starbase"}, {.szName = "Max-Defense"}, {.szName = "Sniper"}, {.szName = "Chicken"}}; /* 1078:000c */
@@ -451,8 +461,8 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
 }
 
 int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
-    int16_t c;
-    int16_t i;
+    int16_t  c;
+    int16_t  i;
     uint16_t val;
 
     val = pgame->rgvc[vc] & 0x7f;
@@ -650,7 +660,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
         rgptPlan[i].x = (int16_t)(dx + Random(dy));
         rgptPlan[i].y = (int16_t)(dx + Random(dy));
     }
-    qsort((void *)rgptPlan, iMax, sizeof(STARSPOINT), ICompLong);
+    qsort((void *)rgptPlan, iMax, sizeof(STARSPOINT), ICompStarsPointX);
 
     pptMax = &rgptPlan[iMax];
     cKill = 0;
@@ -728,7 +738,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
             }
         }
 
-        qsort((void *)rgptPlan, cPlanMax, sizeof(STARSPOINT), ICompLong);
+        qsort((void *)rgptPlan, cPlanMax, sizeof(STARSPOINT), ICompStarsPointX);
     }
 
     // ------------------- Planet Names -----------------
@@ -1377,7 +1387,7 @@ RetryAll:
 
     // setup fleet alloc
     cFleet = 0;
-    rglpfl = (FLEET**)LpAlloc(4, htMisc);
+    rglpfl = (FLEET **)LpAlloc(4, htMisc);
 
     for (i = 0; i < game.cPlayer; i++) {
         PLAYER *pplr;
