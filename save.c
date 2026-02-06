@@ -1447,7 +1447,7 @@ int16_t FCreateFile(DtFileType dt, int16_t iPlayer, char *szForceName) {
 
     jmp_rc = setjmp(env.env);
     if (jmp_rc == 0) {
-        StreamOpen(psz, 0x1012);
+        StreamOpen(psz, mdCreate);
         WriteBOF(iPlayer, dt, 0);
     }
 

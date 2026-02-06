@@ -74,7 +74,11 @@ int Stars_strnicmp(const char *a, const char *b, size_t n) {
  * If your project already has an mdOpen enum, adjust here.
  */
 static inline const char *stars_mode_from_md(int16_t mdOpen) {
-    mdOpen = (int16_t)(mdOpen & (int16_t)0xbfff);
+    mdOpen = (int16_t)(mdOpen & (int16_t)~mdNoOpenErr);
+
+    if (mdOpen & 0x1000) {
+        return "w+b"; /* OF_CREATE | OF_READWRITE: create/truncate for read/write */
+    }
 
     switch (mdOpen) {
     case 2:

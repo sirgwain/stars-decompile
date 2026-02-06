@@ -8,6 +8,8 @@
 #include "mdi.h"
 #include "memory.h"
 #include "msg.h"
+#include "planet.h"
+#include "ship.h"
 #include "utilgen.h"
 
 // engine init/lpalloc calls from FCreateStuff broken out for headless mode
@@ -1511,14 +1513,55 @@ INIT_NoRc:
 }
 
 void InitTiles(void) {
-    int16_t  yTop;
-    int16_t  ctile;
-    TILE    *rgtile;
-    int16_t  i;
     int16_t  iPass;
+    TILE    *rgtile;
+    int16_t  ctile;
+    int16_t  yTop;
     uint16_t iCol;
+    int16_t  dy;
 
-    /* TODO: implement */
+    // init draw function pointers
+    rgtilePlanet[0].pfn = DrawPlanShipBitmap;
+    rgtilePlanet[1].pfn = DrawPlanetMinSum;
+    rgtilePlanet[2].pfn = DrawPlanetStats;
+    rgtilePlanet[3].pfn = DrawPlanetShipList;
+    rgtilePlanet[4].pfn = DrawPlanetProduction;
+    rgtilePlanet[5].pfn = DrawPlanetStarbase;
+
+    rgtileShip[0].pfn = DrawPlanShipBitmap;
+    rgtileShip[1].pfn = DrawShipPlanet;
+    rgtileShip[2].pfn = DrawShipOrders;
+    rgtileShip[3].pfn = DrawShipWayPtOrders;
+    rgtileShip[4].pfn = DrawShipCargo;
+    rgtileShip[5].pfn = DrawFleetComp;
+    rgtileShip[6].pfn = DrawPlanetShipList;
+
+    iPass = 2;
+    rgtile = rgtilePlanet;
+    ctile = 6;
+    while (iPass != 0) {
+        iCol = 0;
+        yTop = 4;
+        for (int i = 0; i < ctile; i = i + 1) {
+            if (rgtile[i].iCol != iCol) {
+                yTop = 4;
+                iCol = rgtile[i].iCol;
+            }
+            rgtile[i].dyFull = rgtile[i].dyFull + rgtile[i].yTop * dyArial8;
+            rgtile[i].yTop = yTop;
+            rgtile[i].fErase = 0;
+            rgtile[i].fFixCtls = 0;
+            if (rgtile[i].fPopped == 0) {
+                dy = dyArial8 + 7;
+            } else {
+                dy = rgtile[i].dyFull + 4;
+            }
+            yTop = yTop + dy;
+        }
+        rgtile = rgtileShip;
+        ctile = 7;
+        iPass = iPass - 1;
+    }
 }
 
 #endif

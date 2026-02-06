@@ -6,11 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "create.h"
 #include "dump.h"
 #include "file.h"
 #include "globals.h"
 #include "memory.h"
 #include "port.h"
+#include "strings.h"
+#include "utilgen.h"
 
 /* ------------------------------------------------------------ */
 /* small helpers */
@@ -55,7 +58,10 @@ static void print_usage(FILE *out) {
                  "  shdef <index>          Show a ship design by index\n"
                  "  game                   Dump loaded game summary\n"
                  "  blocks                 Dump raw record blocks (type/size/data)\n"
-                 "  dump                   Dump blocks for all files (.XY, .HST, .M*, .H*)\n");
+                 "  dump                   Dump blocks for all files (.XY, .HST, .M*, .H*)\n"
+                 "\n"
+                 "Standalone commands (no 'load' required):\n"
+                 "  create-tutor            Create a tutorial world\n");
 }
 
 static int32_t parse_i32(const char *s, bool *ok) {
@@ -139,7 +145,6 @@ static void print_planet_row(const PLANET *p) {
            (int)p->fHomeworld, (int)p->fStarbase, (unsigned)p->uPopGuess, (unsigned)p->cFactories, (unsigned)p->cMines);
 }
 
-
 static void print_thing_row(const THING *t) {
     printf("0x%04x  id=%3u  iplr=%2u  ith=%u  (%5d,%5d)  turn=%u\n", (unsigned)t->idFull, (unsigned)t->id, (unsigned)t->iplr, (unsigned)t->ith, (int)t->pt.x,
            (int)t->pt.y, (unsigned)t->turn);
@@ -162,7 +167,6 @@ static void print_fleet_row(const FLEET *f) {
     printf("%5d  plr=%2d  det=%3u  dead=%d  (%5d,%5d)  idPlanet=%d  plan=%u  name=\"%s\"\n", f->id, f->iPlayer, (unsigned)f->det, (int)f->fDead, (int)f->pt.x,
            (int)f->pt.y, (int)f->idPlanet, (unsigned)f->iplan, name);
 }
-
 
 static void print_shdef_row(const SHDEF *s, int idx) {
     printf("%3d  ishdef=%u  free=%d  gift=%d  det=%u  class=\"%s\"  ihuldef=%d  chs=%u  built=%" PRIu32 " exist=%" PRIu32 "\n", idx, (unsigned)s->ishdef,
@@ -449,6 +453,13 @@ int StarsCli_Run(int argc, char **argv) {
 
     if (strcmp(argv[1], "help") == 0 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
         print_usage(stdout);
+        return 0;
+    }
+
+    if (strcmp(argv[1], "create-tutor") == 0) {
+        CchGetString(idsTutorial, szBase);
+        CreateTutorWorld();
+        printf("Tutorial world created.\n");
         return 0;
     }
 

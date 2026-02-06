@@ -2640,7 +2640,7 @@ typedef struct _tile {
     int16_t yTop;                               /* +0x0000 */
     int16_t dyFull;                             /* +0x0002 */
     int16_t grbit;                              /* +0x0004 */
-    void (*pfn)(uint16_t, struct _tile *, OBJ); /* +0x0006 */
+    void (*pfn)(HDC, struct _tile *, OBJ); /* +0x0006 */
     union {
         struct {
             uint16_t iCol : 3;

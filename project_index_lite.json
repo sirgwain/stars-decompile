@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-02-06T14:04:59Z",
+  "generated_at_utc": "2026-02-06T15:15:12Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -1007,151 +1007,151 @@
     "file_size_bytes": {
       "signature": "static int64_t file_size_bytes(const char *path)",
       "file": "cli.c",
-      "line": 18,
+      "line": 21,
       "kind": "definition"
     },
     "print_usage": {
       "signature": "static void print_usage(FILE *out)",
       "file": "cli.c",
-      "line": 37,
+      "line": 40,
       "kind": "definition"
     },
     "parse_i32": {
       "signature": "static int32_t parse_i32(const char *s, bool *ok)",
       "file": "cli.c",
-      "line": 61,
+      "line": 67,
       "kind": "definition"
     },
     "find_planet_by_id": {
       "signature": "static const PLANET * find_planet_by_id(int16_t id)",
       "file": "cli.c",
-      "line": 82,
+      "line": 88,
       "kind": "definition"
     },
     "find_thing_by_idfull": {
       "signature": "static const THING * find_thing_by_idfull(uint16_t idFull)",
       "file": "cli.c",
-      "line": 93,
+      "line": 99,
       "kind": "definition"
     },
     "find_fleet_by_id": {
       "signature": "static const FLEET * find_fleet_by_id(int16_t id)",
       "file": "cli.c",
-      "line": 104,
+      "line": 110,
       "kind": "definition"
     },
     "print_planet_row": {
       "signature": "static void print_planet_row(const PLANET *p)",
       "file": "cli.c",
-      "line": 124,
+      "line": 130,
       "kind": "definition"
     },
     "print_thing_row": {
       "signature": "static void print_thing_row(const THING *t)",
       "file": "cli.c",
-      "line": 138,
+      "line": 143,
       "kind": "definition"
     },
     "print_thing_detail": {
       "signature": "static void print_thing_detail(const THING *t)",
       "file": "cli.c",
-      "line": 143,
+      "line": 148,
       "kind": "definition"
     },
     "print_fleet_row": {
       "signature": "static void print_fleet_row(const FLEET *f)",
       "file": "cli.c",
-      "line": 155,
+      "line": 160,
       "kind": "definition"
     },
     "print_shdef_row": {
       "signature": "static void print_shdef_row(const SHDEF *s, int idx)",
       "file": "cli.c",
-      "line": 162,
+      "line": 166,
       "kind": "definition"
     },
     "cmd_planets": {
       "signature": "static int cmd_planets(bool fVerbose)",
       "file": "cli.c",
-      "line": 170,
+      "line": 174,
       "kind": "definition"
     },
     "cmd_planet": {
       "signature": "static int cmd_planet(const char *sid)",
       "file": "cli.c",
-      "line": 187,
+      "line": 191,
       "kind": "definition"
     },
     "cmd_things": {
       "signature": "static int cmd_things(void)",
       "file": "cli.c",
-      "line": 203,
+      "line": 207,
       "kind": "definition"
     },
     "cmd_thing": {
       "signature": "static int cmd_thing(const char *sidfull)",
       "file": "cli.c",
-      "line": 215,
+      "line": 219,
       "kind": "definition"
     },
     "cmd_fleets": {
       "signature": "static int cmd_fleets(bool fVerbose)",
       "file": "cli.c",
-      "line": 231,
+      "line": 235,
       "kind": "definition"
     },
     "cmd_fleet": {
       "signature": "static int cmd_fleet(const char *sid)",
       "file": "cli.c",
-      "line": 255,
+      "line": 259,
       "kind": "definition"
     },
     "cmd_shdefs": {
       "signature": "static int cmd_shdefs(bool fVerbose)",
       "file": "cli.c",
-      "line": 271,
+      "line": 275,
       "kind": "definition"
     },
     "cmd_shdef": {
       "signature": "static int cmd_shdef(const char *sidx)",
       "file": "cli.c",
-      "line": 285,
+      "line": 289,
       "kind": "definition"
     },
     "cmd_game": {
       "signature": "static int cmd_game(const CliContext *cli)",
       "file": "cli.c",
-      "line": 296,
+      "line": 300,
       "kind": "definition"
     },
     "print_hex_bytes": {
       "signature": "static void print_hex_bytes(const uint8_t *pb, size_t cb)",
       "file": "cli.c",
-      "line": 333,
+      "line": 337,
       "kind": "definition"
     },
     "dump_try_file": {
       "signature": "static int dump_try_file(const CliContext *cli, const char *path_lower, const char *path_upper, int *pFound, int *pErrors)",
       "file": "cli.c",
-      "line": 339,
+      "line": 343,
       "kind": "definition"
     },
     "cmd_dump": {
       "signature": "static int cmd_dump(const CliContext *cli)",
       "file": "cli.c",
-      "line": 362,
+      "line": 366,
       "kind": "definition"
     },
     "do_load": {
       "signature": "static int do_load(CliContext *cli)",
       "file": "cli.c",
-      "line": 419,
+      "line": 423,
       "kind": "definition"
     },
     "StarsCli_Run": {
       "signature": "int StarsCli_Run(int argc, char **argv)",
       "file": "cli.c",
-      "line": 429,
+      "line": 433,
       "kind": "definition"
     },
     "CreateStartupShip": {
@@ -1199,79 +1199,79 @@
     "SetVCVal": {
       "signature": "int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val)",
       "file": "create.c",
-      "line": 496,
+      "line": 535,
       "kind": "definition"
     },
     "GenerateWorld": {
       "signature": "int16_t GenerateWorld(int16_t fBatchMode)",
       "file": "create.c",
-      "line": 516,
+      "line": 555,
       "kind": "definition"
     },
     "FGetNewGameName": {
       "signature": "int16_t FGetNewGameName(char *szFileSuggest)",
       "file": "create.c",
-      "line": 1833,
+      "line": 1876,
       "kind": "definition"
     },
     "GenNewGameFromFile": {
       "signature": "int16_t GenNewGameFromFile(char *pszFile)",
       "file": "create.c",
-      "line": 1845,
+      "line": 1888,
       "kind": "definition"
     },
     "SetNGWTitle": {
       "signature": "void SetNGWTitle(HWND hwnd, int16_t iStep)",
       "file": "create.c",
-      "line": 1879,
+      "line": 1922,
       "kind": "definition"
     },
     "FTrackNewGameDlg3": {
       "signature": "int16_t FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd)",
       "file": "create.c",
-      "line": 1886,
+      "line": 1929,
       "kind": "definition"
     },
     "NewGameWizard": {
       "signature": "void NewGameWizard(HWND hwnd, int16_t fReadOnly)",
       "file": "create.c",
-      "line": 1902,
+      "line": 1945,
       "kind": "definition"
     },
     "NewGameDlg3": {
       "signature": "INT_PTR CALLBACK NewGameDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "create.c",
-      "line": 1929,
+      "line": 1972,
       "kind": "definition"
     },
     "NewGameDlg2": {
       "signature": "INT_PTR CALLBACK NewGameDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "create.c",
-      "line": 1945,
+      "line": 1988,
       "kind": "definition"
     },
     "NewGameDlg": {
       "signature": "INT_PTR CALLBACK NewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "create.c",
-      "line": 1981,
+      "line": 2024,
       "kind": "definition"
     },
     "SimpleNewGameDlg": {
       "signature": "INT_PTR CALLBACK SimpleNewGameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "create.c",
-      "line": 1998,
+      "line": 2041,
       "kind": "definition"
     },
     "DrawNewGame3": {
       "signature": "void DrawNewGame3(HWND hwnd, HDC hdc, int16_t iDraw)",
       "file": "create.c",
-      "line": 2017,
+      "line": 2060,
       "kind": "definition"
     },
     "DrawNewGame2": {
       "signature": "void DrawNewGame2(HWND hwnd, HDC hdc, int16_t iDraw)",
       "file": "create.c",
-      "line": 2038,
+      "line": 2081,
       "kind": "definition"
     },
     "GetVCCheck": {
@@ -1601,73 +1601,73 @@
     "FAllocStuff": {
       "signature": "void FAllocStuff(void)",
       "file": "init.c",
-      "line": 14,
+      "line": 16,
       "kind": "definition"
     },
     "DeallocStuff": {
       "signature": "void DeallocStuff(void)",
       "file": "init.c",
-      "line": 32,
+      "line": 34,
       "kind": "definition"
     },
     "FCreateStuff": {
       "signature": "bool FCreateStuff(void)",
       "file": "init.c",
-      "line": 55,
+      "line": 57,
       "kind": "definition"
     },
     "FCreateFonts": {
       "signature": "bool FCreateFonts(HDC hdc)",
       "file": "init.c",
-      "line": 272,
+      "line": 274,
       "kind": "definition"
     },
     "FreeStuff": {
       "signature": "void FreeStuff(void)",
       "file": "init.c",
-      "line": 367,
+      "line": 369,
       "kind": "definition"
     },
     "StrDate_MMDDYY": {
       "signature": "static void StrDate_MMDDYY(char *dst )",
       "file": "init.c",
-      "line": 754,
+      "line": 756,
       "kind": "definition"
     },
     "ReadIniTileSettings": {
       "signature": "void ReadIniTileSettings(char *pszFormat, TILE *rgtile, int16_t ctile)",
       "file": "init.c",
-      "line": 778,
+      "line": 780,
       "kind": "definition"
     },
     "ReadIniSettings": {
       "signature": "void ReadIniSettings(void)",
       "file": "init.c",
-      "line": 838,
+      "line": 840,
       "kind": "definition"
     },
     "InitStarsPath": {
       "signature": "void InitStarsPath()",
       "file": "init.c",
-      "line": 1355,
+      "line": 1357,
       "kind": "definition"
     },
     "InitInstance": {
       "signature": "int16_t InitInstance(int16_t nCmdShow)",
       "file": "init.c",
-      "line": 1361,
+      "line": 1363,
       "kind": "definition"
     },
     "GetIniWinRc": {
       "signature": "void GetIniWinRc(char *szSection, char *szIniFile, StringId ids, WN *pwn)",
       "file": "init.c",
-      "line": 1409,
+      "line": 1411,
       "kind": "definition"
     },
     "InitTiles": {
       "signature": "void InitTiles(void)",
       "file": "init.c",
-      "line": 1485,
+      "line": 1487,
       "kind": "definition"
     },
     "WriteMemRt": {
@@ -2783,145 +2783,145 @@
     "Stars_OpenFile": {
       "signature": "int Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen)",
       "file": "port.c",
-      "line": 79,
+      "line": 83,
       "kind": "definition"
     },
     "Stars_CloseFile": {
       "signature": "void Stars_CloseFile(StarsFile *h)",
       "file": "port.c",
-      "line": 101,
+      "line": 105,
       "kind": "definition"
     },
     "Stars_Read": {
       "signature": "size_t Stars_Read(StarsFile *h, void *dst, size_t cb)",
       "file": "port.c",
-      "line": 109,
+      "line": 113,
       "kind": "definition"
     },
     "Stars_Seek": {
       "signature": "int Stars_Seek(StarsFile *h, long offset, int whence)",
       "file": "port.c",
-      "line": 115,
+      "line": 119,
       "kind": "definition"
     },
     "Stars_Write": {
       "signature": "size_t Stars_Write(StarsFile *h, const void *src, size_t cb)",
       "file": "port.c",
-      "line": 122,
+      "line": 126,
       "kind": "definition"
     },
     "Stars_ReadU16Unaligned": {
       "signature": "uint16_t Stars_ReadU16Unaligned(const void *p)",
       "file": "port.c",
-      "line": 148,
+      "line": 152,
       "kind": "definition"
     },
     "Stars_AtEOF": {
       "signature": "bool Stars_AtEOF(StarsFile *h)",
       "file": "port.c",
-      "line": 155,
+      "line": 159,
       "kind": "definition"
     },
     "Port_PathSep": {
       "signature": "static char Port_PathSep(void)",
       "file": "port.c",
-      "line": 174,
+      "line": 178,
       "kind": "definition"
     },
     "Port_Utf8ToWide": {
       "signature": "static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide)",
       "file": "port.c",
-      "line": 189,
+      "line": 193,
       "kind": "definition"
     },
     "Stars_PathJoin": {
       "signature": "bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf)",
       "file": "port.c",
-      "line": 235,
+      "line": 239,
       "kind": "definition"
     },
     "Stars_PathExists": {
       "signature": "bool Stars_PathExists(const char *path)",
       "file": "port.c",
-      "line": 262,
+      "line": 266,
       "kind": "definition"
     },
     "Port_MkdirOne": {
       "signature": "static bool Port_MkdirOne(const char *path)",
       "file": "port.c",
-      "line": 279,
+      "line": 283,
       "kind": "definition"
     },
     "Stars_EnsureDirRecursive": {
       "signature": "bool Stars_EnsureDirRecursive(const char *path)",
       "file": "port.c",
-      "line": 298,
+      "line": 302,
       "kind": "definition"
     },
     "Stars_PathSplitExt": {
       "signature": "bool Stars_PathSplitExt(const char *path, char *base_out, size_t base_sz, char *ext_out, size_t ext_sz)",
       "file": "port.c",
-      "line": 339,
+      "line": 343,
       "kind": "definition"
     },
     "Stars_PathBasename": {
       "signature": "const char * Stars_PathBasename(const char *path)",
       "file": "port.c",
-      "line": 379,
+      "line": 383,
       "kind": "definition"
     },
     "Stars_PathDirname": {
       "signature": "bool Stars_PathDirname(const char *path, char *out, size_t out_sz)",
       "file": "port.c",
-      "line": 392,
+      "line": 396,
       "kind": "definition"
     },
     "Stars_ReadFile": {
       "signature": "bool Stars_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len)",
       "file": "port.c",
-      "line": 427,
+      "line": 431,
       "kind": "definition"
     },
     "Port_WriteAll": {
       "signature": "static bool Port_WriteAll(FILE *f, const void *buf, size_t len)",
       "file": "port.c",
-      "line": 489,
+      "line": 493,
       "kind": "definition"
     },
     "Port_TempPathForTarget": {
       "signature": "static bool Port_TempPathForTarget(const char *target_u8, char *out, size_t out_sz)",
       "file": "port.c",
-      "line": 502,
+      "line": 506,
       "kind": "definition"
     },
     "Port_MkTempSibling": {
       "signature": "static bool Port_MkTempSibling(const char *target, char *out, size_t out_sz)",
       "file": "port.c",
-      "line": 515,
+      "line": 519,
       "kind": "definition"
     },
     "Stars_WriteFileAtomic": {
       "signature": "bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len)",
       "file": "port.c",
-      "line": 528,
+      "line": 532,
       "kind": "definition"
     },
     "Cli_SetGenTurns": {
       "signature": "static bool Cli_SetGenTurns(StarsCli *cli, const char *s)",
       "file": "port.c",
-      "line": 618,
+      "line": 622,
       "kind": "definition"
     },
     "Cli_ParseDumpModes": {
       "signature": "static void Cli_ParseDumpModes(StarsCli *cli, const char *modes)",
       "file": "port.c",
-      "line": 628,
+      "line": 632,
       "kind": "definition"
     },
     "Stars_ParseCommandLine": {
       "signature": "bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli)",
       "file": "port.c",
-      "line": 641,
+      "line": 645,
       "kind": "definition"
     },
     "PszNameProdItem": {

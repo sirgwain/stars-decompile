@@ -507,9 +507,48 @@ void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
 }
 
 void CreateTutorWorld(void) {
+    PLAYER *pplrComp;
+    char   *pszFmt;
     int16_t i;
 
-    /* TODO: implement */
+    memset(&game, 0, sizeof(GAME));
+    game.cPlayer = 2;
+    game.mdDensity = 0;
+    game.mdSize = 0;
+    game.mdStartDist = 1;
+    game.fTutorial = 1;
+    game.fBBSPlay = 1;
+    game.fVisScores = 1;
+    game.fNoRandom = 1;
+    game.lid = 0x008CEF49;
+    game.rgvc[7] = 0x80;
+    game.rgvc[8] = 0x81;
+    CchGetString(idsTutorialGame, game.szName);
+
+    memcpy(&rgplr[0], &vrgplrDef[0], sizeof(PLAYER));
+    CchGetString(idsHumanoid, rgplr[0].szName);
+    sprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
+
+    pplrComp = LpplrComp(1, 0);
+    memcpy(&rgplr[1], pplrComp, sizeof(PLAYER));
+    rgplr[1].fAi = 1;
+    rgplr[1].lvlAi = 0;
+    rgplr[1].idAi = 1;
+    CchGetString(idsBerserker, rgplr[1].szName);
+
+    Randomize(1234567890);
+
+    for (i = 1; i < 3; i++) {
+        pszFmt = PszGetCompressedString(idsSHD);
+        sprintf(szWork, pszFmt, szBase, (int)i);
+        remove(szWork);
+
+        pszFmt = PszGetCompressedString(idsSXD);
+        sprintf(szWork, pszFmt, szBase, (int)i);
+        remove(szWork);
+    }
+
+    GenerateWorld(0);
 }
 
 int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
@@ -1335,6 +1374,10 @@ RetryAll:
             }
         }
     }
+
+    // setup fleet alloc
+    cFleet = 0;
+    rglpfl = (FLEET**)LpAlloc(4, htMisc);
 
     for (i = 0; i < game.cPlayer; i++) {
         PLAYER *pplr;

@@ -6979,8 +6979,8 @@
       },
       "types": {
         "typind": 5607,
-        "c_type": "TILE[0]",
-        "c_decl": "TILE rgtilePlanet[0]",
+        "c_type": "TILE[6]",
+        "c_decl": "TILE rgtilePlanet[6]",
         "kind": "array",
         "is_far_ptr": false
       },
@@ -7524,8 +7524,8 @@
       },
       "types": {
         "typind": 5607,
-        "c_type": "TILE[0]",
-        "c_decl": "TILE rgtileShip[0]",
+        "c_type": "TILE[7]",
+        "c_decl": "TILE rgtileShip[7]",
         "kind": "array",
         "is_far_ptr": false
       },

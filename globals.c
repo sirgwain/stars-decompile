@@ -424,8 +424,13 @@ SHDEF       rgshdef[16] = {0};
 SHDEF       shdefBuild = {0};
 THING      *lpthBattle;
 THING      *lpThings;
-TILE        rgtilePlanet[0];
-TILE        rgtileShip[0];
+TILE        rgtilePlanet[6] = {{.yTop = 1, .dyFull = 85, .grbit = 128, .idh = 0x05e2}, {.yTop = 6, .dyFull = 5, .grbit = 1, .idh = 0x05e5},
+                               {.yTop = 8, .dyFull = 6, .grbit = 8, .idh = 0x05e4},    {.yTop = 6, .dyFull = 22, .grbit = 4, .idh = 0x05e6},
+                               {.yTop = 10, .dyFull = 20, .grbit = 64, .idh = 0x05e3}, {.yTop = 8, .dyFull = 15, .grbit = 256, .idh = 0x05e7}};
+TILE        rgtileShip[7] = {{.yTop = 1, .dyFull = 85, .grbit = 128, .idh = 0x05e9}, {.yTop = 3, .dyFull = 5, .grbit = 64, .idh = 0x05ea},
+                             {.yTop = 11, .dyFull = 19, .grbit = 32, .idh = 0x05ee}, {.yTop = 6, .dyFull = 12, .grbit = 256, .idh = 0x05ef},
+                             {.yTop = 7, .dyFull = 14, .grbit = 1, .idh = 0x05eb},   {.yTop = 12, .dyFull = 16, .grbit = 512, .idh = 0x05ec},
+                             {.yTop = 6, .dyFull = 22, .grbit = 4, .idh = 0x05ed}};
 TIMER       vtimer = {0};
 TOK        *vrgtok;
 TURNSERIAL *vrgts;

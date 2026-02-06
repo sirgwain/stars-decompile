@@ -7,10 +7,10 @@
 | Metric | Count |
 |--------|------:|
 | Total functions | 846 |
-| ✅ Implemented | 285 |
-| ⬜ Stub | 558 |
+| ✅ Implemented | 288 |
+| ⬜ Stub | 555 |
 | ❌ Missing | 3 |
-| **Progress** | **33.7%** |
+| **Progress** | **34.0%** |
 
 ## By File
 
@@ -24,9 +24,9 @@
 | aiutil.c | 0 | 62 | 0 | 0.0% |
 | battle.c | 7 | 36 | 0 | 16.3% |
 | build.c | 1 | 21 | 0 | 4.5% |
-| create.c | 10 | 12 | 0 | 45.5% |
+| create.c | 11 | 11 | 0 | 50.0% |
 | file.c | 20 | 2 | 0 | 90.9% |
-| init.c | 7 | 1 | 0 | 87.5% |
+| init.c | 8 | 0 | 0 | 100.0% |
 | log.c | 8 | 15 | 0 | 34.8% |
 | mdi.c | 18 | 11 | 0 | 62.1% |
 | memory.c | 11 | 0 | 0 | 100.0% |
@@ -52,7 +52,7 @@
 | turn3.c | 0 | 1 | 0 | 0.0% |
 | tutor.c | 3 | 30 | 0 | 9.1% |
 | tutor2.c | 1 | 0 | 0 | 100.0% |
-| util.c | 35 | 32 | 0 | 52.2% |
+| util.c | 36 | 31 | 0 | 53.7% |
 | utilgen.c | 51 | 21 | 1 | 69.9% |
 | vcr.c | 6 | 8 | 0 | 42.9% |
 | winmain.c | 1 | 0 | 0 | 100.0% |
@@ -256,31 +256,31 @@
 - ⬜ **SlotDlg** — `int16_t SlotDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [build.c:89](../build.c#L89) · [decompiled](../decompiled/all/build.c#L205)
 - ⬜ **UpdateSlotGlobals** — `void UpdateSlotGlobals(void)` — [build.c:295](../build.c#L295) · [decompiled](../decompiled/all/build.c#L3244)
 
-### create.c (10/22)
+### create.c (11/22)
 
 
 - ✅ **CreateStartupShip** — `int16_t CreateStartupShip(int16_t, int16_t, int16_t, int16_t)` — [create.c:260](../create.c#L260) · [decompiled](../decompiled/all/create.c#L1744)
-- ⬜ **CreateTutorWorld** — `void CreateTutorWorld(void)` — [create.c:509](../create.c#L509) · [decompiled](../decompiled/all/create.c#L2454)
-- ⬜ **DrawNewGame2** — `void DrawNewGame2(uint16_t, uint16_t, int16_t)` — [create.c:2069](../create.c#L2069) · [decompiled](../decompiled/all/create.c#L4087)
-- ⬜ **DrawNewGame3** — `void DrawNewGame3(uint16_t, uint16_t, int16_t)` — [create.c:2048](../create.c#L2048) · [decompiled](../decompiled/all/create.c#L4336)
-- ⬜ **FGetNewGameName** — `int16_t FGetNewGameName(char *)` — [create.c:1864](../create.c#L1864) · [decompiled](../decompiled/all/create.c#L3100)
-- ⬜ **FTrackNewGameDlg3** — `int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)` — [create.c:1917](../create.c#L1917) · [decompiled](../decompiled/all/create.c#L4468)
-- ✅ **GenerateWorld** — `int16_t GenerateWorld(int16_t)` — [create.c:535](../create.c#L535) · [decompiled](../decompiled/all/create.c#L42)
-- ⬜ **GenNewGameFromFile** — `int16_t GenNewGameFromFile(char *)` — [create.c:1876](../create.c#L1876) · [decompiled](../decompiled/all/create.c#L1818)
+- ✅ **CreateTutorWorld** — `void CreateTutorWorld(void)` — [create.c:509](../create.c#L509) · [decompiled](../decompiled/all/create.c#L2454)
+- ⬜ **DrawNewGame2** — `void DrawNewGame2(uint16_t, uint16_t, int16_t)` — [create.c:2112](../create.c#L2112) · [decompiled](../decompiled/all/create.c#L4087)
+- ⬜ **DrawNewGame3** — `void DrawNewGame3(uint16_t, uint16_t, int16_t)` — [create.c:2091](../create.c#L2091) · [decompiled](../decompiled/all/create.c#L4336)
+- ⬜ **FGetNewGameName** — `int16_t FGetNewGameName(char *)` — [create.c:1907](../create.c#L1907) · [decompiled](../decompiled/all/create.c#L3100)
+- ⬜ **FTrackNewGameDlg3** — `int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)` — [create.c:1960](../create.c#L1960) · [decompiled](../decompiled/all/create.c#L4468)
+- ✅ **GenerateWorld** — `int16_t GenerateWorld(int16_t)` — [create.c:574](../create.c#L574) · [decompiled](../decompiled/all/create.c#L42)
+- ⬜ **GenNewGameFromFile** — `int16_t GenNewGameFromFile(char *)` — [create.c:1919](../create.c#L1919) · [decompiled](../decompiled/all/create.c#L1818)
 - ✅ **GetVCCheck** — `int16_t GetVCCheck(GAME *, int16_t)` — [create.c:285](../create.c#L285) · [decompiled](../decompiled/all/create.c#L4568)
 - ✅ **GetVCVal** — `int16_t GetVCVal(GAME *, int16_t, int16_t)` — [create.c:453](../create.c#L453) · [decompiled](../decompiled/all/create.c#L4605)
 - ✅ **InitBattlePlan** — `void InitBattlePlan(BTLPLAN *32, int16_t, int16_t)` — [create.c:287](../create.c#L287) · [decompiled](../decompiled/all/create.c#L7)
 - ✅ **InitNewGame3** — `void InitNewGame3(void)` — [create.c:295](../create.c#L295) · [decompiled](../decompiled/all/create.c#L3088)
 - ✅ **InitNewGamePlr** — `void InitNewGamePlr(int16_t, int16_t)` — [create.c:299](../create.c#L299) · [decompiled](../decompiled/all/create.c#L2946)
-- ✅ **LpplrComp** — `PLAYER *32 LpplrComp(int16_t, int16_t)` — [create.c:1862](../create.c#L1862) · [decompiled](../decompiled/all/create.c#L4536)
-- ⬜ **NewGameDlg** — `int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2012](../create.c#L2012) · [decompiled](../decompiled/all/create.c#L3398)
-- ⬜ **NewGameDlg2** — `int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:1976](../create.c#L1976) · [decompiled](../decompiled/all/create.c#L3623)
-- ⬜ **NewGameDlg3** — `int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:1960](../create.c#L1960) · [decompiled](../decompiled/all/create.c#L4226)
-- ⬜ **NewGameWizard** — `void NewGameWizard(uint16_t, int16_t)` — [create.c:1933](../create.c#L1933) · [decompiled](../decompiled/all/create.c#L2530)
-- ⬜ **SetNGWTitle** — `void SetNGWTitle(uint16_t, int16_t)` — [create.c:1910](../create.c#L1910) · [decompiled](../decompiled/all/create.c#L4517)
+- ✅ **LpplrComp** — `PLAYER *32 LpplrComp(int16_t, int16_t)` — [create.c:1905](../create.c#L1905) · [decompiled](../decompiled/all/create.c#L4536)
+- ⬜ **NewGameDlg** — `int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2055](../create.c#L2055) · [decompiled](../decompiled/all/create.c#L3398)
+- ⬜ **NewGameDlg2** — `int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2019](../create.c#L2019) · [decompiled](../decompiled/all/create.c#L3623)
+- ⬜ **NewGameDlg3** — `int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2003](../create.c#L2003) · [decompiled](../decompiled/all/create.c#L4226)
+- ⬜ **NewGameWizard** — `void NewGameWizard(uint16_t, int16_t)` — [create.c:1976](../create.c#L1976) · [decompiled](../decompiled/all/create.c#L2530)
+- ⬜ **SetNGWTitle** — `void SetNGWTitle(uint16_t, int16_t)` — [create.c:1953](../create.c#L1953) · [decompiled](../decompiled/all/create.c#L4517)
 - ✅ **SetVCCheck** — `void SetVCCheck(GAME *, int16_t, int16_t)` — [create.c:502](../create.c#L502) · [decompiled](../decompiled/all/create.c#L4548)
-- ✅ **SetVCVal** — `int16_t SetVCVal(GAME *, int16_t, int16_t)` — [create.c:515](../create.c#L515) · [decompiled](../decompiled/all/create.c#L4580)
-- ⬜ **SimpleNewGameDlg** — `int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2029](../create.c#L2029) · [decompiled](../decompiled/all/create.c#L3169)
+- ✅ **SetVCVal** — `int16_t SetVCVal(GAME *, int16_t, int16_t)` — [create.c:554](../create.c#L554) · [decompiled](../decompiled/all/create.c#L4580)
+- ⬜ **SimpleNewGameDlg** — `int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)` — [create.c:2072](../create.c#L2072) · [decompiled](../decompiled/all/create.c#L3169)
 
 ### file.c (20/22)
 
@@ -308,17 +308,17 @@
 - ✅ **UnpackBattlePlan** — `void UnpackBattlePlan(uint8_t *32, BTLPLAN *32, int16_t)` — [file.c:76](../file.c#L76) · [decompiled](../decompiled/all/io.c#L1826)
 - ✅ **UpdateBattleRecords** — `void UpdateBattleRecords(void)` — [file.c:200](../file.c#L200) · [decompiled](../decompiled/all/io.c#L1858)
 
-### init.c (7/8)
+### init.c (8/8)
 
 
-- ✅ **FCreateFonts** — `int16_t FCreateFonts(uint16_t)` — [init.c:290](../init.c#L290) · [decompiled](../decompiled/all/init.c#L278)
-- ✅ **FCreateStuff** — `int16_t FCreateStuff(void)` — [init.c:55](../init.c#L55) · [decompiled](../decompiled/all/init.c#L7)
-- ✅ **FreeStuff** — `void FreeStuff(void)` — [init.c:385](../init.c#L385) · [decompiled](../decompiled/all/main.c#L522)
-- ✅ **GetIniWinRc** — `void GetIniWinRc(char *, char *, int16_t, WN *)` — [init.c:1437](../init.c#L1437) · [decompiled](../decompiled/all/init.c#L450)
-- ✅ **InitInstance** — `int16_t InitInstance(int16_t)` — [init.c:1386](../init.c#L1386) · [decompiled](../decompiled/all/init.c#L357)
-- ⬜ **InitTiles** — `void InitTiles(void)` — [init.c:1513](../init.c#L1513) · [decompiled](../decompiled/all/init.c#L404)
-- ✅ **ReadIniSettings** — `void ReadIniSettings(void)` — [init.c:863](../init.c#L863) · [decompiled](../decompiled/all/init.c#L523)
-- ✅ **ReadIniTileSettings** — `void ReadIniTileSettings(char *, TILE *, int16_t)` — [init.c:803](../init.c#L803) · [decompiled](../decompiled/all/init.c#L1001)
+- ✅ **FCreateFonts** — `int16_t FCreateFonts(uint16_t)` — [init.c:292](../init.c#L292) · [decompiled](../decompiled/all/init.c#L278)
+- ✅ **FCreateStuff** — `int16_t FCreateStuff(void)` — [init.c:57](../init.c#L57) · [decompiled](../decompiled/all/init.c#L7)
+- ✅ **FreeStuff** — `void FreeStuff(void)` — [init.c:387](../init.c#L387) · [decompiled](../decompiled/all/main.c#L522)
+- ✅ **GetIniWinRc** — `void GetIniWinRc(char *, char *, int16_t, WN *)` — [init.c:1439](../init.c#L1439) · [decompiled](../decompiled/all/init.c#L450)
+- ✅ **InitInstance** — `int16_t InitInstance(int16_t)` — [init.c:1388](../init.c#L1388) · [decompiled](../decompiled/all/init.c#L357)
+- ✅ **InitTiles** — `void InitTiles(void)` — [init.c:1515](../init.c#L1515) · [decompiled](../decompiled/all/init.c#L404)
+- ✅ **ReadIniSettings** — `void ReadIniSettings(void)` — [init.c:865](../init.c#L865) · [decompiled](../decompiled/all/init.c#L523)
+- ✅ **ReadIniTileSettings** — `void ReadIniTileSettings(char *, TILE *, int16_t)` — [init.c:805](../init.c#L805) · [decompiled](../decompiled/all/init.c#L1001)
 
 ### log.c (8/23)
 
@@ -891,7 +891,7 @@
 
 - ✅ **CchTutorString** — `int16_t CchTutorString(char *, int16_t)` — [tutor2.c:16](../tutor2.c#L16) · [decompiled](../decompiled/all/tutor2.c#L7)
 
-### util.c (35/67)
+### util.c (36/67)
 
 
 - ✅ **CalcPctSurvive** — `void CalcPctSurvive(PLANET *32, float *, float *)` — [util.c:727](../util.c#L727) · [decompiled](../decompiled/all/util.c#L162)
@@ -921,7 +921,7 @@
 - ⬜ **FLookupOrbitingXfer** — `int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)` — [util.c:1319](../util.c#L1319) · [decompiled](../decompiled/all/util.c#L1352)
 - ✅ **FLookupPlanet** — `int16_t FLookupPlanet(int16_t, PLANET *)` — [util.c:1616](../util.c#L1616) · [decompiled](../decompiled/all/util.c#L220)
 - ✅ **FLookupSelPlanet** — `int16_t FLookupSelPlanet(PLANET *)` — [util.c:1213](../util.c#L1213) · [decompiled](../decompiled/all/util.c#L7)
-- ⬜ **FLookupSelShip** — `int16_t FLookupSelShip(FLEET *)` — [util.c:317](../util.c#L317) · [decompiled](../decompiled/all/util.c#L1143)
+- ✅ **FLookupSelShip** — `int16_t FLookupSelShip(FLEET *)` — [util.c:317](../util.c#L317) · [decompiled](../decompiled/all/util.c#L1143)
 - ✅ **FLookupThing** — `int16_t FLookupThing(int16_t, THING *)` — [util.c:1220](../util.c#L1220) · [decompiled](../decompiled/all/util.c#L341)
 - ⬜ **FMatchTarget** — `int16_t FMatchTarget(FLEET *32, int16_t, int16_t)` — [util.c:323](../util.c#L323) · [decompiled](../decompiled/all/util.c#L3567)
 - ⬜ **FValidSerialNo** — `int16_t FValidSerialNo(char *, int32_t *)` — [util.c:706](../util.c#L706) · [decompiled](../decompiled/all/util.c#L3474)

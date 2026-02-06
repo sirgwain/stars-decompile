@@ -65,9 +65,17 @@ typedef struct StarsFile {
 
 extern StarsFile hf;
 
-/* mdOpen flags (passed to StreamOpen / FOpenFile) */
+/* mdOpen flags (passed to StreamOpen / FOpenFile)
+ *
+ * These mirror Win16 OpenFile() constants:
+ *   bits 0-2: access mode (OF_READ=0, OF_WRITE=1, OF_READWRITE=2)
+ *   bits 4-6: share mode  (OF_SHARE_EXCLUSIVE=0x10, OF_SHARE_DENY_WRITE=0x20)
+ *   bit 12:   OF_CREATE=0x1000
+ *   bit 14:   mdNoOpenErr (Stars!-specific, not a Win16 flag)
+ */
 typedef enum MdOpenFlags {
-    mdRead = 0x0020,
+    mdRead = 0x0020,       /* OF_READ | OF_SHARE_DENY_WRITE */
+    mdCreate = 0x1012,     /* OF_CREATE | OF_SHARE_EXCLUSIVE | OF_READWRITE */
     mdNoOpenErr = 0x4000,
 } MdOpenFlags;
 

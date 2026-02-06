@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 285,
-    "stub": 558,
+    "implemented": 288,
+    "stub": 555,
     "missing": 3,
-    "percent_implemented": 33.7
+    "percent_implemented": 34.0
   },
   "by_file": {
     "ai.c": {
@@ -43,8 +43,8 @@
       "missing": 0
     },
     "create.c": {
-      "implemented": 10,
-      "stub": 12,
+      "implemented": 11,
+      "stub": 11,
       "missing": 0
     },
     "file.c": {
@@ -53,8 +53,8 @@
       "missing": 0
     },
     "init.c": {
-      "implemented": 7,
-      "stub": 1,
+      "implemented": 8,
+      "stub": 0,
       "missing": 0
     },
     "log.c": {
@@ -183,8 +183,8 @@
       "missing": 0
     },
     "util.c": {
-      "implemented": 35,
-      "stub": 32,
+      "implemented": 36,
+      "stub": 31,
       "missing": 0
     },
     "utilgen.c": {
@@ -848,7 +848,7 @@
       "addr": "1078:5e5e",
       "segment": "MEMORY_CREATE",
       "proto": "void CreateTutorWorld(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "create.c",
       "line": 509
     },
@@ -1314,7 +1314,7 @@
       "proto": "void DrawNewGame2(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2069
+      "line": 2112
     },
     "DrawNewGame3": {
       "addr": "1078:9d5e",
@@ -1322,7 +1322,7 @@
       "proto": "void DrawNewGame3(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2048
+      "line": 2091
     },
     "DrawPlanShip": {
       "addr": "1048:0d16",
@@ -2290,7 +2290,7 @@
       "proto": "int16_t FCreateFonts(uint16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 290
+      "line": 292
     },
     "FCreateStuff": {
       "addr": "1000:0014",
@@ -2298,7 +2298,7 @@
       "proto": "int16_t FCreateStuff(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 55
+      "line": 57
     },
     "FDamageTok": {
       "addr": "10f0:81d4",
@@ -2658,7 +2658,7 @@
       "proto": "int16_t FGetNewGameName(char *)",
       "status": "stub",
       "file": "create.c",
-      "line": 1864
+      "line": 1907
     },
     "FGetNextObjHere": {
       "addr": "1058:909c",
@@ -2880,7 +2880,7 @@
       "addr": "1038:2032",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FLookupSelShip(FLEET *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
       "line": 317
     },
@@ -3242,7 +3242,7 @@
       "proto": "int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 1917
+      "line": 1960
     },
     "FTrackRaceDlg2": {
       "addr": "10e0:2204",
@@ -3594,7 +3594,7 @@
       "proto": "void FreeStuff(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 385
+      "line": 387
     },
     "FuelFleets": {
       "addr": "10b0:2efa",
@@ -3610,7 +3610,7 @@
       "proto": "int16_t GenNewGameFromFile(char *)",
       "status": "stub",
       "file": "create.c",
-      "line": 1876
+      "line": 1919
     },
     "GenerateWorld": {
       "addr": "1078:0136",
@@ -3618,7 +3618,7 @@
       "proto": "int16_t GenerateWorld(int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 535
+      "line": 574
     },
     "GetASubMenu": {
       "addr": "1020:589a",
@@ -3698,7 +3698,7 @@
       "proto": "void GetIniWinRc(char *, char *, int16_t, WN *)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1437
+      "line": 1439
     },
     "GetMineFieldCounts": {
       "addr": "1028:05ac",
@@ -4250,7 +4250,7 @@
       "proto": "int16_t InitInstance(int16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1386
+      "line": 1388
     },
     "InitMDIApp": {
       "addr": "1020:0000",
@@ -4304,9 +4304,9 @@
       "addr": "1000:0eaa",
       "segment": "MEMORY_INIT",
       "proto": "void InitTiles(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "init.c",
-      "line": 1513
+      "line": 1515
     },
     "InitializeBoard": {
       "addr": "10f0:45b4",
@@ -4834,7 +4834,7 @@
       "proto": "PLAYER *32 LpplrComp(int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 1862
+      "line": 1905
     },
     "LpscannerFromId": {
       "addr": "1008:518a",
@@ -5066,7 +5066,7 @@
       "proto": "int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2012
+      "line": 2055
     },
     "NewGameDlg2": {
       "addr": "1078:87d2",
@@ -5074,7 +5074,7 @@
       "proto": "int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 1976
+      "line": 2019
     },
     "NewGameDlg3": {
       "addr": "1078:99f4",
@@ -5082,7 +5082,7 @@
       "proto": "int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 1960
+      "line": 2003
     },
     "NewGameWizard": {
       "addr": "1078:6022",
@@ -5090,7 +5090,7 @@
       "proto": "void NewGameWizard(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 1933
+      "line": 1976
     },
     "NewPasswordDlg": {
       "addr": "1040:5cba",
@@ -5818,7 +5818,7 @@
       "proto": "void ReadIniSettings(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 863
+      "line": 865
     },
     "ReadIniTileSettings": {
       "addr": "1000:2b8a",
@@ -5826,7 +5826,7 @@
       "proto": "void ReadIniTileSettings(char *, TILE *, int16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 803
+      "line": 805
     },
     "ReadPlayerMessages": {
       "addr": "1030:994a",
@@ -6186,7 +6186,7 @@
       "proto": "void SetNGWTitle(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 1910
+      "line": 1953
     },
     "SetOrdersLbSel": {
       "addr": "1050:9354",
@@ -6274,7 +6274,7 @@
       "proto": "int16_t SetVCVal(GAME *, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 515
+      "line": 554
     },
     "SetVisPFFinish": {
       "addr": "1070:c41c",
@@ -6386,7 +6386,7 @@
       "proto": "int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2029
+      "line": 2072
     },
     "SlotDlg": {
       "addr": "10c8:0550",

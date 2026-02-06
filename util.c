@@ -315,8 +315,8 @@ int16_t GetCachedFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *p
 }
 
 int16_t FLookupSelShip(FLEET *pfl) {
-
-    /* TODO: implement */
+    if (sel.scan.grobj == grobjFleet)
+        return FLookupFleet(((FLEET **)rglpfl)[sel.scan.ifl]->id, pfl);
     return 0;
 }
 
