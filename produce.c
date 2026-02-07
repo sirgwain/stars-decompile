@@ -5,10 +5,14 @@
 
 #include "produce.h"
 
+#include "memory.h"
+#include "mine.h"
 #include "parts.h"
+#include "planet.h"
 #include "race.h"
 #include "resource.h"
 #include "ship.h"
+#include "turn2.h"
 #include "util.h"
 
 char *PszNameProdItem(PROD *lpprod) {
@@ -184,7 +188,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     }
 
     /* Non-ship production items */
-    if (iItem == 0) {
+    if (iItem == iobjMine) {
     LMine:
         /* Mine */
         for (i = 0; i < 3; i++) {
@@ -194,7 +198,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 1) {
+    if (iItem == iobjFactory) {
     LFactory:
         /* Factory */
         if (GetRaceGrbit(&rgplr[iplr], ibitRaceCheapFact) != 0) {
@@ -216,7 +220,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 2) {
+    if (iItem == iobjDefense) {
     LDefense:
         /* Defense */
         part.hs.grhst = hstPlanetary;
@@ -237,7 +241,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 3) {
+    if (iItem == iobjAlchemy) {
     LAlchemy:
         /* Mineral Alchemy */
         for (i = 0; i < 3; i++) {
@@ -251,7 +255,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 4 || iItem == 5) {
+    if (iItem == iobjTerraform || iItem == iobjTerraform2) {
     LTerraform:
         /* Terraform */
         rgCost[0] = 0;
@@ -268,7 +272,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 6 || iItem == 0x11) {
+    if (iItem == iobjPacket || iItem == iobjGenesis) {
         /* Packet or MT Genesis */
         if (raMajor == 6) { /* raMassAccel / PP */
             costSub = 25;
@@ -288,23 +292,23 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 7) {
+    if (iItem == mdIdleFactory) {
         goto LFactory;
     }
-    if (iItem == 8) {
+    if (iItem == mdIdleMine) {
         goto LMine;
     }
-    if (iItem == 9) {
+    if (iItem == mdIdleDefense) {
         goto LDefense;
     }
-    if (iItem == 0xb) {
+    if (iItem == mdIdleAlchemy) {
         goto LAlchemy;
     }
-    if (iItem == 0xc) {
+    if (iItem == mdIdleTerraform) {
         goto LTerraform;
     }
 
-    if (iItem == 0xd) {
+    if (iItem == iobjScanner) {
         /* Scanner */
         part.hs.grhst = hstPlanetary;
         part.hs.iItem = 14; /* iplanetaryScanner */
@@ -316,7 +320,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 0xe || iItem == 0xf || iItem == 0x10) {
+    if (iItem == iobjPacketIron || iItem == iobjPacketBor || iItem == iobjPacketGerm) {
         /* Single mineral packet (Iron/Bor/Germ) */
         if (raMajor == 6) { /* raMassAccel / PP */
             costSub = 70;
@@ -326,7 +330,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
             costSub = 110;
         }
         for (i = 0; i < 3; i++) {
-            if (iItem - 0xe == i && iItem >= 0xe) {
+            if (iItem - iobjPacketIron == i && iItem >= iobjPacketIron) {
                 rgCost[i] = costSub;
             } else {
                 rgCost[i] = 0;
@@ -341,9 +345,9 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     }
 
     /* Planetary installations (stargate, mass driver, etc.) */
-    if (iItem >= 0x12 && iItem <= 0x1a) {
+    if (iItem >= iobjPlanetaryFirst && iItem <= iobjPlanetaryLast) {
         part.hs.grhst = hstPlanetary;
-        part.hs.iItem = (iItem - 0x12) & 0xff;
+        part.hs.iItem = (iItem - iobjPlanetaryFirst) & 0xff;
         FLookupPart(&part);
         GetTruePartCost(iplr, &part, rgCosts);
         for (i = 0; i < 4; i++) {
@@ -352,7 +356,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == 0x1b) {
+    if (iItem == iobjStargateAlt) {
         /* Stargate (alternate index) */
         part.hs.grhst = hstPlanetary;
         part.hs.iItem = 0;
@@ -387,10 +391,113 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_
     int32_t rgRes[4];
     PROD   *lpprod;
 
-    /* debug symbols */
-    /* label LCleanUp @ MEMORY_PRODUCE:0x5469 */
+    if (lpplprod == NULL)
+        lpplprod = lppl->lpplprod;
 
-    /* TODO: implement */
+    Assert(lpplprod && iItem < lpplprod->iprodMac);
+
+    pl = *lppl;
+    pl.lpplprod = (PLPROD *)LpplAlloc(sizeof(PROD), lpplprod->iprodMax, htOrd);
+    memcpy(&pl.lpplprod->rgprod[0], &lpplprod->rgprod[0], lpplprod->iprodMac * sizeof(PROD));
+    iMac = pl.lpplprod->iprodMac = lpplprod->iprodMac;
+
+    prodPartial.cItem = 0;
+    *piFirst = *piLast = 0;
+
+    for (iPass = 1; iPass < 100; iPass++) {
+        EstMineralsMined(&pl, rglQuan, -1, fTrue);
+
+        for (j = 0; j < 3; j++)
+            rgRes[j] = pl.rgwtMin[j];
+
+        rgRes[3] = CResourcesAtPlanet(&pl, lppl->iPlayer);
+
+        if (!pl.fNoResearch) {
+            cResearch = rgRes[3] * (int32_t)rgplr[lppl->iPlayer].pctResearch / 100;
+            rgRes[3] -= cResearch;
+        } else
+            cResearch = 0;
+
+        fAlchemy = fFalse;
+
+        for (i = -1; i < iMac; i++) {
+            if (i == -1)
+                lpprod = &prodPartial;
+            else
+                lpprod = &pl.lpplprod->rgprod[i];
+
+            if (lpprod->cItem == 0)
+                continue;
+
+            if (lpprod->iItem == mdIdleAlchemy && lpprod->grobj == grobjPlanet) {
+                if (i < iMac - 1) {
+                    if (i == iItem) {
+                        *piFirst = *piLast = -1;
+                        goto LCleanUp;
+                    }
+
+                    fAlchemy = fTrue;
+                    continue;
+                }
+                lpprod->cItem = 1020;
+            }
+
+            cBuilt = CBuildProdItem(&pl, lpprod, (i == -1) ? NULL : &prodPartial, rgRes, fAlchemy, &mdStatus, fFalse);
+
+            if (iItem == i) {
+                if (cBuilt > 0 && *piFirst == 0)
+                    *piFirst = iPass;
+
+                if (mdStatus == mdProdStatSkippedAuto) {
+                    if (*piFirst)
+                        *piLast = iPass - 1;
+                    goto LCleanUp;
+                }
+
+                if (mdStatus == mdProdStatComplete || mdStatus == mdProdStatCompleteAuto) {
+                    *piLast = iPass;
+                    goto LCleanUp;
+                }
+            }
+
+            fAlchemy = fFalse;
+
+            if (lpprod->grobj == grobjPlanet) {
+                switch (lpprod->iItem) {
+                case iobjMine:
+                case mdIdleMine:
+                    pl.cMines += (int32_t)cBuilt;
+                    break;
+                case iobjFactory:
+                case mdIdleFactory:
+                    pl.cFactories += (int32_t)cBuilt;
+                    break;
+                }
+            }
+
+            if (mdStatus >= mdProdStatSome)
+                break;
+        }
+
+        if (iItem < 0) {
+            *piFirst = (int16_t)rgRes[3];
+            if (iItem == -1)
+                *piFirst += (int16_t)(cResearch);
+            goto LCleanUp;
+        }
+
+        for (j = 0; j < 3; j++)
+            pl.rgwtMin[j] = rgRes[j];
+        ChgPopFromPlanet(&pl, fTrue);
+    }
+
+    if (*piFirst == 0)
+        *piFirst = 100;
+    *piLast = 100;
+
+LCleanUp:
+    if (pl.lpplprod)
+        FreePl((PL *)pl.lpplprod);
 }
 
 void InitProduction(PROD *rgprod) {

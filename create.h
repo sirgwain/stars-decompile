@@ -19,6 +19,7 @@ void    InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi);
 int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw);
 void    SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked);
 void    CreateTutorWorld(void);
+void    CreateTinyTestWorld(void);
 int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val);
 int16_t GenerateWorld(int16_t fBatchMode);
 PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi); /* RETFAR */

@@ -199,10 +199,10 @@ static void test_FLoadLogFile_tiny_2400(void) {
     }
 
     /* Load a known tiny game first (so GAME/PLAYER globals match the log file). */
-    TEST_CHECK(FLoadGame("./test/data/tiny/2400/TEST", "HST"));
+    TEST_CHECK(FLoadGame("./test/data/test/2400/TEST", "HST"));
 
     /* Now load the corresponding player-1 log. */
-    TEST_CHECK(FLoadLogFile("./test/data/tiny/2400/TEST.X1") == 1);
+    TEST_CHECK(FLoadLogFile("./test/data/test/2400/TEST.X1") == 1);
 
     /* We should have parsed at least some log bytes into lpLog. */
     TEST_CHECK(imemLogCur > 0);

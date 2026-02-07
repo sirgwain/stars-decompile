@@ -61,7 +61,9 @@ static void print_usage(FILE *out) {
                  "  dump                   Dump blocks for all files (.XY, .HST, .M*, .H*)\n"
                  "\n"
                  "Standalone commands (no 'load' required):\n"
-                 "  create-tutor            Create a tutorial world\n");
+                 "  create-tutor [path]         Create a tutorial world (optional base path)\n"
+                 "  create-test-world [path]    Create a test world\n"
+                 "  diff <file1> <file2>        Diff two files block-by-block\n");
 }
 
 static int32_t parse_i32(const char *s, bool *ok) {
@@ -242,20 +244,21 @@ static int cmd_fleets(bool fVerbose) {
         fprintf(stderr, "No fleets loaded (rglpfl == NULL).\n");
         return 2;
     }
-    printf("Fleets (best-effort per-player lists): cPlayer=%d\n", (int)game.cPlayer);
-    for (int16_t iplr = 0; iplr < game.cPlayer; iplr++) {
-        const FLEET *f = rglpfl[iplr];
+    printf("Fleets: cFleet=%d cPlayer=%d\n", (int)cFleet, (int)game.cPlayer);
+    int16_t curPlayer = -1;
+    for (int16_t i = 0; i < cFleet; i++) {
+        const FLEET *f = rglpfl[i];
         if (f == NULL)
             continue;
-        printf("-- player %d --\n", (int)iplr);
-        while (f != NULL) {
-            if (fVerbose) {
-                DumpFleet(f);
-                printf("\n");
-            } else {
-                print_fleet_row(f);
-            }
-            f = f->lpflNext;
+        if (f->iPlayer != curPlayer) {
+            curPlayer = f->iPlayer;
+            printf("-- player %d --\n", (int)curPlayer);
+        }
+        if (fVerbose) {
+            DumpFleet(f);
+            printf("\n");
+        } else {
+            print_fleet_row(f);
         }
     }
     return 0;
@@ -457,10 +460,37 @@ int StarsCli_Run(int argc, char **argv) {
     }
 
     if (strcmp(argv[1], "create-tutor") == 0) {
-        CchGetString(idsTutorial, szBase);
+        if (argc >= 3) {
+            strncpy(szBase, argv[2], sizeof(szBase) - 1);
+            szBase[sizeof(szBase) - 1] = '\0';
+        } else {
+            CchGetString(idsTutorial, szBase);
+        }
         CreateTutorWorld();
         printf("Tutorial world created.\n");
         return 0;
+    }
+
+    if (strcmp(argv[1], "create-test-world") == 0) {
+        if (argc >= 3) {
+            strncpy(szBase, argv[2], sizeof(szBase) - 1);
+            szBase[sizeof(szBase) - 1] = '\0';
+        } else {
+            printf("Must specify path\n");
+            return 1;
+        }
+        CreateTinyTestWorld();
+        printf("Test world created.\n");
+        return 0;
+    }
+
+    if (strcmp(argv[1], "diff") == 0) {
+        if (argc < 4) {
+            fprintf(stderr, "diff requires two file arguments.\n\n");
+            print_usage(stderr);
+            return 2;
+        }
+        return DiffGameFileBlocks(argv[2], argv[3]);
     }
 
     if (strcmp(argv[1], "load") != 0) {

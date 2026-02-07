@@ -430,25 +430,6 @@ static void DumpVerbose_LogRecord(RecordType rt, const uint8_t *pb, uint16_t cb)
             if (cb > 64u)
                 printf("...");
             printf("\n");
-
-            /* Provide a quick little-endian word view to help reverse-engineer. */
-            printf("  u16:");
-            for (uint16_t i = 0; i + 1 < cb && i < 16u; i += 2u) {
-                uint16_t w = rd_u16(pb + i);
-                printf(" %04x", (unsigned)w);
-            }
-            if (cb > 16u)
-                printf(" ...");
-            printf("\n");
-
-            printf("  i16:");
-            for (uint16_t i = 0; i + 1 < cb && i < 16u; i += 2u) {
-                int16_t w = rd_i16(pb + i);
-                printf(" %d", (int)w);
-            }
-            if (cb > 16u)
-                printf(" ...");
-            printf("\n");
         }
         break;
     }
@@ -640,6 +621,108 @@ static int64_t DumpFileSizeBytes(const char *path) {
     return (end < 0) ? -1 : (int64_t)end;
 }
 
+static bool DumpSplitBaseExt(const char *path, char *outBase, size_t cbBase, char *outExt, size_t cbExt) {
+    const char *dot;
+    size_t      n;
+
+    if (outBase == NULL || cbBase == 0 || outExt == NULL || cbExt == 0)
+        return false;
+    outBase[0] = '\0';
+    outExt[0] = '\0';
+
+    if (path == NULL || path[0] == '\0')
+        return false;
+
+    dot = strrchr(path, '.');
+    if (dot == NULL || dot[1] == '\0') {
+        /* No extension; treat whole path as base. */
+        strncpy(outBase, path, cbBase);
+        outBase[cbBase - 1] = '\0';
+        return true;
+    }
+
+    n = (size_t)(dot - path);
+    if (n + 1 > cbBase)
+        return false;
+    memcpy(outBase, path, n);
+    outBase[n] = '\0';
+
+    strncpy(outExt, dot + 1, cbExt);
+    outExt[cbExt - 1] = '\0';
+    return true;
+}
+
+static void DumpVerbose_DecodedStructsForPath(const char *path) {
+    char base[512];
+    char ext[16];
+
+    if (!DumpSplitBaseExt(path, base, sizeof(base), ext, sizeof(ext)))
+        return;
+
+    /* FLoadGame only supports HST and M1-M16 extensions.
+       Skip decoded-struct dumps for xy, h1-h16, x1-x16, etc. */
+    if ((ext[0] == 'h' || ext[0] == 'H') && (ext[1] == 's' || ext[1] == 'S')) {
+        /* HST - ok */
+    } else if ((ext[0] == 'm' || ext[0] == 'M') && ext[1] >= '1' && ext[1] <= '9') {
+        /* M1-M16 - ok */
+    } else {
+        return;
+    }
+
+    /* Keep the dump command isolated from any prior load state. */
+    DestroyCurGame();
+
+    if (!FLoadGame(base, ext))
+        return;
+
+    printf("\n=== Decoded structures (FLoadGame '%s.%s') ===\n", base, ext);
+    printf("\n");
+    DumpGameStruct(&game);
+
+    printf("\nPlayers:\n");
+    for (int16_t iplr = 0; iplr < game.cPlayer; iplr++) {
+        printf("\n-- Player %d --\n", (int)iplr);
+        DumpPlayerStruct(&rgplr[iplr]);
+    }
+
+    printf("\nPlanets (%d):\n", (int)cPlanet);
+    for (int16_t i = 0; i < cPlanet; i++) {
+        printf("\n-- Planet[%d] id=%d --\n", (int)i, (int)lpPlanets[i].id);
+        DumpPlanet(&lpPlanets[i]);
+    }
+
+    printf("\nFleets (%d):\n", (int)cFleet);
+    for (int16_t i = 0; i < cFleet; i++) {
+        if (rglpfl[i] == NULL)
+            continue;
+        printf("\n-- Fleet[%d] id=%d --\n", (int)i, (int)rglpfl[i]->id);
+        DumpFleet(rglpfl[i]);
+    }
+
+    printf("\nShip designs:\n");
+    for (int16_t iplr = 0; iplr < game.cPlayer; iplr++) {
+        if (rglpshdef[iplr] != NULL) {
+            printf("\n-- Player %d ships (%u) --\n", (int)iplr, (unsigned)(uint8_t)rgplr[iplr].cShDef);
+            for (int j = 0; j < (int)(uint8_t)rgplr[iplr].cShDef; j++) {
+                printf("\nDesign %d:\n", j);
+                DumpShDef(&rglpshdef[iplr][j], j);
+            }
+        }
+
+        if (rglpshdefSB[iplr] != NULL) {
+            printf("\n-- Player %d starbases (%u) --\n", (int)iplr, (unsigned)rgplr[iplr].cshdefSB);
+            for (int j = 0; j < (int)rgplr[iplr].cshdefSB; j++) {
+                printf("\nSB Design %d:\n", j);
+                DumpShDef(&rglpshdefSB[iplr][j], j);
+            }
+        }
+    }
+
+    printf("\n=== End decoded structures ===\n\n");
+
+    DestroyCurGame();
+}
+
 int DumpGameFileBlocksEx(const char *szPath, bool fVerbose) {
     FILE      *fp;
     int64_t    sz;
@@ -762,7 +845,1153 @@ int DumpGameFileBlocksEx(const char *szPath, bool fVerbose) {
     fclose(fp);
 
     printf("Total blocks: %d\n", block_count);
+
+    /*
+     * For verbose dumps of non-log files, also show the fully decoded
+     * in-memory structures as loaded by the real game loader.
+     */
+    if (fVerbose && dt != dtLog) {
+        DumpVerbose_DecodedStructsForPath(szPath);
+    }
     return 0;
 }
 
 int DumpGameFileBlocks(const char *path) { return DumpGameFileBlocksEx(path, false); }
+
+/* ------------------------------------------------------------------ */
+/* Block-level reading and diffing                                     */
+/* ------------------------------------------------------------------ */
+
+int ReadGameFileBlocks(const char *path, GameBlockList *out) {
+    FILE    *fp;
+    uint8_t  hdr_buf[2];
+
+    if (path == NULL || out == NULL)
+        return 2;
+
+    memset(out, 0, sizeof(*out));
+
+    fp = fopen(path, "rb");
+    if (!fp) {
+        fprintf(stderr, "ReadGameFileBlocks: cannot open '%s'\n", path);
+        return 2;
+    }
+
+    int cap = 64;
+    out->blocks = (GameBlock *)malloc(cap * sizeof(GameBlock));
+    if (!out->blocks) {
+        fclose(fp);
+        return 2;
+    }
+    out->capacity = cap;
+    out->count = 0;
+
+    while (fread(hdr_buf, 1, 2, fp) == 2) {
+        uint16_t hdr_word = (uint16_t)hdr_buf[0] | ((uint16_t)hdr_buf[1] << 8);
+        uint16_t cb = hdr_word & 0x3FF;
+        uint16_t rt = (hdr_word >> 10) & 0x3F;
+
+        /* Grow array if needed */
+        if (out->count >= out->capacity) {
+            int newcap = out->capacity * 2;
+            GameBlock *nb = (GameBlock *)realloc(out->blocks, newcap * sizeof(GameBlock));
+            if (!nb) {
+                fclose(fp);
+                return 2;
+            }
+            out->blocks = nb;
+            out->capacity = newcap;
+        }
+
+        GameBlock *blk = &out->blocks[out->count];
+        blk->rt = rt;
+        blk->cb = cb;
+        blk->data = NULL;
+
+        if (cb > 0) {
+            blk->data = (uint8_t *)malloc(cb);
+            if (!blk->data) {
+                fclose(fp);
+                return 2;
+            }
+            if (fread(blk->data, 1, cb, fp) != cb) {
+                fprintf(stderr, "ReadGameFileBlocks: short read at block %d\n", out->count);
+                free(blk->data);
+                blk->data = NULL;
+                fclose(fp);
+                return 2;
+            }
+        }
+
+        out->count++;
+
+        if (rt == rtEOF)
+            break;
+    }
+
+    fclose(fp);
+    return 0;
+}
+
+void FreeGameBlockList(GameBlockList *list) {
+    if (list == NULL)
+        return;
+    for (int i = 0; i < list->count; i++) {
+        free(list->blocks[i].data);
+    }
+    free(list->blocks);
+    memset(list, 0, sizeof(*list));
+}
+
+/* ------------------------------------------------------------------ */
+/* Struct-level diffing (operates on FLoadGame-populated globals)       */
+/* ------------------------------------------------------------------ */
+
+/* Helper: compare and print a single field.  Increments fdiffs if different. */
+#define DIFF_FIELD_FMT(label, valA, valB, fmt)                                    \
+    do {                                                                           \
+        if ((valA) != (valB)) {                                                    \
+            printf("    " label ": " fmt " -> " fmt "\n", (valA), (valB));         \
+            fdiffs++;                                                              \
+        }                                                                          \
+    } while (0)
+
+#define DIFF_I(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (int)(a).field, (int)(b).field, "%d")
+
+#define DIFF_U(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "%u")
+
+#define DIFF_X16(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%04x")
+
+#define DIFF_X32(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%08x")
+
+#define DIFF_U32(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (uint32_t)(a).field, (uint32_t)(b).field, "%u")
+
+#define DIFF_I32(label, a, b, field) \
+    DIFF_FIELD_FMT(label, (int32_t)(a).field, (int32_t)(b).field, "%d")
+
+int DiffGame(const GAME *a, const GAME *b) {
+    int fdiffs = 0;
+
+    DIFF_I32("lid", *a, *b, lid);
+    DIFF_I("mdSize", *a, *b, mdSize);
+    DIFF_I("mdDensity", *a, *b, mdDensity);
+    DIFF_I("cPlayer", *a, *b, cPlayer);
+    DIFF_I("cPlanMax", *a, *b, cPlanMax);
+    DIFF_I("mdStartDist", *a, *b, mdStartDist);
+    DIFF_I("fDirty", *a, *b, fDirty);
+    DIFF_U("fExtraFuel", *a, *b, fExtraFuel);
+    DIFF_U("fSlowTech", *a, *b, fSlowTech);
+    DIFF_U("fSinglePlr", *a, *b, fSinglePlr);
+    DIFF_U("fTutorial", *a, *b, fTutorial);
+    DIFF_U("fAisBand", *a, *b, fAisBand);
+    DIFF_U("fBBSPlay", *a, *b, fBBSPlay);
+    DIFF_U("fVisScores", *a, *b, fVisScores);
+    DIFF_U("fNoRandom", *a, *b, fNoRandom);
+    DIFF_U("fClumping", *a, *b, fClumping);
+    DIFF_U("wGen", *a, *b, wGen);
+    DIFF_U("turn", *a, *b, turn);
+
+    if (memcmp(a->rgvc, b->rgvc, sizeof(a->rgvc)) != 0) {
+        printf("    rgvc: ");
+        DumpPrintHexBytes(a->rgvc, sizeof(a->rgvc));
+        printf(" -> ");
+        DumpPrintHexBytes(b->rgvc, sizeof(b->rgvc));
+        printf("\n");
+        fdiffs++;
+    }
+
+    if (strcmp(a->szName, b->szName) != 0) {
+        printf("    szName: \"%s\" -> \"%s\"\n", a->szName, b->szName);
+        fdiffs++;
+    }
+
+    return fdiffs;
+}
+
+int DiffPlayer(const PLAYER *a, const PLAYER *b, int iplr) {
+    int fdiffs = 0;
+
+    /* Skip entirely empty/identical slots */
+    if (memcmp(a, b, sizeof(*a)) == 0)
+        return 0;
+
+    printf("  Player %d:\n", iplr);
+
+    DIFF_I("iPlayer", *a, *b, iPlayer);
+    DIFF_I("cShDef", *a, *b, cShDef);
+    DIFF_I("cPlanet", *a, *b, cPlanet);
+    DIFF_U("cFleet", *a, *b, cFleet);
+    DIFF_U("cshdefSB", *a, *b, cshdefSB);
+    DIFF_U("det", *a, *b, det);
+    DIFF_U("iPlrBmp", *a, *b, iPlrBmp);
+    DIFF_U("fInclude", *a, *b, fInclude);
+    DIFF_U("mdPlayer", *a, *b, mdPlayer);
+    DIFF_U("fAi", *a, *b, fAi);
+    DIFF_U("lvlAi", *a, *b, lvlAi);
+    DIFF_U("idAi", *a, *b, idAi);
+    DIFF_I("idPlanetHome", *a, *b, idPlanetHome);
+    DIFF_U("wScore", *a, *b, wScore);
+    DIFF_I32("lSalt", *a, *b, lSalt);
+
+    for (int j = 0; j < 3; j++) {
+        if (a->rgEnvVar[j] != b->rgEnvVar[j]) {
+            printf("    rgEnvVar[%d]: %d -> %d\n", j, (int)a->rgEnvVar[j], (int)b->rgEnvVar[j]);
+            fdiffs++;
+        }
+    }
+    for (int j = 0; j < 3; j++) {
+        if (a->rgEnvVarMin[j] != b->rgEnvVarMin[j]) {
+            printf("    rgEnvVarMin[%d]: %d -> %d\n", j, (int)a->rgEnvVarMin[j], (int)b->rgEnvVarMin[j]);
+            fdiffs++;
+        }
+    }
+    for (int j = 0; j < 3; j++) {
+        if (a->rgEnvVarMax[j] != b->rgEnvVarMax[j]) {
+            printf("    rgEnvVarMax[%d]: %d -> %d\n", j, (int)a->rgEnvVarMax[j], (int)b->rgEnvVarMax[j]);
+            fdiffs++;
+        }
+    }
+    DIFF_I("pctIdealGrowth", *a, *b, pctIdealGrowth);
+
+    for (int j = 0; j < 6; j++) {
+        if (a->rgTech[j] != b->rgTech[j]) {
+            printf("    rgTech[%d]: %d -> %d\n", j, (int)a->rgTech[j], (int)b->rgTech[j]);
+            fdiffs++;
+        }
+    }
+    for (int j = 0; j < 6; j++) {
+        if (a->rgResSpent[j] != b->rgResSpent[j]) {
+            printf("    rgResSpent[%d]: %u -> %u\n", j, (unsigned)a->rgResSpent[j], (unsigned)b->rgResSpent[j]);
+            fdiffs++;
+        }
+    }
+    DIFF_I("pctResearch", *a, *b, pctResearch);
+    DIFF_I("iTechCur", *a, *b, iTechCur);
+    DIFF_I32("lResLastYear", *a, *b, lResLastYear);
+
+    for (int j = 0; j < 16; j++) {
+        if (a->rgAttr[j] != b->rgAttr[j]) {
+            printf("    rgAttr[%d]: %d -> %d\n", j, (int)a->rgAttr[j], (int)b->rgAttr[j]);
+            fdiffs++;
+        }
+    }
+    DIFF_X32("grbitAttr", *a, *b, grbitAttr);
+    DIFF_X16("grbitTrader", *a, *b, grbitTrader);
+    DIFF_X16("wFlags", *a, *b, wFlags);
+
+    if (memcmp(&a->zpq1, &b->zpq1, sizeof(a->zpq1)) != 0) {
+        printf("    zpq1: differs\n");
+        fdiffs++;
+    }
+
+    for (int j = 0; j < 16; j++) {
+        if (a->rgmdRelation[j] != b->rgmdRelation[j]) {
+            printf("    rgmdRelation[%d]: %u -> %u\n", j, (unsigned)a->rgmdRelation[j], (unsigned)b->rgmdRelation[j]);
+            fdiffs++;
+        }
+    }
+
+    if (strcmp(a->szName, b->szName) != 0) {
+        printf("    szName: \"%s\" -> \"%s\"\n", a->szName, b->szName);
+        fdiffs++;
+    }
+    if (strcmp(a->szNames, b->szNames) != 0) {
+        printf("    szNames: \"%s\" -> \"%s\"\n", a->szNames, b->szNames);
+        fdiffs++;
+    }
+
+    return fdiffs;
+}
+
+#undef DIFF_FIELD_FMT
+#undef DIFF_I
+#undef DIFF_U
+#undef DIFF_X16
+#undef DIFF_X32
+#undef DIFF_U32
+#undef DIFF_I32
+
+/* ------------------------------------------------------------------ */
+/* Planet / Fleet / ShDef diffs                                        */
+/* ------------------------------------------------------------------ */
+
+static void DiffHS(const HS *a, const HS *b, const char *label, int idx, int *pDiffs) {
+    if (a->grhst != b->grhst || a->wRaw_0002 != b->wRaw_0002) {
+        printf("      %s[%d]: grhst=0x%04x iItem=%u cItem=%u -> grhst=0x%04x iItem=%u cItem=%u\n",
+               label, idx,
+               (unsigned)a->grhst, (unsigned)a->iItem, (unsigned)a->cItem,
+               (unsigned)b->grhst, (unsigned)b->iItem, (unsigned)b->cItem);
+        (*pDiffs)++;
+    }
+}
+
+static int DiffHul(const HUL *a, const HUL *b) {
+    int fdiffs = 0;
+
+    if (a->ihuldef != b->ihuldef) {
+        printf("      ihuldef: %d -> %d\n", (int)a->ihuldef, (int)b->ihuldef);
+        fdiffs++;
+    }
+
+    for (int i = 0; i < 6; i++) {
+        if (a->rgTech[i] != b->rgTech[i]) {
+            printf("      rgTech[%d]: %d -> %d\n", i, (int)a->rgTech[i], (int)b->rgTech[i]);
+            fdiffs++;
+        }
+    }
+
+    if (strcmp(a->szClass, b->szClass) != 0) {
+        printf("      szClass: \"%s\" -> \"%s\"\n", a->szClass, b->szClass);
+        fdiffs++;
+    }
+
+    if (a->wtEmpty != b->wtEmpty) {
+        printf("      wtEmpty: %u -> %u\n", (unsigned)a->wtEmpty, (unsigned)b->wtEmpty);
+        fdiffs++;
+    }
+    if (a->resCost != b->resCost) {
+        printf("      resCost: %u -> %u\n", (unsigned)a->resCost, (unsigned)b->resCost);
+        fdiffs++;
+    }
+    for (int i = 0; i < 3; i++) {
+        if (a->rgwtOreCost[i] != b->rgwtOreCost[i]) {
+            printf("      rgwtOreCost[%d]: %u -> %u\n", i, (unsigned)a->rgwtOreCost[i], (unsigned)b->rgwtOreCost[i]);
+            fdiffs++;
+        }
+    }
+    if (a->ibmp != b->ibmp) {
+        printf("      ibmp: %d -> %d\n", (int)a->ibmp, (int)b->ibmp);
+        fdiffs++;
+    }
+    if (a->wtCargoMax != b->wtCargoMax) {
+        printf("      wtCargoMax: %u -> %u\n", (unsigned)a->wtCargoMax, (unsigned)b->wtCargoMax);
+        fdiffs++;
+    }
+    if (a->wtFuelMax != b->wtFuelMax) {
+        printf("      wtFuelMax: %u -> %u\n", (unsigned)a->wtFuelMax, (unsigned)b->wtFuelMax);
+        fdiffs++;
+    }
+    if (a->dp != b->dp) {
+        printf("      dp: %u -> %u\n", (unsigned)a->dp, (unsigned)b->dp);
+        fdiffs++;
+    }
+
+    for (int i = 0; i < 16; i++) {
+        DiffHS(&a->rghs[i], &b->rghs[i], "rghs", i, &fdiffs);
+    }
+
+    if (a->chs != b->chs) {
+        printf("      chs: %u -> %u\n", (unsigned)a->chs, (unsigned)b->chs);
+        fdiffs++;
+    }
+
+    return fdiffs;
+}
+
+static int DiffShDefOne(const SHDEF *a, const SHDEF *b, int iplr, int idx, const char *which) {
+    int fdiffs = 0;
+
+    /* Skip identical and both-free entries. */
+    if (a->fFree && b->fFree)
+        return 0;
+    if (memcmp(a, b, sizeof(*a)) == 0)
+        return 0;
+
+    printf("  Player %d %s SHDEF[%d]:\n", iplr, which, idx);
+
+    if (a->det != b->det) {
+        printf("    det: %u -> %u\n", (unsigned)a->det, (unsigned)b->det);
+        fdiffs++;
+    }
+    if (a->fInclude != b->fInclude) {
+        printf("    fInclude: %u -> %u\n", (unsigned)a->fInclude, (unsigned)b->fInclude);
+        fdiffs++;
+    }
+    if (a->fFree != b->fFree) {
+        printf("    fFree: %u -> %u\n", (unsigned)a->fFree, (unsigned)b->fFree);
+        fdiffs++;
+    }
+    if (a->ishdef != b->ishdef) {
+        printf("    ishdef: %u -> %u\n", (unsigned)a->ishdef, (unsigned)b->ishdef);
+        fdiffs++;
+    }
+    if (a->fGift != b->fGift) {
+        printf("    fGift: %u -> %u\n", (unsigned)a->fGift, (unsigned)b->fGift);
+        fdiffs++;
+    }
+    if (a->turn != b->turn) {
+        printf("    turn: %u -> %u\n", (unsigned)a->turn, (unsigned)b->turn);
+        fdiffs++;
+    }
+    if (a->cBuilt != b->cBuilt) {
+        printf("    cBuilt: %" PRIu32 " -> %" PRIu32 "\n", (uint32_t)a->cBuilt, (uint32_t)b->cBuilt);
+        fdiffs++;
+    }
+    if (a->cExist != b->cExist) {
+        printf("    cExist: %" PRIu32 " -> %" PRIu32 "\n", (uint32_t)a->cExist, (uint32_t)b->cExist);
+        fdiffs++;
+    }
+    if (a->lPower != b->lPower) {
+        printf("    lPower: %" PRId32 " -> %" PRId32 "\n", (int32_t)a->lPower, (int32_t)b->lPower);
+        fdiffs++;
+    }
+    if (a->grbitPlr != b->grbitPlr) {
+        printf("    grbitPlr: 0x%04x -> 0x%04x\n", (unsigned)a->grbitPlr, (unsigned)b->grbitPlr);
+        fdiffs++;
+    }
+    if (a->dScanRange != b->dScanRange) {
+        printf("    dScanRange: %u -> %u\n", (unsigned)a->dScanRange, (unsigned)b->dScanRange);
+        fdiffs++;
+    }
+    if (a->dScanRange2 != b->dScanRange2) {
+        printf("    dScanRange2: %u -> %u\n", (unsigned)a->dScanRange2, (unsigned)b->dScanRange2);
+        fdiffs++;
+    }
+    if (a->pctDetect != b->pctDetect) {
+        printf("    pctDetect: %u -> %u\n", (unsigned)a->pctDetect, (unsigned)b->pctDetect);
+        fdiffs++;
+    }
+    if (a->iSteal != b->iSteal) {
+        printf("    iSteal: %u -> %u\n", (unsigned)a->iSteal, (unsigned)b->iSteal);
+        fdiffs++;
+    }
+
+    if (memcmp(&a->hul, &b->hul, sizeof(a->hul)) != 0) {
+        printf("    hul:\n");
+        fdiffs += DiffHul(&a->hul, &b->hul);
+    }
+
+    return fdiffs;
+}
+
+static int DiffProdQ(const PLPROD *a, const PLPROD *b, const char *prefix) {
+    int fdiffs = 0;
+
+    if (a == NULL && b == NULL)
+        return 0;
+    if (a == NULL || b == NULL) {
+        printf("    %s prodQ: %s -> %s\n", prefix, (a ? "present" : "none"), (b ? "present" : "none"));
+        return 1;
+    }
+
+    if (a->iprodMac != b->iprodMac) {
+        printf("    %s prodQ.iprodMac: %u -> %u\n", prefix, (unsigned)a->iprodMac, (unsigned)b->iprodMac);
+        fdiffs++;
+    }
+    uint8_t mac = (a->iprodMac < b->iprodMac) ? a->iprodMac : b->iprodMac;
+    for (uint8_t i = 0; i < mac; i++) {
+        if (a->rgprod[i].dwRaw_0000 != b->rgprod[i].dwRaw_0000) {
+            printf("    %s prodQ[%u]: 0x%08" PRIx32 " -> 0x%08" PRIx32 "\n", prefix, (unsigned)i,
+                   (uint32_t)a->rgprod[i].dwRaw_0000, (uint32_t)b->rgprod[i].dwRaw_0000);
+            fdiffs++;
+        }
+    }
+
+    return fdiffs;
+}
+
+static int DiffPlanetOne(const PLANET *a, const PLANET *b, int16_t id) {
+    int fdiffs = 0;
+
+    if (a == NULL || b == NULL) {
+        printf("  Planet %d: %s -> %s\n", (int)id, (a ? "present" : "missing"), (b ? "present" : "missing"));
+        return 1;
+    }
+
+    /* Ignore lpplprod pointer value; diff contents below. */
+    PLANET ta = *a;
+    PLANET tb = *b;
+    ta.lpplprod = NULL;
+    tb.lpplprod = NULL;
+
+    if (memcmp(&ta, &tb, sizeof(PLANET)) == 0) {
+        /* Still check prod queue, which is out-of-line. */
+        return DiffProdQ(a->lpplprod, b->lpplprod, "Planet");
+    }
+
+    printf("  Planet %d:\n", (int)id);
+
+    if (a->iPlayer != b->iPlayer) {
+        printf("    iPlayer: %d -> %d\n", (int)a->iPlayer, (int)b->iPlayer);
+        fdiffs++;
+    }
+    if (a->det != b->det) {
+        printf("    det: %u -> %u\n", (unsigned)a->det, (unsigned)b->det);
+        fdiffs++;
+    }
+    if (a->fInclude != b->fInclude) {
+        printf("    fInclude: %u -> %u\n", (unsigned)a->fInclude, (unsigned)b->fInclude);
+        fdiffs++;
+    }
+    if (a->fStarbase != b->fStarbase) {
+        printf("    fStarbase: %u -> %u\n", (unsigned)a->fStarbase, (unsigned)b->fStarbase);
+        fdiffs++;
+    }
+    if (a->fHomeworld != b->fHomeworld) {
+        printf("    fHomeworld: %u -> %u\n", (unsigned)a->fHomeworld, (unsigned)b->fHomeworld);
+        fdiffs++;
+    }
+    if (a->fFirstYear != b->fFirstYear) {
+        printf("    fFirstYear: %u -> %u\n", (unsigned)a->fFirstYear, (unsigned)b->fFirstYear);
+        fdiffs++;
+    }
+    if (a->fWasInhabited != b->fWasInhabited) {
+        printf("    fWasInhabited: %u -> %u\n", (unsigned)a->fWasInhabited, (unsigned)b->fWasInhabited);
+        fdiffs++;
+    }
+
+    for (int i = 0; i < 3; i++) {
+        if (a->rgpctMinLevel[i] != b->rgpctMinLevel[i]) {
+            printf("    rgpctMinLevel[%d]: %u -> %u\n", i, (unsigned)a->rgpctMinLevel[i], (unsigned)b->rgpctMinLevel[i]);
+            fdiffs++;
+        }
+        if (a->rgMinConc[i] != b->rgMinConc[i]) {
+            printf("    rgMinConc[%d]: %u -> %u\n", i, (unsigned)a->rgMinConc[i], (unsigned)b->rgMinConc[i]);
+            fdiffs++;
+        }
+        if (a->rgEnvVar[i] != b->rgEnvVar[i]) {
+            printf("    rgEnvVar[%d]: %u -> %u\n", i, (unsigned)a->rgEnvVar[i], (unsigned)b->rgEnvVar[i]);
+            fdiffs++;
+        }
+        if (a->rgEnvVarOrig[i] != b->rgEnvVarOrig[i]) {
+            printf("    rgEnvVarOrig[%d]: %u -> %u\n", i, (unsigned)a->rgEnvVarOrig[i], (unsigned)b->rgEnvVarOrig[i]);
+            fdiffs++;
+        }
+    }
+
+    if (a->uPopGuess != b->uPopGuess || a->uDefGuess != b->uDefGuess) {
+        printf("    guesses: uPopGuess=%u uDefGuess=%u -> uPopGuess=%u uDefGuess=%u\n",
+               (unsigned)a->uPopGuess, (unsigned)a->uDefGuess,
+               (unsigned)b->uPopGuess, (unsigned)b->uDefGuess);
+        fdiffs++;
+    }
+
+    if (a->iDeltaPop != b->iDeltaPop) {
+        printf("    iDeltaPop: %u -> %u\n", (unsigned)a->iDeltaPop, (unsigned)b->iDeltaPop);
+        fdiffs++;
+    }
+    if (a->cMines != b->cMines) {
+        printf("    cMines: %u -> %u\n", (unsigned)a->cMines, (unsigned)b->cMines);
+        fdiffs++;
+    }
+    if (a->cFactories != b->cFactories) {
+        printf("    cFactories: %u -> %u\n", (unsigned)a->cFactories, (unsigned)b->cFactories);
+        fdiffs++;
+    }
+    if (a->cDefenses != b->cDefenses) {
+        printf("    cDefenses: %u -> %u\n", (unsigned)a->cDefenses, (unsigned)b->cDefenses);
+        fdiffs++;
+    }
+    if (a->iScanner != b->iScanner) {
+        printf("    iScanner: %u -> %u\n", (unsigned)a->iScanner, (unsigned)b->iScanner);
+        fdiffs++;
+    }
+    if (a->fArtifact != b->fArtifact) {
+        printf("    fArtifact: %u -> %u\n", (unsigned)a->fArtifact, (unsigned)b->fArtifact);
+        fdiffs++;
+    }
+    if (a->fNoResearch != b->fNoResearch) {
+        printf("    fNoResearch: %u -> %u\n", (unsigned)a->fNoResearch, (unsigned)b->fNoResearch);
+        fdiffs++;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        if (a->rgwtMin[i] != b->rgwtMin[i]) {
+            printf("    rgwtMin[%d]: %" PRId32 " -> %" PRId32 "\n", i, (int32_t)a->rgwtMin[i], (int32_t)b->rgwtMin[i]);
+            fdiffs++;
+        }
+    }
+
+    if (a->lStarbase != b->lStarbase) {
+        printf("    lStarbase: %" PRId32 " -> %" PRId32 "\n", (int32_t)a->lStarbase, (int32_t)b->lStarbase);
+        fdiffs++;
+    }
+    if (a->wRouting != b->wRouting) {
+        printf("    wRouting: 0x%04x -> 0x%04x\n", (unsigned)a->wRouting, (unsigned)b->wRouting);
+        fdiffs++;
+    }
+    if (a->turn != b->turn) {
+        printf("    turn: %d -> %d\n", (int)a->turn, (int)b->turn);
+        fdiffs++;
+    }
+
+    fdiffs += DiffProdQ(a->lpplprod, b->lpplprod, "Planet");
+    return fdiffs;
+}
+
+static int DiffOrderOne(const ORDER *a, const ORDER *b, int idx, const char *prefix) {
+    if (memcmp(a, b, sizeof(*a)) == 0)
+        return 0;
+
+    printf("      %s ord[%d]: pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u raw=0x%04x\n",
+           prefix,
+           idx,
+           (int)a->pt.x, (int)a->pt.y,
+           (int)a->id,
+           (unsigned)a->grTask, (unsigned)a->iWarp, (unsigned)a->grobj,
+           (unsigned)a->fValidTask, (unsigned)a->fNoAutoTrack, (unsigned)a->wRaw_0006);
+
+    printf("              -> pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u raw=0x%04x\n",
+           (int)b->pt.x, (int)b->pt.y,
+           (int)b->id,
+           (unsigned)b->grTask, (unsigned)b->iWarp, (unsigned)b->grobj,
+           (unsigned)b->fValidTask, (unsigned)b->fNoAutoTrack, (unsigned)b->wRaw_0006);
+
+    return 1;
+}
+
+static int DiffFleetOne(const FLEET *a, const FLEET *b, int16_t id) {
+    int fdiffs = 0;
+
+    if (a == NULL || b == NULL) {
+        printf("  Fleet %d: %s -> %s\n", (int)id, (a ? "present" : "missing"), (b ? "present" : "missing"));
+        return 1;
+    }
+
+    /* Ignore pointers for cheap equality check. */
+    FLEET ta = *a;
+    FLEET tb = *b;
+    ta.lpplord = NULL;
+    tb.lpplord = NULL;
+    ta.lpflNext = NULL;
+    tb.lpflNext = NULL;
+    ta.lpszName = NULL;
+    tb.lpszName = NULL;
+
+    bool fSameBase = (memcmp(&ta, &tb, sizeof(FLEET)) == 0);
+    bool fSameName = true;
+    if (a->lpszName == NULL && b->lpszName == NULL) {
+        fSameName = true;
+    } else if (a->lpszName != NULL && b->lpszName != NULL) {
+        fSameName = (strcmp(a->lpszName, b->lpszName) == 0);
+    } else {
+        fSameName = false;
+    }
+
+    bool fSameOrders = true;
+    if (a->lpplord == NULL && b->lpplord == NULL) {
+        fSameOrders = true;
+    } else if (a->lpplord != NULL && b->lpplord != NULL) {
+        uint8_t macA = a->lpplord->iordMac;
+        uint8_t macB = b->lpplord->iordMac;
+        if (macA != macB) {
+            fSameOrders = false;
+        } else {
+            for (uint8_t i = 0; i < macA; i++) {
+                if (memcmp(&a->lpplord->rgord[i], &b->lpplord->rgord[i], sizeof(ORDER)) != 0) {
+                    fSameOrders = false;
+                    break;
+                }
+            }
+        }
+    } else {
+        fSameOrders = false;
+    }
+
+    if (fSameBase && fSameName && fSameOrders)
+        return 0;
+
+    printf("  Fleet %d:\n", (int)id);
+
+    if (a->iPlayer != b->iPlayer) {
+        printf("    iPlayer: %d -> %d\n", (int)a->iPlayer, (int)b->iPlayer);
+        fdiffs++;
+    }
+    if (a->det != b->det) {
+        printf("    det: %u -> %u\n", (unsigned)a->det, (unsigned)b->det);
+        fdiffs++;
+    }
+    if (a->wRaw_0004 != b->wRaw_0004) {
+        printf("    wFlags: 0x%04x -> 0x%04x\n", (unsigned)a->wRaw_0004, (unsigned)b->wRaw_0004);
+        fdiffs++;
+    }
+    if (a->idPlanet != b->idPlanet) {
+        printf("    idPlanet: %d -> %d\n", (int)a->idPlanet, (int)b->idPlanet);
+        fdiffs++;
+    }
+    if (a->pt.x != b->pt.x || a->pt.y != b->pt.y) {
+        printf("    pt: (%d,%d) -> (%d,%d)\n", (int)a->pt.x, (int)a->pt.y, (int)b->pt.x, (int)b->pt.y);
+        fdiffs++;
+    }
+
+    for (int i = 0; i < 16; i++) {
+        if (a->rgcsh[i] != b->rgcsh[i]) {
+            printf("    rgcsh[%d]: %d -> %d\n", i, (int)a->rgcsh[i], (int)b->rgcsh[i]);
+            fdiffs++;
+        }
+    }
+
+    if (a->det >= detAll || b->det >= detAll) {
+        for (int i = 0; i < 16; i++) {
+            if (memcmp(&a->rgdv[i], &b->rgdv[i], sizeof(DV)) != 0) {
+                printf("    rgdv[%d]: dp=%u pct=%u -> dp=%u pct=%u\n",
+                       i,
+                       (unsigned)a->rgdv[i].dp, (unsigned)a->rgdv[i].pctDp,
+                       (unsigned)b->rgdv[i].dp, (unsigned)b->rgdv[i].pctDp);
+                fdiffs++;
+            }
+        }
+    } else {
+        if (a->wtFleet != b->wtFleet) {
+            printf("    wtFleet: %" PRId32 " -> %" PRId32 "\n", (int32_t)a->wtFleet, (int32_t)b->wtFleet);
+            fdiffs++;
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        if (a->rgwtMin[i] != b->rgwtMin[i]) {
+            printf("    rgwtMin[%d]: %" PRId32 " -> %" PRId32 "\n", i, (int32_t)a->rgwtMin[i], (int32_t)b->rgwtMin[i]);
+            fdiffs++;
+        }
+    }
+    if (a->iplan != b->iplan) {
+        printf("    iplan: %u -> %u\n", (unsigned)a->iplan, (unsigned)b->iplan);
+        fdiffs++;
+    }
+    if (a->cord != b->cord) {
+        printf("    cord: %d -> %d\n", (int)a->cord, (int)b->cord);
+        fdiffs++;
+    }
+    if (a->lPower != b->lPower) {
+        printf("    lPower: %" PRId32 " -> %" PRId32 "\n", (int32_t)a->lPower, (int32_t)b->lPower);
+        fdiffs++;
+    }
+    if (a->lFuelUsed != b->lFuelUsed) {
+        printf("    lFuelUsed: %" PRId32 " -> %" PRId32 "\n", (int32_t)a->lFuelUsed, (int32_t)b->lFuelUsed);
+        fdiffs++;
+    }
+    if (a->dirLong != b->dirLong) {
+        printf("    dirLong: 0x%08" PRIx32 " -> 0x%08" PRIx32 "\n", (uint32_t)a->dirLong, (uint32_t)b->dirLong);
+        fdiffs++;
+    }
+
+    if (!fSameName) {
+        printf("    name: \"%s\" -> \"%s\"\n", (a->lpszName ? a->lpszName : ""), (b->lpszName ? b->lpszName : ""));
+        fdiffs++;
+    }
+
+    if (a->lpplord == NULL && b->lpplord == NULL) {
+        /* ok */
+    } else if (a->lpplord == NULL || b->lpplord == NULL) {
+        printf("    orders: %s -> %s\n", (a->lpplord ? "present" : "none"), (b->lpplord ? "present" : "none"));
+        fdiffs++;
+    } else {
+        if (a->lpplord->iordMac != b->lpplord->iordMac) {
+            printf("    orders.iordMac: %u -> %u\n", (unsigned)a->lpplord->iordMac, (unsigned)b->lpplord->iordMac);
+            fdiffs++;
+        }
+        uint8_t mac = (a->lpplord->iordMac < b->lpplord->iordMac) ? a->lpplord->iordMac : b->lpplord->iordMac;
+        for (uint8_t i = 0; i < mac; i++) {
+            fdiffs += DiffOrderOne(&a->lpplord->rgord[i], &b->lpplord->rgord[i], (int)i, "");
+        }
+    }
+
+    return fdiffs;
+}
+
+/* Simple snapshots so we can compare file A vs file B without relying on
+ * pointer stability inside the allocator.
+ */
+
+typedef struct DumpSnapshot {
+    GAME   game;
+    PLAYER rgplr[16];
+
+    int16_t cPlanet;
+    PLANET *rgpl; /* length cPlanet */
+    PLPROD **rgplprod; /* parallel array, owned */
+
+    int16_t cFleet;
+    FLEET  *rgfl;       /* length cFleet */
+    PLORD **rgflord;    /* parallel, owned */
+    char  **rgflname;   /* parallel, owned */
+    int16_t *rgflid;    /* parallel, owned */
+
+    SHDEF  *rglpshdef[16];
+    SHDEF  *rglpshdefSB[16];
+} DumpSnapshot;
+
+static void SnapshotFree(DumpSnapshot *s) {
+    if (s == NULL)
+        return;
+
+    if (s->rgpl != NULL) {
+        for (int16_t i = 0; i < s->cPlanet; i++) {
+            free(s->rgplprod ? s->rgplprod[i] : NULL);
+        }
+        free(s->rgpl);
+        free(s->rgplprod);
+    }
+
+    if (s->rgfl != NULL) {
+        for (int16_t i = 0; i < s->cFleet; i++) {
+            free(s->rgflord ? s->rgflord[i] : NULL);
+            free(s->rgflname ? s->rgflname[i] : NULL);
+        }
+        free(s->rgfl);
+        free(s->rgflord);
+        free(s->rgflname);
+        free(s->rgflid);
+    }
+
+    for (int i = 0; i < 16; i++) {
+        free(s->rglpshdef[i]);
+        free(s->rglpshdefSB[i]);
+    }
+
+    memset(s, 0, sizeof(*s));
+}
+
+static bool SnapshotTake(DumpSnapshot *s) {
+    if (s == NULL)
+        return false;
+
+    memset(s, 0, sizeof(*s));
+    memcpy(&s->game, &game, sizeof(game));
+    memcpy(&s->rgplr[0], &rgplr[0], sizeof(s->rgplr));
+
+    s->cPlanet = cPlanet;
+    if (s->cPlanet < 0)
+        s->cPlanet = 0;
+    if (s->cPlanet > 0) {
+        s->rgpl = (PLANET *)calloc((size_t)s->cPlanet, sizeof(PLANET));
+        s->rgplprod = (PLPROD **)calloc((size_t)s->cPlanet, sizeof(PLPROD *));
+        if (s->rgpl == NULL || s->rgplprod == NULL)
+            return false;
+
+        for (int16_t i = 0; i < s->cPlanet; i++) {
+            s->rgpl[i] = lpPlanets[i];
+            s->rgpl[i].lpplprod = NULL;
+            s->rgplprod[i] = NULL;
+
+            if (lpPlanets[i].lpplprod != NULL) {
+                const PLPROD *pq = lpPlanets[i].lpplprod;
+                size_t cb = sizeof(PLPROD) + (size_t)pq->iprodMac * sizeof(PROD);
+                PLPROD *copy = (PLPROD *)malloc(cb);
+                if (copy == NULL)
+                    return false;
+                memcpy(copy, pq, cb);
+                s->rgplprod[i] = copy;
+            }
+        }
+    }
+
+    s->cFleet = cFleet;
+    if (s->cFleet < 0)
+        s->cFleet = 0;
+    if (s->cFleet > 0) {
+        s->rgfl = (FLEET *)calloc((size_t)s->cFleet, sizeof(FLEET));
+        s->rgflord = (PLORD **)calloc((size_t)s->cFleet, sizeof(PLORD *));
+        s->rgflname = (char **)calloc((size_t)s->cFleet, sizeof(char *));
+        s->rgflid = (int16_t *)calloc((size_t)s->cFleet, sizeof(int16_t));
+        if (s->rgfl == NULL || s->rgflord == NULL || s->rgflname == NULL || s->rgflid == NULL)
+            return false;
+
+        for (int16_t i = 0; i < s->cFleet; i++) {
+            const FLEET *src = rglpfl[i];
+            s->rgfl[i] = *src;
+            s->rgflid[i] = src->id;
+            s->rgfl[i].lpplord = NULL;
+            s->rgfl[i].lpflNext = NULL;
+            s->rgfl[i].lpszName = NULL;
+
+            if (src->lpszName != NULL) {
+                size_t n = strlen(src->lpszName) + 1;
+                s->rgflname[i] = (char *)malloc(n);
+                if (s->rgflname[i] == NULL)
+                    return false;
+                memcpy(s->rgflname[i], src->lpszName, n);
+            }
+
+            if (src->lpplord != NULL) {
+                const PLORD *po = src->lpplord;
+                uint8_t nord = po->iordMax;
+                if (nord == 0)
+                    nord = (uint8_t)(src->cord + 1);
+                size_t cb = sizeof(PLORD) + (size_t)nord * sizeof(ORDER);
+                PLORD *copy = (PLORD *)malloc(cb);
+                if (copy == NULL)
+                    return false;
+                memcpy(copy, po, cb);
+                s->rgflord[i] = copy;
+            }
+        }
+    }
+
+    for (int i = 0; i < 16; i++) {
+        if (rglpshdef[i] != NULL) {
+            s->rglpshdef[i] = (SHDEF *)malloc(sizeof(SHDEF) * ishdefMax);
+            if (s->rglpshdef[i] == NULL)
+                return false;
+            memcpy(s->rglpshdef[i], rglpshdef[i], sizeof(SHDEF) * ishdefMax);
+        }
+
+        if (rglpshdefSB[i] != NULL) {
+            s->rglpshdefSB[i] = (SHDEF *)malloc(sizeof(SHDEF) * ishdefSBMax);
+            if (s->rglpshdefSB[i] == NULL)
+                return false;
+            memcpy(s->rglpshdefSB[i], rglpshdefSB[i], sizeof(SHDEF) * ishdefSBMax);
+        }
+    }
+
+    return true;
+}
+
+static const PLANET *SnapshotFindPlanet(const DumpSnapshot *s, int16_t id, const PLPROD **ppq) {
+    if (ppq != NULL)
+        *ppq = NULL;
+    if (s == NULL || s->rgpl == NULL)
+        return NULL;
+    for (int16_t i = 0; i < s->cPlanet; i++) {
+        if (s->rgpl[i].id == id) {
+            if (ppq != NULL && s->rgplprod != NULL)
+                *ppq = s->rgplprod[i];
+            return &s->rgpl[i];
+        }
+    }
+    return NULL;
+}
+
+static const FLEET *SnapshotFindFleet(const DumpSnapshot *s, int16_t id, const PLORD **ppord, const char **ppname) {
+    if (ppord != NULL)
+        *ppord = NULL;
+    if (ppname != NULL)
+        *ppname = NULL;
+    if (s == NULL || s->rgfl == NULL)
+        return NULL;
+
+    for (int16_t i = 0; i < s->cFleet; i++) {
+        if (s->rgflid != NULL && s->rgflid[i] == id) {
+            if (ppord != NULL)
+                *ppord = (s->rgflord ? s->rgflord[i] : NULL);
+            if (ppname != NULL)
+                *ppname = (s->rgflname ? s->rgflname[i] : NULL);
+            return &s->rgfl[i];
+        }
+    }
+    return NULL;
+}
+
+int DiffGameFileBlocks(const char *pathA, const char *pathB) {
+    char    baseA[1024], extA[16];
+    char    baseB[1024], extB[16];
+    int     diffs = 0;
+
+    /* Split paths into base + extension for FLoadGame */
+    if (!Stars_PathSplitExt(pathA, baseA, sizeof(baseA), extA, sizeof(extA))) {
+        fprintf(stderr, "diff: invalid path: %s\n", pathA);
+        return 2;
+    }
+    if (!Stars_PathSplitExt(pathB, baseB, sizeof(baseB), extB, sizeof(extB))) {
+        fprintf(stderr, "diff: invalid path: %s\n", pathB);
+        return 2;
+    }
+
+    /* Load file A */
+    if (!FLoadGame(baseA, extA)) {
+        fprintf(stderr, "diff: FLoadGame failed for '%s'\n", pathA);
+        return 2;
+    }
+
+    /* Snapshot globals from file A (deep copy where needed). */
+    DumpSnapshot snapA;
+    if (!SnapshotTake(&snapA)) {
+        fprintf(stderr, "diff: out of memory while snapshotting '%s'\n", pathA);
+        SnapshotFree(&snapA);
+        return 2;
+    }
+
+    DestroyCurGame();
+
+    /* Load file B (overwrites globals) */
+    if (!FLoadGame(baseB, extB)) {
+        fprintf(stderr, "diff: FLoadGame failed for '%s'\n", pathB);
+        SnapshotFree(&snapA);
+        return 2;
+    }
+
+    /* --- Diff GAME struct --- */
+    printf("GAME:\n");
+    int gameDiffs = DiffGame(&snapA.game, &game);
+    if (gameDiffs == 0)
+        printf("    (identical)\n");
+    diffs += gameDiffs;
+
+    /* --- Diff PLAYER structs --- */
+    int maxPlr = (snapA.game.cPlayer > game.cPlayer) ? snapA.game.cPlayer : game.cPlayer;
+    if (maxPlr > 16) maxPlr = 16;
+
+    printf("\nPLAYERS:\n");
+    int plrDiffs = 0;
+    for (int i = 0; i < maxPlr; i++) {
+        plrDiffs += DiffPlayer(&snapA.rgplr[i], &rgplr[i], i);
+    }
+    if (plrDiffs == 0)
+        printf("  (all identical)\n");
+    diffs += plrDiffs;
+
+    /* --- Diff PLANET structs (matched by planet id) --- */
+    printf("\nPLANETS:\n");
+    int planetDiffs = 0;
+    int16_t maxPlanId = snapA.game.cPlanMax;
+    if (game.cPlanMax > maxPlanId)
+        maxPlanId = game.cPlanMax;
+    if (maxPlanId < 0)
+        maxPlanId = 0;
+
+    for (int16_t id = 0; id < maxPlanId; id++) {
+        const PLPROD *pqA = NULL;
+        const PLANET *pa = SnapshotFindPlanet(&snapA, id, &pqA);
+
+        const PLANET *pb = NULL;
+        const PLPROD *pqB = NULL;
+        for (int16_t j = 0; j < cPlanet; j++) {
+            if (lpPlanets[j].id == id) {
+                pb = &lpPlanets[j];
+                pqB = lpPlanets[j].lpplprod;
+                break;
+            }
+        }
+
+        PLANET ta;
+        PLANET tb;
+        const PLANET *pTa = pa;
+        const PLANET *pTb = pb;
+        if (pa != NULL) {
+            ta = *pa;
+            ta.lpplprod = (PLPROD *)pqA;
+            pTa = &ta;
+        }
+        if (pb != NULL) {
+            tb = *pb;
+            tb.lpplprod = (PLPROD *)pqB;
+            pTb = &tb;
+        }
+
+        planetDiffs += DiffPlanetOne(pTa, pTb, id);
+    }
+    if (planetDiffs == 0)
+        printf("  (all identical)\n");
+    diffs += planetDiffs;
+
+    /* --- Diff FLEET structs (matched by fleet id) --- */
+    printf("\nFLEETS:\n");
+    int fleetDiffs = 0;
+    bool *seen = NULL;
+    if (cFleet > 0) {
+        seen = (bool *)calloc((size_t)cFleet, sizeof(bool));
+    }
+
+    for (int16_t i = 0; i < snapA.cFleet; i++) {
+        int16_t id = snapA.rgflid[i];
+
+        const PLORD *ordA = (snapA.rgflord ? snapA.rgflord[i] : NULL);
+        const char  *nameA = (snapA.rgflname ? snapA.rgflname[i] : NULL);
+
+        const FLEET *fb = NULL;
+        for (int16_t j = 0; j < cFleet; j++) {
+            if (rglpfl[j]->id == id) {
+                fb = rglpfl[j];
+                if (seen != NULL)
+                    seen[j] = true;
+                break;
+            }
+        }
+
+        FLEET fa = snapA.rgfl[i];
+        fa.lpplord = (PLORD *)ordA;
+        fa.lpszName = (char *)nameA;
+
+        fleetDiffs += DiffFleetOne(&fa, fb, id);
+    }
+
+    /* Fleets present only in B. */
+    for (int16_t j = 0; j < cFleet; j++) {
+        if (seen != NULL && seen[j])
+            continue;
+        fleetDiffs += DiffFleetOne(NULL, rglpfl[j], rglpfl[j]->id);
+    }
+    free(seen);
+    if (fleetDiffs == 0)
+        printf("  (all identical)\n");
+    diffs += fleetDiffs;
+
+    /* --- Diff SHDEF arrays (matched by slot index) --- */
+    printf("\nSHDEFS:\n");
+    int shdefDiffs = 0;
+    for (int i = 0; i < maxPlr; i++) {
+        const SHDEF *a = snapA.rglpshdef[i];
+        const SHDEF *b = rglpshdef[i];
+        if (a == NULL && b == NULL)
+            continue;
+
+        for (int j = 0; j < ishdefMax; j++) {
+            SHDEF tmpA;
+            SHDEF tmpB;
+            const SHDEF *pa = a;
+            const SHDEF *pb = b;
+
+            if (a == NULL) {
+                memset(&tmpA, 0, sizeof(tmpA));
+                tmpA.fFree = true;
+                pa = &tmpA;
+            } else {
+                pa = &a[j];
+            }
+            if (b == NULL) {
+                memset(&tmpB, 0, sizeof(tmpB));
+                tmpB.fFree = true;
+                pb = &tmpB;
+            } else {
+                pb = &b[j];
+            }
+
+            shdefDiffs += DiffShDefOne(pa, pb, i, j, "");
+        }
+    }
+
+    /* Starbase ship defs. */
+    printf("\nSTARBASE SHDEFS:\n");
+    for (int i = 0; i < maxPlr; i++) {
+        const SHDEF *a = snapA.rglpshdefSB[i];
+        const SHDEF *b = rglpshdefSB[i];
+        if (a == NULL && b == NULL)
+            continue;
+
+        for (int j = 0; j < ishdefSBMax; j++) {
+            SHDEF tmpA;
+            SHDEF tmpB;
+            const SHDEF *pa = a;
+            const SHDEF *pb = b;
+
+            if (a == NULL) {
+                memset(&tmpA, 0, sizeof(tmpA));
+                tmpA.fFree = true;
+                pa = &tmpA;
+            } else {
+                pa = &a[j];
+            }
+            if (b == NULL) {
+                memset(&tmpB, 0, sizeof(tmpB));
+                tmpB.fFree = true;
+                pb = &tmpB;
+            } else {
+                pb = &b[j];
+            }
+
+            shdefDiffs += DiffShDefOne(pa, pb, i, j, "SB");
+        }
+    }
+    if (shdefDiffs == 0)
+        printf("  (all identical)\n");
+    diffs += shdefDiffs;
+
+    printf("\n%d difference(s) found.\n", diffs);
+    SnapshotFree(&snapA);
+    return (diffs > 0) ? 1 : 0;
+}

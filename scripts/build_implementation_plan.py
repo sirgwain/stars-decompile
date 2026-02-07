@@ -38,27 +38,6 @@ def get_decompiled_file_for_segment(segment):
     return p if p.exists() else None
 
 
-def count_function_lines(decompiled_path, func_name):
-    """Count lines from '// Function: FuncName' to next marker or EOF."""
-    if not decompiled_path or not decompiled_path.exists():
-        return None
-    try:
-        lines = decompiled_path.read_text().splitlines()
-    except Exception:
-        return None
-
-    marker = f"// Function: {func_name}"
-    start = None
-    for i, line in enumerate(lines):
-        if line.strip() == marker:
-            start = i
-        elif start is not None and line.strip().startswith("// Function:"):
-            return i - start
-    if start is not None:
-        return len(lines) - start
-    return None
-
-
 def is_ai_function(info):
     """Check if function belongs to an AI-related file."""
     src = info.get("src_file")
@@ -85,7 +64,9 @@ def build_plan(exclude_ai=False):
         proto = impl_info.get("proto", "")
         depth = cg_info.get("depth", None)
         decompiled = get_decompiled_file_for_segment(segment)
-        line_count = count_function_lines(decompiled, name)
+        line_count = impl_info.get("decompiled_line_count")
+
+        win32 = impl_info.get("win32", False)
 
         entry = {
             "status": status,
@@ -95,6 +76,7 @@ def build_plan(exclude_ai=False):
             "segment": segment,
             "decompiled": decompiled,
             "line_count": line_count,
+            "win32": win32,
         }
 
         if exclude_ai and is_ai_function(entry):
@@ -162,10 +144,11 @@ def build_plan(exclude_ai=False):
 
         if unimplemented:
             md.append(f"### Unimplemented ({len(unimplemented)})\n")
-            md.append("| | Function | Lines | Prototype | Source | Decompiled |")
-            md.append("|---|----------|------:|-----------|--------|------------|")
+            md.append("| | Function | Lines | Win | Prototype | Source | Decompiled |")
+            md.append("|---|----------|------:|:---:|-----------|--------|------------|")
             for name, info in unimplemented:
                 lc = info["line_count"] if info["line_count"] is not None else "?"
+                win = "W" if info.get("win32") else ""
                 src_link = ""
                 if info["src_file"]:
                     src_link = f"[{info['src_file']}](../{info['src_file']})"
@@ -174,20 +157,21 @@ def build_plan(exclude_ai=False):
                     dec_rel = os.path.relpath(info["decompiled"], ROOT / "notes")
                     dec_link = f"[{info['decompiled'].name}]({dec_rel})"
                 proto = f"`{info['proto']}`" if info["proto"] else ""
-                md.append(f"| ⬜ | **{name}** | {lc} | {proto} | {src_link} | {dec_link} |")
+                md.append(f"| ⬜ | **{name}** | {lc} | {win} | {proto} | {src_link} | {dec_link} |")
             md.append("")
 
         if implemented:
             md.append(f"### Implemented ({len(implemented)})\n")
             md.append("<details><summary>Show {0} implemented functions</summary>\n".format(len(implemented)))
-            md.append("| | Function | Lines | Source |")
-            md.append("|---|----------|------:|--------|")
+            md.append("| | Function | Lines | Win | Source |")
+            md.append("|---|----------|------:|:---:|--------|")
             for name, info in sorted(implemented, key=lambda x: x[0]):
                 lc = info["line_count"] if info["line_count"] is not None else "?"
+                win = "W" if info.get("win32") else ""
                 src_link = ""
                 if info["src_file"]:
                     src_link = f"[{info['src_file']}](../{info['src_file']})"
-                md.append(f"| ✅ | {name} | {lc} | {src_link} |")
+                md.append(f"| ✅ | {name} | {lc} | {win} | {src_link} |")
             md.append("\n</details>\n")
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

@@ -1103,13 +1103,12 @@ FLEET *LpflNew(int16_t iPlr, int16_t idPl) {
     lpord->pt.x = lpfl->pt.x;
     lpord->pt.y = lpfl->pt.y;
     lpord->id = lpfl->idPlanet;
-    if (lpfl->idPlanet == -1) {
-        lpord->iWarp = 4;
-    } else {
-        lpord->iWarp = 1;
-    }
-    lpord->grobj = grobjNone;
+
+    /* ASM: grobj = (idPl == -1) ? 4 : 1; iWarp = 0; fValidTask = 1; grTask = 0 */
+    lpord->iWarp = 0;
+    lpord->grobj = (lpfl->idPlanet == -1) ? 4 : 1; /* 4==deep space, 1==planet in the original */
     lpord->fValidTask = 1;
+    lpord->fNoAutoTrack = 0;
     lpord->grTask = 0;
 
     if (sel.scan.ifl != -1 && i <= sel.scan.ifl) {

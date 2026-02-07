@@ -37,4 +37,36 @@ void DumpFleet(const FLEET *f);
  */
 void DumpShDef(const SHDEF *s, int idx);
 
+/* ------------------------------------------------------------------ */
+/* Block-level reading and diffing                                     */
+/* ------------------------------------------------------------------ */
+
+typedef struct GameBlock {
+    uint16_t rt;       /* record type */
+    uint16_t cb;       /* payload size */
+    uint8_t *data;     /* heap-allocated payload (NULL if cb==0) */
+} GameBlock;
+
+typedef struct GameBlockList {
+    GameBlock *blocks;
+    int        count;
+    int        capacity;
+} GameBlockList;
+
+/* Read all blocks from a file into a list.  Caller must call FreeGameBlockList(). */
+int  ReadGameFileBlocks(const char *path, GameBlockList *out);
+void FreeGameBlockList(GameBlockList *list);
+
+/* Field-level struct diffs.  Return number of differences found.
+ *
+ * Note: DiffGameFileBlocks() compares GAME, PLAYER, plus detailed diffs for
+ * planets, fleets, and ship definitions (including starbase ship defs).
+ */
+int DiffGame(const GAME *a, const GAME *b);
+int DiffPlayer(const PLAYER *a, const PLAYER *b, int iplr);
+
+/* Diff two files by loading each via FLoadGame and comparing globals.
+ * Returns 0 if identical, 1 if different, 2 on error. */
+int DiffGameFileBlocks(const char *pathA, const char *pathB);
+
 #endif /* DUMP_H_ */

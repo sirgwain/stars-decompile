@@ -2,7 +2,12 @@
 #include "types.h"
 
 #include "globals.h"
+#include "msg.h"
+#include "planet.h"
+#include "produce.h"
+#include "race.h"
 #include "turn2.h"
+#include "util.h"
 
 /* functions */
 void Produce(void) {
@@ -251,7 +256,6 @@ int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists) {
 int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly) {
     int32_t  pctT;
     int16_t  cMax;
-    uint32_t iobjOther;
     int32_t  cCanBuild;
     int32_t  lMinNeeded;
     int32_t  lAlchCost;
@@ -262,19 +266,210 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     int32_t  rgCostPaid[4];
     int16_t  i;
     int16_t  fResourceBlocked;
-    int32_t  pctInitial;
     int32_t  pctTooBig;
     int32_t  pct;
-    int32_t  rgCost[4];
+    uint32_t rgCost[4];
     int16_t  fMineralBlocked;
-    int32_t  AddCost;
+    int32_t  addCost;
+    uint16_t iItemOrig;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TURN2:0x1324 */
-    /* label LAlchemize @ MEMORY_TURN2:0x13e1 */
+    cAlchemy = 0;
+    iItemOrig = lpprod->iItem;
+    prod.dwRaw_0000 = lpprod->dwRaw_0000;
 
-    /* TODO: implement */
-    return 0;
+    GetProductionCosts(lppl, lpprod, rgCost, lppl->iPlayer, 1);
+
+    cBuilt = 0;
+
+    if (lpprod->grobj == grobjPlanet && lpprod->iItem < 7) {
+        fAutoBuild = 1;
+    } else {
+        fAutoBuild = 0;
+    }
+
+    if (fAutoBuild) {
+        cMax = 1000;
+
+        switch (lpprod->iItem) {
+        case iobjMine:
+            cMax = CMaxOperableMines(lppl, lppl->iPlayer, 1) - (int16_t)lppl->cMines;
+            break;
+        case iobjFactory:
+            cMax = CMaxOperableFactories(lppl, lppl->iPlayer, 1) - (int16_t)lppl->cFactories;
+            break;
+        case iobjDefense:
+            cMax = CMaxOperableDefenses(lppl, lppl->iPlayer, 1) - (int16_t)lppl->cDefenses;
+            break;
+        case iobjAlchemy:
+            break;
+        case iobjTerraform:
+        case iobjTerraform2:
+            cMax = IpctCanTerraformLppl(lppl);
+            if (cMax > 0 && lpprod->iItem == iobjTerraform &&
+                ChgPopFromPlanet(lppl, 0) >= 0 &&
+                PctPlanetDesirability(lppl, lppl->iPlayer) > 0) {
+                cMax = 0;
+            }
+            break;
+        case iobjPacket:
+            if (IWarpMAFromLppl(lppl, NULL) == 0 ||
+                ((uint16_t)(lppl->lStarbase >> 16) & 0x3ff) == 0) {
+                cMax = 0;
+            }
+            break;
+        }
+
+        if (cMax < 0)
+            cMax = 0;
+
+        if ((cMax >= 0 && (uint16_t)cMax < prod.cItem) || lpprod->iItem == iobjAlchemy) {
+            prod.cItem = cMax;
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        rgCostPaid[i] = (int32_t)rgCost[i] * prod.pct / 100;
+    }
+
+    for (;;) {
+        if (prod.cItem == 0)
+            goto LDone;
+
+        for (i = 0; i < 4; i++) {
+            if (rgRes[i] < (int32_t)rgCost[i] - rgCostPaid[i])
+                break;
+        }
+
+        if (i > 3) {
+            cBuilt++;
+            prod.cItem--;
+            prod.pct = 0;
+            for (i = 0; i < 4; i++) {
+                rgRes[i] -= ((int32_t)rgCost[i] - rgCostPaid[i]);
+                rgCostPaid[i] = 0;
+            }
+            continue;
+        }
+
+        fMineralBlocked = 0;
+        fResourceBlocked = 0;
+        pct = 100;
+        lMinNeeded = 0;
+
+        for (i = 0; i < 4; i++) {
+            if ((int32_t)rgCost[i] > 0) {
+                if (rgRes[i] < (int32_t)rgCost[i]) {
+                    pctT = (rgRes[i] + rgCostPaid[i]) * 100 / (int32_t)rgCost[i];
+                    pctTooBig = (rgRes[i] + rgCostPaid[i] + 1) * 100 / (int32_t)rgCost[i];
+                    if (pctT <= pctTooBig - 1)
+                        pctT = pctTooBig - 1;
+                } else {
+                    pctT = 100;
+                }
+                if (pctT < pct) {
+                    lMinNeeded = ((int32_t)rgCost[i] - rgCostPaid[i]) - rgRes[i];
+                    pct = pctT;
+                    if (i == 3)
+                        fResourceBlocked = 1;
+                    else
+                        fMineralBlocked = 1;
+                }
+            }
+        }
+
+        if (fMineralBlocked && fAutoBuild != 0) {
+            if (fAlchemy == 0) {
+                fAutoBuild = 2;
+                goto LDone;
+            }
+        } else {
+            for (i = 0; i < 4; i++) {
+                addCost = (int32_t)rgCost[i] * pct / 100 - rgCostPaid[i];
+                rgRes[i] -= addCost;
+                rgCostPaid[i] += addCost;
+            }
+            prod.pct = (uint32_t)pct;
+
+            if (fAlchemy == 0 || fResourceBlocked)
+                goto LDone;
+        }
+
+    /* LAlchemize */
+        lAlchCost = (GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) != 0) ? 25 : 100;
+
+        cCanBuild = rgRes[3] / lAlchCost;
+        if (cCanBuild > lMinNeeded)
+            cCanBuild = lMinNeeded;
+
+        if (cCanBuild > 0) {
+            for (i = 0; i < 3; i++)
+                rgRes[i] += cCanBuild;
+            rgRes[3] -= cCanBuild * lAlchCost;
+            cAlchemy += (int16_t)cCanBuild;
+        }
+
+        if (cCanBuild != lMinNeeded) {
+            if (rgRes[3] > 0 && pprodPartial != NULL) {
+                memset(pprodPartial, 0, sizeof(PROD));
+                pprodPartial->grobj = grobjPlanet;
+                pprodPartial->iItem = mdIdleAlchemy;
+                pprodPartial->cItem = 1;
+
+                pctT = rgRes[3] * 100 / lAlchCost;
+                pctTooBig = (rgRes[3] + 1) * 100 / lAlchCost;
+                if (pctT <= pctTooBig - 1)
+                    pctT = pctTooBig - 1;
+                pprodPartial->pct = (uint32_t)pctT;
+
+                addCost = pctT * lAlchCost / 100;
+                rgRes[3] -= addCost;
+            }
+            goto LDone;
+        }
+    }
+
+LDone:
+    if (cBuilt > 0 && lpprod->grobj == grobjPlanet &&
+        (lpprod->iItem == mdIdleAlchemy || lpprod->iItem == iobjAlchemy)) {
+        cAlchemy += cBuilt;
+        for (i = 0; i < 3; i++) {
+            rgRes[i] += (int32_t)cBuilt;
+        }
+    }
+
+    if (cAlchemy != 0 && fCalcOnly == 0 && gd.fGeneratingTurn) {
+        FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach,
+                     lppl->id, lppl->id, cAlchemy);
+    }
+
+    if (pmdStatus != NULL) {
+        if (fAutoBuild == 2) {
+            *pmdStatus = (cBuilt < 1) ? mdProdStatNoneAuto : mdProdStatSomeAuto;
+        } else if (fAutoBuild == 0 || prod.cItem != 0) {
+            if (cBuilt == 0) {
+                *pmdStatus = (iItemOrig == lpprod->iItem) ?
+                    mdProdStatBlockedSame : mdProdStatBlockedDiff;
+            } else if (prod.cItem == 0) {
+                *pmdStatus = mdProdStatComplete;
+            } else {
+                *pmdStatus = mdProdStatSome;
+            }
+        } else {
+            *pmdStatus = (cBuilt < 1) ? mdProdStatSkippedAuto : mdProdStatCompleteAuto;
+        }
+    }
+
+    if (fCalcOnly == 0 && fAutoBuild == 0) {
+        lpprod->dwRaw_0000 = prod.dwRaw_0000;
+    }
+
+    if (fAutoBuild != 0 && pprodPartial != NULL &&
+        pprodPartial->cItem == 0 && lpprod->iItem != iobjMine) {
+        pprodPartial->dwRaw_0000 = prod.dwRaw_0000;
+        pprodPartial->cItem = 1;
+    }
+
+    return cBuilt;
 }
 
 void AutoTerraform(void) {

@@ -561,6 +561,50 @@ void CreateTutorWorld(void) {
     GenerateWorld(0);
 }
 
+void CreateTinyTestWorld(void) {
+    PLAYER *pplrComp;
+    char   *pszFmt;
+    int16_t i;
+
+    memset(&game, 0, sizeof(GAME));
+    game.cPlayer = 2;
+    game.mdDensity = 0;
+    game.mdSize = 0;
+    game.mdStartDist = 0;
+    game.fTutorial = 0;
+    game.fBBSPlay = 0;
+    game.fVisScores = 0;
+    game.fNoRandom = 0;
+    game.rgvc[7] = 0x80;
+    game.rgvc[8] = 0x81;
+    strncpy(game.szName, "Tiny Test Game", sizeof(game.szName));
+
+    memcpy(&rgplr[0], &vrgplrDef[0], sizeof(PLAYER));
+    CchGetString(idsHumanoid, rgplr[0].szName);
+    sprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
+
+    pplrComp = LpplrComp(1, 0);
+    memcpy(&rgplr[1], pplrComp, sizeof(PLAYER));
+    rgplr[1].fAi = 1;
+    rgplr[1].lvlAi = 0;
+    rgplr[1].idAi = 1;
+    CchGetString(idsBerserker, rgplr[1].szName);
+
+    Randomize(12345);
+
+    for (i = 1; i < 3; i++) {
+        pszFmt = PszGetCompressedString(idsSHD);
+        sprintf(szWork, pszFmt, szBase, (int)i);
+        remove(szWork);
+
+        pszFmt = PszGetCompressedString(idsSXD);
+        sprintf(szWork, pszFmt, szBase, (int)i);
+        remove(szWork);
+    }
+
+    GenerateWorld(0);
+}
+
 int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
     int16_t cur;
 
@@ -1117,6 +1161,7 @@ RetryAll:
 
         /* assign owner */
         plHome->iPlayer = i;
+        plHome->fHomeworld = 1;
 
         /* wRaw_0004: set starbase flag */
         plHome->fStarbase = 1;
@@ -1131,6 +1176,18 @@ RetryAll:
         plHome->cFactories = 10;
         plHome->cMines = 10;
         plHome->cDefenses = 10;
+
+        // after assigning owner/homeworld/starbase...
+
+        // Set initial population like the original (offset +0x28 = rgwtMin[3]).
+        if (GetRaceGrbit(pplr, ibitRaceLowStartingPop) != 0) {
+            plHome->rgwtMin[3] = 175;
+        } else {
+            plHome->rgwtMin[3] = 250;
+        }
+
+        // Then derive pop guess from that population.
+        plHome->uPopGuess = (uint16_t)(plHome->rgwtMin[3] / 4); // 0xAF/4=43, 0xFA/4=62
 
         /* setup pop guess amount */
         plHome->uPopGuess = plHome->rgwtMin[3] / 4;

@@ -13,7 +13,7 @@
  */
 
 typedef struct CliContext {
-    const char *file;      /* original file path, e.g. "test/data/tiny/2400/TEST.HST" */
+    const char *file;      /* original file path, e.g. "test/data/test/2400/TEST.HST" */
     char        path_base[1024]; /* parsed: path without extension */
     char        ext[32];         /* parsed: extension without dot */
     int16_t     iPlayer;   /* -1 for "host"/no-player loads when supported */

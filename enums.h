@@ -379,6 +379,41 @@ typedef enum iplanetary {
     iplanetaryCount = 15,
 } iplanetary;
 
+typedef enum ProdItemType {
+    iobjMine = 0,
+    iobjFactory = 1,
+    iobjDefense = 2,
+    iobjAlchemy = 3,
+    iobjTerraform = 4,
+    iobjTerraform2 = 5,
+    iobjPacket = 6,
+    mdIdleFactory = 7,
+    mdIdleMine = 8,
+    mdIdleDefense = 9,
+    /* 0xa unused */
+    mdIdleAlchemy = 0xb,
+    mdIdleTerraform = 0xc,
+    iobjScanner = 0xd,
+    iobjPacketIron = 0xe,
+    iobjPacketBor = 0xf,
+    iobjPacketGerm = 0x10,
+    iobjGenesis = 0x11,
+    iobjPlanetaryFirst = 0x12,
+    iobjPlanetaryLast = 0x1a,
+    iobjStargateAlt = 0x1b,
+} ProdItemType;
+
+typedef enum mdProdStat {
+    mdProdStatComplete = 0,
+    mdProdStatCompleteAuto = 1,
+    mdProdStatSkippedAuto = 2,
+    mdProdStatSomeAuto = 3,
+    mdProdStatNoneAuto = 4,
+    mdProdStatSome = 5,
+    mdProdStatBlockedDiff = 6,
+    mdProdStatBlockedSame = 7,
+} mdProdStat;
+
 typedef enum iterra {
     iterraTotalTerraform3 = 0,
     iterraTotalTerraform5 = 1,

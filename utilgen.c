@@ -378,32 +378,34 @@ int16_t FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int1
 }
 
 void Randomize2(uint32_t dw) {
-    /* Indices derived from dw (7-bit) with XOR scramblers */
-    uint16_t a = (uint16_t)(((uint16_t)dw & 0x7Fu) ^ 0x35u);
-    uint16_t b = (uint16_t)((((uint16_t)(dw >> 1) & 0x7Fu) ^ 0x5Cu));
+    /* ASM:
+       b = (dw & 0x7f) ^ 0x35
+       a = ((dw >> 7) & 0x7f) ^ 0x5c
+       if (b == a) a = (a + 1) & 0x7f
+       seed1 = signext(rgPrimes[b])
+       seed2 = signext(rgPrimes[a])
+    */
 
-    /* Ensure different indices */
-    if (a == b) {
-        b = (uint16_t)((b + 1u) & 0x7Fu);
+    uint16_t b = (uint16_t)((dw & 0x7Fu) ^ 0x35u);
+    uint16_t a = (uint16_t)(((dw >> 7) & 0x7Fu) ^ 0x5Cu);
+
+    if (b == a) {
+        a = (uint16_t)((a + 1u) & 0x7Fu);
     }
 
-    /* Load primes and sign-extend to 32-bit (matches CWD -> DX:AX) */
-    lRandSeed1 = (int32_t)rgPrimes[a];
-    lRandSeed2 = (int32_t)rgPrimes[b];
+    lRandSeed1 = (int32_t)rgPrimes[b];
+    lRandSeed2 = (int32_t)rgPrimes[a];
 }
 
 void Randomize(uint32_t dw) {
-    /* Indices derived exactly like the assembly */
     uint16_t a = (uint16_t)(dw & 0x3Fu);
-    uint16_t b = (uint16_t)((dw >> 1) & 0x3Fu);
+    uint16_t b = (uint16_t)((dw >> 6) & 0x3Fu); /* <-- must be >> 6 */
 
-    /* Ensure different indices */
     if (a == b) {
         b = (uint16_t)((b + 1u) & 0x3Fu);
     }
 
-    /* Load primes and sign-extend to 32-bit */
-    lRandSeed1 = (int32_t)rgPrimes[a];
+    lRandSeed1 = (int32_t)rgPrimes[a]; /* sign-extend (CWD in asm) */
     lRandSeed2 = (int32_t)rgPrimes[b];
 }
 
@@ -638,51 +640,43 @@ char *PszGetLine(char **ppszBeg) {
 }
 
 int16_t Random(int16_t c) {
-    /* Constants from the original generator (L'Ecuyer combined LCG). */
-    const uint32_t q1 = 53668u, r1 = 12211u, a1 = 40014u, m1 = 2147483563u; /* 0x7FFFFFAB */
-    const uint32_t q2 = 52774u, r2 = 3791u, a2 = 40692u, m2 = 2147483399u;  /* 0x7FFFFF07 */
+    const uint32_t q1 = 53668u, r1 = 12211u, a1 = 40014u, m1 = 2147483563u;
+    const uint32_t q2 = 52774u, r2 = 3791u, a2 = 40692u, m2 = 2147483399u;
 
     int32_t s1 = lRandSeed1;
     int32_t s2 = lRandSeed2;
 
-    /* If c < 1, original returns 0 and does not commit new seeds. */
-    if (c < 1) {
-        return 0;
-    }
-
-    /* Update seed 1: k = s1 / q1; s1 = a1*(s1 - k*q1) - k*r1; if (s1 < 0) s1 += m1; */
+    /* update s1 */
     {
         uint32_t k = (uint32_t)s1 / q1;
-        int32_t  s1mkq = (int32_t)((uint32_t)s1 - k * q1); /* preserve unsigned low-32 behavior */
-        s1 = (int32_t)(a1 * (uint32_t)s1mkq) - (int32_t)(r1 * k);
-        if (s1 < 0) {
+        uint32_t s1mkq = (uint32_t)s1 - k * q1;
+        s1 = (int32_t)(a1 * s1mkq) - (int32_t)(r1 * k);
+        if (s1 < 0)
             s1 += (int32_t)m1;
-        }
     }
 
-    /* Update seed 2: k = s2 / q2; s2 = a2*(s2 - k*q2) - k*r2; if (s2 < 0) s2 += m2; */
+    /* update s2 */
     {
         uint32_t k = (uint32_t)s2 / q2;
-        int32_t  s2mkq = (int32_t)((uint32_t)s2 - k * q2);
-        s2 = (int32_t)(a2 * (uint32_t)s2mkq) - (int32_t)(r2 * k);
-        if (s2 < 0) {
+        uint32_t s2mkq = (uint32_t)s2 - k * q2;
+        s2 = (int32_t)(a2 * s2mkq) - (int32_t)(r2 * k);
+        if (s2 < 0)
             s2 += (int32_t)m2;
-        }
     }
 
-    /* Combine: z = s1 - s2; if (z < 1) z += (m1 - 1); */
-    {
-        int32_t z = s1 - s2;
-        if (z < 1) {
-            z += (int32_t)(m1 - 1u); /* 2147483562 == 0x7FFFFFAA */
-        }
+    int32_t z = s1 - s2;
+    if (z < 1)
+        z += (int32_t)(m1 - 1u);
 
-        lRandSeed1 = s1;
-        lRandSeed2 = s2;
+    /* IMPORTANT: commit seeds unconditionally (matches asm) */
+    lRandSeed1 = s1;
+    lRandSeed2 = s2;
 
-        /* Original uses unsigned remainder; c is positive here. */
-        return (int16_t)((uint32_t)z % (uint32_t)(uint16_t)c);
-    }
+    /* Now the range check (signed) */
+    if (c <= 0)
+        return 0;
+
+    return (int16_t)((uint32_t)z % (uint32_t)(int32_t)c);
 }
 
 char *PszFromLong(int32_t l, int16_t *pcch) {

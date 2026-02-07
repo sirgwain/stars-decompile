@@ -26,7 +26,7 @@ def find_function_bodies(c_files, target_names):
     where the next '{' starts a function body. Then checks if the body contains
     "TODO: implement".
 
-    Returns dict: func_name -> {"file": str, "line": int, "implemented": bool}
+    Returns dict: func_name -> {"file": str, "line": int, "implemented": bool, "win32": bool}
     """
     results = {}
 
@@ -36,13 +36,45 @@ def find_function_bodies(c_files, target_names):
         r'\b(' + '|'.join(re.escape(n) for n in target_names) + r')\s*\('
     )
 
+    # Pattern to detect _WIN32 in preprocessor conditionals
+    win32_if = re.compile(r'^\s*#\s*if.*\b_WIN32\b')
+    pp_else = re.compile(r'^\s*#\s*(?:else|elif)\b')
+    pp_endif = re.compile(r'^\s*#\s*endif\b')
+    pp_if = re.compile(r'^\s*#\s*if')
+
     for c_file in c_files:
         with open(c_file, "r", encoding="utf-8", errors="replace") as f:
             lines = f.readlines()
 
+        # Track preprocessor nesting to know if we're inside #ifdef _WIN32
+        # Stack entries: True if this #if level is a _WIN32 block
+        pp_stack = []
+        in_win32 = False
+
         i = 0
         while i < len(lines):
             line = lines[i]
+
+            # Track preprocessor directives
+            if pp_endif.match(line):
+                if pp_stack:
+                    pp_stack.pop()
+                in_win32 = any(pp_stack)
+            elif pp_else.match(line):
+                # #else inverts the condition at current level
+                if pp_stack:
+                    pp_stack[-1] = not pp_stack[-1]
+                in_win32 = any(pp_stack)
+            elif win32_if.match(line):
+                # Check if it's #ifdef _WIN32 or #if defined(_WIN32)
+                # For #ifndef _WIN32, the negation means we're NOT in win32
+                is_ifndef = bool(re.match(r'^\s*#\s*ifndef\b', line))
+                pp_stack.append(not is_ifndef)
+                in_win32 = any(pp_stack)
+            elif pp_if.match(line):
+                pp_stack.append(False)
+                in_win32 = any(pp_stack)
+
             m = name_pattern.search(line)
             if not m:
                 i += 1
@@ -96,6 +128,7 @@ def find_function_bodies(c_files, target_names):
                     "file": os.path.basename(c_file),
                     "line": i + 1,
                     "implemented": not has_todo,
+                    "win32": in_win32,
                 }
 
             i += 1
@@ -104,11 +137,12 @@ def find_function_bodies(c_files, target_names):
 
 
 def find_decompiled_lines(decompiled_dir, target_names):
-    """Find line numbers for functions in decompiled/all/*.c files.
+    """Find line numbers and line counts for functions in decompiled/all/*.c files.
 
-    Looks for '// Function: FuncName' comment lines.
+    Looks for '// Function: FuncName' comment lines and measures the distance
+    to the next function marker (minus the separator block) to estimate size.
 
-    Returns dict: func_name -> {"file": str, "line": int}
+    Returns dict: func_name -> {"file": str, "line": int, "line_count": int|None}
     """
     results = {}
     if not decompiled_dir.is_dir():
@@ -116,14 +150,40 @@ def find_decompiled_lines(decompiled_dir, target_names):
 
     for c_file in sorted(decompiled_dir.glob("*.c")):
         with open(c_file, "r", encoding="utf-8", errors="replace") as f:
-            for line_num, line in enumerate(f, 1):
-                if line.startswith("// Function: "):
-                    name = line[len("// Function: "):].strip()
-                    if name in target_names:
-                        results[name] = {
-                            "file": c_file.name,
-                            "line": line_num,
-                        }
+            lines = f.readlines()
+
+        # Collect all function marker positions in this file
+        markers = []
+        for i, line in enumerate(lines):
+            if line.startswith("// Function: "):
+                name = line[len("// Function: "):].strip()
+                markers.append((i, name))
+
+        for idx, (line_idx, name) in enumerate(markers):
+            if name not in target_names:
+                continue
+            # Line count: from this marker to next marker's separator block, or EOF
+            if idx + 1 < len(markers):
+                next_marker = markers[idx + 1][0]
+                # The separator block is 4 lines before "// Function:" line:
+                # blank, ====, // Function:, // Address:, // Segment:, ====, blank
+                # Walk backwards from next_marker to find start of separator
+                end = next_marker
+                while end > line_idx and lines[end - 1].strip() in ("", "// ======================================================================"):
+                    end -= 1
+                line_count = end - line_idx
+            else:
+                # Last function in file: count to EOF, trimming trailing blanks
+                end = len(lines)
+                while end > line_idx and lines[end - 1].strip() == "":
+                    end -= 1
+                line_count = end - line_idx
+
+            results[name] = {
+                "file": c_file.name,
+                "line": line_idx + 1,  # 1-based
+                "line_count": max(line_count, 1),
+            }
 
     return results
 
@@ -177,13 +237,23 @@ def generate_markdown(project_dir, functions, summary, by_file, decompiled_lines
         funcs_by_file.setdefault(key, []).append((name, info))
 
     for fname in sorted(funcs_by_file.keys()):
-        func_list = sorted(funcs_by_file[fname], key=lambda x: x[0].lower())
+        # Sort: unimplemented before implemented, non-win32 before win32,
+        # then by decompiled line count ascending, then alphabetically
+        func_list = sorted(funcs_by_file[fname], key=lambda x: (
+            0 if x[1]["status"] != "implemented" else 1,
+            1 if x[1].get("win32") else 0,
+            x[1].get("decompiled_line_count") or 99999,
+            x[0].lower(),
+        ))
         impl_count = sum(1 for _, info in func_list if info["status"] == "implemented")
         lines.append(f"### {fname} ({impl_count}/{len(func_list)})\n")
         lines.append("")
 
         for name, info in func_list:
             check = "✅" if info["status"] == "implemented" else "⬜"
+            win_tag = " 🪟" if info.get("win32") else ""
+            dlc = info.get("decompiled_line_count")
+            size_tag = f" ({dlc}L)" if dlc else ""
 
             # Build links
             link_parts = []
@@ -201,10 +271,10 @@ def generate_markdown(project_dir, functions, summary, by_file, decompiled_lines
             links = " · ".join(link_parts) if link_parts else ""
             proto = f"`{info['proto']}`"
 
+            parts = [f"- {check} **{name}**{win_tag}{size_tag} — {proto}"]
             if links:
-                lines.append(f"- {check} **{name}** — {proto} — {links}")
-            else:
-                lines.append(f"- {check} **{name}** — {proto}")
+                parts.append(f" — {links}")
+            lines.append("".join(parts))
 
         lines.append("")
 
@@ -253,6 +323,8 @@ def main():
     functions = {}
     for name, info in sorted(procs.items()):
         body = func_bodies.get(name)
+        decomp = decompiled_lines.get(name)
+        decomp_lines = decomp["line_count"] if decomp else None
         if body is not None:
             status = "implemented" if body["implemented"] else "stub"
             functions[name] = {
@@ -260,6 +332,8 @@ def main():
                 "status": status,
                 "file": body["file"],
                 "line": body["line"],
+                "decompiled_line_count": decomp_lines,
+                "win32": body["win32"],
             }
         else:
             functions[name] = {
@@ -267,6 +341,8 @@ def main():
                 "status": "missing",
                 "file": None,
                 "line": None,
+                "decompiled_line_count": decomp_lines,
+                "win32": False,
             }
 
     # Summary

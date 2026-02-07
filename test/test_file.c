@@ -49,7 +49,7 @@ static void test_file__FLoadGame_tiny_2400(void) {
         return;
     }
 
-    TEST_CHECK(FLoadGame("./test/data/tiny/2401/TEST", "HST"));
+    TEST_CHECK(FLoadGame("./test/data/test/2401/TEST", "HST"));
 
     /* Tiny test files represent year 2400 (turn 1). Validate that we parsed
      * something plausible.

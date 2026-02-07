@@ -232,7 +232,7 @@ typedef struct _planet {
     union {
         uint8_t rgbImp[8];
         struct {
-            unsigned long iDeltaPop : 8, cMines : 12, cFactories : 12, cDefenses : 12, iScanner : 5, unused5 : 5, fArtifact : 1, fNoResearch : 1, unused2 : 8;
+            uint32_t iDeltaPop : 8, cMines : 12, cFactories : 12, cDefenses : 12, iScanner : 5, unused5 : 5, fArtifact : 1, fNoResearch : 1, unused2 : 8;
         };
     }; /* +0x0014 */
     int32_t rgwtMin[4]; /* +0x001c */
@@ -259,6 +259,10 @@ typedef struct _planet {
     int16_t turn;     /* +0x0032 */
     PLPROD *lpplprod; /* +0x0034 */
 } PLANET;
+_Static_assert(offsetof(PLANET, rgbImp) == 0x14, "offsetof(PLANET,rgbImp)");
+_Static_assert(sizeof(((PLANET *)0)->rgbImp) == 8, "sizeof(PLANET.rgbImp)");
+_Static_assert(offsetof(PLANET, rgwtMin) == 0x1c, "offsetof(PLANET,rgwtMin)");
+_Static_assert(sizeof(PLANET) == 60, "sizeof(PLANET)");
 
 /* typind 4114 (0x1012) size=64 */
 typedef struct _game {
@@ -289,7 +293,6 @@ typedef struct _game {
     uint8_t  rgvc[12];   /* +0x0014 */
     char     szName[32]; /* +0x0020 */
 } GAME;
-#ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(GAME) == 64, "sizeof(GAME)");
 _Static_assert(offsetof(GAME, lid) == 0x0, "offsetof(GAME,lid)");
 _Static_assert(offsetof(GAME, mdSize) == 0x4, "offsetof(GAME,mdSize)");
@@ -302,7 +305,7 @@ _Static_assert(offsetof(GAME, wCrap) == 0x10, "offsetof(GAME,wCrap)");
 _Static_assert(offsetof(GAME, turn) == 0x12, "offsetof(GAME,turn)");
 _Static_assert(offsetof(GAME, rgvc) == 0x14, "offsetof(GAME,rgvc)");
 _Static_assert(offsetof(GAME, szName) == 0x20, "offsetof(GAME,szName)");
-#endif
+
 
 /* typind 4115 (0x1013) size=10 */
 typedef struct _gdata {
@@ -2637,9 +2640,9 @@ typedef struct _obj {
 
 /* typind 5046 (0x13b6) size=16 */
 typedef struct _tile {
-    int16_t yTop;                               /* +0x0000 */
-    int16_t dyFull;                             /* +0x0002 */
-    int16_t grbit;                              /* +0x0004 */
+    int16_t yTop;                          /* +0x0000 */
+    int16_t dyFull;                        /* +0x0002 */
+    int16_t grbit;                         /* +0x0004 */
     void (*pfn)(HDC, struct _tile *, OBJ); /* +0x0006 */
     union {
         struct {

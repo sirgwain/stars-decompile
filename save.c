@@ -1594,7 +1594,7 @@ void SetVisPFPlanets(int16_t iPlr) {
 
                 /* Check starbase cloak */
                 if (lppl2->iPlayer != -1) {
-                    SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                    SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                     int32_t lVisible = lpshdefSB->lVisible;
                     int16_t hiVis = (int16_t)(lVisible >> 16);
                     if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
@@ -1629,8 +1629,7 @@ void SetVisPFPlanets(int16_t iPlr) {
         for (lpth = lpThings; lpth < lpthMac; lpth++) {
             if (iPlr == -1)
                 continue;
-            if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket &&
-                lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
+            if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket && lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
                 continue;
             if (lpth->ith == ithMinefield && (lpth->thm.grbitPlrNow & grbitPlr) != 0)
                 continue;
@@ -1720,7 +1719,7 @@ void SetVisPFPlanets(int16_t iPlr) {
 
             /* Check starbase cloak on target */
             if (lppl2->fStarbase && lppl2->iPlayer != -1) {
-                SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                 int32_t lVisible = lpshdefSB->lVisible;
                 int16_t hiVis = (int16_t)(lVisible >> 16);
                 if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
@@ -1800,8 +1799,7 @@ void SetVisPFFleets(int16_t iPlr) {
                     continue;
 
                 /* Steal tech: mark fleets at same location */
-                if ((iSteal & 1) && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y &&
-                    (!lpfl2->fInclude || lpfl2->det < detMore)) {
+                if ((iSteal & 1) && pt.x == lpfl2->pt.x && pt.y == lpfl2->pt.y && (!lpfl2->fInclude || lpfl2->det < detMore)) {
                     MarkFleet(lpfl2, detMore);
                 }
 
@@ -1852,8 +1850,7 @@ void SetVisPFFleets(int16_t iPlr) {
                 /* Skip things already visible or not applicable */
                 if (iPlr == -1)
                     continue;
-                if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket &&
-                    lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
+                if (lpth->ith != ithMinefield && lpth->ith != ithMineralPacket && lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole)
                     continue;
                 /* Skip minefields already known to this player */
                 if (lpth->ith == ithMinefield && (lpth->thm.grbitPlrNow & grbitPlr) != 0)
@@ -1936,7 +1933,7 @@ void SetVisPFFleets(int16_t iPlr) {
 
                     /* Check starbase cloak */
                     if (lppl->fStarbase && lppl->iPlayer != -1) {
-                        SHDEF *lpshdefSB = &rglpshdefSB[lppl->iPlayer][lppl->isb];
+                        SHDEF  *lpshdefSB = &rglpshdefSB[lppl->iPlayer][lppl->isb];
                         int32_t lVisible = lpshdefSB->lVisible;
                         int16_t hiVis = (int16_t)(lVisible >> 16);
                         if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {
@@ -2093,16 +2090,17 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
 
             if (rt != rtPlanetB) {
                 /* Check if improvements should be written */
-                fHasImp = (lppl->iPlayer != -1 && lppl->iDeltaPop != 0) || lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 ||
-                          lppl->iScanner != 0x1f;
-
-                /* Set bit 12 based on improvement presence (inverted logic in output) */
-                w2 = (w2 & 0xefff) | (fHasImp ? 0 : 0x1000);
+                /* bit 12 is fArtifact */
+                w2 = (w2 & 0xefff) | ((uint16_t)(lppl->fArtifact & 1) << 12);
                 put_u16(&rgb[2], w2);
 
+                /* decide whether to write the 8-byte rgbImp block */
+                fHasImp = (lppl->iPlayer != -1 && lppl->iDeltaPop != 0) || lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 ||
+                          lppl->iScanner != 0x1f || lppl->fArtifact != 0 || /* optional: include if you consider this “imp data” */
+                          lppl->fNoResearch != 0;                           /* optional */
+
                 if (fHasImp) {
-                    /* Set bit 11 and write improvements */
-                    w2 = (w2 & 0xf7ff) | 0x800;
+                    w2 = (w2 & 0xf7ff) | 0x0800; /* bit 11 */
                     put_u16(&rgb[2], w2);
                     memmove(pb, lppl->rgbImp, 8);
                     pb += 8;
@@ -2202,19 +2200,19 @@ void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
 }
 
 void SetVisPFThings(int16_t iPlr) {
-    int16_t    pctCloak;
-    int16_t    dy;
-    FLEET     *lpfl2;
-    int32_t    d2;
-    int16_t    j;
-    THING     *lpth;
-    int32_t    lRadius2;
-    THING     *lpthMac;
-    int16_t    dx;
-    uint16_t   grbitPlr;
-    PLANET    *lppl2;
-    THING     *lpth2;
-    int16_t    raMajor;
+    int16_t  pctCloak;
+    int16_t  dy;
+    FLEET   *lpfl2;
+    int32_t  d2;
+    int16_t  j;
+    THING   *lpth;
+    int32_t  lRadius2;
+    THING   *lpthMac;
+    int16_t  dx;
+    uint16_t grbitPlr;
+    PLANET  *lppl2;
+    THING   *lpth2;
+    int16_t  raMajor;
 
     if (iPlr == -1) {
         grbitPlr = 0;
@@ -2282,8 +2280,7 @@ void SetVisPFThings(int16_t iPlr) {
             for (lpth2 = lpThings; lpth2 < lpthMac; lpth2++) {
                 if (iPlr == -1)
                     continue;
-                if (lpth2->ith != ithMinefield && lpth2->ith != ithMineralPacket &&
-                    lpth2->ith != ithMysteryTrader && lpth2->ith != ithWormhole)
+                if (lpth2->ith != ithMinefield && lpth2->ith != ithMineralPacket && lpth2->ith != ithMysteryTrader && lpth2->ith != ithWormhole)
                     continue;
                 if (lpth2->ith == ithMinefield && (lpth2->thm.grbitPlrNow & grbitPlr) != 0)
                     continue;
@@ -2345,7 +2342,7 @@ void SetVisPFThings(int16_t iPlr) {
 
                 /* Check starbase cloak */
                 if (lppl2->fStarbase && lppl2->iPlayer != -1) {
-                    SHDEF *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
+                    SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                     int32_t lVisible = lpshdefSB->lVisible;
                     int16_t hiVis = (int16_t)(lVisible >> 16);
                     if (hiVis < 1 && (hiVis < 0 || (uint16_t)lVisible < 10000)) {

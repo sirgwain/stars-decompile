@@ -632,8 +632,10 @@ int16_t CMaxMines(PLANET *lppl, int16_t iplr) {
 }
 
 int16_t FProdIsTerra(PROD *lpprod) {
-
-    /* TODO: implement */
+    if (lpprod->grobj == grobjPlanet &&
+        (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjTerraform || lpprod->iItem == iobjTerraform2)) {
+        return 1;
+    }
     return 0;
 }
 
@@ -823,8 +825,20 @@ int16_t CFactoriesOperating(PLANET *lppl) {
     int16_t cFacts;
     int16_t cFactsOp;
 
-    /* TODO: implement */
-    return 0;
+    iplr = lppl->iPlayer;
+    if (iplr == -1)
+        return 0;
+
+    if (GetRaceStat(&rgplr[iplr], rsMajorAdv) == raMacintosh)
+        return 0;
+
+    cFacts = (int16_t)lppl->cFactories;
+    cFactsOp = CMaxOperableFactories(lppl, iplr, 0);
+
+    if (cFacts <= cFactsOp)
+        return cFacts;
+
+    return cFactsOp;
 }
 
 #ifdef _WIN32
