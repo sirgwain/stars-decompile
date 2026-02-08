@@ -1,5 +1,6 @@
+#include <limits.h>
+#include <stdint.h>
 
-#include "util.h"
 #include "enums.h"
 #include "globals.h"
 #include "log.h"
@@ -13,6 +14,7 @@
 #include "strings.h"
 #include "tutor.h"
 #include "types.h"
+#include "util.h"
 #include "utilgen.h"
 
 /* globals */
@@ -28,6 +30,37 @@ COLORREF rgcrDrawStars2b[5] = {0x007f7f7f, 0x0000007f, 0x00007f00, 0x007f0000, 0
 
 #endif /* _WIN32 */
 /* functions */
+
+int16_t muldiv_i16(int16_t number, int16_t numer, int16_t denom) {
+    // faithful to the Win16 usage pattern here: 16-bit args, 16-bit return.
+    // Use 32-bit intermediate; rounding to nearest, halves away from zero.
+    if (denom == 0)
+        return 0; // or assert
+
+    int32_t prod = (int32_t)number * (int32_t)numer;
+    int32_t den = (int32_t)denom;
+
+    // Normalize sign so denom > 0
+    if (den < 0) {
+        den = -den;
+        prod = -prod;
+    }
+
+    if (prod >= 0)
+        prod += den / 2;
+    else
+        prod -= den / 2;
+
+    int32_t q = prod / den;
+
+    // Win32 MulDiv returns -1 on overflow; Win16 variants also commonly saturate/error.
+    // For Stars’ ranges this won't trigger; pick a deterministic behavior:
+    if (q > INT16_MAX)
+        return (int16_t)INT16_MAX; // or (int16_t)-1 if you want "MulDiv overflow" behavior
+    if (q < INT16_MIN)
+        return (int16_t)INT16_MIN;
+    return (int16_t)q;
+}
 
 char *SzVersion(void) {
     /* These are the wsprintf arguments in the decompile. */

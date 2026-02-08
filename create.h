@@ -13,14 +13,14 @@ extern int16_t vrgvcMax[10];
 
 /* functions */
 int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef);
-int16_t GetVCCheck(GAME *pgame, int16_t vc);
+int16_t GetVCCheck(GAME *pgame, VictoryCondition vc);
+int16_t GetVCVal(GAME *pgame, VictoryCondition vc, int16_t fRaw);
+void    SetVCCheck(GAME *pgame, VictoryCondition vc, int16_t fChecked);
+int16_t SetVCVal(GAME *pgame, VictoryCondition vc, int16_t val);
 void    InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr);
 void    InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi);
-int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw);
-void    SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked);
 void    CreateTutorWorld(void);
 void    CreateTinyTestWorld(void);
-int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val);
 int16_t GenerateWorld(int16_t fBatchMode);
 PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi); /* RETFAR */
 int16_t FGetNewGameName(char *szFileSuggest);

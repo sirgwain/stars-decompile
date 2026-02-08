@@ -18,6 +18,7 @@ extern COLORREF rgcrDrawStars2b[5]; /* MEMORY_UTIL:0x5fce */
 #endif /* _WIN32 */
 
 /* functions */
+int16_t  muldiv_i16(int16_t number, int16_t numer, int16_t denom);
 char    *SzVersion(void);                                                                                               /* MEMORY_MAIN:0x1212 */
 char    *PszGetLocName(GrobjClass grobj, int16_t id, int16_t x, int16_t y);                                             /* MEMORY_UTIL:0x3b08 */
 int16_t  FCanFleetUseStargates(FLEET *lpfl, POINT ptSrc, POINT ptDst);                                                  /* MEMORY_UTIL:0x75e2 */

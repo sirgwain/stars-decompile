@@ -1602,6 +1602,8 @@ typedef struct DumpSnapshot {
     GAME   game;
     PLAYER rgplr[16];
 
+    STARSPOINT rgptPlan[999];
+
     int16_t cPlanet;
     PLANET *rgpl; /* length cPlanet */
     PLPROD **rgplprod; /* parallel array, owned */
@@ -1654,6 +1656,8 @@ static bool SnapshotTake(DumpSnapshot *s) {
     memset(s, 0, sizeof(*s));
     memcpy(&s->game, &game, sizeof(game));
     memcpy(&s->rgplr[0], &rgplr[0], sizeof(s->rgplr));
+
+    memcpy(&s->rgptPlan[0], &rgptPlan[0], sizeof(s->rgptPlan));
 
     s->cPlanet = cPlanet;
     if (s->cPlanet < 0)
@@ -1843,6 +1847,23 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
         maxPlanId = game.cPlanMax;
     if (maxPlanId < 0)
         maxPlanId = 0;
+
+    if (game.cPlanMax != snapA.game.cPlanMax) {
+        printf("  Num Planets: %d -> %d\n", snapA.game.cPlanMax, game.cPlanMax);
+    }
+    /* Diff planet XY coordinates (rgptPlan, loaded from .XY) before planet structs. */
+    int xyDiffs = 0;
+    for (int16_t id = 0; id < maxPlanId; id++) {
+        const STARSPOINT a = snapA.rgptPlan[id];
+        const STARSPOINT b = rgptPlan[id];
+        if (a.x != b.x || a.y != b.y) {
+            printf("  Planet %d xy: (%d,%d) -> (%d,%d)\n", (int)id, (int)a.x, (int)a.y, (int)b.x, (int)b.y);
+            xyDiffs++;
+        }
+    }
+    if (xyDiffs == 0)
+        printf("  (all coordinates identical)\n");
+    planetDiffs += xyDiffs;
 
     for (int16_t id = 0; id < maxPlanId; id++) {
         const PLPROD *pqA = NULL;

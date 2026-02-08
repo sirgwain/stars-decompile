@@ -12,12 +12,17 @@
   "SetSzWorkFromDt": { "dt": "DtFileType" },
   "FMarkFile": { "dt": "DtFileType" },
   "FCreateFile": { "dt": "DtFileType" },
-  
+
   "FRunLogRecord": { "rt": "RecordType" },
   "FEnumCalcJettison": { "rt": "RecordType" },
   "WriteRt": { "rt": "RecordType" },
   "CancelMemRt": { "rt": "RecordType" },
   "WritePlanet": { "rt": "RecordType" },
+
+  "GetVCCheck": { "vc": "VictoryCondition" },
+  "GetVCVal": { "vc": "VictoryCondition" },
+  "SetVCCheck": { "vc": "VictoryCondition" },
+  "SetVCVal": { "vc": "VictoryCondition" },
 
   "SetRaceGrbit": { "ibit": "RaceGrbit" },
   "GetRaceGrbit": { "ibit": "RaceGrbit" },

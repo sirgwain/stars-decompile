@@ -694,6 +694,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
             char ch = *p++;
 
             switch (ch) {
+            case 'a':
             case 'A':
                 out_cli->fNewGame = true;
                 break;

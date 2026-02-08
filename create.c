@@ -4,6 +4,7 @@
 
 #include "create.h"
 #include "file.h"
+#include "port.h"
 #include "mdi.h"
 #include "memory.h"
 #include "msg.h"
@@ -292,7 +293,7 @@ int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_
     return ishdef;
 }
 
-int16_t GetVCCheck(GAME *pgame, int16_t vc) { return (pgame->rgvc[vc] & 0x80) != 0; }
+int16_t GetVCCheck(GAME *pgame, VictoryCondition vc) { return (pgame->rgvc[vc] & 0x80) != 0; }
 
 void InitBattlePlan(BTLPLAN *lpbtlplan, int16_t iplan, int16_t iplr) {
     *lpbtlplan = rgbtlplanT[iplan];
@@ -460,43 +461,68 @@ void InitNewGamePlr(int16_t iStepMaxSoFar, int16_t lvlAi) {
     }
 }
 
-int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
+int16_t GetVCVal(GAME *pgame, VictoryCondition vc, int16_t fRaw) {
     int16_t  c;
     int16_t  i;
     uint16_t val;
 
     val = pgame->rgvc[vc] & 0x7f;
+
     if (fRaw == 0) {
-        switch (vc) {
-        case 0:
+        switch ((VictoryCondition)vc) {
+
+        case vcOwnsPercentPlanets:
+            /* Owns % of all planets */
             val = val * 5 + 20;
             break;
-        case 1:
+
+        case vcAttainsTechLevel:
+            /* Attains Tech X in Y fields (level) */
             val = val + 8;
             break;
-        case 2:
+
+        case vcAttainsTechFields:
+            /* Number of tech fields */
             val = val + 2;
             break;
-        case 3:
+
+        case vcExceedsScore:
+            /* Exceeds a score of X */
             val = val * 1000 + 1000;
             break;
-        case 4:
+
+        case vcExceedsSecondPlaceBy:
+            /* Exceeds second place score by X */
             val = val * 10 + 20;
             break;
-        case 5:
-        case 6:
+
+        case vcProductionCapacity:
+        case vcOwnsCapitalShips:
+            /* Production (thousands) or capital ships */
             val = val * 10 + 10;
             break;
-        case 7:
+
+        case vcHighestScoreAfterYears:
+            /* Highest score after X years */
             val = val * 10 + 30;
             break;
-        case 9:
+
+        case vcMinYearsBeforeWin:
+            /* Minimum years before winner declared */
             val = val * 10 + 30;
             break;
+
+        case vcMeetsNumCriteria:
         default:
+            /*
+             * Clamp "N of selected criteria" to the number
+             * of currently enabled criteria.
+             *
+             * Criteria are vc 0..7, excluding vcAttainsTechFields (2).
+             */
             c = 0;
-            for (i = 0; i < 8; i++) {
-                if (i != 2 && (pgame->rgvc[i] & 0x80) != 0) {
+            for (i = 0; i < vcMeetsNumCriteria; i++) {
+                if (i != vcAttainsTechFields && (pgame->rgvc[i] & 0x80) != 0) {
                     c++;
                 }
             }
@@ -506,10 +532,11 @@ int16_t GetVCVal(GAME *pgame, int16_t vc, int16_t fRaw) {
             break;
         }
     }
+
     return val;
 }
 
-void SetVCCheck(GAME *pgame, int16_t vc, int16_t fChecked) {
+void SetVCCheck(GAME *pgame, VictoryCondition vc, int16_t fChecked) {
     uint8_t hi;
 
     hi = (fChecked == 0) ? 0 : 0x80;
@@ -570,27 +597,34 @@ void CreateTinyTestWorld(void) {
     game.cPlayer = 2;
     game.mdDensity = 0;
     game.mdSize = 0;
-    game.mdStartDist = 0;
+    game.mdStartDist = 1;
     game.fTutorial = 0;
     game.fBBSPlay = 0;
     game.fVisScores = 0;
     game.fNoRandom = 0;
-    game.rgvc[7] = 0x80;
-    game.rgvc[8] = 0x81;
+    SetVCCheck(&game, vcOwnsPercentPlanets, true);
+    SetVCVal(&game, vcOwnsPercentPlanets, (60 - 20) / 5);
+    SetVCCheck(&game, vcAttainsTechLevel, true);
+    SetVCVal(&game, vcAttainsTechLevel, 26 - 8);
+    SetVCCheck(&game, vcAttainsTechFields, true);
+    SetVCVal(&game, vcAttainsTechFields, 4 - 2);
     strncpy(game.szName, "Tiny Test Game", sizeof(game.szName));
 
     memcpy(&rgplr[0], &vrgplrDef[0], sizeof(PLAYER));
     CchGetString(idsHumanoid, rgplr[0].szName);
     sprintf(rgplr[0].szNames, "%ss", rgplr[0].szName);
 
-    pplrComp = LpplrComp(1, 0);
+    pplrComp = LpplrComp(0, 1);
     memcpy(&rgplr[1], pplrComp, sizeof(PLAYER));
     rgplr[1].fAi = 1;
-    rgplr[1].lvlAi = 0;
-    rgplr[1].idAi = 1;
-    CchGetString(idsBerserker, rgplr[1].szName);
+    rgplr[1].lvlAi = 1;
+    rgplr[1].idAi = 0;
+    CchGetString(idsHicardi, rgplr[1].szName);
+    snprintf(rgplr[1].szNames, sizeof(rgplr[1].szNames), "%ss", rgplr[1].szName);
 
     Randomize(12345);
+
+    rgplr[0].iPlrBmp = Random(game.cPlayer) == 0;
 
     for (i = 1; i < 3; i++) {
         pszFmt = PszGetCompressedString(idsSHD);
@@ -605,7 +639,7 @@ void CreateTinyTestWorld(void) {
     GenerateWorld(0);
 }
 
-int16_t SetVCVal(GAME *pgame, int16_t vc, int16_t val) {
+int16_t SetVCVal(GAME *pgame, VictoryCondition vc, int16_t val) {
     int16_t cur;
 
     if (val < 0) {
@@ -698,13 +732,22 @@ int16_t GenerateWorld(int16_t fBatchMode) {
 
     dGalMinSq = (int16_t)(dGalMinDist * dGalMinDist);
     iMax = min((int16_t)(cPlanMax + cPlanMax / 7), cPlanetAbsMax);
-    dx = (int16_t)(dGalOff + 10);
-    dy = (int16_t)(dGal + 1 - 20);
+    dx = dGalOff + 10;
+    dy = dGal + 1 - 20;
     for (i = 0; i < iMax; i++) {
         rgptPlan[i].x = (int16_t)(dx + Random(dy));
         rgptPlan[i].y = (int16_t)(dx + Random(dy));
     }
+    for (i = 0; i < iMax; i++) {
+        printf("  Planet %d xy: (%d,%d)\n", i, rgptPlan[i].x, rgptPlan[i].y);
+    }
+
     qsort((void *)rgptPlan, iMax, sizeof(STARSPOINT), ICompStarsPointX);
+
+    printf("Sorted\n");
+    for (i = 0; i < iMax; i++) {
+        printf("  Planet %d xy: (%d,%d)\n", i, rgptPlan[i].x, rgptPlan[i].y);
+    }
 
     pptMax = &rgptPlan[iMax];
     cKill = 0;
@@ -943,17 +986,15 @@ RetryAll:
     }
 
     // Set bounds for other player homeworlds based on player count
-    if (game.cPlayer < 5) {
-        if (game.cPlayer < 3) {
-            dMin = (int16_t)(MulDiv(dGal, 3, 20) + dGalOff);
-            dMax = (int16_t)(MulDiv(dGal, 17, 20) + dGalOff);
-        } else {
-            dMin = (int16_t)(dGal / 10 + dGalOff);
-            dMax = (int16_t)(MulDiv(dGal, 9, 10) + dGalOff);
-        }
-    } else {
+    if (game.cPlayer > 4) {
         dMin = (int16_t)(dGal / 20 + dGalOff);
-        dMax = (int16_t)(MulDiv(dGal, 19, 20) + dGalOff);
+        dMax = (int16_t)(muldiv_i16((int16_t)dGal, 19, 20) + dGalOff);
+    } else if (game.cPlayer > 2) {
+        dMin = (int16_t)(dGal / 10 + dGalOff);
+        dMax = (int16_t)(muldiv_i16((int16_t)dGal, 9, 10) + dGalOff);
+    } else {
+        dMin = (int16_t)(muldiv_i16((int16_t)dGal, 3, 20) + dGalOff);
+        dMax = (int16_t)(muldiv_i16((int16_t)dGal, 17, 20) + dGalOff);
     }
 
     // ------------------- Place player homeworlds -----------------
@@ -1153,7 +1194,6 @@ RetryAll:
     for (i = 0; i < game.cPlayer; i = i + 1) {
         PLANET *plHome;
         PLAYER *pplr;
-        int16_t ap;
 
         iMin = rgi[i];
         plHome = &lpPlanets[iMin];
@@ -1681,6 +1721,7 @@ RetryAll:
                     if (part.hs.iItem == iscannerBatScanner || part.hs.iItem == iscannerRhinoScanner) {
                         candidates[nCand++] = iscannerPossumScanner;
                         candidates[nCand++] = iscannerMoleScanner;
+                        candidates[nCand++] = iscannerRhinoScanner;
                     }
                     break;
 
@@ -1719,7 +1760,7 @@ RetryAll:
 
                 for (l = 0; l < nCand; l++) {
                     part.hs.iItem = candidates[l]; /* ONLY low byte changes; cItem preserved automatically */
-                    if (FLookupPart(&part) == 1) {
+                    if (FLookupPart(&part) == LookupOk) {
                         hs->iItem = candidates[l]; /* same: preserve hs->cItem */
                         break;
                     }
@@ -1984,35 +2025,451 @@ int16_t FGetNewGameName(char *szFileSuggest) {
 }
 
 int16_t GenNewGameFromFile(char *pszFile) {
-    int32_t rgl[10];
-    int16_t cPlr;
-    int16_t rgplrbmp[16];
-    int16_t cNum;
-    int16_t c;
-    int16_t i;
-    int16_t fSuccess;
-    char   *lpbStart;
-    MemJump env;
-    int16_t j;
-    char   *lpb;
-    char   *lpbDef;
-    int16_t cb;
-    char   *pchT;
-    int16_t idAi;
-    int16_t lvlAi;
+    int32_t  rgl[10];
+    int16_t  rgplrbmp[16];
+    int16_t  c;
+    int16_t  i;
+    int16_t  fSuccess;
+    char    *lpbStart;
+    MemJump  env;
+    int16_t  j;
+    char    *lpb;
+    char    *pszLine;
+    char    *pszErr;
+    int16_t  idAi;
+    int16_t  lvlAi;
+    int16_t  cParsed;
+    uint16_t cbFile;
+    char    *lpbDef;
+    int16_t  cPlayers;
+    PLAYER  *pplr;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_CREATE:0x485f */
-    /* block (block) @ MEMORY_CREATE:0x4dc2 */
-    /* label LError @ MEMORY_CREATE:0x5e2c */
-    /* label LUniDefShort @ MEMORY_CREATE:0x49bd */
-    /* label LUniDefError @ MEMORY_CREATE:0x4a15 */
-    /* label LUniDefError3 @ MEMORY_CREATE:0x4b5b */
-    /* label LCantGetRace @ MEMORY_CREATE:0x4fb4 */
-    /* label LBadDefVc @ MEMORY_CREATE:0x509f */
+    fSuccess = 0;
 
-    /* TODO: implement */
-    return 0;
+    /* ---- Setup filename scratch + install error trampoline ---- */
+    strcpy(szWork, pszFile);
+    penvMem = &env;
+    if (setjmp(env.env) != 0)
+        goto LError;
+
+    /* ---- If INI flags indicate logging: compute base name and log "Generating..." ---- */
+    if (ini.fLogging) {
+        strcpy(szBase, pszFile);
+        *strrchr(szBase, '.') = '\0';
+        TurnLog(idsGeneratingYearD);
+    }
+
+    /* ---- Reset game struct ---- */
+    memset(&game, 0, sizeof(GAME));
+
+    /* ---- Read entire definition file into memory ---- */
+    StreamOpen(pszFile, 0x20);
+    fseek(hf.fp, 0, SEEK_END);
+    cbFile = (uint16_t)ftell(hf.fp);
+    fseek(hf.fp, 0, SEEK_SET);
+    if (cbFile > 15999) {
+        FileError(idsUniverseCreationFileAppearsInvalid);
+        goto LError;
+    }
+    lpbDef = LpAlloc(cbFile + 1, htPerm);
+    lpbDefMac = lpbDef + cbFile;
+    RgFromStream(lpbDef, cbFile);
+    StreamClose();
+    lpbDef[cbFile] = '\0';
+
+    lpb = lpbDef;
+
+    /* ---- Line 1: Game title (non-empty, <= 31 chars) ---- */
+    pszLine = PszGetLine(&lpb);
+    if (*pszLine == '\0' || strlen(pszLine) > 31) {
+        pszErr = PszFormatIds(idsIllegalGameTitle, NULL);
+        AlertSz(pszErr, 0x10);
+        goto LError;
+    }
+    strcpy(game.szName, pszLine);
+
+    /* ---- Line 2: Universe core parameters (up to 4 numbers) ---- */
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 4);
+    if (cParsed == -1)
+        goto LUniDefError;
+
+    /* Validate parameters 0..2: must be in [0..4], but params 1-2 max is 3 */
+    for (i = 0; i < cParsed; i++) {
+        if (i < 3) {
+            if (rgl[i] < 0 || rgl[i] > 4)
+                goto LUniDefError;
+            if (rgl[i] == 4 && i != 0)
+                goto LUniDefError;
+        }
+    }
+
+    if (cParsed > 0)
+        game.mdSize = (int16_t)rgl[0];
+    if (cParsed > 1)
+        game.mdDensity = (int16_t)rgl[1];
+    if (cParsed > 2)
+        game.mdStartDist = (int16_t)rgl[2];
+    if (cParsed > 3)
+        Randomize((uint32_t)rgl[3]);
+
+    /* ---- Line 3: Universe option bits (up to 7 booleans) ---- */
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 7);
+    if (cParsed == -1)
+        goto LUniDefError3;
+
+    for (i = 0; i < cParsed; i++) {
+        if (rgl[i] < 0 || rgl[i] > 1)
+            goto LUniDefError3;
+    }
+
+    if (cParsed > 0)
+        game.fExtraFuel = (uint16_t)rgl[0] & 1;
+    if (cParsed > 1)
+        game.fSlowTech = (uint16_t)rgl[1] & 1;
+    if (cParsed > 2)
+        game.fBBSPlay = (uint16_t)rgl[2] & 1;
+    if (cParsed > 3)
+        game.fNoRandom = (uint16_t)rgl[3] & 1;
+    if (cParsed > 4)
+        game.fAisBand = (uint16_t)rgl[4] & 1;
+    if (cParsed > 5)
+        game.fVisScores = (uint16_t)rgl[5] & 1;
+    if (cParsed > 6)
+        game.fClumping = (uint16_t)rgl[6] & 1;
+
+    /* ---- Line 4: number of players (1..16) ---- */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 1);
+    cPlayers = (int16_t)rgl[0];
+    if (cParsed < 1 || rgl[0] < 1 || rgl[0] > 16) {
+        pszErr = PszFormatIds(idsLine4HasImproperNumberPlayerFiles, NULL);
+        AlertSz(pszErr, 0x10);
+        goto LError;
+    }
+
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+
+    game.cPlayer = cPlayers;
+
+    /* ---- Per-player definition lines ---- */
+    for (i = 0; i < cPlayers; i++) {
+        pszLine = PszGetLine(&lpb);
+        if (lpb >= lpbDefMac)
+            goto LUniDefShort;
+
+        lpbStart = pszLine;
+
+        if (*pszLine != '#') {
+            /* (A) Load a race file into vplr, copy to rgplr[i] */
+            strcpy(szWork, pszLine);
+            if (FWasRaceFile(szWork, 0) == 0)
+                goto LCantGetRace;
+            memcpy(&rgplr[i], &vplr, sizeof(PLAYER));
+        } else {
+            /* (B) Computer player spec "#race ai" */
+            cParsed = CParseNumbers(lpbStart + 1, rgl, 2);
+
+            if (cParsed < 2 || rgl[0] < 0 || rgl[0] > 6 || rgl[1] < 0 || rgl[1] > 4) {
+                strcpy(szWork, pszLine);
+            LCantGetRace:
+                pszErr = PszGetCompressedString(idsLineDUnableLoadRaceFileS);
+                wsprintf(szWork, pszErr, i + 5, lpbStart);
+                AlertSz(szWork, 0x10);
+                goto LError;
+            }
+
+            /* ai: 0 = random [0..3]; otherwise 1..4 maps to [0..3] */
+            if (rgl[1] == 0)
+                lvlAi = Random(4);
+            else
+                lvlAi = (int16_t)(rgl[1] - 1);
+
+            /* race: 0 = random [0..5]; otherwise 1..6 maps to [0..5] */
+            if (rgl[0] == 0)
+                idAi = Random(6);
+            else
+                idAi = (int16_t)(rgl[0] - 1);
+
+            pplr = LpplrComp(idAi, lvlAi);
+            memcpy(&rgplr[i], pplr, sizeof(PLAYER));
+
+            /* Mark AI + stash AI race id and AI level */
+            rgplr[i].fAi = 1;
+            rgplr[i].idAi = idAi;
+            rgplr[i].lvlAi = lvlAi & 7;
+        }
+    }
+
+    /* ---- Victory Conditions ---- */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+
+    i = 0;
+
+    /* VC 0: Owns % of all planets (20..100, step 5) */
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 20 || rgl[1] > 100)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcOwnsPercentPlanets, 1);
+        SetVCVal(&game, vcOwnsPercentPlanets, (int16_t)((rgl[1] - 20) / 5));
+    }
+
+    /* VC 1/2: Attains tech level/fields */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 3);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 1;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 3 || rgl[1] < 8 || rgl[1] > 26 || rgl[2] < 2 || rgl[2] > 6)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcAttainsTechLevel, 1);
+        SetVCCheck(&game, vcAttainsTechFields, 1);
+        SetVCVal(&game, vcAttainsTechLevel, (int16_t)(rgl[1] - 8));
+        SetVCVal(&game, vcAttainsTechFields, (int16_t)(rgl[2] - 2));
+    }
+
+    /* VC 3: Exceeds a score */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 2;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 1000 || rgl[1] > 20000)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcExceedsScore, 1);
+        SetVCVal(&game, vcExceedsScore, (int16_t)((rgl[1] - 1000) / 1000));
+    }
+
+    /* VC 4: Exceeds second place score by */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 3;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 20 || rgl[1] > 300)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcExceedsSecondPlaceBy, 1);
+        SetVCVal(&game, vcExceedsSecondPlaceBy, (int16_t)((rgl[1] - 20) / 10));
+    }
+
+    /* VC 5: Production capacity */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 4;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 10 || rgl[1] > 500)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcProductionCapacity, 1);
+        SetVCVal(&game, vcProductionCapacity, (int16_t)((rgl[1] - 10) / 10));
+    }
+
+    /* VC 6: Owns capital ships */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 5;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 10 || rgl[1] > 300)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcOwnsCapitalShips, 1);
+        SetVCVal(&game, vcOwnsCapitalShips, (int16_t)((rgl[1] - 10) / 10));
+    }
+
+    /* VC 7: Highest score after years */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 6;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 1)
+        goto LBadDefVc;
+    if (rgl[0] == 1) {
+        if (cParsed < 2 || rgl[1] < 30 || rgl[1] > 900)
+            goto LBadDefVc;
+        SetVCCheck(&game, vcHighestScoreAfterYears, 1);
+        SetVCVal(&game, vcHighestScoreAfterYears, (int16_t)((rgl[1] - 30) / 10));
+    }
+
+    /* VC 8/9: Meets N criteria / min years */
+    pszLine = PszGetLine(&lpb);
+    cParsed = CParseNumbers(pszLine, rgl, 2);
+    if (lpb >= lpbDefMac)
+        goto LUniDefShort;
+    i = 7;
+    if (cParsed < 1 || rgl[0] < 0 || rgl[0] > 7)
+        goto LBadDefVc;
+    if (rgl[0] > 0) {
+        if (cParsed < 2 || rgl[1] < 30 || rgl[1] > 500)
+            goto LBadDefVc;
+        SetVCVal(&game, vcMeetsNumCriteria, (int16_t)rgl[0]);
+        SetVCVal(&game, vcMinYearsBeforeWin, (int16_t)((rgl[1] - 30) / 10));
+    }
+
+    /* ---- Base filename: strip ".xy" extension if present ---- */
+    pszLine = PszGetLine(&lpb);
+    {
+        uint16_t len = (uint16_t)strlen(pszLine);
+        if (len > 3 && pszLine[len - 1] == 'y' && pszLine[len - 2] == 'x' && pszLine[len - 3] == '.') {
+            pszLine[len - 3] = '\0';
+        }
+    }
+    strcpy(szBase, pszLine);
+
+    /* Ensure the output directory exists (e.g. "./test/data/generated/" for
+       szBase = "./test/data/generated/tiny"). */
+    {
+        char szDir[256];
+        strncpy(szDir, szBase, sizeof(szDir) - 1);
+        szDir[sizeof(szDir) - 1] = '\0';
+        char *pSlash = strrchr(szDir, '/');
+#ifdef _WIN32
+        char *pBSlash = strrchr(szDir, '\\');
+        if (pBSlash > pSlash)
+            pSlash = pBSlash;
+#endif
+        if (pSlash) {
+            *pSlash = '\0';
+            Stars_EnsureDirRecursive(szDir);
+        }
+    }
+
+    if (lpb + 4 < lpbDefMac) {
+        lpbDefUni = lpb;
+    }
+
+    /* ---- Post-parse player normalization ---- */
+    for (i = 0; i < game.cPlayer; i++) {
+        if (!rgplr[i].fAi && CAdvantagePoints(&rgplr[i]) < 0) {
+            memcpy(&rgplr[i], &vrgplrDef[0], sizeof(PLAYER));
+            rgplr[i].fHacker = 1;
+        }
+        if (rgplr[i].szName[0] == '\0') {
+            CchGetString(Random(0x18) + idsBerserker, rgplr[i].szName);
+            strcpy(rgplr[i].szNames, rgplr[i].szName);
+            strcat(rgplr[i].szNames, "s");
+        }
+    }
+
+    /* ---- Ensure unique player names ---- */
+    for (i = 1; i < game.cPlayer; i++) {
+        for (j = 0; j < i; j++) {
+            if (strcmp(rgplr[i].szName, rgplr[j].szName) == 0)
+                break;
+        }
+        if (j < i) {
+            c = Random(0x18);
+        LFindUniqueName:
+            for (j = 0; j < game.cPlayer; j++) {
+                pszErr = PszGetCompressedString(c + idsBerserker);
+                if (strcmp(rgplr[j].szName, pszErr) == 0)
+                    break;
+            }
+            if (j != game.cPlayer) {
+                c++;
+                if (c > 0x17)
+                    c = 0;
+                goto LFindUniqueName;
+            }
+            CchGetString(c + idsBerserker, rgplr[i].szName);
+            strcpy(rgplr[i].szNames, rgplr[i].szName);
+            strcat(rgplr[i].szNames, "s");
+        }
+    }
+
+    /* ---- Player bitmap assignment ---- */
+    for (i = 0; i < game.cPlayer; i++) {
+        rgplrbmp[i] = rgplr[i].iPlrBmp;
+        if (rgplrbmp[i] < 0 || rgplrbmp[i] > 31)
+            rgplrbmp[i] = -1;
+    }
+    for (i = 1; i < game.cPlayer; i++) {
+        if (rgplrbmp[i] != -1) {
+            for (j = 0; j < i && rgplrbmp[j] != rgplrbmp[i]; j++)
+                ;
+            if (j < i) {
+                int16_t pick = Random(2);
+                rgplrbmp[pick == 0 ? j : i] = -1;
+            }
+        }
+    }
+    for (i = 0; i < game.cPlayer; i++) {
+        if (rgplrbmp[i] == -1) {
+            rgplrbmp[i] = Random(0x20);
+            while (1) {
+                for (j = 0; j < game.cPlayer && (j == i || rgplrbmp[i] != rgplrbmp[j]); j++)
+                    ;
+                if (j == game.cPlayer)
+                    break;
+                rgplrbmp[i]++;
+                if (rgplrbmp[i] > 31)
+                    rgplrbmp[i] = 0;
+            }
+        }
+    }
+    for (i = 0; i < game.cPlayer; i++) {
+        rgplr[i].iPlrBmp = rgplrbmp[i] & 0x1f;
+    }
+
+    /* ---- Generate world and succeed ---- */
+    GenerateWorld(1);
+    fSuccess = 1;
+    goto LError;
+
+LBadDefVc:
+    pszErr = PszGetCompressedString(idsLineDHasImproperVictoryConditionDefinition);
+    wsprintf(szWork, pszErr, i + cPlayers + 5);
+    AlertSz(szWork, 0x10);
+    goto LError;
+
+LUniDefError:
+    pszErr = PszFormatIds(idsLine2HasBadUniverseDefinitionParameter, NULL);
+    AlertSz(pszErr, 0x10);
+    goto LError;
+
+LUniDefError3:
+    pszErr = PszFormatIds(idsLine3HasBadUniverseDefinitionParameter, NULL);
+    AlertSz(pszErr, 0x10);
+    goto LError;
+
+LUniDefShort:
+    pszErr = PszFormatIds(idsUniverseDefinitionFileAppearsTooShort, NULL);
+    AlertSz(pszErr, 0x10);
+
+LError:
+    penvMem = NULL;
+    StreamClose();
+    lpbDefUni = NULL;
+    TurnLog(fSuccess + idsFailed);
+    return fSuccess;
 }
 
 #ifdef _WIN32

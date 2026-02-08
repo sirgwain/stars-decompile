@@ -598,4 +598,17 @@ typedef enum RecordType {
     rtMax = 47                // one past highest observed (0x2d)
 } RecordType;
 
+typedef enum VictoryCondition {
+    vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
+    vcAttainsTechLevel = 1,       /* "Attains Tech X in Y fields." (level) */
+    vcAttainsTechFields = 2,      /* number of tech fields */
+    vcExceedsScore = 3,           /* "Exceeds a score of X." */
+    vcExceedsSecondPlaceBy = 4,   /* "Exceeds second place score by X." */
+    vcProductionCapacity = 5,     /* "Has a production capacity of X thousand." */
+    vcOwnsCapitalShips = 6,       /* "Owns X capital ships." */
+    vcHighestScoreAfterYears = 7, /* "Has the highest score after X years." */
+    vcMeetsNumCriteria = 8,       /* "Winner must meet X of the above selected criteria." */
+    vcMinYearsBeforeWin = 9       /* "At least X years must pass before a winner is declared." */
+} VictoryCondition;
+
 #endif /* ENUMS_H_ */

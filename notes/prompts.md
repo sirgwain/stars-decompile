@@ -36,10 +36,14 @@ cmake --build --preset build-macos-linux-win32-stubs
 Give me a download zip with any changed files.
 
 # Copy/Paste Prompt
-Translate this function to modern c. Don't change the general flow. Account for every instruction. Don't add bounds checking or extra functions. Rename ghidra generated locals to have sensible names. Update types to standard c types. Only add casting that is absolutely necessary.
+For each function in the pasted list from @notes/implementation.md:
+
+Translate the function to modern c. Don't change the general flow. Account for every instruction. Don't add bounds checking or extra functions. Rename ghidra generated locals to have sensible names. Update types to standard c types. Only add casting that is absolutely necessary.
 
 After the first pass, go through the translated function and convert bitwise operations to bitfields where possible, referencing types.h in this project for struct definitions. Also remove any union references in favor of the union members, i.e. xfer.u_XFER_0x0004.pl should just be xfer.pl
 
 when done run build and run tests:
 
 `mise run build-all`
+
+Do this for every function

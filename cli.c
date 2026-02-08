@@ -38,9 +38,12 @@ static int64_t file_size_bytes(const char *path) {
 }
 
 static void print_usage(FILE *out) {
-    fprintf(out, "stars_cli - inspect Stars! save files\n\n"
+    fprintf(out, "stars_cli - inspect and generate Stars! save files\n\n"
                  "Usage:\n"
+                 "  stars_cli -a <file.def>    Generate a new game from a .def file\n"
                  "  stars_cli load <file> [options] <cmd> [cmd-args]\n\n"
+                 "Flags:\n"
+                 "  -a                     Generate new game from .def file (Stars! -A flag)\n\n"
                  "Where:\n"
                  "  <file> is the path to a Stars! file (e.g. game/TEST.HST, game/TEST.M1)\n"
                  "         For 'dump' command, use base path without extension (e.g. game/TEST)\n\n"
@@ -184,6 +187,9 @@ static int cmd_planets(bool fVerbose) {
         return 2;
     }
     printf("Planets: cPlanet=%d\n", (int)cPlanet);
+    for (int16_t i = 0; i < cPlanet; i++) {
+        printf("  Planet %d xy: (%d,%d)\n", i, rgptPlan[i].x, rgptPlan[i].y);
+    }
     for (int16_t i = 0; i < cPlanet; i++) {
         if (fVerbose) {
             DumpPlanet(&lpPlanets[i]);
@@ -444,7 +450,8 @@ static int do_load(CliContext *cli) {
 
 int StarsCli_Run(int argc, char **argv) {
     CliContext cli;
-    int        i = 1;
+    StarsCli  starscli;
+    int       i;
 
     memset(&cli, 0, sizeof(cli));
     cli.iPlayer = 0;
@@ -459,9 +466,49 @@ int StarsCli_Run(int argc, char **argv) {
         return 0;
     }
 
-    if (strcmp(argv[1], "create-tutor") == 0) {
-        if (argc >= 3) {
-            strncpy(szBase, argv[2], sizeof(szBase) - 1);
+    /* ---- Parse flags via Stars_ParseCommandLine ---- */
+    if (!Stars_ParseCommandLine(argc, (const char *const *)argv, &starscli)) {
+        fprintf(stderr, "Error parsing command line flags.\n\n");
+        print_usage(stderr);
+        return 2;
+    }
+
+    /* ---- Handle -A / -a: generate new game from .def file ---- */
+    if (starscli.fNewGame) {
+        if (!starscli.startup_file) {
+            fprintf(stderr, "-a requires a .def file path.\n\n");
+            print_usage(stderr);
+            return 2;
+        }
+        printf("Generating new game from: %s\n", starscli.startup_file);
+        int16_t ok = GenNewGameFromFile((char *)starscli.startup_file);
+        if (ok) {
+            printf("Game generated successfully. Output base: %s\n", szBase);
+            return 0;
+        } else {
+            fprintf(stderr, "GenNewGameFromFile failed.\n");
+            return 1;
+        }
+    }
+
+    /* ---- Legacy subcommand handling ---- */
+    /* Stars_ParseCommandLine treats the first non-flag arg as startup_file,
+       which for legacy commands is the subcommand name (load, diff, etc.) */
+    const char *subcmd = starscli.startup_file;
+    if (!subcmd) {
+        fprintf(stderr, "Missing command.\n\n");
+        print_usage(stderr);
+        return 2;
+    }
+
+    if (strcmp(subcmd, "create-tutor") == 0) {
+        /* Find the path arg after "create-tutor" in argv */
+        int idx = 0;
+        for (int j = 1; j < argc; j++) {
+            if (strcmp(argv[j], "create-tutor") == 0) { idx = j + 1; break; }
+        }
+        if (idx > 0 && idx < argc) {
+            strncpy(szBase, argv[idx], sizeof(szBase) - 1);
             szBase[sizeof(szBase) - 1] = '\0';
         } else {
             CchGetString(idsTutorial, szBase);
@@ -471,9 +518,13 @@ int StarsCli_Run(int argc, char **argv) {
         return 0;
     }
 
-    if (strcmp(argv[1], "create-test-world") == 0) {
-        if (argc >= 3) {
-            strncpy(szBase, argv[2], sizeof(szBase) - 1);
+    if (strcmp(subcmd, "create-test-world") == 0) {
+        int idx = 0;
+        for (int j = 1; j < argc; j++) {
+            if (strcmp(argv[j], "create-test-world") == 0) { idx = j + 1; break; }
+        }
+        if (idx > 0 && idx < argc) {
+            strncpy(szBase, argv[idx], sizeof(szBase) - 1);
             szBase[sizeof(szBase) - 1] = '\0';
         } else {
             printf("Must specify path\n");
@@ -484,22 +535,32 @@ int StarsCli_Run(int argc, char **argv) {
         return 0;
     }
 
-    if (strcmp(argv[1], "diff") == 0) {
-        if (argc < 4) {
+    if (strcmp(subcmd, "diff") == 0) {
+        /* Find "diff" in argv, then grab the next two args */
+        int idx = 0;
+        for (int j = 1; j < argc; j++) {
+            if (strcmp(argv[j], "diff") == 0) { idx = j + 1; break; }
+        }
+        if (idx == 0 || idx + 1 >= argc) {
             fprintf(stderr, "diff requires two file arguments.\n\n");
             print_usage(stderr);
             return 2;
         }
-        return DiffGameFileBlocks(argv[2], argv[3]);
+        return DiffGameFileBlocks(argv[idx], argv[idx + 1]);
     }
 
-    if (strcmp(argv[1], "load") != 0) {
-        fprintf(stderr, "First argument must be 'load'.\n\n");
+    if (strcmp(subcmd, "load") != 0) {
+        fprintf(stderr, "Unknown command: %s\n\n", subcmd);
         print_usage(stderr);
         return 2;
     }
-    i++;
-    if (i >= argc) {
+
+    /* ---- "load" subcommand: find the file arg and command after it ---- */
+    i = 0;
+    for (int j = 1; j < argc; j++) {
+        if (strcmp(argv[j], "load") == 0) { i = j + 1; break; }
+    }
+    if (i == 0 || i >= argc) {
         fprintf(stderr, "load requires <file>.\n\n");
         print_usage(stderr);
         return 2;

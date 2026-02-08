@@ -255,19 +255,104 @@ void FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut) {
 }
 
 int16_t FWasRaceFile(char *szFile, int16_t fChkPass) {
-    int16_t  idsError;
-    int32_t  lSaltSav;
+    int16_t  fileErrSilentSav;
     PLAYER   plr;
     MemJump *penvMemSav;
-    MemJump  env;
+    int16_t  idsError;
     int16_t  fRet;
+    MemJump  env;
+    uint16_t versSav;
+    uint16_t w8;
+    uint16_t checksum;
+    char    *psz;
+    int      i;
+    int32_t  lSaltSav;
     int16_t  fSav;
 
-    /* debug symbols */
-    /* label LBadFile @ MEMORY_MDI:0x5dec */
+    fileErrSilentSav = fFileErrSilent;
+    penvMemSav = penvMem;
 
-    /* TODO: implement */
-    return 0;
+    idsError = -1;
+    fRet = 0;
+
+    fFileErrSilent = 1;
+    penvMem = &env;
+
+    versSav = wVersFile;
+
+    if (setjmp(env.env) != 0)
+        goto LError;
+
+    StreamOpen(szFile, 0x20);
+    ReadRt();
+
+    w8 = (uint16_t)rgbCur[8] | ((uint16_t)rgbCur[9] << 8);
+
+    if ((hdrCur.rt == rtBOF) && ((w8 >> 12) == 2) && (0x30 < ((w8 >> 5) & 0x7f)) && (((w8 >> 5) & 0x7f) < 0x54)) {
+        wVersFile = (uint16_t)rgbCur[8] | ((uint16_t)rgbCur[9] << 8);
+        versSav = wVersFile;
+
+        if ((rgbCur[14] == 5) && (ReadRt(), hdrCur.rt == rtPlr)) {
+            idsError = 3;
+
+            ReadRtPlr(&plr, (uint8_t *)rgbCur);
+            ReadRt();
+
+            if (hdrCur.rt == 0) {
+                checksum = (uint16_t)rgbCur[0] | ((uint16_t)rgbCur[1] << 8);
+
+                lSaltSav = lSaltCur;
+
+                if (checksum == IRaceChecksum(&plr)) {
+                    lSaltCur = plr.lSalt;
+
+                    if ((fChkPass == 0) || (FCheckPassword() != 0)) {
+                        if (plr.lSalt == 0) {
+                            szRacePass[0] = '\0';
+                            lSaltCur = lSaltSav;
+                        } else {
+                            lSaltCur = lSaltSav;
+                            strncpy(szRacePass, szPassLast, sizeof(szRacePass));
+                        }
+
+                        vplr = plr;
+                        strncpy(szRaceFile, szFile, sizeof(szRaceFile));
+
+                        StreamClose();
+                        penvMem = (MemJump *)penvMemSav;
+                        fFileErrSilent = fileErrSilentSav;
+                        return 1;
+                    }
+
+                    fRet = -1;
+                    lSaltCur = lSaltSav;
+                    versSav = wVersFile;
+                } else {
+                    lSaltCur = lSaltSav;
+                }
+            }
+        }
+    } else {
+        idsError = 0x0d;
+        fRet = -1;
+        versSav = wVersFile;
+    }
+
+LError:
+    wVersFile = versSav;
+
+    /* per project idiom: clear active jump env before cleanup that might longjmp */
+    penvMem = NULL;
+    StreamClose();
+
+    penvMem = (MemJump *)penvMemSav;
+    fFileErrSilent = fileErrSilentSav;
+
+    if ((fileErrSilentSav == 0) && (idsError != -1)) {
+        Error(idsError);
+    }
+
+    return fRet;
 }
 
 void EnsureAis(void) {
