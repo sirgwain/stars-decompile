@@ -738,16 +738,7 @@ int16_t GenerateWorld(int16_t fBatchMode) {
         rgptPlan[i].x = (int16_t)(dx + Random(dy));
         rgptPlan[i].y = (int16_t)(dx + Random(dy));
     }
-    for (i = 0; i < iMax; i++) {
-        printf("  Planet %d xy: (%d,%d)\n", i, rgptPlan[i].x, rgptPlan[i].y);
-    }
-
     qsort((void *)rgptPlan, iMax, sizeof(STARSPOINT), ICompStarsPointX);
-
-    printf("Sorted\n");
-    for (i = 0; i < iMax; i++) {
-        printf("  Planet %d xy: (%d,%d)\n", i, rgptPlan[i].x, rgptPlan[i].y);
-    }
 
     pptMax = &rgptPlan[iMax];
     cKill = 0;
