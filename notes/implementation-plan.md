@@ -18,7 +18,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 7 | Depth 7 | 15 | 6 | 9 |
 | 8 | Depth 8 | 15 | 8 | 7 |
 | 9 | Depth 9 | 26 | 17 | 9 |
-| 10 | Depth 10 | 14 | 11 | 3 |
+| 10 | Depth 10 | 14 | 12 | 2 |
 | 11 | Depth 11 | 14 | 9 | 5 |
 | 12 | Depth 12 | 20 | 8 | 12 |
 | 13 | Depth 13 | 14 | 6 | 8 |
@@ -27,8 +27,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 16 | Depth 16 | 8 | 5 | 3 |
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
-| -1 | Depth -1 — Cyclic Functions | 107 | 15 | 92 |
-| | **Total** | **743** | **307** | **436** |
+| -1 | Depth -1 — Cyclic Functions | 107 | 16 | 91 |
+| | **Total** | **743** | **309** | **434** |
 
 ## Depth 0 — Leaf Functions
 
@@ -723,17 +723,16 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 10 — Calls up to depth 9
 
-### Unimplemented (3)
+### Unimplemented (2)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
-| ⬜ | **FWasRaceFile** | 109 |  | `int16_t FWasRaceFile(char *, int16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **FFinishPlrMsgEntry** | 181 |  | `int16_t FFinishPlrMsgEntry(int16_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
 | ⬜ | **FTutorTaskDone** | 2668 | W | `int16_t FTutorTaskDone(void)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 
-### Implemented (11)
+### Implemented (12)
 
-<details><summary>Show 11 implemented functions</summary>
+<details><summary>Show 12 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
@@ -742,6 +741,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | FMarkFile | 174 |  | [save.c](../save.c) |
 | ✅ | FOpenFile | 173 |  | [file.c](../file.c) |
 | ✅ | FReadFleet | 200 |  | [file.c](../file.c) |
+| ✅ | FWasRaceFile | 109 |  | [mdi.c](../mdi.c) |
 | ✅ | InitInstance | 45 | W | [init.c](../init.c) |
 | ✅ | LpflNew | 95 |  | [util.c](../util.c) |
 | ✅ | LpplReAlloc | 14 |  | [memory.c](../memory.c) |
@@ -954,7 +954,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth -1 — Cyclic Functions
 
-### Unimplemented (92)
+### Unimplemented (91)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -1036,7 +1036,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **FBuildObject** | 527 |  | `int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **FHandleWayPointDrag** | 570 | W | `int16_t FHandleWayPointDrag(POINT)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **ClickInShipOrders** | 606 | W | `uint16_t ClickInShipOrders(POINT, int16_t, int16_t, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
-| ⬜ | **GenNewGameFromFile** | 634 |  | `int16_t GenNewGameFromFile(char *)` | [create.c](../create.c) | [create.c](../decompiled/all/create.c) |
 | ⬜ | **PlanetWndProc** | 666 | W | `int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **ProdCommandHandler** | 676 | W | `void ProdCommandHandler(uint16_t, uint16_t, int32_t)` | [produce.c](../produce.c) | [produce.c](../decompiled/all/produce.c) |
 | ⬜ | **FAttack** | 708 |  | `int16_t FAttack(int16_t, int16_t, BTLREC *32, uint16_t)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
@@ -1051,9 +1050,9 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **CommandHandler** | 1185 | W | `void CommandHandler(uint16_t, uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **SatisfyOrders** | 1687 |  | `void SatisfyOrders(int16_t)` | [turn3.c](../turn3.c) | [turn.c](../decompiled/all/turn.c) |
 
-### Implemented (15)
+### Implemented (16)
 
-<details><summary>Show 15 implemented functions</summary>
+<details><summary>Show 16 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
@@ -1067,6 +1066,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | FRunLogRecord | 821 |  | [log.c](../log.c) |
 | ✅ | FWriteDataFile | 498 |  | [save.c](../save.c) |
 | ✅ | FrameWndProc | 667 | W | [mdi.c](../mdi.c) |
+| ✅ | GenNewGameFromFile | 634 |  | [create.c](../create.c) |
 | ✅ | GenerateWorld | 1700 |  | [create.c](../create.c) |
 | ✅ | HostModeDialog | 305 | W | [mdi.c](../mdi.c) |
 | ✅ | HostTimerProc | 177 | W | [mdi.c](../mdi.c) |

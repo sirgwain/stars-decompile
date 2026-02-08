@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 307,
-    "stub": 536,
+    "implemented": 309,
+    "stub": 534,
     "missing": 3,
-    "percent_implemented": 36.3
+    "percent_implemented": 36.5
   },
   "by_file": {
     "ai.c": {
@@ -43,8 +43,8 @@
       "missing": 0
     },
     "create.c": {
-      "implemented": 11,
-      "stub": 11,
+      "implemented": 12,
+      "stub": 10,
       "missing": 0
     },
     "file.c": {
@@ -63,8 +63,8 @@
       "missing": 0
     },
     "mdi.c": {
-      "implemented": 18,
-      "stub": 11,
+      "implemented": 19,
+      "stub": 10,
       "missing": 0
     },
     "memory.c": {
@@ -370,7 +370,7 @@
       "proto": "void BringUpHostDlg(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3156,
+      "line": 3241,
       "decompiled_line_count": 174,
       "win32": true
     },
@@ -470,7 +470,7 @@
       "proto": "int16_t CFindTurnsOutstanding(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 624,
+      "line": 709,
       "decompiled_line_count": 85,
       "win32": true
     },
@@ -650,7 +650,7 @@
       "proto": "int16_t CTurnsOutSafe(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 285,
+      "line": 370,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -660,7 +660,7 @@
       "proto": "void CalcPctSurvive(PLANET *32, float *, float *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 727,
+      "line": 760,
       "decompiled_line_count": 56,
       "win32": false
     },
@@ -680,7 +680,7 @@
       "proto": "int32_t CalcPlayerScore(int16_t, SCORE *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1598,
+      "line": 1631,
       "decompiled_line_count": 175,
       "win32": false
     },
@@ -700,7 +700,7 @@
       "proto": "int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1779,
+      "line": 1812,
       "decompiled_line_count": 109,
       "win32": true
     },
@@ -820,7 +820,7 @@
       "proto": "int32_t ChgPopFromPlanet(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1441,
+      "line": 1474,
       "decompiled_line_count": 176,
       "win32": false
     },
@@ -860,7 +860,7 @@
       "proto": "void ClearFile(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 331,
+      "line": 364,
       "decompiled_line_count": 23,
       "win32": false
     },
@@ -900,7 +900,7 @@
       "proto": "void CommandHandler(uint16_t, uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1033,
+      "line": 1118,
       "decompiled_line_count": 1185,
       "win32": true
     },
@@ -910,7 +910,7 @@
       "proto": "void ComputeShdefPowers(void)",
       "status": "stub",
       "file": "util.c",
-      "line": 1038,
+      "line": 1071,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -960,7 +960,7 @@
       "proto": "void CreateChildWindows(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3446,
+      "line": 3531,
       "decompiled_line_count": 179,
       "win32": true
     },
@@ -1000,7 +1000,7 @@
       "proto": "int16_t CreateStartupShip(int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 270,
+      "line": 271,
       "decompiled_line_count": 72,
       "win32": false
     },
@@ -1010,7 +1010,7 @@
       "proto": "void CreateTutorWorld(void)",
       "status": "implemented",
       "file": "create.c",
-      "line": 519,
+      "line": 546,
       "decompiled_line_count": 74,
       "win32": false
     },
@@ -1050,7 +1050,7 @@
       "proto": "double DGetDistance(int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 535,
+      "line": 568,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -1060,7 +1060,7 @@
       "proto": "void DecorateHullName(int16_t, int16_t, char *)",
       "status": "stub",
       "file": "util.c",
-      "line": 792,
+      "line": 825,
       "decompiled_line_count": 46,
       "win32": false
     },
@@ -1360,7 +1360,7 @@
       "proto": "int32_t DpOfLpflIshdef(FLEET *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 956,
+      "line": 989,
       "decompiled_line_count": 26,
       "win32": false
     },
@@ -1370,7 +1370,7 @@
       "proto": "int32_t DpShieldOfShdef(SHDEF *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1375,
+      "line": 1408,
       "decompiled_line_count": 69,
       "win32": false
     },
@@ -1380,7 +1380,7 @@
       "proto": "void DrawABunchOfStars(uint16_t, RECT *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1797,
+      "line": 1830,
       "decompiled_line_count": 68,
       "win32": true
     },
@@ -1530,7 +1530,7 @@
       "proto": "void DrawHostDialog2(uint16_t, uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2102,
+      "line": 2187,
       "decompiled_line_count": 128,
       "win32": true
     },
@@ -1540,7 +1540,7 @@
       "proto": "void DrawHostOptions(uint16_t, uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2215,
+      "line": 2300,
       "decompiled_line_count": 10,
       "win32": true
     },
@@ -1590,7 +1590,7 @@
       "proto": "void DrawNewGame2(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2179,
+      "line": 2627,
       "decompiled_line_count": 137,
       "win32": true
     },
@@ -1600,7 +1600,7 @@
       "proto": "void DrawNewGame3(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2158,
+      "line": 2606,
       "decompiled_line_count": 130,
       "win32": true
     },
@@ -1640,7 +1640,7 @@
       "proto": "void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1810,
+      "line": 1843,
       "decompiled_line_count": 20,
       "win32": true
     },
@@ -2170,7 +2170,7 @@
       "proto": "void EnsureAis(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 273,
+      "line": 358,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -2430,7 +2430,7 @@
       "proto": "int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1342,
+      "line": 1375,
       "decompiled_line_count": 187,
       "win32": false
     },
@@ -2440,7 +2440,7 @@
       "proto": "int16_t FCanBuildShdef(SHDEF *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 801,
+      "line": 834,
       "decompiled_line_count": 52,
       "win32": false
     },
@@ -2450,7 +2450,7 @@
       "proto": "int16_t FCanFleetUseStargates(FLEET *32, POINT, POINT)",
       "status": "stub",
       "file": "util.c",
-      "line": 64,
+      "line": 97,
       "decompiled_line_count": 132,
       "win32": false
     },
@@ -2860,7 +2860,7 @@
       "proto": "int16_t FDeleteFleet(int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 547,
+      "line": 580,
       "decompiled_line_count": 93,
       "win32": false
     },
@@ -2920,7 +2920,7 @@
       "proto": "int16_t FDupFleet(FLEET *32, FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 595,
+      "line": 628,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -2930,7 +2930,7 @@
       "proto": "int16_t FDupPlanet(PLANET *32, PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 634,
+      "line": 667,
       "decompiled_line_count": 55,
       "win32": false
     },
@@ -3100,7 +3100,7 @@
       "proto": "int16_t FFindNearestObject(POINT, int16_t, SCAN *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1752,
+      "line": 1785,
       "decompiled_line_count": 228,
       "win32": false
     },
@@ -3120,7 +3120,7 @@
       "proto": "int16_t FFindSomethingAndSelectIt(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 614,
+      "line": 699,
       "decompiled_line_count": 49,
       "win32": true
     },
@@ -3140,7 +3140,7 @@
       "proto": "int16_t FFleetCanJumpgate(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 1588,
+      "line": 1621,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -3180,7 +3180,7 @@
       "proto": "int16_t FFleetMergeAll(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 813,
+      "line": 846,
       "decompiled_line_count": 119,
       "win32": false
     },
@@ -3200,7 +3200,7 @@
       "proto": "int16_t FFleetSplitAll(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 972,
+      "line": 1005,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -3270,7 +3270,7 @@
       "proto": "int16_t FGetNewGameName(char *)",
       "status": "stub",
       "file": "create.c",
-      "line": 1974,
+      "line": 2006,
       "decompiled_line_count": 67,
       "win32": false
     },
@@ -3480,7 +3480,7 @@
       "proto": "int16_t FLookupFleet(int16_t, FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1253,
+      "line": 1286,
       "decompiled_line_count": 70,
       "win32": false
     },
@@ -3490,7 +3490,7 @@
       "proto": "int16_t FLookupObject(int16_t, int16_t, void *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1727,
+      "line": 1760,
       "decompiled_line_count": 19,
       "win32": false
     },
@@ -3500,7 +3500,7 @@
       "proto": "int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1318,
+      "line": 1351,
       "decompiled_line_count": 74,
       "win32": false
     },
@@ -3530,7 +3530,7 @@
       "proto": "int16_t FLookupPlanet(int16_t, PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1615,
+      "line": 1648,
       "decompiled_line_count": 91,
       "win32": false
     },
@@ -3540,7 +3540,7 @@
       "proto": "int16_t FLookupSelPlanet(PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1212,
+      "line": 1245,
       "decompiled_line_count": 28,
       "win32": false
     },
@@ -3550,7 +3550,7 @@
       "proto": "int16_t FLookupSelShip(FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 317,
+      "line": 350,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -3560,7 +3560,7 @@
       "proto": "int16_t FLookupThing(int16_t, THING *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1219,
+      "line": 1252,
       "decompiled_line_count": 52,
       "win32": false
     },
@@ -3580,7 +3580,7 @@
       "proto": "int16_t FMatchTarget(FLEET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 323,
+      "line": 356,
       "decompiled_line_count": 80,
       "win32": false
     },
@@ -3650,7 +3650,7 @@
       "proto": "int16_t FOpenGame(uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2776,
+      "line": 2861,
       "decompiled_line_count": 215,
       "win32": true
     },
@@ -4000,7 +4000,7 @@
       "proto": "int16_t FTrackNewGameDlg3(uint16_t, POINT, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2027,
+      "line": 2475,
       "decompiled_line_count": 47,
       "win32": true
     },
@@ -4110,7 +4110,7 @@
       "proto": "int16_t FValidSerialNo(char *, int32_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 706,
+      "line": 739,
       "decompiled_line_count": 91,
       "win32": false
     },
@@ -4118,7 +4118,7 @@
       "addr": "1020:5da8",
       "segment": "MEMORY_MDI",
       "proto": "int16_t FWasRaceFile(char *, int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "mdi.c",
       "line": 257,
       "decompiled_line_count": 109,
@@ -4380,7 +4380,7 @@
       "proto": "int32_t FrameWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 1328,
+      "line": 1413,
       "decompiled_line_count": 667,
       "win32": true
     },
@@ -4458,9 +4458,9 @@
       "addr": "1078:4812",
       "segment": "MEMORY_CREATE",
       "proto": "int16_t GenNewGameFromFile(char *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "create.c",
-      "line": 1986,
+      "line": 2018,
       "decompiled_line_count": 634,
       "win32": false
     },
@@ -4470,7 +4470,7 @@
       "proto": "int16_t GenerateWorld(int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 628,
+      "line": 662,
       "decompiled_line_count": 1700,
       "win32": false
     },
@@ -4480,7 +4480,7 @@
       "proto": "uint16_t GetASubMenu(uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2762,
+      "line": 2847,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -4490,7 +4490,7 @@
       "proto": "int16_t GetCachedFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 271,
+      "line": 304,
       "decompiled_line_count": 58,
       "win32": false
     },
@@ -4550,7 +4550,7 @@
       "proto": "int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1738,
+      "line": 1771,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -4590,7 +4590,7 @@
       "proto": "int16_t GetPlanetScannerRange(PLANET *32, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1045,
+      "line": 1078,
       "decompiled_line_count": 75,
       "win32": false
     },
@@ -4660,7 +4660,7 @@
       "proto": "int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1396,
+      "line": 1429,
       "decompiled_line_count": 184,
       "win32": false
     },
@@ -4680,7 +4680,7 @@
       "proto": "void GetTrueHullCost(int16_t, HUL *32, uint16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1387,
+      "line": 1420,
       "decompiled_line_count": 16,
       "win32": false
     },
@@ -4700,7 +4700,7 @@
       "proto": "int16_t GetVCCheck(GAME *, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 295,
+      "line": 296,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -4720,7 +4720,7 @@
       "proto": "int16_t GetVCVal(GAME *, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 463,
+      "line": 464,
       "decompiled_line_count": 55,
       "win32": false
     },
@@ -4730,7 +4730,7 @@
       "proto": "void GetWindowRc(uint16_t, RECT *)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2090,
+      "line": 2175,
       "decompiled_line_count": 21,
       "win32": true
     },
@@ -4780,7 +4780,7 @@
       "proto": "uint16_t HcrsFromFrameWindowPt(POINT, int16_t *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3120,
+      "line": 3205,
       "decompiled_line_count": 51,
       "win32": true
     },
@@ -4830,7 +4830,7 @@
       "proto": "int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 297,
+      "line": 382,
       "decompiled_line_count": 305,
       "win32": true
     },
@@ -4840,7 +4840,7 @@
       "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3280,
+      "line": 3365,
       "decompiled_line_count": 50,
       "win32": true
     },
@@ -4850,7 +4850,7 @@
       "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2646,
+      "line": 2731,
       "decompiled_line_count": 177,
       "win32": true
     },
@@ -4920,7 +4920,7 @@
       "proto": "int16_t ICompFleetPoint(void *, void *)",
       "status": "stub",
       "file": "util.c",
-      "line": 983,
+      "line": 1016,
       "decompiled_line_count": 32,
       "win32": false
     },
@@ -4930,7 +4930,7 @@
       "proto": "int16_t ICompFleetPoint2(void *, void *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 831,
+      "line": 864,
       "decompiled_line_count": 26,
       "win32": false
     },
@@ -5030,7 +5030,7 @@
       "proto": "int16_t IStargateFromLppl(PLANET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 946,
+      "line": 979,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -5210,7 +5210,7 @@
       "proto": "int16_t IflFromLpfl(FLEET *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1364,
+      "line": 1397,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -5230,7 +5230,7 @@
       "proto": "void InitBattlePlan(BTLPLAN *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 297,
+      "line": 298,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -5270,7 +5270,7 @@
       "proto": "int16_t InitMDIApp(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3292,
+      "line": 3377,
       "decompiled_line_count": 176,
       "win32": true
     },
@@ -5280,7 +5280,7 @@
       "proto": "void InitNewGame3(void)",
       "status": "implemented",
       "file": "create.c",
-      "line": 305,
+      "line": 306,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -5290,7 +5290,7 @@
       "proto": "void InitNewGamePlr(int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 309,
+      "line": 310,
       "decompiled_line_count": 140,
       "win32": false
     },
@@ -5350,7 +5350,7 @@
       "proto": "void InitializeMenu(uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2961,
+      "line": 3046,
       "decompiled_line_count": 95,
       "win32": true
     },
@@ -5410,7 +5410,7 @@
       "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3130,
+      "line": 3215,
       "decompiled_line_count": 144,
       "win32": true
     },
@@ -5450,7 +5450,7 @@
       "proto": "int16_t IshFindSimilarDesign(HUL *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 783,
+      "line": 816,
       "decompiled_line_count": 43,
       "win32": false
     },
@@ -5480,7 +5480,7 @@
       "proto": "int16_t IshdefPrimaryFromLpfl(FLEET *32, int16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 237,
+      "line": 270,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -5550,7 +5550,7 @@
       "proto": "int32_t LCalcFuelGainFromRamScoops(FLEET *32, int16_t, int32_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 178,
+      "line": 211,
       "decompiled_line_count": 77,
       "win32": false
     },
@@ -5560,7 +5560,7 @@
       "proto": "int32_t LComputePower(SHDEF *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 363,
+      "line": 396,
       "decompiled_line_count": 100,
       "win32": false
     },
@@ -5660,7 +5660,7 @@
       "proto": "void LinkFleets(int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1328,
+      "line": 1361,
       "decompiled_line_count": 103,
       "win32": false
     },
@@ -5790,7 +5790,7 @@
       "proto": "int32_t LongFromSerialCh(char)",
       "status": "implemented",
       "file": "util.c",
-      "line": 485,
+      "line": 518,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -5850,7 +5850,7 @@
       "proto": "FLEET *32 LpflFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 87,
+      "line": 120,
       "decompiled_line_count": 40,
       "win32": false
     },
@@ -5860,7 +5860,7 @@
       "proto": "FLEET *32 LpflNew(int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1057,
+      "line": 1090,
       "decompiled_line_count": 95,
       "win32": false
     },
@@ -5870,7 +5870,7 @@
       "proto": "FLEET *32 LpflNewSplit(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1710,
+      "line": 1743,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -5960,7 +5960,7 @@
       "proto": "PLANET *32 LpplFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 132,
+      "line": 165,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -5990,7 +5990,7 @@
       "proto": "PLAYER *32 LpplrComp(int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 1972,
+      "line": 2004,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -6040,7 +6040,7 @@
       "proto": "THING *32 LpthFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 168,
+      "line": 201,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -6280,7 +6280,7 @@
       "proto": "int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2122,
+      "line": 2570,
       "decompiled_line_count": 223,
       "win32": true
     },
@@ -6290,7 +6290,7 @@
       "proto": "int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2086,
+      "line": 2534,
       "decompiled_line_count": 462,
       "win32": true
     },
@@ -6300,7 +6300,7 @@
       "proto": "int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2070,
+      "line": 2518,
       "decompiled_line_count": 108,
       "win32": true
     },
@@ -6310,7 +6310,7 @@
       "proto": "void NewGameWizard(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2043,
+      "line": 2491,
       "decompiled_line_count": 414,
       "win32": true
     },
@@ -6410,7 +6410,7 @@
       "proto": "void OutputSz(int16_t, char *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 991,
+      "line": 1024,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -6740,7 +6740,7 @@
       "proto": "char * PszFleetNameFromWord(uint16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 675,
+      "line": 708,
       "decompiled_line_count": 37,
       "win32": false
     },
@@ -6850,7 +6850,7 @@
       "proto": "char * PszGetDistance(int16_t, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 718,
+      "line": 751,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -6870,7 +6870,7 @@
       "proto": "char * PszGetFleetName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 379,
+      "line": 412,
       "decompiled_line_count": 63,
       "win32": false
     },
@@ -6890,7 +6890,7 @@
       "proto": "char * PszGetLocName(int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 46,
+      "line": 79,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -6910,7 +6910,7 @@
       "proto": "char * PszGetPlanetName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 580,
+      "line": 613,
       "decompiled_line_count": 24,
       "win32": false
     },
@@ -6930,7 +6930,7 @@
       "proto": "char * PszGetThingName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 429,
+      "line": 462,
       "decompiled_line_count": 63,
       "win32": false
     },
@@ -6950,7 +6950,7 @@
       "proto": "char * PszPlayerName(int16_t, int16_t, int16_t, int16_t, int16_t, PLAYER *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 865,
+      "line": 898,
       "decompiled_line_count": 72,
       "win32": false
     },
@@ -7280,7 +7280,7 @@
       "proto": "void RefitFrameChildren(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3575,
+      "line": 3660,
       "decompiled_line_count": 129,
       "win32": true
     },
@@ -7420,7 +7420,7 @@
       "proto": "void RestoreSelection(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3569,
+      "line": 3654,
       "decompiled_line_count": 92,
       "win32": true
     },
@@ -7570,7 +7570,7 @@
       "proto": "void SelectOursAtObject(POINT *)",
       "status": "stub",
       "file": "util.c",
-      "line": 569,
+      "line": 602,
       "decompiled_line_count": 80,
       "win32": false
     },
@@ -7680,7 +7680,7 @@
       "proto": "void SetNGWTitle(uint16_t, int16_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2020,
+      "line": 2468,
       "decompiled_line_count": 17,
       "win32": true
     },
@@ -7770,7 +7770,7 @@
       "proto": "void SetVCCheck(GAME *, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 512,
+      "line": 539,
       "decompiled_line_count": 18,
       "win32": false
     },
@@ -7790,7 +7790,7 @@
       "proto": "int16_t SetVCVal(GAME *, int16_t, int16_t)",
       "status": "implemented",
       "file": "create.c",
-      "line": 608,
+      "line": 642,
       "decompiled_line_count": 23,
       "win32": false
     },
@@ -7860,7 +7860,7 @@
       "proto": "void SetWindowIniString(char *, uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3549,
+      "line": 3634,
       "decompiled_line_count": 52,
       "win32": true
     },
@@ -7930,7 +7930,7 @@
       "proto": "int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "create.c",
-      "line": 2139,
+      "line": 2587,
       "decompiled_line_count": 227,
       "win32": true
     },
@@ -8050,7 +8050,7 @@
       "proto": "char * SzVersion(void)",
       "status": "implemented",
       "file": "util.c",
-      "line": 32,
+      "line": 65,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -8120,7 +8120,7 @@
       "proto": "int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 636,
+      "line": 721,
       "decompiled_line_count": 336,
       "win32": true
     },
@@ -8180,7 +8180,7 @@
       "proto": "void TurnLog(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 854,
+      "line": 887,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -8320,7 +8320,7 @@
       "proto": "void UpdateShdefCost(SHDEF *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1122,
+      "line": 1155,
       "decompiled_line_count": 97,
       "win32": false
     },
@@ -8370,7 +8370,7 @@
       "proto": "void ValidateWaypoints(void)",
       "status": "stub",
       "file": "util.c",
-      "line": 1422,
+      "line": 1455,
       "decompiled_line_count": 182,
       "win32": false
     },
@@ -8390,7 +8390,7 @@
       "proto": "uint16_t WFromLpfl(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 1718,
+      "line": 1751,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -8400,7 +8400,7 @@
       "proto": "uint16_t WPackLong(int32_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 521,
+      "line": 554,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -8470,7 +8470,7 @@
       "proto": "void WriteIniSettings(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2223,
+      "line": 2308,
       "decompiled_line_count": 302,
       "win32": true
     },
@@ -8560,7 +8560,7 @@
       "proto": "int32_t WtFromLpfl(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 561,
+      "line": 594,
       "decompiled_line_count": 31,
       "win32": false
     },
