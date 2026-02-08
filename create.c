@@ -1241,7 +1241,7 @@ RetryAll:
         FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
 
         // cap advantage points at 50
-        iT = max(50, CAdvantagePoints(pplr));
+        iT = min(50, CAdvantagePoints(pplr));
 
         // boost pop for hard ai players
         if ((pplr->fAi != 0) && (pplr->lvlAi > 2)) {

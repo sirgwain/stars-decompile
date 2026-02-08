@@ -8,9 +8,9 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 | Depth | Label | Total | Implemented | Unimplemented |
 |-------|-------|------:|------------:|--------------:|
-| 0 | Depth 0 — Leaf Functions | 192 | 130 | 62 |
-| 1 | Depth 1 — Calls Only Leaves | 73 | 33 | 40 |
-| 2 | Depth 2 | 76 | 25 | 51 |
+| 0 | Depth 0 — Leaf Functions | 192 | 131 | 61 |
+| 1 | Depth 1 — Calls Only Leaves | 73 | 34 | 39 |
+| 2 | Depth 2 | 76 | 26 | 50 |
 | 3 | Depth 3 | 59 | 13 | 46 |
 | 4 | Depth 4 | 46 | 11 | 35 |
 | 5 | Depth 5 | 19 | 2 | 17 |
@@ -19,7 +19,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 8 | Depth 8 | 15 | 8 | 7 |
 | 9 | Depth 9 | 26 | 17 | 9 |
 | 10 | Depth 10 | 14 | 12 | 2 |
-| 11 | Depth 11 | 14 | 9 | 5 |
+| 11 | Depth 11 | 14 | 10 | 4 |
 | 12 | Depth 12 | 20 | 8 | 12 |
 | 13 | Depth 13 | 14 | 6 | 8 |
 | 14 | Depth 14 | 13 | 3 | 10 |
@@ -28,11 +28,11 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
 | -1 | Depth -1 — Cyclic Functions | 107 | 16 | 91 |
-| | **Total** | **743** | **309** | **434** |
+| | **Total** | **743** | **313** | **430** |
 
 ## Depth 0 — Leaf Functions
 
-### Unimplemented (62)
+### Unimplemented (61)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -80,7 +80,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **FOtherStuffAtScanSel** | 52 | W | `int16_t FOtherStuffAtScanSel(void)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
 | ⬜ | **CshQueued** | 54 |  | `int16_t CshQueued(int16_t, int16_t *, int16_t)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **NoAutoTrackFleet** | 55 |  | `void NoAutoTrackFleet(FLEET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
-| ⬜ | **BoundsCheckPlayer** | 56 |  | `void BoundsCheckPlayer(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **FCheckTemplate** | 57 | W | `int16_t FCheckTemplate(int16_t)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
 | ⬜ | **FGetNextObjHere** | 60 | W | `int16_t FGetNextObjHere(SCAN *, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **FIsButtonDown** | 60 | W | `int16_t FIsButtonDown(int16_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
@@ -99,14 +98,15 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DrawRadarCircle** | 163 | W | `void DrawRadarCircle(DRAWCIR *, RECT *)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 | ⬜ | **AnimateAttack** | 436 | W | `void AnimateAttack(uint16_t)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 
-### Implemented (130)
+### Implemented (131)
 
-<details><summary>Show 130 implemented functions</summary>
+<details><summary>Show 131 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
 | ✅ | AddBackTrailingSpaces | 13 |  | [utilgen.c](../utilgen.c) |
 | ✅ | BoundPoints | 38 |  | [utilgen.c](../utilgen.c) |
+| ✅ | BoundsCheckPlayer | 56 |  | [race.c](../race.c) |
 | ✅ | BtlDataGet | 50 |  | [vcr.c](../vcr.c) |
 | ✅ | CBattleKills | 43 |  | [vcr.c](../vcr.c) |
 | ✅ | CBattles | 44 |  | [vcr.c](../vcr.c) |
@@ -240,7 +240,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 1 — Calls Only Leaves
 
-### Unimplemented (40)
+### Unimplemented (39)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -281,13 +281,12 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **GetVCRStats** | 107 | W | `void GetVCRStats(int16_t, int32_t *, DV *, int32_t *, int16_t *)` | [vcr.c](../vcr.c) | [vcr.c](../decompiled/all/vcr.c) |
 | ⬜ | **PtDisplayZipOrdInfo** | 127 | W | `POINT PtDisplayZipOrdInfo(uint16_t, int16_t, int16_t)` | [popup.c](../popup.c) | [popup.c](../decompiled/all/popup.c) |
 | ⬜ | **GetShdefScannerRange** | 184 |  | `int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
-| ⬜ | **LInnateRaceHabitability** | 250 |  | `int32_t LInnateRaceHabitability(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **DrawBtn** | 258 | W | `void DrawBtn(uint16_t, RECT *, int16_t, int16_t, char *)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 | ⬜ | **_Draw3dFrame** | ? | W | `void _Draw3dFrame(uint16_t, RECT *, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
 
-### Implemented (33)
+### Implemented (34)
 
-<details><summary>Show 33 implemented functions</summary>
+<details><summary>Show 34 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
@@ -309,6 +308,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | IdmGetMessageN | 17 |  | [msg.c](../msg.c) |
 | ✅ | InitializeMenu | 95 | W | [mdi.c](../mdi.c) |
 | ✅ | LCalcFuelGainFromRamScoops | 77 |  | [util.c](../util.c) |
+| ✅ | LInnateRaceHabitability | 250 |  | [race.c](../race.c) |
 | ✅ | LdpFromItokDv | 47 |  | [vcr.c](../vcr.c) |
 | ✅ | LphuldefFromId | 17 |  | [parts.c](../parts.c) |
 | ✅ | PaletteSize | 20 | W | [utilgen.c](../utilgen.c) |
@@ -329,7 +329,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 2 — Calls up to depth 1
 
-### Unimplemented (51)
+### Unimplemented (50)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -382,15 +382,15 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **TooltipWndProc** | 208 | W | `int32_t TooltipWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [tb.c](../tb.c) | [tb.c](../decompiled/all/tb.c) |
 | ⬜ | **PtDisplayPlanetStateInfo** | 252 | W | `POINT PtDisplayPlanetStateInfo(uint16_t, int16_t)` | [popup.c](../popup.c) | [popup.c](../decompiled/all/popup.c) |
 | ⬜ | **CplrBattle** | 269 |  | `int16_t CplrBattle(FLEET *32, uint16_t *, uint16_t *, uint16_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
-| ⬜ | **CAdvantagePoints** | 315 |  | `int16_t CAdvantagePoints(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **DrawShipScanPath** | 337 | W | `void DrawShipScanPath(uint16_t, int16_t)` | [scan.c](../scan.c) | [scan.c](../decompiled/all/scan.c) |
 
-### Implemented (25)
+### Implemented (26)
 
-<details><summary>Show 25 implemented functions</summary>
+<details><summary>Show 26 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
+| ✅ | CAdvantagePoints | 315 |  | [race.c](../race.c) |
 | ✅ | CBattleUnits | 71 |  | [vcr.c](../vcr.c) |
 | ✅ | CMineFromLpfl | 57 |  | [ship2.c](../ship2.c) |
 | ✅ | DibBlt | 34 | W | [utilgen.c](../utilgen.c) |
@@ -753,19 +753,18 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 11 — Calls up to depth 10
 
-### Unimplemented (5)
+### Unimplemented (4)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
 | ⬜ | **LpflNewSplit** | 41 |  | `FLEET *32 LpflNewSplit(FLEET *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **AdvanceTutor** | 62 |  | `void AdvanceTutor(void)` | [tutor.c](../tutor.c) | [tutor.c](../decompiled/all/tutor.c) |
-| ⬜ | **FSaveRace** | 74 |  | `int16_t FSaveRace(char *, PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **MysteryTrader** | 99 |  | `void MysteryTrader(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **DropSalvage** | 141 |  | `void DropSalvage(THING *32 *, int32_t *32, int16_t, POINT *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
 
-### Implemented (9)
+### Implemented (10)
 
-<details><summary>Show 9 implemented functions</summary>
+<details><summary>Show 10 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
@@ -776,6 +775,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | FDupFleet | 53 |  | [util.c](../util.c) |
 | ✅ | FDupPlanet | 55 |  | [util.c](../util.c) |
 | ✅ | FNewTurnAvail | 30 |  | [file.c](../file.c) |
+| ✅ | FSaveRace | 74 | W | [race.c](../race.c) |
 | ✅ | FWriteHistFile | 118 |  | [log.c](../log.c) |
 | ✅ | FWriteLogFile | 79 |  | [log.c](../log.c) |
 

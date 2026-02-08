@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 309,
-    "stub": 534,
+    "implemented": 313,
+    "stub": 530,
     "missing": 3,
-    "percent_implemented": 36.5
+    "percent_implemented": 37.0
   },
   "by_file": {
     "ai.c": {
@@ -103,8 +103,8 @@
       "missing": 0
     },
     "race.c": {
-      "implemented": 6,
-      "stub": 20,
+      "implemented": 10,
+      "stub": 16,
       "missing": 0
     },
     "report.c": {
@@ -348,9 +348,9 @@
       "addr": "10e0:40ae",
       "segment": "MEMORY_RACE",
       "proto": "void BoundsCheckPlayer(PLAYER *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "race.c",
-      "line": 128,
+      "line": 405,
       "decompiled_line_count": 56,
       "win32": false
     },
@@ -408,9 +408,9 @@
       "addr": "10e0:444c",
       "segment": "MEMORY_RACE",
       "proto": "int16_t CAdvantagePoints(PLAYER *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "race.c",
-      "line": 56,
+      "line": 61,
       "decompiled_line_count": 315,
       "win32": false
     },
@@ -460,7 +460,7 @@
       "proto": "int16_t CFactoriesOperating(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 823,
+      "line": 822,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -490,7 +490,7 @@
       "proto": "int16_t CMaxDefenses(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 642,
+      "line": 641,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -540,7 +540,7 @@
       "proto": "int16_t CMaxOperableMines(PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 767,
+      "line": 766,
       "decompiled_line_count": 45,
       "win32": false
     },
@@ -580,7 +580,7 @@
       "proto": "int16_t CMinesOperating(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 794,
+      "line": 793,
       "decompiled_line_count": 44,
       "win32": false
     },
@@ -670,7 +670,7 @@
       "proto": "int32_t CalcPlanetMaxPop(int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 702,
+      "line": 701,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -740,7 +740,7 @@
       "proto": "void ChangeMainObjSel(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1094,
+      "line": 1093,
       "decompiled_line_count": 127,
       "win32": true
     },
@@ -870,7 +870,7 @@
       "proto": "uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1159,
+      "line": 1158,
       "decompiled_line_count": 205,
       "win32": true
     },
@@ -970,7 +970,7 @@
       "proto": "void CreateRandomRace(PLAYER *)",
       "status": "stub",
       "file": "race.c",
-      "line": 134,
+      "line": 474,
       "decompiled_line_count": 336,
       "win32": false
     },
@@ -1430,7 +1430,7 @@
       "proto": "void DrawCBEntireItem(DRAWITEMSTRUCT *32, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 987,
+      "line": 986,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -1560,7 +1560,7 @@
       "proto": "void DrawMassWarpGauge(uint16_t, RECT *, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 995,
+      "line": 994,
       "decompiled_line_count": 49,
       "win32": true
     },
@@ -1610,7 +1610,7 @@
       "proto": "void DrawPlanShip(uint16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 886,
+      "line": 885,
       "decompiled_line_count": 91,
       "win32": true
     },
@@ -1620,7 +1620,7 @@
       "proto": "void DrawPlanShipBitmap(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1028,
+      "line": 1027,
       "decompiled_line_count": 99,
       "win32": true
     },
@@ -1630,7 +1630,7 @@
       "proto": "void DrawPlanetMinSum(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 974,
+      "line": 973,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1650,7 +1650,7 @@
       "proto": "void DrawPlanetProduction(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1007,
+      "line": 1006,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1660,7 +1660,7 @@
       "proto": "void DrawPlanetShipList(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 931,
+      "line": 930,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1670,7 +1670,7 @@
       "proto": "void DrawPlanetStarbase(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 954,
+      "line": 953,
       "decompiled_line_count": 207,
       "win32": true
     },
@@ -1680,7 +1680,7 @@
       "proto": "void DrawPlanetStats(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 906,
+      "line": 905,
       "decompiled_line_count": 254,
       "win32": true
     },
@@ -1720,7 +1720,7 @@
       "proto": "void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1103,
+      "line": 1102,
       "decompiled_line_count": 184,
       "win32": true
     },
@@ -1740,7 +1740,7 @@
       "proto": "void DrawRace2(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 390,
+      "line": 950,
       "decompiled_line_count": 225,
       "win32": true
     },
@@ -1750,7 +1750,7 @@
       "proto": "void DrawRace3(uint16_t, uint16_t, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 349,
+      "line": 909,
       "decompiled_line_count": 137,
       "win32": true
     },
@@ -1760,7 +1760,7 @@
       "proto": "void DrawRaceAdvantagePoints(uint16_t, RECT *, PLAYER *)",
       "status": "stub",
       "file": "race.c",
-      "line": 312,
+      "line": 872,
       "decompiled_line_count": 79,
       "win32": true
     },
@@ -2240,7 +2240,7 @@
       "proto": "void EnsureTileSize(int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1151,
+      "line": 1150,
       "decompiled_line_count": 79,
       "win32": true
     },
@@ -2900,7 +2900,7 @@
       "proto": "int16_t FDrawTileNC(uint16_t, TILE *, RECT *, char *)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1046,
+      "line": 1045,
       "decompiled_line_count": 52,
       "win32": true
     },
@@ -3838,11 +3838,11 @@
       "addr": "10e0:58d4",
       "segment": "MEMORY_RACE",
       "proto": "int16_t FSaveRace(char *, PLAYER *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "race.c",
-      "line": 101,
+      "line": 1021,
       "decompiled_line_count": 74,
-      "win32": false
+      "win32": true
     },
     "FScout": {
       "addr": "1080:2322",
@@ -4010,7 +4010,7 @@
       "proto": "int16_t FTrackRaceDlg2(uint16_t, POINT, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 434,
+      "line": 994,
       "decompiled_line_count": 154,
       "win32": true
     },
@@ -4020,7 +4020,7 @@
       "proto": "int16_t FTrackRaceDlg3(uint16_t, POINT, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 418,
+      "line": 978,
       "decompiled_line_count": 47,
       "win32": true
     },
@@ -4270,7 +4270,7 @@
       "proto": "void FillPlanetProdLB(uint16_t, PLPROD *32, PLANET *32)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1131,
+      "line": 1130,
       "decompiled_line_count": 133,
       "win32": true
     },
@@ -4300,7 +4300,7 @@
       "proto": "void FillShipDD(int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1084,
+      "line": 1083,
       "decompiled_line_count": 66,
       "win32": true
     },
@@ -4620,7 +4620,7 @@
       "proto": "int16_t GetRaceGrbit(PLAYER *, int16_t)",
       "status": "implemented",
       "file": "race.c",
-      "line": 43,
+      "line": 48,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -4630,7 +4630,7 @@
       "proto": "int16_t GetRaceStat(PLAYER *, int16_t)",
       "status": "implemented",
       "file": "race.c",
-      "line": 114,
+      "line": 391,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -4760,7 +4760,7 @@
       "proto": "void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 1064,
+      "line": 1063,
       "decompiled_line_count": 18,
       "win32": true
     },
@@ -4910,7 +4910,7 @@
       "proto": "int16_t IBestTerraform(PLANET *32, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 659,
+      "line": 658,
       "decompiled_line_count": 79,
       "win32": false
     },
@@ -5020,7 +5020,7 @@
       "proto": "uint16_t IRaceChecksum(PLAYER *)",
       "status": "implemented",
       "file": "race.c",
-      "line": 116,
+      "line": 393,
       "decompiled_line_count": 19,
       "win32": false
     },
@@ -5080,7 +5080,7 @@
       "proto": "int16_t IdFindAdjStarbase(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1072,
+      "line": 1071,
       "decompiled_line_count": 53,
       "win32": true
     },
@@ -5380,7 +5380,7 @@
       "proto": "void InvalidateAdvPtsRect(uint16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 370,
+      "line": 930,
       "decompiled_line_count": 41,
       "win32": true
     },
@@ -5420,7 +5420,7 @@
       "proto": "int16_t IpctCanTerraformLppl(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 677,
+      "line": 676,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -5430,7 +5430,7 @@
       "proto": "int16_t IrcRaceDlgHitTest(POINT)",
       "status": "stub",
       "file": "race.c",
-      "line": 454,
+      "line": 1014,
       "decompiled_line_count": 28,
       "win32": true
     },
@@ -5628,9 +5628,9 @@
       "addr": "10e0:4c6e",
       "segment": "MEMORY_RACE",
       "proto": "int32_t LInnateRaceHabitability(PLAYER *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "race.c",
-      "line": 152,
+      "line": 492,
       "decompiled_line_count": 250,
       "win32": false
     },
@@ -6490,7 +6490,7 @@
       "proto": "int16_t PctPlanetCapacity(PLANET *32)",
       "status": "stub",
       "file": "planet.c",
-      "line": 815,
+      "line": 814,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -6530,7 +6530,7 @@
       "proto": "int16_t PctTrueMaxGrowth(int16_t)",
       "status": "implemented",
       "file": "race.c",
-      "line": 90,
+      "line": 380,
       "decompiled_line_count": 18,
       "win32": false
     },
@@ -6560,7 +6560,7 @@
       "proto": "void PlanetClick(int16_t, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1174,
+      "line": 1173,
       "decompiled_line_count": 219,
       "win32": true
     },
@@ -6570,7 +6570,7 @@
       "proto": "int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 846,
+      "line": 845,
       "decompiled_line_count": 666,
       "win32": true
     },
@@ -7070,7 +7070,7 @@
       "proto": "int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 330,
+      "line": 890,
       "decompiled_line_count": 163,
       "win32": true
     },
@@ -7080,7 +7080,7 @@
       "proto": "int16_t RaceWizardDlg1(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 275,
+      "line": 835,
       "decompiled_line_count": 336,
       "win32": true
     },
@@ -7090,7 +7090,7 @@
       "proto": "int16_t RaceWizardDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 249,
+      "line": 809,
       "decompiled_line_count": 179,
       "win32": true
     },
@@ -7100,7 +7100,7 @@
       "proto": "int16_t RaceWizardDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 233,
+      "line": 793,
       "decompiled_line_count": 102,
       "win32": true
     },
@@ -7110,7 +7110,7 @@
       "proto": "int16_t RaceWizardDlg4(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 216,
+      "line": 776,
       "decompiled_line_count": 144,
       "win32": true
     },
@@ -7120,7 +7120,7 @@
       "proto": "int16_t RaceWizardDlg5(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 199,
+      "line": 759,
       "decompiled_line_count": 155,
       "win32": true
     },
@@ -7130,7 +7130,7 @@
       "proto": "int16_t RaceWizardDlg6(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 184,
+      "line": 744,
       "decompiled_line_count": 134,
       "win32": true
     },
@@ -7290,7 +7290,7 @@
       "proto": "void ReflowColumn(int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1210,
+      "line": 1209,
       "decompiled_line_count": 74,
       "win32": true
     },
@@ -7560,7 +7560,7 @@
       "proto": "void SelectAdjPlanet(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1197,
+      "line": 1196,
       "decompiled_line_count": 73,
       "win32": true
     },
@@ -7700,7 +7700,7 @@
       "proto": "void SetPlanetTitleBar(uint16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1057,
+      "line": 1056,
       "decompiled_line_count": 26,
       "win32": true
     },
@@ -7710,7 +7710,7 @@
       "proto": "void SetRCWTitle(uint16_t, int16_t)",
       "status": "stub",
       "file": "race.c",
-      "line": 383,
+      "line": 943,
       "decompiled_line_count": 17,
       "win32": true
     },
@@ -7720,7 +7720,7 @@
       "proto": "void SetRaceGrbit(PLAYER *, int16_t, int16_t)",
       "status": "implemented",
       "file": "race.c",
-      "line": 24,
+      "line": 29,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -7730,7 +7730,7 @@
       "proto": "int16_t SetRaceStat(PLAYER *, int16_t, int16_t)",
       "status": "implemented",
       "file": "race.c",
-      "line": 77,
+      "line": 367,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -7990,7 +7990,7 @@
       "proto": "int16_t StargateRangeFromLppl(PLANET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 755,
+      "line": 754,
       "decompiled_line_count": 46,
       "win32": false
     },
@@ -8220,7 +8220,7 @@
       "proto": "void UninhabitPlanet(PLANET *32)",
       "status": "stub",
       "file": "planet.c",
-      "line": 746,
+      "line": 745,
       "decompiled_line_count": 51,
       "win32": false
     },

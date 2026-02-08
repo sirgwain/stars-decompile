@@ -232,7 +232,7 @@ int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr) {
     */
     {
         double  avg = (double)pctPos / 3.0;
-        int32_t base = (int32_t)(sqrt(avg)); /* trunc toward 0 like __ftol for positive */
+        int32_t base = (int32_t)(sqrt(avg) + 0.9);
         int32_t result = (base * pctMod) / 10000;
         return (int16_t)result;
     }
@@ -632,8 +632,7 @@ int16_t CMaxMines(PLANET *lppl, int16_t iplr) {
 }
 
 int16_t FProdIsTerra(PROD *lpprod) {
-    if (lpprod->grobj == grobjPlanet &&
-        (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjTerraform || lpprod->iItem == iobjTerraform2)) {
+    if (lpprod->grobj == grobjPlanet && (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjTerraform || lpprod->iItem == iobjTerraform2)) {
         return 1;
     }
     return 0;

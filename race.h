@@ -19,7 +19,6 @@ void     SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet);
 int16_t  SetRaceStat(PLAYER *pplr, int16_t iStat, int16_t iVal);
 int16_t  CAdvantagePoints(PLAYER *pplr);
 int16_t  PctTrueMaxGrowth(int16_t iplr);
-int16_t  FSaveRace(char *szFileSuggest, PLAYER *pplr);
 uint16_t IRaceChecksum(PLAYER *pplr);
 void     BoundsCheckPlayer(PLAYER *pplr);
 
@@ -46,6 +45,7 @@ void             DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw);
 int16_t          FTrackRaceDlg3(HWND hwnd, POINT pt, int16_t kbd);
 int16_t          FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd);
 int16_t          IrcRaceDlgHitTest(POINT pt);
+int16_t          FSaveRace(char *szFileSuggest, PLAYER *pplr);
 
 #endif /* _WIN32 */
 

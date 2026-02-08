@@ -42,14 +42,15 @@
 /* These are constants in the original; keep them header-only without creating
  * multiple definitions across TUs.
  */
-#define dGalOff       1000 /* map border inset ("off") */
-#define ishdefMax     16
-#define ishdefSBMax   10
-#define cbAllocMac    65480
-#define BTLPLANMAX    16
-#define cPlanetAbsMax 999
-#define cThingAbsMax  4050
-#define cFleetAbsMax  512
+#define dGalOff           1000 /* map border inset ("off") */
+#define ishdefMax         16
+#define ishdefSBMax       10
+#define cbAllocMac        65480
+#define BTLPLANMAX        16
+#define cPlanetAbsMax     999
+#define cThingAbsMax      4050
+#define cFleetAbsMax      512
+#define pctIdealGrowthMax 20
 
 #define cMaxMru              9
 #define cbMruEntry           0x100

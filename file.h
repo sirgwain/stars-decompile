@@ -15,14 +15,6 @@ typedef enum MdCheckType {
     mdPlayerType = 0x0008, /* PLAYER.fAi */
 } MdCheckType;
 
-typedef enum DtFileType {
-    dtXY = 0,   /* Universe file: .xy */
-    dtLog = 1,  /* Log file: .xN */
-    dtHost = 2, /* Host file: .hst */
-    dtTurn = 3, /* Turn file: .mN */
-    dtHist = 4, /* History file: .hN */
-} DtFileType;
-
 /* dt flag bits (upper bits) */
 enum {
     bitfMulti = 0x2000,  /* multi-part file */

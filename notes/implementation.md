@@ -7,10 +7,10 @@
 | Metric | Count |
 |--------|------:|
 | Total functions | 846 |
-| ✅ Implemented | 309 |
-| ⬜ Stub | 534 |
+| ✅ Implemented | 313 |
+| ⬜ Stub | 530 |
 | ❌ Missing | 3 |
-| **Progress** | **36.5%** |
+| **Progress** | **37.0%** |
 
 ## By File
 
@@ -36,7 +36,7 @@
 | planet.c | 19 | 29 | 0 | 39.6% |
 | popup.c | 0 | 11 | 0 | 0.0% |
 | produce.c | 3 | 11 | 0 | 21.4% |
-| race.c | 6 | 20 | 0 | 23.1% |
+| race.c | 10 | 16 | 0 | 38.5% |
 | report.c | 0 | 24 | 1 | 0.0% |
 | research.c | 2 | 8 | 0 | 20.0% |
 | save.c | 24 | 0 | 0 | 100.0% |
@@ -461,54 +461,54 @@
 ### planet.c (19/48)
 
 
-- ⬜ **PctPlanetCapacity** (33L) — `int16_t PctPlanetCapacity(PLANET *32)` — [planet.c:815](../planet.c#L815) · [decompiled](../decompiled/all/planet.c#L3033)
+- ⬜ **PctPlanetCapacity** (33L) — `int16_t PctPlanetCapacity(PLANET *32)` — [planet.c:814](../planet.c#L814) · [decompiled](../decompiled/all/planet.c#L3033)
 - ⬜ **FGetBestDefensePart** (34L) — `int16_t FGetBestDefensePart(PART *)` — [planet.c:145](../planet.c#L145) · [decompiled](../decompiled/all/planet.c#L1086)
-- ⬜ **StargateRangeFromLppl** (46L) — `int16_t StargateRangeFromLppl(PLANET *32, int16_t, int16_t)` — [planet.c:755](../planet.c#L755) · [decompiled](../decompiled/all/planet.c#L3758)
-- ⬜ **UninhabitPlanet** (51L) — `void UninhabitPlanet(PLANET *32)` — [planet.c:746](../planet.c#L746) · [decompiled](../decompiled/all/planet.c#L4055)
+- ⬜ **StargateRangeFromLppl** (46L) — `int16_t StargateRangeFromLppl(PLANET *32, int16_t, int16_t)` — [planet.c:754](../planet.c#L754) · [decompiled](../decompiled/all/planet.c#L3758)
+- ⬜ **UninhabitPlanet** (51L) — `void UninhabitPlanet(PLANET *32)` — [planet.c:745](../planet.c#L745) · [decompiled](../decompiled/all/planet.c#L4055)
 - ⬜ **PszProductionETA** (71L) — `char * PszProductionETA(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)` — [planet.c:321](../planet.c#L321) · [decompiled](../decompiled/all/planet.c#L1390)
 - ⬜ **PctCloakFromHuldef** (77L) — `int16_t PctCloakFromHuldef(HUL *32, int16_t, int16_t *)` — [planet.c:16](../planet.c#L16) · [decompiled](../decompiled/all/planet.c#L4108)
-- ⬜ **IBestTerraform** (79L) — `int16_t IBestTerraform(PLANET *32, int16_t)` — [planet.c:659](../planet.c#L659) · [decompiled](../decompiled/all/planet.c#L2512)
-- ⬜ **DrawPlanetMinSum** 🪟 (6L) — `void DrawPlanetMinSum(uint16_t, TILE *, OBJ)` — [planet.c:974](../planet.c#L974) · [decompiled](../decompiled/all/planet.c#L822)
-- ⬜ **DrawPlanetProduction** 🪟 (6L) — `void DrawPlanetProduction(uint16_t, TILE *, OBJ)` — [planet.c:1007](../planet.c#L1007) · [decompiled](../decompiled/all/planet.c#L1382)
-- ⬜ **DrawPlanetShipList** 🪟 (6L) — `void DrawPlanetShipList(uint16_t, TILE *, OBJ)` — [planet.c:931](../planet.c#L931) · [decompiled](../decompiled/all/planet.c#L1564)
-- ⬜ **SetPlanetTitleBar** 🪟 (26L) — `void SetPlanetTitleBar(uint16_t)` — [planet.c:1057](../planet.c#L1057) · [decompiled](../decompiled/all/planet.c#L1572)
-- ⬜ **DrawCBEntireItem** 🪟 (44L) — `void DrawCBEntireItem(DRAWITEMSTRUCT *32, int16_t)` — [planet.c:987](../planet.c#L987) · [decompiled](../decompiled/all/planet.c#L2666)
-- ⬜ **DrawMassWarpGauge** 🪟 (49L) — `void DrawMassWarpGauge(uint16_t, RECT *, int16_t, int16_t)` — [planet.c:995](../planet.c#L995) · [decompiled](../decompiled/all/planet.c#L1331)
-- ⬜ **FDrawTileNC** 🪟 (52L) — `int16_t FDrawTileNC(uint16_t, TILE *, RECT *, char *)` — [planet.c:1046](../planet.c#L1046) · [decompiled](../decompiled/all/planet.c#L768)
-- ⬜ **IdFindAdjStarbase** 🪟 (53L) — `int16_t IdFindAdjStarbase(int16_t, int16_t)` — [planet.c:1072](../planet.c#L1072) · [decompiled](../decompiled/all/planet.c#L1872)
-- ⬜ **FillShipDD** 🪟 (66L) — `void FillShipDD(int16_t)` — [planet.c:1084](../planet.c#L1084) · [decompiled](../decompiled/all/planet.c#L1729)
-- ⬜ **SelectAdjPlanet** 🪟 (73L) — `void SelectAdjPlanet(int16_t, int16_t)` — [planet.c:1197](../planet.c#L1197) · [decompiled](../decompiled/all/planet.c#L1797)
-- ⬜ **ReflowColumn** 🪟 (74L) — `void ReflowColumn(int16_t, int16_t, int16_t)` — [planet.c:1210](../planet.c#L1210) · [decompiled](../decompiled/all/planet.c#L2436)
-- ⬜ **EnsureTileSize** 🪟 (79L) — `void EnsureTileSize(int16_t)` — [planet.c:1151](../planet.c#L1151) · [decompiled](../decompiled/all/planet.c#L2355)
-- ⬜ **DrawPlanShip** 🪟 (91L) — `void DrawPlanShip(uint16_t, int16_t)` — [planet.c:886](../planet.c#L886) · [decompiled](../decompiled/all/planet.c#L675)
-- ⬜ **DrawPlanShipBitmap** 🪟 (99L) — `void DrawPlanShipBitmap(uint16_t, TILE *, OBJ)` — [planet.c:1028](../planet.c#L1028) · [decompiled](../decompiled/all/planet.c#L1463)
-- ⬜ **ChangeMainObjSel** 🪟 (127L) — `void ChangeMainObjSel(int16_t, int16_t)` — [planet.c:1094](../planet.c#L1094) · [decompiled](../decompiled/all/planet.c#L1600)
-- ⬜ **FillPlanetProdLB** 🪟 (133L) — `void FillPlanetProdLB(uint16_t, PLPROD *32, PLANET *32)` — [planet.c:1131](../planet.c#L1131) · [decompiled](../decompiled/all/planet.c#L2898)
-- ⬜ **DrawProductionItem** 🪟 (184L) — `void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)` — [planet.c:1103](../planet.c#L1103) · [decompiled](../decompiled/all/planet.c#L2712)
-- ⬜ **ClickInPlanetOrders** 🪟 (205L) — `uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)` — [planet.c:1159](../planet.c#L1159) · [decompiled](../decompiled/all/planet.c#L2148)
-- ⬜ **DrawPlanetStarbase** 🪟 (207L) — `void DrawPlanetStarbase(uint16_t, TILE *, OBJ)` — [planet.c:954](../planet.c#L954) · [decompiled](../decompiled/all/planet.c#L1122)
-- ⬜ **PlanetClick** 🪟 (219L) — `void PlanetClick(int16_t, int16_t, int16_t, int16_t)` — [planet.c:1174](../planet.c#L1174) · [decompiled](../decompiled/all/planet.c#L1927)
-- ⬜ **DrawPlanetStats** 🪟 (254L) — `void DrawPlanetStats(uint16_t, TILE *, OBJ)` — [planet.c:906](../planet.c#L906) · [decompiled](../decompiled/all/planet.c#L830)
-- ⬜ **PlanetWndProc** 🪟 (666L) — `int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)` — [planet.c:846](../planet.c#L846) · [decompiled](../decompiled/all/planet.c#L7)
+- ⬜ **IBestTerraform** (79L) — `int16_t IBestTerraform(PLANET *32, int16_t)` — [planet.c:658](../planet.c#L658) · [decompiled](../decompiled/all/planet.c#L2512)
+- ⬜ **DrawPlanetMinSum** 🪟 (6L) — `void DrawPlanetMinSum(uint16_t, TILE *, OBJ)` — [planet.c:973](../planet.c#L973) · [decompiled](../decompiled/all/planet.c#L822)
+- ⬜ **DrawPlanetProduction** 🪟 (6L) — `void DrawPlanetProduction(uint16_t, TILE *, OBJ)` — [planet.c:1006](../planet.c#L1006) · [decompiled](../decompiled/all/planet.c#L1382)
+- ⬜ **DrawPlanetShipList** 🪟 (6L) — `void DrawPlanetShipList(uint16_t, TILE *, OBJ)` — [planet.c:930](../planet.c#L930) · [decompiled](../decompiled/all/planet.c#L1564)
+- ⬜ **SetPlanetTitleBar** 🪟 (26L) — `void SetPlanetTitleBar(uint16_t)` — [planet.c:1056](../planet.c#L1056) · [decompiled](../decompiled/all/planet.c#L1572)
+- ⬜ **DrawCBEntireItem** 🪟 (44L) — `void DrawCBEntireItem(DRAWITEMSTRUCT *32, int16_t)` — [planet.c:986](../planet.c#L986) · [decompiled](../decompiled/all/planet.c#L2666)
+- ⬜ **DrawMassWarpGauge** 🪟 (49L) — `void DrawMassWarpGauge(uint16_t, RECT *, int16_t, int16_t)` — [planet.c:994](../planet.c#L994) · [decompiled](../decompiled/all/planet.c#L1331)
+- ⬜ **FDrawTileNC** 🪟 (52L) — `int16_t FDrawTileNC(uint16_t, TILE *, RECT *, char *)` — [planet.c:1045](../planet.c#L1045) · [decompiled](../decompiled/all/planet.c#L768)
+- ⬜ **IdFindAdjStarbase** 🪟 (53L) — `int16_t IdFindAdjStarbase(int16_t, int16_t)` — [planet.c:1071](../planet.c#L1071) · [decompiled](../decompiled/all/planet.c#L1872)
+- ⬜ **FillShipDD** 🪟 (66L) — `void FillShipDD(int16_t)` — [planet.c:1083](../planet.c#L1083) · [decompiled](../decompiled/all/planet.c#L1729)
+- ⬜ **SelectAdjPlanet** 🪟 (73L) — `void SelectAdjPlanet(int16_t, int16_t)` — [planet.c:1196](../planet.c#L1196) · [decompiled](../decompiled/all/planet.c#L1797)
+- ⬜ **ReflowColumn** 🪟 (74L) — `void ReflowColumn(int16_t, int16_t, int16_t)` — [planet.c:1209](../planet.c#L1209) · [decompiled](../decompiled/all/planet.c#L2436)
+- ⬜ **EnsureTileSize** 🪟 (79L) — `void EnsureTileSize(int16_t)` — [planet.c:1150](../planet.c#L1150) · [decompiled](../decompiled/all/planet.c#L2355)
+- ⬜ **DrawPlanShip** 🪟 (91L) — `void DrawPlanShip(uint16_t, int16_t)` — [planet.c:885](../planet.c#L885) · [decompiled](../decompiled/all/planet.c#L675)
+- ⬜ **DrawPlanShipBitmap** 🪟 (99L) — `void DrawPlanShipBitmap(uint16_t, TILE *, OBJ)` — [planet.c:1027](../planet.c#L1027) · [decompiled](../decompiled/all/planet.c#L1463)
+- ⬜ **ChangeMainObjSel** 🪟 (127L) — `void ChangeMainObjSel(int16_t, int16_t)` — [planet.c:1093](../planet.c#L1093) · [decompiled](../decompiled/all/planet.c#L1600)
+- ⬜ **FillPlanetProdLB** 🪟 (133L) — `void FillPlanetProdLB(uint16_t, PLPROD *32, PLANET *32)` — [planet.c:1130](../planet.c#L1130) · [decompiled](../decompiled/all/planet.c#L2898)
+- ⬜ **DrawProductionItem** 🪟 (184L) — `void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)` — [planet.c:1102](../planet.c#L1102) · [decompiled](../decompiled/all/planet.c#L2712)
+- ⬜ **ClickInPlanetOrders** 🪟 (205L) — `uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)` — [planet.c:1158](../planet.c#L1158) · [decompiled](../decompiled/all/planet.c#L2148)
+- ⬜ **DrawPlanetStarbase** 🪟 (207L) — `void DrawPlanetStarbase(uint16_t, TILE *, OBJ)` — [planet.c:953](../planet.c#L953) · [decompiled](../decompiled/all/planet.c#L1122)
+- ⬜ **PlanetClick** 🪟 (219L) — `void PlanetClick(int16_t, int16_t, int16_t, int16_t)` — [planet.c:1173](../planet.c#L1173) · [decompiled](../decompiled/all/planet.c#L1927)
+- ⬜ **DrawPlanetStats** 🪟 (254L) — `void DrawPlanetStats(uint16_t, TILE *, OBJ)` — [planet.c:905](../planet.c#L905) · [decompiled](../decompiled/all/planet.c#L830)
+- ⬜ **PlanetWndProc** 🪟 (666L) — `int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)` — [planet.c:845](../planet.c#L845) · [decompiled](../decompiled/all/planet.c#L7)
 - ✅ **PszCalcGravity** (24L) — `char * PszCalcGravity(int16_t)` — [planet.c:589](../planet.c#L589) · [decompiled](../decompiled/all/planet.c#L2620)
 - ✅ **PszCalcEnvVar** (25L) — `char * PszCalcEnvVar(int16_t, int16_t)` — [planet.c:511](../planet.c#L511) · [decompiled](../decompiled/all/planet.c#L2593)
 - ✅ **FProdIsTerra** (29L) — `int16_t FProdIsTerra(PROD *32)` — [planet.c:634](../planet.c#L634) · [decompiled](../decompiled/all/planet.c#L3806)
-- ✅ **IpctCanTerraformLppl** (31L) — `int16_t IpctCanTerraformLppl(PLANET *32)` — [planet.c:677](../planet.c#L677) · [decompiled](../decompiled/all/planet.c#L3837)
+- ✅ **IpctCanTerraformLppl** (31L) — `int16_t IpctCanTerraformLppl(PLANET *32)` — [planet.c:676](../planet.c#L676) · [decompiled](../decompiled/all/planet.c#L3837)
 - ✅ **CMaxFactories** (32L) — `int16_t CMaxFactories(PLANET *32, int16_t)` — [planet.c:561](../planet.c#L561) · [decompiled](../decompiled/all/planet.c#L3458)
 - ✅ **CMaxMines** (32L) — `int16_t CMaxMines(PLANET *32, int16_t)` — [planet.c:610](../planet.c#L610) · [decompiled](../decompiled/all/planet.c#L3287)
-- ✅ **CMaxDefenses** (34L) — `int16_t CMaxDefenses(PLANET *32, int16_t)` — [planet.c:642](../planet.c#L642) · [decompiled](../decompiled/all/planet.c#L3539)
+- ✅ **CMaxDefenses** (34L) — `int16_t CMaxDefenses(PLANET *32, int16_t)` — [planet.c:641](../planet.c#L641) · [decompiled](../decompiled/all/planet.c#L3539)
 - ✅ **CMaxOperableDefenses** (37L) — `int16_t CMaxOperableDefenses(PLANET *32, int16_t, int16_t)` — [planet.c:294](../planet.c#L294) · [decompiled](../decompiled/all/planet.c#L3575)
-- ✅ **CFactoriesOperating** (42L) — `int16_t CFactoriesOperating(PLANET *32)` — [planet.c:823](../planet.c#L823) · [decompiled](../decompiled/all/planet.c#L3414)
-- ✅ **CMinesOperating** (44L) — `int16_t CMinesOperating(PLANET *32)` — [planet.c:794](../planet.c#L794) · [decompiled](../decompiled/all/planet.c#L3368)
+- ✅ **CFactoriesOperating** (42L) — `int16_t CFactoriesOperating(PLANET *32)` — [planet.c:822](../planet.c#L822) · [decompiled](../decompiled/all/planet.c#L3414)
+- ✅ **CMinesOperating** (44L) — `int16_t CMinesOperating(PLANET *32)` — [planet.c:793](../planet.c#L793) · [decompiled](../decompiled/all/planet.c#L3368)
 - ✅ **CMaxOperableFactories** (45L) — `int16_t CMaxOperableFactories(PLANET *32, int16_t, int16_t)` — [planet.c:533](../planet.c#L533) · [decompiled](../decompiled/all/planet.c#L3492)
-- ✅ **CMaxOperableMines** (45L) — `int16_t CMaxOperableMines(PLANET *32, int16_t, int16_t)` — [planet.c:767](../planet.c#L767) · [decompiled](../decompiled/all/planet.c#L3321)
+- ✅ **CMaxOperableMines** (45L) — `int16_t CMaxOperableMines(PLANET *32, int16_t, int16_t)` — [planet.c:766](../planet.c#L766) · [decompiled](../decompiled/all/planet.c#L3321)
 - ✅ **PctPlanetOptValue** (52L) — `int16_t PctPlanetOptValue(PLANET *32, int16_t)` — [planet.c:27](../planet.c#L27) · [decompiled](../decompiled/all/planet.c#L3068)
-- ✅ **CalcPlanetMaxPop** (53L) — `int32_t CalcPlanetMaxPop(int16_t, int16_t)` — [planet.c:702](../planet.c#L702) · [decompiled](../decompiled/all/planet.c#L3232)
+- ✅ **CalcPlanetMaxPop** (53L) — `int32_t CalcPlanetMaxPop(int16_t, int16_t)` — [planet.c:701](../planet.c#L701) · [decompiled](../decompiled/all/planet.c#L3232)
 - ✅ **IWarpMAFromLppl** (55L) — `int16_t IWarpMAFromLppl(PLANET *32, int16_t *)` — [planet.c:85](../planet.c#L85) · [decompiled](../decompiled/all/planet.c#L3701)
 - ✅ **CResourcesAtPlanet** (85L) — `int16_t CResourcesAtPlanet(PLANET *32, int16_t)` — [planet.c:241](../planet.c#L241) · [decompiled](../decompiled/all/planet.c#L3614)
 - ✅ **PctPlanetDesirability** (108L) — `int16_t PctPlanetDesirability(PLANET *32, int16_t)` — [planet.c:154](../planet.c#L154) · [decompiled](../decompiled/all/planet.c#L3122)
 - ✅ **FCanTerraformLppl** (183L) — `int16_t FCanTerraformLppl(PLANET *32, int16_t *, int16_t *, int16_t *, int16_t)` — [planet.c:334](../planet.c#L334) · [decompiled](../decompiled/all/planet.c#L3870)
-- ✅ **HandleFocusState** 🪟 (18L) — `void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)` — [planet.c:1064](../planet.c#L1064) · [decompiled](../decompiled/all/planet.c#L2646)
+- ✅ **HandleFocusState** 🪟 (18L) — `void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)` — [planet.c:1063](../planet.c#L1063) · [decompiled](../decompiled/all/planet.c#L2646)
 
 ### popup.c (0/11)
 
@@ -543,35 +543,35 @@
 - ✅ **GetProductionCosts** (383L) — `void GetProductionCosts(PLANET *32, PROD *32, uint32_t *, int16_t, int16_t)` — [produce.c:30](../produce.c#L30) · [decompiled](../decompiled/all/produce.c#L1737)
 - ✅ **EnableZipProdBtns** 🪟 (23L) — `void EnableZipProdBtns(uint16_t, int16_t)` — [produce.c:568](../produce.c#L568) · [decompiled](../decompiled/all/produce.c#L2631)
 
-### race.c (6/26)
+### race.c (10/26)
 
 
-- ⬜ **BoundsCheckPlayer** (56L) — `void BoundsCheckPlayer(PLAYER *)` — [race.c:128](../race.c#L128) · [decompiled](../decompiled/all/race.c#L1922)
-- ⬜ **FSaveRace** (74L) — `int16_t FSaveRace(char *, PLAYER *)` — [race.c:101](../race.c#L101) · [decompiled](../decompiled/all/race.c#L2694)
-- ⬜ **LInnateRaceHabitability** (250L) — `int32_t LInnateRaceHabitability(PLAYER *)` — [race.c:152](../race.c#L152) · [decompiled](../decompiled/all/race.c#L2297)
-- ⬜ **CAdvantagePoints** (315L) — `int16_t CAdvantagePoints(PLAYER *)` — [race.c:56](../race.c#L56) · [decompiled](../decompiled/all/race.c#L1980)
-- ⬜ **CreateRandomRace** (336L) — `void CreateRandomRace(PLAYER *)` — [race.c:134](../race.c#L134) · [decompiled](../decompiled/all/race.c#L2789)
-- ⬜ **SetRCWTitle** 🪟 (17L) — `void SetRCWTitle(uint16_t, int16_t)` — [race.c:383](../race.c#L383) · [decompiled](../decompiled/all/race.c#L2770)
-- ⬜ **IrcRaceDlgHitTest** 🪟 (28L) — `int16_t IrcRaceDlgHitTest(POINT)` — [race.c:454](../race.c#L454) · [decompiled](../decompiled/all/race.c#L918)
-- ⬜ **InvalidateAdvPtsRect** 🪟 (41L) — `void InvalidateAdvPtsRect(uint16_t)` — [race.c:370](../race.c#L370) · [decompiled](../decompiled/all/race.c#L2549)
-- ⬜ **FTrackRaceDlg3** 🪟 (47L) — `int16_t FTrackRaceDlg3(uint16_t, POINT, int16_t)` — [race.c:418](../race.c#L418) · [decompiled](../decompiled/all/race.c#L1347)
-- ⬜ **DrawRaceAdvantagePoints** 🪟 (79L) — `void DrawRaceAdvantagePoints(uint16_t, RECT *, PLAYER *)` — [race.c:312](../race.c#L312) · [decompiled](../decompiled/all/race.c#L2592)
-- ⬜ **RaceWizardDlg3** 🪟 (102L) — `int16_t RaceWizardDlg3(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:233](../race.c#L233) · [decompiled](../decompiled/all/race.c#L1104)
-- ⬜ **RaceWizardDlg6** 🪟 (134L) — `int16_t RaceWizardDlg6(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:184](../race.c#L184) · [decompiled](../decompiled/all/race.c#L1786)
-- ⬜ **DrawRace3** 🪟 (137L) — `void DrawRace3(uint16_t, uint16_t, int16_t)` — [race.c:349](../race.c#L349) · [decompiled](../decompiled/all/race.c#L1208)
-- ⬜ **RaceWizardDlg4** 🪟 (144L) — `int16_t RaceWizardDlg4(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:216](../race.c#L216) · [decompiled](../decompiled/all/race.c#L1483)
-- ⬜ **FTrackRaceDlg2** 🪟 (154L) — `int16_t FTrackRaceDlg2(uint16_t, POINT, int16_t)` — [race.c:434](../race.c#L434) · [decompiled](../decompiled/all/race.c#L948)
-- ⬜ **RaceWizardDlg5** 🪟 (155L) — `int16_t RaceWizardDlg5(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:199](../race.c#L199) · [decompiled](../decompiled/all/race.c#L1629)
-- ⬜ **RaceCreationWizard** 🪟 (163L) — `int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)` — [race.c:330](../race.c#L330) · [decompiled](../decompiled/all/race.c#L7)
-- ⬜ **RaceWizardDlg2** 🪟 (179L) — `int16_t RaceWizardDlg2(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:249](../race.c#L249) · [decompiled](../decompiled/all/race.c#L510)
-- ⬜ **DrawRace2** 🪟 (225L) — `void DrawRace2(uint16_t, uint16_t, int16_t)` — [race.c:390](../race.c#L390) · [decompiled](../decompiled/all/race.c#L691)
-- ⬜ **RaceWizardDlg1** 🪟 (336L) — `int16_t RaceWizardDlg1(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:275](../race.c#L275) · [decompiled](../decompiled/all/race.c#L172)
-- ✅ **GetRaceStat** (10L) — `int16_t GetRaceStat(PLAYER *, int16_t)` — [race.c:114](../race.c#L114) · [decompiled](../decompiled/all/race.c#L1396)
-- ✅ **SetRaceStat** (17L) — `int16_t SetRaceStat(PLAYER *, int16_t, int16_t)` — [race.c:77](../race.c#L77) · [decompiled](../decompiled/all/race.c#L1408)
-- ✅ **PctTrueMaxGrowth** (18L) — `int16_t PctTrueMaxGrowth(int16_t)` — [race.c:90](../race.c#L90) · [decompiled](../decompiled/all/race.c#L3127)
-- ✅ **IRaceChecksum** (19L) — `uint16_t IRaceChecksum(PLAYER *)` — [race.c:116](../race.c#L116) · [decompiled](../decompiled/all/race.c#L2673)
-- ✅ **GetRaceGrbit** (22L) — `int16_t GetRaceGrbit(PLAYER *, int16_t)` — [race.c:43](../race.c#L43) · [decompiled](../decompiled/all/race.c#L1427)
-- ✅ **SetRaceGrbit** (30L) — `void SetRaceGrbit(PLAYER *, int16_t, int16_t)` — [race.c:24](../race.c#L24) · [decompiled](../decompiled/all/race.c#L1451)
+- ⬜ **CreateRandomRace** (336L) — `void CreateRandomRace(PLAYER *)` — [race.c:474](../race.c#L474) · [decompiled](../decompiled/all/race.c#L2789)
+- ⬜ **SetRCWTitle** 🪟 (17L) — `void SetRCWTitle(uint16_t, int16_t)` — [race.c:943](../race.c#L943) · [decompiled](../decompiled/all/race.c#L2770)
+- ⬜ **IrcRaceDlgHitTest** 🪟 (28L) — `int16_t IrcRaceDlgHitTest(POINT)` — [race.c:1014](../race.c#L1014) · [decompiled](../decompiled/all/race.c#L918)
+- ⬜ **InvalidateAdvPtsRect** 🪟 (41L) — `void InvalidateAdvPtsRect(uint16_t)` — [race.c:930](../race.c#L930) · [decompiled](../decompiled/all/race.c#L2549)
+- ⬜ **FTrackRaceDlg3** 🪟 (47L) — `int16_t FTrackRaceDlg3(uint16_t, POINT, int16_t)` — [race.c:978](../race.c#L978) · [decompiled](../decompiled/all/race.c#L1347)
+- ⬜ **DrawRaceAdvantagePoints** 🪟 (79L) — `void DrawRaceAdvantagePoints(uint16_t, RECT *, PLAYER *)` — [race.c:872](../race.c#L872) · [decompiled](../decompiled/all/race.c#L2592)
+- ⬜ **RaceWizardDlg3** 🪟 (102L) — `int16_t RaceWizardDlg3(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:793](../race.c#L793) · [decompiled](../decompiled/all/race.c#L1104)
+- ⬜ **RaceWizardDlg6** 🪟 (134L) — `int16_t RaceWizardDlg6(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:744](../race.c#L744) · [decompiled](../decompiled/all/race.c#L1786)
+- ⬜ **DrawRace3** 🪟 (137L) — `void DrawRace3(uint16_t, uint16_t, int16_t)` — [race.c:909](../race.c#L909) · [decompiled](../decompiled/all/race.c#L1208)
+- ⬜ **RaceWizardDlg4** 🪟 (144L) — `int16_t RaceWizardDlg4(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:776](../race.c#L776) · [decompiled](../decompiled/all/race.c#L1483)
+- ⬜ **FTrackRaceDlg2** 🪟 (154L) — `int16_t FTrackRaceDlg2(uint16_t, POINT, int16_t)` — [race.c:994](../race.c#L994) · [decompiled](../decompiled/all/race.c#L948)
+- ⬜ **RaceWizardDlg5** 🪟 (155L) — `int16_t RaceWizardDlg5(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:759](../race.c#L759) · [decompiled](../decompiled/all/race.c#L1629)
+- ⬜ **RaceCreationWizard** 🪟 (163L) — `int16_t RaceCreationWizard(uint16_t, int16_t, int16_t)` — [race.c:890](../race.c#L890) · [decompiled](../decompiled/all/race.c#L7)
+- ⬜ **RaceWizardDlg2** 🪟 (179L) — `int16_t RaceWizardDlg2(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:809](../race.c#L809) · [decompiled](../decompiled/all/race.c#L510)
+- ⬜ **DrawRace2** 🪟 (225L) — `void DrawRace2(uint16_t, uint16_t, int16_t)` — [race.c:950](../race.c#L950) · [decompiled](../decompiled/all/race.c#L691)
+- ⬜ **RaceWizardDlg1** 🪟 (336L) — `int16_t RaceWizardDlg1(uint16_t, uint16_t, uint16_t, int32_t)` — [race.c:835](../race.c#L835) · [decompiled](../decompiled/all/race.c#L172)
+- ✅ **GetRaceStat** (10L) — `int16_t GetRaceStat(PLAYER *, int16_t)` — [race.c:391](../race.c#L391) · [decompiled](../decompiled/all/race.c#L1396)
+- ✅ **SetRaceStat** (17L) — `int16_t SetRaceStat(PLAYER *, int16_t, int16_t)` — [race.c:367](../race.c#L367) · [decompiled](../decompiled/all/race.c#L1408)
+- ✅ **PctTrueMaxGrowth** (18L) — `int16_t PctTrueMaxGrowth(int16_t)` — [race.c:380](../race.c#L380) · [decompiled](../decompiled/all/race.c#L3127)
+- ✅ **IRaceChecksum** (19L) — `uint16_t IRaceChecksum(PLAYER *)` — [race.c:393](../race.c#L393) · [decompiled](../decompiled/all/race.c#L2673)
+- ✅ **GetRaceGrbit** (22L) — `int16_t GetRaceGrbit(PLAYER *, int16_t)` — [race.c:48](../race.c#L48) · [decompiled](../decompiled/all/race.c#L1427)
+- ✅ **SetRaceGrbit** (30L) — `void SetRaceGrbit(PLAYER *, int16_t, int16_t)` — [race.c:29](../race.c#L29) · [decompiled](../decompiled/all/race.c#L1451)
+- ✅ **BoundsCheckPlayer** (56L) — `void BoundsCheckPlayer(PLAYER *)` — [race.c:405](../race.c#L405) · [decompiled](../decompiled/all/race.c#L1922)
+- ✅ **LInnateRaceHabitability** (250L) — `int32_t LInnateRaceHabitability(PLAYER *)` — [race.c:492](../race.c#L492) · [decompiled](../decompiled/all/race.c#L2297)
+- ✅ **CAdvantagePoints** (315L) — `int16_t CAdvantagePoints(PLAYER *)` — [race.c:61](../race.c#L61) · [decompiled](../decompiled/all/race.c#L1980)
+- ✅ **FSaveRace** 🪟 (74L) — `int16_t FSaveRace(char *, PLAYER *)` — [race.c:1021](../race.c#L1021) · [decompiled](../decompiled/all/race.c#L2694)
 
 ### report.c (0/25)
 

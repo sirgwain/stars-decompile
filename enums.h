@@ -598,6 +598,15 @@ typedef enum RecordType {
     rtMax = 47                // one past highest observed (0x2d)
 } RecordType;
 
+typedef enum DtFileType {
+    dtXY = 0,   /* Universe file: .xy */
+    dtLog = 1,  /* Log file: .xN */
+    dtHost = 2, /* Host file: .hst */
+    dtTurn = 3, /* Turn file: .mN */
+    dtHist = 4, /* History file: .hN */
+    dtRace = 5, /* History file: .r1 */
+} DtFileType;
+
 typedef enum VictoryCondition {
     vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
     vcAttainsTechLevel = 1,       /* "Attains Tech X in Y fields." (level) */

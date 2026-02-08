@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-02-08T03:24:22Z",
+  "generated_at_utc": "2026-02-08T14:53:51Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -1715,7 +1715,7 @@
     "StreamClose": {
       "signature": "void StreamClose(void)",
       "file": "file.h",
-      "line": 54,
+      "line": 46,
       "kind": "prototype"
     },
     "FAllocStuff": {
@@ -2597,199 +2597,199 @@
     "CMaxDefenses": {
       "signature": "int16_t CMaxDefenses(PLANET *lppl, int16_t iplr)",
       "file": "planet.c",
-      "line": 622,
+      "line": 621,
       "kind": "definition"
     },
     "IBestTerraform": {
       "signature": "int16_t IBestTerraform(PLANET *lppl, int16_t fHelp)",
       "file": "planet.c",
-      "line": 639,
+      "line": 638,
       "kind": "definition"
     },
     "IpctCanTerraformLppl": {
       "signature": "int16_t IpctCanTerraformLppl(PLANET *lppl)",
       "file": "planet.c",
-      "line": 657,
+      "line": 656,
       "kind": "definition"
     },
     "CalcPlanetMaxPop": {
       "signature": "int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr)",
       "file": "planet.c",
-      "line": 682,
+      "line": 681,
       "kind": "definition"
     },
     "UninhabitPlanet": {
       "signature": "void UninhabitPlanet(PLANET *lppl)",
       "file": "planet.c",
-      "line": 726,
+      "line": 725,
       "kind": "definition"
     },
     "StargateRangeFromLppl": {
       "signature": "int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish)",
       "file": "planet.c",
-      "line": 735,
+      "line": 734,
       "kind": "definition"
     },
     "CMaxOperableMines": {
       "signature": "int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear)",
       "file": "planet.c",
-      "line": 747,
+      "line": 746,
       "kind": "definition"
     },
     "CMinesOperating": {
       "signature": "int16_t CMinesOperating(PLANET *lppl)",
       "file": "planet.c",
-      "line": 774,
+      "line": 773,
       "kind": "definition"
     },
     "PctPlanetCapacity": {
       "signature": "int16_t PctPlanetCapacity(PLANET *lppl)",
       "file": "planet.c",
-      "line": 795,
+      "line": 794,
       "kind": "definition"
     },
     "CFactoriesOperating": {
       "signature": "int16_t CFactoriesOperating(PLANET *lppl)",
       "file": "planet.c",
-      "line": 803,
+      "line": 802,
       "kind": "definition"
     },
     "PlanetWndProc": {
       "signature": "LRESULT CALLBACK PlanetWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "planet.c",
-      "line": 826,
+      "line": 825,
       "kind": "definition"
     },
     "DrawPlanShip": {
       "signature": "void DrawPlanShip(HDC hdc, int16_t grbit)",
       "file": "planet.c",
-      "line": 866,
+      "line": 865,
       "kind": "definition"
     },
     "DrawPlanetStats": {
       "signature": "void DrawPlanetStats(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 886,
+      "line": 885,
       "kind": "definition"
     },
     "DrawPlanetShipList": {
       "signature": "void DrawPlanetShipList(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 911,
+      "line": 910,
       "kind": "definition"
     },
     "DrawPlanetStarbase": {
       "signature": "void DrawPlanetStarbase(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 934,
+      "line": 933,
       "kind": "definition"
     },
     "DrawPlanetMinSum": {
       "signature": "void DrawPlanetMinSum(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 954,
+      "line": 953,
       "kind": "definition"
     },
     "DrawCBEntireItem": {
       "signature": "void DrawCBEntireItem(DRAWITEMSTRUCT *lpdis, int16_t inflate)",
       "file": "planet.c",
-      "line": 967,
+      "line": 966,
       "kind": "definition"
     },
     "DrawMassWarpGauge": {
       "signature": "void DrawMassWarpGauge(HDC hdc, RECT *prc, int16_t iBest, int16_t iCur)",
       "file": "planet.c",
-      "line": 975,
+      "line": 974,
       "kind": "definition"
     },
     "DrawPlanetProduction": {
       "signature": "void DrawPlanetProduction(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 987,
+      "line": 986,
       "kind": "definition"
     },
     "DrawPlanShipBitmap": {
       "signature": "void DrawPlanShipBitmap(HDC hdc, TILE *ptile, OBJ obj)",
       "file": "planet.c",
-      "line": 1008,
+      "line": 1007,
       "kind": "definition"
     },
     "FDrawTileNC": {
       "signature": "int16_t FDrawTileNC(HDC hdc, TILE *ptile, RECT *prc, char *pszTitle)",
       "file": "planet.c",
-      "line": 1026,
+      "line": 1025,
       "kind": "definition"
     },
     "SetPlanetTitleBar": {
       "signature": "void SetPlanetTitleBar(HWND hwnd)",
       "file": "planet.c",
-      "line": 1037,
+      "line": 1036,
       "kind": "definition"
     },
     "HandleFocusState": {
       "signature": "void HandleFocusState(DRAWITEMSTRUCT *lpdis, int16_t inflate)",
       "file": "planet.c",
-      "line": 1044,
+      "line": 1043,
       "kind": "definition"
     },
     "IdFindAdjStarbase": {
       "signature": "int16_t IdFindAdjStarbase(int16_t idPlanet, int16_t fNext)",
       "file": "planet.c",
-      "line": 1052,
+      "line": 1051,
       "kind": "definition"
     },
     "FillShipDD": {
       "signature": "void FillShipDD(int16_t idSkip)",
       "file": "planet.c",
-      "line": 1064,
+      "line": 1063,
       "kind": "definition"
     },
     "ChangeMainObjSel": {
       "signature": "void ChangeMainObjSel(int16_t grobjNew, int16_t iObjSel)",
       "file": "planet.c",
-      "line": 1074,
+      "line": 1073,
       "kind": "definition"
     },
     "DrawProductionItem": {
       "signature": "void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox)",
       "file": "planet.c",
-      "line": 1083,
+      "line": 1082,
       "kind": "definition"
     },
     "FillPlanetProdLB": {
       "signature": "void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl)",
       "file": "planet.c",
-      "line": 1111,
+      "line": 1110,
       "kind": "definition"
     },
     "EnsureTileSize": {
       "signature": "void EnsureTileSize(int16_t fSmallTiles)",
       "file": "planet.c",
-      "line": 1131,
+      "line": 1130,
       "kind": "definition"
     },
     "ClickInPlanetOrders": {
       "signature": "uint16_t ClickInPlanetOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn)",
       "file": "planet.c",
-      "line": 1139,
+      "line": 1138,
       "kind": "definition"
     },
     "PlanetClick": {
       "signature": "void PlanetClick(int16_t x, int16_t y, int16_t sks, int16_t fRightBtn)",
       "file": "planet.c",
-      "line": 1154,
+      "line": 1153,
       "kind": "definition"
     },
     "SelectAdjPlanet": {
       "signature": "void SelectAdjPlanet(int16_t dInc, int16_t idPlanet)",
       "file": "planet.c",
-      "line": 1177,
+      "line": 1176,
       "kind": "definition"
     },
     "ReflowColumn": {
       "signature": "void ReflowColumn(int16_t iCol, int16_t iTile, int16_t fRedraw)",
       "file": "planet.c",
-      "line": 1190,
+      "line": 1189,
       "kind": "definition"
     },
     "PopFromLppl": {
@@ -3137,157 +3137,157 @@
     "SetRaceGrbit": {
       "signature": "void SetRaceGrbit(PLAYER *pplr, RaceGrbit ibit, int16_t fSet)",
       "file": "race.c",
-      "line": 24,
+      "line": 29,
       "kind": "definition"
     },
     "GetRaceGrbit": {
       "signature": "int16_t GetRaceGrbit(const PLAYER *pplr, const RaceGrbit ibit)",
       "file": "race.c",
-      "line": 42,
+      "line": 47,
       "kind": "definition"
     },
     "CAdvantagePoints": {
       "signature": "int16_t CAdvantagePoints(PLAYER *pplr)",
       "file": "race.c",
-      "line": 55,
+      "line": 60,
       "kind": "definition"
     },
     "SetRaceStat": {
       "signature": "int16_t SetRaceStat(PLAYER *pplr, int16_t iStat, int16_t iVal)",
       "file": "race.c",
-      "line": 76,
+      "line": 299,
       "kind": "definition"
     },
     "PctTrueMaxGrowth": {
       "signature": "int16_t PctTrueMaxGrowth(int16_t iplr)",
       "file": "race.c",
-      "line": 89,
-      "kind": "definition"
-    },
-    "FSaveRace": {
-      "signature": "int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr)",
-      "file": "race.c",
-      "line": 100,
+      "line": 312,
       "kind": "definition"
     },
     "IRaceChecksum": {
       "signature": "uint16_t IRaceChecksum(PLAYER *pplr)",
       "file": "race.c",
-      "line": 115,
+      "line": 325,
       "kind": "definition"
     },
     "BoundsCheckPlayer": {
       "signature": "void BoundsCheckPlayer(PLAYER *pplr)",
       "file": "race.c",
-      "line": 127,
+      "line": 337,
       "kind": "definition"
     },
     "CreateRandomRace": {
       "signature": "void CreateRandomRace(PLAYER *pplr)",
       "file": "race.c",
-      "line": 133,
+      "line": 406,
       "kind": "definition"
     },
     "LInnateRaceHabitability": {
       "signature": "int32_t LInnateRaceHabitability(PLAYER *pplr)",
       "file": "race.c",
-      "line": 151,
+      "line": 424,
       "kind": "definition"
     },
     "RaMajor": {
       "signature": "int16_t RaMajor(int16_t iplr)",
       "file": "race.c",
-      "line": 176,
+      "line": 669,
       "kind": "definition"
     },
     "RaceWizardDlg6": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg6(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 183,
+      "line": 676,
       "kind": "definition"
     },
     "RaceWizardDlg5": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg5(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 198,
+      "line": 691,
       "kind": "definition"
     },
     "RaceWizardDlg4": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg4(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 215,
+      "line": 708,
       "kind": "definition"
     },
     "RaceWizardDlg3": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg3(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 232,
+      "line": 725,
       "kind": "definition"
     },
     "RaceWizardDlg2": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 248,
+      "line": 741,
       "kind": "definition"
     },
     "RaceWizardDlg1": {
       "signature": "INT_PTR CALLBACK RaceWizardDlg1(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
       "file": "race.c",
-      "line": 274,
+      "line": 767,
       "kind": "definition"
     },
     "DrawRaceAdvantagePoints": {
       "signature": "void DrawRaceAdvantagePoints(HDC hdc, RECT *prc, PLAYER *pplr)",
       "file": "race.c",
-      "line": 311,
+      "line": 804,
       "kind": "definition"
     },
     "RaceCreationWizard": {
       "signature": "int16_t RaceCreationWizard(HWND hwndParent, int16_t fReadOnly, int16_t fDontWrite)",
       "file": "race.c",
-      "line": 329,
+      "line": 822,
       "kind": "definition"
     },
     "DrawRace3": {
       "signature": "void DrawRace3(HWND hwnd, HDC hdc, int16_t iDraw)",
       "file": "race.c",
-      "line": 348,
+      "line": 841,
       "kind": "definition"
     },
     "InvalidateAdvPtsRect": {
       "signature": "void InvalidateAdvPtsRect(HWND hwnd)",
       "file": "race.c",
-      "line": 369,
+      "line": 862,
       "kind": "definition"
     },
     "SetRCWTitle": {
       "signature": "void SetRCWTitle(HWND hwnd, int16_t iStep)",
       "file": "race.c",
-      "line": 382,
+      "line": 875,
       "kind": "definition"
     },
     "DrawRace2": {
       "signature": "void DrawRace2(HWND hwnd, HDC hdc, int16_t iDraw)",
       "file": "race.c",
-      "line": 389,
+      "line": 882,
       "kind": "definition"
     },
     "FTrackRaceDlg3": {
       "signature": "int16_t FTrackRaceDlg3(HWND hwnd, POINT pt, int16_t kbd)",
       "file": "race.c",
-      "line": 417,
+      "line": 910,
       "kind": "definition"
     },
     "FTrackRaceDlg2": {
       "signature": "int16_t FTrackRaceDlg2(HWND hwnd, POINT pt, int16_t kbd)",
       "file": "race.c",
-      "line": 433,
+      "line": 926,
       "kind": "definition"
     },
     "IrcRaceDlgHitTest": {
       "signature": "int16_t IrcRaceDlgHitTest(POINT pt)",
       "file": "race.c",
-      "line": 453,
+      "line": 946,
+      "kind": "definition"
+    },
+    "FSaveRace": {
+      "signature": "int16_t FSaveRace(char *szFileSuggest, PLAYER *pplr)",
+      "file": "race.c",
+      "line": 953,
       "kind": "definition"
     },
     "GetRaceStat": {
@@ -4823,43 +4823,43 @@
     "test_IWarpMAFromLppl_visibility_and_two_at_top_warp": {
       "signature": "static void test_IWarpMAFromLppl_visibility_and_two_at_top_warp(void)",
       "file": "test/test_planet.c",
-      "line": 127,
+      "line": 133,
       "kind": "definition"
     },
     "test_PopFromLppl": {
       "signature": "static void test_PopFromLppl(void)",
       "file": "test/test_planet.c",
-      "line": 231,
+      "line": 237,
       "kind": "definition"
     },
     "test_CMaxOperableFactories_clamps_and_mac_zero": {
       "signature": "static void test_CMaxOperableFactories_clamps_and_mac_zero(void)",
       "file": "test/test_planet.c",
-      "line": 245,
+      "line": 251,
       "kind": "definition"
     },
     "test_CMaxOperableMines_clamps_and_mac_zero": {
       "signature": "static void test_CMaxOperableMines_clamps_and_mac_zero(void)",
       "file": "test/test_planet.c",
-      "line": 286,
+      "line": 292,
       "kind": "definition"
     },
     "test_CalcPlanetMaxPop_race_modifiers_smoke": {
       "signature": "static void test_CalcPlanetMaxPop_race_modifiers_smoke(void)",
       "file": "test/test_planet.c",
-      "line": 327,
+      "line": 333,
       "kind": "definition"
     },
     "test_PctPlanetOptValue_restores_env_and_not_worse_than_base": {
       "signature": "static void test_PctPlanetOptValue_restores_env_and_not_worse_than_base(void)",
       "file": "test/test_planet.c",
-      "line": 364,
+      "line": 370,
       "kind": "definition"
     },
     "test_FCanTerraformLppl_no_parts_returns_0_and_restores_idPlayer": {
       "signature": "static void test_FCanTerraformLppl_no_parts_returns_0_and_restores_idPlayer(void)",
       "file": "test/test_planet.c",
-      "line": 403,
+      "line": 409,
       "kind": "definition"
     },
     "make_starter_planet": {
@@ -4884,6 +4884,12 @@
       "signature": "static void test_EstimateItemProdSched_factory_completes_year1(void)",
       "file": "test/test_produce.c",
       "line": 75,
+      "kind": "definition"
+    },
+    "test_CAdvantagePoints_table": {
+      "signature": "static void test_CAdvantagePoints_table(void)",
+      "file": "test/test_race.c",
+      "line": 11,
       "kind": "definition"
     },
     "test_SetSzWorkFromDt_table": {

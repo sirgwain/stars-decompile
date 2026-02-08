@@ -1428,19 +1428,19 @@ static int DiffOrderOne(const ORDER *a, const ORDER *b, int idx, const char *pre
     if (memcmp(a, b, sizeof(*a)) == 0)
         return 0;
 
-    printf("      %s ord[%d]: pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u raw=0x%04x\n",
+    printf("      %s ord[%d]: pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n",
            prefix,
            idx,
            (int)a->pt.x, (int)a->pt.y,
            (int)a->id,
            (unsigned)a->grTask, (unsigned)a->iWarp, (unsigned)a->grobj,
-           (unsigned)a->fValidTask, (unsigned)a->fNoAutoTrack, (unsigned)a->wRaw_0006);
+           (unsigned)a->fValidTask, (unsigned)a->fNoAutoTrack, (unsigned)a->fUnused, (unsigned)a->wRaw_0006);
 
-    printf("              -> pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u raw=0x%04x\n",
+    printf("              -> pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n",
            (int)b->pt.x, (int)b->pt.y,
            (int)b->id,
            (unsigned)b->grTask, (unsigned)b->iWarp, (unsigned)b->grobj,
-           (unsigned)b->fValidTask, (unsigned)b->fNoAutoTrack, (unsigned)b->wRaw_0006);
+           (unsigned)b->fValidTask, (unsigned)b->fNoAutoTrack, (unsigned)b->fUnused, (unsigned)b->wRaw_0006);
 
     return 1;
 }
