@@ -8,6 +8,7 @@
 #include "race.h"
 #include "turn2.h"
 #include "util.h"
+#include "utilgen.h"
 
 /* functions */
 void Produce(void) {
@@ -479,10 +480,58 @@ void AutoTerraform(void) {
     int16_t i;
     int16_t rgMin[3];
     int16_t rgCost[3];
-    int16_t fTerra;
     PLANET *lpplMac;
+    bool fAnyTerra;
+    int16_t iEnv;
+    int16_t pctDesire;
 
-    /* TODO: implement */
+    fAnyTerra = false;
+    for (i = 0; i < game.cPlayer; i++) {
+        rgp[i] = (GetRaceStat(&rgplr[i], rsMajorAdv) == raTerra);
+        if (rgp[i] != 0) {
+            fAnyTerra = true;
+        }
+    }
+    if (!fAnyTerra)
+        return;
+
+    lpplMac = lpPlanets + cPlanet;
+    for (lppl = lpPlanets; lppl < lpplMac; lppl++) {
+        if (lppl->iPlayer == -1 || rgp[lppl->iPlayer] == 0)
+            continue;
+
+        if (lppl->fStarbase && lppl->iPlayer == -1) {
+            lppl->fStarbase = 0;
+        }
+
+        iEnv = Random(3);
+        if (rgplr[lppl->iPlayer].rgEnvVar[iEnv] != -1 &&
+            rgplr[lppl->iPlayer].rgEnvVar[iEnv] != (int8_t)lppl->rgEnvVarOrig[iEnv] &&
+            Random(10) == 0 &&
+            (lppl->rgwtMin[3] > 999 || Random(1000) < (int16_t)lppl->rgwtMin[3])) {
+
+            if (rgplr[lppl->iPlayer].rgEnvVar[iEnv] < (int8_t)lppl->rgEnvVarOrig[iEnv]) {
+                lppl->rgEnvVarOrig[iEnv]--;
+            } else {
+                lppl->rgEnvVarOrig[iEnv]++;
+            }
+            FSendPlrMsg2(lppl->iPlayer, idmEngineersHaveManagedImproveUnderlying1, lppl->id, lppl->id, iEnv);
+        }
+
+        if (FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, 1)) {
+            for (i = 0; i < 3; i++) {
+                if (rgMin[i] == -1) {
+                    if (rgMax[i] != -1) {
+                        lppl->rgEnvVar[i] = (uint8_t)rgMax[i];
+                    }
+                } else {
+                    lppl->rgEnvVar[i] = (uint8_t)rgMin[i];
+                }
+            }
+            pctDesire = PctPlanetDesirability(lppl, lppl->iPlayer);
+            FSendPlrMsg2(lppl->iPlayer, idmHasAutoTerraformedValue, lppl->id, lppl->id, pctDesire);
+        }
+    }
 }
 
 int16_t FPacketDecay(THING *lpth, int16_t pctRate) {

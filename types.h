@@ -156,7 +156,6 @@ typedef struct _order {
         TASKSELL     tsell;
     }; /* +0x0008 */
 } ORDER;
-#ifdef STARS_LAYOUT_CHECKS
 _Static_assert(sizeof(ORDER) == 18, "sizeof(ORDER)");
 _Static_assert(offsetof(ORDER, pt) == 0x0, "offsetof(ORDER,pt)");
 _Static_assert(offsetof(ORDER, id) == 0x4, "offsetof(ORDER,id)");
@@ -164,7 +163,6 @@ _Static_assert(offsetof(ORDER, txp) == 0x8, "offsetof(ORDER,txp)");
 _Static_assert(offsetof(ORDER, tlm) == 0x8, "offsetof(ORDER,tlm)");
 _Static_assert(offsetof(ORDER, tptl) == 0x8, "offsetof(ORDER,tptl)");
 _Static_assert(offsetof(ORDER, tsell) == 0x8, "offsetof(ORDER,tsell)");
-#endif
 
 /* typind 4229 (0x1085) size=24 */
 typedef struct _ziporder {

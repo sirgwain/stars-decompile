@@ -1738,7 +1738,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 }
             } else {
                 if (uTimerType == 2) {
-                    if (FLoadGame(szBase, mpdtsz[dtHist]) != 0) {
+                    if (FLoadGame(szBase, mpdtsz[dtHost]) != 0) {
                         KillTimer(NULL, uTimerIdOld);
                         uTimerId = 0;
                         EnsureAis();

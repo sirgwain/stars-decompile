@@ -7,10 +7,10 @@
 | Metric | Count |
 |--------|------:|
 | Total functions | 846 |
-| ✅ Implemented | 313 |
-| ⬜ Stub | 530 |
+| ✅ Implemented | 315 |
+| ⬜ Stub | 528 |
 | ❌ Missing | 3 |
-| **Progress** | **37.0%** |
+| **Progress** | **37.2%** |
 
 ## By File
 
@@ -47,8 +47,8 @@
 | strings.c | 1 | 0 | 0 | 100.0% |
 | tb.c | 0 | 12 | 0 | 0.0% |
 | thing.c | 4 | 4 | 0 | 50.0% |
-| turn.c | 0 | 6 | 0 | 0.0% |
-| turn2.c | 2 | 26 | 0 | 7.1% |
+| turn.c | 1 | 5 | 0 | 16.7% |
+| turn2.c | 3 | 25 | 0 | 10.7% |
 | turn3.c | 0 | 1 | 0 | 0.0% |
 | tutor.c | 3 | 30 | 0 | 9.1% |
 | tutor2.c | 1 | 0 | 0 | 100.0% |
@@ -285,27 +285,27 @@
 ### file.c (20/22)
 
 
-- ⬜ **PromptSaveGame** (29L) — `void PromptSaveGame(void)` — [file.c:1864](../file.c#L1864) · [decompiled](../decompiled/all/io.c#L1959)
-- ⬜ **AskSaveDialog** (34L) — `int16_t AskSaveDialog(void)` — [file.c:1621](../file.c#L1621) · [decompiled](../decompiled/all/io.c#L1923)
-- ✅ **StreamClose** (14L) — `void StreamClose(void)` — [file.c:1627](../file.c#L1627) · [decompiled](../decompiled/all/io.c#L2586)
-- ✅ **GetFileStatus** (15L) — `void GetFileStatus(int16_t, int16_t)` — [file.c:1656](../file.c#L1656) · [decompiled](../decompiled/all/io.c#L2206)
-- ✅ **FBogusLong** (18L) — `int16_t FBogusLong(uint32_t)` — [file.c:2155](../file.c#L2155) · [decompiled](../decompiled/all/io.c#L2122)
+- ⬜ **PromptSaveGame** (29L) — `void PromptSaveGame(void)` — [file.c:1869](../file.c#L1869) · [decompiled](../decompiled/all/io.c#L1959)
+- ⬜ **AskSaveDialog** (34L) — `int16_t AskSaveDialog(void)` — [file.c:1626](../file.c#L1626) · [decompiled](../decompiled/all/io.c#L1923)
+- ✅ **StreamClose** (14L) — `void StreamClose(void)` — [file.c:1632](../file.c#L1632) · [decompiled](../decompiled/all/io.c#L2586)
+- ✅ **GetFileStatus** (15L) — `void GetFileStatus(int16_t, int16_t)` — [file.c:1661](../file.c#L1661) · [decompiled](../decompiled/all/io.c#L2206)
+- ✅ **FBogusLong** (18L) — `int16_t FBogusLong(uint32_t)` — [file.c:2160](../file.c#L2160) · [decompiled](../decompiled/all/io.c#L2122)
 - ✅ **FBadFileError** (19L) — `int16_t FBadFileError(int16_t)` — [file.c:106](../file.c#L106) · [decompiled](../decompiled/all/io.c#L2519)
 - ✅ **FileError** (19L) — `void FileError(int16_t)` — [file.c:36](../file.c#L36) · [decompiled](../decompiled/all/io.c#L2185)
-- ✅ **ReadRt** (20L) — `void ReadRt(void)` — [file.c:1484](../file.c#L1484) · [decompiled](../decompiled/all/io.c#L2497)
-- ✅ **RgFromStream** (24L) — `void RgFromStream(void *32, uint16_t)` — [file.c:2132](../file.c#L2132) · [decompiled](../decompiled/all/io.c#L2602)
-- ✅ **FNewTurnAvail** (30L) — `int16_t FNewTurnAvail(int16_t)` — [file.c:1629](../file.c#L1629) · [decompiled](../decompiled/all/io.c#L2398)
+- ✅ **ReadRt** (20L) — `void ReadRt(void)` — [file.c:1489](../file.c#L1489) · [decompiled](../decompiled/all/io.c#L2497)
+- ✅ **RgFromStream** (24L) — `void RgFromStream(void *32, uint16_t)` — [file.c:2137](../file.c#L2137) · [decompiled](../decompiled/all/io.c#L2602)
+- ✅ **FNewTurnAvail** (30L) — `int16_t FNewTurnAvail(int16_t)` — [file.c:1634](../file.c#L1634) · [decompiled](../decompiled/all/io.c#L2398)
 - ✅ **UnpackBattlePlan** (30L) — `void UnpackBattlePlan(uint8_t *32, BTLPLAN *32, int16_t)` — [file.c:76](../file.c#L76) · [decompiled](../decompiled/all/io.c#L1826)
-- ✅ **FValidSerialLong** (41L) — `int16_t FValidSerialLong(uint32_t)` — [file.c:1969](../file.c#L1969) · [decompiled](../decompiled/all/io.c#L2142)
+- ✅ **FValidSerialLong** (41L) — `int16_t FValidSerialLong(uint32_t)` — [file.c:1974](../file.c#L1974) · [decompiled](../decompiled/all/io.c#L2142)
 - ✅ **ReadRtPlr** (44L) — `void ReadRtPlr(PLAYER *, uint8_t *)` — [file.c:147](../file.c#L147) · [decompiled](../decompiled/all/io.c#L146)
 - ✅ **StreamOpen** (44L) — `void StreamOpen(char *, int16_t)` — [file.c:44](../file.c#L44) · [decompiled](../decompiled/all/io.c#L2540)
 - ✅ **UpdateBattleRecords** (63L) — `void UpdateBattleRecords(void)` — [file.c:200](../file.c#L200) · [decompiled](../decompiled/all/io.c#L1858)
-- ✅ **FCheckFile** (65L) — `int16_t FCheckFile(uint16_t, int16_t, uint16_t)` — [file.c:1871](../file.c#L1871) · [decompiled](../decompiled/all/io.c#L2430)
-- ✅ **DestroyCurGame** (130L) — `void DestroyCurGame(void)` — [file.c:1974](../file.c#L1974) · [decompiled](../decompiled/all/io.c#L1990)
-- ✅ **FReadShDef** (137L) — `int16_t FReadShDef(RTSHDEF *32, SHDEF *32, int16_t)` — [file.c:1366](../file.c#L1366) · [decompiled](../decompiled/all/io.c#L7)
-- ✅ **FOpenFile** (173L) — `int16_t FOpenFile(uint16_t, int16_t, int16_t)` — [file.c:1508](../file.c#L1508) · [decompiled](../decompiled/all/io.c#L2223)
+- ✅ **FCheckFile** (65L) — `int16_t FCheckFile(uint16_t, int16_t, uint16_t)` — [file.c:1876](../file.c#L1876) · [decompiled](../decompiled/all/io.c#L2430)
+- ✅ **DestroyCurGame** (130L) — `void DestroyCurGame(void)` — [file.c:1979](../file.c#L1979) · [decompiled](../decompiled/all/io.c#L1990)
+- ✅ **FReadShDef** (137L) — `int16_t FReadShDef(RTSHDEF *32, SHDEF *32, int16_t)` — [file.c:1371](../file.c#L1371) · [decompiled](../decompiled/all/io.c#L7)
+- ✅ **FOpenFile** (173L) — `int16_t FOpenFile(uint16_t, int16_t, int16_t)` — [file.c:1513](../file.c#L1513) · [decompiled](../decompiled/all/io.c#L2223)
 - ✅ **FReadFleet** (200L) — `int16_t FReadFleet(FLEET *32)` — [file.c:205](../file.c#L205) · [decompiled](../decompiled/all/io.c#L1624)
-- ✅ **FReadPlanet** (207L) — `int16_t FReadPlanet(int16_t, PLANET *32, int16_t, int16_t)` — [file.c:1663](../file.c#L1663) · [decompiled](../decompiled/all/io.c#L1415)
+- ✅ **FReadPlanet** (207L) — `int16_t FReadPlanet(int16_t, PLANET *32, int16_t, int16_t)` — [file.c:1668](../file.c#L1668) · [decompiled](../decompiled/all/io.c#L1415)
 - ✅ **FLoadGame** (1221L) — `int16_t FLoadGame(char *, char *)` — [file.c:380](../file.c#L380) · [decompiled](../decompiled/all/io.c#L192)
 
 ### init.c (8/8)
@@ -802,47 +802,47 @@
 - ✅ **LpthNew** (79L) — `THING *32 LpthNew(int16_t, int16_t)` — [thing.c:130](../thing.c#L130) · [decompiled](../decompiled/all/thing.c#L7)
 - ✅ **IValidateWormholePos** (138L) — `int16_t IValidateWormholePos(THING *32)` — [thing.c:183](../thing.c#L183) · [decompiled](../decompiled/all/thing.c#L244)
 
-### turn.c (0/6)
+### turn.c (1/6)
 
 
-- ⬜ **DoOrders** (54L) — `void DoOrders(int16_t)` — [turn.c:14](../turn.c#L14) · [decompiled](../decompiled/all/turn.c#L834)
-- ⬜ **FuelFleets** (92L) — `void FuelFleets(void)` — [turn.c:21](../turn.c#L21) · [decompiled](../decompiled/all/turn.c#L1540)
-- ⬜ **FTravelThroughMineFields** (535L) — `int16_t FTravelThroughMineFields(FLEET *32, int16_t *, THING *32)` — [turn.c:148](../turn.c#L148) · [decompiled](../decompiled/all/turn.c#L2480)
-- ⬜ **MoveThings** (648L) — `void MoveThings(int16_t)` — [turn.c:208](../turn.c#L208) · [decompiled](../decompiled/all/turn.c#L890)
-- ⬜ **FGenerateTurn** (825L) — `int16_t FGenerateTurn(void)` — [turn.c:38](../turn.c#L38) · [decompiled](../decompiled/all/turn.c#L7)
-- ⬜ **MoveFleets** (844L) — `void MoveFleets(void)` — [turn.c:81](../turn.c#L81) · [decompiled](../decompiled/all/turn.c#L1634)
+- ⬜ **DoOrders** (54L) — `void DoOrders(int16_t)` — [turn.c:30](../turn.c#L30) · [decompiled](../decompiled/all/turn.c#L834)
+- ⬜ **FuelFleets** (92L) — `void FuelFleets(void)` — [turn.c:37](../turn.c#L37) · [decompiled](../decompiled/all/turn.c#L1540)
+- ⬜ **FTravelThroughMineFields** (535L) — `int16_t FTravelThroughMineFields(FLEET *32, int16_t *, THING *32)` — [turn.c:840](../turn.c#L840) · [decompiled](../decompiled/all/turn.c#L2480)
+- ⬜ **MoveThings** (648L) — `void MoveThings(int16_t)` — [turn.c:900](../turn.c#L900) · [decompiled](../decompiled/all/turn.c#L890)
+- ⬜ **MoveFleets** (844L) — `void MoveFleets(void)` — [turn.c:773](../turn.c#L773) · [decompiled](../decompiled/all/turn.c#L1634)
+- ✅ **FGenerateTurn** (825L) — `int16_t FGenerateTurn(void)` — [turn.c:54](../turn.c#L54) · [decompiled](../decompiled/all/turn.c#L7)
 
-### turn2.c (2/28)
+### turn2.c (3/28)
 
 
-- ⬜ **RandomEvents** (14L) — `void RandomEvents(void)` — [turn2.c:627](../turn2.c#L627) · [decompiled](../decompiled/all/turn2.c#L1344)
-- ⬜ **MineMinerals** (21L) — `void MineMinerals(void)` — [turn2.c:516](../turn2.c#L516) · [decompiled](../decompiled/all/turn2.c#L2432)
-- ⬜ **CreateBackupDir** (30L) — `void CreateBackupDir(void)` — [turn2.c:44](../turn2.c#L44) · [decompiled](../decompiled/all/turn2.c#L3132)
-- ⬜ **CreateShip** (31L) — `void CreateShip(int16_t, FLEET *32, int16_t, int16_t)` — [turn2.c:612](../turn2.c#L612) · [decompiled](../decompiled/all/turn2.c#L1311)
-- ⬜ **DiscoverNewMinerals** (34L) — `void DiscoverNewMinerals(void)` — [turn2.c:577](../turn2.c#L577) · [decompiled](../decompiled/all/turn2.c#L2735)
-- ⬜ **FQueueColonistDrop** (47L) — `int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)` — [turn2.c:248](../turn2.c#L248) · [decompiled](../decompiled/all/turn2.c#L2230)
-- ⬜ **TossNonAutoBuildItems** (57L) — `void TossNonAutoBuildItems(PLANET *32)` — [turn2.c:109](../turn2.c#L109) · [decompiled](../decompiled/all/turn2.c#L2614)
-- ⬜ **PlanetaryClimateChange** (60L) — `void PlanetaryClimateChange(void)` — [turn2.c:568](../turn2.c#L568) · [decompiled](../decompiled/all/turn2.c#L2673)
-- ⬜ **IBestRemoteTerra** (65L) — `int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)` — [turn2.c:559](../turn2.c#L559) · [decompiled](../decompiled/all/turn2.c#L4087)
-- ⬜ **UpdatePopulations** (73L) — `void UpdatePopulations(void)` — [turn2.c:171](../turn2.c#L171) · [decompiled](../decompiled/all/turn2.c#L2279)
-- ⬜ **AutoTerraform** (74L) — `void AutoTerraform(void)` — [turn2.c:475](../turn2.c#L475) · [decompiled](../decompiled/all/turn2.c#L2049)
-- ⬜ **FPacketDecay** (76L) — `int16_t FPacketDecay(THING *32, int16_t)` — [turn2.c:488](../turn2.c#L488) · [decompiled](../decompiled/all/turn2.c#L3164)
-- ⬜ **UpdateGuesses** (76L) — `void UpdateGuesses(void)` — [turn2.c:225](../turn2.c#L225) · [decompiled](../decompiled/all/turn2.c#L2354)
-- ⬜ **BreedColonistsInTransit** (98L) — `void BreedColonistsInTransit(void)` — [turn2.c:614](../turn2.c#L614) · [decompiled](../decompiled/all/turn2.c#L3667)
-- ⬜ **MysteryTrader** (99L) — `void MysteryTrader(void)` — [turn2.c:237](../turn2.c#L237) · [decompiled](../decompiled/all/turn2.c#L2771)
-- ⬜ **RemoteTerraforming** (103L) — `void RemoteTerraforming(void)` — [turn2.c:155](../turn2.c#L155) · [decompiled](../decompiled/all/turn2.c#L2125)
-- ⬜ **HealShips** (124L) — `void HealShips(void)` — [turn2.c:598](../turn2.c#L598) · [decompiled](../decompiled/all/turn2.c#L1923)
-- ⬜ **TransferToOthers** (149L) — `void TransferToOthers(void)` — [turn2.c:499](../turn2.c#L499) · [decompiled](../decompiled/all/turn2.c#L1360)
-- ⬜ **MeteorStrike** (157L) — `void MeteorStrike(void)` — [turn2.c:584](../turn2.c#L584) · [decompiled](../decompiled/all/turn2.c#L2455)
-- ⬜ **ThingDecay** (166L) — `void ThingDecay(void)` — [turn2.c:50](../turn2.c#L50) · [decompiled](../decompiled/all/turn2.c#L3242)
-- ⬜ **SweepForMines** (231L) — `void SweepForMines(void)` — [turn2.c:186](../turn2.c#L186) · [decompiled](../decompiled/all/turn2.c#L3434)
-- ⬜ **UpdatePlayerScores** (258L) — `void UpdatePlayerScores(void)` — [turn2.c:205](../turn2.c#L205) · [decompiled](../decompiled/all/turn2.c#L2872)
-- ⬜ **UpdateResearchStatus** (318L) — `void UpdateResearchStatus(int16_t)` — [turn2.c:116](../turn2.c#L116) · [decompiled](../decompiled/all/turn2.c#L3767)
-- ⬜ **Produce** (390L) — `void Produce(void)` — [turn2.c:13](../turn2.c#L13) · [decompiled](../decompiled/all/turn2.c#L7)
-- ⬜ **DropColonists** (410L) — `void DropColonists(void)` — [turn2.c:71](../turn2.c#L71) · [decompiled](../decompiled/all/turn2.c#L1511)
-- ⬜ **FBuildObject** (527L) — `int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)` — [turn2.c:524](../turn2.c#L524) · [decompiled](../decompiled/all/turn2.c#L782)
-- ✅ **UnmarkMineFields** (22L) — `void UnmarkMineFields(void)` — [turn2.c:629](../turn2.c#L629) · [decompiled](../decompiled/all/turn2.c#L3410)
-- ✅ **CBuildProdItem** (381L) — `int16_t CBuildProdItem(PLANET *32, PROD *32, PROD *, int32_t *, int16_t, int16_t *, int16_t)` — [turn2.c:256](../turn2.c#L256) · [decompiled](../decompiled/all/turn2.c#L399)
+- ⬜ **RandomEvents** (14L) — `void RandomEvents(void)` — [turn2.c:676](../turn2.c#L676) · [decompiled](../decompiled/all/turn2.c#L1344)
+- ⬜ **MineMinerals** (21L) — `void MineMinerals(void)` — [turn2.c:565](../turn2.c#L565) · [decompiled](../decompiled/all/turn2.c#L2432)
+- ⬜ **CreateBackupDir** (30L) — `void CreateBackupDir(void)` — [turn2.c:45](../turn2.c#L45) · [decompiled](../decompiled/all/turn2.c#L3132)
+- ⬜ **CreateShip** (31L) — `void CreateShip(int16_t, FLEET *32, int16_t, int16_t)` — [turn2.c:661](../turn2.c#L661) · [decompiled](../decompiled/all/turn2.c#L1311)
+- ⬜ **DiscoverNewMinerals** (34L) — `void DiscoverNewMinerals(void)` — [turn2.c:626](../turn2.c#L626) · [decompiled](../decompiled/all/turn2.c#L2735)
+- ⬜ **FQueueColonistDrop** (47L) — `int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)` — [turn2.c:249](../turn2.c#L249) · [decompiled](../decompiled/all/turn2.c#L2230)
+- ⬜ **TossNonAutoBuildItems** (57L) — `void TossNonAutoBuildItems(PLANET *32)` — [turn2.c:110](../turn2.c#L110) · [decompiled](../decompiled/all/turn2.c#L2614)
+- ⬜ **PlanetaryClimateChange** (60L) — `void PlanetaryClimateChange(void)` — [turn2.c:617](../turn2.c#L617) · [decompiled](../decompiled/all/turn2.c#L2673)
+- ⬜ **IBestRemoteTerra** (65L) — `int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)` — [turn2.c:608](../turn2.c#L608) · [decompiled](../decompiled/all/turn2.c#L4087)
+- ⬜ **UpdatePopulations** (73L) — `void UpdatePopulations(void)` — [turn2.c:172](../turn2.c#L172) · [decompiled](../decompiled/all/turn2.c#L2279)
+- ⬜ **FPacketDecay** (76L) — `int16_t FPacketDecay(THING *32, int16_t)` — [turn2.c:537](../turn2.c#L537) · [decompiled](../decompiled/all/turn2.c#L3164)
+- ⬜ **UpdateGuesses** (76L) — `void UpdateGuesses(void)` — [turn2.c:226](../turn2.c#L226) · [decompiled](../decompiled/all/turn2.c#L2354)
+- ⬜ **BreedColonistsInTransit** (98L) — `void BreedColonistsInTransit(void)` — [turn2.c:663](../turn2.c#L663) · [decompiled](../decompiled/all/turn2.c#L3667)
+- ⬜ **MysteryTrader** (99L) — `void MysteryTrader(void)` — [turn2.c:238](../turn2.c#L238) · [decompiled](../decompiled/all/turn2.c#L2771)
+- ⬜ **RemoteTerraforming** (103L) — `void RemoteTerraforming(void)` — [turn2.c:156](../turn2.c#L156) · [decompiled](../decompiled/all/turn2.c#L2125)
+- ⬜ **HealShips** (124L) — `void HealShips(void)` — [turn2.c:647](../turn2.c#L647) · [decompiled](../decompiled/all/turn2.c#L1923)
+- ⬜ **TransferToOthers** (149L) — `void TransferToOthers(void)` — [turn2.c:548](../turn2.c#L548) · [decompiled](../decompiled/all/turn2.c#L1360)
+- ⬜ **MeteorStrike** (157L) — `void MeteorStrike(void)` — [turn2.c:633](../turn2.c#L633) · [decompiled](../decompiled/all/turn2.c#L2455)
+- ⬜ **ThingDecay** (166L) — `void ThingDecay(void)` — [turn2.c:51](../turn2.c#L51) · [decompiled](../decompiled/all/turn2.c#L3242)
+- ⬜ **SweepForMines** (231L) — `void SweepForMines(void)` — [turn2.c:187](../turn2.c#L187) · [decompiled](../decompiled/all/turn2.c#L3434)
+- ⬜ **UpdatePlayerScores** (258L) — `void UpdatePlayerScores(void)` — [turn2.c:206](../turn2.c#L206) · [decompiled](../decompiled/all/turn2.c#L2872)
+- ⬜ **UpdateResearchStatus** (318L) — `void UpdateResearchStatus(int16_t)` — [turn2.c:117](../turn2.c#L117) · [decompiled](../decompiled/all/turn2.c#L3767)
+- ⬜ **Produce** (390L) — `void Produce(void)` — [turn2.c:14](../turn2.c#L14) · [decompiled](../decompiled/all/turn2.c#L7)
+- ⬜ **DropColonists** (410L) — `void DropColonists(void)` — [turn2.c:72](../turn2.c#L72) · [decompiled](../decompiled/all/turn2.c#L1511)
+- ⬜ **FBuildObject** (527L) — `int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)` — [turn2.c:573](../turn2.c#L573) · [decompiled](../decompiled/all/turn2.c#L782)
+- ✅ **UnmarkMineFields** (22L) — `void UnmarkMineFields(void)` — [turn2.c:678](../turn2.c#L678) · [decompiled](../decompiled/all/turn2.c#L3410)
+- ✅ **AutoTerraform** (74L) — `void AutoTerraform(void)` — [turn2.c:476](../turn2.c#L476) · [decompiled](../decompiled/all/turn2.c#L2049)
+- ✅ **CBuildProdItem** (381L) — `int16_t CBuildProdItem(PLANET *32, PROD *32, PROD *, int32_t *, int16_t, int16_t *, int16_t)` — [turn2.c:257](../turn2.c#L257) · [decompiled](../decompiled/all/turn2.c#L399)
 
 ### turn3.c (0/1)
 

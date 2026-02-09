@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 313,
-    "stub": 530,
+    "implemented": 315,
+    "stub": 528,
     "missing": 3,
-    "percent_implemented": 37.0
+    "percent_implemented": 37.2
   },
   "by_file": {
     "ai.c": {
@@ -158,13 +158,13 @@
       "missing": 0
     },
     "turn.c": {
-      "implemented": 0,
-      "stub": 6,
+      "implemented": 1,
+      "stub": 5,
       "missing": 0
     },
     "turn2.c": {
-      "implemented": 2,
-      "stub": 26,
+      "implemented": 3,
+      "stub": 25,
       "missing": 0
     },
     "turn3.c": {
@@ -280,7 +280,7 @@
       "proto": "int16_t AskSaveDialog(void)",
       "status": "stub",
       "file": "file.c",
-      "line": 1621,
+      "line": 1626,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -308,9 +308,9 @@
       "addr": "10b8:48f6",
       "segment": "MEMORY_TURN2",
       "proto": "void AutoTerraform(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn2.c",
-      "line": 475,
+      "line": 476,
       "decompiled_line_count": 74,
       "win32": false
     },
@@ -360,7 +360,7 @@
       "proto": "void BreedColonistsInTransit(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 614,
+      "line": 663,
       "decompiled_line_count": 98,
       "win32": false
     },
@@ -450,7 +450,7 @@
       "proto": "int16_t CBuildProdItem(PLANET *32, PROD *32, PROD *, int32_t *, int16_t, int16_t *, int16_t)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 256,
+      "line": 257,
       "decompiled_line_count": 381,
       "win32": false
     },
@@ -950,7 +950,7 @@
       "proto": "void CreateBackupDir(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 44,
+      "line": 45,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -990,7 +990,7 @@
       "proto": "void CreateShip(int16_t, FLEET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 612,
+      "line": 661,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -1130,7 +1130,7 @@
       "proto": "void DestroyCurGame(void)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1974,
+      "line": 1979,
       "decompiled_line_count": 130,
       "win32": false
     },
@@ -1190,7 +1190,7 @@
       "proto": "void DiscoverNewMinerals(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 577,
+      "line": 626,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -1300,7 +1300,7 @@
       "proto": "void DoOrders(int16_t)",
       "status": "stub",
       "file": "turn.c",
-      "line": 14,
+      "line": 30,
       "decompiled_line_count": 54,
       "win32": false
     },
@@ -2000,7 +2000,7 @@
       "proto": "void DropColonists(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 71,
+      "line": 72,
       "decompiled_line_count": 410,
       "win32": false
     },
@@ -2410,7 +2410,7 @@
       "proto": "int16_t FBogusLong(uint32_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 2155,
+      "line": 2160,
       "decompiled_line_count": 18,
       "win32": false
     },
@@ -2420,7 +2420,7 @@
       "proto": "int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 524,
+      "line": 573,
       "decompiled_line_count": 527,
       "win32": false
     },
@@ -2560,7 +2560,7 @@
       "proto": "int16_t FCheckFile(uint16_t, int16_t, uint16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1871,
+      "line": 1876,
       "decompiled_line_count": 65,
       "win32": false
     },
@@ -3218,9 +3218,9 @@
       "addr": "10b0:0000",
       "segment": "MEMORY_TURN",
       "proto": "int16_t FGenerateTurn(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn.c",
-      "line": 38,
+      "line": 54,
       "decompiled_line_count": 825,
       "win32": false
     },
@@ -3620,7 +3620,7 @@
       "proto": "int16_t FNewTurnAvail(int16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1629,
+      "line": 1634,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -3640,7 +3640,7 @@
       "proto": "int16_t FOpenFile(uint16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1508,
+      "line": 1513,
       "decompiled_line_count": 173,
       "win32": false
     },
@@ -3670,7 +3670,7 @@
       "proto": "int16_t FPacketDecay(THING *32, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 488,
+      "line": 537,
       "decompiled_line_count": 76,
       "win32": false
     },
@@ -3750,7 +3750,7 @@
       "proto": "int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 248,
+      "line": 249,
       "decompiled_line_count": 47,
       "win32": false
     },
@@ -3770,7 +3770,7 @@
       "proto": "int16_t FReadPlanet(int16_t, PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1663,
+      "line": 1668,
       "decompiled_line_count": 207,
       "win32": false
     },
@@ -3780,7 +3780,7 @@
       "proto": "int16_t FReadShDef(RTSHDEF *32, SHDEF *32, int16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1366,
+      "line": 1371,
       "decompiled_line_count": 137,
       "win32": false
     },
@@ -4060,7 +4060,7 @@
       "proto": "int16_t FTravelThroughMineFields(FLEET *32, int16_t *, THING *32)",
       "status": "stub",
       "file": "turn.c",
-      "line": 148,
+      "line": 840,
       "decompiled_line_count": 535,
       "win32": false
     },
@@ -4100,7 +4100,7 @@
       "proto": "int16_t FValidSerialLong(uint32_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1969,
+      "line": 1974,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -4450,7 +4450,7 @@
       "proto": "void FuelFleets(void)",
       "status": "stub",
       "file": "turn.c",
-      "line": 21,
+      "line": 37,
       "decompiled_line_count": 92,
       "win32": false
     },
@@ -4540,7 +4540,7 @@
       "proto": "void GetFileStatus(int16_t, int16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1656,
+      "line": 1661,
       "decompiled_line_count": 15,
       "win32": false
     },
@@ -4800,7 +4800,7 @@
       "proto": "void HealShips(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 598,
+      "line": 647,
       "decompiled_line_count": 124,
       "win32": false
     },
@@ -4900,7 +4900,7 @@
       "proto": "int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 559,
+      "line": 608,
       "decompiled_line_count": 65,
       "win32": false
     },
@@ -6190,7 +6190,7 @@
       "proto": "void MeteorStrike(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 584,
+      "line": 633,
       "decompiled_line_count": 157,
       "win32": false
     },
@@ -6210,7 +6210,7 @@
       "proto": "void MineMinerals(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 516,
+      "line": 565,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -6230,7 +6230,7 @@
       "proto": "void MoveFleets(void)",
       "status": "stub",
       "file": "turn.c",
-      "line": 81,
+      "line": 773,
       "decompiled_line_count": 844,
       "win32": false
     },
@@ -6240,7 +6240,7 @@
       "proto": "void MoveThings(int16_t)",
       "status": "stub",
       "file": "turn.c",
-      "line": 208,
+      "line": 900,
       "decompiled_line_count": 648,
       "win32": false
     },
@@ -6270,7 +6270,7 @@
       "proto": "void MysteryTrader(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 237,
+      "line": 238,
       "decompiled_line_count": 99,
       "win32": false
     },
@@ -6580,7 +6580,7 @@
       "proto": "void PlanetaryClimateChange(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 568,
+      "line": 617,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -6670,7 +6670,7 @@
       "proto": "void Produce(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 13,
+      "line": 14,
       "decompiled_line_count": 390,
       "win32": false
     },
@@ -6710,7 +6710,7 @@
       "proto": "void PromptSaveGame(void)",
       "status": "stub",
       "file": "file.c",
-      "line": 1864,
+      "line": 1869,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -7150,7 +7150,7 @@
       "proto": "void RandomEvents(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 627,
+      "line": 676,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -7250,7 +7250,7 @@
       "proto": "void ReadRt(void)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1484,
+      "line": 1489,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -7320,7 +7320,7 @@
       "proto": "void RemoteTerraforming(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 155,
+      "line": 156,
       "decompiled_line_count": 103,
       "win32": false
     },
@@ -7430,7 +7430,7 @@
       "proto": "void RgFromStream(void *32, uint16_t)",
       "status": "implemented",
       "file": "file.c",
-      "line": 2132,
+      "line": 2137,
       "decompiled_line_count": 24,
       "win32": false
     },
@@ -8020,7 +8020,7 @@
       "proto": "void StreamClose(void)",
       "status": "implemented",
       "file": "file.c",
-      "line": 1627,
+      "line": 1632,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -8040,7 +8040,7 @@
       "proto": "void SweepForMines(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 186,
+      "line": 187,
       "decompiled_line_count": 231,
       "win32": false
     },
@@ -8110,7 +8110,7 @@
       "proto": "void ThingDecay(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 50,
+      "line": 51,
       "decompiled_line_count": 166,
       "win32": false
     },
@@ -8140,7 +8140,7 @@
       "proto": "void TossNonAutoBuildItems(PLANET *32)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 109,
+      "line": 110,
       "decompiled_line_count": 57,
       "win32": false
     },
@@ -8170,7 +8170,7 @@
       "proto": "void TransferToOthers(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 499,
+      "line": 548,
       "decompiled_line_count": 149,
       "win32": false
     },
@@ -8230,7 +8230,7 @@
       "proto": "void UnmarkMineFields(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 629,
+      "line": 678,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -8260,7 +8260,7 @@
       "proto": "void UpdateGuesses(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 225,
+      "line": 226,
       "decompiled_line_count": 76,
       "win32": false
     },
@@ -8280,7 +8280,7 @@
       "proto": "void UpdatePlayerScores(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 205,
+      "line": 206,
       "decompiled_line_count": 258,
       "win32": false
     },
@@ -8290,7 +8290,7 @@
       "proto": "void UpdatePopulations(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 171,
+      "line": 172,
       "decompiled_line_count": 73,
       "win32": false
     },
@@ -8310,7 +8310,7 @@
       "proto": "void UpdateResearchStatus(int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 116,
+      "line": 117,
       "decompiled_line_count": 318,
       "win32": false
     },

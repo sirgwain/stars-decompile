@@ -11,7 +11,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 0 | Depth 0 — Leaf Functions | 192 | 131 | 61 |
 | 1 | Depth 1 — Calls Only Leaves | 73 | 34 | 39 |
 | 2 | Depth 2 | 76 | 26 | 50 |
-| 3 | Depth 3 | 59 | 13 | 46 |
+| 3 | Depth 3 | 59 | 14 | 45 |
 | 4 | Depth 4 | 46 | 11 | 35 |
 | 5 | Depth 5 | 19 | 2 | 17 |
 | 6 | Depth 6 | 10 | 2 | 8 |
@@ -27,8 +27,8 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | 16 | Depth 16 | 8 | 5 | 3 |
 | 17 | Depth 17 | 11 | 0 | 11 |
 | 18 | Depth 18 | 2 | 0 | 2 |
-| -1 | Depth -1 — Cyclic Functions | 107 | 16 | 91 |
-| | **Total** | **743** | **313** | **430** |
+| -1 | Depth -1 — Cyclic Functions | 107 | 17 | 90 |
+| | **Total** | **743** | **315** | **428** |
 
 ## Depth 0 — Leaf Functions
 
@@ -421,7 +421,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth 3 — Calls up to depth 2
 
-### Unimplemented (46)
+### Unimplemented (45)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -441,7 +441,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **AutoFleetOrder** | 69 |  | `void AutoFleetOrder(FLEET *32, PLANET *32)` | [ship2.c](../ship2.c) | [ship2.c](../decompiled/all/ship2.c) |
 | ⬜ | **DrawDlgLBEntireItem** | 71 | W | `void DrawDlgLBEntireItem(DRAWITEMSTRUCT *32, int16_t)` | [build.c](../build.c) | [build.c](../decompiled/all/build.c) |
 | ⬜ | **DrawProgressGauge** | 72 | W | `void DrawProgressGauge(uint16_t, int16_t, int16_t)` | [utilgen.c](../utilgen.c) | [utilgen.c](../decompiled/all/utilgen.c) |
-| ⬜ | **AutoTerraform** | 74 |  | `void AutoTerraform(void)` | [turn2.c](../turn2.c) | [turn2.c](../decompiled/all/turn2.c) |
 | ⬜ | **ReflowColumn** | 74 | W | `void ReflowColumn(int16_t, int16_t, int16_t)` | [planet.c](../planet.c) | [planet.c](../decompiled/all/planet.c) |
 | ⬜ | **GetPlanetScannerRange** | 75 |  | `int16_t GetPlanetScannerRange(PLANET *32, int16_t *)` | [util.c](../util.c) | [util.c](../decompiled/all/util.c) |
 | ⬜ | **ITechLearnATech** | 75 |  | `int16_t ITechLearnATech(int16_t, int16_t, int16_t, int16_t, uint16_t *)` | [battle.c](../battle.c) | [battle.c](../decompiled/all/battle.c) |
@@ -472,13 +471,14 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **CreateRandomRace** | 336 |  | `void CreateRandomRace(PLAYER *)` | [race.c](../race.c) | [race.c](../decompiled/all/race.c) |
 | ⬜ | **DrawResearchDlg** | 901 | W | `void DrawResearchDlg(uint16_t, uint16_t, RECT *, int16_t)` | [research.c](../research.c) | [research.c](../decompiled/all/research.c) |
 
-### Implemented (13)
+### Implemented (14)
 
-<details><summary>Show 13 implemented functions</summary>
+<details><summary>Show 14 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
 | ✅ | AlertSz | 28 | W | [utilgen.c](../utilgen.c) |
+| ✅ | AutoTerraform | 74 |  | [turn2.c](../turn2.c) |
 | ✅ | CreateChildWindows | 179 | W | [mdi.c](../mdi.c) |
 | ✅ | DrawHostDialog2 | 128 | W | [mdi.c](../mdi.c) |
 | ✅ | EstFuelUse | 203 |  | [ship.c](../ship.c) |
@@ -954,7 +954,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 
 ## Depth -1 — Cyclic Functions
 
-### Unimplemented (91)
+### Unimplemented (90)
 
 | | Function | Lines | Win | Prototype | Source | Decompiled |
 |---|----------|------:|:---:|-----------|--------|------------|
@@ -1042,7 +1042,6 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **DrawReportItem** | 763 | W | `void DrawReportItem(uint16_t, RECT *, int16_t, int16_t, int16_t)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **ICompReport** | 800 | W | `int16_t ICompReport(void *, void *)` | [report.c](../report.c) | [report.c](../decompiled/all/report.c) |
 | ⬜ | **MessageWndProc** | 814 | W | `int32_t MessageWndProc(uint16_t, uint16_t, uint16_t, int32_t)` | [msg.c](../msg.c) | [msg.c](../decompiled/all/msg.c) |
-| ⬜ | **FGenerateTurn** | 825 |  | `int16_t FGenerateTurn(void)` | [turn.c](../turn.c) | [turn.c](../decompiled/all/turn.c) |
 | ⬜ | **MoveFleets** | 844 |  | `void MoveFleets(void)` | [turn.c](../turn.c) | [turn.c](../decompiled/all/turn.c) |
 | ⬜ | **DrawShipWayPtOrders** | 891 | W | `void DrawShipWayPtOrders(uint16_t, TILE *, OBJ)` | [ship.c](../ship.c) | [ship.c](../decompiled/all/ship.c) |
 | ⬜ | **DrawMineSurvey** | 998 | W | `void DrawMineSurvey(uint16_t, RECT *)` | [mine.c](../mine.c) | [mine.c](../decompiled/all/mine.c) |
@@ -1050,9 +1049,9 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ⬜ | **CommandHandler** | 1185 | W | `void CommandHandler(uint16_t, uint16_t)` | [mdi.c](../mdi.c) | [mdi.c](../decompiled/all/mdi.c) |
 | ⬜ | **SatisfyOrders** | 1687 |  | `void SatisfyOrders(int16_t)` | [turn3.c](../turn3.c) | [turn.c](../decompiled/all/turn.c) |
 
-### Implemented (16)
+### Implemented (17)
 
-<details><summary>Show 16 implemented functions</summary>
+<details><summary>Show 17 implemented functions</summary>
 
 | | Function | Lines | Win | Source |
 |---|----------|------:|:---:|--------|
@@ -1060,6 +1059,7 @@ Auto-generated cross-reference of call graph depth and implementation status.
 | ✅ | CreateTutorWorld | 74 |  | [create.c](../create.c) |
 | ✅ | EstMineralsMined | 232 |  | [mine.c](../mine.c) |
 | ✅ | EstimateItemProdSched | 207 |  | [produce.c](../produce.c) |
+| ✅ | FGenerateTurn | 825 |  | [turn.c](../turn.c) |
 | ✅ | FLoadGame | 1221 |  | [file.c](../file.c) |
 | ✅ | FOpenGame | 215 | W | [mdi.c](../mdi.c) |
 | ✅ | FRunLogFile | 34 |  | [log.c](../log.c) |

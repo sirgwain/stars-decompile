@@ -1496,7 +1496,7 @@ static int DiffFleetOne(const FLEET *a, const FLEET *b, int16_t id) {
     if (fSameBase && fSameName && fSameOrders)
         return 0;
 
-    printf("  Fleet %d:\n", (int)id);
+    printf("  Fleet %d iplr: %d:\n", (int)id, a->iPlayer);
 
     if (a->iPlayer != b->iPlayer) {
         printf("    iPlayer: %d -> %d\n", (int)a->iPlayer, (int)b->iPlayer);

@@ -702,7 +702,7 @@ short FGenerateTurn(void)
                - Track missing X files (rgfNoXFile)
                - Rename .x/.m etc across host and per-player variants
                ------------------------------------------------------------ */
-            j = 0x358;
+            j = 856;
             fDone = 0;
             _memset(rgfNoXFile, 0, 0x10);
             i = 0;

@@ -112,7 +112,7 @@ typedef struct StarsCli {
 
     /* Options with args */
     const char *batch_file; /* -B <file> */
-    int16_t     gen_turns;  /* -G<number> or -G <number>, -1 if absent */
+    int16_t     gen_turns;  /* -g<number> or -g <number>, also -G<number>, -1 if absent */
     const char *password;   /* -P <password> */
 
     /* Dump flags (-D[fpm]) */

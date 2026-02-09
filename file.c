@@ -404,9 +404,14 @@ bool FLoadGame(const char *pszFileName, char *pszExt) {
         pszExtWork++;
     }
 
-    DBG_LOGI("FLoadGame: base='%s' ext='%s'", pszFileName ? pszFileName : "(null)", pszExtWork ? pszExtWork : "(null)");
+    DBG_LOGI("FLoadGame: pszFileName='%s' ext='%s'", pszFileName ? pszFileName : "(null)", pszExtWork ? pszExtWork : "(null)");
 
-    strncpy(szBase, pszFileName, sizeof(szBase));
+    if (pszFileName != szBase) {
+        /* copy + always terminate */
+        size_t n = sizeof(szBase);
+        strncpy(szBase, pszFileName, n);
+        szBase[n - 1] = '\0';
+    }
     gd.fFleetLinkValid = false;
 
     penvMemSav = penvMem;

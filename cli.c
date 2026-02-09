@@ -10,9 +10,11 @@
 #include "dump.h"
 #include "file.h"
 #include "globals.h"
+#include "mdi.h"
 #include "memory.h"
 #include "port.h"
 #include "strings.h"
+#include "turn.h"
 #include "utilgen.h"
 
 /* ------------------------------------------------------------ */
@@ -41,6 +43,7 @@ static void print_usage(FILE *out) {
     fprintf(out, "stars_cli - inspect and generate Stars! save files\n\n"
                  "Usage:\n"
                  "  stars_cli -a <file.def>    Generate a new game from a .def file\n"
+                 "  stars_cli -g<N> <game.HST> Generate N turns from host file and exit\n"
                  "  stars_cli load <file> [options] <cmd> [cmd-args]\n\n"
                  "Flags:\n"
                  "  -a                     Generate new game from .def file (Stars! -A flag)\n\n"
@@ -448,10 +451,48 @@ static int do_load(CliContext *cli) {
     return 0;
 }
 
+static int do_generate_turns_from_host(const char *host_file, int16_t cTurns) {
+    CliContext cli;
+    memset(&cli, 0, sizeof(cli));
+
+    if (host_file == NULL || *host_file == '\0') {
+        fprintf(stderr, "-g requires a host file (e.g. game/TEST.HST)\n");
+        return 2;
+    }
+    if (cTurns < 0) {
+        fprintf(stderr, "-g requires a non-negative turn count\n");
+        return 2;
+    }
+
+    cli.file = host_file;
+    if (!Stars_PathSplitExt(cli.file, cli.path_base, sizeof(cli.path_base), cli.ext, sizeof(cli.ext))) {
+        fprintf(stderr, "Invalid file path: %s\n", cli.file);
+        return 2;
+    }
+
+    /* Host-only: Stars! cannot load a player file when generating turns. */
+    if (Stars_stricmp(cli.ext, "HST") != 0) {
+        fprintf(stderr, "-g expects a host file (.HST). Got: %s\n", cli.file);
+        return 2;
+    }
+
+    /* Host context. */
+    idPlayer = -1;
+
+    strncpy(szBase, cli.path_base, sizeof(szBase));
+    for (int16_t t = 0; t < cTurns; t++) {
+        printf("Generating turn %d/%d...\n", (int)(t + 1), (int)cTurns);
+        EnsureAis();
+        (void)FGenerateTurn();
+    }
+
+    return 0;
+}
+
 int StarsCli_Run(int argc, char **argv) {
     CliContext cli;
-    StarsCli  starscli;
-    int       i;
+    StarsCli   starscli;
+    int        i;
 
     memset(&cli, 0, sizeof(cli));
     cli.iPlayer = 0;
@@ -491,6 +532,26 @@ int StarsCli_Run(int argc, char **argv) {
         }
     }
 
+    /* ---- -g/-G: generate turns from a host file and exit ---- */
+    if (starscli.gen_turns >= 0) {
+        /* In this mode the positional argument is the host file path (not a subcommand). */
+        if (!starscli.startup_file) {
+            fprintf(stderr, "-g requires a host file path.\n\n");
+            print_usage(stderr);
+            return 2;
+        }
+
+        /* Disallow mixing with legacy subcommands like `load`. */
+        if (strcmp(starscli.startup_file, "load") == 0 || strcmp(starscli.startup_file, "diff") == 0 || strcmp(starscli.startup_file, "create-tutor") == 0 ||
+            strcmp(starscli.startup_file, "create-test-world") == 0) {
+            fprintf(stderr, "-g cannot be combined with subcommands (use: stars_cli -g<N> <game.HST>)\n\n");
+            print_usage(stderr);
+            return 2;
+        }
+
+        return do_generate_turns_from_host(starscli.startup_file, starscli.gen_turns);
+    }
+
     /* ---- Legacy subcommand handling ---- */
     /* Stars_ParseCommandLine treats the first non-flag arg as startup_file,
        which for legacy commands is the subcommand name (load, diff, etc.) */
@@ -505,7 +566,10 @@ int StarsCli_Run(int argc, char **argv) {
         /* Find the path arg after "create-tutor" in argv */
         int idx = 0;
         for (int j = 1; j < argc; j++) {
-            if (strcmp(argv[j], "create-tutor") == 0) { idx = j + 1; break; }
+            if (strcmp(argv[j], "create-tutor") == 0) {
+                idx = j + 1;
+                break;
+            }
         }
         if (idx > 0 && idx < argc) {
             strncpy(szBase, argv[idx], sizeof(szBase) - 1);
@@ -521,7 +585,10 @@ int StarsCli_Run(int argc, char **argv) {
     if (strcmp(subcmd, "create-test-world") == 0) {
         int idx = 0;
         for (int j = 1; j < argc; j++) {
-            if (strcmp(argv[j], "create-test-world") == 0) { idx = j + 1; break; }
+            if (strcmp(argv[j], "create-test-world") == 0) {
+                idx = j + 1;
+                break;
+            }
         }
         if (idx > 0 && idx < argc) {
             strncpy(szBase, argv[idx], sizeof(szBase) - 1);
@@ -539,7 +606,10 @@ int StarsCli_Run(int argc, char **argv) {
         /* Find "diff" in argv, then grab the next two args */
         int idx = 0;
         for (int j = 1; j < argc; j++) {
-            if (strcmp(argv[j], "diff") == 0) { idx = j + 1; break; }
+            if (strcmp(argv[j], "diff") == 0) {
+                idx = j + 1;
+                break;
+            }
         }
         if (idx == 0 || idx + 1 >= argc) {
             fprintf(stderr, "diff requires two file arguments.\n\n");
@@ -558,7 +628,10 @@ int StarsCli_Run(int argc, char **argv) {
     /* ---- "load" subcommand: find the file arg and command after it ---- */
     i = 0;
     for (int j = 1; j < argc; j++) {
-        if (strcmp(argv[j], "load") == 0) { i = j + 1; break; }
+        if (strcmp(argv[j], "load") == 0) {
+            i = j + 1;
+            break;
+        }
     }
     if (i == 0 || i >= argc) {
         fprintf(stderr, "load requires <file>.\n\n");

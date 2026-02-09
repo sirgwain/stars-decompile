@@ -663,7 +663,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
     /* Simple argv scanner:
        - handles -LVW combined flags
        - handles /LVW too
-       - handles -G10 and -G 10
+       - handles -g10 and -g 10 (also -G10 / -G 10)
        - handles -DFP and -D FP
        - stops option parsing at "--"
     */
@@ -738,6 +738,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
                 p = "";
             } break;
 
+            case 'g':
             case 'G': {
                 const char *arg = (*p) ? p : ((i + 1 < argc) ? argv[++i] : NULL);
                 if (!Cli_SetGenTurns(out_cli, arg))

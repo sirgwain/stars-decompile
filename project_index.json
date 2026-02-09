@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-02-08T14:53:51Z",
+  "generated_at_utc": "2026-02-09T14:46:45Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -2312,7 +2312,7 @@
       {
         "signature": "static int64_t file_size_bytes(const char *path)",
         "file": "cli.c",
-        "line": 21,
+        "line": 23,
         "kind": "definition"
       }
     ],
@@ -2320,7 +2320,7 @@
       {
         "signature": "static void print_usage(FILE *out)",
         "file": "cli.c",
-        "line": 40,
+        "line": 42,
         "kind": "definition"
       }
     ],
@@ -2328,7 +2328,7 @@
       {
         "signature": "static int32_t parse_i32(const char *s, bool *ok)",
         "file": "cli.c",
-        "line": 72,
+        "line": 75,
         "kind": "definition"
       }
     ],
@@ -2336,7 +2336,7 @@
       {
         "signature": "static const PLANET * find_planet_by_id(int16_t id)",
         "file": "cli.c",
-        "line": 93,
+        "line": 96,
         "kind": "definition"
       }
     ],
@@ -2344,7 +2344,7 @@
       {
         "signature": "static const THING * find_thing_by_idfull(uint16_t idFull)",
         "file": "cli.c",
-        "line": 104,
+        "line": 107,
         "kind": "definition"
       }
     ],
@@ -2352,7 +2352,7 @@
       {
         "signature": "static const FLEET * find_fleet_by_id(int16_t id)",
         "file": "cli.c",
-        "line": 115,
+        "line": 118,
         "kind": "definition"
       }
     ],
@@ -2360,7 +2360,7 @@
       {
         "signature": "static void print_planet_row(const PLANET *p)",
         "file": "cli.c",
-        "line": 135,
+        "line": 138,
         "kind": "definition"
       }
     ],
@@ -2368,7 +2368,7 @@
       {
         "signature": "static void print_thing_row(const THING *t)",
         "file": "cli.c",
-        "line": 148,
+        "line": 151,
         "kind": "definition"
       }
     ],
@@ -2376,7 +2376,7 @@
       {
         "signature": "static void print_thing_detail(const THING *t)",
         "file": "cli.c",
-        "line": 153,
+        "line": 156,
         "kind": "definition"
       }
     ],
@@ -2384,7 +2384,7 @@
       {
         "signature": "static void print_fleet_row(const FLEET *f)",
         "file": "cli.c",
-        "line": 165,
+        "line": 168,
         "kind": "definition"
       }
     ],
@@ -2392,7 +2392,7 @@
       {
         "signature": "static void print_shdef_row(const SHDEF *s, int idx)",
         "file": "cli.c",
-        "line": 171,
+        "line": 174,
         "kind": "definition"
       }
     ],
@@ -2400,7 +2400,7 @@
       {
         "signature": "static int cmd_planets(bool fVerbose)",
         "file": "cli.c",
-        "line": 179,
+        "line": 182,
         "kind": "definition"
       }
     ],
@@ -2408,7 +2408,7 @@
       {
         "signature": "static int cmd_planet(const char *sid)",
         "file": "cli.c",
-        "line": 199,
+        "line": 202,
         "kind": "definition"
       }
     ],
@@ -2416,7 +2416,7 @@
       {
         "signature": "static int cmd_things(void)",
         "file": "cli.c",
-        "line": 215,
+        "line": 218,
         "kind": "definition"
       }
     ],
@@ -2424,7 +2424,7 @@
       {
         "signature": "static int cmd_thing(const char *sidfull)",
         "file": "cli.c",
-        "line": 227,
+        "line": 230,
         "kind": "definition"
       }
     ],
@@ -2432,7 +2432,7 @@
       {
         "signature": "static int cmd_fleets(bool fVerbose)",
         "file": "cli.c",
-        "line": 243,
+        "line": 246,
         "kind": "definition"
       }
     ],
@@ -2440,7 +2440,7 @@
       {
         "signature": "static int cmd_fleet(const char *sid)",
         "file": "cli.c",
-        "line": 268,
+        "line": 271,
         "kind": "definition"
       }
     ],
@@ -2448,7 +2448,7 @@
       {
         "signature": "static int cmd_shdefs(bool fVerbose)",
         "file": "cli.c",
-        "line": 284,
+        "line": 287,
         "kind": "definition"
       }
     ],
@@ -2456,7 +2456,7 @@
       {
         "signature": "static int cmd_shdef(const char *sidx)",
         "file": "cli.c",
-        "line": 298,
+        "line": 301,
         "kind": "definition"
       }
     ],
@@ -2464,7 +2464,7 @@
       {
         "signature": "static int cmd_game(const CliContext *cli)",
         "file": "cli.c",
-        "line": 309,
+        "line": 312,
         "kind": "definition"
       }
     ],
@@ -2472,7 +2472,7 @@
       {
         "signature": "static void print_hex_bytes(const uint8_t *pb, size_t cb)",
         "file": "cli.c",
-        "line": 346,
+        "line": 349,
         "kind": "definition"
       }
     ],
@@ -2480,7 +2480,7 @@
       {
         "signature": "static int dump_try_file(const CliContext *cli, const char *path_lower, const char *path_upper, int *pFound, int *pErrors)",
         "file": "cli.c",
-        "line": 352,
+        "line": 355,
         "kind": "definition"
       }
     ],
@@ -2488,7 +2488,7 @@
       {
         "signature": "static int cmd_dump(const CliContext *cli)",
         "file": "cli.c",
-        "line": 375,
+        "line": 378,
         "kind": "definition"
       }
     ],
@@ -2496,7 +2496,15 @@
       {
         "signature": "static int do_load(CliContext *cli)",
         "file": "cli.c",
-        "line": 432,
+        "line": 435,
+        "kind": "definition"
+      }
+    ],
+    "do_generate_turns_from_host": [
+      {
+        "signature": "static int do_generate_turns_from_host(const char *host_file, int16_t cTurns)",
+        "file": "cli.c",
+        "line": 445,
         "kind": "definition"
       }
     ],
@@ -2504,7 +2512,7 @@
       {
         "signature": "int StarsCli_Run(int argc, char **argv)",
         "file": "cli.c",
-        "line": 442,
+        "line": 483,
         "kind": "definition"
       },
       {
@@ -3416,7 +3424,7 @@
       {
         "signature": "bool FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad)",
         "file": "file.c",
-        "line": 1341,
+        "line": 1346,
         "kind": "definition"
       },
       {
@@ -3430,7 +3438,7 @@
       {
         "signature": "void ReadRt(void)",
         "file": "file.c",
-        "line": 1459,
+        "line": 1464,
         "kind": "definition"
       },
       {
@@ -3444,7 +3452,7 @@
       {
         "signature": "bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md)",
         "file": "file.c",
-        "line": 1483,
+        "line": 1488,
         "kind": "definition"
       },
       {
@@ -3458,7 +3466,7 @@
       {
         "signature": "int16_t AskSaveDialog(void)",
         "file": "file.c",
-        "line": 1596,
+        "line": 1601,
         "kind": "definition"
       },
       {
@@ -3472,7 +3480,7 @@
       {
         "signature": "bool FNewTurnAvail(int16_t idPlayer)",
         "file": "file.c",
-        "line": 1604,
+        "line": 1609,
         "kind": "definition"
       },
       {
@@ -3486,7 +3494,7 @@
       {
         "signature": "void GetFileStatus(int16_t dt, int16_t iPlayer)",
         "file": "file.c",
-        "line": 1631,
+        "line": 1636,
         "kind": "definition"
       },
       {
@@ -3500,7 +3508,7 @@
       {
         "signature": "bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited)",
         "file": "file.c",
-        "line": 1638,
+        "line": 1643,
         "kind": "definition"
       },
       {
@@ -3514,7 +3522,7 @@
       {
         "signature": "void PromptSaveGame(void)",
         "file": "file.c",
-        "line": 1839,
+        "line": 1844,
         "kind": "definition"
       },
       {
@@ -3528,7 +3536,7 @@
       {
         "signature": "bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md)",
         "file": "file.c",
-        "line": 1846,
+        "line": 1851,
         "kind": "definition"
       },
       {
@@ -3542,7 +3550,7 @@
       {
         "signature": "bool FValidSerialLong(uint32_t lSerial)",
         "file": "file.c",
-        "line": 1944,
+        "line": 1949,
         "kind": "definition"
       },
       {
@@ -3556,7 +3564,7 @@
       {
         "signature": "void DestroyCurGame(void)",
         "file": "file.c",
-        "line": 1949,
+        "line": 1954,
         "kind": "definition"
       },
       {
@@ -3570,7 +3578,7 @@
       {
         "signature": "void RgFromStream(void *rg, uint16_t cb)",
         "file": "file.c",
-        "line": 2090,
+        "line": 2095,
         "kind": "definition"
       },
       {
@@ -3584,7 +3592,7 @@
       {
         "signature": "bool FBogusLong(uint32_t lSerial)",
         "file": "file.c",
-        "line": 2113,
+        "line": 2118,
         "kind": "definition"
       },
       {
@@ -10790,7 +10798,7 @@
       {
         "signature": "void DoOrders(int16_t fPostMovement)",
         "file": "turn.c",
-        "line": 14,
+        "line": 30,
         "kind": "definition"
       },
       {
@@ -10804,7 +10812,7 @@
       {
         "signature": "void FuelFleets(void)",
         "file": "turn.c",
-        "line": 21,
+        "line": 37,
         "kind": "definition"
       },
       {
@@ -10818,7 +10826,7 @@
       {
         "signature": "int16_t FGenerateTurn(void)",
         "file": "turn.c",
-        "line": 38,
+        "line": 54,
         "kind": "definition"
       },
       {
@@ -10832,7 +10840,7 @@
       {
         "signature": "void MoveFleets(void)",
         "file": "turn.c",
-        "line": 81,
+        "line": 694,
         "kind": "definition"
       },
       {
@@ -10846,7 +10854,7 @@
       {
         "signature": "int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)",
         "file": "turn.c",
-        "line": 148,
+        "line": 761,
         "kind": "definition"
       },
       {
@@ -10860,7 +10868,7 @@
       {
         "signature": "void MoveThings(int16_t fPostProd)",
         "file": "turn.c",
-        "line": 208,
+        "line": 821,
         "kind": "definition"
       },
       {
@@ -10874,7 +10882,7 @@
       {
         "signature": "void Produce(void)",
         "file": "turn2.c",
-        "line": 13,
+        "line": 14,
         "kind": "definition"
       },
       {
@@ -10888,7 +10896,7 @@
       {
         "signature": "void CreateBackupDir(void)",
         "file": "turn2.c",
-        "line": 44,
+        "line": 45,
         "kind": "definition"
       },
       {
@@ -10902,7 +10910,7 @@
       {
         "signature": "void ThingDecay(void)",
         "file": "turn2.c",
-        "line": 50,
+        "line": 51,
         "kind": "definition"
       },
       {
@@ -10916,7 +10924,7 @@
       {
         "signature": "void DropColonists(void)",
         "file": "turn2.c",
-        "line": 71,
+        "line": 72,
         "kind": "definition"
       },
       {
@@ -10930,7 +10938,7 @@
       {
         "signature": "void TossNonAutoBuildItems(PLANET *lppl)",
         "file": "turn2.c",
-        "line": 109,
+        "line": 110,
         "kind": "definition"
       },
       {
@@ -10944,7 +10952,7 @@
       {
         "signature": "void UpdateResearchStatus(int16_t fUsePool)",
         "file": "turn2.c",
-        "line": 116,
+        "line": 117,
         "kind": "definition"
       },
       {
@@ -10958,7 +10966,7 @@
       {
         "signature": "void RemoteTerraforming(void)",
         "file": "turn2.c",
-        "line": 155,
+        "line": 156,
         "kind": "definition"
       },
       {
@@ -10972,7 +10980,7 @@
       {
         "signature": "void UpdatePopulations(void)",
         "file": "turn2.c",
-        "line": 171,
+        "line": 172,
         "kind": "definition"
       },
       {
@@ -10986,7 +10994,7 @@
       {
         "signature": "void SweepForMines(void)",
         "file": "turn2.c",
-        "line": 186,
+        "line": 187,
         "kind": "definition"
       },
       {
@@ -11000,7 +11008,7 @@
       {
         "signature": "void UpdatePlayerScores(void)",
         "file": "turn2.c",
-        "line": 205,
+        "line": 206,
         "kind": "definition"
       },
       {
@@ -11014,7 +11022,7 @@
       {
         "signature": "void UpdateGuesses(void)",
         "file": "turn2.c",
-        "line": 225,
+        "line": 226,
         "kind": "definition"
       },
       {
@@ -11028,7 +11036,7 @@
       {
         "signature": "void MysteryTrader(void)",
         "file": "turn2.c",
-        "line": 237,
+        "line": 238,
         "kind": "definition"
       },
       {
@@ -11042,7 +11050,7 @@
       {
         "signature": "int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists)",
         "file": "turn2.c",
-        "line": 248,
+        "line": 249,
         "kind": "definition"
       },
       {
@@ -11056,7 +11064,7 @@
       {
         "signature": "int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly)",
         "file": "turn2.c",
-        "line": 256,
+        "line": 257,
         "kind": "definition"
       }
     ],
@@ -11064,7 +11072,7 @@
       {
         "signature": "void AutoTerraform(void)",
         "file": "turn2.c",
-        "line": 475,
+        "line": 476,
         "kind": "definition"
       },
       {
@@ -11078,7 +11086,7 @@
       {
         "signature": "int16_t FPacketDecay(THING *lpth, int16_t pctRate)",
         "file": "turn2.c",
-        "line": 488,
+        "line": 537,
         "kind": "definition"
       },
       {
@@ -11092,7 +11100,7 @@
       {
         "signature": "void TransferToOthers(void)",
         "file": "turn2.c",
-        "line": 499,
+        "line": 548,
         "kind": "definition"
       },
       {
@@ -11106,7 +11114,7 @@
       {
         "signature": "void MineMinerals(void)",
         "file": "turn2.c",
-        "line": 516,
+        "line": 565,
         "kind": "definition"
       },
       {
@@ -11120,7 +11128,7 @@
       {
         "signature": "int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals)",
         "file": "turn2.c",
-        "line": 524,
+        "line": 573,
         "kind": "definition"
       },
       {
@@ -11134,7 +11142,7 @@
       {
         "signature": "int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp)",
         "file": "turn2.c",
-        "line": 559,
+        "line": 608,
         "kind": "definition"
       },
       {
@@ -11148,7 +11156,7 @@
       {
         "signature": "void PlanetaryClimateChange(void)",
         "file": "turn2.c",
-        "line": 568,
+        "line": 617,
         "kind": "definition"
       },
       {
@@ -11162,7 +11170,7 @@
       {
         "signature": "void DiscoverNewMinerals(void)",
         "file": "turn2.c",
-        "line": 577,
+        "line": 626,
         "kind": "definition"
       },
       {
@@ -11176,7 +11184,7 @@
       {
         "signature": "void MeteorStrike(void)",
         "file": "turn2.c",
-        "line": 584,
+        "line": 633,
         "kind": "definition"
       },
       {
@@ -11190,7 +11198,7 @@
       {
         "signature": "void HealShips(void)",
         "file": "turn2.c",
-        "line": 598,
+        "line": 647,
         "kind": "definition"
       },
       {
@@ -11204,7 +11212,7 @@
       {
         "signature": "void BreedColonistsInTransit(void)",
         "file": "turn2.c",
-        "line": 614,
+        "line": 663,
         "kind": "definition"
       },
       {
@@ -11218,7 +11226,7 @@
       {
         "signature": "void UnmarkMineFields(void)",
         "file": "turn2.c",
-        "line": 629,
+        "line": 678,
         "kind": "definition"
       },
       {

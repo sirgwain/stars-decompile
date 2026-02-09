@@ -572,28 +572,28 @@ void SetSzWorkFromDt(DtFileType dt, int16_t iPlayer) {
 
     switch (dt) {
     case dtTurn: /* Log file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".M%d", iPlayer + 1);
+        snprintf(szWork + len, sizeof(szWork) - len, ".m%d", iPlayer + 1);
         break;
 
     case dtHost:
-        strcat(szWork, ".HST");
+        strcat(szWork, ".hst");
         break;
 
     case dtXY: /* Universe file */
-        strcat(szWork, ".XY");
+        strcat(szWork, ".xy");
         break;
 
     case dtLog: /* Turn file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".X%d", iPlayer + 1);
+        snprintf(szWork + len, sizeof(szWork) - len, ".x%d", iPlayer + 1);
         break;
 
     case dtHist: /* History file */
-        snprintf(szWork + len, sizeof(szWork) - len, ".H%d", iPlayer + 1);
+        snprintf(szWork + len, sizeof(szWork) - len, ".h%d", iPlayer + 1);
         break;
 
     default:
         /* Defensive fallback: behave like universe */
-        strncat(szWork, ".XY", sizeof(szWork));
+        strncat(szWork, ".xy", sizeof(szWork));
         break;
     }
 }
@@ -1004,7 +1004,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                     }
 
                     /* Handle patrol task - find targets */
-                    if (lpord->grTask == 7 && (lpfl->cord < 2 || lpord[1].grobj != 2)) {
+                    if (lpord->grTask == 7 && (lpfl->cord < 2 || lpord[1].grobj != grobjFleet)) {
                         lpflBest = NULL;
                         lBest = 100000000;
                         fFoundIdeal = 0;
@@ -1137,7 +1137,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                     lpord[iord].grobj = 4; /* go to position */
                                     lpord[iord].id = iord;
                                 }
-                            } else if (lpord[iord].grobj == 2) { /* intercept fleet */
+                            } else if (lpord[iord].grobj == grobjFleet) { /* intercept fleet */
                                 fNoAutoTrack = lpord[iord].fNoAutoTrack;
                                 if (fNoAutoTrack) {
                                     lpord[iord].fNoAutoTrack = 0;
