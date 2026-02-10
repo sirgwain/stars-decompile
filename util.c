@@ -836,10 +836,28 @@ int16_t FCanBuildShdef(SHDEF *lpshdef, int16_t iplr) {
     int16_t iplrSav;
     PART    part;
 
-    /* debug symbols */
-    /* label LFail @ MEMORY_UTIL:0x7bbb */
-
-    /* TODO: implement */
+    iplrSav = idPlayer;
+    if (lpshdef->hul.ihuldef < ihuldefCount) {
+        part.hs.grhst = hstHull;
+        part.hs.iItem = lpshdef->hul.ihuldef & 0xff;
+    } else {
+        part.hs.grhst = hstSBHull;
+        part.hs.iItem = (lpshdef->hul.ihuldef - ihuldefCount) & 0xff;
+    }
+    idPlayer = iplr;
+    if (FLookupPart(&part) == 1) {
+        for (j = 0; j < (int16_t)lpshdef->hul.chs; j++) {
+            if (lpshdef->hul.rghs[j].cItem != 0) {
+                part.hs = lpshdef->hul.rghs[j];
+                if (FLookupPart(&part) != 1)
+                    goto LFail;
+            }
+        }
+        idPlayer = iplrSav;
+        return 1;
+    }
+LFail:
+    idPlayer = iplrSav;
     return 0;
 }
 
@@ -982,8 +1000,17 @@ int16_t IStargateFromLppl(PLANET *lppl) {
     int16_t ihs;
     HUL    *lphul;
 
-    /* TODO: implement */
-    return 0;
+    if (lppl != NULL && lppl->fStarbase) {
+        lphul = &rglpshdefSB[lppl->iPlayer][lppl->isb].hul;
+        lphs = lphul->rghs;
+        for (ihs = 0; ihs < lphul->chs; ihs++) {
+            if (lphs->grhst == hstSpecialSB && lphs->cItem != 0 && lphs->iItem < 7) {
+                return lphs->iItem;
+            }
+            lphs++;
+        }
+    }
+    return -1;
 }
 
 int32_t DpOfLpflIshdef(FLEET *lpfl, int16_t ishdef) {

@@ -26,11 +26,11 @@ void    FormatSerialAndEnv(int32_t lSerial, const uint8_t *pbEnv, char *pszOut);
 int16_t FWasRaceFile(char *szFile, int16_t fChkPass);
 void    EnsureAis(void);
 int16_t CTurnsOutSafe(void);
+int16_t CFindTurnsOutstanding(void);
 
 #ifdef _WIN32
 INT_PTR CALLBACK HostModeDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
 int16_t          FFindSomethingAndSelectIt(void);
-int16_t          CFindTurnsOutstanding(void);
 LRESULT CALLBACK TitleWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */
 void             CommandHandler(HWND hwnd, WPARAM wParam);
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); /* PASCAL */

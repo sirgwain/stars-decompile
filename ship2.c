@@ -5,6 +5,9 @@
 #include "ship2.h"
 
 #include "parts.h"
+#include "race.h"
+#include "ship.h"
+#include "util.h"
 
 /* functions */
 int16_t FScout(FLEET *lpfl) {
@@ -74,7 +77,34 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
     FLEET  *lpflT;
     int16_t fFoundFleet;
 
-    /* TODO: implement */
+    fFoundFleet = false;
+    lpord = lpfl->lpplord->rgord;
+    if ((lppl->iPlayer == -1 || (GetRaceStat(&rgplr[lpfl->iPlayer], rsMajorAdv) == raMacintosh && lppl->iPlayer == lpfl->iPlayer)) &&
+        CMineFromLpfl(lpfl) != 0) {
+        if (lppl->iPlayer == iNoPlayer) {
+            for (ifl = 0; ifl < cFleet; ifl++) {
+                lpflT = rglpfl[ifl];
+                if (lpflT == NULL)
+                    break;
+                if (lpfl->iPlayer <= lpflT->iPlayer && !lpflT->fDead && lpfl != lpflT) {
+                    if (lpfl->iPlayer < lpflT->iPlayer)
+                        break;
+                    if (lpflT->pt.x == lpfl->pt.x && lpflT->pt.y == lpfl->pt.y && CMineFromLpfl(lpflT) > 0 && CMineFromLpfl(lpflT) < 4000) {
+                        fFoundFleet = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (fFoundFleet) {
+            lpord->grTask = 4; // remote mining?
+            lpord->grobj = grobjFleet;
+            lpord->id = lpflT->id;
+        } else {
+            lpord->grTask = 3;
+        }
+    }
+    lpfl->iplan = 0;
 }
 
 int32_t CMineSweepFromLphul(HUL *lphul) {
@@ -96,11 +126,48 @@ int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, in
     PART    partSrc;
     int32_t pctSurviveT;
     int32_t pctSurvive;
+    int32_t massLimitSrc;
+    int32_t massLimitDst;
 
-    /* debug symbols */
-    /* label TotalDeath @ MEMORY_SHIP2:0x1702 */
-
-    /* TODO: implement */
+    pctSurvive = 10000;
+    partDst.hs.grhst = hstSpecialSB;
+    partSrc.hs.grhst = hstSpecialSB;
+    partSrc.hs.iItem = isbsSrc & 0xff;
+    partDst.hs.iItem = isbsDst & 0xff;
+    FLookupPart(&partSrc);
+    FLookupPart(&partDst);
+    dBaseDistance = (int32_t)partSrc.pspecialsb->grAbility2;
+    if (dBaseDistance == -1)
+        dBaseDistance = 10000;
+    if ((int32_t)dDist > dBaseDistance * 5)
+        return -1;
+    massLimitSrc = (int32_t)partSrc.pspecialsb->grAbility;
+    if (massLimitSrc > 0 && (int32_t)wt > massLimitSrc * 5)
+        return -2;
+    massLimitDst = (int32_t)partDst.pspecialsb->grAbility;
+    if (massLimitDst > 0 && (int32_t)wt > massLimitDst * 5)
+        return -2;
+    if ((int32_t)dDist > dBaseDistance) {
+        pctSurvive = (dBaseDistance * 5 - (int32_t)dDist) * 2500 / dBaseDistance;
+        if (pctSurvive < 1)
+            goto TotalDeath;
+    }
+    if (massLimitSrc < (int32_t)wt && massLimitSrc > 0) {
+        pctSurviveT = (massLimitSrc * 5 - (int32_t)wt) * 2500 / massLimitSrc;
+        if (pctSurviveT < 1)
+            goto TotalDeath;
+        pctSurvive = pctSurvive * pctSurviveT / 10000;
+    }
+    if (massLimitDst < (int32_t)wt && massLimitDst > 0) {
+        pctSurviveT = (massLimitDst * 5 - (int32_t)wt) * 2500 / massLimitDst;
+        if (pctSurviveT < 1)
+            goto TotalDeath;
+        pctSurvive = pctSurvive * pctSurviveT / 10000;
+    }
+    *ppctDmg = (int16_t)((10000 - pctSurvive) / 100);
+    return 1;
+TotalDeath:
+    *ppctDmg = 100;
     return 0;
 }
 
@@ -176,18 +243,73 @@ void AutoRouteFleet(FLEET *lpfl, PLANET *lppl) {
     int32_t dTravel;
     int16_t iWarp;
     int16_t pctDmg;
-    int16_t wt;
+    int16_t wtBig;
     int32_t cTurns;
+    int32_t cTurnsPrev;
     int16_t i;
     ORDER  *lpord;
     PLANET *lpplRoute;
     int16_t isbsDst;
-    int16_t wtBig;
     int16_t ishdef;
-    int16_t ishdefBig;
     int16_t isbsSrc;
+    int16_t idRoute;
+    HULDEF *lphuldef;
 
-    /* TODO: implement */
+    lpfl->cord = 2;
+    lpfl->lpplord->iordMac = 2;
+    lpord = &lpfl->lpplord->rgord[1];
+    lpord->grTask = 8;
+    lpord->grobj = grobjPlanet;
+    idRoute = (lppl->wRouting & 0x3ff) - 1;
+    lpord->id = idRoute;
+    lpplRoute = LpplFromId(idRoute);
+    lpord->pt = rgptPlan[idRoute];
+    lpord->fValidTask = 1;
+    iWarp = IFindIdealWarp(lpfl, 0);
+    dTravel = (int32_t)DGetDistance(lpfl->pt.x, lpfl->pt.y, lpord->pt.x, lpord->pt.y);
+    if (lppl->iPlayer == lpplRoute->iPlayer && lppl->fStarbase && lpplRoute->fStarbase) {
+        isbsDst = IStargateFromLppl(lpplRoute);
+        isbsSrc = IStargateFromLppl(lppl);
+        for (i = 0; i < 4 && lpfl->rgwtMin[i] == 0; i++)
+            ;
+        if (i == 4 && isbsDst != -1 && isbsSrc != -1) {
+            wtBig = 0;
+            for (ishdef = 0; ishdef < 0x10; ishdef++) {
+                if (lpfl->rgcsh[ishdef] != 0 && rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty > wtBig) {
+                    wtBig = rglpshdef[lpfl->iPlayer][ishdef].hul.wtEmpty;
+                }
+            }
+            if (MdCalcStargateDamage(isbsSrc, isbsDst, (int16_t)dTravel, wtBig, &pctDmg) == 1 && pctDmg == 0) {
+                iWarp = iWarpStargate;
+            }
+        }
+        if (iWarp < 9) {
+            lphuldef = LphuldefFromId((HullDef)rglpshdefSB[lpplRoute->iPlayer][lpplRoute->isb].hul.ihuldef);
+            if (lphuldef->hul.wtCargoMax != 0) {
+                for (iWarp = 9; iWarp > 0; iWarp--) {
+                    if (dTravel <= EstFuelUse(lpfl, 0, iWarp, -1, 1))
+                        break;
+                }
+                lpord->iWarp = iWarp & 0xf;
+            }
+        }
+    }
+    if (iWarp < 11 && iWarp != 0) {
+        cTurns = dTravel / (int32_t)iWarp / (int32_t)iWarp;
+        while (iWarp >= 3) {
+            cTurnsPrev = dTravel / (int32_t)(iWarp - 1) / (int32_t)(iWarp - 1);
+            if (cTurnsPrev > cTurns)
+                break;
+            iWarp--;
+        }
+        iWarp++;
+        while (iWarp > 0) {
+            if (EstFuelUse(lpfl, 0, iWarp, dTravel, 0) <= lpfl->rgwtMin[4])
+                break;
+            iWarp--;
+        }
+    }
+    lpord->iWarp = iWarp & 0xf;
 }
 
 void KillUsedWaypoints(void) {

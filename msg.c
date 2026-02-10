@@ -1024,11 +1024,139 @@ void SetMsgTitle(HWND hwnd) {
     MSGPLR *lpmp;
     RECT    rc;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_MSG:0x732e */
-    /* label FinishUp @ MEMORY_MSG:0x77de */
+    if (hwnd == NULL)
+        return;
+    if (fAi)
+        return;
 
-    /* TODO: implement */
+    sw = gd.fSendMsgMode ? SW_SHOW : SW_HIDE;
+    ShowWindow(hwndMsgEdit, sw);
+    ShowWindow(hwndMsgDrop, sw);
+    ShowWindow(rghwndMsgBtn[3], sw);
+
+    if (gd.fSendMsgMode)
+        ShowWindow(hwndMsgScroll, SW_HIDE);
+
+    cMsgTot = cMsg + vcmsgplrIn;
+
+    if (gd.fSendMsgMode) {
+        i = idsDone;
+    } else {
+        if (iMsgCur < cMsg)
+            i = gd.fGotoVCR ? idsView : idsGoto3;
+        else
+            i = idsReply;
+    }
+    SetWindowText(rghwndMsgBtn[1], PszGetCompressedString(i));
+
+    if (gd.fSendMsgMode) {
+        wsprintf(szWork, PszGetCompressedString(idsSendMessagesDD), iMsgSendCur + 1, vcmsgplrOut);
+
+        rc = rcMsgText;
+        ExpandRc(&rc, -4, -4);
+
+        SetWindowPos(hwndMsgDrop, NULL, rc.left + 0x1e, rc.top, (rc.right - rc.left) - 0x54, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOACTIVATE);
+        SetWindowPos(rghwndMsgBtn[3], NULL, rc.right - 0x32, rc.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+        rc.top = rc.top + dyShipDD + 3;
+        SetWindowPos(hwndMsgEdit, NULL, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_NOZORDER | SWP_NOACTIVATE);
+
+        EnableWindow(rghwndMsgBtn[0], iMsgSendCur > 0);
+        EnableWindow(rghwndMsgBtn[1], TRUE);
+        EnableWindow(rghwndMsgBtn[2], TRUE);
+
+        lpmp = vlpmsgplrOut;
+        i = iMsgSendCur;
+        while (i-- > 0)
+            lpmp = lpmp->lpmsgplrNext;
+
+        if (lpmp == NULL) {
+            SendMessage(hwndMsgDrop, CB_SETCURSEL, viInRe, 0);
+            SetWindowText(hwndMsgEdit, "");
+        } else {
+            SendMessage(hwndMsgDrop, CB_SETCURSEL, lpmp->iPlrTo, 0);
+            if (lpmp->cLen < 0) {
+                SetWindowText(hwndMsgEdit, (LPCSTR)(lpmp + 1));
+            } else {
+                i = 1000;
+                FDecompressUserString((char *)(lpmp + 1), lpmp->cLen, (char *)lpb2k, &i);
+                SetWindowText(hwndMsgEdit, (LPCSTR)lpb2k);
+            }
+        }
+        goto FinishUp;
+    }
+
+    if (cMsgTot == 0) {
+        CchGetString(idsYearDCMessagesNone, szT);
+        wsprintf(szWork, szT, game.turn + 2400, ch);
+    } else {
+        CchGetString(idsYearDCMessagesDD, szT);
+        wsprintf(szWork, szT, game.turn + 2400, ch, iMsgCur + 1, cMsgTot);
+    }
+
+    EnableWindow(rghwndMsgBtn[0], IMsgPrev(0) != -1);
+    EnableWindow(rghwndMsgBtn[2], IMsgNext(0) != -1);
+
+    if (iMsgCur >= cMsg) {
+        EnableWindow(rghwndMsgBtn[1], TRUE);
+        goto FinishUp;
+    }
+
+    if (cMsg != 0 && iMsgCur < cMsg && FGetNMsgbig(iMsgCur, &mb)) {
+        if (mb.wGoto == -1) {
+            mdMsgObj = 0;
+        } else {
+            idMsgObj = mb.wGoto & 0x7fff;
+            if (mb.wGoto == -2) {
+                mdMsgObj = 3;
+            } else if (mb.wGoto == -3) {
+                mdMsgObj = 5;
+            } else if (mb.wGoto == -4) {
+                mdMsgObj = 8;
+            } else if (mb.wGoto == -5) {
+                mdMsgObj = 9;
+            } else if (mb.wGoto == -6) {
+                mdMsgObj = 10;
+                vptMsg.x = mb.rgParam[0];
+            } else if (mb.wGoto == -7) {
+                mdMsgObj = 0xb;
+            } else if ((mb.wGoto & 0xc000) == 0xc000) {
+                mdMsgObj = 4;
+            } else if ((mb.wGoto & 0x4000) == 0) {
+                if (mb.wGoto < 0) {
+                    FLEET *lpfl = LpflFromId(idMsgObj);
+                    mdMsgObj = (lpfl != NULL) ? 2 : 0;
+                } else {
+                    mdMsgObj = 1;
+                }
+            } else {
+                idMsgObj = mb.wGoto & 0x3fff;
+                if (idMsgObj == 0x800) {
+                    mdMsgObj = 7;
+                } else {
+                    mdMsgObj = 6;
+                    vptMsg.x = mb.rgParam[0];
+                    vptMsg.y = mb.rgParam[1];
+                }
+            }
+        }
+    }
+
+    if (mdMsgObj != 0) {
+        if (iMsgCur < 0) {
+            mdMsgObj = 0;
+        } else if (!fViewFilteredMsg) {
+            int16_t idm = IdmGetMessageN(iMsgCur);
+            if (bitfMsgFiltered[idm >> 3] & (1 << (idm & 7)))
+                mdMsgObj = 0;
+        }
+    }
+
+    EnableWindow(rghwndMsgBtn[1], mdMsgObj != 0);
+
+FinishUp:
+    strcpy(szMsgTitle, szWork);
+    InvalidateRect(hwndMessage, &rcMsgTitle, TRUE);
 }
 
 INT_PTR CALLBACK SerialDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

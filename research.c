@@ -4,6 +4,7 @@
 #include "types.h"
 
 #include "mdi.h"
+#include "race.h"
 #include "parts.h"
 #include "research.h"
 #include "strings.h"
@@ -34,9 +35,29 @@ int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
     int32_t lCost;
     int16_t i;
     int16_t cTech;
+    int16_t bonus;
 
-    /* TODO: implement */
-    return 0;
+    cTech = 0;
+    for (i = 0; i < 6; i++) {
+        cTech += rgplr[iplr].rgTech[i];
+    }
+
+    lCost = (int32_t)(cTech * 10) + rglTechCost[iLevel];
+
+    bonus = GetRaceStat(&rgplr[iplr], iTech + rsTechBonus1) - 1;
+    if (bonus != 0) {
+        if (bonus < 0) {
+            lCost += lCost - (lCost >> 2);
+        } else {
+            lCost /= 2;
+        }
+    }
+
+    if (game.fSlowTech) {
+        lCost <<= 1;
+    }
+
+    return lCost;
 }
 
 int32_t ProjectedResearchSpending(int32_t pct) {

@@ -375,13 +375,48 @@ void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
 }
 
 int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops) {
-    int16_t i;
-    int16_t j;
-    int16_t iWorst;
-    ENGINE *lpengine;
+    int16_t  i;
+    int16_t  j;
+    int16_t  iWorst;
+    ENGINE  *lpengine;
+    uint16_t id;
+    SHDEF   *lpshdef;
 
-    /* TODO: implement */
-    return 0;
+    iWorst = 10;
+    if (lpfl == NULL) {
+        lpfl = &sel.fl;
+    }
+    for (i = 0; i <= 0xf; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lpshdef = &rglpshdef[lpfl->iPlayer][i];
+            for (j = 0; j < (int16_t)lpshdef->hul.chs && lpshdef->hul.rghs[j].grhst != hstEngine; j++)
+                ;
+            if (j == (int16_t)lpshdef->hul.chs) {
+                return 0;
+            }
+            id = lpshdef->hul.rghs[j].iItem;
+            lpengine = LpengineFromId(id);
+            for (; iWorst > 0; iWorst--) {
+                if (lpengine->rgcFuelUsed[iWorst] < 121) {
+                    if (lpengine->rgcFuelUsed[iWorst] > 0 && fIgnoreScoops == 0 && id != iengineTransGalacticMizerScoop && id != iengineGalaxyScoop) {
+                        if (iWorst >= 5 && lpengine->rgcFuelUsed[iWorst - 1] == 0) {
+                            iWorst--;
+                        } else if (iWorst >= 6 && lpengine->rgcFuelUsed[iWorst - 2] == 0) {
+                            iWorst -= 2;
+                        } else if (iWorst > 6 && lpengine->rgcFuelUsed[iWorst - 3] == 0) {
+                            iWorst -= 3;
+                        }
+                    }
+                    if (iWorst == 10 && id != iengineInterspace10 && id != iengineEnigmaPulsar && id != iengineTransStar10 &&
+                        id != iengineTransGalacticMizerScoop && id != iengineGalaxyScoop) {
+                        iWorst = 9;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return iWorst;
 }
 
 void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {

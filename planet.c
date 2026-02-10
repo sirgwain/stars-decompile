@@ -2,10 +2,13 @@
 #include "globals.h"
 #include "types.h"
 
+#include "memory.h"
 #include "parts.h"
 #include "planet.h"
+#include "produce.h"
 #include "race.h"
 #include "util.h"
+#include "utilgen.h"
 
 #include <math.h>
 
@@ -632,7 +635,7 @@ int16_t CMaxMines(PLANET *lppl, int16_t iplr) {
 }
 
 int16_t FProdIsTerra(PROD *lpprod) {
-    if (lpprod->grobj == grobjPlanet && (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjTerraform || lpprod->iItem == iobjTerraform2)) {
+    if (lpprod->grobj == grobjPlanet && (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjMinTerraform || lpprod->iItem == iobjMaxTerraform)) {
         return 1;
     }
     return 0;
@@ -657,7 +660,6 @@ int16_t CMaxDefenses(PLANET *lppl, int16_t iplr) {
 
 int16_t IBestTerraform(PLANET *lppl, int16_t fHelp) {
     int16_t iSave;
-    int16_t iBest;
     int16_t rgMax[3];
     int16_t pctT;
     int16_t i;
@@ -668,9 +670,53 @@ int16_t IBestTerraform(PLANET *lppl, int16_t fHelp) {
     int16_t rgpctBest[3];
     int16_t rgCost[3];
     int16_t iPlrSav;
+    uint8_t envSav;
+    int16_t pctNew;
 
-    /* TODO: implement */
-    return 0;
+    iPlrSav = idPlayer;
+    iPlr = lppl->iPlayer;
+    if (iPlr == -1) {
+        idPlayer = iPlrSav;
+        return 0;
+    }
+    idPlayer = iPlr;
+    if (!FCanTerraformLppl(lppl, rgMin, rgMax, rgCost, fHelp)) {
+        idPlayer = iPlrSav;
+        return 0;
+    }
+    pctCur = PctPlanetDesirability(lppl, iPlr);
+    for (i = 0; i < 3; i++) {
+        if (rgMin[i] == -1) {
+            if (rgMax[i] != -1) {
+                iEnv = rgMax[i];
+            } else {
+                rgpctBest[i] = 0;
+                continue;
+            }
+        } else {
+            iEnv = rgMin[i];
+        }
+        envSav = lppl->rgEnvVar[i];
+        lppl->rgEnvVar[i] = (uint8_t)iEnv;
+        pctNew = PctPlanetDesirability(lppl, iPlr);
+        pctT = pctNew - pctCur;
+        if (pctT < 0)
+            pctT = -pctT;
+        rgpctBest[i] = (pctT * 100) / abs((int8_t)envSav - iEnv) + 1;
+        lppl->rgEnvVar[i] = envSav;
+    }
+    iSave = 0;
+    for (i = 1; i < 3; i++) {
+        if (rgpctBest[iSave] < rgpctBest[i]) {
+            iSave = i;
+        }
+    }
+    idPlayer = iPlrSav;
+    if (rgMin[iSave] == -1) {
+        return iSave + 1;
+    } else {
+        return -(iSave + 1);
+    }
 }
 
 int16_t IpctCanTerraformLppl(PLANET *lppl) {
@@ -745,10 +791,23 @@ int32_t CalcPlanetMaxPop(int16_t idpl, int16_t iplr) {
 void UninhabitPlanet(PLANET *lppl) {
     int16_t i;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x876c */
-
-    /* TODO: implement */
+    if (lppl->iPlayer != -1 && GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raTerra) {
+        for (i = 0; i < 3; i++) {
+            lppl->rgEnvVar[i] = lppl->rgEnvVarOrig[i];
+        }
+    }
+    lppl->iPlayer = iNoPlayer;
+    lppl->rgwtMin[3] = 0;
+    if (lppl->lpplprod != NULL) {
+        FreePl((PL *)((PLANET *)lpPlanets)[lppl->id].lpplprod);
+        ((PLANET *)lpPlanets)[lppl->id].lpplprod = NULL;
+        lppl->lpplprod = NULL;
+    }
+    lppl->fNoResearch = 0;
+    lppl->fStarbase = 0;
+    lppl->cDefenses = 0;
+    lppl->iScanner = iNoScanner;
+    lppl->lStarbase = 0;
 }
 
 int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish) {
@@ -1128,23 +1187,77 @@ void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t 
 }
 
 void FillPlanetProdLB(HWND hwnd, PLPROD *lpplprod, PLANET *lppl) {
-    int16_t fMinimal;
-    int32_t rgwtMin[4];
+    bool    fMinimal;
     int16_t i;
-    int16_t cItem;
     char    szTemp[80];
-    int32_t resCost;
     char   *psz;
     char    ch;
     PROD   *lpprod;
     int16_t etaLast;
     int16_t etaFirst;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x6831 */
-    /* label NoMsg @ MEMORY_PLANET:0x67a8 */
-
-    /* TODO: implement */
+    fMinimal = (lppl != NULL);
+    if (!fMinimal) {
+        lppl = &sel.pl;
+        if (hwnd == 0)
+            hwnd = hwndPlanetProdLB;
+        SendMessage(hwnd, LB_RESETCONTENT, 0, 0);
+    }
+    if (lpplprod == NULL)
+        lpplprod = lppl->lpplprod;
+    if (lpplprod == NULL || lpplprod->iprodMac == 0) {
+        psz = PszGetCompressedString(idsQueueEmpty);
+    } else {
+        if (hwndProdDlg == 0)
+            goto NoMsg;
+        psz = PszGetCompressedString(idsTopQueue);
+    }
+    if (fMinimal) {
+        if (psz != szWork)
+            strcpy(szWork, psz);
+    } else {
+        SendMessage(hwnd, LB_ADDSTRING, 0, (LPARAM)psz);
+    }
+NoMsg:
+    if (lpplprod != NULL) {
+        lpprod = lpplprod->rgprod;
+        for (i = 0; i < (int16_t)lpplprod->iprodMac; i++) {
+            psz = PszNameProdItem(lpprod);
+            EstimateItemProdSched(lppl, lpplprod, i, &etaFirst, &etaLast);
+            if ((etaFirst == 0 && etaLast == 0) || (etaFirst == -1 && etaLast == -1)) {
+                ch = '&';
+            } else {
+                if ((etaFirst < 2 || etaFirst > 99) && !(etaFirst == 100 && lpprod->grobj == grobjPlanet && lpprod->iItem <= 6)) {
+                    if (etaFirst == 1 && etaLast == 1)
+                        ch = '*';
+                    else if (etaFirst < 100)
+                        ch = '#';
+                    else
+                        ch = '!';
+                } else {
+                    ch = ' ';
+                }
+            }
+            sprintf(szTemp, "%c%5d%s", ch, (int)lpprod->cItem, psz);
+            if (lpprod->grobj == grobjPlanet && lpprod->iItem < 7) {
+                szTemp[1] += 2;
+                if (lpprod->iItem == iobjAlchemy)
+                    szTemp[5] = '*';
+            }
+            if (lpprod->grobj == grobjPlanet && (lpprod->iItem == mdIdleTerraform || lpprod->iItem == iobjMinTerraform || lpprod->iItem == iobjMaxTerraform)) {
+                szTemp[1] += 1;
+            }
+            if (fMinimal) {
+                strcpy(szWork, szTemp);
+                return;
+            }
+            SendMessage(hwnd, LB_ADDSTRING, 0, (LPARAM)szTemp);
+            lpprod++;
+        }
+        if (fMinimal) {
+            CchGetString(idsQueueEmpty, szWork);
+        }
+    }
 }
 
 void EnsureTileSize(int16_t fSmallTiles) {

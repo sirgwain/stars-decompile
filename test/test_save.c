@@ -46,11 +46,11 @@ static void test_SetSzWorkFromDt_table(void) {
 
     const Case cases[] = {
         {
-            "dtTurn appends .XY and strips extension",
+            "dtTurn appends .xy and strips extension",
             "game1.sta",
             dtXY,
             7,
-            "game1.XY",
+            "game1.xy",
             "game1",
         },
         {
@@ -58,31 +58,31 @@ static void test_SetSzWorkFromDt_table(void) {
             "C:\\GAMES\\STARS\\mystuff.gam",
             dtHost,
             3,
-            "C:\\GAMES\\STARS\\mystuff.HST",
+            "C:\\GAMES\\STARS\\mystuff.hst",
             "C:\\GAMES\\STARS\\mystuff",
         },
         {
-            "dtLog uses .MN with %c%d format",
+            "dtLog uses .mN with %c%d format",
             "foo.bar",
             dtTurn,
             10,
-            "foo.M11",
+            "foo.m11",
             "foo",
         },
         {
-            "dtXY uses .XN with %c%d format",
+            "dtXY uses .xN with %c%d format",
             "foo.bar",
             dtLog,
             0,
-            "foo.X1",
+            "foo.x1",
             "foo",
         },
         {
-            "dtHist uses .HN with %c%d format",
+            "dtHist uses .hN with %c%d format",
             "foo.bar",
             dtHist,
             15,
-            "foo.H16",
+            "foo.h16",
             "foo",
         },
         {
@@ -90,7 +90,7 @@ static void test_SetSzWorkFromDt_table(void) {
             "C:\\dir.name\\file",
             dtXY,
             2,
-            "C:\\dir.name\\file.XY",
+            "C:\\dir.name\\file.xy",
             "C:\\dir.name\\file",
         },
         {
@@ -98,7 +98,7 @@ static void test_SetSzWorkFromDt_table(void) {
             "C:\\dir.name\\file.ext",
             dtXY,
             2,
-            "C:\\dir.name\\file.XY",
+            "C:\\dir.name\\file.xy",
             "C:\\dir.name\\file",
         },
     };

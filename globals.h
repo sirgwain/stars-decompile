@@ -51,6 +51,9 @@
 #define cThingAbsMax      4050
 #define cFleetAbsMax      512
 #define pctIdealGrowthMax 20
+#define iNoScanner        0x1F
+#define iNoPlayer         -1
+#define iWarpStargate     11
 
 #define cMaxMru              9
 #define cbMruEntry           0x100

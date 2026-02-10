@@ -1,9 +1,8 @@
 Tiny Test Game
 0 0 1 12345
 0 0 0 0 0 0 0
-2
+1
 ./test/data/humanoid.r1
-# 1 2
 1 60
 1 26 4
 0

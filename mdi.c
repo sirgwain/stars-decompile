@@ -14,6 +14,7 @@
 #include "mine.h"
 #include "msg.h"
 #include "planet.h"
+#include "platform.h"
 #include "popup.h"
 #include "produce.h"
 #include "race.h"
@@ -419,13 +420,93 @@ void EnsureAis(void) {
 }
 
 int16_t CTurnsOutSafe(void) {
-    int16_t idPlayerSav;
-    int16_t fHostModeSav;
-    int16_t fGenSav;
-    int16_t cturn;
+    int16_t  idPlayerSav = idPlayer;
+    uint16_t fGeneratingTurnSav = gd.fGeneratingTurn;
+    uint16_t fHostModeSav = gd.fHostMode;
 
-    /* TODO: implement */
-    return 0;
+    idPlayer = -1;
+
+    /* decompile: (gd.grBits & 0xfff5) | 8  => clear bit1/bit3, set bit3 */
+    gd.fGeneratingTurn = 0;
+    gd.fHostMode = 1;
+
+    int16_t cOut = CFindTurnsOutstanding();
+
+    gd.fGeneratingTurn = fGeneratingTurnSav;
+    gd.fHostMode = fHostModeSav;
+    idPlayer = idPlayerSav;
+
+    return cOut;
+}
+
+int16_t CFindTurnsOutstanding(void) {
+    int16_t cOut = 0;
+    int16_t cAi = 0;
+    int16_t i = 0;
+
+    /* keep same scalar type as ctickLast so we don't need casts when assigning */
+    int32_t tick = ctickLast;
+
+    fFileErrSilent = 1;
+
+    /* decompile: (gd.grBits & 0xfffd) | 2 => set bit1 */
+    gd.fGeneratingTurn = 1;
+
+    for (;;) {
+        if (game.cPlayer <= i) {
+            gd.fGeneratingTurn = 0;
+
+            /* decompile: high-word bit4 = fAllAis */
+            gd.fAllAis = (cAi == game.cPlayer);
+
+            fFileErrSilent = 0;
+            return cOut;
+        }
+
+        int16_t prev = ((int16_t *)rgOut)[i];
+        int16_t idsError = 0;
+
+        if (!rgplr[i].fAi) {
+            ctickLast = tick;
+
+            if (FCheckLogFile(i, &idsError) == 0) {
+                if (idsError == 0) {
+                    if (!rgplr[i].fDead) {
+                        /* decompile: (gd.grBits high-word >> 7)&1 => fPartialTurn */
+                        ((int16_t *)rgOut)[i] = gd.fPartialTurn ? 2 : 1;
+                        cOut++;
+                    } else {
+                        ((int16_t *)rgOut)[i] = -1;
+                    }
+                } else {
+                    if (idsError == 0x1c)
+                        ((int16_t *)rgOut)[i] = 4;
+                    else if (idsError == 0x1d)
+                        ((int16_t *)rgOut)[i] = 5;
+                    else
+                        ((int16_t *)rgOut)[i] = 3;
+
+                    cOut++;
+                }
+            } else {
+                goto LAiOrIgnored;
+            }
+        } else {
+        LAiOrIgnored:
+            if (rgplr[i].fAi)
+                cAi++;
+
+            ctickLast = tick;
+            ((int16_t *)rgOut)[i] = 0;
+        }
+
+        if (tick == 0 || ((int16_t *)rgOut)[i] != prev) {
+            ctickLast = tick;
+            tick = PlatformTickMs();
+        }
+
+        i++;
+    }
 }
 
 #ifdef _WIN32
@@ -752,18 +833,6 @@ int16_t FFindSomethingAndSelectIt(void) {
     PLANET *lppl;
     int16_t i;
     FLEET  *lpfl;
-
-    /* TODO: implement */
-    return 0;
-}
-
-int16_t CFindTurnsOutstanding(void) {
-    int16_t idsError;
-    int16_t cAi;
-    int16_t i;
-    int16_t cOut;
-    int16_t fSav;
-    int16_t fOut;
 
     /* TODO: implement */
     return 0;

@@ -14,17 +14,51 @@
 #include "ship.h"
 #include "turn2.h"
 #include "util.h"
+#include "utilgen.h"
 
 char *PszNameProdItem(PROD *lpprod) {
-    uint32_t iItem;
-    int16_t  iDelta;
+    uint16_t   iItem;
+    int16_t    iDelta;
+    int16_t    ish;
+    SHDEF     *lpshdef;
+    PLANETARY *lpplanetary;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PRODUCE:0x3d94 */
-    /* label LBogus @ MEMORY_PRODUCE:0x3d3b */
-
-    /* TODO: implement */
-    return NULL;
+    iItem = lpprod->iItem;
+    if (lpprod->grobj == grobjFleet) {
+        if (iItem < cShdefMax) {
+            if (!rgshdef[iItem].fFree) {
+                strcpy(szWork, rgshdef[iItem].hul.szClass);
+                goto LDone;
+            }
+        } else {
+            ish = iItem - cShdefMax;
+            lpshdef = &rglpshdefSB[idPlayer][ish];
+            if (!lpshdef->fFree) {
+                strcpy(szWork, lpshdef->hul.szClass);
+                if (sel.pl.fStarbase) {
+                    iDelta = rglpshdefSB[idPlayer][sel.pl.isb].hul.ihuldef - lpshdef->hul.ihuldef;
+                    if (iDelta > 0) {
+                        strcat(szWork, " (downgrade)");
+                    } else if (iDelta < 0) {
+                        strcat(szWork, " (upgrade)");
+                    }
+                }
+                goto LDone;
+            }
+        }
+        szWork[0] = '\0';
+    } else if (iItem < iobjPlanetaryScannerFirst || iItem > iobjPlanetaryScannerLast) {
+        if (iItem == iobjPlanetaryScanner) {
+            CchGetString(idsPlanetaryScanner, szWork);
+        } else {
+            CchGetString(iItem + idsMines, szWork);
+        }
+    } else {
+        lpplanetary = LpplanetaryFromId(iItem - iobjPlanetaryScannerFirst);
+        strcpy(szWork, lpplanetary->szName);
+    }
+LDone:
+    return szWork;
 }
 
 void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne) {
@@ -49,10 +83,10 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
 
     if (lpprod->grobj == grobjFleet) {
         /* Ship or starbase production */
-        fStarbase = iItem > 15;
+        fStarbase = iItem >= cShdefMax;
         if (fStarbase) {
             lpshdef = rglpshdefSB[iplr];
-            iItem = iItem - 16;
+            iItem = iItem - cShdefMax;
         } else {
             lpshdef = rglpshdef[iplr];
         }
@@ -87,14 +121,12 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
                 for (int i = 0; i < lphulCur->chs; i++) {
                     if (lphulCur->rghs[i].cItem != 0 && lphulNew->rghs[i].cItem != 0) {
                         /* Get current slot part cost */
-                        part.hs.grhst = lphulCur->rghs[i].grhst;
-                        part.hs.wRaw_0002 = lphulCur->rghs[i].wRaw_0002;
+                        part.hs = lphulCur->rghs[i];
                         FLookupPart(&part);
                         GetTruePartCost(iplr, &part, (uint16_t *)rgCostsPartCur);
 
                         /* Get new slot part cost */
-                        part.hs.grhst = lphulNew->rghs[i].grhst;
-                        part.hs.wRaw_0002 = lphulNew->rghs[i].wRaw_0002;
+                        part.hs = lphulNew->rghs[i];
                         FLookupPart(&part);
                         GetTruePartCost(iplr, &part, (uint16_t *)rgCostsPartNew);
 
@@ -104,7 +136,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
                                 for (j = 0; j < 4; j++) {
                                     rgCostsPartCur[j] = rgCostsPartCur[j] * lphulCur->rghs[i].cItem;
                                     rgCostsPartNew[j] = rgCostsPartNew[j] * lphulNew->rghs[i].cItem;
-                                    if ((uint16_t)(rgCostsPartNew[j] - rgCostsPartCur[j]) < 0x8000) {
+                                    if ((uint16_t)(rgCostsPartNew[j] - rgCostsPartCur[j]) < 32768) {
                                         costDiff = rgCostsPartNew[j] - rgCostsPartCur[j];
                                     } else {
                                         costDiff = 0;
@@ -224,7 +256,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
     LDefense:
         /* Defense */
         part.hs.grhst = hstPlanetary;
-        part.hs.iItem = 9; /* iplanetaryDefense */
+        part.hs.iItem = iplanetarySDI; /* defense */
         FLookupPart(&part);
 
         for (i = 0; i < 3; i++) {
@@ -255,7 +287,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == iobjTerraform || iItem == iobjTerraform2) {
+    if (iItem == iobjMinTerraform || iItem == iobjMaxTerraform) {
     LTerraform:
         /* Terraform */
         rgCost[0] = 0;
@@ -266,17 +298,17 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         } else {
             rgCost[3] = 100;
         }
-        if (raMajor == 3) { /* raTerra / CA */
+        if (raMajor == raTerra) { /* raTerra / CA */
             rgCost[3] = rgCost[3] / 2;
         }
         goto LMultiply;
     }
 
-    if (iItem == iobjPacket || iItem == iobjGenesis) {
-        /* Packet or MT Genesis */
-        if (raMajor == 6) { /* raMassAccel / PP */
+    if (iItem == iobjPacket || iItem == iobjPacketMixed) {
+        /* Packet */
+        if (raMajor == raMassAccel) { /* raMassAccel / PP */
             costSub = 25;
-        } else if (raMajor == 7) { /* raStargate / IT */
+        } else if (raMajor == raStargate) { /* raStargate / IT */
             costSub = 48;
         } else {
             costSub = 44;
@@ -308,10 +340,10 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LTerraform;
     }
 
-    if (iItem == iobjScanner) {
+    if (iItem == iobjGenesis) {
         /* Scanner */
         part.hs.grhst = hstPlanetary;
-        part.hs.iItem = 14; /* iplanetaryScanner */
+        part.hs.iItem = iplanetaryGenesisDevice; /* iplanetaryScanner */
         FLookupPart(&part);
         GetTruePartCost(iplr, &part, rgCosts);
         for (i = 0; i < 4; i++) {
@@ -322,9 +354,9 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
 
     if (iItem == iobjPacketIron || iItem == iobjPacketBor || iItem == iobjPacketGerm) {
         /* Single mineral packet (Iron/Bor/Germ) */
-        if (raMajor == 6) { /* raMassAccel / PP */
+        if (raMajor == raMassAccel) { /* raMassAccel / PP */
             costSub = 70;
-        } else if (raMajor == 7) { /* raStargate / IT */
+        } else if (raMajor == raStargate) { /* raStargate / IT */
             costSub = 120;
         } else {
             costSub = 110;
@@ -336,7 +368,7 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
                 rgCost[i] = 0;
             }
         }
-        if (raMajor == 6) {
+        if (raMajor == raMassAccel) {
             rgCost[i] = 5;
         } else {
             rgCost[i] = 10;
@@ -344,10 +376,10 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    /* Planetary installations (stargate, mass driver, etc.) */
-    if (iItem >= iobjPlanetaryFirst && iItem <= iobjPlanetaryLast) {
+    /* Planetary installations (scanner?) 18 to 26 */
+    if (iItem >= iobjPlanetaryScannerFirst && iItem <= iobjPlanetaryScannerLast) {
         part.hs.grhst = hstPlanetary;
-        part.hs.iItem = (iItem - iobjPlanetaryFirst) & 0xff;
+        part.hs.iItem = (iItem - iobjPlanetaryScannerFirst) & 0xff;
         FLookupPart(&part);
         GetTruePartCost(iplr, &part, rgCosts);
         for (i = 0; i < 4; i++) {
@@ -356,10 +388,9 @@ void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t ip
         goto LMultiply;
     }
 
-    if (iItem == iobjStargateAlt) {
-        /* Stargate (alternate index) */
+    if (iItem == iobjPlanetaryScanner) {
         part.hs.grhst = hstPlanetary;
-        part.hs.iItem = 0;
+        part.hs.iItem = iplanetaryViewer50;
         FLookupPart(&part);
         GetTruePartCost(iplr, &part, rgCosts);
         for (i = 0; i < 4; i++) {

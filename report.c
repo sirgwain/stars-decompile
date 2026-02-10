@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include "report.h"
+#include "vcr.h"
 
 /* globals */
 uint16_t mpicolgrbitBU[12] = {0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x00ff, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
@@ -124,13 +125,64 @@ char *PszGetDestName(FLEET *lpfl, HDC hdc) {
 }
 
 void InvalidateReport(int16_t irpt, int16_t fReload) {
-    int16_t   fResetRpt;
     int16_t   fClearRpt;
     RPT      *prptSav;
     uint16_t *lprgidSav;
-    RECT      rc;
+    bool      fRestoreSav;
 
-    /* TODO: implement */
+    fClearRpt = 0;
+    fRestoreSav = false;
+    if (gd.fGeneratingTurn || fAi)
+        return;
+#ifdef _WIN32
+    if (hwndReportDlg == 0 || irpt != vprptCur->irpt) {
+#else
+    if (vprptCur == NULL || irpt != vprptCur->irpt) {
+#endif
+        if (vprptCur == NULL) {
+            fClearRpt = fReload;
+            if (irpt == 0)
+                vprptCur = &vrptPlanet;
+            else
+                vprptCur = &vrptFleet;
+        } else if (fReload != 0 && vprptCur->irpt != irpt) {
+            lprgidSav = vlprgidRep;
+            prptSav = vprptCur;
+            fRestoreSav = true;
+            if (irpt == 0)
+                vprptCur = &vrptPlanet;
+            else
+                vprptCur = &vrptFleet;
+        }
+    } else {
+#ifdef _WIN32
+        RECT rc;
+        GetClientRect(hwndReportDlg, &rc);
+        if (fReload != 2) {
+            rc.top = dyArial8 + 6;
+            rc.bottom = (dyArial8 + 4) * vprptCur->cRowsVis + rc.top;
+        }
+        InvalidateRect(hwndReportDlg, &rc, fReload == 2);
+#endif
+        gd.fRptSafeDraw = 1;
+    }
+    vprptCur->fCached = 0;
+#ifdef _WIN32
+    if (fReload != 0) {
+        SortReportCache(vprptCur->irpt, vprptCur->icolSort);
+    }
+#endif
+    if (fClearRpt != 0) {
+        vprptCur = NULL;
+    } else if (fRestoreSav) {
+        vprptCur = prptSav;
+        vlprgidRep = lprgidSav;
+#ifdef _WIN32
+    } else if (fReload != 0 && hwndReportDlg != 0 && irpt == vprptCur->irpt) {
+        SetScrollRange((HWND)(uintptr_t)vprptCur->hwndVScroll, 2, 0, vprptCur->cRows - vprptCur->cRowsVis, 0);
+        InvalidateRect(hwndReportDlg, NULL, 1);
+#endif
+    }
 }
 
 #ifdef _WIN32
@@ -234,14 +286,73 @@ void SetHScrollBar(void) {
 
 void SortReportCache(int16_t irpt, int16_t icol) {
     uint16_t rgidRep[1024];
-    PLANET  *lpplMac;
     int16_t  cRows;
     uint16_t iItem;
     PLANET  *lppl;
     FLEET   *lpfl;
     int16_t  i;
 
-    /* TODO: implement */
+    cRows = 0;
+    iItem = 0;
+    if (vprptCur->icolSort != icol) {
+        vicolSortPrev = vprptCur->icolSort;
+        viSubsortPrev = vprptCur->iSubsort;
+        vfAscendingPrev = vprptCur->fAscending;
+        vprptCur->icolSort = icol;
+        gd.fChgReports = 1;
+    }
+    if (hwndReportDlg != 0 || vprptCur->fCached == 0) {
+        if (irpt == 0) {
+            vlprgidRep = vlprgidPlanet;
+            lppl = (PLANET *)lpPlanets;
+            while (lppl < (PLANET *)lpPlanets + cPlanet) {
+                if (lppl->iPlayer == idPlayer && lppl->det == detAll) {
+                    rgidRep[cRows] = iItem;
+                    cRows++;
+                }
+                iItem++;
+                lppl++;
+            }
+        } else if (irpt == 1) {
+            vlprgidRep = vlprgidFleet;
+            for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
+                lpfl = rglpfl[iItem];
+                if (lpfl == NULL)
+                    break;
+                if (lpfl->iplr == idPlayer) {
+                    rgidRep[cRows] = iItem;
+                    cRows++;
+                }
+            }
+        } else if (irpt == 2) {
+            vlprgidRep = vlprgidMisc;
+            vrptBattle.fCached = 0;
+            for (iItem = 0; (int16_t)iItem < cFleet; iItem++) {
+                lpfl = rglpfl[iItem];
+                if (lpfl == NULL)
+                    break;
+                if (lpfl->iplr != idPlayer) {
+                    rgidRep[cRows] = iItem;
+                    cRows++;
+                }
+                if (cRows >= 1020)
+                    break;
+            }
+        } else if (irpt == 3) {
+            vlprgidRep = vlprgidMisc;
+            vrptEFleet.fCached = 0;
+            cRows = CBattles();
+            for (i = 0; i < cRows; i++) {
+                rgidRep[i] = i;
+            }
+        } else {
+            return;
+        }
+        vprptCur->cRows = cRows;
+        qsort(rgidRep, cRows, 2, (int (*)(const void *, const void *))ICompReport);
+        memcpy(vlprgidRep, rgidRep, cRows * 2);
+        vprptCur->fCached = 1;
+    }
 }
 
 void InitScoreDlg(HWND hwnd, int16_t fVictory) {

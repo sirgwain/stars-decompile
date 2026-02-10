@@ -3,6 +3,10 @@
 
 #include "build.h"
 #include "globals.h"
+#include "memory.h"
+#include "planet.h"
+#include "util.h"
+#include "utilgen.h"
 
 /* globals */
 uint16_t rggrbitParts[13] = {0x19ff, 0x0008, 0x0010, 0x0040, 0x0800, 0x0001, 0x1000, 0x0100, 0x0080, 0x0002, 0x0004, 0x0020, 0x0030};     /* 10c8:0038 */
@@ -19,7 +23,31 @@ void KillQueuedMassPackets(PLANET *lppl) {
     int16_t iDst;
     PROD   *lpprod;
 
-    /* TODO: implement */
+    if (lppl->lpplprod != NULL && lppl->lpplprod->iprodMac != 0) {
+        iDst = 0;
+        lpprod = lppl->lpplprod->rgprod;
+        for (iprod = 0; iprod < (int16_t)lppl->lpplprod->iprodMac; iprod++) {
+            if (lpprod->grobj != grobjPlanet || lpprod->iItem < iobjPacketIron || lpprod->iItem > iobjPacketMixed) {
+                if (iDst != iprod) {
+                    lppl->lpplprod->rgprod[iDst] = *lpprod;
+                }
+                iDst++;
+            }
+            lpprod++;
+        }
+        if (iDst == 0) {
+            FreePl((PL *)lppl->lpplprod);
+            lppl->lpplprod = NULL;
+        } else if (iDst != iprod) {
+            lppl->lpplprod->iprodMac = (uint8_t)iDst;
+        }
+        if (sel.grobj == grobjPlanet && sel.pl.id == lppl->id) {
+            FLookupPlanet(sel.pl.id, &sel.pl);
+#ifdef _WIN32
+            FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, 0);
+#endif
+        }
+    }
 }
 
 int16_t IEmptyBmpFromGrhst(HullSlotType grhst) {
@@ -70,7 +98,35 @@ void KillQueuedShips(PLANET *lppl) {
     int16_t iDst;
     PROD   *lpprod;
 
-    /* TODO: implement */
+    if (lppl->lpplprod == NULL || lppl->lpplprod->iprodMac == 0)
+        return;
+
+    iDst = 0;
+    lpprod = lppl->lpplprod->rgprod;
+    for (iprod = 0; iprod < (int16_t)lppl->lpplprod->iprodMac; iprod++) {
+        if (lpprod->grobj != grobjFleet || lpprod->iItem > cShdefMax) {
+            if (lpprod->grobj == grobjFleet) {
+                lpprod->pct = 0;
+            }
+            if (iDst != iprod) {
+                lppl->lpplprod->rgprod[iDst] = *lpprod;
+            }
+            iDst++;
+        }
+        lpprod++;
+    }
+    if (iDst == 0) {
+        FreePl((PL *)lppl->lpplprod);
+        lppl->lpplprod = NULL;
+    } else if (iDst != iprod) {
+        lppl->lpplprod->iprodMac = (uint8_t)iDst;
+    }
+    if (sel.grobj == grobjPlanet && sel.pl.id == lppl->id) {
+        FLookupPlanet(sel.pl.id, &sel.pl);
+#ifdef _WIN32
+        FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, 0);
+#endif
+    }
 }
 
 #ifdef _WIN32
