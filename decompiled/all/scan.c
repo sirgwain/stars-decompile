@@ -91,9 +91,9 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     }
     if (msg == WM_PAINT) {
         HVar6 = BeginPaint(hwnd, &ps);
-        if ((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) && (((uint)gd.grBits2 & 1) == 0)) {
+        if ((((FLEET **)rglpfl != 0) || (rglpfl._2_2_ != 0)) && (((uint)gd.grBits2 & 1) == 0)) {
             GetClientRect(hwnd, &rc);
-            DrawScannerSBar(HVar6, &ps.rcPaint, (SBAR *)0x0, 1);
+            DrawScannerSBar(HVar6, &ps.rcPaint, 0, 1);
             rc.bottom = rc.bottom - dySBar;
             DrawScanner(HVar6, &ps.rcPaint);
         }
@@ -202,7 +202,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 pt_00.x = pt.x;
                 FFindNearestObject(pt_00, grobj, &scan);
                 if ((((gd.grBits._2_2_ >> 8 & 1) == 0) &&
-                     (((sel.grobj != grobjPlanet || ((wParam & 4) == 0)) || (sVar8 = IWarpMAFromLppl(&sel.pl, (short *)0x0), sVar8 < 1)))) ||
+                     (((sel.grobj != grobjPlanet || ((wParam & 4) == 0)) || (sVar8 = IWarpMAFromLppl(&sel.pl, 0), sVar8 < 1)))) ||
                     (msg != WM_LBUTTONDOWN)) {
                     if ((((gd.grBits._2_2_ >> 0xd & 1) == 0) && ((sel.grobj != grobjPlanet || ((wParam & 8) == 0)))) || (msg != WM_LBUTTONDOWN)) {
                         if ((msg == WM_MBUTTONDOWN) || ((msg == WM_RBUTTONDOWN && ((wParam & 4) != 0)))) {
@@ -231,7 +231,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                                     pFVar3 = ((FLEET **)rglpfl)[i];
                                     iVar1 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                                     lpfl = (FLEET *)CONCAT22(iVar1, pFVar3);
-                                    if ((pFVar3 == (FLEET *)0x0) && (iVar1 == 0))
+                                    if ((pFVar3 == 0) && (iVar1 == 0))
                                         break;
                                     if ((pt.x == (&pFVar3->pt)->x) && (pt.y == (pFVar3->pt).y)) {
                                         if ((sel.grobj == grobjFleet) && (lpfl->id == sel.id)) {
@@ -270,7 +270,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                                     lpth = (THING *)CONCAT22(uVar15, (THING *)lpth + 1);
                                 }
                                 LogicalToScan(&pt);
-                                sVar8 = PopupMenu(hwnd, pt.x, pt.y, c, rgid, (char **)0x0, iChecked, 1);
+                                sVar8 = PopupMenu(hwnd, pt.x, pt.y, c, rgid, 0, iChecked, 1);
                                 if (sVar8 < 0) {
                                     return 0;
                                 }
@@ -292,7 +292,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                                         pFVar3 = ((FLEET **)rglpfl)[i];
                                         iVar1 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                                         lpfl = (FLEET *)CONCAT22(iVar1, pFVar3);
-                                        if (((pFVar3 == (FLEET *)0x0) && (iVar1 == 0)) || (lpfl->id == (int)rgid[sVar8]))
+                                        if (((pFVar3 == 0) && (iVar1 == 0)) || (lpfl->id == (int)rgid[sVar8]))
                                             break;
                                     }
                                     scan.ifl = i;
@@ -715,7 +715,7 @@ short DrawScanner(HDC hdc, RECT *prc)
     uVar8 = grbitScan & 0xf;
     hdcScreen = 0;
     hbmpScreen = 0;
-    if (((((FLEET **)rglpfl != (FLEET **)0x0) || (rglpfl._2_2_ != 0)) && (((uint)gd.grBits2 & 1) == 0)) && (((uint)gd.grBits >> 1 & 1) == 0)) {
+    if (((((FLEET **)rglpfl != 0) || (rglpfl._2_2_ != 0)) && (((uint)gd.grBits2 & 1) == 0)) && (((uint)gd.grBits >> 1 & 1) == 0)) {
         uVar9 = PtToScan(4000 - xScanTop);
         ptOrigin.x = uVar9 & 7;
         uVar9 = PtToScan(4000 - yScanTop);
@@ -842,10 +842,10 @@ short DrawScanner(HDC hdc, RECT *prc)
                 /* WARNING: Load size is inaccurate */
                 pFVar6 = ((FLEET **)rglpfl)[i];
                 iVar21 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-                if ((pFVar6 == (FLEET *)0x0) && (iVar21 == 0))
+                if ((pFVar6 == 0) && (iVar21 == 0))
                     break;
                 if (pFVar6->iPlayer == idPlayer) {
-                    dRange = GetFleetScannerRange((FLEET *)CONCAT22(iVar21, pFVar6), &local_a76, (short *)0x0, (short *)0x0);
+                    dRange = GetFleetScannerRange((FLEET *)CONCAT22(iVar21, pFVar6), &local_a76, 0, 0);
                     if (0 < (int)local_a76) {
                         local_674 = local_674 | 2;
                     }
@@ -861,7 +861,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                     }
                 }
             }
-            DrawRadarCircle(&local_a74, (RECT *)0x0);
+            DrawRadarCircle(&local_a74, 0);
             if (hbrRadarNear == 0) {
                 if (vcScreenColors < 9) {
                     uVar9 = 0x7f7f;
@@ -910,10 +910,10 @@ short DrawScanner(HDC hdc, RECT *prc)
                     /* WARNING: Load size is inaccurate */
                     pFVar6 = ((FLEET **)rglpfl)[i];
                     iVar21 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
-                    if ((pFVar6 == (FLEET *)0x0) && (iVar21 == 0))
+                    if ((pFVar6 == 0) && (iVar21 == 0))
                         break;
                     if (pFVar6->iPlayer == idPlayer) {
-                        GetFleetScannerRange((FLEET *)CONCAT22(iVar21, pFVar6), &local_a76, (short *)0x0, (short *)0x0);
+                        GetFleetScannerRange((FLEET *)CONCAT22(iVar21, pFVar6), &local_a76, 0, 0);
                         if (0 < (int)local_a76) {
                             if (vpctRadarView < 100) {
                                 local_a76 = (PLANET *)MulDiv((short)local_a76, vpctRadarView, 100);
@@ -951,7 +951,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                     lpth = (THING *)CONCAT22(uVar41, (THING *)lpth + 1);
                 }
             }
-            DrawRadarCircle(&local_a74, (RECT *)0x0);
+            DrawRadarCircle(&local_a74, 0);
             SelectObject(hdc, hbrRadar);
             SelectObject(hdc, hpenRadar);
             if (uVar8 != 5) {
@@ -972,7 +972,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                     pFVar6 = ((FLEET **)rglpfl)[i];
                     iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                     lpfl = (FLEET *)CONCAT22(iVar31, pFVar6);
-                    if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0))
+                    if ((pFVar6 == 0) && (iVar31 == 0))
                         break;
                     if (pFVar6->idPlanet == -1) {
                         lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31, pFVar6));
@@ -1031,10 +1031,10 @@ short DrawScanner(HDC hdc, RECT *prc)
             for (j = 0; pPVar30 = lpThings._2_2_, j < 3; j = j + 1) {
                 if (((j != 0) || ((grbitScanMines & 1) != 0)) && (((j != 1 || ((grbitScanMines & 2) != 0)) && ((j != 2 || ((grbitScanMines & 0xc) != 0)))))) {
                     for (i = 0; i < 3; i = i + 1) {
-                        for (local_a76 = (PLANET *)0x0; (int)local_a76 <= (int)(uint)(i == 0); local_a76 = (PLANET *)((int)&local_a76->id + 1)) {
+                        for (local_a76 = 0; (int)local_a76 <= (int)(uint)(i == 0); local_a76 = (PLANET *)((int)&local_a76->id + 1)) {
                             SetBrushOrg(hdc, ptOrigin.x, ptOrigin.y);
                             SelectObject(hdc, ((ushort *)rghbrPat)[i]);
-                            if (local_a76 == (PLANET *)0x0) {
+                            if (local_a76 == 0) {
                                 uVar41 = *(undefined2 *)(j * 4 + rgcrScanMine);
                                 uVar28 = *(undefined2 *)(j * 4 + hbrBlue);
                             } else {
@@ -1089,7 +1089,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                                                 }
                                                 SetRect(&rc, pt.x - dRange, pt.y - dRange, pt.x + dRange + 1, pt.y + dRange + 1);
                                                 SetBkColor(hdc, CONCAT22(*(undefined2 *)(j * 4 + hbrBlue), *(undefined2 *)(j * 4 + rgcrScanMine)));
-                                                ExtTextOut(hdc, rc.left, rc.top, 2, &rc, (LPCSTR)0x0, 0, (short *)0x0);
+                                                ExtTextOut(hdc, rc.left, rc.top, 2, &rc, 0, 0, 0);
                                                 SetBkColor(hdc, 0);
                                             }
                                         }
@@ -1103,7 +1103,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                             LAB_1058_243c:
                                 lpth = (THING *)CONCAT22(uVar41, (THING *)lpth + 1);
                             }
-                            DrawRadarCircle(&local_a74, (RECT *)0x0);
+                            DrawRadarCircle(&local_a74, 0);
                         }
                     }
                 }
@@ -1125,7 +1125,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                     rc.right = PtToScan(iVar17 + pt.x + iVar21);
                     rc.bottom = PtToScan((iVar18 - pt.y) + iVar21);
                     DrawRadarCircle(&local_a74, &rc);
-                    DrawRadarCircle(&local_a74, (RECT *)0x0);
+                    DrawRadarCircle(&local_a74, 0);
                 }
             }
             SetROP2(hdc, local_674);
@@ -1153,7 +1153,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                         if ((local_48a->idFull < *(uint *)((int)&pTVar32->u_THING_0x0006 + 6)) &&
                             ((1 << ((byte)idPlayer & 0x1f) & *(uint *)((int)&pTVar32->u_THING_0x0006 + 4)) != 0)) {
                             local_486 = LpthFromId(*(short *)((int)&pTVar32->u_THING_0x0006 + 6));
-                            if (local_486 != (THING *)0x0) {
+                            if (local_486 != 0) {
                                 MoveTo(hdc, pt.x, pt.y);
                                 uVar41 = (undefined2)((ulong)local_486 >> 0x10);
                                 local_482.x = (&((THING *)local_486)->pt)->x;
@@ -1232,7 +1232,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                 pFVar6 = ((FLEET **)rglpfl)[i];
                 iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                 lpfl = (FLEET *)CONCAT22(iVar31, pFVar6);
-                if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0))
+                if ((pFVar6 == 0) && (iVar31 == 0))
                     break;
                 if (((pFVar6->wFlags_0x4 >> 10 & 1) == 0) && ((6 < (pFVar6->wFlags_0x4 & 0xff) && (1 < pFVar6->cord)))) {
                     lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31, pFVar6));
@@ -1312,7 +1312,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                         pPVar38 = LpplFromId(i);
                         iVar31 = (int)((ulong)pPVar38 >> 0x10);
                         pPVar30 = (PLANET *)pPVar38;
-                        if (((pPVar30 != (PLANET *)0x0) || (iVar31 != 0)) && (pPVar30->iPlayer != -1)) {
+                        if (((pPVar30 != 0) || (iVar31 != 0)) && (pPVar30->iPlayer != -1)) {
                             if (pPVar30->iPlayer == idPlayer) {
                                 uVar41 = 0xffff;
                                 uVar28 = 0xff;
@@ -1373,7 +1373,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                     if (*(int *)(*(int *)(iVar31 + rglpshdefSB) + (*(uint *)&pPVar30->lStarbase & 0xf) * 0x93) == 0x20) {
                         fStarbase = 2;
                     }
-                    sVar20 = IWarpMAFromLppl(lppl, (short *)0x0);
+                    sVar20 = IWarpMAFromLppl(lppl, 0);
                     bVar35 = 0 < sVar20;
                     sVar20 = IStargateFromLppl(lppl);
                     bVar34 = sVar20 != -1;
@@ -1481,7 +1481,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                             pTVar32 = (THING *)(uint)(uVar8 == 2);
                             local_486 = (THING *)CONCAT22(local_486._2_2_, pTVar32);
                             local_482.y = (short)(iScanZoom < 0);
-                            if ((3 < (pPVar30->wFlags_0x4 & 0xff)) || ((pTVar32 != (THING *)0x0 && (2 < (pPVar30->wFlags_0x4 & 0xff))))) {
+                            if ((3 < (pPVar30->wFlags_0x4 & 0xff)) || ((pTVar32 != 0 && (2 < (pPVar30->wFlags_0x4 & 0xff))))) {
                                 local_486 = (THING *)CONCAT22(pt.x - *(int *)(local_482.y * 10 + vrgScanPO), pTVar32);
                                 local_48a = (THING *)CONCAT22(pt.y - *(int *)(local_482.y * 10 + vrgScanPO_0x2), (THING *)local_48a);
                                 HVar26 = SelectObject(hdc, hbrButtonFace);
@@ -1489,7 +1489,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                                 PatBlt(hdc, local_486._2_2_ + -2, (local_48a._2_2_ - *(int *)(local_482.y * 10 + 0x590)) + 1, 1,
                                        *(short *)(local_482.y * 10 + 0x590), 0xf00021);
                                 for (local_482.x = 0; local_482.x < 3; local_482.x = local_482.x + 1) {
-                                    if ((THING *)local_486 == (THING *)0x0) {
+                                    if ((THING *)local_486 == 0) {
                                         local_48c = *(PLANET **)(pPVar30->rgwtMin + local_482.x);
                                         local_48a._0_2_ = (THING *)*(uint *)((int)(pPVar30->rgwtMin + local_482.x) + 2);
                                         uVar9 = cMinGrafMax / 0x28;
@@ -1515,7 +1515,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                                         local_48c = (PLANET *)pPVar38;
                                         local_48a = (THING *)CONCAT22(local_48a._2_2_, (THING *)((ulong)pPVar38 >> 0x10));
                                     }
-                                    if ((-1 < (int)(THING *)local_48a) && ((0 < (int)(THING *)local_48a || (local_48c != (PLANET *)0x0)))) {
+                                    if ((-1 < (int)(THING *)local_48a) && ((0 < (int)(THING *)local_48a || (local_48c != 0)))) {
                                         SelectObject(hdc, ((ushort *)rghbrMineral)[local_482.x]);
                                         PatBlt(hdc, local_486._2_2_, local_48a._2_2_ - (int)local_48c, *(short *)(local_482.y * 10 + 0x592), (short)local_48c,
                                                0xf00021);
@@ -1675,7 +1675,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                 pFVar6 = ((FLEET **)rglpfl)[i];
                 iVar31 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                 lpflT = (FLEET *)CONCAT22(iVar31, pFVar6);
-                if ((pFVar6 == (FLEET *)0x0) && (iVar31 == 0))
+                if ((pFVar6 == 0) && (iVar31 == 0))
                     break;
                 lVar39 = CShipsScanVis((FLEET *)CONCAT22(iVar31, pFVar6));
                 if ((0 < lVar39) || ((lpflT->id == iVar21 || (lpflT->id == sVar20)))) {
@@ -2012,9 +2012,9 @@ void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
     short      y2;
 
     CVar14 = CONCAT22(crSav._2_2_, (undefined2)crSav);
-    if ((prc == (RECT *)0x0) ||
+    if ((prc == 0) ||
         ((pdc->fCovered == 0 && (BVar1 = IntersectRect(&rc, (RECT *)CONCAT62((int6)(CONCAT44(&rc, 0x11200000) >> 0x10), prc), &pdc->rcClip), BVar1 != 0)))) {
-        if (prc == (RECT *)0x0) {
+        if (prc == 0) {
             if (pdc->fHollowOut != 0) {
                 SetROP2(pdc->hdc, 9);
                 CVar14 = SetBkColor(pdc->hdc, (COLORREF)(CONCAT44((long)(CONCAT26(pdc->hdc, 0xff00000000) >> 0x20), 0xffff0000) >> 0x10));
@@ -2098,7 +2098,7 @@ void DrawRadarCircle(DRAWCIR *pdc, RECT *prc)
                         if (pdc->rgrad[i] < iVar3) {
                             _sqrt((double)(long)(uVar13 + uVar11));
                             bVar9 = CARRY2((uint)pdc->rgrad, i * 2);
-                            bVar10 = pdc->rgrad + i == (short *)0x0;
+                            bVar10 = pdc->rgrad + i == 0;
                             __aFfcompp();
                             if (bVar9 || bVar10) {
                                 pdc->rgrad[i] = 0;
@@ -2528,13 +2528,13 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
     bVar1 = true;
     GetClientRect(hwndScanner, &rc);
     rc.top = rc.bottom - dySBar;
-    if ((prc == (RECT *)0x0) || (BVar2 = IntersectRect(&rcT, prc, &rc), BVar2 != 0)) {
+    if ((prc == 0) || (BVar2 = IntersectRect(&rcT, prc, &rc), BVar2 != 0)) {
         bVar12 = hdc == 0;
         if (bVar12) {
             hdc = GetDC(hwndScanner);
         }
         HVar3 = SelectObject(hdc, rghfontArial8[1]);
-        if (psbar == (SBAR *)0x0) {
+        if (psbar == 0) {
             grobj = sel.scan.grobj;
         } else {
             grobj = psbar->grbit;
@@ -2555,37 +2555,37 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
         rcT.bottom = rc.bottom + -4;
         rcT.left = rc.left + 4;
         if (0x167 < rc.right) {
-            DVar14 = GetTextExtent(hdc, s_ID_000_1120_05a2, 7);
+            DVar14 = GetTextExtent(hdc, "ID #000", 7);
             rcT.right = (int)DVar14 + 6 + rcT.left;
             DrawLockLight(hdc, &rcT, fFullRedraw);
             if ((grobj & 1U) == 0) {
                 if (grobj == 4) {
-                    if (psbar == (SBAR *)0x0) {
+                    if (psbar == 0) {
                         id = sel.scan.iwp;
                     } else {
                         id = psbar->id;
                     }
-                    sVar6 = _wsprintf(szWork, s_WP_d_1120_05b1, id);
+                    sVar6 = _wsprintf(szWork, "WP #%d", id);
                     TextOut(hdc, rcT.left + 3, rcT.top + 2, szWork, sVar6);
                 }
             } else {
-                if (psbar == (SBAR *)0x0) {
+                if (psbar == 0) {
                     id = sel.scan.idpl;
                 } else {
                     id = psbar->id;
                 }
                 if (id != -1) {
-                    sVar6 = _wsprintf(szWork, s_ID_d_1120_05aa, id + 1);
+                    sVar6 = _wsprintf(szWork, "ID #%d", id + 1);
                     SetBkMode(hdc, 2);
                     TextOut(hdc, rcT.left + 3, rcT.top + 2, szWork, sVar6);
                 }
             }
-            DVar15 = GetTextExtent(hdc, s_X_8888_1120_05b8, 7);
+            DVar15 = GetTextExtent(hdc, "X: 8888", 7);
             iVar10 = (int)DVar15;
             rcT.left = rcT.left + (int)DVar14 + 10;
             rcT.right = iVar10 + 6 + rcT.left;
             DrawLockLight(hdc, &rcT, fFullRedraw);
-            if (psbar == (SBAR *)0x0) {
+            if (psbar == 0) {
                 if (grobj == 0) {
                     pt.y = 0;
                     pt.x = 0;
@@ -2598,7 +2598,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
                 pt.y = (psbar->pt).y;
             }
             if (0 < pt.x) {
-                sVar6 = _wsprintf(szWork, s_X_d_1120_05c0, pt.x);
+                sVar6 = _wsprintf(szWork, "X: %d", pt.x);
                 SetBkMode(hdc, 2);
                 TextOut(hdc, rcT.left + 3, rcT.top + 2, szWork, sVar6);
             }
@@ -2606,7 +2606,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
             rcT.right = iVar10 + 6 + rcT.left;
             DrawLockLight(hdc, &rcT, fFullRedraw);
             if (0 < pt.y) {
-                sVar6 = _wsprintf(szWork, s_Y_d_1120_05c6, pt.y);
+                sVar6 = _wsprintf(szWork, "Y: %d", pt.y);
                 SetBkMode(hdc, 2);
                 TextOut(hdc, rcT.left + 3, rcT.top + 2, szWork, sVar6);
             }
@@ -2623,7 +2623,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
         if (grobj != 4) {
             GVar7 = grobj;
         }
-        if ((psbar == (SBAR *)0x0) || (psbar->psz == (char *)0x0)) {
+        if ((psbar == 0) || (psbar->psz == 0)) {
             if ((GVar7 & grobjPlanet) == grobjNone) {
                 if ((GVar7 & grobjFleet) == grobjNone) {
                     if ((GVar7 & grobjThing) == grobjNone) {
@@ -2633,7 +2633,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
                             bVar1 = false;
                         }
                     } else {
-                        if (psbar == (SBAR *)0x0) {
+                        if (psbar == 0) {
                             uVar9 = ((THING *)lpThings + sel.scan.ith)->idFull;
                         } else {
                             uVar9 = psbar->id;
@@ -2641,7 +2641,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
                         PszGetThingName(uVar9);
                     }
                 } else {
-                    if (psbar == (SBAR *)0x0) {
+                    if (psbar == 0) {
                         sVar6 = ((FLEET **)rglpfl)[sel.scan.ifl]->id;
                     } else {
                         sVar6 = psbar->id;
@@ -2650,7 +2650,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
                 }
             } else {
                 sVar6 = sel.scan.idpl;
-                if (psbar != (SBAR *)0x0) {
+                if (psbar != 0) {
                     sVar6 = psbar->id;
                 }
                 PszGetPlanetName(sVar6);
@@ -2668,7 +2668,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
             uVar18 = unaff_SS;
             HVar21 = hdc;
             UVar20 = lstrlen(szWork);
-            ExtTextOut(HVar21, iVar10, iVar11, UVar19, (RECT *)CONCAT22(uVar18, pRVar17), (LPCSTR)CONCAT22(uVar16, pcVar8), UVar20, (short *)0x0);
+            ExtTextOut(HVar21, iVar10, iVar11, UVar19, (RECT *)CONCAT22(uVar18, pRVar17), (LPCSTR)CONCAT22(uVar16, pcVar8), UVar20, 0);
         }
         OffsetRc(&rc, 0, dySBar >> 1);
         rcT.top = rc.top + 4;
@@ -2681,7 +2681,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
         rcClip.right = rcT.right;
         rcClip.bottom = rcT.bottom;
         ExpandRc(&rcClip, -2, -2);
-        if (psbar == (SBAR *)0x0) {
+        if (psbar == 0) {
             if (grobj == 0) {
                 pt.y = 0;
                 pt.x = 0;
@@ -2693,7 +2693,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
             pt.x = (&psbar->pt)->x;
             pt.y = (psbar->pt).y;
         }
-        if ((psbar == (SBAR *)0x0) || (psbar->pscan == (SCAN *)0x0)) {
+        if ((psbar == 0) || (psbar->pscan == 0)) {
             if ((sel.grobj == grobjFleet) || (sel.grobj == grobjPlanet)) {
                 pt2.x = sel.pt.x;
                 pt2.y = sel.pt.y;
@@ -2710,7 +2710,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
             for (psz = szBuf; *psz != ' '; psz = psz + 1) {
             }
             CchGetString((0x15d < rc.right) + idsLy, psz + 1);
-            if ((psbar == (SBAR *)0x0) || (psbar->pscan == (SCAN *)0x0)) {
+            if ((psbar == 0) || (psbar->pscan == 0)) {
                 uVar9 = _strlen(psz);
                 CchGetString(idsFrom, psz + uVar9);
                 pcVar8 = PszGetLocName(sel.grobj, sel.id, pt2.x, pt2.y);
@@ -2724,7 +2724,7 @@ void DrawScannerSBar(HDC hdc, RECT *prc, SBAR *psbar, short fFullRedraw)
             uVar18 = unaff_SS;
             HVar21 = hdc;
             uVar9 = _strlen(szBuf);
-            ExtTextOut(HVar21, iVar10, iVar11, UVar20, (RECT *)CONCAT22(uVar18, pRVar17), pcVar8, uVar9, (short *)0x0);
+            ExtTextOut(HVar21, iVar10, iVar11, UVar20, (RECT *)CONCAT22(uVar18, pRVar17), pcVar8, uVar9, 0);
         }
         SelectObject(hdc, HVar5);
         SetBkMode(hdc, sVar4);
@@ -3144,7 +3144,7 @@ void CtrPointScan(POINT pt, short fScroll)
             yScanTop = uVar6;
             SetScrollPos(hwndScanner, (short)(uVar9 >> 0x10), (short)uVar9, 1);
             if (fScroll == 0) {
-                InvalidateRect(hwndScanner, (RECT *)0x0, 0);
+                InvalidateRect(hwndScanner, 0, 0);
             } else {
                 sVar7 = PtToScan(sVar7 - uVar6);
                 sVar8 = PtToScan(sVar8 - uVar5);
@@ -3407,9 +3407,9 @@ short IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
     uVar10 = (undefined2)((ulong)lpord >> 0x10);
     pOVar7 = (ORDER *)lpord;
     uVar1 = pOVar7->wFlags_0x6;
-    uVar4 = IFindIdealWarp((FLEET *)0x0, 0);
+    uVar4 = IFindIdealWarp(0, 0);
     if (fAi != 0) {
-        iWarpAi = IFindIdealWarp((FLEET *)0x0, 1);
+        iWarpAi = IFindIdealWarp(0, 1);
     }
     lVar16 = CONCAT22(in_stack_0000ffce, in_stack_0000ffcc);
     uVar11 = (undefined2)((ulong)lpfl >> 0x10);
@@ -3427,7 +3427,7 @@ short IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
         bVar2 = true;
     } else {
         bVar2 = false;
-        for (local_1e._0_2_ = (PLANET *)0x0; local_1e._2_2_ = 0, (int)(PLANET *)local_1e < 0x10; local_1e._0_2_ = (PLANET *)((int)(PLANET *)local_1e + 1)) {
+        for (local_1e._0_2_ = 0; local_1e._2_2_ = 0, (int)(PLANET *)local_1e < 0x10; local_1e._0_2_ = (PLANET *)((int)(PLANET *)local_1e + 1)) {
             if (0 < pFVar8->rgcsh[(int)(PLANET *)local_1e]) {
                 for (;
                      iVar9 = pFVar8->iPlayer * 4, local_1e._2_2_ < (int)(uint) * (byte *)(*(int *)(iVar9 + rglpshdef) + (int)(PLANET *)local_1e * 0x93 + 0x7a);
@@ -3457,14 +3457,14 @@ short IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
         pt.x = (lpord->pt).x;
         sVar6 = FFindNearestObject(pt, 0x81, &scan);
         if (sVar6 == 0) {
-            local_1e = (PLANET *)0x0;
+            local_1e = 0;
         } else {
             local_1e = LpplFromId(scan.idpl);
         }
         lVar16 = CONCAT22(in_stack_0000ffce, in_stack_0000ffcc);
-        if ((bVar2) || ((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) &&
-                         ((((PLANET *)local_1e)->iPlayer == -1 || (((PLANET *)local_1e)->iPlayer == idPlayer)))))) {
-            if ((bVar3) && (((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) && (((PLANET *)local_1e)->iPlayer == idPlayer)) &&
+        if ((bVar2) ||
+            ((((PLANET *)local_1e != 0 || (local_1e._2_2_ != 0)) && ((((PLANET *)local_1e)->iPlayer == -1 || (((PLANET *)local_1e)->iPlayer == idPlayer)))))) {
+            if ((bVar3) && (((((PLANET *)local_1e != 0 || (local_1e._2_2_ != 0)) && (((PLANET *)local_1e)->iPlayer == idPlayer)) &&
                              (*(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (*(uint *)&((PLANET *)local_1e)->lStarbase & 0xf) * 0x93) != 0x20)))) {
                 bVar3 = false;
             }
@@ -3497,7 +3497,7 @@ short IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord)
             pOVar7->wFlags_0x6 = pOVar7->wFlags_0x6 & 0xff0f | (iWarp & 0xfU) << 4;
             lVar13 = LFuelUseToWaypoint(lpfl, iwp, 1);
             if ((lVar13 <= CONCAT22(*(undefined2 *)((int)pFVar8->rgwtMin + 0x12), (int)pFVar8->rgwtMin[4])) &&
-                ((((((PLANET *)local_1e != (PLANET *)0x0 || (local_1e._2_2_ != 0)) && ((((PLANET *)local_1e)->wFlags_0x4 >> 9 & 1) != 0)) &&
+                ((((((PLANET *)local_1e != 0 || (local_1e._2_2_ != 0)) && ((((PLANET *)local_1e)->wFlags_0x4 >> 9 & 1) != 0)) &&
                    ((((PLANET *)local_1e)->iPlayer == idPlayer &&
                      (pHVar14 = LphuldefFromId(*(HullDef *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (*(uint *)&((PLANET *)local_1e)->lStarbase & 0xf) * 0x93)),
                       (((HULDEF *)pHVar14)->hul).wtCargoMax != 0)))) ||
@@ -3769,7 +3769,7 @@ short FHandleWayPointDrag(POINT pt)
                     } else {
                         sbar.id = scan.iwp;
                     }
-                    sbar.psz = (char *)0x0;
+                    sbar.psz = 0;
                 }
                 sbar.pt.x = rgpt[0].x;
                 sbar.pt.y = rgpt[0].y;
@@ -3784,7 +3784,7 @@ short FHandleWayPointDrag(POINT pt)
                 pHVar15[-5] = 0x1058;
                 pHVar15[-6] = 0x853a;
                 DrawScanXorLines(pHVar15[-4], (POINT *)pHVar15[-3], pHVar15[-2]);
-                sbar.pscan = (SCAN *)0x0;
+                sbar.pscan = 0;
                 pHVar15[-2] = 0;
                 pHVar15[-3] = (HWND)&sbar;
                 pHVar15[-4] = 0;
@@ -3832,7 +3832,7 @@ short FHandleWayPointDrag(POINT pt)
         pHVar15[-5] = 0x8647;
         GetClientRect(pHVar15[-1], *(RECT **)(pHVar15 + -3));
         if (fDup != 0) {
-            pHVar15[-1] = (HWND)((char *)s_M6102__MATH___floating_point_err_1120_2022 + 2);
+            pHVar15[-1] = (HWND)((char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 2);
             pHVar15[-2] = 0;
             pHVar15[-3] = 0;
             pHVar15[-4] = 0x61;
@@ -4305,8 +4305,8 @@ void ChangeScanSel(SCAN *pscan, short fValidScan)
             pt_00.x = (pscan->pt).x;
             FEnsurePointOnScreen(pt_00, 1);
         }
-        DrawScannerSBar(0, (RECT *)0x0, (SBAR *)0x0, 0);
-        InvalidateRect(hwndMine, (RECT *)0x0, 1);
+        DrawScannerSBar(0, 0, 0, 0);
+        InvalidateRect(hwndMine, 0, 1);
         SetMineralTitleBar(hwndMine);
         if (bVar3) {
             local_12 = GetDC(hwndScanner);
@@ -4368,7 +4368,7 @@ short FGetNextObjHere(SCAN *pscan, short fOnlyOurs)
         pFVar1 = ((FLEET **)rglpfl)[i];
         iVar2 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
         lpfl = (FLEET *)CONCAT22(iVar2, pFVar1);
-        if ((pFVar1 == (FLEET *)0x0) && (iVar2 == 0))
+        if ((pFVar1 == 0) && (iVar2 == 0))
             break;
         if (bVar4) {
             if (((sel.pt.x == (&pFVar1->pt)->x) && (sel.pt.y == (pFVar1->pt).y)) && ((fOnlyOurs == 0 || (pFVar1->iPlayer == idPlayer))))
@@ -4387,7 +4387,7 @@ short FGetNextObjHere(SCAN *pscan, short fOnlyOurs)
                 pFVar1 = ((FLEET **)rglpfl)[i];
                 iVar2 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                 lpfl = (FLEET *)CONCAT22(iVar2, pFVar1);
-                if (((pFVar1 == (FLEET *)0x0) && (iVar2 == 0)) ||
+                if (((pFVar1 == 0) && (iVar2 == 0)) ||
                     ((((pscan->pt).x == (&pFVar1->pt)->x && ((pscan->pt).y == (pFVar1->pt).y)) && ((fOnlyOurs == 0 || (pFVar1->iPlayer == idPlayer))))))
                     break;
             }
@@ -4452,7 +4452,7 @@ short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                     sVar1 = FSelectSz(szName);
                     if (sVar1 == 0) {
                         sVar1 = 0x10;
-                        sz = PszFormatIds(idsSorryCantFindPlanetFleetName, (short *)0x0);
+                        sz = PszFormatIds(idsSorryCantFindPlanetFleetName, 0);
                         AlertSz(sz, sVar1);
                         HVar2 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar2);
@@ -4555,7 +4555,7 @@ short FSelectSz(char *szName)
                 pch = pch + 1;
                 if ((*(byte *)(*pch + 0x175f) & 4) == 0) {
                     lpfl = LpflFromId(ifl - 1U | idPlayer << 9);
-                    if (((FLEET *)lpfl != (FLEET *)0x0) || ((int)((ulong)lpfl >> 0x10) != 0))
+                    if (((FLEET *)lpfl != 0) || ((int)((ulong)lpfl >> 0x10) != 0))
                         goto SCAN_LFoundFleetId;
                     break;
                 }
@@ -4567,7 +4567,7 @@ short FSelectSz(char *szName)
             pFVar1 = ((FLEET **)rglpfl)[ifl];
             iVar2 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
             lpfl = (FLEET *)CONCAT22(iVar2, pFVar1);
-            if ((pFVar1 == (FLEET *)0x0) && (iVar2 == 0))
+            if ((pFVar1 == 0) && (iVar2 == 0))
                 break;
             pcVar7 = szName;
             pcVar5 = PszGetFleetName(lpfl->id);
@@ -4898,7 +4898,7 @@ LAB_1058_9b4d:
             } else {
                 sbar.id = scan.iwp;
             }
-            sbar.psz = (char *)0x0;
+            sbar.psz = 0;
         }
         sbar.pt.x = ptLogical.x;
         sbar.pt.y = ptLogical.y;

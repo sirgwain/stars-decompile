@@ -36,7 +36,7 @@ void BattleVCR(short iBattle)
            Impure (Non-shareable)
         */
     pasVar3 = penvMem;
-    lpDlgProc = (FARPROC)0x0;
+    lpDlgProc = 0;
     viStepVCRCur = -1;
     if ((uint)gd.grBits >> 0xe < 2) {
         dxyVCRBoard = 0x161;
@@ -70,22 +70,22 @@ void BattleVCR(short iBattle)
                 } else {
                     sVar4 = 0x10;
                     penvMem = pasVar3;
-                    sz = PszFormatIds(idsMemory, (short *)0x0);
+                    sz = PszFormatIds(idsMemory, 0);
                     AlertSz(sz, sVar4);
                 }
-                if (lpDlgProc != (FARPROC)0x0) {
+                if (lpDlgProc != 0) {
                     FreeProcInstance(lpDlgProc);
                 }
-                if (vrgtok != (TOK *)0x0) {
+                if (vrgtok != 0) {
                     FreeLp(vrgtok, htMisc);
                 }
-                if (vrgdpVCR != (long *)0x0) {
+                if (vrgdpVCR != 0) {
                     FreeLp(vrgdpVCR, htMisc);
                 }
                 vrgtok._2_2_ = 0;
-                vrgtok._0_2_ = (TOK *)0x0;
+                vrgtok._0_2_ = 0;
                 vrgdpVCR._2_2_ = 0;
-                vrgdpVCR._0_2_ = (long *)0x0;
+                vrgdpVCR._0_2_ = 0;
                 return;
             }
             if (vlpbdVCR->id == 0xffff)
@@ -97,7 +97,7 @@ void BattleVCR(short iBattle)
         pHVar1 = ((HB *)lphb)->lphbNext;
         iVar2 = *(int *)((int)&((HB *)lphb)->lphbNext + 2);
         lphb = (HB *)CONCAT22(iVar2, pHVar1);
-        if ((pHVar1 == (HB *)0x0) && (iVar2 == 0))
+        if ((pHVar1 == 0) && (iVar2 == 0))
             break;
         vlpbdVCR = (BTLDATA *)CONCAT22(iVar2, &pHVar1[1].cbBlock);
     }
@@ -125,7 +125,7 @@ short CBattles(void)
 
     cBattles = 0;
     lphb = (HB *)CONCAT22(rglphb[0xb]._2_2_, (HB *)rglphb[0xb]);
-    if (((HB *)rglphb[0xb] == (HB *)0x0) && (rglphb[0xb]._2_2_ == 0)) {
+    if (((HB *)rglphb[0xb] == 0) && (rglphb[0xb]._2_2_ == 0)) {
         cBattles = 0;
     } else {
         lpbd = (BTLDATA *)CONCAT22(rglphb[0xb]._2_2_, &((HB *)rglphb[0xb])[1].cbBlock);
@@ -144,7 +144,7 @@ short CBattles(void)
             pHVar1 = ((HB *)lphb)->lphbNext;
             iVar2 = *(int *)((int)&((HB *)lphb)->lphbNext + 2);
             lphb = (HB *)CONCAT22(iVar2, pHVar1);
-            if (((pHVar1 == (HB *)0x0) && (iVar2 == 0)) || (pHVar1->ibTop < 0x11))
+            if (((pHVar1 == 0) && (iVar2 == 0)) || (pHVar1->ibTop < 0x11))
                 break;
             lpbd = (BTLDATA *)CONCAT22(iVar2, &pHVar1[1].cbBlock);
         }
@@ -169,8 +169,8 @@ BTLDATA *BtlDataGet(short i)
     BTLDATA   *lpbd;
 
     lphb = (HB *)CONCAT22(rglphb[0xb]._2_2_, (HB *)rglphb[0xb]);
-    if (((HB *)rglphb[0xb] == (HB *)0x0) && (rglphb[0xb]._2_2_ == 0)) {
-        pBVar3 = (BTLDATA *)0x0;
+    if (((HB *)rglphb[0xb] == 0) && (rglphb[0xb]._2_2_ == 0)) {
+        pBVar3 = 0;
         uVar4 = 0;
     } else {
         lpbd = (BTLDATA *)CONCAT22(rglphb[0xb]._2_2_, &((HB *)rglphb[0xb])[1].cbBlock);
@@ -179,7 +179,7 @@ BTLDATA *BtlDataGet(short i)
                 uVar4 = (undefined2)((ulong)lpbd >> 0x10);
                 pBVar3 = (BTLDATA *)lpbd;
                 if (pBVar3->cbData == 0) {
-                    pBVar3 = (BTLDATA *)0x0;
+                    pBVar3 = 0;
                     uVar4 = 0;
                     goto LAB_10e8_0449;
                 }
@@ -193,11 +193,11 @@ BTLDATA *BtlDataGet(short i)
             pHVar1 = ((HB *)lphb)->lphbNext;
             iVar2 = *(int *)((int)&((HB *)lphb)->lphbNext + 2);
             lphb = (HB *)CONCAT22(iVar2, pHVar1);
-            if (((pHVar1 == (HB *)0x0) && (iVar2 == 0)) || (pHVar1->ibTop < 0x11))
+            if (((pHVar1 == 0) && (iVar2 == 0)) || (pHVar1->ibTop < 0x11))
                 break;
             lpbd = (BTLDATA *)CONCAT22(iVar2, &pHVar1[1].cbBlock);
         }
-        pBVar3 = (BTLDATA *)0x0;
+        pBVar3 = 0;
         uVar4 = 0;
     }
 LAB_10e8_0449:
@@ -343,7 +343,7 @@ long LdpFromItokDv(short itok, DV *lpdv)
     ushort dpShdef;
     DV     dv;
 
-    if (((DV *)lpdv == (DV *)0x0) && (lpdv._2_2_ == 0)) {
+    if (((DV *)lpdv == 0) && (lpdv._2_2_ == 0)) {
         dv.dp = 0;
     } else {
         dv = (DV)lpdv->dp;
@@ -594,7 +594,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             GetWindowRect(HVar4, &rc);
             MapWindowPoints(0, hwnd, (POINT *)&rc, 2);
             if (dxyVCRSquare < 0x40) {
-                local_1e = (RECT *)0x0;
+                local_1e = 0;
             } else {
                 local_20 = ((rc.right - rc.left) + 8) * i;
                 local_22 = ((rc.right - rc.left) * 7) / 2;
@@ -719,7 +719,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 local_1c._2_2_ = SetBkMode(HVar7, 2);
                 local_26 = SetBkColor(HVar7, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 SelectObject(HVar7, rghfontArial8[1]);
-                InitBtnTrack(local_3e, hwnd, 0, local_1e, local_1c._0_2_, 0x50, 0, 0, (char *)0x0);
+                InitBtnTrack(local_3e, hwnd, 0, local_1e, local_1c._0_2_, 0x50, 0, 0, 0);
                 while (true) {
                     sVar8 = FTrackBtn(local_3e);
                     if (sVar8 == 0)
@@ -933,17 +933,17 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
     dpArmor._0_2_ = (undefined2)lVar11;
     dpShields._2_2_ = (undefined2)(uVar12 >> 0x10);
     dpShields._0_2_ = (undefined2)uVar12;
-    if (pdv != (DV *)0x0) {
+    if (pdv != 0) {
         pdv->dp = dv.dp;
     }
-    if (pcsh != (short *)0x0) {
+    if (pcsh != 0) {
         *pcsh = cshT;
     }
-    if (pdpArmor != (long *)0x0) {
+    if (pdpArmor != 0) {
         *(undefined2 *)pdpArmor = (undefined2)dpArmor;
         *(undefined2 *)((int)pdpArmor + 2) = dpArmor._2_2_;
     }
-    if (pdpShields != (long *)0x0) {
+    if (pdpShields != 0) {
         *(undefined2 *)pdpShields = (undefined2)dpShields;
         *(undefined2 *)((int)pdpShields + 2) = dpShields._2_2_;
     }
@@ -1073,11 +1073,11 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
             } else {
                 uVar10 = 3;
             }
-            DrawBtn(hdc, (RECT *)rgrcBuildSpin + i, uVar10 | 0x20, 0, (char *)0x0);
+            DrawBtn(hdc, (RECT *)rgrcBuildSpin + i, uVar10 | 0x20, 0, 0);
         }
         if (-1 < viStepVCRCur) {
             iVar12 = iVar12 + dyArial8 + 4;
-            pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[vlpbrVCR->itok].iplr, 1, 1, 1, 0, (PLAYER *)0x0);
+            pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[vlpbrVCR->itok].iplr, 1, 1, 1, 0, 0);
             uVar21 = 0x1120;
             pcVar18 = (char *)szWork;
             iVar2 = iVar12;
@@ -1115,7 +1115,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
             fJam = 0;
             uVar21 = (undefined2)((ulong)vlpbrVCR >> 0x10);
             if (0 < ((BTLREC *)vlpbrVCR)->ctok) {
-                pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[((BTLREC *)vlpbrVCR)->wFlags_0x4 >> 8].iplr, 0, 1, 1, 0, (PLAYER *)0x0);
+                pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[((BTLREC *)vlpbrVCR)->wFlags_0x4 >> 8].iplr, 0, 1, 1, 0, 0);
                 uVar21 = 0x1120;
                 pcVar18 = PszGetCompressedString(idsAttacksS);
                 sVar6 = _wsprintf(szT, pcVar18, pcVar5, uVar21);
@@ -1168,7 +1168,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
                     j = j + *(int *)((int)(BTLREC *)vlpbrVCR + (i + -1) * 8 + 8);
                     if (rgfSeen[itokT] == 0) {
                         rgfSeen[itokT] = 1;
-                        GetVCRStats(itokT, &dpT, (DV *)0x0, &local_1a4, &local_1a0);
+                        GetVCRStats(itokT, &dpT, 0, &local_1a4, &local_1a0);
                         uVar10 = *(uint *)((long *)vrgdpVCR + itokT);
                         uVar9 = uVar10 - (uint)dpT;
                         bVar13 = CARRY2((uint)dpArmor, uVar9);
@@ -1190,10 +1190,10 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
                     CchGetString(idsAnd, szT);
                     if ((dpArmor._2_2_ < 0) || ((dpArmor._2_2_ < 1 && ((uint)dpArmor == 0)))) {
                         if (j < 1) {
-                            pcVar5 = (char *)0x1422;
+                            pcVar5 = (char *)s___1120_1422;
                             uVar21 = 0x1120;
                         } else {
-                            pcVar5 = (char *)0x1420;
+                            pcVar5 = (char *)s___1120_1420;
                             uVar21 = 0x1120;
                         }
                     } else {
@@ -1235,10 +1235,10 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
                     pcVar5 = PszGetCompressedString(idsDestroyingDShip);
                     sVar6 = _wsprintf(szWork, pcVar5, sVar6);
                     if (j == 1) {
-                        _strcpy((char *)szWork + sVar6, (char *)0x1424);
+                        _strcpy((char *)szWork + sVar6, (char *)s___1120_1424);
                         c = sVar6 + 1;
                     } else {
-                        _strcpy((char *)szWork + sVar6, (char *)0x1426);
+                        _strcpy((char *)szWork + sVar6, (char *)s_s__1120_1426);
                         c = sVar6 + 2;
                     }
                     TextOut(hdc, x, y, szWork, c);
@@ -1265,7 +1265,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
             TextOut(hdc, x, 200, szWork, sVar6);
             iVar12 = dyArial8 + 200;
             if (-1 < viVCRFocus) {
-                pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[viVCRFocus].iplr, 1, 1, 1, 0, (PLAYER *)0x0);
+                pcVar5 = PszPlayerName((uint)((TOK *)vrgtok)[viVCRFocus].iplr, 1, 1, 1, 0, 0);
                 uVar8 = _strlen(pcVar5);
                 TextOut(hdc, x, iVar12, szWork, uVar8);
                 iVar12 = iVar12 + dyArial8;
@@ -1292,7 +1292,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
                     c = _wsprintf(szWork, pcVar5, pcVar18, lpshdef._2_2_, uVar20);
                 }
                 if (local_1a0 != 0) {
-                    sVar6 = _wsprintf((char *)szWork + c, s_d_1120_1429, local_1a0);
+                    sVar6 = _wsprintf((char *)szWork + c, " (-%d)", local_1a0);
                     c = c + sVar6;
                 }
                 SetTextColor(hdc, 0x7f0000);
@@ -1412,7 +1412,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
                     }
                 }
                 SetRect(&rc, x, y + 4, x + dyArial8 + 4, y + dyArial8 + 8);
-                DrawBtn(hdc, &rc, 8, 0, (char *)0x1430);
+                DrawBtn(hdc, &rc, 8, 0, (char *)s___1120_1430);
             }
         }
         iStart = 0;
@@ -1462,8 +1462,7 @@ void DrawVCR(HDC hdc, short iStart, short iEnd)
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * uVar10 + 10, 1, dxyVCRSquare + 2, 0x42);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + dxyVCRSquare + 0xb, (dxyVCRSquare + 3) * uVar10 + 10, 1, dxyVCRSquare + 2, 0x42);
             PatBlt(hdc, (dxyVCRSquare + 3) * x + 10, (dxyVCRSquare + 3) * uVar10 + dxyVCRSquare + 0xb, dxyVCRSquare + 2, 1, 0x42);
-            DrawFleetBitmap((FLEET *)0x0, hdc, (dxyVCRSquare + 3) * x + 0xb, (dxyVCRSquare + 3) * uVar10 + 0xb, 0, ibmp, ctok, (uint)(dxyVCRSquare < 0x40),
-                            ibmpRace, csh);
+            DrawFleetBitmap(0, hdc, (dxyVCRSquare + 3) * x + 0xb, (dxyVCRSquare + 3) * uVar10 + 0xb, 0, ibmp, ctok, (uint)(dxyVCRSquare < 0x40), ibmpRace, csh);
         }
         local_1a0 = (uint)vbrcVCRFocus;
         if (((local_1a0 == ((uVar10 & 0xf) << 4 | x & 0xfU)) && (viVCRFocus == -1)) ||
@@ -2009,7 +2008,7 @@ short PopupVCRMenu(HWND hwnd, short x, short y, byte brc)
     bVar1 = ((TOK *)vrgtok)[((BTLREC *)vlpbrVCR)->wFlags_0x4 >> 8].brc;
     for (i = 0; i < (int)(uint)((BTLDATA *)vlpbdVCR)->ctok; i = i + 1) {
         if ((((TOK *)vrgtok)[i].brc == brc) && (((TOK *)vrgtok)[i].csh != 0)) {
-            PszPlayerName((uint)((TOK *)vrgtok)[i].iplr, 0, 0, 0, 0, (PLAYER *)0x0);
+            PszPlayerName((uint)((TOK *)vrgtok)[i].iplr, 0, 0, 0, 0, 0);
             uVar2 = _strlen((char *)szWork);
             if (*&((TOK *)vrgtok)[i].u_TOK_0x0003 == '\x01') {
                 iVar4 = (uint)((TOK *)vrgtok)[i].iplr * 4;
@@ -2020,7 +2019,7 @@ short PopupVCRMenu(HWND hwnd, short x, short y, byte brc)
                 lpshdef._2_2_ = *(undefined2 *)(iVar4 + rglpshdef_0x2);
                 lpshdef._0_2_ = (SHDEF *)(*(int *)(iVar4 + rglpshdef) + (uint) * (byte *)((int)&((TOK *)vrgtok)[i].u_TOK_0x0003 + 1) * 0x93);
             }
-            sVar3 = _wsprintf((char *)szWork + uVar2, s_s_d_1120_1432, (((SHDEF *)lpshdef)->hul).szClass, lpshdef._2_2_, ((TOK *)vrgtok)[i].csh);
+            sVar3 = _wsprintf((char *)szWork + uVar2, " %s * %d", (((SHDEF *)lpshdef)->hul).szClass, lpshdef._2_2_, ((TOK *)vrgtok)[i].csh);
             cch = uVar2 + sVar3;
             if (brc == bVar1) {
                 uVar6 = (undefined2)((ulong)vlpbrVCR >> 0x10);
@@ -2033,7 +2032,7 @@ short PopupVCRMenu(HWND hwnd, short x, short y, byte brc)
                         }
                     }
                     if (0 < cKilled) {
-                        sVar3 = _wsprintf((char *)szWork + cch, s_d_1120_143b, cKilled);
+                        sVar3 = _wsprintf((char *)szWork + cch, " (-%d)", cKilled);
                         cch = cch + sVar3;
                     }
                 }
@@ -2053,7 +2052,7 @@ short PopupVCRMenu(HWND hwnd, short x, short y, byte brc)
     if (c == 0) {
         sVar3 = -1;
     } else {
-        sVar3 = PopupMenu(hwnd, x, y, c, (long *)0x0, rgsz, iChecked, 1);
+        sVar3 = PopupMenu(hwnd, x, y, c, 0, rgsz, iChecked, 1);
         if (sVar3 == -1) {
             sVar3 = -1;
         } else {

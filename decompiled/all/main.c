@@ -49,7 +49,7 @@ short WinMain(HINSTANCE param_1, HINSTANCE param_2, LPSTR param_3, short param_4
     vtimer.fAutoGenWhenIn = 1;
     if ((param_2 == 0) && (sVar4 = InitMDIApp(), sVar4 == 0)) {
         sVar4 = 0x10;
-        pcVar5 = PszFormatIds(idsUnableInitializeStars, (short *)0x0);
+        pcVar5 = PszFormatIds(idsUnableInitializeStars, 0);
         AlertSz(pcVar5, sVar4);
         lVar9 = CONCAT22(lSaltLast._2_2_, (undefined2)lSaltLast);
         msg.wParam = 0;
@@ -64,7 +64,7 @@ short WinMain(HINSTANCE param_1, HINSTANCE param_2, LPSTR param_3, short param_4
             sVar4 = FGetSystemColors();
             if (sVar4 == 0) {
                 sVar4 = 0x10;
-                pcVar5 = PszFormatIds(idsUnableInitializeStars, (short *)0x0);
+                pcVar5 = PszFormatIds(idsUnableInitializeStars, 0);
                 AlertSz(pcVar5, sVar4);
                 lVar9 = CONCAT22(lSaltLast._2_2_, (undefined2)lSaltLast);
                 msg.wParam = 0;
@@ -72,7 +72,7 @@ short WinMain(HINSTANCE param_1, HINSTANCE param_2, LPSTR param_3, short param_4
                 sVar4 = InitInstance(param_4);
                 if (sVar4 == 0) {
                     sVar4 = 0x10;
-                    pcVar5 = PszFormatIds(idsUnableInitializeStars, (short *)0x0);
+                    pcVar5 = PszFormatIds(idsUnableInitializeStars, 0);
                     AlertSz(pcVar5, sVar4);
                     lVar9 = CONCAT22(lSaltLast._2_2_, (undefined2)lSaltLast);
                     msg.wParam = 0;
@@ -366,7 +366,7 @@ short FSetUpBatchProcessing(void)
     penvMem = &env;
     sVar1 = __setjmp(env);
     if (sVar1 == 0) {
-        StreamOpen((char *)szBase, 0x20);
+        StreamOpen((char *)szBase, mdRead);
         lVar2 = __filelength(hf);
         cb_00 = (ushort)lVar2;
         _lpchBatch = LpAlloc(cb_00, htPerm);
@@ -385,7 +385,7 @@ short FSetUpBatchProcessing(void)
         pch[-1] = '\0';
         fSuccess = 1;
     }
-    penvMem = (short (*)[9])0x0;
+    penvMem = 0;
     StreamClose();
     if (fSuccess == 0) {
         szBase[0] = '\0';
@@ -591,7 +591,7 @@ void FreeStuff(void)
     FreeProcInstance((fn_lpfnFakeListProc *)CONCAT22(lpfnFakeListProc._2_2_, (fn_lpfnFakeListProc *)lpfnFakeListProc));
     FreeProcInstance((fn_lpfnHostTimerProc *)CONCAT22(lpfnHostTimerProc._2_2_, (fn_lpfnHostTimerProc *)lpfnHostTimerProc));
     FreeProcInstance((fn_lpfnBrowserDlgProc *)CONCAT22(lpfnBrowserDlgProc._2_2_, (fn_lpfnBrowserDlgProc *)lpfnBrowserDlgProc));
-    if (((fn_lpfnTutorDlgProc *)lpfnTutorDlgProc != (fn_lpfnTutorDlgProc *)0x0) || (lpfnTutorDlgProc._2_2_ != 0)) {
+    if (((fn_lpfnTutorDlgProc *)lpfnTutorDlgProc != 0) || (lpfnTutorDlgProc._2_2_ != 0)) {
         FreeProcInstance((fn_lpfnTutorDlgProc *)CONCAT22(lpfnTutorDlgProc._2_2_, (fn_lpfnTutorDlgProc *)lpfnTutorDlgProc));
     }
     DeleteObject(hrgnHuge);
@@ -646,10 +646,10 @@ void FreeStuff(void)
         FreeResource(((ushort *)rghdibInventory)[i]);
     }
     FreeLp((byte *)CONCAT22(lpLog._2_2_, (byte *)lpLog), htLog);
-    lpLog._0_2_ = (byte *)0x0;
+    lpLog._0_2_ = 0;
     lpLog._2_2_ = 0;
     FreeLp((short *)CONCAT22(lpMsg._2_2_, (short *)lpMsg), htMsg);
-    lpMsg._0_2_ = (short *)0x0;
+    lpMsg._0_2_ = 0;
     lpMsg._2_2_ = 0;
     DeleteObject(vhpal);
     if (vhpalSplash != 0) {

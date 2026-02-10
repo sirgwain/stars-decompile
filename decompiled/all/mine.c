@@ -56,14 +56,14 @@ long MineWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         uVar10 = 0x1120;
         pcVar9 = szButton;
         pcVar2 = PszGetCompressedString(idsDetonateMineFieldYear);
-        hwndMineCB = CreateWindow((LPCSTR)CONCAT22(uVar10, pcVar9), pcVar2, 0x40000003, 100, 100, 0x96, dyArial8, hwnd, 0, hInst, (void *)0x0);
+        hwndMineCB = CreateWindow((LPCSTR)CONCAT22(uVar10, pcVar9), pcVar2, 0x40000003, 100, 100, 0x96, dyArial8, hwnd, 0, hInst, 0);
         SendMessage(hwndMineCB, WM_SETFONT, rghfontArial8[1], 0);
         SetMineralTitleBar(hwnd);
     } else if (message == WM_PAINT) {
         hdc_00 = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
         SetRect(&stack0xffbe, 4, 4, rc.right + -4, dyArial8 * 2 + -4);
-        _Draw3dFrame(hdc_00, &stack0xffbe, 0);
+        Draw3dFrame(hdc_00, &stack0xffbe, 0);
         local_32 = (POINT)SetTextColor(hdc_00, CONCAT22(crButtonText._2_2_, (undefined2)crButtonText));
         local_3c._4_4_ = SetBkColor(hdc_00, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         local_3c.top = _strlen((char *)szMineralTitle);
@@ -436,7 +436,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
             local_d4._0_2_ = iVar14;
             if (((pFVar6->wFlags_0x4 & 0xff) == 7) || ((pFVar6->wFlags_0x4 & 0xff) == 4)) {
                 lVar32 = WtFromLpfl((FLEET *)CONCAT22(iVar18, pFVar6));
-                unique0x100044ad = lVar32;
+                unique0x100044b9 = lVar32;
                 sStack_56 = CchGetString(idsFuel2, szT);
                 DVar29 = GetTextExtent(hdc, szT, sStack_56);
                 c2 = CchGetString(idsCargo, (char *)szWork);
@@ -645,7 +645,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
                                 }
                                 SetTextColor(hdc, (ulong)uVar16);
                             }
-                            sVar11 = _wsprintf(szWork, s_d_1120_04fa, local_1d0._2_2_);
+                            sVar11 = _wsprintf(szWork, " (%d%%)", local_1d0._2_2_);
                             TextOut(hdc, local_d8 + dx, iVar18, szWork, sVar11);
                         }
                     }
@@ -682,7 +682,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
                     SetTextColor(hdc, 0xff);
                     sVar37 = 0;
                     sVar11 = 0;
-                    pcVar12 = PszPlayerName(pl.iPlayer, 0, 1, 0, 0, (PLAYER *)0x0);
+                    pcVar12 = PszPlayerName(pl.iPlayer, 0, 1, 0, 0, 0);
                     RightTextOut(hdc, iVar14, iVar18 + dyArial8 + -2, pcVar12, sVar11, sVar37);
                 }
                 iVar18 = iVar18 + dyArial8 + -2;
@@ -700,7 +700,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
                     pcVar12 = PszGetCompressedString(idsReportDYear);
                     c = _wsprintf(szWork, pcVar12, iVar19);
                     if (1 < dNum) {
-                        _strcat((char *)szWork, (char *)0x502);
+                        _strcat((char *)szWork, (char *)s_s_1120_0502);
                         c = c + 1;
                     }
                     sVar11 = CchGetString(idsOld, (char *)szWork + c);
@@ -852,7 +852,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
                     sVar11 = _wsprintf(szWork, PCTD, i * dNum);
                     CtrTextOut(hdc, xBeg, (short)(THING *)local_e6, (char *)szWork, sVar11);
                 }
-                RightTextOut(hdc, local_d8 - 4, (short)(THING *)local_e6, (char *)0x504, 2, 0);
+                RightTextOut(hdc, local_d8 - 4, (short)(THING *)local_e6, (char *)s_kT_1120_0504, 2, 0);
                 if (pl.iPlayer == idPlayer) {
                     EstMineralsMined(&pl, rgl, -1, 0);
                 } else {
@@ -867,7 +867,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
                             /* WARNING: Load size is inaccurate */
                             pFVar6 = ((FLEET **)rglpfl)[ifl];
                             iVar17 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
-                            if ((pFVar6 == (FLEET *)0x0) && (iVar17 == 0))
+                            if ((pFVar6 == 0) && (iVar17 == 0))
                                 break;
                             if ((pFVar6->idPlanet == pl.id) && (((pFVar6->iPlayer == idPlayer && ((pFVar6->wFlags_0x4 >> 10 & 1) == 0)) &&
                                                                  ((*(uint *)&((PLORD *)pFVar6->lpplord)[2].iordMax & 0xf) == 3)))) {
@@ -1220,7 +1220,7 @@ void DrawMineSurvey(HDC hdc, RECT *prc)
     } else {
         local_e6 = LpthFromId(*(short *)((int)&(local_d4._0_2_)->u_THING_0x0006 + 6));
         uVar34 = (undefined2)((ulong)local_e6 >> 0x10);
-        if (local_e6 == (THING *)0x0)
+        if (local_e6 == 0)
             goto LAB_1028_19f8;
         sStack_56 = _wsprintf(szWork, szT, (&((THING *)local_e6)->pt)->x, (((THING *)local_e6)->pt).y);
     }
@@ -1419,7 +1419,7 @@ void MineClick(short x, short y, short msg, short sks)
             GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = 0;
             local_66 = CONCAT22(local_66._2_2_, (short)local_66);
             if (3 < (local_4e._4_2_ & 0xff)) {
-                local_6a = (char *)0x0;
+                local_6a = 0;
                 local_68 = 0;
                 GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory = local_32[(ht + -1) * 2];
                 GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fSummary = local_32[(ht + -1) * 2 + 1];
@@ -1434,7 +1434,7 @@ void MineClick(short x, short y, short msg, short sks)
                         pFVar4 = ((FLEET **)rglpfl)[local_5e];
                         iVar9 = *(int *)((int)((FLEET **)rglpfl + local_5e) + 2);
                         _local_62 = (FLEET *)CONCAT22(iVar9, pFVar4);
-                        if ((pFVar4 == (FLEET *)0x0) && (iVar9 == 0))
+                        if ((pFVar4 == 0) && (iVar9 == 0))
                             break;
                         if ((pFVar4->idPlanet == local_4e._0_2_) && (((pFVar4->iPlayer == idPlayer && ((pFVar4->wFlags_0x4 >> 10 & 1) == 0)) &&
                                                                       ((*(uint *)&((PLORD *)pFVar4->lpplord)[2].iordMax & 0xf) == 3)))) {
@@ -1449,7 +1449,7 @@ void MineClick(short x, short y, short msg, short sks)
                             }
                         }
                     }
-                    if ((-1 < local_68) && ((0 < local_68 || (local_6a != (char *)0x0)))) {
+                    if ((-1 < local_68) && ((0 < local_68 || (local_6a != 0)))) {
                         GlobalPD.u_POPUPDATA_0x0002.rgi[4]._0_2_ = local_6a;
                         GlobalPD.u_POPUPDATA_0x0002.rgi[4]._2_2_ = local_68;
                     }
@@ -1464,7 +1464,7 @@ void MineClick(short x, short y, short msg, short sks)
         local_78[1] = 500;
         local_78[2] = 1000;
         local_78[3] = 0x9c4;
-        local_70 = (char *)s_Stars_1120_1385 + 3;
+        local_70 = (char *)"Stars!" + 3;
         local_6e = 0x1d4c;
         local_6c = 10000;
         local_6a = (char *)rgbCur + 0x288;
@@ -1476,12 +1476,12 @@ void MineClick(short x, short y, short msg, short sks)
                 local_7a = (short)local_66;
             }
         }
-        local_66._0_2_ = PopupMenu(hwndMine, x, y, 9, (long *)0x0, local_8c, local_7a, 1);
+        local_66._0_2_ = PopupMenu(hwndMine, x, y, 9, 0, local_8c, local_7a, 1);
         if (((short)local_66 != -1) && (local_78[(short)local_66] != cMinGrafMax)) {
             cMinGrafMax = local_78[(short)local_66];
-            InvalidateRect(hwndMine, (RECT *)0x0, 1);
+            InvalidateRect(hwndMine, 0, 1);
             if ((grbitScan & 0xf) == 1) {
-                InvalidateRect(hwndScanner, (RECT *)0x0, 1);
+                InvalidateRect(hwndScanner, 0, 1);
             }
         }
         break;
@@ -1540,7 +1540,7 @@ void MineClick(short x, short y, short msg, short sks)
             if (local_28.grobj == grobjFleet) {
                 local_16 = (PLPROD *)((int)(ushort *)local_28.ifl + 1);
             } else {
-                local_16 = (PLPROD *)0x0;
+                local_16 = 0;
             }
             for (; (int)local_16 < cFleet; local_16 = (PLPROD *)((int)&local_16->wFlags + 1)) {
                 iVar9 = *(int *)((FLEET **)rglpfl + (int)local_16);
@@ -1556,12 +1556,12 @@ void MineClick(short x, short y, short msg, short sks)
                 PStack_12.hs.wFlags_0x2 = (ushort)(((FLEET *)((FLEET **)rglpfl)[(int)local_16])->iPlayer == idPlayer);
             } else {
                 if ((local_28.grobjFull & grobjThing) != grobjNone) {
-                    local_16 = (PLPROD *)0x0;
+                    local_16 = 0;
                     goto LAB_1028_4113;
                 }
                 if ((local_28.grobjFull & grobjPlanet) == grobjNone) {
                     do {
-                        for (local_16 = (PLPROD *)0x0; (int)local_16 < cFleet; local_16 = (PLPROD *)((int)&local_16->wFlags + 1)) {
+                        for (local_16 = 0; (int)local_16 < cFleet; local_16 = (PLPROD *)((int)&local_16->wFlags + 1)) {
                             iVar9 = *(int *)((FLEET **)rglpfl + (int)local_16);
                             iVar3 = *(int *)((int)((FLEET **)rglpfl + (int)local_16) + 2);
                             _local_14 = CONCAT22(iVar3, iVar9);
@@ -1575,7 +1575,7 @@ void MineClick(short x, short y, short msg, short sks)
                             PStack_12.hs.wFlags_0x2 = (ushort)(((FLEET *)((FLEET **)rglpfl)[(int)local_16])->iPlayer == idPlayer);
                             goto MINE_ChangeIt;
                         }
-                        local_16 = (PLPROD *)0x0;
+                        local_16 = 0;
                     LAB_1028_4113:
                         for (; (int)local_16 < cThing; local_16 = (PLPROD *)((int)&local_16->wFlags + 1)) {
                             local_2c = local_28.pt.x;
@@ -1595,7 +1595,7 @@ void MineClick(short x, short y, short msg, short sks)
                         if ((local_28.grobjFull & grobjFleet) == grobjNone) {
                             if ((local_28.grobjFull & grobjThing) == grobjNone)
                                 goto LAB_1028_4192;
-                            local_16 = (PLPROD *)0x0;
+                            local_16 = 0;
                             goto LAB_1028_4113;
                         }
                     } while (true);
@@ -1603,7 +1603,7 @@ void MineClick(short x, short y, short msg, short sks)
                 local_28.grobj = grobjPlanet;
                 local_18 = local_28.idpl;
                 PStack_12.u_PART_0x0004.parmor = LpplFromId(local_28.idpl);
-                if (((PLANET *)PStack_12.u_PART_0x0004.parmor == (PLANET *)0x0) && (PStack_12.u_PART_0x0004._2_2_ == 0)) {
+                if (((PLANET *)PStack_12.u_PART_0x0004.parmor == 0) && (PStack_12.u_PART_0x0004._2_2_ == 0)) {
                     PStack_12.hs.wFlags_0x2 = 0;
                 } else {
                     PStack_12.hs.wFlags_0x2 = (ushort)(((PLANET *)PStack_12.u_PART_0x0004.parmor)->iPlayer == idPlayer);
@@ -1653,7 +1653,7 @@ void MineClick(short x, short y, short msg, short sks)
             if (c < 2) {
                 c = 0;
             } else {
-                c = PopupMenu(hwndMine, x, y, c, (long *)0x0, rgpsz, -1, 1);
+                c = PopupMenu(hwndMine, x, y, c, 0, rgpsz, -1, 1);
                 if (c == -1) {
                     return;
                 }
@@ -1762,7 +1762,7 @@ void SetMineralTitleBar(HWND hwnd)
         _strcat(psz, szSummary);
     }
     _strcpy((char *)szMineralTitle, psz);
-    InvalidateRect(hwnd, (RECT *)0x0, 1);
+    InvalidateRect(hwnd, 0, 1);
     bVar1 = false;
     if (bVar5) {
         if ((((((THING *)lpThings + sel.scan.ith)->idFull >> 0xd == 0) && (*(char *)((int)&((THING *)lpThings)[sel.scan.ith].u_THING_0x0006 + 6) == '\0')) &&
@@ -1993,7 +1993,7 @@ void PopupMineralScanChoices(HWND hwnd, short x, short y)
         pFVar4 = ((FLEET **)rglpfl)[i];
         iVar6 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
         lpfl = (FLEET *)CONCAT22(iVar6, pFVar4);
-        if ((pFVar4 == (FLEET *)0x0) && (iVar6 == 0))
+        if ((pFVar4 == 0) && (iVar6 == 0))
             break;
         if ((sel.scan.pt.x == (&pFVar4->pt)->x) && (sel.scan.pt.y == (pFVar4->pt).y)) {
             if ((sel.scan.grobj == grobjFleet) && (((FLEET **)rglpfl)[sel.scan.ifl]->id == lpfl->id)) {
@@ -2031,7 +2031,7 @@ void PopupMineralScanChoices(HWND hwnd, short x, short y)
         }
         lpth = (THING *)CONCAT22(uVar9, (THING *)lpth + 1);
     }
-    sVar5 = PopupMenu(hwnd, x, y, c, rgid, (char **)0x0, iChecked, 1);
+    sVar5 = PopupMenu(hwnd, x, y, c, rgid, 0, iChecked, 1);
     if (-1 < sVar5) {
         psVar7 = (short *)&sel.scan;
         pSVar8 = &scan;
@@ -2066,7 +2066,7 @@ void PopupMineralScanChoices(HWND hwnd, short x, short y)
                 pFVar4 = ((FLEET **)rglpfl)[i];
                 iVar6 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
                 lpfl = (FLEET *)CONCAT22(iVar6, pFVar4);
-                if (((pFVar4 == (FLEET *)0x0) && (iVar6 == 0)) || (lpfl->id == idNew))
+                if (((pFVar4 == 0) && (iVar6 == 0)) || (lpfl->id == idNew))
                     break;
             }
             scan.ifl = i;
@@ -2177,7 +2177,7 @@ void EstMineralsMined(PLANET *lppl, long *plQuan, long cMines, short fApply)
                     /* WARNING: Load size is inaccurate */
                     pFVar3 = ((FLEET **)rglpfl)[local_2c];
                     iVar4 = *(int *)((int)((FLEET **)rglpfl + local_2c) + 2);
-                    if ((pFVar3 == (FLEET *)0x0) && (iVar4 == 0)) {
+                    if ((pFVar3 == 0) && (iVar4 == 0)) {
                         return;
                     }
                     if ((((pFVar3->idPlanet == lppl->id) && (pFVar3->iPlayer == pPVar8->iPlayer)) && ((pFVar3->wFlags_0x4 >> 10 & 1) == 0)) &&

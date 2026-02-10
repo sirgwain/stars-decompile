@@ -63,7 +63,7 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
             pWVar8 = pWVar9;
             if ((iVar2 < -2) && (iVar2 == -3)) {
                 pWVar9[-1] = 0x1120;
-                pWVar9[-2] = (WMType)(char *)s_COMBOBOX_1120_16ce;
+                pWVar9[-2] = (WMType)(char *)"COMBOBOX";
                 pWVar9[-3] = 0;
                 pWVar9[-4] = 0;
                 pWVar9[-5] = 0x5020;
@@ -249,7 +249,7 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 ShowTooltip(ids, &rc);
             }
         } else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
-            ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, (RECT *)0x0);
+            ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, 0);
             pt.x = (HWND)lParam;
             uVar12 = __aFulshr(uVar12, pct);
             ptBtn.y = (short)uVar12;
@@ -658,7 +658,7 @@ void ExecuteButton(short itb, short fDown)
             grbitScan = grbitScan | 0x40;
         }
         uVar7 = 0x14f8;
-        InvalidateRect(hwndTb, (RECT *)0x0, 1);
+        InvalidateRect(hwndTb, 0, 1);
         puVar6 = &stack0xff6e;
         goto LAB_1068_1644;
     case 9:
@@ -732,7 +732,7 @@ void ExecuteButton(short itb, short fDown)
                 if (uVar1 != 0) {
                     grbitScan = grbitScan | 0x200;
                     uVar7 = 0x14f8;
-                    InvalidateRect(hwndTb, (RECT *)0x0, 1);
+                    InvalidateRect(hwndTb, 0, 1);
                     puVar6 = &stack0xff6e;
                 }
             }
@@ -795,7 +795,7 @@ void ExecuteButton(short itb, short fDown)
                 if (uVar1 != 0) {
                     grbitScan = grbitScan | 0x800;
                     uVar7 = 0x14f8;
-                    InvalidateRect(hwndTb, (RECT *)0x0, 1);
+                    InvalidateRect(hwndTb, 0, 1);
                     puVar6 = &stack0xff6e;
                 }
             }
@@ -843,13 +843,13 @@ LAB_1068_1644:
         *(undefined2 *)(puVar6 + -8) = 1;
         *(undefined2 *)(puVar6 + -10) = uVar7;
         uVar7 = 0x14f8;
-        *(char **)(puVar6 + -0xc) = (char *)s__s_pla_1120_165c + 6;
+        *(char **)(puVar6 + -0xc) = (char *)"%s.pla" + 6;
         InvalidateRect(*(HWND *)(puVar6 + -2), *(RECT **)(puVar6 + -6), *(BOOL *)(puVar6 + -8));
         puVar6 = puVar6 + 2;
     }
     if (((uint)gd.grBits >> 0xb & 1) != 0) {
         *(undefined2 *)(puVar6 + -2) = uVar7;
-        *(char **)(puVar6 + -4) = (char *)s_0_0_1120_167a;
+        *(char **)(puVar6 + -4) = (char *)"\t0\t0";
         AdvanceTutor();
     }
 switchD_1068_161b_default:
@@ -996,7 +996,7 @@ void ShowTooltip(StringId ids, RECT *prc)
             goto LAB_1068_1814;
         bVar1 = true;
     }
-    if (((int)ids < 0) || (prc == (RECT *)0x0)) {
+    if (((int)ids < 0) || (prc == 0)) {
         if (hwndTooltip != 0) {
             *(HWND *)(puVar9 + -2) = hwndTooltip;
             *(undefined2 *)(puVar9 + -4) = uVar11;
@@ -1182,7 +1182,7 @@ long TooltipWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
             UVar5 = CchGetString(vidsTooltip, (char *)szWork);
             sVar6 = SetBkMode(HVar4, 1);
             SetTextColor(HVar4, CONCAT22(crWindowText._2_2_, (undefined2)crWindowText));
-            ExtTextOut(HVar4, 3, 3, 0, (RECT *)0x0, szWork, UVar5, (short *)0x0);
+            ExtTextOut(HVar4, 3, 3, 0, 0, szWork, UVar5, 0);
             SetBkMode(HVar4, sVar6);
             EndPaint(hwnd, &ps);
             LVar10 = 0;
@@ -1356,7 +1356,7 @@ long FakeComboProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     if (msg == WM_MOUSEMOVE) {
         TbWndProc(hwnd, WM_MOUSEMOVE, wParam, lParam);
     } else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
-        ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, (RECT *)0x0);
+        ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, 0);
     }
     LVar1 = CallWindowProc((fn_lpfnRealComboProc *)CONCAT22(lpfnRealComboProc._2_2_, (fn_lpfnRealComboProc *)lpfnRealComboProc), hwnd, msg, wParam, lParam);
     return LVar1;
@@ -1376,7 +1376,7 @@ long FakeCEProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     if (msg == WM_MOUSEMOVE) {
         TbWndProc(hwnd, WM_MOUSEMOVE, wParam, lParam);
     } else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
-        ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, (RECT *)0x0);
+        ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, 0);
     }
     LVar1 = CallWindowProc((fn_lpfnRealCEProc *)CONCAT22(lpfnRealCEProc._2_2_, (fn_lpfnRealCEProc *)lpfnRealCEProc), hwnd, msg, wParam, lParam);
     return LVar1;

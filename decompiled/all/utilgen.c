@@ -506,14 +506,14 @@ void OutputFileString(char *szFile, char *sz)
 }
 
 // ======================================================================
-// Function: CopyFile
+// Function: CopyStarsFile
 // Address: 1040:1ffa
 // Segment: MEMORY_UTILGEN
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x104020de) */
 
-void CopyFile(char *szSrc, char *szDst)
+void CopyStarsFile(char *szSrc, char *szDst)
 
 {
     short (*pasVar1)[9];
@@ -537,7 +537,7 @@ void CopyFile(char *szSrc, char *szDst)
     penvMem = &env;
     sVar3 = __setjmp(env);
     if (sVar3 == 0) {
-        StreamOpen(szSrc, 0x20);
+        StreamOpen(szSrc, mdRead);
         hfDst = OpenFile(szDst, &of, 0x1012);
         if (hfDst == 0xffff) {
             StreamClose();
@@ -586,9 +586,9 @@ short AlertSz(char *sz, short mbType)
 
     if (((ini.wFlags >> 0xe & 1) == 0) && ((-1 < (int)ini.wFlags || ((ini.wFlags >> 3 & 1) == 0)))) {
         HVar2 = GetFocus();
-        sVar1 = MessageBox(HVar2, sz, s_Stars_1120_1385, mbType);
+        sVar1 = MessageBox(HVar2, sz, "Stars!", mbType);
     } else {
-        _wsprintf(szT, s_Error___s_1120_137b, sz, 0x1120);
+        _wsprintf(szT, "Error: %s", sz, 0x1120);
         if ((ini.wFlags >> 0xe & 1) == 0) {
             sVar1 = 6;
         } else {
@@ -637,7 +637,7 @@ char *PszFromInt(short i, short *pcch)
     short cch;
 
     sVar1 = _wsprintf(szFormatNumber, PCTD, i);
-    if (pcch != (short *)0x0) {
+    if (pcch != 0) {
         *pcch = sVar1;
     }
     return (char *)szFormatNumber;
@@ -857,7 +857,7 @@ void WrapTextOut(HDC hdc, short *px, short *py, char *psz, short cLen, short xLe
                 TextOut(hdc, *px, *py, pchStart, (int)pchEnd - (int)pchStart);
             }
             *px = *px + dx;
-            if ((pxMax != (short *)0x0) && (*pxMax < *px)) {
+            if ((pxMax != 0) && (*pxMax < *px)) {
                 *pxMax = *px;
             }
             if (pchEnd == pchStart + cLen) {
@@ -988,7 +988,7 @@ void RightTextOut(HDC hdc, short x, short y, char *psz, short cLen, short dxEras
         FillRect(hdc, &rc, hbrButtonFace);
     } else if ((0 < dxErase) && (dxErase < iVar1)) {
         SetRect(&rc, x - dxErase, y, x, y + dyArial8);
-        ExtTextOut(hdc, x - iVar1, y, 6, &rc, psz, cLen, (short *)0x0);
+        ExtTextOut(hdc, x - iVar1, y, 6, &rc, psz, cLen, 0);
         return;
     }
     TextOut(hdc, x - iVar1, y, psz, cLen);
@@ -1309,6 +1309,52 @@ long LDrawGauge(HDC hdc, RECT *prc, short cSegs, long *rgSize, ushort *rghbr, lo
         uVar4 = __aFulmul(uVar4, 1000);
     }
     return uVar4;
+}
+
+// ======================================================================
+// Function: Draw3dFrame
+// Address: 1040:336a
+// Segment: MEMORY_UTILGEN
+// ======================================================================
+
+void Draw3dFrame(HDC hdc, RECT *prc, short fErase)
+
+{
+    HGDIOBJ HVar1;
+    RECT    rc;
+    HBRUSH  hbrSav;
+    short   dx;
+    short   dy;
+
+    rc.left = prc->left;
+    rc.top = prc->top;
+    rc.right = prc->right;
+    rc.bottom = prc->bottom;
+    dx = prc->right - prc->left;
+    dy = prc->bottom - prc->top;
+    HVar1 = SelectObject(hdc, hbrButtonHilite);
+    if ((fErase == -1) || (fErase == -2)) {
+        PatBlt(hdc, rc.left, rc.bottom, dx + 1, 1, 0xf00021);
+        PatBlt(hdc, rc.right, rc.top, 1, dy, 0xf00021);
+        SelectObject(hdc, hbrButtonShadow);
+        PatBlt(hdc, rc.left, rc.top, dx, 1, 0xf00021);
+        PatBlt(hdc, rc.left, rc.top, 1, dy, 0xf00021);
+        ExpandRc(&rc, -1, -1);
+        SelectObject(hdc, hbrButtonHilite);
+        dx = dx + -2;
+        dy = dy + -2;
+    }
+    PatBlt(hdc, rc.left, rc.top, dx, 1, 0xf00021);
+    PatBlt(hdc, rc.left, rc.top, 1, dy, 0xf00021);
+    SelectObject(hdc, hbrButtonShadow);
+    PatBlt(hdc, rc.left, rc.bottom, dx + 1, 1, 0xf00021);
+    PatBlt(hdc, rc.right, rc.top, 1, dy, 0xf00021);
+    if ((fErase != 0) && (fErase != -2)) {
+        SelectObject(hdc, hbrButtonFace);
+        PatBlt(hdc, rc.left + 1, rc.top + 1, dx + -1, dy + -1, 0xf00021);
+    }
+    SelectObject(hdc, HVar1);
+    return;
 }
 
 // ======================================================================
@@ -1633,7 +1679,7 @@ void DrawBtn(HDC hdc, RECT *prc, short bt, short fDown, char *szText)
         }
     }
     SelectObject(hdc, HVar1);
-    if (szText != (char *)0x0) {
+    if (szText != 0) {
         HVar1 = SelectObject(hdc, rghfontArial8[1]);
         sVar12 = SetBkMode(hdc, 1);
         uVar18 = (undefined2)crButtonHilite;
@@ -2037,7 +2083,7 @@ short NybbleFromCh(byte ch)
                 if ((ch < 0x30) || (0x35 < ch)) {
                     if ((ch < 0x36) || (0x39 < ch)) {
                         pcVar1 = _strchr((char *)rgchcomp, (uint)ch);
-                        if (pcVar1 == (char *)0x0) {
+                        if (pcVar1 == 0) {
                             uVar2 = (uint)ch << 4 | 0xf;
                         } else {
                             uVar2 = (int)(pcVar1 + -0x13fc) * 0x10 | 0xe;
@@ -2153,7 +2199,7 @@ ushort HpalFromDib(HGLOBAL hdib)
     HPALETTE          hpal;
 
     pv = LockResource(hdib);
-    if (pv == (char *)0x0) {
+    if (pv == 0) {
         uVar2 = 0;
     } else {
         uVar2 = DibNumColors(pv);
@@ -2252,7 +2298,7 @@ short DibBlt(HDC hdc, short x0, short y0, short dx, short dy, HGLOBAL hdib, shor
     } else {
         pv = GlobalLock(hdib);
         iVar4 = (int)((ulong)pv >> 0x10);
-        if (((BITMAPINFO *)pv == (BITMAPINFO *)0x0) && (iVar4 == 0)) {
+        if (((BITMAPINFO *)pv == 0) && (iVar4 == 0)) {
             sVar3 = 0;
         } else {
             uVar1 = (pv->bmiHeader).biSize;
@@ -2358,7 +2404,7 @@ ushort DibFromBitmap(HBITMAP hbm, ulong biStyle, ushort biBits, HPALETTE hpal)
                 pBVar11 = (BITMAPINFOHEADER *)((int)&pBVar11->biSize + 2);
                 *&(pBVar2->bmiHeader).biSize = (int)pBVar1->biSize;
             }
-            GetDIBits(HVar5, hbm, 0, (UINT)bi.biHeight, (void *)0x0, pBVar14, 0);
+            GetDIBits(HVar5, hbm, 0, (UINT)bi.biHeight, 0, pBVar14, 0);
             pBVar11 = &bi;
             for (iVar4 = 0x14; iVar4 != 0; iVar4 = iVar4 + -1) {
                 pBVar1 = pBVar11;
@@ -2451,7 +2497,7 @@ ushort HdibLoadBigResource(short idb)
         hFile = AccessResource(hInst, HVar1);
         if (hFile != 0xffff) {
             lpBuffer = LockResource(HVar2);
-            if (lpBuffer != (char *)0x0) {
+            if (lpBuffer != 0) {
                 dwSize = SizeofResource(hInst, HVar1);
                 sVar3 = ReadBigBlock(hFile, lpBuffer, dwSize);
                 if (sVar3 != 0) {
@@ -2803,13 +2849,13 @@ short PasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         if (vcPasswordFailures < 10) {
                             pcVar2 = (char *)0x3e8;
                         } else if (vcPasswordFailures < 100) {
-                            pcVar2 = (char *)s_Stars_1120_1385 + 3;
+                            pcVar2 = (char *)"Stars!" + 3;
                         } else {
                             pcVar2 = (char *)0x2710;
                         }
                         Delay((short)pcVar2);
                         mbType = 0x10;
-                        pcVar2 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, (short *)0x0);
+                        pcVar2 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0);
                         AlertSz(pcVar2, mbType);
                         HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar1);
@@ -2913,7 +2959,7 @@ short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     lSalt2 = LSaltFromSz(szPass);
                     if (lSalt2 != lSalt) {
                         sVar9 = 0x10;
-                        pcVar4 = PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, (short *)0x0);
+                        pcVar4 = PszFormatIds(idsPasswordsTypedTwoFieldsSamePleaseReenter, 0);
                         AlertSz(pcVar4, sVar9);
                         HVar3 = GetDlgItem(hwnd, IDC_EDITTEXT);
                         SetFocus(HVar3);
@@ -2928,7 +2974,7 @@ short NewPasswordDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         lVar1 = lSalt;
                         if (sVar9 == 0) {
                             sVar9 = 0x10;
-                            pcVar4 = PszFormatIds(idsUnableCreateHostFile, (short *)0x0);
+                            pcVar4 = PszFormatIds(idsUnableCreateHostFile, 0);
                             uVar7 = 0x1040;
                             AlertSz(pcVar4, sVar9);
                             puVar6 = &stack0xffc4;
@@ -3406,7 +3452,7 @@ ushort HfontPrinterCreate(HDC hdc, short iSize, short *pdyFont)
     pLVar1->lfHeight = -sVar2;
     _strcpy(pLVar1->lfFaceName, *(char (*)[32])(rgszArial + 1));
     HVar3 = CreateFontIndirect(pLVar1);
-    if ((pdyFont != (short *)0x0) && (HVar3 != 0)) {
+    if ((pdyFont != 0) && (HVar3 != 0)) {
         HVar4 = SelectObject(hdc, HVar3);
         GetTextMetrics(hdc, &tm);
         *pdyFont = tm.tmHeight + tm.tmExternalLeading;

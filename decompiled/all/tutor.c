@@ -63,7 +63,7 @@ short TutorDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     ShowTutor(0);
                     if (((uint)tutor.wFlags >> 0xe & 1) != 0) {
                         sVar3 = 0x40;
-                        sz = PszFormatIds(idsMakeTutorialReappearCompleteTaskChooseTutorial, (short *)0x0);
+                        sz = PszFormatIds(idsMakeTutorialReappearCompleteTaskChooseTutorial, 0);
                         AlertSz(sz, sVar3);
                         tutor.wFlags = tutor.wFlags & 0xbfff;
                     }
@@ -211,7 +211,7 @@ void DrawTutorText(HWND hwnd)
         } else {
             fNewLine = 1;
         }
-        WrapTextOut(hdc, &xLeft, &yTop, rgch, cLen, rc.left, rc.right - rc.left, (short *)0x0, fNewLine, 1);
+        WrapTextOut(hdc, &xLeft, &yTop, rgch, cLen, rc.left, rc.right - rc.left, 0, fNewLine, 1);
         if (tutor.idt + didt == tutor.idtBold) {
             SetTextColor(hdc, CONCAT22(crButtonText._2_2_, (undefined2)crButtonText));
             SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
@@ -248,12 +248,12 @@ void StartTutor(short fRestart)
     puVar4 = &stack0xfff4;
     if (((uint)gd.grBits >> 0xb & 1) == 0) {
         _memset((TUTOR *)&tutor, 0, 0x2c);
-        if (lpfnTutorDlgProc == (fn_lpfnTutorDlgProc *)0x0) {
+        if (lpfnTutorDlgProc == 0) {
             pfVar6 = MakeProcInstance(TutorDlg, hInst);
             lpfnTutorDlgProc = pfVar6;
-            if (pfVar6 == (fn_lpfnTutorDlgProc *)0x0) {
+            if (pfVar6 == 0) {
                 sVar1 = 0x10;
-                pcVar3 = PszFormatIds(idsMemory, (short *)0x0);
+                pcVar3 = PszFormatIds(idsMemory, 0);
                 AlertSz(pcVar3, sVar1);
                 pfVar6 = lpfnTutorDlgProc;
                 goto LAB_10f8_0a29;
@@ -285,15 +285,15 @@ void StartTutor(short fRestart)
         if (((int)game.lid == 0) && (game.lid._2_2_ == 0)) {
             sVar1 = CchGetString(idsTutorial, (char *)szBase);
             if (fRestart == 0) {
-                _strcat((char *)szBase, (char *)0x148a);
+                _strcat((char *)szBase, (char *)".xy");
                 sVar2 = __access((char *)szBase, 0);
                 if (sVar2 != -1) {
-                    mbType = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
-                    pcVar3 = PszFormatIds(idsTutorialHasRunBeforeWouldLikeDestroy, (short *)0x0);
+                    mbType = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 2;
+                    pcVar3 = PszFormatIds(idsTutorialHasRunBeforeWouldLikeDestroy, 0);
                     sVar2 = AlertSz(pcVar3, (short)mbType);
                     if (sVar2 != 6) {
                         ((char *)szBase)[sVar1] = '\0';
-                        _strcat((char *)szBase, (char *)0x148e);
+                        _strcat((char *)szBase, (char *)".m1");
                         ini.wFlags = ini.wFlags & 0xfffe | 1;
                         sVar2 = FOpenGame(hwndFrame, 0);
                         if (0 < sVar2) {
@@ -614,8 +614,8 @@ short FAskKillTutor(void)
     char *mbType;
 
     if (game.turn < 0x1e) {
-        mbType = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
-        sz = PszFormatIds(idsCurrentlyRunningStarsTutorialDoWantExit, (short *)0x0);
+        mbType = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 2;
+        sz = PszFormatIds(idsCurrentlyRunningStarsTutorialDoWantExit, 0);
         sVar1 = AlertSz(sz, (short)mbType);
         if (sVar1 != 6) {
             return 0;
@@ -725,7 +725,7 @@ short FTutorTaskDone(void)
         if (tutor.idt == 0x28) {
             sVar3 = FCheckQueue(0xd, 0, grobjPlanet, 7, 0x14, 0);
             if (sVar3 == 0) {
-                if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                     tutor.idtBold = 0x2a;
                 } else {
                     tutor.idtBold = 0x2b;
@@ -968,7 +968,7 @@ short FTutorTaskDone(void)
                     sVar3 = FCheckMessages(idmColonistsDroppedDestroyedPlanetaryDefensesRestMa, -1, 0);
                     if ((sVar3 == 0) || (sVar3 = FCheckSelection(grobjPlanet, 0xd), sVar3 == 0)) {
                         tutor.idtBold = 0x62;
-                    } else if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                    } else if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                         tutor.idtBold = 0x65;
                     } else {
                         tutor.idtBold = 0x66;
@@ -984,7 +984,7 @@ short FTutorTaskDone(void)
                 sVar3 = FCheckMessages(idmGroundTroopsValiantlyDestroyedAttackingBarbarian, -1, 0);
                 if ((sVar3 == 0) || (sVar3 = FCheckSelection(grobjPlanet, 0x10), sVar3 == 0)) {
                     tutor.idtBold = 0x68;
-                } else if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                } else if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                     tutor.idtBold = 0x6a;
                 } else {
                     tutor.idtBold = 0x6b;
@@ -1113,7 +1113,7 @@ short FTutorTaskDone(void)
                 tutor.wFlags = tutor.wFlags & 0xfff7U | 8;
                 uVar4 = 1;
             } else {
-                if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                     tutor.idtBold = 0x88;
                 } else {
                     tutor.idtBold = 0x89;
@@ -1324,7 +1324,7 @@ short FTutorTaskDone(void)
                         } else {
                             tutor.idtBold = 0xbc;
                         }
-                    } else if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                    } else if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                         tutor.idtBold = 0xbc;
                     } else {
                         tutor.idtBold = 0xbd;
@@ -1547,7 +1547,7 @@ short FTutorTaskDone(void)
                     sVar3 = FCheckSelection(grobjPlanet, 0xe);
                     if (sVar3 == 0) {
                         tutor.idtBold = 0xf9;
-                    } else if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                    } else if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                         tutor.idtBold = 0xfa;
                     } else {
                         tutor.idtBold = 0xfb;
@@ -1556,7 +1556,7 @@ short FTutorTaskDone(void)
                 } else {
                     sVar3 = FCheckTemplate(0);
                     if (sVar3 == 0) {
-                        if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                        if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                             tutor.idtBold = 0xfe;
                             uVar4 = 0;
                         } else if (vyZPDStatic == -1) {
@@ -1575,7 +1575,7 @@ short FTutorTaskDone(void)
             if (sVar3 == 0) {
                 tutor.idtBold = 0x100;
                 uVar4 = 0;
-            } else if ((((uint)tutor.wFlags >> 10 & 1) == 0) && (((PLPROD *)lpplProdGlob != (PLPROD *)0x0 || (lpplProdGlob._2_2_ != 0)))) {
+            } else if ((((uint)tutor.wFlags >> 10 & 1) == 0) && (((PLPROD *)lpplProdGlob != 0 || (lpplProdGlob._2_2_ != 0)))) {
                 tutor.idtBold = 0x101;
                 uVar4 = 0;
             } else {
@@ -1741,7 +1741,7 @@ short FTutorTaskDone(void)
             uVar4 = 0;
         } else if (tutor.idt == 0x120) {
             if ((((uint)tutor.wFlags >> 10 & 1) == 0) && (((uint)tutor.wFlags >> 9 & 1) == 0)) {
-                if (((TOK *)vrgtok == (TOK *)0x0) && (vrgtok._2_2_ == 0)) {
+                if (((TOK *)vrgtok == 0) && (vrgtok._2_2_ == 0)) {
                     tutor.idtBold = 0x121;
                 } else {
                     tutor.idtBold = 0x122;
@@ -1932,7 +1932,7 @@ short FTutorTaskDone(void)
                     pPVar9 = LpplFromId(0xd);
                     pPVar2 = ((PLANET *)pPVar9)->lpplprod;
                     if ((((PLPROD *)pPVar2)->iprodMac < 4) || (sVar3 = FCheckQueue(0xd, 0, grobjPlanet, 8, 100, 0), sVar3 == 0)) {
-                        if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                        if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                             tutor.idtBold = 0x155;
                         } else {
                             tutor.idtBold = 0x156;
@@ -2022,7 +2022,7 @@ short FTutorTaskDone(void)
                     tutor.wFlags = tutor.wFlags & 0xfbff;
                     uVar4 = 0;
                 } else if ((((uint)tutor.wFlags >> 9 & 1) == 0) && (((uint)tutor.wFlags >> 10 & 1) == 0)) {
-                    if (vprptCur == (RPT *)0x0) {
+                    if (vprptCur == 0) {
                         tutor.idtBold = 0x16b;
                     } else {
                         tutor.wFlags = tutor.wFlags & 0xfbffU | 0x400;
@@ -2097,7 +2097,7 @@ short FTutorTaskDone(void)
                             pPVar2 = ((PLANET *)pPVar9)->lpplprod;
                             if (((((PLPROD *)pPVar2)->iprodMac < 2) || (sVar3 = FCheckQueue(0xd, 0, grobjPlanet, 1, 0x3c, 0), sVar3 == 0)) ||
                                 (sVar3 = FCheckQueue(0xd, 1, grobjPlanet, 0, 0x3c, 0), sVar3 == 0)) {
-                                if (((PLPROD *)lpplProdGlob == (PLPROD *)0x0) && (lpplProdGlob._2_2_ == 0)) {
+                                if (((PLPROD *)lpplProdGlob == 0) && (lpplProdGlob._2_2_ == 0)) {
                                     tutor.idtBold = 0x17c;
                                 } else {
                                     tutor.idtBold = 0x17d;
@@ -2371,7 +2371,7 @@ short FTutorTaskDone(void)
                 tutor.idtBold = 0x1b0;
                 uVar4 = 0;
             } else if ((((uint)tutor.wFlags >> 9 & 1) == 0) && (((uint)tutor.wFlags >> 10 & 1) == 0)) {
-                if (vprptCur == (RPT *)0x0) {
+                if (vprptCur == 0) {
                     tutor.idtBold = 0x1b2;
                 } else if (((vprptCur->icolSort == 0xb) && (vprptCur->fAscending == 0)) && (vprptCur->iSubsort == 3)) {
                     tutor.idtBold = 0x1b7;
@@ -2502,7 +2502,7 @@ short FTutorTaskDone(void)
                         tutor.idtBold = 0x1d4;
                         uVar4 = 0;
                     } else if ((((uint)tutor.wFlags >> 9 & 1) == 0) && (((uint)tutor.wFlags >> 10 & 1) == 0)) {
-                        if (vprptCur == (RPT *)0x0) {
+                        if (vprptCur == 0) {
                             tutor.idtBold = 0x1d5;
                         } else if (vprptCur->icolSort == 2) {
                             tutor.idtBold = 0x1d7;
@@ -2546,7 +2546,7 @@ short FTutorTaskDone(void)
                             uVar4 = 0;
                         } else {
                             pFVar8 = LpflFromId(2);
-                            if (pFVar8 == (FLEET *)0x0) {
+                            if (pFVar8 == 0) {
                                 tutor.wFlags = tutor.wFlags & 0xfbff;
                                 uVar4 = 1;
                             } else {
@@ -2563,7 +2563,7 @@ short FTutorTaskDone(void)
                                             tutor.idtBold = 0x1dd;
                                         }
                                         tutor.idh = 0x5ed;
-                                    } else if (vrgiflMerge == (short *)0x0) {
+                                    } else if (vrgiflMerge == 0) {
                                         tutor.idtBold = 0x1de;
                                         tutor.idh = 0x5ec;
                                     } else {
@@ -2593,7 +2593,7 @@ short FTutorTaskDone(void)
                     sVar3 = FCheckMessages(idmThereMassiveBloodBathInvolvingFleetsRaces, -1, 0);
                     if (((sVar3 == 0) || ((sVar3 = FCheckSelection(grobjFleet, 4), sVar3 == 0 && (sVar3 = FCheckSelection(grobjFleet, 8), sVar3 == 0)))) ||
                         ((((uint)tutor.wFlags >> 9 & 1) == 0 && (((uint)tutor.wFlags >> 10 & 1) == 0)))) {
-                        if (((TOK *)vrgtok != (TOK *)0x0) || (vrgtok._2_2_ != 0)) {
+                        if (((TOK *)vrgtok != 0) || (vrgtok._2_2_ != 0)) {
                             tutor.wFlags = tutor.wFlags & 0xfbffU | 0x400;
                         }
                         tutor.idtBold = 0x1e2;
@@ -2860,7 +2860,7 @@ short FTutorTaskDone(void)
                     uVar4 = 0;
                 } else {
                     pFVar8 = LpflFromId(0xc);
-                    if ((pFVar8 == (FLEET *)0x0) || (pFVar8 = LpflFromId(0xc), (((FLEET *)pFVar8)->wFlags_0x4 >> 10 & 1) != 0)) {
+                    if ((pFVar8 == 0) || (pFVar8 = LpflFromId(0xc), (((FLEET *)pFVar8)->wFlags_0x4 >> 10 & 1) != 0)) {
                         uVar4 = 1;
                     } else {
                         sVar12 = 0x276;
@@ -2890,7 +2890,7 @@ short FTutorTaskDone(void)
             }
         } else if (tutor.idt == 0x218) {
             pFVar8 = LpflFromId(0xc);
-            if (pFVar8 == (FLEET *)0x0) {
+            if (pFVar8 == 0) {
                 sVar3 = FCheckMessages(idmInvolvedWayRaceUninhabitedPlanetForcesCrush, -1, 0);
                 if (sVar3 == 0) {
                     tutor.idtBold = 0x21a;
@@ -2912,7 +2912,7 @@ short FTutorTaskDone(void)
                 }
             } else {
                 sVar3 = FCheckSelection(grobjFleet, 0xb);
-                if ((sVar3 != 0) && (vrgiflMerge == (short *)0x0)) {
+                if ((sVar3 != 0) && (vrgiflMerge == 0)) {
                     tutor.idh = 0x5ec;
                 }
                 tutor.idtBold = 0x219;
@@ -3433,7 +3433,7 @@ void TutorError(short idsError)
             tutor.wFlags = tutor.wFlags & 0xfe3f;
             tutor.idsError = idsError;
             mbType = 0x10;
-            sz = PszFormatIds(idsError, (short *)0x0);
+            sz = PszFormatIds(idsError, 0);
             AlertSz(sz, mbType);
         }
     } else {
@@ -3502,7 +3502,7 @@ short FCheckFleetName(short id, short ids)
     pFVar6 = LpflFromId(id);
     iVar5 = (int)((ulong)pFVar6 >> 0x10);
     pFVar1 = (FLEET *)pFVar6;
-    if ((pFVar1 == (FLEET *)0x0) && (iVar5 == 0)) {
+    if ((pFVar1 == 0) && (iVar5 == 0)) {
         uVar4 = 1;
     } else if ((*(int *)&pFVar1->lpszName == 0) && (*(int *)((int)&pFVar1->lpszName + 2) == 0)) {
         if (ids == -1) {
@@ -3719,7 +3719,7 @@ short FCheckFleetWP(ushort ifl, short iord, GrobjClass grobj, short id, ushort g
     iVar8 = (int)((ulong)pFVar11 >> 0x10);
     pFVar4 = (FLEET *)pFVar11;
     tutor.idh = 0x5f6;
-    if (((pFVar4 != (FLEET *)0x0) || (iVar8 != 0)) && (tutor.idh = 0xbf6, iord + 1 <= pFVar4->cord)) {
+    if (((pFVar4 != 0) || (iVar8 != 0)) && (tutor.idh = 0xbf6, iord + 1 <= pFVar4->cord)) {
         uVar3 = *(undefined2 *)((int)&pFVar4->lpplord + 2);
         psVar9 = (short *)(*(int *)&pFVar4->lpplord + 4 + iord * 0x12);
         pOVar10 = &ord;
@@ -3785,7 +3785,7 @@ short FCheckPlanetRoute(short idpl, short idplRoute)
     sVar1 = tutor.idh;
     pPVar4 = LpplFromId(idpl);
     iVar3 = (int)((ulong)pPVar4 >> 0x10);
-    if (((PLANET *)pPVar4 == (PLANET *)0x0) && (iVar3 == 0)) {
+    if (((PLANET *)pPVar4 == 0) && (iVar3 == 0)) {
         sVar2 = 0;
     } else {
         tutor.idh = 0x5fb;
@@ -3822,7 +3822,7 @@ short FCheckLayingWP(ushort ifl, short iord, short id, short iYears)
     pFVar5 = LpflFromId(ifl);
     iVar4 = (int)((ulong)pFVar5 >> 0x10);
     pFVar1 = (FLEET *)pFVar5;
-    if ((pFVar1 == (FLEET *)0x0) && (iVar4 == 0)) {
+    if ((pFVar1 == 0) && (iVar4 == 0)) {
         sVar3 = 0;
     } else {
         tutor.idh = 0x5f8;
@@ -3867,7 +3867,7 @@ short FCheckColonizeWP(ushort ifl, short id, ushort iWarp)
     lpfl_00 = LpflFromId(ifl);
     iVar4 = (int)((ulong)lpfl_00 >> 0x10);
     pFVar1 = (FLEET *)lpfl_00;
-    if ((pFVar1 == (FLEET *)0x0) && (iVar4 == 0)) {
+    if ((pFVar1 == 0) && (iVar4 == 0)) {
         sVar3 = 0;
     } else {
         tutor.idh = 0x5f2;
@@ -3913,7 +3913,7 @@ short FCheckPatrolWP(ushort ifl, short iord, short id, ushort iWarp, ushort iPla
     pFVar5 = LpflFromId(ifl);
     iVar4 = (int)((ulong)pFVar5 >> 0x10);
     pFVar1 = (FLEET *)pFVar5;
-    if ((pFVar1 == (FLEET *)0x0) && (iVar4 == 0)) {
+    if ((pFVar1 == 0) && (iVar4 == 0)) {
         sVar3 = 0;
     } else {
         tutor.idh = 0xc17;
@@ -3978,7 +3978,7 @@ short FCheckXferWP(ushort ifl, short iord, short id, ushort iWarp, ITEMACTION *l
     pFVar12 = LpflFromId(ifl);
     iVar9 = (int)((ulong)pFVar12 >> 0x10);
     pFVar4 = (FLEET *)pFVar12;
-    if ((pFVar4 == (FLEET *)0x0) && (iVar9 == 0)) {
+    if ((pFVar4 == 0) && (iVar9 == 0)) {
         fRet = 0;
         sVar5 = tutor.idh;
     } else {
@@ -4068,7 +4068,7 @@ short FCheckQueue(short ipl, short iprod, GrobjClass grobj, ushort iItem, ushort
     pPVar7 = LpplFromId(ipl);
     iVar6 = (int)((ulong)pPVar7 >> 0x10);
     pPVar2 = (PLANET *)pPVar7;
-    if ((((pPVar2 != (PLANET *)0x0) || (iVar6 != 0)) && ((*(int *)&pPVar2->lpplprod != 0 || (*(int *)((int)&pPVar2->lpplprod + 2) != 0)))) &&
+    if ((((pPVar2 != 0) || (iVar6 != 0)) && ((*(int *)&pPVar2->lpplprod != 0 || (*(int *)((int)&pPVar2->lpplprod + 2) != 0)))) &&
         (iprod < (int)(uint)((PLPROD *)pPVar2->lpplprod)->iprodMac)) {
         uVar1 = *(uint *)(*(int *)&pPVar2->lpplprod + 4 + iprod * 4);
         uVar8 = __aFulshr(uVar9, sVar3);
@@ -4141,7 +4141,7 @@ short FCheckCargo(FLEET *lpfl, short wtMin1, short wtMin2, short wtMin3, short w
 
     sVar1 = tutor.idh;
     fRet = 0;
-    if (lpfl == (FLEET *)0x0) {
+    if (lpfl == 0) {
         fRet = 0;
     } else {
         tutor.idh = 0x433;

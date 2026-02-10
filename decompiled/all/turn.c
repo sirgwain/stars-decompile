@@ -73,43 +73,29 @@ short FGenerateTurn(void)
     char *pchT;
     short fErrSav;
 
-    /* --------------------------------------------------------------------
-       Function prologue / setup:
-       - Save current player context
-       - Switch cursor to “busy”
-       - Clear any previous in-memory game state
-       -------------------------------------------------------------------- */
+    /* Segment:    23
+       Offset:     0009e840
+       Length:     9eb8
+       Min Alloc:  9eb8
+       Flags:      1d10
+           Code
+           Discardable
+           Moveable
+           LoadOnCall
+           Impure (Non-shareable)
+        */
     idCur = idPlayer;
     fSuccess = 0;
     HVar14 = LoadCursor(0, (LPCSTR)0x7f02);
     hcurSav = SetCursor(HVar14);
     DestroyCurGame();
-
-    /* --------------------------------------------------------------------
-       Optional deterministic RNG seed for “fixed” / reproducible generation.
-       (Triggered by a bit in gd.grBits.)
-       -------------------------------------------------------------------- */
     if (((uint)gd.grBits >> 0xb & 1) != 0) {
         Randomize(1234567890);
     }
-
-    /* --------------------------------------------------------------------
-       Load the host/base game file:
-       - Temporarily silence file errors
-       - Kick progress gauge
-       - Attempt FLoadGame(szBase, <host extension>)
-       -------------------------------------------------------------------- */
     sVar16 = fFileErrSilent;
     fFileErrSilent = 1;
     UpdateProgressGauge(0x168);
-    sVar15 = FLoadGame((char *)szBase, (char *)0x9c4);
-
-    /* --------------------------------------------------------------------
-       Early failure path:
-       - Restore silent flag/cursor
-       - Log failure (“can’t find host file”)
-       - Re-stitch far-ish globals back into locals (decompiler artifacts)
-       -------------------------------------------------------------------- */
+    sVar15 = FLoadGame((char *)szBase, (char *)"hst");
     if (sVar15 == 0) {
         fFileErrSilent = sVar16;
         SetCursor(hcurSav);
@@ -120,20 +106,8 @@ short FGenerateTurn(void)
         pTVar1 = (TURNSERIAL *)CONCAT22(vrgts._2_2_, (TURNSERIAL *)vrgts);
         fSuccess = 0;
     } else {
-
-        /* ----------------------------------------------------------------
-           Main success path entry:
-           - Announce “Generating Year …”
-           - Restore silent flag
-           ---------------------------------------------------------------- */
         TurnLog(idsGeneratingYearD);
         fFileErrSilent = sVar16;
-
-        /* ----------------------------------------------------------------
-           Backward-compat / version-migration hack:
-           If file version indicates older layout, possibly initialize or
-           normalize per-player md bits/fields (bit twiddling on wMdPlr).
-           ---------------------------------------------------------------- */
         if (wVersFile >> 0xc == 0) {
             i = 0;
             while ((i < game.cPlayer && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 3 & 0x1f) == 0))) {
@@ -148,47 +122,19 @@ short FGenerateTurn(void)
                 }
             }
         }
-
-        /* ----------------------------------------------------------------
-           Establish a longjmp “escape hatch” for out-of-memory / fatal errors
-           during turn generation. (penvMem / __setjmp pattern.)
-           ---------------------------------------------------------------- */
         penvMem = &env;
         sVar16 = __setjmp(env);
-
-        /* ----------------------------------------------------------------
-           Main generation body executes only on the initial setjmp return.
-           If a longjmp happens, control will skip into cleanup below.
-           ---------------------------------------------------------------- */
         if (sVar16 == 0) {
-
-            /* ------------------------------------------------------------
-               Allocate per-turn working buffers:
-               - colonist drop list
-               - full transfer list
-               - extra planet resources (per planet)
-               - per-player turn-serial records
-               ------------------------------------------------------------ */
             lpcd = LpAlloc(12000, htMisc);
             lpxf = LpAlloc(25000, htMisc);
             vrgPlanResExtra = LpAlloc(game.cPlanMax << 1, htMisc);
             __fmemset(vrgPlanResExtra, 0, game.cPlanMax << 1);
             vrgts = LpAlloc(game.cPlayer << 4, htMisc);
-
-            /* ------------------------------------------------------------
-               Initialize counters/flags for the upcoming turn processing.
-               ------------------------------------------------------------ */
             UpdateProgressGauge(0x172);
             cColDrop = 0;
             cXferFull = 0;
             gd.grBits._0_2_ = (uint)gd.grBits & 0xfdfd | 0x202;
             imemMsgCur = 0;
-
-            /* ------------------------------------------------------------
-               Build a shuffled player processing order (mpiplr2):
-               - Start with identity mapping
-               - Fisher–Yates-ish shuffle using Random()
-               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 mpiplr2[i] = (byte)i;
             }
@@ -202,18 +148,9 @@ short FGenerateTurn(void)
                     mpiplr2[i] = bVar5;
                 }
             }
-
-            /* ------------------------------------------------------------
-               Per-player input pass:
-               For each player in shuffled order:
-               - Build that player's log filename (X file)
-               - Initialize their TURNSERIAL entry to -1/-1
-               - Load and run their log records (if present)
-               - Update progress gauge
-               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 uVar21 = (uint)mpiplr2[i];
-                _wsprintf(szWork, s_s_x_d_1120_09c8, (char *)szBase, 0x1120, uVar21 + 1);
+                _wsprintf(szWork, "%s.x%d", (char *)szBase, 0x1120, uVar21 + 1);
                 uVar6 = vrgts._2_2_;
                 pTVar24 = (TURNSERIAL *)vrgts + uVar21;
                 idPlayer = uVar21;
@@ -224,7 +161,7 @@ short FGenerateTurn(void)
                     sVar16 = FRunLogFile();
                     if (sVar16 == 0) {
                         sVar16 = 0x10;
-                        pcVar19 = PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, (short *)0x0);
+                        pcVar19 = PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, 0);
                         AlertSz(pcVar19, sVar16);
                         goto TURN_FreeStuffUp;
                     }
@@ -232,13 +169,6 @@ short FGenerateTurn(void)
                 sVar16 = MulDiv(0x3c, i + 1, game.cPlayer);
                 UpdateProgressGauge(sVar16 + 0x172);
             }
-
-            /* ------------------------------------------------------------
-               Post-load validation / anti-cheat preparation:
-               - idPlayer = -1 (no current player context)
-               - Walk players and validate serials / detect duplicates
-               - Mutate rgplr flags when suspicious
-               ------------------------------------------------------------ */
             idPlayer = -1;
             i = 0;
             pTVar1 = vrgts;
@@ -248,12 +178,8 @@ short FGenerateTurn(void)
                 if (game.cPlayer <= i)
                     break;
                 vrgts = pTVar1;
-
-                /* Skip inactive/AI/etc combinations based on rgplr flags and gd.grBits */
                 if ((((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 1 & 1) == 0) && ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0)) &&
                     ((((uint)gd.grBits >> 0xb & 1) == 0 || (i != 0)))) {
-
-                    /* If serial present, validate it; if invalid, mark the player as suspicious */
                     if (((int)((TURNSERIAL *)vrgts + i)->lSerialNumber != -1) || (*(int *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2) != -1)) {
                         pTVar1 = (TURNSERIAL *)vrgts + i;
                         puVar3 = (undefined2 *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2);
@@ -266,8 +192,6 @@ short FGenerateTurn(void)
                             goto LAB_10b0_03c3;
                         }
                     }
-
-                    /* If serial present, compare against earlier players for duplicates with mismatched config */
                     vrgts._2_2_ = (undefined2)((ulong)pTVar1 >> 0x10);
                     vrgts._0_2_ = (TURNSERIAL *)pTVar1;
                     if (((int)((TURNSERIAL *)vrgts + i)->lSerialNumber != -1) || (*(int *)((int)&((TURNSERIAL *)vrgts)[i].lSerialNumber + 2) != -1)) {
@@ -306,7 +230,6 @@ short FGenerateTurn(void)
                         }
                     }
                 } else {
-                    /* If player excluded from checking, clear the “suspicious” bit in flags */
                     local_15a = (FLEET *)(CONCAT22(*(undefined2 *)((int)&rgplr[0].wFlags + i * 0xc0), (FLEET *)local_15a) & 0xfffbffff);
                     *(undefined2 *)((int)&rgplr[0].wFlags + i * 0xc0) = local_15a._2_2_;
                     pTVar1 = vrgts;
@@ -314,12 +237,6 @@ short FGenerateTurn(void)
             LAB_10b0_03c3:
                 i = i + 1;
             }
-
-            /* ------------------------------------------------------------
-               If any players were flagged as cheaters:
-               - Notify them (and potentially others)
-               - Trigger additional periodic “strike” message logic
-               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 2 & 1) != 0) {
                     vrgts = pTVar1;
@@ -332,11 +249,6 @@ short FGenerateTurn(void)
                     }
                 }
             }
-
-            /* ------------------------------------------------------------
-               Ensure each non-deleted ship design is in a “valid” state for
-               the turn (force some fields/flags when missing).
-               ------------------------------------------------------------ */
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 for (ish = 0; ish < 0x10; ish = ish + 1) {
                     if (((*(uint *)(*(int *)(i * 4 + rglpshdef) + ish * 0x93 + 0x7b) >> 9 & 1) == 0) &&
@@ -357,19 +269,13 @@ short FGenerateTurn(void)
                     }
                 }
             }
-
-            /* ------------------------------------------------------------
-               “Follow fleet” orders preprocessing:
-               - Scan all fleets; mark those that are in follow mode
-               - Validate basic preconditions and send warnings if needed
-               ------------------------------------------------------------ */
             fFollow = 0;
             for (ifl = 0; vrgts = pTVar1, ifl < cFleet; ifl = ifl + 1) {
                 /* WARNING: Load size is inaccurate */
                 pFVar17 = ((FLEET **)rglpfl)[ifl];
                 iVar23 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
                 lpfl = (FLEET *)CONCAT22(iVar23, pFVar17);
-                if ((pFVar17 == (FLEET *)0x0) && (iVar23 == 0))
+                if ((pFVar17 == 0) && (iVar23 == 0))
                     break;
                 pFVar17->wFlags_0x4 = pFVar17->wFlags_0x4 & 0xbfff;
                 if ((pFVar17->cord == 1) && ((*(uint *)&((PLORD *)pFVar17->lpplord)[2].iordMax >> 8 & 0xf) == 2)) {
@@ -384,17 +290,7 @@ short FGenerateTurn(void)
                     pTVar1 = vrgts;
                 }
             }
-
-            /* ------------------------------------------------------------
-               Waypoint validation pass before movement/orders resolution.
-               ------------------------------------------------------------ */
             ValidateWaypoints();
-
-            /* ------------------------------------------------------------
-               Follow-chain resolution:
-               Up to 8 passes to propagate follow targets and copy waypoints
-               from leaders to followers, reallocating order arrays as needed.
-               ------------------------------------------------------------ */
             if (fFollow != 0) {
                 fFollow = 1;
                 i = 0;
@@ -405,13 +301,9 @@ short FGenerateTurn(void)
                         pFVar17 = ((FLEET **)rglpfl)[ifl];
                         iVar23 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
                         lpfl = (FLEET *)CONCAT22(iVar23, pFVar17);
-                        if ((pFVar17 == (FLEET *)0x0) && (iVar23 == 0))
+                        if ((pFVar17 == 0) && (iVar23 == 0))
                             break;
-
-                        /* Only fleets marked “follow” and currently in orbit (?) are processed */
                         if (((int)pFVar17->wFlags_0x4 < 0) && (pFVar17->cord == 1)) {
-
-                            /* Copy current follow-order block into locals for inspection */
                             uVar6 = *(undefined2 *)((int)&pFVar17->lpplord + 2);
                             puVar26 = (undefined2 *)(*(int *)&pFVar17->lpplord + 4);
                             puVar27 = local_16c;
@@ -422,18 +314,14 @@ short FGenerateTurn(void)
                                 puVar26 = puVar26 + 1;
                                 *puVar4 = *puVar3;
                             }
-
-                            /* If order is “follow fleet”, resolve leader by id and sync orders */
                             if ((local_166 >> 8 & 0xf) == 2) {
                                 local_15a = LpflFromId(local_168);
                                 iVar25 = (int)((ulong)local_15a >> 0x10);
                                 pFVar10 = (FLEET *)local_15a;
-                                if (((pFVar10 != (FLEET *)0x0) || (iVar25 != 0)) &&
+                                if (((pFVar10 != 0) || (iVar25 != 0)) &&
                                     ((pFVar10->cord != 1 || ((*(uint *)&((PLORD *)pFVar10->lpplord)[2].iordMax >> 8 & 0xf) == 2)))) {
                                     if (pFVar10->cord != 1) {
                                         fFollow = 1;
-
-                                        /* Ensure follower has enough order slots, then copy leader orders */
                                         if (((PLORD *)pFVar17->lpplord)->iordMax < 2) {
                                             pPVar29 = LpplReAlloc((PL *)CONCAT22(*(undefined2 *)((int)&pFVar17->lpplord + 2), *(PL **)&pFVar17->lpplord), 2);
                                             *(PL **)&pFVar17->lpplord = (PL *)pPVar29;
@@ -467,12 +355,8 @@ short FGenerateTurn(void)
                                     }
                                     goto LAB_10b0_09f2;
                                 }
-
-                                /* Leader invalid / didn’t move: warn player */
                                 FSendPlrMsg(pFVar17->iPlayer, idmHadOrdersFollowFleetWhichDidntMove, lpfl->id | 0x8000, lpfl->id, 0, 0, 0, 0, 0, 0);
                             }
-
-                            /* Clear follow flag if not a valid follow order */
                             pFVar17->wFlags_0x4 = pFVar17->wFlags_0x4 & 0x7fff;
                         }
                     LAB_10b0_09f2:
@@ -480,28 +364,16 @@ short FGenerateTurn(void)
                     i = i + 1;
                 }
             }
-
-            /* ------------------------------------------------------------
-               Primary turn execution pipeline (high-level):
-               - DoOrders(0) (pre-move / planning stage)
-               - Validate & clamp player race settings
-               - Detect race-tampering and apply penalties / notifications
-               ------------------------------------------------------------ */
             UpdateProgressGauge(0x1b8);
             DoOrders(0);
             UpdateProgressGauge(0x212);
-
             for (i = 0; i < game.cPlayer; i = i + 1) {
-
-                /* Re-assert stored race stats (may normalize/repair) */
                 local_15a = (FLEET *)((ulong)local_15a & 0xffff0000);
                 while ((int)(FLEET *)local_15a < 0x10) {
                     sVar16 = GetRaceStat((PLAYER *)rgplr + i, (RaceStat)(FLEET *)local_15a);
                     SetRaceStat((PLAYER *)rgplr + i, (RaceStat)(FLEET *)local_15a, sVar16);
                     local_15a = (FLEET *)((int)(FLEET *)local_15a + 1);
                 }
-
-                /* Clamp research and growth percent settings into allowed ranges */
                 if ((*(char *)((int)&rgplr[0].pctResearch + i * 0xc0) < '\0') || ('d' < *(char *)((int)&rgplr[0].pctResearch + i * 0xc0))) {
                     *(undefined1 *)((int)&rgplr[0].pctResearch + i * 0xc0) = 0xf;
                 }
@@ -511,17 +383,12 @@ short FGenerateTurn(void)
                 if ('\x14' < *(char *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0)) {
                     *(undefined1 *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0) = 0x14;
                 }
-
-                /* Check “advantage points” and detect tampered race files */
                 local_15a = (FLEET *)(CONCAT22(local_15a._2_2_, *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4) & 0xffff0001);
                 sVar16 = CAdvantagePoints((PLAYER *)rgplr + i);
                 local_15a = (FLEET *)CONCAT22(sVar16, (FLEET *)local_15a);
                 pFVar30 = local_15a;
-
                 if (((sVar16 < 0) || ((FLEET *)local_15a != (FLEET *)(*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1))) &&
                     ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0)) {
-
-                    /* Notify hacked player and all other non-excluded players */
                     FSendPlrMsg2(i, idmRaceDefinitionHasTamperedStatisticsHaveAltered, -1, 0, 0);
                     local_15a = (FLEET *)((ulong)local_15a & 0xffff0000);
                     while ((int)(FLEET *)local_15a < game.cPlayer) {
@@ -530,12 +397,9 @@ short FGenerateTurn(void)
                         }
                         local_15a = (FLEET *)CONCAT22(local_15a._2_2_, (FLEET *)((int)&((FLEET *)local_15a)->id + 1));
                     }
-
-                    /* Mark player flagged and then try to “repair” advantage points under cap */
                     local_15c = *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 0xffef | 0x10;
                     *(uint *)((int)&rgplr[0].wFlags + i * 0xc0) = local_15c;
                     pFVar30 = local_15a;
-
                     iVar23 = local_15a._2_2_;
                     while ((iVar23 < 500 && (*(char *)((int)rgplr[0].rgAttr + i * 0xc0) < '\x19'))) {
                         pcVar2 = (char *)((int)rgplr[0].rgAttr + i * 0xc0);
@@ -545,7 +409,6 @@ short FGenerateTurn(void)
                         local_15a = (FLEET *)CONCAT22(iVar23, (FLEET *)local_15a);
                         pFVar30 = local_15a;
                     }
-
                     local_15a._2_2_ = (uint)((ulong)pFVar30 >> 0x10);
                     iVar23 = local_15a._2_2_;
                     while ((iVar23 < 500 && ('\x01' < *(char *)((int)&rgplr[0].pctIdealGrowth + i * 0xc0)))) {
@@ -556,8 +419,6 @@ short FGenerateTurn(void)
                         local_15a = (FLEET *)CONCAT22(iVar23, (FLEET *)local_15a);
                         pFVar30 = local_15a;
                     }
-
-                    /* As last resort, zero some attributes until advantage points under cap */
                     local_15a._2_2_ = (uint)((ulong)pFVar30 >> 0x10);
                     if ((int)local_15a._2_2_ < 500) {
                         local_15a = (FLEET *)CONCAT22(local_15a._2_2_, (FLEET *)0x8);
@@ -574,17 +435,10 @@ short FGenerateTurn(void)
                 }
                 local_15a = pFVar30;
             }
-
-            /* ------------------------------------------------------------
-               World simulation steps (movement/production/etc):
-               Order here matters; this is the meat of “advance one year”.
-               ------------------------------------------------------------ */
             UnmarkMineFields();
             MoveThings(0);
             UpdateProgressGauge(0x226);
             MoveFleets();
-
-            /* Clear a planet flag on all planets, then set it on each homeworld */
             uVar21 = lpPlanets._2_2_;
             local_15c = lpPlanets._2_2_;
             local_15e = (PLANET *)lpPlanets + cPlanet;
@@ -598,7 +452,6 @@ short FGenerateTurn(void)
                 ((PLANET *)lpPlanets)[*(int *)((int)&rgplr[0].idPlanetHome + i * 0xc0)].wFlags_0x4 = local_160;
             }
             local_15a._2_2_ = local_15c;
-
             UpdateProgressGauge(0x28a);
             ThingDecay();
             BreedColonistsInTransit();
@@ -617,14 +470,6 @@ short FGenerateTurn(void)
             SpankTheCheaters();
             ValidateWaypoints();
             UpdateGuesses();
-
-            /* ------------------------------------------------------------
-               End-of-turn bookkeeping:
-               - Mark host file dirty/updated
-               - Backup directory creation
-               - Increment year/turn
-               - Build backup filename tail pointers (pchBak, pcVar22)
-               ------------------------------------------------------------ */
             UpdateProgressGauge(0x354);
             FMarkFile(dtHost, -1, 1, 0);
             CreateBackupDir();
@@ -633,27 +478,20 @@ short FGenerateTurn(void)
             pcVar22 = (char *)szBase + uVar18;
             pcVar19 = _strrchr((char *)szBase, 0x5c);
             _strcpy(szT, (char *)szBackup);
-            if (pcVar19 == (char *)0x0) {
+            if (pcVar19 == 0) {
                 _strcat(szT, (char *)szBase);
             } else {
                 _strcat(szT, pcVar19 + 1);
             }
             uVar20 = _strlen(szT);
             pchBak = szT + uVar20;
-
-            /* ------------------------------------------------------------
-               Update player scores and refresh per-design cached values
-               (cloak %, scanner ranges, buildability flags, etc.)
-               ------------------------------------------------------------ */
             UpdateProgressGauge(0x356);
             UpdatePlayerScores();
             for (i = 0; i < game.cPlayer; i = i + 1) {
-
-                /* Recompute starbase design cloak (and square it?) for SB list */
                 for (j = 0; j < 10; j = j + 1) {
                     if ((*(uint *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
                         sVar16 = PctCloakFromHuldef(
-                            (HUL *)CONCAT22(*(undefined2 *)(i * 4 + rglpshdefSB_0x2), (HUL *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93)), i, (short *)0x0);
+                            (HUL *)CONCAT22(*(undefined2 *)(i * 4 + rglpshdefSB_0x2), (HUL *)(*(int *)(i * 4 + rglpshdefSB) + j * 0x93)), i, 0);
                         iVar23 = 100 - sVar16;
                         local_15a = (FLEET *)(long)iVar23;
                         uVar6 = *(undefined2 *)(i * 4 + rglpshdefSB_0x2);
@@ -674,8 +512,6 @@ short FGenerateTurn(void)
                         *(uint *)(iVar23 + 0x89) = local_15a._2_2_;
                     }
                 }
-
-                /* Recompute ship design scanner range/buildability and cache results */
                 for (j = 0; j < 0x10; j = j + 1) {
                     if ((*(uint *)(*(int *)(i * 4 + rglpshdef) + j * 0x93 + 0x7b) >> 9 & 1) == 0) {
                         local_15a._0_2_ = (FLEET *)GetShdefScannerRange(
@@ -695,14 +531,7 @@ short FGenerateTurn(void)
                     }
                 }
             }
-
-            /* ------------------------------------------------------------
-               Rotate/rename/copy per-player output files:
-               - Build backup names
-               - Track missing X files (rgfNoXFile)
-               - Rename .x/.m etc across host and per-player variants
-               ------------------------------------------------------------ */
-            j = 856;
+            j = 0x358;
             fDone = 0;
             _memset(rgfNoXFile, 0, 0x10);
             i = 0;
@@ -714,10 +543,10 @@ short FGenerateTurn(void)
                     fDone = 1;
                 }
                 if (i < 0) {
-                    _strcpy(pcVar22, (char *)0x9d4);
-                    _strcpy(pchBak, (char *)0x9d9);
+                    _strcpy(pcVar22, (char *)".hst");
+                    _strcpy(pchBak, (char *)".hst");
                 } else {
-                    _wsprintf(pcVar22, s_x_d_1120_09cf, i + 1);
+                    _wsprintf(pcVar22, ".x%d", i + 1);
                     _strcpy(pchBak, pcVar22);
                     _remove(szT);
                     sVar16 = __access((char *)szBase, 0);
@@ -733,17 +562,11 @@ short FGenerateTurn(void)
                 if ((i < 0) || (rgfNoXFile[i] == 0)) {
                     _rename((char *)szBase, szT);
                 } else {
-                    CopyFile((char *)szBase, szT);
+                    CopyStarsFile((char *)szBase, szT);
                 }
                 *pcVar22 = '\0';
                 i = i + 1;
             }
-
-            /* ------------------------------------------------------------
-               Write data files for host and for each player:
-               - Randomize a small “crap” field in game.wCrap
-               - For each player and host sentinel (-1), call FWriteDataFile
-               ------------------------------------------------------------ */
             j = 0x36b;
             fDone = 0;
             uVar21 = Random(8);
@@ -765,46 +588,30 @@ short FGenerateTurn(void)
                 FWriteDataFile((char *)szBase, i, sVar16);
                 i = i + 1;
             }
-
-            /* ------------------------------------------------------------
-               Success epilogue:
-               - Progress to near-complete
-               - Reset in-memory log cursor
-               - Flag success for caller
-               ------------------------------------------------------------ */
             UpdateProgressGauge(0x3e6);
             imemLogCur = 0;
             fSuccess = 1;
         }
-
-    /* --------------------------------------------------------------------
-       Unified cleanup / epilogue (both error and success paths):
-       - Progress to 100%
-       - Free per-turn allocations
-       - Reset globals/flags and restore cursor
-       - Log success/failure
-       - Restore far-ish globals from locals (decompiler artifacts)
-       -------------------------------------------------------------------- */
     TURN_FreeStuffUp:
         UpdateProgressGauge(1000);
         FreeLp(vrgPlanResExtra, htMisc);
         /* WARNING: Ignoring partial resolution of indirect */
-        vrgPlanResExtra._0_2_ = (ushort *)0x0;
+        vrgPlanResExtra._0_2_ = 0;
         /* WARNING: Ignoring partial resolution of indirect */
         vrgPlanResExtra._2_2_ = 0;
         FreeLp(vrgts, htMisc);
         /* WARNING: Ignoring partial resolution of indirect */
-        vrgts._0_2_ = (TURNSERIAL *)0x0;
+        vrgts._0_2_ = 0;
         /* WARNING: Ignoring partial resolution of indirect */
         vrgts._2_2_ = 0;
         FreeLp(lpcd, htMisc);
         /* WARNING: Ignoring partial resolution of indirect */
-        lpcd._0_2_ = (COLDROP *)0x0;
+        lpcd._0_2_ = 0;
         /* WARNING: Ignoring partial resolution of indirect */
         lpcd._2_2_ = 0;
         FreeLp(lpxf, htMisc);
         /* WARNING: Ignoring partial resolution of indirect */
-        lpxf._0_2_ = (XFERFULL *)0x0;
+        lpxf._0_2_ = 0;
         /* WARNING: Ignoring partial resolution of indirect */
         lpxf._2_2_ = 0;
         gd.grBits._0_2_ = (uint)gd.grBits & 0xfdfd;
@@ -1335,7 +1142,7 @@ void MoveThings(short fPostProd)
                             }
                             dmgRaw = lVar20;
                             if (*(int *)((int)((ulonglong)local_4e >> 0x20) + 2) != -1) {
-                                CalcPctSurvive((PLANET *)((ulonglong)local_4e >> 0x20), &pct, (float *)0x0);
+                                CalcPctSurvive((PLANET *)((ulonglong)local_4e >> 0x20), &pct, 0);
                                 lVar20 = __ftol((double)CONCAT26(rgCost[0], CONCAT24(local_82, CONCAT22(unaff_SI, unaff_DI))));
                                 if (lVar20 != 0) {
                                     dmgRaw = lVar20;
@@ -1575,7 +1382,7 @@ void FuelFleets(void)
         /* WARNING: Load size is inaccurate */
         pFVar1 = ((FLEET **)rglpfl)[ifl];
         iVar2 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
-        if ((pFVar1 == (FLEET *)0x0) && (iVar2 == 0))
+        if ((pFVar1 == 0) && (iVar2 == 0))
             break;
         if ((pFVar1->wFlags_0x4 >> 10 & 1) == 0) {
             if (((((pFVar1->idPlanet == -1) || ((((PLANET *)lpPlanets)[pFVar1->idPlanet].wFlags_0x4 >> 9 & 1) == 0)) ||
@@ -1741,7 +1548,7 @@ void MoveFleets(void)
                 pFVar17 = ((FLEET **)rglpfl)[ifl];
                 iVar10 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
                 lpfl = (FLEET *)CONCAT22(iVar10, pFVar17);
-                if ((pFVar17 != (FLEET *)0x0) || (iVar10 != 0)) {
+                if ((pFVar17 != 0) || (iVar10 != 0)) {
                     if (cPass == 0) {
                         *(undefined2 *)&pFVar17->dirLong = 0;
                         *(undefined2 *)((int)&pFVar17->dirLong + 2) = 0;
@@ -2137,7 +1944,7 @@ void MoveFleets(void)
                                     FSendPlrMsg2(pFVar20->iPlayer, idmUnableUseStargateBecauseHadColonistsBoard, lpfl->id | 0x8000, lpfl->id, *_pPStack_6a);
                                     goto LAB_10b0_32f6;
                                 }
-                                local_dc._100_2_ = (PLORD *)0x0;
+                                local_dc._100_2_ = 0;
                                 local_dc._102_2_ = 0;
                                 stack0xff94 = (double)((ulonglong)stack0xff94 & 0xffffffffffff);
                                 while (true) {
@@ -2175,8 +1982,8 @@ void MoveFleets(void)
                                 *piVar1 = *piVar1 + iVar18 + (uint)CARRY2(uVar36, uVar13);
                                 *(undefined2 *)(pFVar20->rgwtMin + 3) = 0;
                                 *(undefined2 *)((int)pFVar20->rgwtMin + 0xe) = 0;
-                                if ((pcVar5 == (char *)0x0) && (iVar10 == 0)) {
-                                    if (((PLORD *)local_dc._100_2_ != (PLORD *)0x0) || (local_dc._102_2_ != 0)) {
+                                if ((pcVar5 == 0) && (iVar10 == 0)) {
+                                    if (((PLORD *)local_dc._100_2_ != 0) || (local_dc._102_2_ != 0)) {
                                         sVar38 = 0;
                                         sVar37 = 0;
                                         sVar12 = 0;
@@ -2195,7 +2002,7 @@ void MoveFleets(void)
                                                         (short)uVar28, uVar36, sVar12, sVar37, sVar38);
                                         }
                                     }
-                                } else if (((PLORD *)local_dc._100_2_ == (PLORD *)0x0) && (local_dc._102_2_ == 0)) {
+                                } else if (((PLORD *)local_dc._100_2_ == 0) && (local_dc._102_2_ == 0)) {
                                     sVar38 = 0;
                                     sVar37 = 0;
                                     sVar12 = 0;
@@ -2267,7 +2074,7 @@ code_r0x10b04783:
         dMineTravel = (uint)dTravel;
     }
     if ((*(uint *)(iVar15 + 0x1c) >> 4 & 0xf) < 0xb) {
-        sVar12 = FTravelThroughMineFields(lpfl, &dMineTravel, (THING *)0x0);
+        sVar12 = FTravelThroughMineFields(lpfl, &dMineTravel, 0);
         if (sVar12 != 0)
             goto LAB_10b0_484b;
         uVar21 = (undefined2)((ulong)lpfl >> 0x10);
@@ -2288,7 +2095,7 @@ code_r0x10b04783:
                 }
                 lVar34 = LCalcFuelGainFromRamScoops(lpfl, *(uint *)(iVar15 + 0x1c) >> 4 & 0xf, lVar34);
                 if (0 < lVar34) {
-                    lVar32 = ChgCargo(grobjFleet, lpfl->id, 4, lVar34, (void *)0x0);
+                    lVar32 = ChgCargo(grobjFleet, lpfl->id, 4, lVar34, 0);
                     local_64._0_6_ = CONCAT24((int)lVar32, (char *)local_64);
                     local_64 = (double)CONCAT26((int)((ulong)lVar32 >> 0x10), (uint6)local_64);
                     if (0x7ef4 < lVar34) {
@@ -2409,7 +2216,7 @@ code_r0x10b04783:
     if (((ptEnd.x == (&((FLEET *)lpfl)->pt)->x) && (ptEnd.y == (((FLEET *)lpfl)->pt).y)) && ((*(uint *)(iVar15 + 0x1c) >> 8 & 0xf) == 8)) {
         pTVar33 = LpthFromId(*(short *)(iVar15 + 0x1a));
         local_64 = (double)CONCAT44(local_64._4_4_, pTVar33);
-        if ((pTVar33 != (THING *)0x0) && (pTVar33->idFull >> 0xd == 2)) {
+        if ((pTVar33 != 0) && (pTVar33->idFull >> 0xd == 2)) {
             stack0xff94 = (double)CONCAT26(1 << ((byte)((FLEET *)lpfl)->iPlayer & 0x1f), stack0xff94);
             pTVar33 = LpthFromId(*(short *)((int)&((THING *)pTVar33)->u_THING_0x0006 + 6));
             local_64._0_6_ = CONCAT24((THING *)pTVar33, (char *)local_64);
@@ -2577,7 +2384,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
     short           rgishInc[16];
     long            d2Closest;
 
-    lpthSalvage = (THING *)0x0;
+    lpthSalvage = 0;
     iVar13 = *pdTravel;
     cishInc = 0;
     uVar21 = (undefined2)((ulong)lpfl >> 0x10);
@@ -2586,7 +2393,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
     uVar22 = 0x10e0;
     sVar7 = GetRaceStat((PLAYER *)rgplr + iPlayer, rsMajorAdv);
     iVar12 = (uint)(sVar7 == raMines) * 2 + (uint)(sVar7 == raStealth);
-    if (lpthHit == (THING *)0x0) {
+    if (lpthHit == 0) {
         ptSrc.x = (&pFVar15->pt)->x;
         ptSrc.y = (pFVar15->pt).y;
         uVar31 = (undefined2)((ulong)pFVar15->lpplord >> 0x10);
@@ -2685,7 +2492,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
             }
         }
     }
-    if (lpthHit == (THING *)0x0) {
+    if (lpthHit == 0) {
         rgi[2] = 0;
         rgi[1] = 0;
         rgi[0] = 0;
@@ -2742,7 +2549,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
             flDead.wFlags_0x4 = flDead.wFlags_0x4 & 0xfb00 | 0x407;
             for (i = 0; i < 0x10; i = i + 1) {
                 if ((0 < pFVar15->rgcsh[i]) &&
-                    (((lpthHit == (THING *)0x0 || ((lpthHit->idFull >> 9 & 0xf) != pFVar15->iPlayer)) ||
+                    (((lpthHit == 0 || ((lpthHit->idFull >> 9 & 0xf) != pFVar15->iPlayer)) ||
                       ((iVar12 = pFVar15->iPlayer * 4, *(int *)(*(int *)(iVar12 + rglpshdef) + i * 0x93) != 0x1b &&
                                                            (iVar12 = pFVar15->iPlayer * 4, *(int *)(*(int *)(iVar12 + rglpshdef) + i * 0x93) != 0x1c)))))) {
                     iVar12 = pFVar15->rgcsh[i];
@@ -2792,7 +2599,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
                     }
                 }
             }
-            if ((lpthHit != (THING *)0x0) && (lVar6 == 0)) {
+            if ((lpthHit != 0) && (lVar6 == 0)) {
                 return 0;
             }
             if ((cshDead != (uint)csh) || (cshDead >> 0xf != csh._2_2_)) {
@@ -2811,7 +2618,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
                 pFVar15->wFlags_0x4 = pFVar15->wFlags_0x4 & 0xfbff | 0x400;
             }
         }
-        if (lpthHit == (THING *)0x0) {
+        if (lpthHit == 0) {
             iVar13 = ptDst.x - ptSrc.x;
             dy = ptDst.y - ptSrc.y;
             uVar25 = __aFulmul((long)dy, (long)dy);
@@ -2833,7 +2640,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
                     lpthSalvage = (THING *)lpthSalvage + 1;
                 }
                 if (((THING *)lpthSalvage == (THING *)lpThings + cThing) && (lpthSalvage._2_2_ == lpThings._2_2_)) {
-                    lpthSalvage = (THING *)0x0;
+                    lpthSalvage = 0;
                 }
                 DropSalvage(&lpthSalvage, (long *)CONCAT22(uVar21, pFVar15->rgwtMin), (uint)flSrc.id >> 9 & 0xf, &ptAct);
             }
@@ -2914,14 +2721,14 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
             lVar6 = d2;
         } else if (cshDead == 0) {
             if (iPlayer != (lpthClosest->idFull >> 9 & 0xf)) {
-                if (lpthHit == (THING *)0x0) {
+                if (lpthHit == 0) {
                     MVar9 = idmHasStoppedMineFieldFleetHasTaken;
                 } else {
                     MVar9 = idmHasDamagedDetonatingMineFieldFleetHas;
                 }
                 FSendPlrMsg(iPlayer, MVar9, lpfl->id | 0x8000, lpfl->id | 0x8000, lpthClosest->idFull >> 9 & 0xf, iType, ptAct.x, ptAct.y, (short)dmgTot, 0);
             }
-            if (lpthHit == (THING *)0x0) {
+            if (lpthHit == 0) {
                 MVar9 = idmHasStoppedMineFieldMinesHaveInflicted;
             } else {
                 MVar9 = idmHasDamagedDetonatingMineFieldMinesHave;
@@ -2929,7 +2736,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
             FSendPlrMsg(lpthClosest->idFull >> 9 & 0xf, MVar9, lpfl->id | 0x8000, lpfl->id | 0x8000, iType, ptAct.x, ptAct.y, (short)dmgTot, 0, 0);
             lVar6 = d2;
         } else if ((csh._2_2_ < cshDead >> 0xf) || ((csh._2_2_ <= cshDead >> 0xf && ((uint)csh <= (uint)cshDead)))) {
-            if (((THING *)lpthSalvage == (THING *)0x0) && (lpthSalvage._2_2_ == 0)) {
+            if (((THING *)lpthSalvage == 0) && (lpthSalvage._2_2_ == 0)) {
                 flDead.id = lpfl->id;
                 if (iPlayer != (lpthClosest->idFull >> 9 & 0xf)) {
                     sVar33 = 0;
@@ -2970,7 +2777,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
             }
         } else {
             if (iPlayer != (lpthClosest->idFull >> 9 & 0xf)) {
-                if (lpthHit == (THING *)0x0) {
+                if (lpthHit == 0) {
                     MVar9 = idmHasStoppedMineFieldFleetHasTaken2;
                 } else {
                     MVar9 = idmHasTakenDamageDetonatingMineFieldFleet;
@@ -2978,7 +2785,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
                 FSendPlrMsg(iPlayer, MVar9, lpfl->id | 0x8000, lpfl->id | 0x8000, lpthClosest->idFull >> 9 & 0xf, iType, ptAct.x, ptAct.y, (short)dmgTot,
                             cshDead);
             }
-            if (lpthHit == (THING *)0x0) {
+            if (lpthHit == 0) {
                 MVar9 = idmHasStoppedMineFieldMinesHaveInflicted2;
             } else {
                 MVar9 = idmHasDamagedDetonatingMineFieldMinesHave2;
@@ -2988,7 +2795,7 @@ short FTravelThroughMineFields(FLEET *lpfl, short *pdTravel, THING *lpthHit)
         }
         d2._2_2_ = (int)((ulong)lVar6 >> 0x10);
         d2._0_2_ = (uint)lVar6;
-        if (lpthHit == (THING *)0x0) {
+        if (lpthHit == 0) {
             uVar22 = (undefined2)((ulong)lpthClosest >> 0x10);
             pTVar18 = (THING *)lpthClosest;
             if (lVar6 < CONCAT22(*(undefined2 *)((int)&pTVar18->u_THING_0x0006 + 2), ((&pTVar18->u_THING_0x0006)->thp).wFlags)) {
@@ -3154,7 +2961,7 @@ LAB_10b0_67ba:
     pFVar28 = ((FLEET **)rglpfl)[ifltcur];
     iVar22 = *(int *)((int)((FLEET **)rglpfl + ifltcur) + 2);
     lpfl = (FLEET *)CONCAT22(iVar22, pFVar28);
-    if ((pFVar28 == (FLEET *)0x0) && (iVar22 == 0)) {
+    if ((pFVar28 == 0) && (iVar22 == 0)) {
         return;
     }
     if (iPass == 1) {
@@ -3184,8 +2991,8 @@ LAB_10b0_67ba:
         fFueling = 0;
         fStealing = 0;
         fDunnage = 0;
-        lpflWP = (FLEET *)0x0;
-        lpthWP = (THING *)0x0;
+        lpflWP = 0;
+        lpthWP = 0;
         if (pFVar28->idPlanet == -1) {
         LAB_10b0_68f7:
             fAtPlanet = 0;
@@ -3205,7 +3012,7 @@ LAB_10b0_67ba:
                 fHasPermission = 0;
             }
             if (fHasPermission == 0) {
-                GetFleetScannerRange(lpfl, (short *)0x0, (short *)0x0, &fHasPermission);
+                GetFleetScannerRange(lpfl, 0, 0, &fHasPermission);
                 if (fHasPermission == 1) {
                     fHasPermission = 0;
                 }
@@ -3216,7 +3023,7 @@ LAB_10b0_67ba:
                             pFVar28 = ((FLEET **)rglpfl)[iflWP];
                             iVar22 = *(int *)((int)((FLEET **)rglpfl + iflWP) + 2);
                             lpflWP = (FLEET *)CONCAT22(iVar22, pFVar28);
-                            if ((pFVar28 == (FLEET *)0x0) && (iVar22 == 0))
+                            if ((pFVar28 == 0) && (iVar22 == 0))
                                 break;
                             if ((pFVar28->wFlags_0x4 >> 10 & 1) == 0) {
                                 iVar24 = (int)((ulong)lpfl >> 0x10);
@@ -3249,7 +3056,7 @@ LAB_10b0_67ba:
             xWP = 0xffff;
             fHasPermission = (short)(((FLEET *)lpfl)->iPlayer == ((FLEET *)lpflWP)->iPlayer);
             if (fHasPermission == 0) {
-                GetFleetScannerRange(lpfl, (short *)0x0, (short *)0x0, &fHasPermission);
+                GetFleetScannerRange(lpfl, 0, 0, &fHasPermission);
                 if (fHasPermission != 0) {
                     fStealing = 1;
                 }
@@ -3297,7 +3104,7 @@ LAB_10b0_67ba:
                          ((j == 4 && (((ord.wFlags_0x6 >> 8 & 0xf) != 2 && ((ord.wFlags_0x6 >> 8 & 0xf) != 4)))))) ||
                         ((2 < j && ((ord.wFlags_0x6 >> 8 & 0xf) == 8))))
                         goto switchD_10b0_7b5d_default;
-                    amountWP._0_2_ = (undefined1 *)0x0;
+                    amountWP._0_2_ = 0;
                     amountWP._2_2_ = 0;
                     uVar16 = ord.wFlags_0x6 >> 8 & 0xf;
                     if (uVar16 == 1) {
@@ -3381,9 +3188,9 @@ LAB_10b0_67ba:
                         puVar12 = (undefined1 *)(uVar41 - CONCAT22(*(undefined2 *)((int)(((FLEET *)lpfl)->rgwtMin + j) + 2), (int)((FLEET *)lpfl)->rgwtMin[j]));
                         amountEdit = (long)puVar12;
                         if (((long)puVar12 < 0x10000) && ((long)puVar12 < 0)) {
-                            amountEdit._0_2_ = (undefined1 *)0x0;
+                            amountEdit._0_2_ = 0;
                             amountEdit._2_2_ = 0;
-                            puVar12 = (undefined1 *)0x0;
+                            puVar12 = 0;
                         }
                     }
                     amountEdit._2_2_ = (int)((ulong)puVar12 >> 0x10);
@@ -3400,7 +3207,7 @@ LAB_10b0_67ba:
                         puVar14 = puVar12;
                     TURN_Load:
                         puVar37 = puVar14;
-                        if ((iLoad != 0) && (puVar37 != (undefined1 *)0x0)) {
+                        if ((iLoad != 0) && (puVar37 != 0)) {
                             l = (long)puVar38;
                             l2 = lVar42;
                             amount = (long)puVar37;
@@ -3426,9 +3233,9 @@ LAB_10b0_67ba:
                             amountEdit = (long)puVar12;
                             if ((fHasPermission == 0) || ((ord.wFlags_0x6 >> 8 & 0xf) == 4)) {
                                 if ((j == 4) && (fOptFuel != 0)) {
-                                    amount._0_2_ = (undefined1 *)0x0;
+                                    amount._0_2_ = 0;
                                     amount._2_2_ = 0;
-                                    puVar37 = (undefined1 *)0x0;
+                                    puVar37 = 0;
                                 } else {
                                     if (iPass == 4) {
                                         uVar19 = ord.wFlags_0x6 >> 8 & 0xf;
@@ -3449,7 +3256,7 @@ LAB_10b0_67ba:
                                 if ((fStealing != 0) && ((j == 3 || (j == 4)))) {
                                     fDone = 1;
                                 }
-                                if (puVar37 == (undefined1 *)0x0) {
+                                if (puVar37 == 0) {
                                     if (uVar19 == 6) {
                                         if (j == 4) {
                                             fDone = 0;
@@ -3462,18 +3269,16 @@ LAB_10b0_67ba:
                                         puVar13 = puVar37;
                                     }
                                     l = (long)puVar13;
-                                    lVar42 = ChgCargo(ord.wFlags_0x6 >> 8 & (grobjThing | grobjOther | grobjFleet | grobjPlanet), ord.id, j,
-                                                      CONCAT22(-((int)((ulong)puVar13 >> 0x10) + (uint)((undefined1 *)puVar13 != (undefined1 *)0x0)),
-                                                               -(int)(undefined1 *)puVar13),
-                                                      (void *)0x0);
+                                    lVar42 = ChgCargo(
+                                        ord.wFlags_0x6 >> 8 & (grobjThing | grobjOther | grobjFleet | grobjPlanet), ord.id, j,
+                                        CONCAT22(-((int)((ulong)puVar13 >> 0x10) + (uint)((undefined1 *)puVar13 != 0)), -(int)(undefined1 *)puVar13), 0);
                                     l2 = lVar42;
                                     if (lVar42 != 0) {
                                         puVar38 = (undefined1 *)ChgCargo(grobjFleet, lpfl->id, j,
-                                                                         CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42),
-                                                                         (void *)0x0);
+                                                                         CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42), 0);
                                         l = (long)puVar38;
                                         lVar42 = l2;
-                                        if (puVar38 != (undefined1 *)0x0) {
+                                        if (puVar38 != 0) {
                                             if (((ord.wFlags_0x6 >> 8 & 0xf) == 2) && (((FLEET *)lpfl)->iPlayer != ((FLEET *)lpflWP)->iPlayer)) {
                                                 sVar45 = 0;
                                                 sVar44 = 0;
@@ -3509,20 +3314,18 @@ LAB_10b0_67ba:
                                         ((undefined1 *)amount != (undefined1 *)CONCAT22(-(l2._2_2_ + (uint)((int)l2 != 0)), (undefined1 *)-(int)l2))) {
                                         l = amount + lVar42;
                                         l2 = lVar42;
-                                        lVar42 =
-                                            ChgCargo(grobjPlanet, pl.id, j,
-                                                     CONCAT22(-((int)((ulong)l >> 0x10) + (uint)((undefined1 *)l != (undefined1 *)0x0)), -(int)(undefined1 *)l),
-                                                     (void *)0x0);
+                                        lVar42 = ChgCargo(grobjPlanet, pl.id, j,
+                                                          CONCAT22(-((int)((ulong)l >> 0x10) + (uint)((undefined1 *)l != 0)), -(int)(undefined1 *)l), 0);
                                         l2 = lVar42;
                                         if (lVar42 == 0) {
-                                            l._0_2_ = (undefined1 *)0x0;
+                                            l._0_2_ = 0;
                                             l._2_2_ = 0;
-                                            puVar38 = (undefined1 *)0x0;
+                                            puVar38 = 0;
                                             puVar37 = (undefined1 *)amount;
                                             puVar12 = (undefined1 *)amountEdit;
                                         } else {
                                             lVar42 = ChgCargo(grobjFleet, lpfl->id, j,
-                                                              CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42), (void *)0x0);
+                                                              CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42), 0);
                                             l = lVar42;
                                             if (fMining == 0) {
                                                 sVar45 = 0;
@@ -3559,7 +3362,7 @@ LAB_10b0_67ba:
                                     if ((puVar37 != puVar38) && (uVar19 == 6)) {
                                         bVar36 = false;
                                     }
-                                    if (((puVar38 != (undefined1 *)0x0) && (uVar19 == 7)) && (j == 4)) {
+                                    if (((puVar38 != 0) && (uVar19 == 7)) && (j == 4)) {
                                         wtOptimalFuel = (long)puVar38;
                                     }
                                 }
@@ -3607,17 +3410,17 @@ LAB_10b0_67ba:
                                         iVar22 = ((FLEET *)lpflWP)->iPlayer * 0xc0 + 0x5a12;
                                         local_9a = (FLEET *)CONCAT22(iVar22, (FLEET *)local_9a);
                                         if (*(char *)(iVar22 + ((FLEET *)lpfl)->iPlayer) == '\x02') {
-                                            amount._0_2_ = (undefined1 *)0x0;
+                                            amount._0_2_ = 0;
                                             amount._2_2_ = 0;
-                                            puVar37 = (undefined1 *)0x0;
+                                            puVar37 = 0;
                                             goto LAB_10b0_7ae8;
                                         }
                                     }
                                     if ((j != 3) || ((ord.wFlags_0x6 >> 8 & 0xf) != 4)) {
-                                        if (puVar37 != (undefined1 *)0x0) {
+                                        if (puVar37 != 0) {
                                             if ((fFueling == 0) || (j == 4)) {
                                                 puVar38 = (undefined1 *)ChgCargo(ord.wFlags_0x6 >> 8 & (grobjThing | grobjOther | grobjFleet | grobjPlanet),
-                                                                                 ord.id, j, (long)puVar37, (void *)0x0);
+                                                                                 ord.id, j, (long)puVar37, 0);
                                                 l = (long)puVar38;
                                                 if (0 < (long)puVar38) {
                                                     sVar44 = 0;
@@ -3639,7 +3442,7 @@ LAB_10b0_67ba:
                                                 lVar42 = l2;
                                                 puVar12 = (undefined1 *)amountEdit;
                                             } else {
-                                                lVar42 = ChgCargo(grobjPlanet, pl.id, j, (long)puVar37, (void *)0x0);
+                                                lVar42 = ChgCargo(grobjPlanet, pl.id, j, (long)puVar37, 0);
                                                 sVar45 = 0;
                                                 sVar43 = j;
                                                 uVar20 = xWP;
@@ -3662,14 +3465,14 @@ LAB_10b0_67ba:
                                     LAB_10b0_7ae8:
                                         amount._2_2_ = (uint)((ulong)puVar37 >> 0x10);
                                         amount._0_2_ = (undefined1 *)puVar37;
-                                        if (puVar37 != (undefined1 *)0x0) {
+                                        if (puVar37 != 0) {
                                             iVar22 = -(int)(undefined1 *)amount;
-                                            iVar24 = amount._2_2_ + ((undefined1 *)amount != (undefined1 *)0x0);
+                                            iVar24 = amount._2_2_ + ((undefined1 *)amount != 0);
                                             l = (long)puVar38;
                                             amount = (long)puVar37;
                                             l2 = lVar42;
                                             amountEdit = (long)puVar12;
-                                            puVar38 = (undefined1 *)ChgCargo(grobjFleet, lpfl->id, j, CONCAT22(-iVar24, iVar22), (void *)0x0);
+                                            puVar38 = (undefined1 *)ChgCargo(grobjFleet, lpfl->id, j, CONCAT22(-iVar24, iVar22), 0);
                                             l = (long)puVar38;
                                             puVar37 = (undefined1 *)amount;
                                             lVar42 = l2;
@@ -3697,7 +3500,7 @@ LAB_10b0_67ba:
                         break;
                     case 7:
                         if (j == 4) {
-                            wtOptimalFuel._0_2_ = (undefined1 *)0x0;
+                            wtOptimalFuel._0_2_ = 0;
                             wtOptimalFuel._2_2_ = 0;
                             wtOptimalFuel = 0;
                             fOptFuel = 1;
@@ -3707,7 +3510,7 @@ LAB_10b0_67ba:
                                 amount._2_2_ = amountWP._2_2_;
                                 puVar14 = (undefined1 *)CONCAT22(amountWP._2_2_, (undefined1 *)amountWP);
                                 puVar37 = (undefined1 *)CONCAT22(amountWP._2_2_, (undefined1 *)amountWP);
-                                if ((undefined1 *)amountWP == (undefined1 *)0x0)
+                                if ((undefined1 *)amountWP == 0)
                                     goto joined_r0x10b070d0;
                                 goto TURN_Load;
                             }
@@ -3723,7 +3526,7 @@ LAB_10b0_67ba:
                         puVar37 = (undefined1 *)CONCAT22(amount._2_2_, puVar21);
                         if ((int)amount._2_2_ < 0) {
                             if (iLoad == 0) {
-                                amount._2_2_ = -(amount._2_2_ + (puVar21 != (undefined1 *)0x0));
+                                amount._2_2_ = -(amount._2_2_ + (puVar21 != 0));
                                 amount._0_2_ = (undefined1 *)-(int)puVar21;
                                 puVar37 = (undefined1 *)CONCAT22(amount._2_2_, (undefined1 *)-(int)puVar21);
                                 goto TURN_Unload;
@@ -3759,7 +3562,7 @@ LAB_10b0_67ba:
                             puVar37 = (undefined1 *)CONCAT22(amount._2_2_, (undefined1 *)amount);
                             if (iLoad == 0) {
                                 puVar21 = (undefined1 *)-(int)(undefined1 *)amount;
-                                amount._2_2_ = -(amount._2_2_ + ((undefined1 *)amount != (undefined1 *)0x0));
+                                amount._2_2_ = -(amount._2_2_ + ((undefined1 *)amount != 0));
                                 uVar19 = *(uint *)((int)(((FLEET *)lpfl)->rgwtMin + j) + 2);
                                 if (((int)uVar19 < (int)amount._2_2_) ||
                                     (((int)uVar19 <= (int)amount._2_2_ && (*(undefined1 **)(((FLEET *)lpfl)->rgwtMin + j) <= puVar21)))) {
@@ -3781,26 +3584,25 @@ LAB_10b0_67ba:
                 }
                 if (((fOptFuel != 0) && (iLoad != 0)) && (fDunnage != 1)) {
                     if (((FLEET *)lpfl)->cord < 2) {
-                        amount._0_2_ = (undefined1 *)0x0;
+                        amount._0_2_ = 0;
                         amount._2_2_ = 0;
-                        puVar37 = (undefined1 *)0x0;
+                        puVar37 = 0;
                         local_9e = (PLANET *)CONCAT22(*(undefined2 *)((int)((FLEET *)lpfl)->rgwtMin + 0x12), *(PLANET **)(((FLEET *)lpfl)->rgwtMin + 4));
                     TURN_SetOptAmount:
                         amount = (long)puVar37;
                         amountEdit = (long)puVar12;
-                        if (((PLANET *)local_9e == (PLANET *)0x0) && (local_9e._2_2_ == 0)) {
-                            l._0_2_ = (undefined1 *)0x0;
+                        if (((PLANET *)local_9e == 0) && (local_9e._2_2_ == 0)) {
+                            l._0_2_ = 0;
                             l._2_2_ = 0;
-                            l = (long)(undefined1 *)0x0;
+                            l = (long)0;
                         } else {
                             l = (long)puVar38;
                             l2 = lVar42;
-                            lVar42 =
-                                ChgCargo(ord.wFlags_0x6 >> 8 & (grobjThing | grobjOther | grobjFleet | grobjPlanet), ord.id, 4, (long)local_9e, (void *)0x0);
+                            lVar42 = ChgCargo(ord.wFlags_0x6 >> 8 & (grobjThing | grobjOther | grobjFleet | grobjPlanet), ord.id, 4, (long)local_9e, 0);
                             l2 = lVar42;
                             if (lVar42 != 0) {
-                                puVar38 = (undefined1 *)ChgCargo(
-                                    grobjFleet, lpfl->id, 4, CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42), (void *)0x0);
+                                puVar38 = (undefined1 *)ChgCargo(grobjFleet, lpfl->id, 4,
+                                                                 CONCAT22(-((int)((ulong)lVar42 >> 0x10) + (uint)((int)lVar42 != 0)), -(int)lVar42), 0);
                                 l = (long)puVar38;
                                 lVar42 = l2;
                             }
@@ -3965,9 +3767,9 @@ LAB_10b0_67ba:
                 puVar12 = (undefined1 *)amountEdit;
             } while (true);
         }
-        if ((((THING *)lpthWP != (THING *)0x0) || (lpthWP._2_2_ != 0)) && (lpthWP->idFull >> 0xd == 1))
+        if ((((THING *)lpthWP != 0) || (lpthWP._2_2_ != 0)) && (lpthWP->idFull >> 0xd == 1))
             goto TURN_LTryDunnage;
-        if (((THING *)lpthWP != (THING *)0x0) || (lpthWP._2_2_ != 0)) {
+        if (((THING *)lpthWP != 0) || (lpthWP._2_2_ != 0)) {
             FSendPlrMsg2(((FLEET *)lpfl)->iPlayer, idmHadOrdersTransferCargoFutilePursuit, lpfl->id | 0x8000, lpfl->id, lpthWP->idFull >> 0xd);
         }
         goto TURN_CancelOrder;
@@ -4039,7 +3841,7 @@ LAB_10b0_67ba:
                         local_aa = (FLEET *)CONCAT22(local_aa._2_2_ + 1, (FLEET *)local_aa);
                     }
                     if (((ord.wFlags_0x6 & 0xf) != 2) || (bVar36)) {
-                        local_a6 = (FLEET *)0x0;
+                        local_a6 = 0;
                         if (((ord.wFlags_0x6 & 0xf) == 5) && (pl.iPlayer != -1)) {
                             sVar43 = GetRaceGrbit((PLAYER *)rgplr + pl.iPlayer, ibitRaceGeneralizedResearch | ibitRaceTT);
                             if (sVar43 == 0)
@@ -4150,7 +3952,7 @@ LAB_10b0_67ba:
                         local_9e = (PLANET *)CONCAT22(local_9e._2_2_, pl.id);
                         if (bVar36) {
                             lResUltimate._0_2_ = 0;
-                            lResUltimate._2_2_ = (char *)0x0;
+                            lResUltimate._2_2_ = 0;
                             local_9a = (FLEET *)((ulong)local_9a & 0xffff);
                             while (local_9a._2_2_ < 0x10) {
                                 if (0 < ((FLEET *)lpfl)->rgcsh[local_9a._2_2_]) {
@@ -4190,7 +3992,7 @@ LAB_10b0_67ba:
                             }
                             if ((-1 < (int)lResUltimate._2_2_) && (0 < (int)lResUltimate._2_2_)) {
                                 lResUltimate._0_2_ = 0xffff;
-                                lResUltimate._2_2_ = (char *)0x0;
+                                lResUltimate._2_2_ = 0;
                             }
                             lVar42 = CONCAT22(lResUltimate._2_2_, (uint)lResUltimate);
                             ((ushort *)vrgPlanResExtra)[pl.id] = ((ushort *)vrgPlanResExtra)[pl.id] + (uint)lResUltimate;
@@ -4246,7 +4048,7 @@ LAB_10b0_67ba:
                             FSendPlrMsg(pl.iPlayer, idm, (short)(PLANET *)local_9e, lpfl->id, (short)(FLEET *)local_a6, (short)uVar41, sVar43,
                                         (uint)lResUltimate, uVar20, sVar44);
                         } else if (pl.id == -1) {
-                            lpthWP = (THING *)0x0;
+                            lpthWP = 0;
                             DropSalvage(&lpthWP, pl.rgwtMin, (uint)lpfl->id >> 9 & 0xf, &ord.pt);
                             uVar20 = WFromLpfl(lpfl);
                             FSendPlrMsg2(((FLEET *)lpfl)->iPlayer, idmHasDismantledScrapLeftDeepSpace, -6, lpthWP->idFull, uVar20);
@@ -4315,16 +4117,16 @@ LAB_10b0_67ba:
         goto TURN_CancelOrder;
     }
     if ((ord.wFlags_0x6 & 0xf) == 3) {
-        local_9a = (FLEET *)0x0;
+        local_9a = 0;
         if ((iPass == 3) && ((pFVar28->wFlags_0x4 >> 0xd & 1) != 0)) {
             if (pFVar28->idPlanet == -1) {
                 FSendPlrMsg2(pFVar28->iPlayer, idmRemoteMiningRobotsHadOrdersMineDeep, lpfl->id | 0x8000, lpfl->id, 0);
             } else {
                 local_9e = LpplFromId(pFVar28->idPlanet);
-                if (((PLANET *)local_9e != (PLANET *)0x0) || ((int)((ulong)local_9e >> 0x10) != 0)) {
+                if (((PLANET *)local_9e != 0) || ((int)((ulong)local_9e >> 0x10) != 0)) {
                     local_9a = (FLEET *)CMineFromLpfl(lpfl);
                     uVar33 = (undefined2)((ulong)lpfl >> 0x10);
-                    if (((FLEET *)local_9a != (FLEET *)0x0) || ((int)((ulong)local_9a >> 0x10) != 0)) {
+                    if (((FLEET *)local_9a != 0) || ((int)((ulong)local_9a >> 0x10) != 0)) {
                         if (((PLANET *)local_9e)->iPlayer == -1) {
                             EstMineralsMined(local_9e, &local_ae, (long)local_9a, 1);
                         } else {
@@ -4380,7 +4182,7 @@ LAB_10b0_67ba:
                 local_9a = LpflFromId(ord.id);
                 iVar22 = (int)((ulong)local_9a >> 0x10);
                 pFVar28 = (FLEET *)local_9a;
-                if (((pFVar28 != (FLEET *)0x0) || (iVar22 != 0)) && ((pFVar28->wFlags_0x4 >> 10 & 1) == 0)) {
+                if (((pFVar28 != 0) || (iVar22 != 0)) && ((pFVar28->wFlags_0x4 >> 10 & 1) == 0)) {
                     if (((FLEET *)lpfl != pFVar28) || (lpfl._2_2_ != iVar22)) {
                         if (pFVar28->iPlayer == ((FLEET *)lpfl)->iPlayer) {
                             sVar43 = local_9a->id;
@@ -4445,7 +4247,7 @@ LAB_10b0_67ba:
                                 local_c0 = LpflNew(local_c2, ((FLEET *)lpfl)->idPlanet);
                                 iVar22 = (int)((ulong)local_c0 >> 0x10);
                                 pFVar28 = (FLEET *)local_c0;
-                                if ((pFVar28 != (FLEET *)0x0) || (iVar22 != 0)) {
+                                if ((pFVar28 != 0) || (iVar22 != 0)) {
                                     uVar33 = (undefined2)((ulong)lpfl >> 0x10);
                                     pFVar26 = (FLEET *)lpfl;
                                     if ((int)local_c2 < pFVar26->iPlayer) {
@@ -4544,7 +4346,7 @@ LAB_10b0_67ba:
             _local_a2 = (undefined1 *)CLayMinesFromLpfl(lpfl, -1, -1);
             pFVar28 = (FLEET *)lpfl;
             uVar33 = (undefined2)((ulong)lpfl >> 0x10);
-            if (((undefined1 *)_local_a2 == (undefined1 *)0x0) && ((int)((ulong)_local_a2 >> 0x10) == 0)) {
+            if (((undefined1 *)_local_a2 == 0) && ((int)((ulong)_local_a2 >> 0x10) == 0)) {
                 FSendPlrMsg2(pFVar28->iPlayer, idmHasAttemptedLayMinesOrderHasCanceled, lpfl->id | 0x8000, lpfl->id, 0);
                 goto TURN_CancelOrder;
             }
@@ -4558,11 +4360,11 @@ LAB_10b0_67ba:
             }
             for (j = 0; j < 3; j = j + 1) {
                 _local_a2 = (undefined1 *)CLayMinesFromLpfl(lpfl, j, -1);
-                if (((undefined1 *)_local_a2 != (undefined1 *)0x0) || ((int)((ulong)_local_a2 >> 0x10) != 0)) {
+                if (((undefined1 *)_local_a2 != 0) || ((int)((ulong)_local_a2 >> 0x10) != 0)) {
                     if ((((FLEET *)lpfl)->wFlags_0x4 >> 0xd & 1) == 0) {
                         _local_a2 = (undefined1 *)__aFldiv((long)_local_a2, 2);
                     }
-                    local_a6 = (FLEET *)0x0;
+                    local_a6 = 0;
                     local_ae = 10000000;
                     local_aa = (FLEET *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
                     local_b6 = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
@@ -4593,7 +4395,7 @@ LAB_10b0_67ba:
                         }
                         local_aa = (FLEET *)CONCAT22(local_aa._2_2_, ((FLEET *)local_aa)->rgcsh + 3);
                     }
-                    if ((((FLEET *)local_a6 == (FLEET *)0x0) && (local_a6._2_2_ == 0)) ||
+                    if ((((FLEET *)local_a6 == 0) && (local_a6._2_2_ == 0)) ||
                         ((iVar22 = (&((FLEET *)local_a6)->pt)->x,
                           0xf < iVar22 || ((0xe < iVar22 && (0x423f < ((&((FLEET *)local_a6)->idPlanet)->thp).wFlags)))))) {
                         local_aa = LpthNew(pFVar28->iPlayer, ithMinefield);
@@ -4602,7 +4404,7 @@ LAB_10b0_67ba:
                         pFVar28 = (FLEET *)local_aa;
                         pFVar26 = (FLEET *)lpfl;
                         uVar33 = (undefined2)((ulong)lpfl >> 0x10);
-                        if ((pFVar28 == (FLEET *)0x0) && (iVar22 == 0)) {
+                        if ((pFVar28 == 0) && (iVar22 == 0)) {
                             FSendPlrMsg2(pFVar26->iPlayer, idmFailedLayMinesYearDueTechnicalDifficulties, lpfl->id | 0x8000, lpfl->id, 0);
                             goto LAB_10b0_9ea2;
                         }

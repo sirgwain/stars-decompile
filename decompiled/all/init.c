@@ -117,7 +117,7 @@ short FCreateStuff(void)
     hpenYellow = CreatePen(0, 1, 0xffff);
     hpenDkYellow = CreatePen(0, 1, 0x7f7f);
     hpenDkPurple = CreatePen(0, 1, 0x7f007f);
-    HVar20 = LoadBitmap(hInst, s_Screen50Bmp_1120_05e6);
+    HVar20 = LoadBitmap(hInst, "Screen50Bmp");
     hbr50Screen = CreatePatternBrush(HVar20);
     DeleteObject(HVar20);
     for (i = 0; i < 3; i = i + 1) {
@@ -126,16 +126,16 @@ short FCreateStuff(void)
         ((ushort *)rghbrPat)[i] = HVar21;
         DeleteObject(HVar20);
     }
-    HVar20 = LoadBitmap(hInst, s_CargoBmp_1120_05f2);
+    HVar20 = LoadBitmap(hInst, "CargoBmp");
     hbrCargo = CreatePatternBrush(HVar20);
     DeleteObject(HVar20);
-    HVar20 = LoadBitmap(hInst, s_DockBmp_1120_05fb);
+    HVar20 = LoadBitmap(hInst, "DockBmp");
     hbrDock = CreatePatternBrush(HVar20);
     DeleteObject(HVar20);
-    hcurScanner = LoadCursor(hInst, s_ScannerCur_1120_0603);
-    hcurScanAdd = LoadCursor(hInst, s_ScannerAdd_1120_060e);
-    hcurOpenGrab = LoadCursor(hInst, s_OpenGrabCur_1120_0619);
-    hcurCloseGrab = LoadCursor(hInst, s_CloseGrabCur_1120_0625);
+    hcurScanner = LoadCursor(hInst, "ScannerCur");
+    hcurScanAdd = LoadCursor(hInst, "ScannerAdd");
+    hcurOpenGrab = LoadCursor(hInst, "OpenGrabCur");
+    hcurCloseGrab = LoadCursor(hInst, "CloseGrabCur");
     hcurTrashCan = LoadCursor(hInst, (LPCSTR)0x7a);
     hcurNoWay = LoadCursor(hInst, (LPCSTR)0x79);
     hcurResizeWE = LoadCursor(hInst, (LPCSTR)0x102);
@@ -143,9 +143,9 @@ short FCreateStuff(void)
     hcurResize4Way = LoadCursor(hInst, (LPCSTR)0x107);
     hcurArrowHelp = LoadCursor(hInst, (LPCSTR)0x108);
     hcurHand = LoadCursor(hInst, (LPCSTR)0x109);
-    hbmpScanner = LoadBitmap(hInst, s_ScannerBmp_1120_0632);
+    hbmpScanner = LoadBitmap(hInst, "ScannerBmp");
     hbmpScanShip = LoadBitmap(hInst, (LPCSTR)0x58);
-    hbmpUnknownPlanet = LoadBitmap(hInst, s_UnknownPlanetBmp_1120_063d);
+    hbmpUnknownPlanet = LoadBitmap(hInst, "UnknownPlanetBmp");
     hbmpNumbers = LoadBitmap(hInst, (LPCSTR)0xf9);
     hdibPlanets = HdibLoadBigResource(0x70);
     hdibThings = HdibLoadBigResource(0x57);
@@ -180,16 +180,16 @@ short FCreateStuff(void)
     hbmpMsg = LoadBitmap(hInst, (LPCSTR)0x86);
     hbmpMono = LoadBitmap(hInst, (LPCSTR)0xc7);
     hdibPlaque = HdibLoadBigResource(0x437);
-    hiconStars = LoadIcon(hInst, s_StarsIco_1120_064e);
-    hiconHost = LoadIcon(hInst, s_HostIco_1120_0657);
-    hiconWait = LoadIcon(hInst, s_WaitIco_1120_065f);
-    rghiconVCR[0] = LoadIcon(hInst, s_Bang1Ico_1120_0667);
-    rghiconVCR[1] = LoadIcon(hInst, s_Bang2Ico_1120_0670);
-    rghiconVCR[2] = LoadIcon(hInst, s_Bang3Ico_1120_0679);
-    rghiconVCR[3] = LoadIcon(hInst, s_Torp1Ico_1120_0682);
-    rghiconVCR[4] = LoadIcon(hInst, s_Torp2Ico_1120_068b);
-    rghiconVCR[5] = LoadIcon(hInst, s_Torp3Ico_1120_0694);
-    rghiconVCR[6] = LoadIcon(hInst, s_Torp4Ico_1120_069d);
+    hiconStars = LoadIcon(hInst, "StarsIco");
+    hiconHost = LoadIcon(hInst, "HostIco");
+    hiconWait = LoadIcon(hInst, "WaitIco");
+    rghiconVCR[0] = LoadIcon(hInst, "Bang1Ico");
+    rghiconVCR[1] = LoadIcon(hInst, "Bang2Ico");
+    rghiconVCR[2] = LoadIcon(hInst, "Bang3Ico");
+    rghiconVCR[3] = LoadIcon(hInst, "Torp1Ico");
+    rghiconVCR[4] = LoadIcon(hInst, "Torp2Ico");
+    rghiconVCR[5] = LoadIcon(hInst, "Torp3Ico");
+    rghiconVCR[6] = LoadIcon(hInst, "Torp4Ico");
     lpLog = LpAlloc(32000, htLog);
     lpMsg = LpAlloc(0xffc8, htMsg);
     lpfnFakeComboProc = MakeProcInstance(FakeComboProc, hInst);
@@ -210,7 +210,7 @@ short FCreateStuff(void)
           ((hiconStars == 0 || (hiconWait == 0)))))) {
         sVar18 = 0x10;
         vlprgidFleet = puVar26;
-        sz = PszFormatIds(idsUnableLoadBitmaps, (short *)0x0);
+        sz = PszFormatIds(idsUnableLoadBitmaps, 0);
         AlertSz(sz, sVar18);
         sVar18 = 0;
         puVar26 = vlprgidFleet;
@@ -337,7 +337,7 @@ short FCreateFonts(HDC hdc)
     HVar4 = SelectObject(hdc, rghfontArial8[0]);
     GetTextMetrics(hdc, &tm);
     dyArial8 = tm.tmHeight + tm.tmExternalLeading;
-    DVar5 = GetTextExtent(hdc, s_88888888kT_1120_0726, 10);
+    DVar5 = GetTextExtent(hdc, "88888888kT", 10);
     dxMaxMineralQuan = (short)DVar5;
     SelectObject(hdc, rghfontArial7[0]);
     GetTextMetrics(hdc, &tm);
@@ -369,8 +369,7 @@ short InitInstance(short nCmdShow)
     ini.wFlags = ini.wFlags & 0xfe1a;
     ini.idPlayer = -1;
     ReadIniSettings();
-    hwndFrame = CreateWindow(szFrame, s_Stars_1120_0731, 0xcf0000, ini.wnFrame.rc.left, ini.wnFrame.rc.top, ini.wnFrame.rc.right, ini.wnFrame.rc.bottom, 0, 0,
-                             hInst, (void *)0x0);
+    hwndFrame = CreateWindow(szFrame, "Stars!", 0xcf0000, ini.wnFrame.rc.left, ini.wnFrame.rc.top, ini.wnFrame.rc.right, ini.wnFrame.rc.bottom, 0, 0, hInst, 0);
     if (hwndFrame == 0) {
         sVar1 = 0;
     } else {
@@ -418,7 +417,7 @@ void InitTiles(void)
     short  yTop;
 
     iPass = 2;
-    rgtile = (TILE *)&rgtilePlanet;
+    rgtile = (TILE *)rgtilePlanet;
     ctile = 6;
     while (iPass != 0) {
         iCol = 0;
@@ -439,7 +438,7 @@ void InitTiles(void)
             }
             yTop = yTop + iVar1;
         }
-        rgtile = (TILE *)&rgtileShip;
+        rgtile = (TILE *)rgtileShip;
         ctile = 7;
         iPass = iPass + -1;
     }
@@ -599,7 +598,7 @@ void ReadIniSettings(void)
     UVar6 = GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
     if ((UVar6 == 0) && ((vcScreenColors < 5 || ((uint)gd.grBits >> 0xe == 0)))) {
         sVar7 = 0x10;
-        sz = PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, (short *)0x0);
+        sz = PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, 0);
         AlertSz(sz, sVar7);
     }
     CchGetString(idsLayout, szEntry);
@@ -706,10 +705,10 @@ void ReadIniSettings(void)
     }
     CchGetString(idsPlanettiles, szEntry);
     GetPrivateProfileString(szSection, szEntry, s_X_1120_073c, szWork, 0x14, szIniFile);
-    ReadIniTileSettings((char *)szWork, (TILE *)&rgtilePlanet, 6);
+    ReadIniTileSettings((char *)szWork, (TILE *)rgtilePlanet, 6);
     CchGetString(idsShiptiles, szEntry);
     GetPrivateProfileString(szSection, szEntry, s_X_1120_073e, szWork, 0x14, szIniFile);
-    ReadIniTileSettings((char *)szWork, (TILE *)&rgtileShip, 7);
+    ReadIniTileSettings((char *)szWork, (TILE *)rgtileShip, 7);
     CchGetString(idsSelection, szEntry);
     sVar7 = GetPrivateProfileString(szSection, szEntry, s_N_1120_0740, szWork, 0x14, szIniFile);
     if (sVar7 < 3) {
@@ -779,7 +778,7 @@ LAB_1000_1995:
     CchGetString(idsMineralscale, szEntry);
     cMinGrafMax = GetPrivateProfileInt(szSection, szEntry, cMinGrafMax, szIniFile);
     if ((cMinGrafMax < 100) || (30000 < cMinGrafMax)) {
-        cMinGrafMax = (int)(char *)s_Stars_1120_1385 + 3;
+        cMinGrafMax = (int)(char *)"Stars!" + 3;
     }
     CchGetString(idsFiles, szSection);
     CchGetString(idsLogging, szEntry);
@@ -796,7 +795,7 @@ LAB_1000_1995:
         ini.wFlags = ini.wFlags & 0xfffe | 1;
         _strcpy((char *)szBase, (char *)szWork);
     }
-    if (((char *)vrgszMRU == (char *)0x0) && (vrgszMRU = (char *)CONCAT22(vrgszMRU._2_2_, (char *)vrgszMRU), vrgszMRU._2_2_ == 0)) {
+    if (((char *)vrgszMRU == 0) && (vrgszMRU = (char *)CONCAT22(vrgszMRU._2_2_, (char *)vrgszMRU), vrgszMRU._2_2_ == 0)) {
         vrgszMRU = LpAlloc(0x900, htPerm);
     }
     uVar8 = _strlen(szEntry);

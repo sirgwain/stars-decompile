@@ -289,7 +289,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
     penvMem = &env;
     sVar14 = __setjmp(env);
     if (sVar14 == 0) {
-        sVar14 = FOpenFile(dtXY, -1, 0x20);
+        sVar14 = FOpenFile(dtXY, -1, mdRead);
         if (sVar14 != 0) {
             ReadRt();
             if ((uint)hdrCur >> 10 == 7) {
@@ -339,13 +339,13 @@ short FLoadGame(char *pszFileName, char *pszExt)
                     IO_LNoHistFile:
                         cPlanetHist = 0;
                         FreeLp(lpPlanets, htPlanets);
-                        lpPlanets._0_2_ = (PLANET *)0x0;
+                        lpPlanets._0_2_ = 0;
                         lpPlanets._2_2_ = 0;
                         cThing = 0;
                         FreeLp(lpThings, htThings);
-                        lpThings = (THING *)0x0;
+                        lpThings = 0;
                     } else {
-                        sVar15 = FOpenFile(dtHist, iPlayer, 0x20);
+                        sVar15 = FOpenFile(dtHist, iPlayer, mdRead);
                         if (sVar15 == 0)
                             goto IO_LNoHistFile;
                         ReadRt();
@@ -357,7 +357,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                         IO_CorruptHist:
                             StreamClose();
                             sVar15 = 0x10;
-                            pcVar21 = PszFormatIds(idsHistoryFileAppearsCorruptHistoricalDataWill, (short *)0x0);
+                            pcVar21 = PszFormatIds(idsHistoryFileAppearsCorruptHistoricalDataWill, 0);
                             AlertSz(pcVar21, sVar15);
                             goto IO_LNoHistFile;
                         }
@@ -563,10 +563,10 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             } else {
                                 vlpbAiData = (byte *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
                                 pPVar9 = (PLANET *)CONCAT22(vlpbAiData._2_2_, (byte *)vlpbAiData);
-                                if (((byte *)vlpbAiData == (byte *)0x0) && (vlpbAiData = pPVar29, pPVar9 = pPVar29, vlpbAiData._2_2_ == 0)) {
+                                if (((byte *)vlpbAiData == 0) && (vlpbAiData = pPVar29, pPVar9 = pPVar29, vlpbAiData._2_2_ == 0)) {
                                     vlpbAiData = LpAlloc(0x1fa0, htMisc);
                                     pPVar9 = vlpbAiData;
-                                    if (vlpbAiData == (PLANET *)0x0)
+                                    if (vlpbAiData == 0)
                                         goto IO_CorruptHist;
                                 }
                                 while (pPVar29 = vlpbAiData, (uint)hdrCur >> 10 == 0x29) {
@@ -588,7 +588,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             vlpbAiData = pPVar29;
                             local_4c = pPVar9;
                             lpThings = LpAlloc(cThingAlloc * 0x12, htThings);
-                            if (lpThings == (THING *)0x0)
+                            if (lpThings == 0)
                                 goto IO_CorruptHist;
                             __fmemset(lpThings, 0, cThingAlloc * 0x12);
                             ReadRt();
@@ -610,7 +610,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                     }
                     fFileErrSilent = sVar14;
                     GetFileStatus(dt, iPlayer);
-                    sVar14 = FOpenFile(dt | grf, iPlayer, 0x20);
+                    sVar14 = FOpenFile(dt | grf, iPlayer, mdRead);
                     if (sVar14 != 0) {
                         if (iPlayer == -1) {
                             local_4c = (PLANET *)(CONCAT22((uint)rgbCur._14_2_ >> 0xb, (PLANET *)local_4c) & 0x1ffff);
@@ -623,7 +623,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             ReadRt();
                             while (((uint)hdrCur >> 10 == 0x1f || ((uint)hdrCur >> 10 == 0x27))) {
                                 if ((uint)hdrCur >> 10 != 0x27) {
-                                    if (lpbBattleLog == (byte *)0x0) {
+                                    if (lpbBattleLog == 0) {
                                         lpbBattleCur = LpAlloc(0xffc8, htBattle);
                                         lpbBattleLog = lpbBattleCur;
                                     }
@@ -638,7 +638,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 lpbBattleCur = (byte *)CONCAT22(lpbBattleCur._2_2_, (byte *)lpbBattleCur + ((uint)hdrCur & 0x3ff));
                                 ReadRt();
                             }
-                            if ((((byte *)lpbBattleCur != (byte *)0x0) || (lpbBattleCur._2_2_ != 0)) &&
+                            if ((((byte *)lpbBattleCur != 0) || (lpbBattleCur._2_2_ != 0)) &&
                                 (pbVar10 = lpbBattleCur, pbVar10[0] = 0xff, pbVar10[1] = 0xff, (wVersFile >> 5 & 0x7f) < 0x50)) {
                                 UpdateBattleRecords();
                             }
@@ -673,7 +673,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             if (sVar14 == 0) {
                                 if (((ini.wFlags >> 0xe & 1) != 0) || ((int)ini.wFlags < 0)) {
                                     sVar14 = 0x10;
-                                    pcVar21 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, (short *)0x0);
+                                    pcVar21 = PszFormatIds(idsPasswordHaveEnteredIncorrectPleaseTry, 0);
                                     AlertSz(pcVar21, sVar14);
                                 }
                                 break;
@@ -682,10 +682,10 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             ResetHb(htFleets);
                             ResetHb(htOrd);
                             FreeLp(rglpfl, htMisc);
-                            rglpfl._0_2_ = (FLEET **)0x0;
+                            rglpfl._0_2_ = 0;
                             rglpfl._2_2_ = 0;
                             lppl = lpPlanets;
-                            if (lpPlanets == (PLANET *)0x0) {
+                            if (lpPlanets == 0) {
                                 cPlanetAlloc = cPlanet;
                                 if (cPlanet < 1) {
                                     cPlanetAlloc = 1;
@@ -917,7 +917,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     }
                                 }
                             }
-                            if (pSVar31 == (SCOREX *)0x0) {
+                            if (pSVar31 == 0) {
                                 pSVar31 = LpAlloc(game.cPlayer * 0x18, htMisc);
                                 vlprgScoreX = pSVar31;
                                 __fmemset(pSVar31, 0, game.cPlayer * 0x18);
@@ -956,7 +956,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                     } else {
                                         local_4e = game.turn;
                                     }
-                                    local_4c._0_2_ = (PLANET *)0x0;
+                                    local_4c._0_2_ = 0;
                                     while (((int)(PLANET *)local_4c < ((short *)rgcsxPlr)[local_4c._2_2_] &&
                                             (*(uint *)(*(int *)((SCOREX **)rgsxPlr + local_4c._2_2_) + (int)(PLANET *)local_4c * 0x18 + 2) < local_4e))) {
                                         local_4c._0_2_ = (PLANET *)((int)&((PLANET *)local_4c)->id + 1);
@@ -1014,10 +1014,10 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 ReadRt();
                                 pSVar31 = vlprgScoreX;
                             }
-                            if (lpThings != (THING *)0x0) {
+                            if (lpThings != 0) {
                                 FreeLp(lpThings, htThings);
                                 /* WARNING: Ignoring partial resolution of indirect */
-                                lpThings._0_2_ = (THING *)0x0;
+                                lpThings._0_2_ = 0;
                                 /* WARNING: Ignoring partial resolution of indirect */
                                 lpThings._2_2_ = 0;
                                 cThing = 0;
@@ -1032,13 +1032,13 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 if ((int)rgbCur._0_2_ < 10) {
                                     cThingAlloc = 10;
                                 }
-                                if (lpThings == (THING *)0x0) {
+                                if (lpThings == 0) {
                                     pTVar32 = LpAlloc(cThingAlloc * 0x12, htThings);
                                     /* WARNING: Ignoring partial resolution of indirect */
                                     lpThings._0_2_ = (THING *)pTVar32;
                                     /* WARNING: Ignoring partial resolution of indirect */
                                     lpThings._2_2_ = (int)((ulong)pTVar32 >> 0x10);
-                                    if (lpThings == (THING *)0x0)
+                                    if (lpThings == 0)
                                         break;
                                     __fmemset(lpThings, 0, cThingAlloc * 0x12);
                                     pSVar31 = vlprgScoreX;
@@ -1048,7 +1048,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                                 lpth = lpThings;
                                 j = 0;
                                 for (i = 0; i < (int)local_4c._2_2_; i = i + 1) {
-                                    if ((PLANET *)local_4c == (PLANET *)0x0) {
+                                    if ((PLANET *)local_4c == 0) {
                                     LAB_1070_270b:
                                         cThing = cThing + 1;
                                     } else {
@@ -1112,7 +1112,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
                             IO_Corrupt_2:
                                 idPlayer = sVar14;
                                 sVar14 = 0x10;
-                                pcVar21 = PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, (short *)0x0);
+                                pcVar21 = PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0);
                                 AlertSz(pcVar21, sVar14);
                                 break;
                             }
@@ -1169,7 +1169,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
             }
         IO_XYCorrupt:
             sVar14 = 0x10;
-            pcVar21 = PszFormatIds(idsUniverseDefinitionFileSeemsMissingCorrupt, (short *)0x0);
+            pcVar21 = PszFormatIds(idsUniverseDefinitionFileSeemsMissingCorrupt, 0);
             AlertSz(pcVar21, sVar14);
         }
     }
@@ -1181,7 +1181,7 @@ IO_LError_2:
         sVar14 = GetSystemMetrics(0);
         local_4c._0_2_ = (PLANET *)sVar14;
         local_4c._2_2_ = GetSystemMetrics(1);
-        hwndTitle = CreateWindow(szTitle, s_Stars_1120_0752, 0x90000000, 0, 0, (short)(PLANET *)local_4c, local_4c._2_2_, hwndFrame, 0, hInst, (void *)0x0);
+        hwndTitle = CreateWindow(szTitle, "Stars!", 0x90000000, 0, 0, (short)(PLANET *)local_4c, local_4c._2_2_, hwndFrame, 0, hInst, 0);
         fFreeingTitle = 0;
         ShowWindow(hwndFrame, 0);
     }
@@ -1208,7 +1208,7 @@ LAB_1070_3200:
     return sVar14;
 LAB_1070_2a35:
     sVar14 = 0x10;
-    pcVar21 = PszFormatIds(idsWarningIgnoringUnexpectedDataAfterEof, (short *)0x0);
+    pcVar21 = PszFormatIds(idsWarningIgnoringUnexpectedDataAfterEof, 0);
     AlertSz(pcVar21, sVar14);
 LAB_1070_2a56:
     StreamClose();
@@ -1219,7 +1219,7 @@ LAB_1070_2a56:
         _wsprintf(szWork, pcVar21, sVar14);
         AlertSz((char *)szWork, 0x40);
     }
-    sVar14 = __strnicmp(pszExt, (char *)0x759, 3);
+    sVar14 = __strnicmp(pszExt, (char *)"hst", 3);
     ppFVar11 = rglpfl;
     if (sVar14 != 0) {
         lppl = lpPlanets;
@@ -1240,7 +1240,7 @@ LAB_1070_2a56:
                     pPVar29 = LpplFromId(((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags & 0x3ff);
                     iVar19 = (int)((ulong)pPVar29 >> 0x10);
                     lppl = lpPlanets;
-                    if ((((PLANET *)pPVar29 != (PLANET *)0x0) || (iVar19 != 0)) && (((PLANET *)pPVar29)->iPlayer == iPlayer)) {
+                    if ((((PLANET *)pPVar29 != 0) || (iVar19 != 0)) && (((PLANET *)pPVar29)->iPlayer == iPlayer)) {
                         local_56 = IWarpMAFromLppl(pPVar29, &local_58);
                         lppl = lpPlanets;
                         if ((int)(local_58->rgpctMinLevel + (local_56 - 6)) < (int)((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 10 & 0xf) + 4)) {
@@ -1264,12 +1264,12 @@ LAB_1070_2a56:
                         (iVar19 = ((PLANET *)lppl)->iPlayer * 4,
                          *(int *)(*(int *)(iVar19 + rglpshdefSB) + (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93) != 0x20)) {
                         local_4c._2_2_ = 0;
-                        local_4c._0_2_ = (PLANET *)0x0;
+                        local_4c._0_2_ = 0;
                         local_54 = *(int *)&((PLANET *)lppl)->lpplprod;
                         uStack_52 = *(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2);
                         for (; local_54 = local_54 + 4, (int)(PLANET *)local_4c < (int)(uint)((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac;
                              local_4c._0_2_ = (PLANET *)((int)&((PLANET *)local_4c)->id + 1)) {
-                            EstimateItemProdSched(lppl, (PLPROD *)0x0, (short)(PLANET *)local_4c, &local_4e, &local_50);
+                            EstimateItemProdSched(lppl, 0, (short)(PLANET *)local_4c, &local_4e, &local_50);
                             if (1 < (int)local_50) {
                                 local_4c._2_2_ = 0;
                                 break;
@@ -1301,7 +1301,7 @@ LAB_1070_2a56:
         }
         if ((gd.grBits._2_2_ >> 1 & 1) == 0) {
             lpPlanets = lppl;
-            _wsprintf(szWork, s_s_x_s_1120_075d, pszFileName, 0x1120, pszExt + 1, 0x1120);
+            _wsprintf(szWork, "%s.x%s", pszFileName, 0x1120, pszExt + 1, 0x1120);
             sVar14 = FLoadLogFile((char *)szWork);
             if (sVar14 != 0) {
                 sVar14 = FRunLogFile();
@@ -1310,7 +1310,7 @@ LAB_1070_2a56:
                     goto LAB_1070_2eb1;
             }
             sVar14 = 0x10;
-            pcVar21 = PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, (short *)0x0);
+            pcVar21 = PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, 0);
             AlertSz(pcVar21, sVar14);
             goto IO_LError_2;
         }
@@ -1371,11 +1371,10 @@ LAB_1070_2a56:
     pPVar29 = lpPlanets;
     pSVar31 = vlprgScoreX;
     pbVar12 = lpbBattleLog;
-    if (((iPlayer != -1) && ((*(uint *)((int)&rgplr[0].wMdPlr + iPlayer * 0xc0) >> 9 & 1) == 0)) &&
-        (((char *)vrgszMRU != (char *)0x0 || (vrgszMRU._2_2_ != 0)))) {
+    if (((iPlayer != -1) && ((*(uint *)((int)&rgplr[0].wMdPlr + iPlayer * 0xc0) >> 9 & 1) == 0)) && (((char *)vrgszMRU != 0 || (vrgszMRU._2_2_ != 0)))) {
         rglpfl = ppFVar11;
         _strcpy(local_148, pszFileName);
-        _strcat(local_148, (char *)0x764);
+        _strcat(local_148, (char *)s___1120_0764);
         _strcat(local_148, pszExt);
         sVar14 = __fstricmp(local_148, (char *)CONCAT22(vrgszMRU._2_2_, (char *)vrgszMRU));
         pbVar10 = vlpbAiData;
@@ -1815,7 +1814,7 @@ short FReadFleet(FLEET *lpfl)
     } else {
     IO_Corrupt:
         sVar7 = 0x10;
-        sz = PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, (short *)0x0);
+        sz = PszFormatIds(idsGameFileAppearsCorruptUnableLoadFile, 0);
         AlertSz(sz, sVar7);
         sVar7 = 0;
     }
@@ -1878,7 +1877,7 @@ void UpdateBattleRecords(void)
     BTLDATA   *lpbd;
 
     lphb = (HB *)CONCAT22(rglphb[0xb]._2_2_, (HB *)rglphb[0xb]);
-    if (((HB *)rglphb[0xb] != (HB *)0x0) || (rglphb[0xb]._2_2_ != 0)) {
+    if (((HB *)rglphb[0xb] != 0) || (rglphb[0xb]._2_2_ != 0)) {
         lpbd = (BTLDATA *)CONCAT22(rglphb[0xb]._2_2_, &((HB *)rglphb[0xb])[1].cbBlock);
         while (true) {
             while (lpbd->id == 0xffff) {
@@ -1887,7 +1886,7 @@ void UpdateBattleRecords(void)
                 pHVar2 = ((HB *)lphb)->lphbNext;
                 iVar3 = *(int *)((int)&((HB *)lphb)->lphbNext + 2);
                 lphb = (HB *)CONCAT22(iVar3, pHVar2);
-                if ((pHVar2 == (HB *)0x0) && (iVar3 == 0)) {
+                if ((pHVar2 == 0) && (iVar3 == 0)) {
                     return;
                 }
                 if (pHVar2->ibTop < 0x11) {
@@ -2004,19 +2003,19 @@ void DestroyCurGame(void)
         PromptSaveGame();
     }
     ResetHb(htPlanets);
-    lpPlanets._0_2_ = (PLANET *)0x0;
+    lpPlanets._0_2_ = 0;
     lpPlanets._2_2_ = 0;
     cPlanet = 0;
     ResetHb(htFleets);
-    rglpfl._0_2_ = (FLEET **)0x0;
+    rglpfl._0_2_ = 0;
     rglpfl._2_2_ = 0;
     cFleet = 0;
     ResetHb(htThings);
-    lpThings._0_2_ = (THING *)0x0;
+    lpThings._0_2_ = 0;
     lpThings._2_2_ = 0;
     cThing = 0;
     cThingAlloc = 0;
-    vlprgScoreX._0_2_ = (SCOREX *)0x0;
+    vlprgScoreX._0_2_ = 0;
     vlprgScoreX._2_2_ = 0;
     vrptFleet.fCached = 0;
     vrptPlanet.fCached = 0;
@@ -2026,16 +2025,16 @@ void DestroyCurGame(void)
         *(undefined2 *)((SCOREX **)rgsxPlr + i) = 0;
         *(undefined2 *)((int)(SCOREX **)rgsxPlr + i * 4 + 2) = 0;
     }
-    lpbBattleT._0_2_ = (byte *)0x0;
+    lpbBattleT._0_2_ = 0;
     lpbBattleT._2_2_ = 0;
-    lpbBattleLog._0_2_ = (byte *)0x0;
+    lpbBattleLog._0_2_ = 0;
     lpbBattleLog._2_2_ = 0;
-    lpbBattleCur._0_2_ = (byte *)0x0;
+    lpbBattleCur._0_2_ = 0;
     lpbBattleCur._2_2_ = 0;
     gd.grBits._0_2_ = (uint)gd.grBits & 0xebff;
     gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xfbff;
     ResetHb(htBattle);
-    if (((HB *)rglphb[0xb] != (HB *)0x0) || (rglphb[0xb]._2_2_ != 0)) {
+    if (((HB *)rglphb[0xb] != 0) || (rglphb[0xb]._2_2_ != 0)) {
         ((HB *)rglphb[0xb])[1].cbBlock = 0xffff;
     }
     ResetHb(htMisc);
@@ -2063,7 +2062,7 @@ void DestroyCurGame(void)
     imemLogCur = 0;
     imemLogPrev = -1;
     iMsgCur = 0;
-    vlpbAiData._0_2_ = (byte *)0x0;
+    vlpbAiData._0_2_ = 0;
     vlpbAiData._2_2_ = 0;
     ResetMessages();
     lSaltCur._0_2_ = 0;
@@ -2103,9 +2102,9 @@ void DestroyCurGame(void)
     sel.pt.x = 0;
     sel.pl.id = -1;
     sel.fl.id = -1;
-    sel.fl.lpplord._0_2_ = (PLORD *)0x0;
+    sel.fl.lpplord._0_2_ = 0;
     sel.fl.lpplord._2_2_ = 0;
-    sel.pl.lpplprod._0_2_ = (PLPROD *)0x0;
+    sel.pl.lpplprod._0_2_ = 0;
     sel.pl.lpplprod._2_2_ = 0;
     dxPlanetProdLB = 0;
     dxOrderED = 0;
@@ -2196,7 +2195,7 @@ void FileError(StringId ids)
     idsFileError = ids;
     if ((fFileErrSilent == 0) && (((uint)gd.grBits >> 1 & 1) == 0)) {
         mbType = 0x10;
-        sz = PszFormatIds(ids, (short *)0x0);
+        sz = PszFormatIds(ids, 0);
         AlertSz(sz, mbType);
     }
     return;
@@ -2225,7 +2224,7 @@ void GetFileStatus(short dt, short iPlayer)
 // Segment: MEMORY_IO
 // ======================================================================
 
-short FOpenFile(DtFileType dt, short iPlayer, short md)
+short FOpenFile(DtFileType dt, short iPlayer, MdOpenFlags md)
 
 {
     DtFileType dt_00;
@@ -2329,7 +2328,7 @@ short FOpenFile(DtFileType dt, short iPlayer, short md)
                     }
                     if (rtbof.turn == game.turn) {
                         if (((dt_00 == dtHost) && (((uint)gd.grBits >> 3 & 1) == 0)) && ((rtbof.wFlags_0xe >> 9 & 1) != 0)) {
-                            *(undefined2 *)((int)psVar7 + -2) = (char *)s_M6102__MATH___floating_point_err_1120_2022 + 2;
+                            *(undefined2 *)((int)psVar7 + -2) = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 2;
                             *(undefined2 *)((int)psVar7 + -4) = 0;
                             *(undefined2 *)((int)psVar7 + -6) = 0;
                             *(undefined2 *)((int)psVar7 + -8) = 0x15;
@@ -2414,7 +2413,7 @@ short FNewTurnAvail(short idPlayer)
     uVar2 = game.wCrap >> 9;
     fFileErrSilent = 1;
     game.turn = 0;
-    sVar3 = FOpenFile(0x2003, idPlayer, 0x20);
+    sVar3 = FOpenFile(0x2003, idPlayer, mdRead);
     if (sVar3 == 0) {
         fNew = 0;
     } else {
@@ -2451,7 +2450,7 @@ short FCheckFile(DtFileType dt, short iPlayer, ushort md)
         gd.grBits._0_2_ = (uint)gd.grBits & 0xfff7 | 8;
     }
     fFileErrSilent = 1;
-    sVar3 = FOpenFile(dt, iPlayer, 0x20);
+    sVar3 = FOpenFile(dt, iPlayer, mdRead);
     if (md == 1) {
         if ((sVar3 == 0) || (((uint)rgbCur._14_2_ >> 9 & 1) != 0)) {
             fReturn = 1;
@@ -2545,7 +2544,7 @@ short FBadFileError(StringId ids)
 /* WARNING: Removing unreachable block (ram,0x1070536a) */
 /* WARNING: Removing unreachable block (ram,0x10705391) */
 
-void StreamOpen(char *szFile, short mdOpen)
+void StreamOpen(char *szFile, MdOpenFlags mdOpen)
 
 {
     ulong      uVar1;
@@ -2559,7 +2558,7 @@ void StreamOpen(char *szFile, short mdOpen)
 
     uVar1 = 0;
     while (true) {
-        hf = OpenFile(szFile, &of, mdOpen & 0xbfff);
+        hf = OpenFile(szFile, &of, mdOpen & ~mdNoOpenErr);
         if (hf != 0xffff) {
             return;
         }
@@ -2575,7 +2574,7 @@ void StreamOpen(char *szFile, short mdOpen)
             DVar3 = GetTickCount();
         } while (DVar3 < DVar2 + 500);
     }
-    if ((mdOpen & 0x4000U) == 0) {
+    if ((mdOpen & mdNoOpenErr) == 0) {
         FileError(idsCantOpenFile);
     }
     _longjmp(penvMem, -1);
@@ -2610,7 +2609,7 @@ void RgFromStream(void *rg, ushort cb)
     UINT UVar1;
 
     if (cb != 0) {
-        if (((byte *)vlpMemStream == (byte *)0x0) && (vlpMemStream._2_2_ == 0)) {
+        if (((byte *)vlpMemStream == 0) && (vlpMemStream._2_2_ == 0)) {
             UVar1 = _lread(hf, rg, cb);
             if (UVar1 != cb) {
                 FileError(idsGameFileAppearsCorruptUnableLoadFile);
@@ -2676,7 +2675,7 @@ void WriteRtPlr(PLAYER *pplr, byte *pbStore)
     short  i;
     byte   rgb[264];
 
-    if (pbStore == (byte *)0x0) {
+    if (pbStore == 0) {
         pbStore = rgb;
     }
     if ((pplr->wFlags & 1) != 0) {
@@ -2776,7 +2775,7 @@ void WriteRtShDef(SHDEF *lpshdef, byte **ppbStore)
         *pb = (byte)cOut;
         pb = pb + cOut + 1;
     }
-    if (ppbStore == (byte **)0x0) {
+    if (ppbStore == 0) {
         WriteRt(rtShDef, (int)pb - (int)rgb, rgb);
     } else {
         _memmove(*ppbStore, rgb, (int)pb - (int)rgb);
@@ -2871,7 +2870,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             pFVar8 = ((FLEET **)rglpfl)[i];
             iVar15 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
             lpfl = (FLEET *)CONCAT22(iVar15, pFVar8);
-            if ((pFVar8 == (FLEET *)0x0) && (iVar15 == 0))
+            if ((pFVar8 == 0) && (iVar15 == 0))
                 break;
             if (((pFVar8->wFlags_0x4 >> 10 & 1) == 0) && (((uint)lpfl->id >> 9 & 0xf) == iPlayer)) {
                 for (j = 0; (j < 0x10 && (pFVar8->rgcsh[j] == 0)); j = j + 1) {
@@ -2901,7 +2900,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                         *(undefined2 *)(iVar14 + 0xe) = uVar6;
                     }
                     if (((*(uint *)(iVar14 + 10) & 0xf) == 7) && ((pFVar8->cord < 2 || ((*(uint *)(iVar14 + 0x1c) >> 8 & 0xf) != 2)))) {
-                        local_6c = (FLEET *)0x0;
+                        local_6c = 0;
                         local_76 = 100000000;
                         local_6e = 0;
                         if ((pFVar8->idPlanet == -1) && ((1 < pFVar8->cord && ((pFVar8->wFlags_0x4 >> 9 & 1) != 0)))) {
@@ -2920,7 +2919,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                             pFVar7 = ((FLEET **)rglpfl)[local_68];
                             iVar13 = *(int *)((int)((FLEET **)rglpfl + local_68) + 2);
                             local_5a = (FLEET *)CONCAT22(iVar13, pFVar7);
-                            if ((pFVar7 == (FLEET *)0x0) && (iVar13 == 0))
+                            if ((pFVar7 == 0) && (iVar13 == 0))
                                 break;
                             if (((pFVar7->wFlags_0x4 >> 8 & 1) != 0) && (pFVar7->iPlayer != iPlayer)) {
                                 local_72 = (&pFVar7->pt)->x - local_5e;
@@ -2954,7 +2953,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                         if (j == 0x226) {
                             j = 10000;
                         }
-                        if ((((FLEET *)local_6c != (FLEET *)0x0) || (local_6c._2_2_ != 0)) && (local_76 != 0)) {
+                        if ((((FLEET *)local_6c != 0) || (local_6c._2_2_ != 0)) && (local_76 != 0)) {
                             uVar23 = __aFulmul((long)j, (long)j);
                             if (local_76 <= (long)uVar23) {
                                 if ((int)(uint)((PLORD *)pFVar8->lpplord)->iordMax <= pFVar8->cord + 1) {
@@ -3027,13 +3026,13 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                                 pTVar25 = LpthFromId(pOVar17[iord].id);
                                 iVar14 = (int)((ulong)pTVar25 >> 0x10);
                                 pTVar16 = (THING *)pTVar25;
-                                if ((((pTVar16 == (THING *)0x0) && (iVar14 == 0)) ||
+                                if ((((pTVar16 == 0) && (iVar14 == 0)) ||
                                      ((pTVar25->idFull >> 0xd == 3 && ((*(uint *)((int)&pTVar16->u_THING_0x0006 + 4) >> 4 & 1) == 0)))) ||
                                     (((pTVar25->idFull >> 0xd == 0 && ((1 << (bVar12 & 0x1f) & *(uint *)((int)&pTVar16->u_THING_0x0006 + 8)) == 0)) ||
                                       ((pTVar25->idFull >> 0xd == 2 && ((((&pTVar16->u_THING_0x0006)->thp).wFlags >> 0xd & 1) == 0)))))) {
-                                    if (((pTVar16 == (THING *)0x0) && (iVar14 == 0)) || (pTVar25->idFull >> 0xd != 2)) {
-                                        if (((pTVar16 == (THING *)0x0) && (iVar14 == 0)) || (pTVar25->idFull >> 0xd != 3)) {
-                                            if (((pTVar16 != (THING *)0x0) || (iVar14 != 0)) && (pTVar25->idFull >> 0xd == 0)) {
+                                    if (((pTVar16 == 0) && (iVar14 == 0)) || (pTVar25->idFull >> 0xd != 2)) {
+                                        if (((pTVar16 == 0) && (iVar14 == 0)) || (pTVar25->idFull >> 0xd != 3)) {
+                                            if (((pTVar16 != 0) || (iVar14 != 0)) && (pTVar25->idFull >> 0xd == 0)) {
                                                 FSendPlrMsg2(pFVar8->iPlayer, idmMineFieldHeadingHasVanishedOrdersHave, lpfl->id | 0x8000, lpfl->id, 0);
                                             }
                                         } else {
@@ -3055,7 +3054,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                                 lpflT = LpflFromId(pOVar17[iord].id);
                                 iVar14 = (int)((ulong)lpflT >> 0x10);
                                 pFVar7 = (FLEET *)lpflT;
-                                if (((pFVar7 == (FLEET *)0x0) && (iVar14 == 0)) || ((pFVar7->wFlags_0x4 >> 10 & 1) != 0)) {
+                                if (((pFVar7 == 0) && (iVar14 == 0)) || ((pFVar7->wFlags_0x4 >> 10 & 1) != 0)) {
                                     FSendPlrMsg(iPlayer, idmSWaypointAppearsHaveDestroyedHasDisappeared, lpfl->id | 0x8000, lpfl->id, pOVar17[iord].id, 0, 0, 0,
                                                 0, 0);
                                 } else {
@@ -3090,9 +3089,9 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
     MarkPlayersThatSentMsgs(iPlayer);
     MarkPlanetsPlayerLost(iPlayer);
     if (iPlayer == -1) {
-        _wsprintf(szWork, s_s_hst_1120_09fe, pszFileBase, 0x1120);
+        _wsprintf(szWork, "%s.hst", pszFileBase, 0x1120);
     } else {
-        _wsprintf(szWork, s_s_m_d_1120_0a05, pszFileBase, 0x1120, iPlayer + 1);
+        _wsprintf(szWork, "%s.m%d", pszFileBase, 0x1120, iPlayer + 1);
     }
     penvMemSav = penvMem;
     penvMem = &env;
@@ -3105,7 +3104,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             } else {
                 dt = dtTurn;
             }
-            sVar10 = FCreateFile(dt, iPlayer, (char *)0x0);
+            sVar10 = FCreateFile(dt, iPlayer, 0);
             if (sVar10 == 0)
                 goto IO_LFail_2;
         } else {
@@ -3121,7 +3120,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                     local_56 = *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) & 0xfff8 | 7;
                     *(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) = local_56;
                 }
-                WriteRtPlr((PLAYER *)rgplr + i, (byte *)0x0);
+                WriteRtPlr((PLAYER *)rgplr + i, 0);
             }
         }
         if ((iPlayer == -1) && (((int)lSaltCur != 0 || (lSaltCur._2_2_ != 0)))) {
@@ -3173,7 +3172,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                 uVar22 = *(undefined2 *)(i * 4 + rglpshdef_0x2);
                 for (j = 0; j < 0x10; j = j + 1) {
                     if (((*(uint *)(iVar15 + j * 0x93 + 0x7b) >> 9 & 1) == 0) && ((*(uint *)(iVar15 + j * 0x93 + 0x7b) >> 8 & 1) != 0)) {
-                        WriteRtShDef((SHDEF *)CONCAT22(uVar22, (SHDEF *)(iVar15 + j * 0x93)), (byte **)0x0);
+                        WriteRtShDef((SHDEF *)CONCAT22(uVar22, (SHDEF *)(iVar15 + j * 0x93)), 0);
                     }
                 }
             }
@@ -3183,7 +3182,7 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             pFVar8 = ((FLEET **)rglpfl)[i];
             iVar15 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
             lpflT = (FLEET *)CONCAT22(iVar15, pFVar8);
-            if ((pFVar8 == (FLEET *)0x0) && (iVar15 == 0))
+            if ((pFVar8 == 0) && (iVar15 == 0))
                 break;
             if ((pFVar8->wFlags_0x4 >> 8 & 1) != 0) {
                 WriteFleet((FLEET *)CONCAT22(iVar15, pFVar8));
@@ -3195,12 +3194,12 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
                 uVar22 = *(undefined2 *)(i * 4 + rglpshdefSB_0x2);
                 for (j = 0; j < 10; j = j + 1) {
                     if (((*(uint *)(iVar15 + j * 0x93 + 0x7b) >> 9 & 1) == 0) && ((*(uint *)(iVar15 + j * 0x93 + 0x7b) >> 8 & 1) != 0)) {
-                        WriteRtShDef((SHDEF *)CONCAT22(uVar22, (SHDEF *)(iVar15 + j * 0x93)), (byte **)0x0);
+                        WriteRtShDef((SHDEF *)CONCAT22(uVar22, (SHDEF *)(iVar15 + j * 0x93)), 0);
                     }
                 }
             }
         }
-        if ((iPlayer != -1) && (((SCOREX *)vlprgScoreX != (SCOREX *)0x0 || (vlprgScoreX._2_2_ != 0)))) {
+        if ((iPlayer != -1) && (((SCOREX *)vlprgScoreX != 0 || (vlprgScoreX._2_2_ != 0)))) {
             for (i = 0; i < game.cPlayer; i = i + 1) {
                 if (((((gd.grBits._2_2_ & 1) != 0) || (i == iPlayer)) || ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) & 1) != 0)) ||
                     (((game.wCrap >> 6 & 1) != 0 && (0x13 < game.turn)))) {
@@ -3266,16 +3265,16 @@ short FWriteDataFile(char *pszFileBase, short iPlayer, short fAppend)
             if (iPlayer == -1) {
                 idPlayer = -1;
                 sVar10 = 0x10;
-                pcVar11 = PszFormatIds(idsUnableCreateHostFile, (short *)0x0);
+                pcVar11 = PszFormatIds(idsUnableCreateHostFile, 0);
                 AlertSz(pcVar11, sVar10);
             } else {
                 sVar10 = 0x10;
-                pcVar11 = PszFormatIds(idsUnableCreateNewTurnFile, (short *)0x0);
+                pcVar11 = PszFormatIds(idsUnableCreateNewTurnFile, 0);
                 AlertSz(pcVar11, sVar10);
             }
         } else {
             sVar10 = 0x10;
-            pcVar11 = PszFormatIds(idsUnableUpdateTurnFile, (short *)0x0);
+            pcVar11 = PszFormatIds(idsUnableUpdateTurnFile, 0);
             AlertSz(pcVar11, sVar10);
         }
         idPlayer = -1;
@@ -3347,7 +3346,7 @@ void WriteBattles(short iPlayer)
         lphb = (HB *)CONCAT22(rglphb[0xb]._2_2_, (HB *)rglphb[0xb]);
         lpbBattle._0_2_ = &((HB *)rglphb[0xb])[1].cbBlock;
         lpbBattle._2_2_ = rglphb[0xb]._2_2_;
-        while (((HB *)lphb != (HB *)0x0 || (lphb._2_2_ != 0))) {
+        while (((HB *)lphb != 0 || (lphb._2_2_ != 0))) {
             lpbtldata = (BTLDATA *)CONCAT22(lpbBattle._2_2_, (byte *)lpbBattle);
             while (true) {
                 uVar13 = (undefined2)((ulong)lphb >> 0x10);
@@ -3358,7 +3357,7 @@ void WriteBattles(short iPlayer)
                 pHVar3 = pHVar9->lphbNext;
                 lpbBattle._2_2_ = *(int *)((int)&pHVar9->lphbNext + 2);
                 lphb = (HB *)CONCAT22(lpbBattle._2_2_, pHVar3);
-                if ((pHVar3 == (HB *)0x0) && (lpbBattle._2_2_ == 0)) {
+                if ((pHVar3 == 0) && (lpbBattle._2_2_ == 0)) {
                     return;
                 }
                 lpbBattle._0_2_ = &pHVar3[1].cbBlock;
@@ -3844,7 +3843,7 @@ void WriteRtString(char *lpsz)
     short      cOut;
     byte       rgb[33];
 
-    if ((lpsz != (char *)0x0) && (*lpsz != '\0')) {
+    if ((lpsz != 0) && (*lpsz != '\0')) {
         cOut = 0x1f;
         sVar1 = FCompressUserString(lpsz, (char *)(rgb + 1), &cOut);
         if (sVar1 == 0) {
@@ -4018,30 +4017,30 @@ void SetSzWorkFromDt(DtFileType dt, short iPlayer)
     char      *pchSlash;
 
     pcVar1 = _strrchr((char *)szBase, 0x2e);
-    if ((pcVar1 != (char *)0x0) && ((pcVar2 = _strrchr((char *)szBase, 0x5c), pcVar2 == (char *)0x0 || (pcVar2 < pcVar1)))) {
+    if ((pcVar1 != 0) && ((pcVar2 = _strrchr((char *)szBase, 0x5c), pcVar2 == 0 || (pcVar2 < pcVar1)))) {
         *pcVar1 = '\0';
     }
-    sVar3 = _wsprintf(szWork, s_s_1120_0a0c, (char *)szBase, 0x1120);
+    sVar3 = _wsprintf(szWork, "%s.", (char *)szBase, 0x1120);
     if (dt == dtXY) {
     LAB_1070_8d76:
-        _strcat((char *)szWork, (char *)0xa10);
+        _strcat((char *)szWork, (char *)s_xy_1120_0a10);
     } else {
         if (dt != dtLog) {
             if (dt == dtHost) {
-                _strcat((char *)szWork, (char *)0xa13);
+                _strcat((char *)szWork, (char *)"hst");
                 return;
             }
             if ((dt != dtTurn) && (dt != dtHist))
                 goto LAB_1070_8d76;
         }
         if (dt == dtLog) {
-            uVar4 = 0x78;
+            uVar4 = L'x';
         } else if (dt == dtHist) {
-            uVar4 = 0x68;
+            uVar4 = L'h';
         } else {
-            uVar4 = 0x6d;
+            uVar4 = L'm';
         }
-        _wsprintf((char *)szWork + sVar3, s_c_d_1120_0a17, uVar4, iPlayer + 1);
+        _wsprintf((char *)szWork + sVar3, "%c%d", uVar4, iPlayer + 1);
     }
     return;
 }
@@ -4061,7 +4060,7 @@ short FCreateFile(DtFileType dt, short iPlayer, char *szForceName)
     short env[9];
     short (*penvMemSav)[9];
 
-    if (szForceName == (char *)0x0) {
+    if (szForceName == 0) {
         SetSzWorkFromDt(dt, iPlayer);
         psz = (char *)szWork;
     } else {
@@ -4071,7 +4070,7 @@ short FCreateFile(DtFileType dt, short iPlayer, char *szForceName)
     penvMem = &env;
     sVar2 = __setjmp(env);
     if (sVar2 == 0) {
-        StreamOpen(psz, 0x1012);
+        StreamOpen(psz, mdCreate);
         WriteBOF(iPlayer, dt, 0);
     }
     penvMem = pasVar1;
@@ -4096,7 +4095,7 @@ void WriteBOF(short iPlayer, short dt, short fMulti)
     RTBOF      rtbof;
 
     _memset(&rtbof, 0, 0x10);
-    _strncpy(rtbof.rgid, (char *)s_J3J3_1120_0a1c, 4);
+    _strncpy(rtbof.rgid, (char *)"J3J3", 4);
     rtbof.lidGame._0_2_ = (undefined2)game.lid;
     rtbof.lidGame._2_2_ = game.lid._2_2_;
     rtbof.wVersion = 0x2a60;
@@ -4163,7 +4162,7 @@ short FMarkFile(DtFileType dt, short iPlayer, short mdMark, short f)
         return 0;
     }
     fFileErrSilent = 1;
-    StreamOpen((char *)szWork, 0x12);
+    StreamOpen((char *)szWork, mdReadWrite);
     fFileErrSilent = fSilentSav;
     ReadRt();
     if ((uint)hdrCur >> 10 == 8) {
@@ -4334,7 +4333,7 @@ void RgToStream(void *rg, ushort cb)
 
     if ((cb != 0) && (UVar1 = _lwrite(hf, rg, cb), UVar1 != cb)) {
         mbType = 0x10;
-        sz = PszFormatIds(idsErrorWritingFile, (short *)0x0);
+        sz = PszFormatIds(idsErrorWritingFile, 0);
         AlertSz(sz, mbType);
         _longjmp(penvMem, -1);
     }
@@ -4490,7 +4489,7 @@ void SetVisPFInit(short iPlr)
         pFVar5 = ((FLEET **)rglpfl)[ifl];
         iVar10 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
         lpfl = (FLEET *)CONCAT22(iVar10, pFVar5);
-        if ((pFVar5 == (FLEET *)0x0) && (iVar10 == 0))
+        if ((pFVar5 == 0) && (iVar10 == 0))
             break;
         *(uint *)((int)&pFVar5->dirLong + 2) = *(uint *)((int)&pFVar5->dirLong + 2) & 0xffef;
         pFVar5->wFlags_0x4 = pFVar5->wFlags_0x4 & 0x7fff;
@@ -4518,7 +4517,7 @@ void SetVisPFInit(short iPlr)
             }
             if ((iPlr != -1) && (pFVar5->idPlanet != -1)) {
                 lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets + pFVar5->idPlanet);
-                sVar8 = GetCachedFleetScannerRange((FLEET *)CONCAT22(iVar10, pFVar5), (short *)0x0, (short *)0x0, &iSteal);
+                sVar8 = GetCachedFleetScannerRange((FLEET *)CONCAT22(iVar10, pFVar5), 0, 0, &iSteal);
                 if (sVar8 < 0) {
                     detNew = 1;
                 } else {
@@ -4653,7 +4652,7 @@ void SetVisPFFleets(short iPlr)
         pFVar2 = ((FLEET **)rglpfl)[ifl];
         iVar8 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
         lpfl = (FLEET *)CONCAT22(iVar8, pFVar2);
-        if ((pFVar2 == (FLEET *)0x0) && (iVar8 == 0)) {
+        if ((pFVar2 == 0) && (iVar8 == 0)) {
             return;
         }
         if ((pFVar2->wFlags_0x4 >> 10 & 1) == 0) {
@@ -4682,7 +4681,7 @@ void SetVisPFFleets(short iPlr)
                     pFVar2 = ((FLEET **)rglpfl)[j];
                     iVar8 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
                     lpfl2 = (FLEET *)CONCAT22(iVar8, pFVar2);
-                    if ((pFVar2 == (FLEET *)0x0) && (iVar8 == 0))
+                    if ((pFVar2 == 0) && (iVar8 == 0))
                         break;
                     if ((pFVar2->wFlags_0x4 >> 10 & 1) == 0) {
                         if (((((iSteal & 1U) != 0) && (pt.x == (&pFVar2->pt)->x)) && (pt.y == (pFVar2->pt).y)) &&
@@ -4977,7 +4976,7 @@ void SetVisPFPlanets(short iPlr)
         for (i = 0; i < 10; i = i + 1) {
             rgStargateRange[i] = 0;
             if ((*(uint *)(*(int *)(iPlr * 4 + rglpshdefSB) + i * 0x93 + 0x7b) >> 9 & 1) == 0) {
-                sVar7 = StargateRangeFromLppl((PLANET *)0x0, iPlr, i);
+                sVar7 = StargateRangeFromLppl(0, iPlr, i);
                 rgStargateRange[i] = sVar7;
                 if (0 < sVar7) {
                     bVar5 = true;
@@ -5236,7 +5235,7 @@ void SetVisPFPlanets(short iPlr)
                 /* WARNING: Load size is inaccurate */
                 pFVar4 = ((FLEET **)rglpfl)[j];
                 iVar16 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
-                if ((pFVar4 == (FLEET *)0x0) && (iVar16 == 0))
+                if ((pFVar4 == 0) && (iVar16 == 0))
                     break;
                 if (((pFVar4->wFlags_0x4 >> 8 & 1) == 0) && ((pFVar4->wFlags_0x4 >> 10 & 1) == 0)) {
                     lRadPlanet2 = uVar19;
@@ -5380,7 +5379,7 @@ void SetVisPFThings(short iPlr)
                     /* WARNING: Load size is inaccurate */
                     pFVar4 = ((FLEET **)rglpfl)[j];
                     iVar16 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
-                    if ((pFVar4 == (FLEET *)0x0) && (iVar16 == 0))
+                    if ((pFVar4 == 0) && (iVar16 == 0))
                         break;
                     if ((((pFVar4->wFlags_0x4 >> 8 & 1) == 0) &&
                          (((pFVar4->wFlags_0x4 >> 10 & 1) == 0 && (sVar6 = _abs(iVar2 - (&pFVar4->pt)->x), sVar6 <= iVar7)))) &&
@@ -5503,7 +5502,7 @@ void SetVisPFThings(short iPlr)
                         /* WARNING: Load size is inaccurate */
                         pFVar4 = ((FLEET **)rglpfl)[j];
                         iVar16 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
-                        if ((pFVar4 == (FLEET *)0x0) && (iVar16 == 0))
+                        if ((pFVar4 == 0) && (iVar16 == 0))
                             break;
                         if (((pFVar4->wFlags_0x4 >> 8 & 1) == 0) && (((pFVar4->wFlags_0x4 >> 10 & 1) == 0 && (pFVar4->idPlanet == -1)))) {
                             uVar9 = _abs(iVar3 - (&pFVar4->pt)->x);

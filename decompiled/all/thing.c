@@ -43,7 +43,7 @@ THING *LpthNew(short iplr, ThingType ith)
             iItem = lpth->idFull & 0x1ff;
             for (; i < cThing; i = i + 1) {
                 if (0x1fe < iItem) {
-                    lpth._0_2_ = (THING *)0x0;
+                    lpth._0_2_ = 0;
                     lpth._2_2_ = 0;
                     pTVar1 = lpThings;
                     goto LAB_1110_021d;
@@ -57,7 +57,7 @@ THING *LpthNew(short iplr, ThingType ith)
         }
         if (cThingAlloc <= cThing) {
             cThingAlloc = cThingAlloc + 10;
-            if (lpThings == (THING *)0x0) {
+            if (lpThings == 0) {
                 pTVar1 = LpAlloc(cThingAlloc * 0x12, htThings);
             } else {
                 pTVar1 = LpReAlloc(lpThings, cThingAlloc * 0x12, htThings);
@@ -74,7 +74,7 @@ THING *LpthNew(short iplr, ThingType ith)
         __fmemcpy(lpth, &thNew, 0x12);
         pTVar1 = lpThings;
     } else {
-        lpth._0_2_ = (THING *)0x0;
+        lpth._0_2_ = 0;
         lpth._2_2_ = 0;
         pTVar1 = lpThings;
     }
@@ -228,9 +228,9 @@ void DrawThingGauge(HDC hdc, RECT *prc, THING *lpth, short md)
     l._2_2_ = (undefined2)((ulong)lVar6 >> 0x10);
     l._0_2_ = (undefined2)lVar6;
     if (cSections == 1) {
-        c = _wsprintf(szWork, s_ldkT_1120_16a0, (undefined2)l, l._2_2_);
+        c = _wsprintf(szWork, "%ldkT", (undefined2)l, l._2_2_);
     } else {
-        c = _wsprintf(szWork, s__ld_of__ldkT_1120_16a6, (undefined2)l, l._2_2_, (undefined2)lMax, lMax._2_2_);
+        c = _wsprintf(szWork, "%ld of %ldkT", (undefined2)l, l._2_2_, (undefined2)lMax, lMax._2_2_);
     }
     DVar7 = GetTextExtent(hdc, szWork, c);
     if ((int)DVar7 < (prc->right - prc->left) + -3) {
@@ -503,10 +503,10 @@ void DoThingInteractions(short fPostMove)
                     pFVar9 = ((FLEET **)rglpfl)[ifl];
                     iVar15 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
                     lpfl = (FLEET *)CONCAT22(iVar15, pFVar9);
-                    if ((pFVar9 == (FLEET *)0x0) && (iVar15 == 0))
+                    if ((pFVar9 == 0) && (iVar15 == 0))
                         break;
                     if (((pFVar9->wFlags_0x4 >> 10 & 1) == 0) && (((&pFVar9->pt)->x == iVar7 && ((pFVar9->pt).y == iVar8)))) {
-                        wtMin._0_2_ = (char *)0x0;
+                        wtMin._0_2_ = 0;
                         wtMin._2_2_ = 0;
                         for (i = 0; i < 3; i = i + 1) {
                             uVar11 = *(uint *)(pFVar9->rgwtMin + i);
@@ -514,7 +514,7 @@ void DoThingInteractions(short fPostMove)
                             wtMin._0_2_ = (char *)wtMin + uVar11;
                             wtMin._2_2_ = wtMin._2_2_ + *(uint *)((int)(pFVar9->rgwtMin + i) + 2) + (uint)bVar25;
                         }
-                        if ((wtMin._2_2_ < 1) && ((wtMin._2_2_ < 0 || ((char *)wtMin <= (char *)s_Stars_1120_1385 + 2)))) {
+                        if ((wtMin._2_2_ < 1) && ((wtMin._2_2_ < 0 || ((char *)wtMin <= (char *)"Stars!" + 2)))) {
                             if ((pFVar9->wFlags_0x4 >> 0xd & 1) == 0) {
                                 FSendPlrMsg2((uint)lpfl->id >> 9 & 0xf, idmMysteryTraderHasRefusedGiveCaptainAudience, lpfl->id | 0x8000, lpfl->id, 0);
                             }
@@ -545,8 +545,7 @@ void DoThingInteractions(short fPostMove)
                                     if (fMaxTech == 0) {
                                         local_52 = 0;
                                         lVar26 = __aFldiv(
-                                            (long)CONCAT22(wtMin._2_2_ + -1 + (uint)((char *)s_Stars_1120_1385 + 2 < (char *)wtMin), (char *)wtMin + -5000),
-                                            0x4b0);
+                                            (long)CONCAT22(wtMin._2_2_ + -1 + (uint)((char *)"Stars!" + 2 < (char *)wtMin), (char *)wtMin + -5000), 0x4b0);
                                         pPVar28 = (PLANET *)(lVar26 + 6);
                                         i = 0;
                                         while (true) {
@@ -565,7 +564,7 @@ void DoThingInteractions(short fPostMove)
                                                 if (local_52 < 0x54) {
                                                     if (local_52 < 0x48) {
                                                         if (0x3b < local_52) {
-                                                            pPVar28 = (PLANET *)CONCAT22(local_4e._2_2_ - ((PLANET *)local_4e == (PLANET *)0x0),
+                                                            pPVar28 = (PLANET *)CONCAT22(local_4e._2_2_ - ((PLANET *)local_4e == 0),
                                                                                          (PLANET *)((int)&((PLANET *)local_4e)[-1].lpplprod + 3));
                                                         }
                                                     } else {
@@ -601,10 +600,10 @@ void DoThingInteractions(short fPostMove)
                                         while (true) {
                                             local_4e._2_2_ = (uint)((ulong)pPVar28 >> 0x10);
                                             local_4e._0_2_ = (PLANET *)pPVar28;
-                                            bVar25 = (PLANET *)local_4e == (PLANET *)0x0;
+                                            bVar25 = (PLANET *)local_4e == 0;
                                             local_4e._0_2_ = (PLANET *)((int)&((PLANET *)local_4e)[-1].lpplprod + 3);
                                             local_4e._2_2_ = local_4e._2_2_ - bVar25;
-                                            if (pPVar28 == (PLANET *)0x0)
+                                            if (pPVar28 == 0)
                                                 break;
                                             sVar31 = Random(4);
                                             lVar26 = local_5a;
@@ -670,7 +669,7 @@ void DoThingInteractions(short fPostMove)
                                 THING_LGivePart:
                                     local_50 = 0x19;
                                     local_4e._0_2_ = (PLANET *)*(int *)((int)&((THING *)lpth)->u_THING_0x0006 + 8);
-                                    if ((PLANET *)local_4e == (PLANET *)0x0) {
+                                    if ((PLANET *)local_4e == 0) {
                                         sVar31 = Random(0xd);
                                         local_4e._0_2_ = (PLANET *)(1 << ((byte)sVar31 & 0x1f));
                                     }
@@ -734,7 +733,7 @@ void DoThingInteractions(short fPostMove)
                                                 lpfl_00 = LpflNew(sVar13, ((FLEET *)lpfl)->idPlanet);
                                                 iVar15 = (int)((ulong)lpfl_00 >> 0x10);
                                                 pFVar9 = (FLEET *)lpfl_00;
-                                                if ((pFVar9 != (FLEET *)0x0) || (iVar15 != 0)) {
+                                                if ((pFVar9 != 0) || (iVar15 != 0)) {
                                                     sVar31 = cGive;
                                                     uVar10 = WFromLpfl(lpfl);
                                                     FSendPlrMsg2((uint)lpfl->id >> 9 & 0xf, idmHasAbsorbedMysteryTraderReturnHaveGiven3, lpfl_00->id | 0x8000,
@@ -834,7 +833,7 @@ void DoThingInteractions(short fPostMove)
                         uVar29 = __aFulmul(CONCAT22(dx._2_2_, (uint)dx), CONCAT22(dx._2_2_, (uint)dx));
                         l = (long)(local_4e->rgpctMinLevel + (uVar29 - 6));
                         if (l < 0x2711) {
-                            wtNext._0_2_ = (char *)0x0;
+                            wtNext._0_2_ = 0;
                             wtNext._2_2_ = 0;
                             i = 0;
                             while (true) {
@@ -850,7 +849,7 @@ void DoThingInteractions(short fPostMove)
                             if ((*(uint *)((int)&rgplr[0].wMdPlr + iVar15 * 0xc0) >> 10 & 7) == 2) {
                                 pcVar12 = (char *)0xdac;
                             } else {
-                                pcVar12 = (char *)s_Stars_1120_1385 + 3;
+                                pcVar12 = (char *)"Stars!" + 3;
                             }
                             if ((0 < wtNext._2_2_) || ((-1 < wtNext._2_2_ && (pcVar12 <= (char *)wtNext)))) {
                                 uVar23 = (undefined2)((ulong)lpth >> 0x10);
@@ -867,8 +866,7 @@ void DoThingInteractions(short fPostMove)
                                     }
                                     if (cPlrTrueMaxTech * 6 + -6 <= (int)local_4e._2_2_)
                                         goto LAB_1110_1a6b;
-                                    for (local_4e._0_2_ = (PLANET *)0x0; (int)(PLANET *)local_4e < 6;
-                                         local_4e._0_2_ = (PLANET *)((int)&((PLANET *)local_4e)->id + 1)) {
+                                    for (local_4e._0_2_ = 0; (int)(PLANET *)local_4e < 6; local_4e._0_2_ = (PLANET *)((int)&((PLANET *)local_4e)->id + 1)) {
                                         local_4e._2_2_ = 0;
                                         for (i = 1; i < 6; i = i + 1) {
                                             local_50 = (int)*(char *)(iVar15 * 0xc0 + 0x59bc + i);
@@ -897,7 +895,7 @@ void DoThingInteractions(short fPostMove)
                                 }
                                 puVar3 = (uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 6);
                                 *puVar3 = *puVar3 | 1 << ((byte)iVar15 & 0x1f);
-                                for (i = 2; (-1 < wtNext._2_2_ && (((0 < wtNext._2_2_ || ((char *)wtNext != (char *)0x0)) && (-1 < i)))); i = i + -1) {
+                                for (i = 2; (-1 < wtNext._2_2_ && (((0 < wtNext._2_2_ || ((char *)wtNext != 0)) && (-1 < i)))); i = i + -1) {
                                     uVar11 = *(uint *)((int)(((PLANET *)lppl)->rgwtMin + i) + 2);
                                     if (((int)uVar11 < wtNext._2_2_) ||
                                         ((pcVar12 = (char *)wtNext, iVar15 = wtNext._2_2_,

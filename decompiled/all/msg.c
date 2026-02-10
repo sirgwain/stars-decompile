@@ -418,7 +418,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                             PostMessage(hwndFrame, WM_COMMAND, IDM_VIEW_BROWSER_TOGGLE2, 0);
                             puVar16 = &stack0xff84;
                         } else {
-                            InvalidateRect(hwndBrowserChild, (RECT *)0x0, 1);
+                            InvalidateRect(hwndBrowserChild, 0, 1);
                             puVar16 = &stack0xff86;
                         }
                         uVar5 = 0x14f8;
@@ -464,7 +464,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                             uVar5 = 0x1038;
                             sVar10 = FValidSerialNo((char *)szWork, auStack_36 + 2);
                             if (sVar10 == 0) {
-                                if (((MSGPLR *)vSerialNumber == (MSGPLR *)0x0) && (vSerialNumber._2_2_ == 0)) {
+                                if (((MSGPLR *)vSerialNumber == 0) && (vSerialNumber._2_2_ == 0)) {
                                     uVar5 = 0x1118;
                                     _memcpy((byte *)vrgbMachineConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
                                 }
@@ -482,7 +482,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         local_2e = (POINT)LpthFromId(vptMsg.x);
                         iVar7 = local_2e.y;
                         pTVar22 = (THING *)local_2e.x;
-                        if ((pTVar22 != (THING *)0x0) || (iVar7 != 0)) {
+                        if ((pTVar22 != 0) || (iVar7 != 0)) {
                             local_3e._0_2_ = (&pTVar22->pt)->x;
                             local_3e._2_2_ = (pTVar22->pt).y;
                             local_3e._4_2_ = grobjThing;
@@ -530,7 +530,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         auStack_36._2_2_ = (MSGPLR *)vlpmsgplrOut;
                         iMsgSendCur = 0;
                         while (true) {
-                            if ((((MSGPLR *)auStack_36._2_2_ == (MSGPLR *)0x0) && (auStack_36._4_2_ == 0)) ||
+                            if ((((MSGPLR *)auStack_36._2_2_ == 0) && (auStack_36._4_2_ == 0)) ||
                                 ((*(short *)(auStack_36._2_2_ + 6) + -1 == pMVar13->iPlrFrom && (*(short *)(auStack_36._2_2_ + 8) == iMsgCur))))
                                 break;
                             ppMVar2 = (MSGPLR **)auStack_36._2_4_;
@@ -552,7 +552,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                 auStack_36[5] = 0;
                 gd.grBits._0_2_ = (uint)gd.grBits & 0xfeff | auStack_36._4_2_ << 8;
                 auStack_36._2_4_ = uVar3;
-                InvalidateRect(hwndMessage, (RECT *)0x0, 1);
+                InvalidateRect(hwndMessage, 0, 1);
                 SetMsgTitle(hwnd);
                 SetFocus(hwndMsgEdit);
                 return 0;
@@ -572,7 +572,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                 if (((uint)gd.grBits >> 0xb & 1) != 0) {
                     AdvanceTutor();
                 }
-                InvalidateRect(hwndMessage, (RECT *)0x0, 1);
+                InvalidateRect(hwndMessage, 0, 1);
                 SetMsgTitle(hwnd);
                 return 0;
             }
@@ -670,12 +670,12 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         }
         iMsgCur = i;
     LAB_1030_626c:
-        InvalidateRect(hwndMessage, (RECT *)0x0, 1);
+        InvalidateRect(hwndMessage, 0, 1);
         SetMsgTitle(hwnd);
         return 0;
     }
     hdc = BeginPaint(hwnd, &ps);
-    _Draw3dFrame(hdc, (RECT *)&rcMsgTitle, 0);
+    Draw3dFrame(hdc, (RECT *)&rcMsgTitle, 0);
     auStack_36._2_4_ = SetTextColor(hdc, CONCAT22(crButtonText._2_2_, (undefined2)crButtonText));
     local_3e._2_4_ = SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
     cch = _strlen((char *)szMsgTitle);
@@ -737,13 +737,13 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             i = i + 1;
         }
         CchGetString(idsSCC, szT);
-        pcVar4 = PszPlayerName(pMVar13->iPlrFrom, 1, 1, 1, 0, (PLAYER *)0x0);
+        pcVar4 = PszPlayerName(pMVar13->iPlrFrom, 1, 1, 1, 0, 0);
         sVar10 = _wsprintf((char *)CONCAT22(lpb2k._2_2_, (byte *)lpb2k), szT, pcVar4);
         CchGetString(idsSCC2, szT);
         if (pMVar13->iPlrTo == 0) {
             pcVar4 = PszGetCompressedString(idsEverybody);
         } else {
-            pcVar4 = PszPlayerName(pMVar13->iPlrTo + -1, 1, 1, 1, 0, (PLAYER *)0x0);
+            pcVar4 = PszPlayerName(pMVar13->iPlrTo + -1, 1, 1, 1, 0, 0);
         }
         sVar11 = _wsprintf((char *)CONCAT22(lpb2k._2_2_, (byte *)lpb2k + sVar10), szT, pcVar4);
         if (pMVar13->cLen < 0) {
@@ -906,7 +906,7 @@ void SetMsgTitle(HWND hwnd)
             lpmp = (MSGPLR *)CONCAT22(*(undefined2 *)((int)&((MSGPLR *)lpmp)->lpmsgplrNext + 2), lpmp->lpmsgplrNext);
             i = iVar1;
         }
-        if (((MSGPLR *)lpmp == (MSGPLR *)0x0) && (lpmp._2_2_ == 0)) {
+        if (((MSGPLR *)lpmp == 0) && (lpmp._2_2_ == 0)) {
             i = iVar1;
             SendMessage(hwndMsgDrop, CB_SETCURSEL, viInRe, 0);
             SetWindowText(hwndMsgEdit, (LPCSTR)0x11200b34);
@@ -965,7 +965,7 @@ void SetMsgTitle(HWND hwnd)
             } else if ((mb.wGoto & 0x4000U) == 0) {
                 if (mb.wGoto < 0) {
                     pFVar6 = LpflFromId(idMsgObj);
-                    if (pFVar6 == (FLEET *)0x0) {
+                    if (pFVar6 == 0) {
                         mdMsgObj = 0;
                     } else {
                         mdMsgObj = 2;
@@ -1589,14 +1589,14 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
         case 7:
         case 0x27:
             pchT = PszPlayerName(*pParams & 0xf, (uint)(*pszFormat == 'L'), (uint)((*pParams & 0x10U) != 0), (uint)((*pParams & 0x20U) != 0),
-                                 (int)(*pParams & 0xc0U) >> 6, (PLAYER *)0x0);
+                                 (int)(*pParams & 0xc0U) >> 6, 0);
             break;
         case 8:
             pchT = (char *)*(undefined2 *)(*pParams * 2 + rgszMineField);
             break;
         case 10:
             w = (uint)*pParams >> 9 & 0xf;
-            pchT = PszPlayerName(w, 0, 0, 0, 0, (PLAYER *)0x0);
+            pchT = PszPlayerName(w, 0, 0, 0, 0, 0);
             break;
         case 0xb:
             local_1fe.hs.grhst = *pParams / 100;
@@ -1613,7 +1613,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
         case 0xe:
             if (*pParams != idPlayer) {
                 CchGetString(idsOf2, szBuf);
-                pcVar4 = PszPlayerName(*pParams, 0, 0, 0, 0, (PLAYER *)0x0);
+                pcVar4 = PszPlayerName(*pParams, 0, 0, 0, 0, 0);
                 _strcat(szBuf, pcVar4);
                 pcVar4 = PszGetCompressedString(idsOrigin);
                 _strcat(szBuf, pcVar4);
@@ -1652,7 +1652,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
                     for (; (w & 1) == 0; w = w >> 1) {
                         c = c + 1;
                     }
-                    pchT = PszPlayerName(c, 0, 1, 1, 0, (PLAYER *)0x0);
+                    pchT = PszPlayerName(c, 0, 1, 1, 0, 0);
                     break;
                 }
                 cOut = 0;
@@ -1669,7 +1669,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
                                 *pcVar4 = ' ';
                             }
                         }
-                        pcVar4 = PszPlayerName(i, 0, 1, 1, 0, (PLAYER *)0x0);
+                        pcVar4 = PszPlayerName(i, 0, 1, 1, 0, 0);
                         _strcpy(pch, pcVar4);
                         uVar5 = _strlen(pcVar4);
                         pch = pch + uVar5;
@@ -1697,9 +1697,9 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
                 LAB_1030_86a2:
                     if (idPlayer == -1)
                         goto LAB_1030_86d0;
-                    c = _wsprintf(pch, s_m_d_1120_0b59, idPlayer + 1);
+                    c = _wsprintf(pch, ".m%d", idPlayer + 1);
                 } else {
-                    c = _wsprintf(pch, s_x_d_1120_0b54, idPlayer + 1);
+                    c = _wsprintf(pch, ".x%d", idPlayer + 1);
                 }
                 goto MSG_DoInt;
             }
@@ -1709,7 +1709,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
                 pch = pch + 4;
             } else {
                 if (cVar1 == 'r') {
-                    c = _wsprintf(pch, s_h_d_1120_0b63, idPlayer + 1);
+                    c = _wsprintf(pch, ".h%d", idPlayer + 1);
                     goto MSG_DoInt;
                 }
                 if (cVar1 == 't')
@@ -1795,8 +1795,8 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
             if (iPlayer == idPlayer) {
                 __fstrcpy(pch, (char *)CONCAT22(local_1fe.u_PART_0x0004._2_2_, (local_1fe.u_PART_0x0004.parmor._0_2_)->szName));
             } else {
-                pcVar4 = PszPlayerName(iPlayer, 0, 0, 1, 0, (PLAYER *)0x0);
-                _wsprintf(pch, s__s__s_1120_0b6f, pcVar4, 0x1120, (local_1fe.u_PART_0x0004.parmor._0_2_)->szName, local_1fe.u_PART_0x0004._2_2_);
+                pcVar4 = PszPlayerName(iPlayer, 0, 0, 1, 0, 0);
+                _wsprintf(pch, "%s %s", pcVar4, 0x1120, (local_1fe.u_PART_0x0004.parmor._0_2_)->szName, local_1fe.u_PART_0x0004._2_2_);
             }
             uVar5 = _strlen(pch);
             pch = pch + uVar5;
@@ -1878,10 +1878,10 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 if ((wParam == 1) || (wParam == 2)) {
                     if (wParam == 1) {
                         GetDlgItemText(hwnd, IDC_EDITTEXT, szWork, 9);
-                        sVar2 = FValidSerialNo((char *)szWork, (long *)0x0);
+                        sVar2 = FValidSerialNo((char *)szWork, 0);
                         if (sVar2 == 0) {
                             sVar2 = 0x10;
-                            sz = PszFormatIds(idsSerialNumberHaveEnteredValid, (short *)0x0);
+                            sz = PszFormatIds(idsSerialNumberHaveEnteredValid, 0);
                             AlertSz(sz, sVar2);
                             HVar1 = GetDlgItem(hwnd, IDC_EDITTEXT);
                             SetFocus(HVar1);
@@ -2029,7 +2029,7 @@ void MarkPlanetsPlayerLost(short iPlayer)
                 }
             }
             lppl_00 = LpplFromId(w);
-            if (lppl_00 != (PLANET *)0x0) {
+            if (lppl_00 != 0) {
                 MarkPlanet(lppl_00, iPlayer, 3);
             }
         }
@@ -2052,7 +2052,7 @@ void MarkPlayersThatSentMsgs(short iPlayer)
     if (iPlayer != -1) {
         lpmp = (MSGPLR *)CONCAT22(vlpmsgplrOut._2_2_, (MSGPLR *)vlpmsgplrOut);
         while (true) {
-            if (((MSGPLR *)lpmp == (MSGPLR *)0x0) && (lpmp._2_2_ == 0))
+            if (((MSGPLR *)lpmp == 0) && (lpmp._2_2_ == 0))
                 break;
             if (((((MSGPLR *)lpmp)->iPlrTo == 0) && (((MSGPLR *)lpmp)->iPlrFrom != iPlayer)) ||
                 ((((MSGPLR *)lpmp)->iPlrTo + -1 == iPlayer && ((*(uint *)((int)&rgplr[0].wMdPlr + ((MSGPLR *)lpmp)->iPlrFrom * 0xc0) >> 8 & 1) == 0)))) {
@@ -2111,7 +2111,7 @@ void WritePlayerMessages(short iPlayer)
         }
         lpmp = (MSGPLR *)CONCAT22(vlpmsgplrOut._2_2_, (MSGPLR *)vlpmsgplrOut);
         while (true) {
-            if (((MSGPLR *)lpmp == (MSGPLR *)0x0) && (lpmp._2_2_ == 0))
+            if (((MSGPLR *)lpmp == 0) && (lpmp._2_2_ == 0))
                 break;
             if (((((MSGPLR *)lpmp)->iPlrTo == 0) && (((MSGPLR *)lpmp)->iPlrFrom != iPlayer)) || (((MSGPLR *)lpmp)->iPlrTo + -1 == iPlayer)) {
                 pMVar4 = (MSGPLR *)lpmp;
@@ -2141,9 +2141,9 @@ void ResetMessages(void)
     iMsgSendCur = 0;
     _memset((byte *)bitfMsgSent, 0, 0x31);
     _memset((byte *)bitfMsgFiltered, 0, 0x31);
-    vlpmsgplrIn._0_2_ = (MSGPLR *)0x0;
+    vlpmsgplrIn._0_2_ = 0;
     vlpmsgplrIn._2_2_ = 0;
-    vlpmsgplrOut._0_2_ = (MSGPLR *)0x0;
+    vlpmsgplrOut._0_2_ = 0;
     vlpmsgplrOut._2_2_ = 0;
     vcmsgplrIn = 0;
     vcmsgplrOut = 0;
@@ -2297,7 +2297,7 @@ short FFinishPlrMsgEntry(short dInc)
         puVar5 = &stack0xffdc;
     }
     if (cb == 0) {
-        if ((pMVar1 != (MSGPLR *)0x0) || (iVar2 != 0)) {
+        if ((pMVar1 != 0) || (iVar2 != 0)) {
             *(undefined2 *)(puVar5 + -2) = 1;
             *(undefined2 *)(puVar5 + -4) = uVar7;
             *(undefined2 *)(puVar5 + -6) = 0x9c75;
@@ -2356,7 +2356,7 @@ short FFinishPlrMsgEntry(short dInc)
     uVar7 = 0x14f8;
     *(undefined2 *)(puVar5 + -0xe) = 0x9d7c;
     LVar8 = SendMessage(*(HWND *)(puVar5 + -2), *(WMType *)(puVar5 + -4), *(WParamMessageId *)(puVar5 + -6), *(LPARAM *)(puVar5 + -10));
-    if ((pMVar1 == (MSGPLR *)0x0) && (iVar2 == 0)) {
+    if ((pMVar1 == 0) && (iVar2 == 0)) {
         *(undefined2 *)(puVar5 + -2) = 1;
         *(undefined2 *)(puVar5 + -4) = 0x14f8;
         *(undefined2 *)(puVar5 + -6) = 0x9e0a;

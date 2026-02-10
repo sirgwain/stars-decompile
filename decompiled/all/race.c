@@ -133,7 +133,7 @@ RACE_Step2:
                             if (sVar1 == 0)
                                 goto RACE_Step1;
                             if (szRaceFile[0] == '\0') {
-                                pcVar3 = (char *)s_stars_r1_1120_1328;
+                                pcVar3 = (char *)"stars.r1";
                             } else {
                                 pcVar3 = (char *)szRaceFile;
                             }
@@ -238,7 +238,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
         rcGBox.right = rc.right;
         rcGBox.bottom = rc.bottom;
         ExpandRc(&rcGBox, dyArial8, dyArial8 >> 1);
-        _Draw3dFrame(local_12, &rcGBox, -1);
+        Draw3dFrame(local_12, &rcGBox, -1);
         SelectObject(local_12, rghfontArial8[1]);
         SetBkColor(local_12, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         sVar11 = CchGetString(idsPredefinedRaces, (char *)szWork);
@@ -250,7 +250,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
         local_16 = rcGBox.bottom + -0x20;
         local_10 = (PLAYER *)(vplr.wMdPlr >> 3 & 0x1f);
         if (0x1f < local_10) {
-            local_10 = (PLAYER *)0x0;
+            local_10 = 0;
         }
         SelectPalette(local_12, vhpal, 0);
         RealizePalette(local_12);
@@ -268,7 +268,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
                 } else {
                     uVar12 = 3;
                 }
-                DrawBtn(local_12, (RECT *)rgrcBuildSpin + i, uVar12 | 0x20, 0, (char *)0x0);
+                DrawBtn(local_12, (RECT *)rgrcBuildSpin + i, uVar12 | 0x20, 0, 0);
             }
         }
         EndPaint(hwnd, local_38);
@@ -481,7 +481,7 @@ short RaceWizardDlg1(HWND hwnd, WMType message, ushort wParam, long lParam)
             local_14 = (PLAYER *)GetDC(hwnd);
             SelectPalette((HDC)local_14, vhpal, 0);
             RealizePalette((HDC)local_14);
-            InitBtnTrack(local_38 + 0xc, hwnd, 0, (RECT *)local_38._8_2_, local_38._10_2_, 0x50, 0, 0, (char *)0x0);
+            InitBtnTrack(local_38 + 0xc, hwnd, 0, (RECT *)local_38._8_2_, local_38._10_2_, 0x50, 0, 0, 0);
             while (true) {
                 sVar11 = FTrackBtn(local_38 + 0xc);
                 if (sVar11 == 0)
@@ -580,7 +580,7 @@ short RaceWizardDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
                 local_30._22_2_ = CchGetString(idsTemperature, local_30 + 2);
                 DVar7 = GetTextExtent(local_10, (LPCSTR)(local_30 + 2), local_30._22_2_);
                 local_30._24_2_ = (int)DVar7 + 10;
-                DVar7 = GetTextExtent(local_10, s_200mR_1120_1331, 5);
+                DVar7 = GetTextExtent(local_10, "200mR", 5);
                 local_30._26_2_ = (rc.right - local_30._24_2_) - ((int)DVar7 + 10);
                 local_30._28_2_ = (dyArial8 * 3) / 2;
                 local_30._30_2_ = dyArial8 * 3;
@@ -616,7 +616,7 @@ short RaceWizardDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
                     CheckDlgButton(hwnd, i + 0x123, (uint)(*(char *)((int)vplr.rgEnvVarMax + i) < '\0'));
                 }
                 local_30._22_2_ = CchGetString(idsMaximumColonistGrowthRatePerYear, (char *)szWork);
-                DVar7 = GetTextExtent(local_10, s_15_1120_1337, 3);
+                DVar7 = GetTextExtent(local_10, "15%", 3);
                 iVar2 = (int)DVar7;
                 DVar7 = GetTextExtent(local_10, szWork, local_30._22_2_);
                 (vrgrcRCW + 0xf)->left = local_30._24_2_ + (int)DVar7 + iVar2 + 4;
@@ -753,7 +753,7 @@ void DrawRace2(HWND hwnd, HDC hdc, short iDraw)
         hdc = GetDC(hwnd);
     }
     GetClientRect(hwnd, &rc);
-    DrawRaceAdvantagePoints(hdc, &rc, (PLAYER *)0x0);
+    DrawRaceAdvantagePoints(hdc, &rc, 0);
     sVar3 = SetBkMode(hdc, 1);
     SelectObject(hdc, rghfontArial8[1]);
     iVar4 = (rc.right - vrgrcRCW[2].right) / 2 + vrgrcRCW[2].right;
@@ -798,7 +798,7 @@ void DrawRace2(HWND hwnd, HDC hdc, short iDraw)
                 } else {
                     uVar7 = 3;
                 }
-                DrawBtn(hdc, vrgrcRCW + i, uVar7 | bt | uVar2, 0, (char *)0x0);
+                DrawBtn(hdc, vrgrcRCW + i, uVar7 | bt | uVar2, 0, 0);
             }
         } else if (iMod == 1) {
             if (((1 << ((byte)iPit & 0x1f) & iDraw) != 0) &&
@@ -820,9 +820,9 @@ void DrawRace2(HWND hwnd, HDC hdc, short iDraw)
             iPit = iPit + 1;
         } else if ((iDraw & 0xfff0U) != 0) {
             if (iMod == 3) {
-                pcVar5 = (char *)0x133b;
+                pcVar5 = (char *)"<<     >>";
             } else {
-                pcVar5 = (char *)0x1345;
+                pcVar5 = (char *)">>     <<";
             }
             DrawBtn(hdc, vrgrcRCW + i, bt | 8U | uVar2, 0, pcVar5);
         }
@@ -832,10 +832,10 @@ void DrawRace2(HWND hwnd, HDC hdc, short iDraw)
         if (iDraw == -1) {
             sVar6 = CchGetString(idsMaximumColonistGrowthRatePerYear, (char *)szWork);
             TextOut(hdc, vrgrcRCW->left, vrgrcRCW[0xf].top + 3, szWork, sVar6);
-            DrawBtn(hdc, vrgrcRCW + 0xf, uVar2 | 0xa0, 0, (char *)0x0);
-            DrawBtn(hdc, vrgrcRCW + 0x10, uVar2 | 0xa1, 0, (char *)0x0);
+            DrawBtn(hdc, vrgrcRCW + 0xf, uVar2 | 0xa0, 0, 0);
+            DrawBtn(hdc, vrgrcRCW + 0x10, uVar2 | 0xa1, 0, 0);
         } else {
-            DVar14 = GetTextExtent(hdc, s_15_1120_134f, 3);
+            DVar14 = GetTextExtent(hdc, "15%", 3);
             SelectObject(hdc, hbrButtonFace);
             PatBlt(hdc, ((vrgrcRCW + 0xf)->left + -4) - (int)DVar14, vrgrcRCW[0xf].top + 3, (int)DVar14, dyArial8, 0xf00021);
         }
@@ -1013,7 +1013,7 @@ short FTrackRaceDlg2(HWND hwnd, POINT pt, short kbd)
         } else {
             dWidth = 0;
             dShift = 0;
-            psz = (char *)0x0;
+            psz = 0;
             if (sVar3 == 0xf) {
                 dShift = 1;
                 bt = 0xa0;
@@ -1256,7 +1256,7 @@ void DrawRace3(HWND hwnd, HDC hdc, short iDraw)
         hdc = GetDC(hwnd);
     }
     GetClientRect(hwnd, &rc);
-    DrawRaceAdvantagePoints(hdc, &rc, (PLAYER *)0x0);
+    DrawRaceAdvantagePoints(hdc, &rc, 0);
     sVar2 = SetBkMode(hdc, 2);
     CVar9 = SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
     SetTextColor(hdc, CONCAT22(crWindowText._2_2_, (undefined2)crWindowText));
@@ -1296,9 +1296,9 @@ void DrawRace3(HWND hwnd, HDC hdc, short iDraw)
         if ((((char *)rgRW3Width)[i] < '\0') && ((0 < i || (!bVar7)))) {
             dxItem = dxItem + (int)DVar11;
             if (i == 0) {
-                _strcat((char *)szWork, (char *)0x1358);
+                _strcat((char *)szWork, (char *)s_00_1120_1358);
             } else {
-                _strcat((char *)szWork, (char *)0x135b);
+                _strcat((char *)szWork, (char *)s_kT_1120_135b);
             }
         }
         x = (int)DVar12 + 6 + dxItem;
@@ -1317,8 +1317,8 @@ void DrawRace3(HWND hwnd, HDC hdc, short iDraw)
         pRVar6->bottom = pRVar5->bottom;
         OffsetRect(vrgrcRCW + irc + 1, 0, (vrgrcRCW[irc].bottom - vrgrcRCW[irc].top) + -1);
         if (iDraw == -1) {
-            DrawBtn(hdc, vrgrcRCW + irc, bt | 0xa0, 0, (char *)0x0);
-            DrawBtn(hdc, vrgrcRCW + irc + 1, bt | 0xa1, 0, (char *)0x0);
+            DrawBtn(hdc, vrgrcRCW + irc, bt | 0xa0, 0, 0);
+            DrawBtn(hdc, vrgrcRCW + irc + 1, bt | 0xa1, 0, 0);
             idsT = iVar1;
             if ((bVar7) && (iVar1 == 0xf7)) {
                 idsT = 0x105;
@@ -1376,7 +1376,7 @@ short FTrackRaceDlg3(HWND hwnd, POINT pt, short kbd)
             dShift = -1;
             bt = 0xa1;
         }
-        InitBtnTrack(&btnt, hwnd, 0, vrgrcRCW + uVar1, bt, 0x50, 0, 0, (char *)0x0);
+        InitBtnTrack(&btnt, hwnd, 0, vrgrcRCW + uVar1, bt, 0x50, 0, 0, 0);
         if ((kbd & 4U) != 0) {
             dShift = dShift * 3;
         }
@@ -1512,7 +1512,7 @@ short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_PAINT) {
         hdc_00 = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
-        DrawRaceAdvantagePoints(hdc_00, &rc, (PLAYER *)0x0);
+        DrawRaceAdvantagePoints(hdc_00, &rc, 0);
         SelectObject(hdc_00, rghfontArial8[1]);
         SetBkColor(hdc_00, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         HVar1 = GetDlgItem(hwnd, IDC_U16_0x010F);
@@ -1525,7 +1525,7 @@ short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
         rcGBox.bottom = rc.bottom;
         ExpandRc(&rcGBox, dyArial8 + 2, dyArial8 >> 1);
         rcGBox.top = rcGBox.top + -4;
-        _Draw3dFrame(hdc_00, &rcGBox, -1);
+        Draw3dFrame(hdc_00, &rcGBox, -1);
         sVar2 = CchGetString(idsPrimaryRacialTrait, (char *)szWork);
         TextOut(hdc_00, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, sVar2);
         GetClientRect(hwnd, &rc);
@@ -1536,7 +1536,7 @@ short RaceWizardDlg4(HWND hwnd, WMType message, ushort wParam, long lParam)
         GetWindowRect(HVar1, &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
         rc.bottom = rcGBox.top + -6;
-        _Draw3dFrame(hdc_00, &rc, -1);
+        Draw3dFrame(hdc_00, &rc, -1);
         sVar2 = CchGetString(idsDescriptionTrait, (char *)szWork);
         TextOut(hdc_00, rc.left + 8, rc.top - (dyArial8 >> 1), szWork, sVar2);
         sVar2 = GetRaceStat((PLAYER *)&vplr, rsMajorAdv);
@@ -1658,7 +1658,7 @@ short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
-        DrawRaceAdvantagePoints(hdc, &rc, (PLAYER *)0x0);
+        DrawRaceAdvantagePoints(hdc, &rc, 0);
         SelectObject(hdc, rghfontArial8[1]);
         SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         HVar2 = GetDlgItem(hwnd, IDC_U16_0x0130);
@@ -1672,7 +1672,7 @@ short RaceWizardDlg5(HWND hwnd, WMType message, ushort wParam, long lParam)
         GetWindowRect(HVar2, &rcGBox);
         ScreenToClient(hwnd, (POINT *)&rcGBox);
         rc.bottom = rcGBox.top + -0xc;
-        _Draw3dFrame(hdc, &rc, -1);
+        Draw3dFrame(hdc, &rc, -1);
         rcCargo.left = rc.left;
         rcCargo.right = rc.right;
         rcCargo.bottom = rc.bottom;
@@ -1819,7 +1819,7 @@ short RaceWizardDlg6(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_PAINT) {
         hdc_00 = BeginPaint(hwnd, &ps);
         GetClientRect(hwnd, &rc);
-        DrawRaceAdvantagePoints(hdc_00, &rc, (PLAYER *)0x0);
+        DrawRaceAdvantagePoints(hdc_00, &rc, 0);
         SelectObject(hdc_00, rghfontArial8[1]);
         SetBkColor(hdc_00, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         for (i = 0; i < 6; i = i + 1) {
@@ -1832,7 +1832,7 @@ short RaceWizardDlg6(HWND hwnd, WMType message, ushort wParam, long lParam)
             rcGBox.right = rc.right;
             rcGBox.bottom = rc.bottom;
             ExpandRc(&rcGBox, dyArial8, dyArial8 >> 1);
-            _Draw3dFrame(hdc_00, &rcGBox, -1);
+            Draw3dFrame(hdc_00, &rcGBox, -1);
             sVar6 = CchGetString(i + idsEnergy, (char *)szWork);
             sVar7 = CchGetString(idsResearch, (char *)szWork + sVar6);
             TextOut(hdc_00, rcGBox.left + 8, rcGBox.top - (dyArial8 >> 1), szWork, sVar6 + sVar7);
@@ -2043,7 +2043,7 @@ short CAdvantagePoints(PLAYER *pplr)
     } else {
         if (iSpread < 0xe) {
             if (iSpread == 6) {
-                cPoints._0_2_ = (char *)s__s__d_1120_147d + 5;
+                cPoints._0_2_ = (char *)"%s %d" + 5;
             } else if (iSpread == 7) {
                 cPoints._0_2_ = (char *)0xf3c;
             } else if (iSpread == 8) {
@@ -2576,7 +2576,7 @@ void InvalidateAdvPtsRect(HWND hwnd)
     HVar3 = CreateFontIndirect(pLVar1);
     HVar4 = SelectObject(HVar2, HVar3);
     GetTextMetrics(HVar2, &tm);
-    DVar5 = GetTextExtent(HVar2, s_99999_1120_135e, 6);
+    DVar5 = GetTextExtent(HVar2, "-99999", 6);
     GetClientRect(hwnd, &rc);
     rc.left = rc.right - ((int)DVar5 + 8);
     rc.bottom = rc.top + tm.tmHeight + tm.tmExternalLeading + 4;
@@ -2629,12 +2629,12 @@ void DrawRaceAdvantagePoints(HDC hdc, RECT *prc, PLAYER *pplr)
     HVar2 = CreateFontIndirect(pLVar1);
     HVar3 = SelectObject(hdc, HVar2);
     GetTextMetrics(hdc, &tm);
-    DVar7 = GetTextExtent(hdc, s_99999_1120_1365, 6);
+    DVar7 = GetTextExtent(hdc, "-99999", 6);
     rc.top = prc->top;
     rc.right = prc->right;
     rc.left = rc.right - ((int)DVar7 + 8);
     rc.bottom = rc.top + tm.tmHeight + tm.tmExternalLeading + 4;
-    if (pplr == (PLAYER *)0x0) {
+    if (pplr == 0) {
         pplr = (PLAYER *)&vplr;
     }
     sVar4 = CAdvantagePoints(pplr);
@@ -2714,7 +2714,7 @@ short FSaveRace(char *szFileSuggest, PLAYER *pplr)
     char       szFileTitle[256];
     ushort     icksum;
 
-    if (szFileSuggest == (char *)0x0) {
+    if (szFileSuggest == 0) {
         szFile[0] = '\0';
     } else {
         _strcpy(szFile, szFileSuggest);
@@ -2740,7 +2740,7 @@ short FSaveRace(char *szFileSuggest, PLAYER *pplr)
     ofn.nMaxFileTitle._0_2_ = 0x100;
     ofn.nMaxFileTitle._2_2_ = 0;
     ofn.lpstrInitialDir._0_2_ = szDirName;
-    ofn.lpstrDefExt._0_2_ = (char *)0x136c;
+    ofn.lpstrDefExt._0_2_ = (char *)s_r1_1120_136c;
     ofn.lpstrDefExt._2_2_ = 0x1120;
     ofn.Flags._0_2_ = 0x8806;
     ofn.Flags._2_2_ = 0;
@@ -2751,11 +2751,11 @@ short FSaveRace(char *szFileSuggest, PLAYER *pplr)
         sVar2 = FCreateFile(dtHist | dtLog, -1, szFile);
         if (sVar2 == 0) {
             sVar2 = 0x10;
-            sz = PszFormatIds(idsStarsUnableSaveRaceDataFilePlease, (short *)0x0);
+            sz = PszFormatIds(idsStarsUnableSaveRaceDataFilePlease, 0);
             AlertSz(sz, sVar2);
             sVar2 = 0;
         } else {
-            WriteRtPlr(pplr, (byte *)0x0);
+            WriteRtPlr(pplr, 0);
             icksum = IRaceChecksum(pplr);
             WriteRt(rtEOF, 2, &icksum);
             StreamClose();

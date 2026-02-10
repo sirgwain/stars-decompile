@@ -54,10 +54,10 @@ short ChangeProduction(short fClear)
         }
         sVar2 = 1;
     } else {
-        if (((PLPROD *)lpplProdGlob != (PLPROD *)0x0) || (lpplProdGlob._2_2_ != 0)) {
+        if (((PLPROD *)lpplProdGlob != 0) || (lpplProdGlob._2_2_ != 0)) {
             FreePl((PL *)CONCAT22(lpplProdGlob._2_2_, (PLPROD *)lpplProdGlob));
         }
-        lpplProdGlob._0_2_ = (PLPROD *)0x0;
+        lpplProdGlob._0_2_ = 0;
         lpplProdGlob._2_2_ = 0;
         if (hwndProdDlg != 0) {
             EndDialog(hwndProdDlg, 0);
@@ -65,7 +65,7 @@ short ChangeProduction(short fClear)
         hwndProdDlg = 0;
         fDlgUp = 0;
         sVar2 = 0x10;
-        sz = PszFormatIds(idsThereIsntEnoughFreeMemoryModifyProduction, (short *)0x0);
+        sz = PszFormatIds(idsThereIsntEnoughFreeMemoryModifyProduction, 0);
         AlertSz(sz, sVar2);
         sVar2 = 0;
     }
@@ -117,16 +117,16 @@ void InitProduction(PROD *rgprod)
     uVar13 = CONCAT22(unaff_SI, unaff_DI);
     uVar10 = __aFulshr(uVar13, in_stack_0000ffde);
     gd.grBits._0_2_ = (uint)gd.grBits & 0xffdf | ((uint)uVar10 & 1) << 5;
-    if (rgprod == (PROD *)0x0) {
+    if (rgprod == 0) {
         rgprod = pProdGlob;
     }
-    if (((PLPROD *)sel.pl.lpplprod == (PLPROD *)0x0) && (sel.pl.lpplprod._2_2_ == 0)) {
+    if (((PLPROD *)sel.pl.lpplprod == 0) && (sel.pl.lpplprod._2_2_ == 0)) {
         i = 2;
     } else {
         i = (short)((PLPROD *)sel.pl.lpplprod)->iprodMac;
     }
     lpplProdGlob = LpplAlloc(4, i, htOrd);
-    if (((PLPROD *)sel.pl.lpplprod == (PLPROD *)0x0) && (sel.pl.lpplprod._2_2_ == 0)) {
+    if (((PLPROD *)sel.pl.lpplprod == 0) && (sel.pl.lpplprod._2_2_ == 0)) {
         i = 0;
     } else {
         __fmemcpy((PL *)CONCAT22((int)((ulong)lpplProdGlob >> 0x10), (PL *)lpplProdGlob + 1), (PLPROD *)sel.pl.lpplprod + 1, i << 2);
@@ -198,7 +198,7 @@ void InitProduction(PROD *rgprod)
         *(uint *)((int)&pPVar6->dwFlags + 2) = uVar5 & 0xfff1 | 2;
         cProdGlob = cProdGlob + 1;
     }
-    sVar4 = IWarpMAFromLppl(&sel.pl, (short *)0x0);
+    sVar4 = IWarpMAFromLppl(&sel.pl, 0);
     if (0 < sVar4) {
         for (i = 0; i < 4; i = i + 1) {
             uVar8 = *(undefined2 *)((int)&rgprod[cProdGlob].dwFlags + 2);
@@ -426,21 +426,21 @@ void FinishProduction(short fWrite)
         FreePl(lpplProdGlob);
     } else {
         FreePl((PL *)CONCAT22(sel.pl.lpplprod._2_2_, (PLPROD *)sel.pl.lpplprod));
-        if ((((PLPROD *)lpplProdGlob != (PLPROD *)0x0) || (lpplProdGlob._2_2_ != 0)) && (((PLPROD *)lpplProdGlob)->iprodMac == 0)) {
+        if ((((PLPROD *)lpplProdGlob != 0) || (lpplProdGlob._2_2_ != 0)) && (((PLPROD *)lpplProdGlob)->iprodMac == 0)) {
             FreePl(lpplProdGlob);
-            lpplProdGlob = (PLPROD *)0x0;
+            lpplProdGlob = 0;
         }
         sel.pl.lpplprod._0_2_ = (PLPROD *)lpplProdGlob;
         sel.pl.lpplprod._2_2_ = lpplProdGlob._2_2_;
-        lpplProdGlob = (PLPROD *)0x0;
+        lpplProdGlob = 0;
         FLookupPlanet(-1, (PLANET *)&sel.pl);
         FLookupPlanet(sel.pl.id, (PLANET *)&sel.pl);
         if (fAi == 0) {
-            FillPlanetProdLB(0, (PLPROD *)0x0, (PLANET *)0x0);
+            FillPlanetProdLB(0, 0, 0);
             DrawPlanShip(0, 0x40);
         }
     }
-    lpplProdGlob = (PLPROD *)0x0;
+    lpplProdGlob = 0;
     if ((((uint)gd.grBits >> 0xb & 1) != 0) && (idPlayer == 0)) {
         tutor.wFlags = tutor.wFlags & 0xfbffU | 0x400;
         AdvanceTutor();
@@ -637,7 +637,7 @@ short ProductionDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         ppcVar7 = &local_44 + local_3a._6_2_;
                         local_3a._6_2_ = local_3a._6_2_ + 1;
                         *ppcVar7 = pcVar4;
-                        local_3a._2_2_ = PopupMenu(hwnd, local_32.x, local_32.y, local_3a._6_2_, (long *)0x0, &local_44, -1, 1);
+                        local_3a._2_2_ = PopupMenu(hwnd, local_32.x, local_32.y, local_3a._6_2_, 0, &local_44, -1, 1);
                         if (local_3a._2_2_ == local_3a._6_2_ + -1) {
                             _memcpy(local_e4, (ZIPPRODQ *)vrgZipProd, 0xa0);
                             lpDlgProc = MakeProcInstance(ZipProdDlg, hInst);
@@ -780,7 +780,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
         sel.pl.rgbImp._4_2_ = sel.pl.rgbImp._4_2_ | (uint)lVar28;
         sel.pl.rgbImp._6_2_ = sel.pl.rgbImp._6_2_ & 0xff7f | (uint)((ulong)lVar28 >> 0x10);
         LVar29 = SendMessage(HVar12, CB_GETLBTEXTLEN, 0, 0);
-        FillPlanetProdLB(HVar12, lpplProdGlob, (PLANET *)0x0);
+        FillPlanetProdLB(HVar12, lpplProdGlob, 0);
         lSel._0_2_ = (WParamMessageId)LVar29;
         uVar22 = 0x14f8;
         SendMessage(HVar12, CB_GETCURSEL, (WParamMessageId)lSel, 0);
@@ -939,7 +939,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
             }
             psVar21 = &stack0xffba;
             uVar34 = 0;
-            pPVar31 = (PLANET *)0x0;
+            pPVar31 = 0;
             pPVar18 = (PLPROD *)lpplProdGlob;
             uVar22 = lpplProdGlob._2_2_;
             HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -972,7 +972,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
                     } else {
                         SelectAdjPlanet(sVar33, 0);
                     }
-                    InitProduction((PROD *)0x0);
+                    InitProduction(0);
                     InitializeProductionDlg(hwnd);
                     GetClientRect(hwnd, &rc);
                     rc.top = yTopFutureTech;
@@ -1011,7 +1011,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
                     *puVar20 = uVar22;
                     puVar20[1] = uVar34;
                     uVar34 = 0;
-                    pPVar31 = (PLANET *)0x0;
+                    pPVar31 = 0;
                     pPVar18 = (PLPROD *)lpplProdGlob;
                     uVar22 = lpplProdGlob._2_2_;
                     HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -1061,7 +1061,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
                     *puVar20 = uVar34;
                     puVar20[1] = uVar22;
                     uVar34 = 0;
-                    pPVar31 = (PLANET *)0x0;
+                    pPVar31 = 0;
                     pPVar18 = (PLPROD *)lpplProdGlob;
                     uVar22 = lpplProdGlob._2_2_;
                     HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -1169,7 +1169,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
                 ((PLPROD *)lpplProdGlob)->iprodMac = 0;
             }
             uVar34 = 0;
-            pPVar31 = (PLANET *)0x0;
+            pPVar31 = 0;
             pPVar18 = (PLPROD *)lpplProdGlob;
             uVar22 = lpplProdGlob._2_2_;
             HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -1296,7 +1296,7 @@ void ProdCommandHandler(HWND hwnd, ushort wParam, long lParam)
         *pbVar4 = *pbVar4 - 1;
     }
     uVar32 = 0;
-    pPVar31 = (PLANET *)0x0;
+    pPVar31 = 0;
     pPVar18 = (PLPROD *)lpplProdGlob;
     uVar34 = lpplProdGlob._2_2_;
     HVar12 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -1398,7 +1398,7 @@ void InitializeProductionDlg(HWND hwnd)
         i = i + 1;
     }
     uVar9 = 0;
-    pPVar7 = (PLANET *)0x0;
+    pPVar7 = 0;
     HVar4 = GetDlgItem(hwnd, IDC_U16_0x0417);
     FillPlanetProdLB(HVar4, (PLPROD *)CONCAT22(uVar10, pPVar5), (PLANET *)CONCAT22(uVar9, pPVar7));
     HVar4 = GetDlgItem(hwnd, IDC_U16_0x0417);
@@ -1575,7 +1575,7 @@ void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, short iDraw)
                 pcVar3 = PszGetCompressedString(idsDDoneCompletion);
                 sVar6 = _wsprintf(szT, pcVar3, uVar9);
                 lSel._0_2_ = (int)uVar1;
-                PszProductionETA(&sel.pl, (PLPROD *)CONCAT22(lpplProdGlob._2_2_, (PLPROD *)lpplProdGlob), (int)lSel, (short *)0x0, (short *)0x0);
+                PszProductionETA(&sel.pl, (PLPROD *)CONCAT22(lpplProdGlob._2_2_, (PLPROD *)lpplProdGlob), (int)lSel, 0, 0);
                 _strcpy(szT + sVar6, (char *)szWork);
                 iVar8 = rc.left + -0x14;
                 pcVar3 = szT;
@@ -1641,7 +1641,7 @@ void FillProdSrcLB(HWND hwndLB, short mdFill)
                 uVar2 = __aFulshr(uVar3, (ushort)pcVar1);
                 if (((uint)uVar2 & 0x7f) < 7) {
                     szT[0] = 'I';
-                    _strcat(szT + 6, (char *)s__Auto_Build__1120_0cda);
+                    _strcat(szT + 6, (char *)" (Auto Build)");
                 } else {
                     szT[0] = ' ';
                 }
@@ -1709,10 +1709,10 @@ char *PszNameProdItem(PROD *lpprod)
                     iVar4 = iVar4 - *(int *)(*(int *)(idPlayer * 4 + rglpshdefSB) + (int)uVar5);
                     if (iVar4 < 1) {
                         if (iVar4 < 0) {
-                            _strcat((char *)szWork, (char *)s__upgrade__1120_0cf5);
+                            _strcat((char *)szWork, (char *)" (upgrade)");
                         }
                     } else {
-                        _strcat((char *)szWork, (char *)s__downgrade__1120_0ce8);
+                        _strcat((char *)szWork, (char *)" (downgrade)");
                     }
                 }
                 goto LAB_10d0_3f19;
@@ -2172,7 +2172,7 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, short iItem, short *p
     long       cResearch;
 
     uVar17 = CONCAT22(unaff_SI, unaff_DI);
-    if (((PLPROD *)lpplprod == (PLPROD *)0x0) && (lpplprod._2_2_ == 0)) {
+    if (((PLPROD *)lpplprod == 0) && (lpplprod._2_2_ == 0)) {
         /* WARNING: Load size is inaccurate */
         lpplprod = (PLPROD *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2), ((PLANET *)lppl)->lpplprod);
     }
@@ -2202,7 +2202,7 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, short iItem, short *p
             }
             *piLast = 100;
         PRODUCE_LCleanUp:
-            if (((PLPROD *)pl.lpplprod != (PLPROD *)0x0) || (pl.lpplprod._2_2_ != 0)) {
+            if (((PLPROD *)pl.lpplprod != 0) || (pl.lpplprod._2_2_ != 0)) {
                 FreePl(pl.lpplprod);
             }
             return;
@@ -2257,7 +2257,7 @@ void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, short iItem, short *p
                     }
                 }
                 if (i == -1) {
-                    pprodPartial = (PROD *)0x0;
+                    pprodPartial = 0;
                 } else {
                     pprodPartial = &prodPartial;
                 }
@@ -2379,7 +2379,7 @@ short ZipProdDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         local_36._0_2_ = (void *)rc.right;
         local_36._2_2_ = rc.bottom;
         ExpandRc(local_3c + 2, dyArial8, dyArial8 >> 1);
-        _Draw3dFrame(hdc_00, local_3c + 2, -1);
+        Draw3dFrame(hdc_00, local_3c + 2, -1);
         SelectObject(hdc_00, rghfontArial8[1]);
         SetBkColor(hdc_00, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         local_3c._0_2_ = CchGetString(idsCustomOrders, (char *)szWork);
@@ -2694,7 +2694,7 @@ void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq)
             } else {
                 _wsprintf(szWork, szFormat, szAuto);
             }
-            SendMessage(HVar1, CB_LIMITTEXT, 0, 0x112057a4);
+            SendMessage(HVar1, CB_LIMITTEXT, 0, szWork);
         }
     }
     return;

@@ -100,7 +100,7 @@ PLANETARY *LpplanetaryFromId(short id)
 // Segment: MEMORY_PARTS
 // ======================================================================
 
-short FLookupPartX(PART *ppart, ushort grhst, ushort iItem)
+short FLookupPartX(PART *ppart, HullSlotType grhst, ushort iItem)
 
 {
     short sVar1;

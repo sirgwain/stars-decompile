@@ -70,7 +70,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         local_38._4_2_ = (char *)rc.right;
         local_38._6_2_ = rc.bottom;
         ExpandRc(&local_38, dyArial8, dyArial8 >> 1);
-        _Draw3dFrame(hdc_00, &local_38, -1);
+        Draw3dFrame(hdc_00, &local_38, -1);
         SelectObject(hdc_00, rghfontArial8[1]);
         SetBkColor(hdc_00, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
         sVar8 = CchGetString(idsCustomOrders, (char *)szWork);
@@ -87,7 +87,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 SetTextColor(hdc_00, 0);
                 sVar8 = CchGetString(((((ZIPORDER *)vrgZip)[iResTechNow].txp.rgia + i)->wFlags >> 0xc) + idsAction, (char *)szWork);
                 if (*(char *)((int)(HCURSOR *)&hcurScanAdd + sVar8 + 1) == '.') {
-                    _wsprintf((char *)szBase + 0xff + sVar8, s_dkT_1120_16ba);
+                    _wsprintf((char *)szBase + 0xff + sVar8, " %dkT");
                 }
                 iVar9 = (int)DVar15 + 0xe;
                 uVar18 = 0x1120;
@@ -199,7 +199,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 if ((((int)uVar16 == 0) && (0x430 < wParam)) && (wParam < 0x435)) {
                     iResTechNow = wParam - 0x431;
                     EnableZipBtns(hwnd, iResTechNow);
-                    InvalidateRect(hwnd, (RECT *)0x0, 1);
+                    InvalidateRect(hwnd, 0, 1);
                 } else {
                     if ((wParam == 1) || (wParam == 2)) {
                         hwndZipOrderDlg = 0;
@@ -258,7 +258,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                                     puVar13 = puVar13 + 1;
                                     (pZVar4->txp).rgia[0].wFlags = *puVar3;
                                 }
-                                InvalidateRect(hwnd, (RECT *)0x0, 1);
+                                InvalidateRect(hwnd, 0, 1);
                                 puVar12 = &stack0xffba;
                             }
                             *(short *)(puVar12 + -2) = iResTechNow;
@@ -287,7 +287,7 @@ short ZipOrderDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                         _wsprintf(szWork, pcVar17);
                         HVar7 = GetDlgItem(hwnd, iResTechNow + (IDC_FINISH | IDOK));
                         SetWindowText(HVar7, szWork);
-                        InvalidateRect(hwnd, (RECT *)0x0, 1);
+                        InvalidateRect(hwnd, 0, 1);
                         gd.grBits2._0_2_ = (uint)gd.grBits2 & 0xffef | 0x10;
                     } else if (wParam == 0x76) {
                         WinHelp(hwnd, szHelpFile, 1, 0x44a);
@@ -747,7 +747,7 @@ short MdCalcStargateDamage(short isbsSrc, short isbsDst, short dDist, short wt, 
     dBaseDistance._0_2_ = (char *)((BEAM *)partSrc.u_PART_0x0004.pbeam)->dp;
     dBaseDistance._2_2_ = (int)(char *)dBaseDistance >> 0xf;
     if ((char *)dBaseDistance == (char *)0xffff) {
-        dBaseDistance._0_2_ = (char *)s_R6008___not_enough_space_for_arg_1120_1f2d + 0x13;
+        dBaseDistance._0_2_ = (char *)"R6008\r\n- not enough space for arguments\r\n" + 0x13;
         dBaseDistance._2_2_ = 0;
     }
     iVar2 = dDist >> 0xf;
@@ -860,7 +860,7 @@ void KillUsedWaypoints(void)
             pFVar3 = ((FLEET **)rglpfl)[i];
             iVar4 = *(int *)((int)((FLEET **)rglpfl + i) + 2);
             lpfl = (FLEET *)CONCAT22(iVar4, pFVar3);
-            if ((pFVar3 == (FLEET *)0x0) && (iVar4 == 0)) {
+            if ((pFVar3 == 0) && (iVar4 == 0)) {
                 return;
             }
             if (1 < pFVar3->cord) {
@@ -1246,7 +1246,7 @@ void AutoFleetOrder(FLEET *lpfl, PLANET *lppl)
                 pFVar3 = ((FLEET **)rglpfl)[ifl];
                 iVar4 = *(int *)((int)((FLEET **)rglpfl + ifl) + 2);
                 lpflT = (FLEET *)CONCAT22(iVar4, pFVar3);
-                if ((pFVar3 == (FLEET *)0x0) && (iVar4 == 0))
+                if ((pFVar3 == 0) && (iVar4 == 0))
                     break;
                 if ((pFVar7->iPlayer <= pFVar3->iPlayer) && (((pFVar3->wFlags_0x4 >> 10 & 1) == 0 && (lpfl != lpflT)))) {
                     if (pFVar7->iPlayer < pFVar3->iPlayer)
@@ -1831,7 +1831,7 @@ short MergeFleetsDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 pcVar1 = PszGetFleetName(((FLEET **)rglpfl)[vrgiflMerge[i]]->id);
                 _strcpy(szT, pcVar1);
                 if (1 < ((FLEET *)((FLEET **)rglpfl)[vrgiflMerge[i]])->cord) {
-                    _strcat(szT, (char *)0x16c4);
+                    _strcat(szT, (char *)s___1120_16c4);
                 }
                 HVar3 = GetDlgItem(hwnd, IDC_U16_0x0051);
                 SendMessage(HVar3, CB_LIMITTEXT, 0, (LPARAM)szT);
