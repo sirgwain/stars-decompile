@@ -65,33 +65,74 @@ int Stars_strnicmp(const char *a, const char *b, size_t n) {
 /* Small internal helpers                                                  */
 /* ====================================================================== */
 
-/* mdOpen mapping:
- * - original passed mdOpen & 0xbfff to OpenFile()
- * - we map common cases you likely use in Stars:
- *     0 => "rb"
- *     1 => "r+b" (read/write existing)
- *     2 => "wb"  (truncate/create)
- * If your project already has an mdOpen enum, adjust here.
+/*
+ * stars_mode_from_md
+ *
+ * Translate Stars!/Win16-style mdOpen flags into a stdio fopen() mode string.
+ *
+ * The original Win16 code used OpenFile(sz, mdOpen & ~mdNoOpenErr), where
+ * mdOpen is a bitfield composed of:
+ *
+ *   - bits 0–2 : access mode
+ *       OF_READ       = 0
+ *       OF_WRITE      = 1
+ *       OF_READWRITE  = 2
+ *
+ *   - bits 4–6 : share mode (ignored by stdio)
+ *       OF_SHARE_EXCLUSIVE   = 0x10
+ *       OF_SHARE_DENY_WRITE  = 0x20
+ *
+ *   - bit 12 : OF_CREATE (0x1000)
+ *
+ *   - bit 14 : mdNoOpenErr (Stars!-specific; stripped before mapping)
+ *
+ * Share-mode bits have no portable equivalent under stdio and are ignored.
+ * Only the access mode and OF_CREATE bit influence the resulting fopen mode.
+ *
+ * IMPORTANT SEMANTICS:
+ * - OF_READWRITE without OF_CREATE must open an *existing* file ("r+b").
+ *   It must NOT create a new file. This is required for append/mark logic
+ *   (e.g. FMarkFile / FAppendFile) to fail cleanly when the file is missing.
+ *
+ * - OF_CREATE requests creation/truncation ("w+b" or "wb"), depending on
+ *   access bits.
+ *
+ * This function must never infer create/truncate behavior unless OF_CREATE
+ * is explicitly present, or Stars! turn-generation logic will diverge from
+ * the original Win16 behavior.
  */
-static inline const char *stars_mode_from_md(int16_t mdOpen) {
+static inline const char *stars_mode_from_md(MdOpenFlags mdOpen) {
     mdOpen = (int16_t)(mdOpen & (int16_t)~mdNoOpenErr);
 
+    /* OF_CREATE (0x1000) in Win16 OpenFile flags */
     if (mdOpen & 0x1000) {
-        return "w+b"; /* OF_CREATE | OF_READWRITE: create/truncate for read/write */
+        /* create/truncate */
+        switch (mdOpen & 0x0003) {
+        case 0x0002: /* OF_READWRITE */
+            return "w+b";
+        case 0x0001: /* OF_WRITE (approx) */
+            return "wb";
+        default: /* OF_READ */
+            /* Rare; OpenFile could create+read, but stdio can't do read-only create cleanly.
+               The closest useful behavior is read/write create. */
+            return "w+b";
+        }
     }
 
-    switch (mdOpen) {
-    case 2:
-        return "wb";
-    case 1:
+    /* open existing */
+    switch (mdOpen & 0x0003) {
+    case 0x0002: /* OF_READWRITE */
         return "r+b";
-    default:
+    case 0x0001: /* OF_WRITE */
+        /* closest in stdio: read/write existing (lets seeking + rewriting work) */
+        return "r+b";
+    default: /* OF_READ */
         return "rb";
     }
 }
 
 /* Portable "OpenFile": returns 0 on success, nonzero on failure (like hf == -1 check). */
-int Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen) {
+int Stars_OpenFile(StarsFile *h, const char *path, MdOpenFlags mdOpen) {
     const char *mode = stars_mode_from_md(mdOpen);
 
     errno = 0;
@@ -99,12 +140,13 @@ int Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen) {
     if (!h->fp) {
         h->last_errno = errno;
 
-        fprintf(stderr,
-                "Stars_OpenFile: fopen failed\n"
-                "  path: \"%s\"\n"
-                "  mode: \"%s\"\n"
-                "  errno: %d (%s)\n",
-                path, mode ? mode : "(null)", errno, strerror(errno));
+        // TODO: caller should log last_errno on failure
+        // fprintf(stderr,
+        //         "Stars_OpenFile: fopen failed\n"
+        //         "  path: \"%s\"\n"
+        //         "  mode: \"%s\"\n"
+        //         "  errno: %d (%s)\n",
+        //         path, mode ? mode : "(null)", errno, strerror(errno));
 
         return 1;
     }
@@ -186,22 +228,14 @@ bool Stars_AtEOF(StarsFile *h) {
     return pos >= end;
 }
 
-static char Port_PathSep(void) {
-#if defined(_WIN32)
-    return '\\';
-#else
-    return '/';
-#endif
-}
+static bool Stars_IsSep(char c) { return (c == '/') || (c == '\\'); }
 
-static bool Port_IsSep(char c) { return (c == '/') || (c == '\\'); }
+static bool Stars_IsOptPrefix(char c) { return (c == '-') || (c == '/'); }
 
-static bool Port_IsOptPrefix(char c) { return (c == '-') || (c == '/'); }
-
-static bool Port_StrEq(const char *a, const char *b) { return strcmp(a, b) == 0; }
+static bool Stars_StrEq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
-static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
+static bool Stars_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     *out_wide = NULL;
     if (!u8)
         return false;
@@ -223,7 +257,7 @@ static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     return true;
 }
 #elif defined(_WIN32) && defined(STARS_USE_WIN_STUBS)
-static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
+static bool Stars_Utf8ToWide(const char *u8, wchar_t **out_wide) {
     /* Stub build: best-effort ASCII/UTF-8 widening (sufficient for tests). */
     *out_wide = NULL;
     if (!u8)
@@ -247,6 +281,14 @@ static bool Port_Utf8ToWide(const char *u8, wchar_t **out_wide) {
 /* Path utilities                                                          */
 /* ====================================================================== */
 
+char Stars_PathSepChar(void) {
+#if defined(_WIN32)
+    return '\\';
+#else
+    return '/';
+#endif
+}
+
 bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf) {
     if (!out || out_sz == 0 || !base || !leaf)
         return false;
@@ -256,7 +298,7 @@ bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf
 
     /* Need: base + (sep?) + leaf + '\0' */
     size_t need = bl + ll + 1;
-    if (bl > 0 && !Port_IsSep(base[bl - 1]))
+    if (bl > 0 && !Stars_IsSep(base[bl - 1]))
         need += 1;
 
     if (need > out_sz)
@@ -265,8 +307,8 @@ bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf
     memcpy(out, base, bl);
     size_t pos = bl;
 
-    if (pos > 0 && !Port_IsSep(out[pos - 1])) {
-        out[pos++] = Port_PathSep();
+    if (pos > 0 && !Stars_IsSep(out[pos - 1])) {
+        out[pos++] = Stars_PathSepChar();
     }
 
     memcpy(out + pos, leaf, ll);
@@ -280,7 +322,7 @@ bool Stars_PathExists(const char *path) {
 
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     wchar_t *w = NULL;
-    if (!Port_Utf8ToWide(path, &w))
+    if (!Stars_Utf8ToWide(path, &w))
         return false;
     DWORD attr = GetFileAttributesW(w);
     free(w);
@@ -291,12 +333,12 @@ bool Stars_PathExists(const char *path) {
 #endif
 }
 
-static bool Port_MkdirOne(const char *path) {
+static bool Stars_MkdirOne(const char *path) {
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Use _mkdir for narrow paths; for full UTF-8 correctness, use CreateDirectoryW.
        Here we do UTF-8 -> wide and call CreateDirectoryW. */
     wchar_t *w = NULL;
-    if (!Port_Utf8ToWide(path, &w))
+    if (!Stars_Utf8ToWide(path, &w))
         return false;
     BOOL  ok = CreateDirectoryW(w, NULL);
     DWORD err = GetLastError();
@@ -323,17 +365,17 @@ bool Stars_EnsureDirRecursive(const char *path) {
     memcpy(tmp, path, n + 1);
 
     /* Trim trailing separators */
-    while (n > 1 && Port_IsSep(tmp[n - 1])) {
+    while (n > 1 && Stars_IsSep(tmp[n - 1])) {
         tmp[n - 1] = '\0';
         n--;
     }
 
     /* Create progressively */
     for (size_t i = 1; tmp[i] != '\0'; i++) {
-        if (Port_IsSep(tmp[i])) {
+        if (Stars_IsSep(tmp[i])) {
             char saved = tmp[i];
             tmp[i] = '\0';
-            if (*tmp && !Port_MkdirOne(tmp)) {
+            if (*tmp && !Stars_MkdirOne(tmp)) {
                 tmp[i] = saved;
                 free(tmp);
                 return false;
@@ -343,7 +385,7 @@ bool Stars_EnsureDirRecursive(const char *path) {
     }
 
     /* Create full path */
-    if (*tmp && !Port_MkdirOne(tmp)) {
+    if (*tmp && !Stars_MkdirOne(tmp)) {
         free(tmp);
         return false;
     }
@@ -364,7 +406,7 @@ bool Stars_PathSplitExt(const char *path, char *base_out, size_t base_sz, char *
     for (const char *p = path; *p; p++) {
         if (*p == '.')
             last_dot = p;
-        if (Port_IsSep(*p))
+        if (Stars_IsSep(*p))
             last_sep = p;
     }
 
@@ -398,7 +440,7 @@ const char *Stars_PathBasename(const char *path) {
 
     const char *last_sep = NULL;
     for (const char *p = path; *p; p++) {
-        if (Port_IsSep(*p))
+        if (Stars_IsSep(*p))
             last_sep = p;
     }
 
@@ -411,7 +453,7 @@ bool Stars_PathDirname(const char *path, char *out, size_t out_sz) {
 
     const char *last_sep = NULL;
     for (const char *p = path; *p; p++) {
-        if (Port_IsSep(*p))
+        if (Stars_IsSep(*p))
             last_sep = p;
     }
 
@@ -452,7 +494,7 @@ bool Stars_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len) {
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Use _wfopen for UTF-8 path correctness */
     wchar_t *wpath = NULL;
-    if (!Port_Utf8ToWide(path, &wpath))
+    if (!Stars_Utf8ToWide(path, &wpath))
         return false;
 
     FILE *f = _wfopen(wpath, L"rb");
@@ -502,7 +544,7 @@ bool Stars_ReadFile(const char *path, uint8_t **out_buf, size_t *out_len) {
     return true;
 }
 
-static bool Port_WriteAll(FILE *f, const void *buf, size_t len) {
+static bool Stars_WriteAll(FILE *f, const void *buf, size_t len) {
     const uint8_t *p = (const uint8_t *)buf;
     while (len) {
         size_t n = fwrite(p, 1, len, f);
@@ -515,7 +557,7 @@ static bool Port_WriteAll(FILE *f, const void *buf, size_t len) {
 }
 
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
-static bool Port_TempPathForTarget(const char *target_u8, char *out, size_t out_sz) {
+static bool Stars_TempPathForTarget(const char *target_u8, char *out, size_t out_sz) {
     /* Create sibling temp file: <target>.tmp */
     size_t      tl = strlen(target_u8);
     const char *suffix = ".tmp";
@@ -528,7 +570,7 @@ static bool Port_TempPathForTarget(const char *target_u8, char *out, size_t out_
     return true;
 }
 #else
-static bool Port_MkTempSibling(const char *target, char *out, size_t out_sz) {
+static bool Stars_MkTempSibling(const char *target, char *out, size_t out_sz) {
     /* Sibling temp: <target>.tmpXXXXXX */
     const char *suffix = ".tmpXXXXXX";
     size_t      tl = strlen(target);
@@ -550,14 +592,14 @@ bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
     /* Write to sibling <path>.tmp then MoveFileExW(tmp, path, REPLACE_EXISTING). */
     char tmp_u8[4096];
-    if (!Port_TempPathForTarget(path, tmp_u8, sizeof(tmp_u8)))
+    if (!Stars_TempPathForTarget(path, tmp_u8, sizeof(tmp_u8)))
         return false;
 
     wchar_t *wtmp = NULL;
     wchar_t *wpath = NULL;
-    if (!Port_Utf8ToWide(tmp_u8, &wtmp))
+    if (!Stars_Utf8ToWide(tmp_u8, &wtmp))
         return false;
-    if (!Port_Utf8ToWide(path, &wpath)) {
+    if (!Stars_Utf8ToWide(path, &wpath)) {
         free(wtmp);
         return false;
     }
@@ -569,7 +611,7 @@ bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
         return false;
     }
 
-    bool ok = Port_WriteAll(f, buf, len);
+    bool ok = Stars_WriteAll(f, buf, len);
     ok = ok && (fflush(f) == 0);
     ok = ok && (fclose(f) == 0);
 
@@ -595,7 +637,7 @@ bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
 #else
     /* POSIX: mkstemp sibling then rename over target */
     char tmp[4096];
-    if (!Port_MkTempSibling(path, tmp, sizeof(tmp)))
+    if (!Stars_MkTempSibling(path, tmp, sizeof(tmp)))
         return false;
 
     int fd = mkstemp(tmp);
@@ -609,7 +651,7 @@ bool Stars_WriteFileAtomic(const char *path, const void *buf, size_t len) {
         return false;
     }
 
-    bool ok = Port_WriteAll(f, buf, len);
+    bool ok = Stars_WriteAll(f, buf, len);
     ok = ok && (fflush(f) == 0);
     ok = ok && (fclose(f) == 0); /* closes fd too */
 
@@ -673,7 +715,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
         if (!a || !*a)
             continue;
 
-        if (Port_StrEq(a, "--")) {
+        if (Stars_StrEq(a, "--")) {
             /* rest are positional */
             i++;
             if (i < argc && !out_cli->startup_file)
@@ -682,7 +724,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
             break;
         }
 
-        if (!Port_IsOptPrefix(a[0]) || a[1] == '\0') {
+        if (!Stars_IsOptPrefix(a[0]) || a[1] == '\0') {
             if (!out_cli->startup_file)
                 out_cli->startup_file = a;
             continue;
@@ -752,7 +794,7 @@ bool Stars_ParseCommandLine(int argc, const char *const *argv, StarsCli *out_cli
                 const char *modes = NULL;
                 if (*p) {
                     modes = p; /* attached */
-                } else if (i + 1 < argc && argv[i + 1] && !Port_IsOptPrefix(argv[i + 1][0])) {
+                } else if (i + 1 < argc && argv[i + 1] && !Stars_IsOptPrefix(argv[i + 1][0])) {
                     modes = argv[++i]; /* separate token */
                 }
 

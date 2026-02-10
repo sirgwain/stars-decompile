@@ -32,7 +32,7 @@ enum {
 
 /* functions */
 void    FileError(StringId ids);                                           /* MEMORY_IO:0x4a10 */
-void    StreamOpen(const char *szFile, int16_t mdOpen);                    /* MEMORY_IO:0x52ae */
+void    StreamOpen(const char *szFile, MdOpenFlags mdOpen);                /* MEMORY_IO:0x52ae */
 void    UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan); /* MEMORY_IO:0x40ce */
 bool    FBadFileError(StringId ids);                                       /* MEMORY_IO:0x524e */
 void    ReadRtPlr(PLAYER *pplr, uint8_t *pbIn);                            /* MEMORY_IO:0x05e2 */
@@ -41,7 +41,7 @@ bool    FReadFleet(FLEET *lpfl);                                           /* ME
 bool    FLoadGame(const char *pszFileName, char *pszExt);                  /* MEMORY_IO:0x0810 */
 bool    FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);       /* MEMORY_IO:0x0006 */
 void    ReadRt(void);                                                      /* MEMORY_IO:0x5168 */
-bool    FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md);             /* MEMORY_IO:0x4ac2 */
+bool    FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md);             /* MEMORY_IO:0x4ac2 */
 int16_t AskSaveDialog(void); /* PASCAL */                                  /* MEMORY_IO:0x432a */
 void    StreamClose(void);                                                 /* MEMORY_IO:0x53cc */
 

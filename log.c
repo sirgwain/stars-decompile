@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "types.h"
 
+#include "debuglog.h"
 #include "file.h"
 #include "log.h"
 #include "memory.h"
@@ -68,9 +69,7 @@ int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
     iCur = 0;
 
     /* Check if zip production queue needs logging */
-    if (iPlayer == idPlayer &&
-        rgplr[iPlayer].fAi == 0 &&
-        hdrPrev.rt != rtLogPlayerZpq1) {
+    if (iPlayer == idPlayer && rgplr[iPlayer].fAi == 0 && hdrPrev.rt != rtLogPlayerZpq1) {
         uint16_t cbZpq = (uint16_t)(2 * (uint8_t)vrgZipProd[0].cpq + 2);
 
         if (memcmp(&rgplr[iPlayer].zpq1, &vrgZipProd[0].zpq1, cbZpq) != 0) {
@@ -78,13 +77,20 @@ int16_t FWriteLogFile(char *pszFileBase, int16_t iPlayer) {
         }
     }
 
-    strcpy(szBase, pszFileBase);
+    DBG_LOGI("FWriteLogFile: pszFileBase='%s' iPlayer='%d'", pszFileBase, iPlayer);
+
+    if (pszFileBase != szBase) {
+        /* copy + always terminate */
+        size_t n = sizeof(szBase);
+        strncpy(szBase, pszFileBase, n);
+        szBase[n - 1] = '\0';
+    }
+
     sVar = FCreateFile(dtLog, iPlayer, NULL);
     penvMemSav = penvMem;
 
     if (sVar == 0) {
-        char *sz = PszFormatIds(idsUnableCreateLogFile, NULL);
-        AlertSz(sz, 0x10);
+        Error(idsUnableCreateLogFile);
         return 0;
     }
 
@@ -356,8 +362,8 @@ int16_t FWriteTutorialMFile(int16_t iTurn) {
     int16_t  cSkip;
     int16_t  sVar;
 #ifdef _WIN32
-    HRSRC    hrsrc;
-    HGLOBAL  hres;
+    HRSRC   hrsrc;
+    HGLOBAL hres;
 #endif
 
     penvMemSav = penvMem;
@@ -542,11 +548,11 @@ void LogChangeThing(THING *lpth, THING *pthNew) {
 }
 
 void LogChangePlanet(PLANET *ppl, PLANET *pplNew) {
-    int16_t  i;
-    int16_t  fChg;
-    HDR      hdr;
-    LOGXFER  lxNew;
-    int16_t  sVar;
+    int16_t i;
+    int16_t fChg;
+    HDR     hdr;
+    LOGXFER lxNew;
+    int16_t sVar;
 
     fChg = 0;
     if (gd.fGeneratingTurn != 0)
@@ -593,30 +599,21 @@ CheckProdQ:
     if (pplNew->lpplprod == NULL && ppl->lpplprod != NULL) {
         /* Queue cleared */
         WriteMemRt(rtLogPlanetProdQ, 2, &lxNew);
-    } else if (pplNew->lpplprod != NULL &&
-               (ppl->lpplprod == NULL ||
-                ppl->lpplprod->iprodMac != pplNew->lpplprod->iprodMac ||
-                memcmp(ppl->lpplprod->rgprod, pplNew->lpplprod->rgprod,
-                       (size_t)ppl->lpplprod->iprodMac * sizeof(PROD)) != 0)) {
+    } else if (pplNew->lpplprod != NULL && (ppl->lpplprod == NULL || ppl->lpplprod->iprodMac != pplNew->lpplprod->iprodMac ||
+                                            memcmp(ppl->lpplprod->rgprod, pplNew->lpplprod->rgprod, (size_t)ppl->lpplprod->iprodMac * sizeof(PROD)) != 0)) {
         /* Queue changed */
         sVar = FGetPrevLogRt(&hdr, (uint8_t *)rgbCur);
-        if (sVar != 0 && hdr.rt == rtLogPlanetProdQ &&
-            *(int16_t *)rgbCur == ppl->id) {
+        if (sVar != 0 && hdr.rt == rtLogPlanetProdQ && *(int16_t *)rgbCur == ppl->id) {
             imemLogCur = imemLogPrev;
         }
 
         *(int16_t *)rgbCur = ppl->id;
-        memmove(rgbCur + 2, pplNew->lpplprod->rgprod,
-                (size_t)pplNew->lpplprod->iprodMac * sizeof(PROD));
-        WriteMemRt(rtLogPlanetProdQ,
-                   (int16_t)((uint16_t)pplNew->lpplprod->iprodMac * sizeof(PROD) + 2),
-                   rgbCur);
+        memmove(rgbCur + 2, pplNew->lpplprod->rgprod, (size_t)pplNew->lpplprod->iprodMac * sizeof(PROD));
+        WriteMemRt(rtLogPlanetProdQ, (int16_t)((uint16_t)pplNew->lpplprod->iprodMac * sizeof(PROD) + 2), rgbCur);
     }
 
     /* Check starbase/routing/infrastructure changes */
-    if (ppl->fStarbase != pplNew->fStarbase ||
-        (ppl->idFling != pplNew->idFling) ||
-        (ppl->iWarpFling != pplNew->iWarpFling) ||
+    if (ppl->fStarbase != pplNew->fStarbase || (ppl->idFling != pplNew->idFling) || (ppl->iWarpFling != pplNew->iWarpFling) ||
         (ppl->idRoute != pplNew->idRoute)) {
         uint32_t packed = 0;
 
@@ -709,8 +706,7 @@ void LogChangeRelations(void) {
         imemLogCur = imemLogPrev;
     }
 
-    WriteMemRt(rtLogRelations, (int16_t)game.cPlayer,
-               &rgplr[idPlayer].rgmdRelation[0]);
+    WriteMemRt(rtLogRelations, (int16_t)game.cPlayer, &rgplr[idPlayer].rgmdRelation[0]);
 
     if (gd.fTutorial && idPlayer == 0) {
         tutor.fChange = 1;
@@ -1320,8 +1316,7 @@ int16_t FWriteHistFile(int16_t iPlayer) {
     penvMemSav = penvMem;
 
     if (sVar == 0) {
-        char *sz = PszFormatIds(idsUnableCreateHistoryFile, NULL);
-        AlertSz(sz, 0x10);
+        Error(idsUnableCreateHistoryFile);
         return 0;
     }
 
@@ -1497,16 +1492,16 @@ int16_t FRunLogFile(void) {
 }
 
 void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
-    int32_t  rgQuan[5];
-    RTXFER  *prt;
-    int16_t  iOff;
-    int16_t  rt;
-    int16_t  i;
-    char     rgbuf[28];
-    int16_t  grbit;
-    int16_t  grFlag;
-    int32_t  iBiggest;
-    int16_t  cb;
+    int32_t rgQuan[5];
+    RTXFER *prt;
+    int16_t iOff;
+    int16_t rt;
+    int16_t i;
+    char    rgbuf[28];
+    int16_t grbit;
+    int16_t grFlag;
+    int32_t iBiggest;
+    int16_t cb;
 
     iBiggest = 0;
     grFlag = 1;
@@ -1520,11 +1515,7 @@ void LogMakeValidXfer(LOGXFER *plx1, LOGXFER *plx2) {
         prt = NULL;
     }
 
-    if (prt != NULL &&
-        (prt->grobj1 == (plx1->grobj & 0x0F)) &&
-        (prt->grobj2 == (plx2->grobj & 0x0F)) &&
-        prt->id1 == plx1->id &&
-        prt->id2 == plx2->id) {
+    if (prt != NULL && (prt->grobj1 == (plx1->grobj & 0x0F)) && (prt->grobj2 == (plx2->grobj & 0x0F)) && prt->id1 == plx1->id && prt->id2 == plx2->id) {
 
         uint8_t grbitPrev = prt->grbitItems;
         iOff = 0;
@@ -1688,9 +1679,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
     d = (int16_t)(pflNew->cord - pfl->cord);
 
     for (iordOld = 0; iordOld < pfl->cord && iordOld < pflNew->cord; iordOld++) {
-        if (memcmp(&pfl->lpplord->rgord[iordOld],
-                   &pflNew->lpplord->rgord[iordOld],
-                   sizeof(ORDER)) != 0)
+        if (memcmp(&pfl->lpplord->rgord[iordOld], &pflNew->lpplord->rgord[iordOld], sizeof(ORDER)) != 0)
             break;
     }
     iordNew = iordOld;
@@ -1708,9 +1697,7 @@ void LogChangeFleet(FLEET *pfl, FLEET *pflNew) {
             /* Order updated */
             cbWp = (int16_t)sizeof(RTWAYPT);
 
-            if (FGetPrevLogRt(&hdr, (uint8_t *)rgbCur) &&
-                hdr.rt == rtLogFleetOrderUpdate &&
-                *(int16_t *)rgbCur == pflNew->id &&
+            if (FGetPrevLogRt(&hdr, (uint8_t *)rgbCur) && hdr.rt == rtLogFleetOrderUpdate && *(int16_t *)rgbCur == pflNew->id &&
                 *(int16_t *)(rgbCur + 2) == iordNew) {
                 imemLogCur = imemLogPrev;
             }
@@ -1786,8 +1773,7 @@ void LogChangeShDef(SHDEF *lpshdefNew) {
     uint16_t pack;
 
     if (gd.fGeneratingTurn == 0) {
-        pack = ((uint16_t)lpshdefNew->ishdef << 8) |
-               ((uint16_t)(idPlayer & 0x0F) << 4);
+        pack = ((uint16_t)lpshdefNew->ishdef << 8) | ((uint16_t)(idPlayer & 0x0F) << 4);
 
         if (lpshdefNew->fFree == 0) {
             /* New/update: set low nibble to 1 */

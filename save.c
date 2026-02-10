@@ -625,7 +625,7 @@ int16_t FMarkFile(DtFileType dt, int16_t iPlayer, int16_t mdMark, int16_t f) {
     }
 
     fFileErrSilent = 1;
-    StreamOpen((char *)szWork, 0x12);
+    StreamOpen((char *)szWork, mdReadWrite);
     fFileErrSilent = fSilentSav;
 
     ReadRt();

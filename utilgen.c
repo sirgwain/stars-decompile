@@ -4,6 +4,8 @@
 #include "types.h"
 
 #include "debuglog.h"
+#include "file.h"
+#include "port.h"
 #include "strings.h"
 #include "util.h"
 #include "utilgen.h"
@@ -449,19 +451,59 @@ int32_t LSaltFromSz(char *psz) {
 }
 
 void CopyStarsFile(char *szSrc, char *szDst) {
-    char     rgb[2048];
-    int16_t  fFileErrSav;
-    OFSTRUCT of;
-    MemJump  env;
-    ;
-    int16_t hfDst;
-    int32_t cb;
-    int16_t (*penvSav)[9];
+    char      rgb[2048];
+    int16_t   fFileErrSav;
+    OFSTRUCT  of;
+    MemJump   env;
+    StarsFile hfDst;
+    int32_t   cb;
+    MemJump  *penvSav;
+    int       fDstOpen;
+    size_t    cbWritten;
 
     /* debug symbols */
     /* label LStreamError @ MEMORY_UTILGEN:0x2130 */
 
-    /* TODO: implement */
+    fFileErrSav = fFileErrSilent;
+    penvSav = penvMem;
+    fDstOpen = 0;
+    fFileErrSilent = 1;
+    penvMem = &env;
+
+    if (setjmp(env.env) == 0) {
+        StreamOpen(szSrc, 0x20);
+        if (!Stars_OpenFile(&hfDst, szDst, mdCreate)) {
+            StreamClose();
+            penvMem = penvSav;
+            fFileErrSilent = fFileErrSav;
+            return;
+        }
+        fDstOpen = 1;
+
+        Stars_Seek(&hf, 0, SEEK_END);
+        cb = (int32_t)ftell(hf.fp);
+        Stars_Seek(&hf, 0, SEEK_SET);
+
+        while (cb >= 0x801) {
+            RgFromStream(rgb, 0x800);
+            cbWritten = Stars_Write(&hfDst, rgb, 0x800);
+            if (cbWritten != 0x800)
+                goto LStreamError;
+            cb -= 0x800;
+        }
+        if (cb != 0) {
+            RgFromStream(rgb, (uint16_t)cb);
+            Stars_Write(&hfDst, rgb, (uint16_t)cb);
+        }
+    }
+
+LStreamError:
+    StreamClose();
+    if (fDstOpen) {
+        Stars_CloseFile(&hfDst);
+    }
+    penvMem = penvSav;
+    fFileErrSilent = fFileErrSav;
 }
 
 uint32_t LGetNextFileXor(void) {
@@ -828,9 +870,7 @@ void UpdateProgressGauge(int16_t pctX10) {
 #endif
 }
 
-#ifdef _WIN32
-
-int AlertSz(const char *sz, UINT mbType) {
+int AlertSz(const char *sz, unsigned int mbType) {
     int  idResult;
     char szT[256];
 
@@ -840,8 +880,12 @@ int AlertSz(const char *sz, UINT mbType) {
      * else log via OutputSz and return IDYES
      */
     if ((ini.fValidate == 0) && ((ini.fLogging == 0) || (ini.fGen == 0))) {
+#ifdef WIN32
         HWND hwnd = GetFocus();
         idResult = MessageBoxA(hwnd, sz, "Stars!", mbType);
+#else
+        DBG_LOGE(sz);
+#endif
     } else {
         /* Win16 wsprintf -> safe Win32 replacement */
         snprintf(szT, sizeof(szT), "Error: %s", sz);
@@ -855,6 +899,8 @@ int AlertSz(const char *sz, UINT mbType) {
 
     return idResult;
 }
+
+#ifdef _WIN32
 
 INT_PTR CALLBACK RandomSeedDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     char     szValue[33];
@@ -1277,7 +1323,7 @@ void DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText) {
     /* TODO: implement */
 }
 
-void _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase) {
+void Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase) {
     int16_t dy;
     int16_t dx;
     HBRUSH  hbrSav;
@@ -1685,13 +1731,6 @@ void DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly) {
     /* label LRelease @ MEMORY_UTILGEN:0x6841 */
 
     /* TODO: implement */
-}
-#else
-
-// special case because this is called everywhere, do nothing outside of win32
-int16_t AlertSz(const char *sz, uint16_t mbType) {
-    DBG_LOGE(sz);
-    return 0;
 }
 
 #endif

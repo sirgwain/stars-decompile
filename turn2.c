@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "msg.h"
 #include "planet.h"
+#include "port.h"
 #include "produce.h"
 #include "race.h"
 #include "turn2.h"
@@ -43,9 +44,53 @@ void Produce(void) {
 }
 
 void CreateBackupDir(void) {
-    char *pchT;
+    char  *pchT;
+    char  *p1;
+    char  *p2;
+    size_t cap;
 
-    /* TODO: implement */
+    /* szBackup = szBase (but safe even if something weird happens) */
+    snprintf(szBackup, sizeof(szBackup), "%s", szBase);
+
+    /* Find last path separator (accept either '\\' or '/' in szBase) */
+    p1 = strrchr(szBackup, '\\');
+    p2 = strrchr(szBackup, '/');
+    if (p2 && (!p1 || p2 > p1))
+        p1 = p2;
+
+    /* Point at filename portion; then truncate so szBackup is directory prefix */
+    pchT = (p1 == NULL) ? szBackup : (p1 + 1);
+    *pchT = '\0';
+
+    /* Build backup dir name into remaining space */
+    cap = sizeof(szBackup) - (size_t)(pchT - szBackup);
+    if (cap == 0)
+        return;
+
+    if (vcBackupDirs < 2) {
+        snprintf(pchT, cap, "backup");
+    } else if (vcBackupDirs < 100) {
+        unsigned v = (unsigned)((uint32_t)game.turn % (uint32_t)vcBackupDirs);
+        snprintf(pchT, cap, "backup%u", v);
+    } else {
+        unsigned v = (unsigned)((uint32_t)game.turn % (uint32_t)vcBackupDirs);
+        snprintf(pchT, cap, "backup.%03u", v);
+    }
+
+    /* Create the directory (and any parents) */
+    (void)Stars_EnsureDirRecursive(szBackup);
+
+    /* Append "<sep>*" like the original code path did for later globbing */
+    {
+        size_t used = strlen(szBackup);
+        if (used + 2 < sizeof(szBackup)) {
+            if (used > 0 && szBackup[used - 1] != '\\' && szBackup[used - 1] != '/') {
+                szBackup[used++] = Stars_PathSepChar();
+                szBackup[used] = '\0';
+            }
+            strncat(szBackup, "*", sizeof(szBackup) - strlen(szBackup) - 1);
+        }
+    }
 }
 
 void ThingDecay(void) {
@@ -306,15 +351,12 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
         case iobjTerraform:
         case iobjTerraform2:
             cMax = IpctCanTerraformLppl(lppl);
-            if (cMax > 0 && lpprod->iItem == iobjTerraform &&
-                ChgPopFromPlanet(lppl, 0) >= 0 &&
-                PctPlanetDesirability(lppl, lppl->iPlayer) > 0) {
+            if (cMax > 0 && lpprod->iItem == iobjTerraform && ChgPopFromPlanet(lppl, 0) >= 0 && PctPlanetDesirability(lppl, lppl->iPlayer) > 0) {
                 cMax = 0;
             }
             break;
         case iobjPacket:
-            if (IWarpMAFromLppl(lppl, NULL) == 0 ||
-                ((uint16_t)(lppl->lStarbase >> 16) & 0x3ff) == 0) {
+            if (IWarpMAFromLppl(lppl, NULL) == 0 || ((uint16_t)(lppl->lStarbase >> 16) & 0x3ff) == 0) {
                 cMax = 0;
             }
             break;
@@ -395,7 +437,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
                 goto LDone;
         }
 
-    /* LAlchemize */
+        /* LAlchemize */
         lAlchCost = (GetRaceGrbit(&rgplr[lppl->iPlayer], ibitRaceMineralAlchemy) != 0) ? 25 : 100;
 
         cCanBuild = rgRes[3] / lAlchCost;
@@ -430,8 +472,7 @@ int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *
     }
 
 LDone:
-    if (cBuilt > 0 && lpprod->grobj == grobjPlanet &&
-        (lpprod->iItem == mdIdleAlchemy || lpprod->iItem == iobjAlchemy)) {
+    if (cBuilt > 0 && lpprod->grobj == grobjPlanet && (lpprod->iItem == mdIdleAlchemy || lpprod->iItem == iobjAlchemy)) {
         cAlchemy += cBuilt;
         for (i = 0; i < 3; i++) {
             rgRes[i] += (int32_t)cBuilt;
@@ -439,8 +480,7 @@ LDone:
     }
 
     if (cAlchemy != 0 && fCalcOnly == 0 && gd.fGeneratingTurn) {
-        FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach,
-                     lppl->id, lppl->id, cAlchemy);
+        FSendPlrMsg2(lppl->iPlayer, idmScientistsHaveTransmutedCommonMaterialsKtEach, lppl->id, lppl->id, cAlchemy);
     }
 
     if (pmdStatus != NULL) {
@@ -448,8 +488,7 @@ LDone:
             *pmdStatus = (cBuilt < 1) ? mdProdStatNoneAuto : mdProdStatSomeAuto;
         } else if (fAutoBuild == 0 || prod.cItem != 0) {
             if (cBuilt == 0) {
-                *pmdStatus = (iItemOrig == lpprod->iItem) ?
-                    mdProdStatBlockedSame : mdProdStatBlockedDiff;
+                *pmdStatus = (iItemOrig == lpprod->iItem) ? mdProdStatBlockedSame : mdProdStatBlockedDiff;
             } else if (prod.cItem == 0) {
                 *pmdStatus = mdProdStatComplete;
             } else {
@@ -464,8 +503,7 @@ LDone:
         lpprod->dwRaw_0000 = prod.dwRaw_0000;
     }
 
-    if (fAutoBuild != 0 && pprodPartial != NULL &&
-        pprodPartial->cItem == 0 && lpprod->iItem != iobjMine) {
+    if (fAutoBuild != 0 && pprodPartial != NULL && pprodPartial->cItem == 0 && lpprod->iItem != iobjMine) {
         pprodPartial->dwRaw_0000 = prod.dwRaw_0000;
         pprodPartial->cItem = 1;
     }
@@ -481,7 +519,7 @@ void AutoTerraform(void) {
     int16_t rgMin[3];
     int16_t rgCost[3];
     PLANET *lpplMac;
-    bool fAnyTerra;
+    bool    fAnyTerra;
     int16_t iEnv;
     int16_t pctDesire;
 
@@ -505,9 +543,7 @@ void AutoTerraform(void) {
         }
 
         iEnv = Random(3);
-        if (rgplr[lppl->iPlayer].rgEnvVar[iEnv] != -1 &&
-            rgplr[lppl->iPlayer].rgEnvVar[iEnv] != (int8_t)lppl->rgEnvVarOrig[iEnv] &&
-            Random(10) == 0 &&
+        if (rgplr[lppl->iPlayer].rgEnvVar[iEnv] != -1 && rgplr[lppl->iPlayer].rgEnvVar[iEnv] != (int8_t)lppl->rgEnvVarOrig[iEnv] && Random(10) == 0 &&
             (lppl->rgwtMin[3] > 999 || Random(1000) < (int16_t)lppl->rgwtMin[3])) {
 
             if (rgplr[lppl->iPlayer].rgEnvVar[iEnv] < (int8_t)lppl->rgEnvVarOrig[iEnv]) {

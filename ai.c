@@ -1,7 +1,16 @@
 
+#include "globals.h"
 #include "types.h"
 
 #include "ai.h"
+#include "ai2.h"
+#include "ai3.h"
+#include "ai4.h"
+#include "aiutil.h"
+#include "file.h"
+#include "log.h"
+#include "memory.h"
+#include "util.h"
 
 /* globals */
 uint8_t vrgAiRobotoidResOrder[36] = {0x42, 0x63, 0x23, 0x64, 0x02, 0x83, 0x46, 0x25, 0x66, 0xa4, 0x85, 0x06, 0x27, 0x6a, 0x06, 0x87, 0x2a, 0x49,
@@ -35,14 +44,97 @@ uint8_t  vrgTDIshAip[19] = {0x00, 0x02, 0x06, 0x0d, 0x14, 0x1b, 0x22, 0x29, 0x30
 
 /* functions */
 void DoAiTurn(int16_t iPlayer, uint16_t wMdPlr) {
-    char    szExt[4];
-    PROD    rgprod[64];
-    int16_t idSav;
+    char       szExt[4];
+    PROD       rgprod[64];
+    int16_t    idSav;
+    uint8_t   *lpbSavPlanet;
+    PLANET   **lppplSavAi;
+    int16_t    fLoaded;
 
     /* debug symbols */
     /* label Cleanup @ MEMORY_AI:0x0239 */
 
-    /* TODO: implement */
+    idSav = idPlayer;
+    fAi = 1;
+    snprintf(szExt, sizeof(szExt), MPCTD, iPlayer + 1);
+    DestroyCurGame();
+    fLoaded = FLoadGame(szBase, szExt);
+    lpbSavPlanet = vlpbAiPlanet;
+    lppplSavAi = vrglpplAi;
+
+    if (fLoaded) {
+        if (!rgplr[idPlayer].fDead) {
+            vlpbAiPlanet = LpAlloc(game.cPlanMax << 4, htMisc);
+            vrglpplAi = LpAlloc(game.cPlanMax << 2, htMisc);
+
+            if (vlpbAiData == NULL) {
+                vlpbAiData = LpAlloc(0x2000, htMisc);
+                if (vlpbAiData != NULL) {
+                    vlpbAiData[0] = 2;
+                    vlpbAiData[1] = 0;
+                }
+            }
+
+            if (vlpbAiPlanet != NULL && vlpbAiData != NULL && vrglpplAi != NULL) {
+                memset(vlpbAiPlanet, 0, game.cPlanMax << 4);
+                ComputeShdefPowers();
+                MarkPlanetsUnderAttack();
+                IncreaseAIMinefieldSizes();
+                InitRandomPlanetList();
+
+                if (wMdPlr != 0xFFFF) {
+                    rgplr[iPlayer].wMdPlr = wMdPlr;
+                }
+
+                switch (rgplr[iPlayer].idAi) {
+                case 0:
+                    DoRobotoidAiTurn(rgprod);
+                    break;
+                case 1:
+                    DoTurinDroneAiTurn(rgprod);
+                    break;
+                case 2:
+                    DoAutomitronAiTurn(rgprod);
+                    break;
+                case 3:
+                    DoRototillAiTurn(rgprod);
+                    break;
+                case 4:
+                    DoCyberAiTurn(rgprod);
+                    break;
+                case 5:
+                    DoMacintiAiTurn(rgprod);
+                    break;
+                default:
+                    break;
+                case 7:
+                    DoMaidAiTurn(rgprod);
+                }
+            }
+        }
+
+        FWriteLogFile(szBase, iPlayer);
+        FWriteHistFile(iPlayer);
+
+        if (vrglpplAi != NULL) {
+            FreeLp(vrglpplAi, htMisc);
+        }
+        lppplSavAi = NULL;
+
+        if (vlpbAiData != NULL) {
+            vrglpplAi = lppplSavAi;
+            FreeLp(vlpbAiPlanet, htMisc);
+            FreeLp(vlpbAiData, htMisc);
+            vlpbAiData = NULL;
+            lpbSavPlanet = NULL;
+            lppplSavAi = vrglpplAi;
+        }
+    }
+
+    fAi = 0;
+    vrglpplAi = lppplSavAi;
+    vlpbAiPlanet = lpbSavPlanet;
+    idPlayer = idSav;
 }
 
 int16_t FEnumCalcArmadaHumanDest(PLANET *lpplSrc, PLANET *lpplTest) {

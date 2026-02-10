@@ -931,8 +931,7 @@ void ReadIniSettings(void) {
         uint16_t uRes = (uint16_t)GetPrivateProfileInt(szSection, szEntry, 0, szIniFile);
         if (uRes == 0) {
             if ((vcScreenColors < 5) || (gd.mdScreenSize == 0)) {
-                char *sz = PszFormatIds(idsNoteStarsPrefersScreenResolutionLeast800x600, (short *)0);
-                AlertSz(sz, 0x10);
+                Error(idsNoteStarsPrefersScreenResolutionLeast800x600);
             }
         }
     }

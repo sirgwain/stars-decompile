@@ -56,6 +56,7 @@ void     OutputFileString(char *szFile, char *sz);
 char    *PszGetCompressedPlanet(int16_t id);
 int16_t  CommaFormatLong(char *psz, int32_t l);
 void     UpdateProgressGauge(int16_t pctX10);
+int      AlertSz(const char *sz, unsigned int mbType);
 
 #ifdef _WIN32
 
@@ -64,7 +65,6 @@ INT_PTR CALLBACK PasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK ProgressGaugeDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK NewPasswordDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-int      AlertSz(const char *sz, UINT mbType);
 HGLOBAL  HdibLoadBigResource(int idb);
 HBRUSH   HbrGet(COLORREF cr);
 void     CtrTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen);
@@ -80,7 +80,7 @@ int16_t  FStringFitsScreen(char *lpsz, int16_t dxMax);
 uint32_t DibNumColors(const void *pv);
 void     RightTextOut(HDC hdc, int16_t x, int16_t y, char *psz, int16_t cLen, int16_t dxErase);
 void     DrawBtn(HDC hdc, RECT *prc, int16_t bt, int16_t fDown, char *szText);
-void     _Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase);
+void     Draw3dFrame(HDC hdc, RECT *prc, int16_t fErase);
 HPALETTE HpalFromDib(HGLOBAL hdib);
 int16_t  DibBlt(HDC hdc, int32_t x0, int32_t y0, int32_t dx, int32_t dy, HGLOBAL hdib, int32_t x1, int32_t y1, int32_t dxSrc, int32_t dySrc, int32_t rop);
 int16_t  FGetMouseMove(POINT *ppt);
@@ -94,9 +94,5 @@ int32_t LDrawGauge(HDC hdc, RECT *prc, int16_t cSegs, int32_t *rgSize, HBRUSH *r
 void    DiaganolTextOut(HDC hdc, RECT *prc, char *psz, int16_t cLen);
 void    DrawProgressGauge(HDC hdcOrig, int16_t fFull, int16_t iNumOnly);
 
-#else
-// special case because this is called everywhere, do nothing outside of win32
-// TODO: make this multiplatform since it's called all over
-int16_t AlertSz(const char *sz, uint16_t mbType);
 #endif /* _WIN32 */
 #endif /* UTILGEN_H_ */

@@ -4,12 +4,12 @@
 
 #include "create.h"
 #include "file.h"
-#include "port.h"
 #include "mdi.h"
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
 #include "planet.h"
+#include "port.h"
 #include "race.h"
 #include "resource.h"
 #include "save.h"

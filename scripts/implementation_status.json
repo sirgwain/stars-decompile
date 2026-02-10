@@ -1,15 +1,15 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 315,
-    "stub": 528,
-    "missing": 3,
-    "percent_implemented": 37.2
+    "implemented": 319,
+    "stub": 525,
+    "missing": 2,
+    "percent_implemented": 37.7
   },
   "by_file": {
     "ai.c": {
-      "implemented": 0,
-      "stub": 12,
+      "implemented": 1,
+      "stub": 11,
       "missing": 0
     },
     "ai2.c": {
@@ -63,8 +63,8 @@
       "missing": 0
     },
     "mdi.c": {
-      "implemented": 19,
-      "stub": 10,
+      "implemented": 20,
+      "stub": 9,
       "missing": 0
     },
     "memory.c": {
@@ -163,8 +163,8 @@
       "missing": 0
     },
     "turn2.c": {
-      "implemented": 3,
-      "stub": 25,
+      "implemented": 4,
+      "stub": 24,
       "missing": 0
     },
     "turn3.c": {
@@ -188,9 +188,9 @@
       "missing": 0
     },
     "utilgen.c": {
-      "implemented": 51,
+      "implemented": 52,
       "stub": 21,
-      "missing": 1
+      "missing": 0
     },
     "vcr.c": {
       "implemented": 6,
@@ -220,7 +220,7 @@
       "proto": "void AddBackTrailingSpaces(char * *, char *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 727,
+      "line": 769,
       "decompiled_line_count": 13,
       "win32": false
     },
@@ -260,9 +260,9 @@
       "proto": "int16_t AlertSz(char *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 833,
+      "line": 873,
       "decompiled_line_count": 28,
-      "win32": true
+      "win32": false
     },
     "AnimateAttack": {
       "addr": "10e8:3ac2",
@@ -310,7 +310,7 @@
       "proto": "void AutoTerraform(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 476,
+      "line": 514,
       "decompiled_line_count": 74,
       "win32": false
     },
@@ -340,7 +340,7 @@
       "proto": "void BoundPoints(RECT *, POINT *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 502,
+      "line": 544,
       "decompiled_line_count": 38,
       "win32": false
     },
@@ -360,7 +360,7 @@
       "proto": "void BreedColonistsInTransit(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 663,
+      "line": 699,
       "decompiled_line_count": 98,
       "win32": false
     },
@@ -370,7 +370,7 @@
       "proto": "void BringUpHostDlg(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3241,
+      "line": 3292,
       "decompiled_line_count": 174,
       "win32": true
     },
@@ -450,8 +450,8 @@
       "proto": "int16_t CBuildProdItem(PLANET *32, PROD *32, PROD *, int32_t *, int16_t, int16_t *, int16_t)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 257,
-      "decompiled_line_count": 381,
+      "line": 302,
+      "decompiled_line_count": 380,
       "win32": false
     },
     "CFactoriesOperating": {
@@ -470,7 +470,7 @@
       "proto": "int16_t CFindTurnsOutstanding(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 709,
+      "line": 760,
       "decompiled_line_count": 85,
       "win32": true
     },
@@ -590,7 +590,7 @@
       "proto": "int16_t CParseNumbers(char *32, int32_t *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 291,
+      "line": 293,
       "decompiled_line_count": 49,
       "win32": false
     },
@@ -650,7 +650,7 @@
       "proto": "int16_t CTurnsOutSafe(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 370,
+      "line": 421,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -690,7 +690,7 @@
       "proto": "void CancelMemRt(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1420,
+      "line": 1415,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -710,7 +710,7 @@
       "proto": "int16_t CchGetString(int16_t, char *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 413,
+      "line": 415,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -730,7 +730,7 @@
       "proto": "char ChFromNybble(int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 83,
+      "line": 85,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -830,7 +830,7 @@
       "proto": "void ChopLastWord(char *, char * *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 740,
+      "line": 782,
       "decompiled_line_count": 19,
       "win32": false
     },
@@ -840,7 +840,7 @@
       "proto": "void ChopTrailingSpaces(char *, char * *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 534,
+      "line": 576,
       "decompiled_line_count": 13,
       "win32": false
     },
@@ -890,7 +890,7 @@
       "proto": "int16_t CommaFormatLong(char *, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 791,
+      "line": 833,
       "decompiled_line_count": 46,
       "win32": false
     },
@@ -900,7 +900,7 @@
       "proto": "void CommandHandler(uint16_t, uint16_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 1118,
+      "line": 1169,
       "decompiled_line_count": 1185,
       "win32": true
     },
@@ -914,13 +914,13 @@
       "decompiled_line_count": 30,
       "win32": false
     },
-    "CopyFile": {
+    "CopyStarsFile": {
       "addr": "1040:1ffa",
       "segment": "MEMORY_UTILGEN",
-      "proto": "void CopyFile(char *, char *)",
-      "status": "missing",
-      "file": null,
-      "line": null,
+      "proto": "void CopyStarsFile(char *, char *)",
+      "status": "implemented",
+      "file": "utilgen.c",
+      "line": 453,
       "decompiled_line_count": 63,
       "win32": false
     },
@@ -948,9 +948,9 @@
       "addr": "10b8:6dca",
       "segment": "MEMORY_TURN2",
       "proto": "void CreateBackupDir(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn2.c",
-      "line": 45,
+      "line": 46,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -960,7 +960,7 @@
       "proto": "void CreateChildWindows(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3531,
+      "line": 3582,
       "decompiled_line_count": 179,
       "win32": true
     },
@@ -990,7 +990,7 @@
       "proto": "void CreateShip(int16_t, FLEET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 661,
+      "line": 697,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -1001,7 +1001,7 @@
       "status": "implemented",
       "file": "create.c",
       "line": 271,
-      "decompiled_line_count": 72,
+      "decompiled_line_count": 73,
       "win32": false
     },
     "CreateTutorWorld": {
@@ -1040,7 +1040,7 @@
       "proto": "void CtrTextOut(uint16_t, int16_t, int16_t, char *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 979,
+      "line": 1025,
       "decompiled_line_count": 18,
       "win32": true
     },
@@ -1140,7 +1140,7 @@
       "proto": "void DiaganolTextOut(uint16_t, RECT *, char *, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1644,
+      "line": 1690,
       "decompiled_line_count": 131,
       "win32": true
     },
@@ -1150,7 +1150,7 @@
       "proto": "int16_t DibBlt(uint16_t, int16_t, int16_t, int16_t, int16_t, uint16_t, int16_t, int16_t, int16_t, int16_t, int32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1343,
+      "line": 1389,
       "decompiled_line_count": 34,
       "win32": true
     },
@@ -1160,7 +1160,7 @@
       "proto": "uint16_t DibFromBitmap(uint16_t, uint32_t, uint16_t, uint16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1037,
+      "line": 1083,
       "decompiled_line_count": 158,
       "win32": true
     },
@@ -1170,7 +1170,7 @@
       "proto": "uint16_t DibNumColors(void *32)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1171,
+      "line": 1217,
       "decompiled_line_count": 34,
       "win32": true
     },
@@ -1180,7 +1180,7 @@
       "proto": "void DirtyGame(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 331,
+      "line": 337,
       "decompiled_line_count": 13,
       "win32": false
     },
@@ -1190,7 +1190,7 @@
       "proto": "void DiscoverNewMinerals(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 626,
+      "line": 662,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -1208,9 +1208,9 @@
       "addr": "1088:0000",
       "segment": "MEMORY_AI",
       "proto": "void DoAiTurn(int16_t, uint16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "ai.c",
-      "line": 37,
+      "line": 46,
       "decompiled_line_count": 105,
       "win32": false
     },
@@ -1281,7 +1281,7 @@
       "status": "stub",
       "file": "ai3.c",
       "line": 109,
-      "decompiled_line_count": 1136,
+      "decompiled_line_count": 1135,
       "win32": false
     },
     "DoMaidAiTurn": {
@@ -1310,7 +1310,7 @@
       "proto": "void DoRobotoidAiTurn(PROD *)",
       "status": "stub",
       "file": "ai.c",
-      "line": 208,
+      "line": 300,
       "decompiled_line_count": 803,
       "win32": false
     },
@@ -1331,7 +1331,7 @@
       "status": "stub",
       "file": "thing.c",
       "line": 74,
-      "decompiled_line_count": 523,
+      "decompiled_line_count": 521,
       "win32": false
     },
     "DoTurinDroneAiTurn": {
@@ -1340,7 +1340,7 @@
       "proto": "void DoTurinDroneAiTurn(PROD *)",
       "status": "stub",
       "file": "ai.c",
-      "line": 86,
+      "line": 178,
       "decompiled_line_count": 800,
       "win32": false
     },
@@ -1374,6 +1374,16 @@
       "decompiled_line_count": 69,
       "win32": false
     },
+    "Draw3dFrame": {
+      "addr": "1040:336a",
+      "segment": "MEMORY_UTILGEN",
+      "proto": "void Draw3dFrame(uint16_t, RECT *, int16_t)",
+      "status": "stub",
+      "file": "utilgen.c",
+      "line": 1326,
+      "decompiled_line_count": 44,
+      "win32": true
+    },
     "DrawABunchOfStars": {
       "addr": "1038:5fe2",
       "segment": "MEMORY_UTIL",
@@ -1400,7 +1410,7 @@
       "proto": "void DrawBtn(uint16_t, RECT *, int16_t, int16_t, char *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1249,
+      "line": 1295,
       "decompiled_line_count": 258,
       "win32": true
     },
@@ -1510,7 +1520,7 @@
       "proto": "void DrawFuzzyBorder(uint16_t, RECT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1090,
+      "line": 1136,
       "decompiled_line_count": 33,
       "win32": true
     },
@@ -1530,7 +1540,7 @@
       "proto": "void DrawHostDialog2(uint16_t, uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2187,
+      "line": 2238,
       "decompiled_line_count": 128,
       "win32": true
     },
@@ -1540,7 +1550,7 @@
       "proto": "void DrawHostOptions(uint16_t, uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2300,
+      "line": 2351,
       "decompiled_line_count": 10,
       "win32": true
     },
@@ -1701,7 +1711,7 @@
       "status": "stub",
       "file": "popup.c",
       "line": 45,
-      "decompiled_line_count": 266,
+      "decompiled_line_count": 265,
       "win32": true
     },
     "DrawProductionDlg": {
@@ -1730,7 +1740,7 @@
       "proto": "void DrawProgressGauge(uint16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1673,
+      "line": 1719,
       "decompiled_line_count": 72,
       "win32": true
     },
@@ -1971,7 +1981,7 @@
       "status": "stub",
       "file": "vcr.c",
       "line": 325,
-      "decompiled_line_count": 536,
+      "decompiled_line_count": 535,
       "win32": true
     },
     "DrawVCReport": {
@@ -2000,7 +2010,7 @@
       "proto": "void DropColonists(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 72,
+      "line": 117,
       "decompiled_line_count": 410,
       "win32": false
     },
@@ -2031,7 +2041,7 @@
       "status": "stub",
       "file": "report.c",
       "line": 51,
-      "decompiled_line_count": 327,
+      "decompiled_line_count": 326,
       "win32": false
     },
     "DumpUniverse": {
@@ -2070,7 +2080,7 @@
       "proto": "int16_t DxStreamTextOut(uint16_t, int16_t *, int16_t, char *, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1607,
+      "line": 1653,
       "decompiled_line_count": 21,
       "win32": true
     },
@@ -2168,9 +2178,9 @@
       "addr": "1020:56bc",
       "segment": "MEMORY_MDI",
       "proto": "void EnsureAis(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "mdi.c",
-      "line": 358,
+      "line": 359,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -2230,7 +2240,7 @@
       "proto": "void EnsureRobotoidShdefs(void)",
       "status": "stub",
       "file": "ai.c",
-      "line": 60,
+      "line": 152,
       "decompiled_line_count": 144,
       "win32": false
     },
@@ -2250,7 +2260,7 @@
       "proto": "void EnsureTurinDroneShdefs(int16_t)",
       "status": "stub",
       "file": "ai.c",
-      "line": 152,
+      "line": 244,
       "decompiled_line_count": 123,
       "win32": false
     },
@@ -2260,7 +2270,7 @@
       "proto": "void EnumLogRts(int16_t (*32)(void *32, int16_t, int16_t, void *32, int16_t), void *32, int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 468,
+      "line": 474,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -2320,7 +2330,7 @@
       "proto": "void ExpandRc(RECT *, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 326,
+      "line": 328,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -2420,7 +2430,7 @@
       "proto": "int16_t FBuildObject(PLANET *32, int16_t, int16_t, int16_t, int32_t *)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 573,
+      "line": 609,
       "decompiled_line_count": 527,
       "win32": false
     },
@@ -2451,7 +2461,7 @@
       "status": "stub",
       "file": "util.c",
       "line": 97,
-      "decompiled_line_count": 132,
+      "decompiled_line_count": 131,
       "win32": false
     },
     "FCanKillTok": {
@@ -2600,7 +2610,7 @@
       "proto": "int16_t FCheckLogFile(int16_t, int16_t *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 635,
+      "line": 632,
       "decompiled_line_count": 67,
       "win32": false
     },
@@ -2620,7 +2630,7 @@
       "proto": "int16_t FCheckPassword(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 253,
+      "line": 255,
       "decompiled_line_count": 35,
       "win32": false
     },
@@ -2770,7 +2780,7 @@
       "proto": "int16_t FCompressUserString(char *32, char *32, int16_t *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 192,
+      "line": 194,
       "decompiled_line_count": 57,
       "win32": false
     },
@@ -2840,7 +2850,7 @@
       "proto": "int16_t FDecompressUserString(char *32, int16_t, char *32, int16_t *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 128,
+      "line": 130,
       "decompiled_line_count": 65,
       "win32": false
     },
@@ -2950,7 +2960,7 @@
       "proto": "int16_t FEnumCalcArmadaDest(PLANET *32, PLANET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 74,
+      "line": 166,
       "decompiled_line_count": 48,
       "win32": false
     },
@@ -2960,7 +2970,7 @@
       "proto": "int16_t FEnumCalcArmadaHumanDest(PLANET *32, PLANET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 48,
+      "line": 140,
       "decompiled_line_count": 50,
       "win32": false
     },
@@ -2970,7 +2980,7 @@
       "proto": "int16_t FEnumCalcColonistDrop(PLANET *32, PLANET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 199,
+      "line": 291,
       "decompiled_line_count": 35,
       "win32": false
     },
@@ -2980,7 +2990,7 @@
       "proto": "int16_t FEnumCalcEnemyFleets(FLEET *32, FLEET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 167,
+      "line": 259,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -3010,7 +3020,7 @@
       "proto": "int16_t FEnumCalcMinerDest(PLANET *32, PLANET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 159,
+      "line": 251,
       "decompiled_line_count": 26,
       "win32": false
     },
@@ -3120,7 +3130,7 @@
       "proto": "int16_t FFindSomethingAndSelectIt(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 699,
+      "line": 750,
       "decompiled_line_count": 49,
       "win32": true
     },
@@ -3221,7 +3231,7 @@
       "status": "implemented",
       "file": "turn.c",
       "line": 54,
-      "decompiled_line_count": 825,
+      "decompiled_line_count": 632,
       "win32": false
     },
     "FGetAIPart": {
@@ -3250,7 +3260,7 @@
       "proto": "int16_t FGetMouseMove(POINT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1438,
+      "line": 1484,
       "decompiled_line_count": 41,
       "win32": true
     },
@@ -3290,7 +3300,7 @@
       "proto": "int16_t FGetPrevLogRt(HDR *, uint8_t *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 495,
+      "line": 501,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -3300,7 +3310,7 @@
       "proto": "int16_t FGetRMouseMove(POINT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1123,
+      "line": 1169,
       "decompiled_line_count": 41,
       "win32": true
     },
@@ -3390,7 +3400,7 @@
       "proto": "int16_t FIntersectCircleLine(POINT, POINT, POINT, int32_t, int16_t, int16_t *, int16_t *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 356,
+      "line": 358,
       "decompiled_line_count": 135,
       "win32": false
     },
@@ -3461,7 +3471,7 @@
       "status": "implemented",
       "file": "file.c",
       "line": 380,
-      "decompiled_line_count": 1221,
+      "decompiled_line_count": 1220,
       "win32": false
     },
     "FLoadLogFile": {
@@ -3470,7 +3480,7 @@
       "proto": "int16_t FLoadLogFile(char *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 147,
+      "line": 153,
       "decompiled_line_count": 164,
       "win32": false
     },
@@ -3637,7 +3647,7 @@
     "FOpenFile": {
       "addr": "1070:4ac2",
       "segment": "MEMORY_IO",
-      "proto": "int16_t FOpenFile(uint16_t, int16_t, int16_t)",
+      "proto": "int16_t FOpenFile(uint16_t, int16_t, MdOpenFlags)",
       "status": "implemented",
       "file": "file.c",
       "line": 1513,
@@ -3650,7 +3660,7 @@
       "proto": "int16_t FOpenGame(uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2861,
+      "line": 2912,
       "decompiled_line_count": 215,
       "win32": true
     },
@@ -3670,7 +3680,7 @@
       "proto": "int16_t FPacketDecay(THING *32, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 537,
+      "line": 573,
       "decompiled_line_count": 76,
       "win32": false
     },
@@ -3700,7 +3710,7 @@
       "proto": "int16_t FPotentRobWarFleet(FLEET *32, int16_t)",
       "status": "stub",
       "file": "ai.c",
-      "line": 273,
+      "line": 365,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -3750,7 +3760,7 @@
       "proto": "int16_t FQueueColonistDrop(FLEET *32, PLANET *32, int32_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 249,
+      "line": 294,
       "decompiled_line_count": 47,
       "win32": false
     },
@@ -3810,7 +3820,7 @@
       "proto": "int16_t FRunLogFile(void)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1464,
+      "line": 1459,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -3820,7 +3830,7 @@
       "proto": "int16_t FRunLogRecord(int16_t, int16_t, uint8_t *32)",
       "status": "implemented",
       "file": "log.c",
-      "line": 721,
+      "line": 717,
       "decompiled_line_count": 821,
       "win32": false
     },
@@ -3910,7 +3920,7 @@
       "proto": "int16_t FSerialAndEnvFromSz(int32_t *, uint8_t *, char *)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 60,
+      "line": 61,
       "decompiled_line_count": 112,
       "win32": false
     },
@@ -3980,7 +3990,7 @@
       "proto": "int16_t FStringFitsScreen(char *32, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1143,
+      "line": 1189,
       "decompiled_line_count": 29,
       "win32": true
     },
@@ -3990,7 +4000,7 @@
       "proto": "int16_t FTrackBtn(BTNT *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1581,
+      "line": 1627,
       "decompiled_line_count": 61,
       "win32": true
     },
@@ -4120,7 +4130,7 @@
       "proto": "int16_t FWasRaceFile(char *, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 257,
+      "line": 258,
       "decompiled_line_count": 109,
       "win32": false
     },
@@ -4140,7 +4150,7 @@
       "proto": "int16_t FWriteHistFile(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1308,
+      "line": 1304,
       "decompiled_line_count": 118,
       "win32": false
     },
@@ -4150,7 +4160,7 @@
       "proto": "int16_t FWriteLogFile(char *, int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 59,
+      "line": 60,
       "decompiled_line_count": 79,
       "win32": false
     },
@@ -4160,7 +4170,7 @@
       "proto": "int16_t FWriteTutorialMFile(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 351,
+      "line": 357,
       "decompiled_line_count": 90,
       "win32": false
     },
@@ -4370,7 +4380,7 @@
       "proto": "void FormatSerialAndEnv(int32_t, uint8_t *, char *)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 163,
+      "line": 164,
       "decompiled_line_count": 87,
       "win32": false
     },
@@ -4380,7 +4390,7 @@
       "proto": "int32_t FrameWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 1413,
+      "line": 1464,
       "decompiled_line_count": 667,
       "win32": true
     },
@@ -4400,7 +4410,7 @@
       "proto": "void FreeHbr(uint16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1550,
+      "line": 1596,
       "decompiled_line_count": 27,
       "win32": true
     },
@@ -4461,7 +4471,7 @@
       "status": "implemented",
       "file": "create.c",
       "line": 2018,
-      "decompiled_line_count": 634,
+      "decompiled_line_count": 480,
       "win32": false
     },
     "GenerateWorld": {
@@ -4471,7 +4481,7 @@
       "status": "implemented",
       "file": "create.c",
       "line": 662,
-      "decompiled_line_count": 1700,
+      "decompiled_line_count": 1557,
       "win32": false
     },
     "GetASubMenu": {
@@ -4480,7 +4490,7 @@
       "proto": "uint16_t GetASubMenu(uint16_t, int16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2847,
+      "line": 2898,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -4510,7 +4520,7 @@
       "proto": "uint32_t GetDiskSerialNumber(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 347,
+      "line": 349,
       "decompiled_line_count": 104,
       "win32": false
     },
@@ -4530,7 +4540,7 @@
       "proto": "void GetFileSeeds(int32_t *, int32_t *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 554,
+      "line": 596,
       "decompiled_line_count": 18,
       "win32": false
     },
@@ -4570,7 +4580,7 @@
       "proto": "void GetIniWinRc(char *, char *, int16_t, WN *)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1439,
+      "line": 1438,
       "decompiled_line_count": 71,
       "win32": true
     },
@@ -4730,7 +4740,7 @@
       "proto": "void GetWindowRc(uint16_t, RECT *)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2175,
+      "line": 2226,
       "decompiled_line_count": 21,
       "win32": true
     },
@@ -4770,7 +4780,7 @@
       "proto": "uint16_t HbrGet(uint32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 942,
+      "line": 988,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -4780,7 +4790,7 @@
       "proto": "uint16_t HcrsFromFrameWindowPt(POINT, int16_t *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3205,
+      "line": 3256,
       "decompiled_line_count": 51,
       "win32": true
     },
@@ -4790,7 +4800,7 @@
       "proto": "uint16_t HdibLoadBigResource(int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 909,
+      "line": 955,
       "decompiled_line_count": 38,
       "win32": true
     },
@@ -4800,7 +4810,7 @@
       "proto": "void HealShips(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 647,
+      "line": 683,
       "decompiled_line_count": 124,
       "win32": false
     },
@@ -4810,7 +4820,7 @@
       "proto": "uint16_t HfontPrinterCreate(uint16_t, int16_t, int16_t *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1130,
+      "line": 1176,
       "decompiled_line_count": 34,
       "win32": true
     },
@@ -4820,7 +4830,7 @@
       "proto": "void HideProgressGauge(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 998,
+      "line": 1044,
       "decompiled_line_count": 14,
       "win32": true
     },
@@ -4830,7 +4840,7 @@
       "proto": "int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 382,
+      "line": 433,
       "decompiled_line_count": 305,
       "win32": true
     },
@@ -4840,7 +4850,7 @@
       "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3365,
+      "line": 3416,
       "decompiled_line_count": 50,
       "win32": true
     },
@@ -4850,7 +4860,7 @@
       "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2731,
+      "line": 2782,
       "decompiled_line_count": 177,
       "win32": true
     },
@@ -4860,7 +4870,7 @@
       "proto": "uint16_t HpalBlackReserved(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1100,
+      "line": 1146,
       "decompiled_line_count": 28,
       "win32": true
     },
@@ -4870,7 +4880,7 @@
       "proto": "uint16_t HpalFromDib(uint16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1289,
+      "line": 1335,
       "decompiled_line_count": 45,
       "win32": true
     },
@@ -4900,7 +4910,7 @@
       "proto": "int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 608,
+      "line": 644,
       "decompiled_line_count": 65,
       "win32": false
     },
@@ -4940,7 +4950,7 @@
       "proto": "int16_t ICompLong(void *, void *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 711,
+      "line": 753,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -5130,8 +5140,8 @@
       "proto": "int16_t IdTargetArmada(FLEET *32)",
       "status": "stub",
       "file": "ai.c",
-      "line": 173,
-      "decompiled_line_count": 252,
+      "line": 265,
+      "decompiled_line_count": 251,
       "win32": false
     },
     "IdTargetAttack": {
@@ -5240,7 +5250,7 @@
       "proto": "void InitBtnTrack(BTNT *, uint16_t, uint16_t, RECT *, int16_t, int16_t, int16_t, int16_t, char *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1005,
+      "line": 1051,
       "decompiled_line_count": 27,
       "win32": true
     },
@@ -5260,8 +5270,8 @@
       "proto": "int16_t InitInstance(int16_t)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1388,
-      "decompiled_line_count": 45,
+      "line": 1387,
+      "decompiled_line_count": 44,
       "win32": true
     },
     "InitMDIApp": {
@@ -5270,7 +5280,7 @@
       "proto": "int16_t InitMDIApp(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3377,
+      "line": 3428,
       "decompiled_line_count": 176,
       "win32": true
     },
@@ -5330,7 +5340,7 @@
       "proto": "void InitTiles(void)",
       "status": "implemented",
       "file": "init.c",
-      "line": 1515,
+      "line": 1514,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -5350,7 +5360,7 @@
       "proto": "void InitializeMenu(uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3046,
+      "line": 3097,
       "decompiled_line_count": 95,
       "win32": true
     },
@@ -5370,7 +5380,7 @@
       "proto": "void IntToRoman(int16_t, char *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 755,
+      "line": 797,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -5410,7 +5420,7 @@
       "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3215,
+      "line": 3266,
       "decompiled_line_count": 144,
       "win32": true
     },
@@ -5570,7 +5580,7 @@
       "proto": "int32_t LDistance2(POINT, POINT)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 733,
+      "line": 775,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -5580,7 +5590,7 @@
       "proto": "int32_t LDrawGauge(uint16_t, RECT *, int16_t, int32_t *, uint16_t *, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1630,
+      "line": 1676,
       "decompiled_line_count": 64,
       "win32": true
     },
@@ -5620,7 +5630,7 @@
       "proto": "int32_t LGetNextFileXor(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 467,
+      "line": 509,
       "decompiled_line_count": 45,
       "win32": false
     },
@@ -5640,7 +5650,7 @@
       "proto": "int32_t LSaltFromSz(char *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 426,
+      "line": 428,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -5670,7 +5680,7 @@
       "proto": "void LogChangeBtlplan(BTLPLAN *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 694,
+      "line": 691,
       "decompiled_line_count": 15,
       "win32": false
     },
@@ -5680,7 +5690,7 @@
       "proto": "void LogChangeFleet(FLEET *32, FLEET *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1616,
+      "line": 1607,
       "decompiled_line_count": 173,
       "win32": false
     },
@@ -5690,7 +5700,7 @@
       "proto": "void LogChangeName(int16_t, int16_t, char *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1742,
+      "line": 1729,
       "decompiled_line_count": 64,
       "win32": false
     },
@@ -5700,7 +5710,7 @@
       "proto": "void LogChangePlanet(PLANET *32, PLANET *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 544,
+      "line": 550,
       "decompiled_line_count": 134,
       "win32": false
     },
@@ -5710,7 +5720,7 @@
       "proto": "void LogChangeRelations(void)",
       "status": "implemented",
       "file": "log.c",
-      "line": 703,
+      "line": 700,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -5720,7 +5730,7 @@
       "proto": "void LogChangeShDef(SHDEF *32)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1783,
+      "line": 1770,
       "decompiled_line_count": 37,
       "win32": false
     },
@@ -5730,7 +5740,7 @@
       "proto": "void LogChangeThing(THING *32, THING *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 513,
+      "line": 519,
       "decompiled_line_count": 51,
       "win32": false
     },
@@ -5740,7 +5750,7 @@
       "proto": "void LogMakeValidXfer(LOGXFER *, LOGXFER *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1499,
+      "line": 1494,
       "decompiled_line_count": 155,
       "win32": false
     },
@@ -5750,7 +5760,7 @@
       "proto": "void LogMakeValidXferf(LOGXFERF *, LOGXFERF *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 1426,
+      "line": 1421,
       "decompiled_line_count": 43,
       "win32": false
     },
@@ -5760,7 +5770,7 @@
       "proto": "void LogMergeFleet(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 126,
+      "line": 132,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -5770,7 +5780,7 @@
       "proto": "void LogSplitFleet(int16_t)",
       "status": "implemented",
       "file": "log.c",
-      "line": 340,
+      "line": 346,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -6190,7 +6200,7 @@
       "proto": "void MeteorStrike(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 633,
+      "line": 669,
       "decompiled_line_count": 157,
       "win32": false
     },
@@ -6210,7 +6220,7 @@
       "proto": "void MineMinerals(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 565,
+      "line": 601,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -6270,7 +6280,7 @@
       "proto": "void MysteryTrader(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 238,
+      "line": 283,
       "decompiled_line_count": 99,
       "win32": false
     },
@@ -6320,7 +6330,7 @@
       "proto": "int16_t NewPasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 896,
+      "line": 942,
       "decompiled_line_count": 138,
       "win32": true
     },
@@ -6370,7 +6380,7 @@
       "proto": "int16_t NybbleFromCh(uint8_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 29,
+      "line": 31,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -6380,7 +6390,7 @@
       "proto": "void OffsetRc(RECT *, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 704,
+      "line": 746,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -6400,7 +6410,7 @@
       "proto": "void OutputFileString(char *, char *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 757,
+      "line": 799,
       "decompiled_line_count": 35,
       "win32": false
     },
@@ -6430,7 +6440,7 @@
       "proto": "uint16_t PaletteSize(void *32)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1527,
+      "line": 1573,
       "decompiled_line_count": 20,
       "win32": true
     },
@@ -6450,7 +6460,7 @@
       "proto": "int16_t PasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 869,
+      "line": 915,
       "decompiled_line_count": 81,
       "win32": true
     },
@@ -6580,7 +6590,7 @@
       "proto": "void PlanetaryClimateChange(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 617,
+      "line": 653,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -6590,7 +6600,7 @@
       "proto": "void PopRandom(void)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 540,
+      "line": 582,
       "decompiled_line_count": 15,
       "win32": false
     },
@@ -6670,7 +6680,7 @@
       "proto": "void Produce(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 14,
+      "line": 15,
       "decompiled_line_count": 390,
       "win32": false
     },
@@ -6690,7 +6700,7 @@
       "proto": "int16_t ProgressGaugeDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 881,
+      "line": 927,
       "decompiled_line_count": 53,
       "win32": true
     },
@@ -6780,7 +6790,7 @@
       "proto": "char * PszFromInt(int16_t, int16_t *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 717,
+      "line": 759,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -6790,7 +6800,7 @@
       "proto": "char * PszFromLong(int32_t, int16_t *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 682,
+      "line": 724,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -6800,7 +6810,7 @@
       "proto": "char * PszFromLongK(int32_t, int16_t *)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 338,
+      "line": 340,
       "decompiled_line_count": 44,
       "win32": false
     },
@@ -6820,7 +6830,7 @@
       "proto": "char * PszGetCompressedPlanet(int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 782,
+      "line": 824,
       "decompiled_line_count": 68,
       "win32": false
     },
@@ -6880,7 +6890,7 @@
       "proto": "char *32 PszGetLine(char *32 *)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 614,
+      "line": 656,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -7040,7 +7050,7 @@
       "proto": "void PushRandom(int32_t, int32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 692,
+      "line": 734,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -7140,7 +7150,7 @@
       "proto": "int16_t Random(int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 642,
+      "line": 684,
       "decompiled_line_count": 67,
       "win32": false
     },
@@ -7150,7 +7160,7 @@
       "proto": "void RandomEvents(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 676,
+      "line": 712,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -7160,7 +7170,7 @@
       "proto": "int16_t RandomSeedDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 859,
+      "line": 905,
       "decompiled_line_count": 60,
       "win32": true
     },
@@ -7170,7 +7180,7 @@
       "proto": "void Randomize(uint32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 400,
+      "line": 402,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -7180,7 +7190,7 @@
       "proto": "void Randomize2(uint32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 380,
+      "line": 382,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -7200,7 +7210,7 @@
       "proto": "void RcCtrTextOut(uint16_t, RECT *, char *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1010,
+      "line": 1056,
       "decompiled_line_count": 35,
       "win32": true
     },
@@ -7210,7 +7220,7 @@
       "proto": "int16_t ReadBigBlock(int16_t, char *32, uint32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 333,
+      "line": 335,
       "decompiled_line_count": 32,
       "win32": false
     },
@@ -7280,7 +7290,7 @@
       "proto": "void RefitFrameChildren(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3660,
+      "line": 3711,
       "decompiled_line_count": 129,
       "win32": true
     },
@@ -7320,7 +7330,7 @@
       "proto": "void RemoteTerraforming(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 156,
+      "line": 201,
       "decompiled_line_count": 103,
       "win32": false
     },
@@ -7420,7 +7430,7 @@
       "proto": "void RestoreSelection(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 3654,
+      "line": 3705,
       "decompiled_line_count": 92,
       "win32": true
     },
@@ -7450,7 +7460,7 @@
       "proto": "void RightTextOut(uint16_t, int16_t, int16_t, char *, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1221,
+      "line": 1267,
       "decompiled_line_count": 32,
       "win32": true
     },
@@ -7461,7 +7471,7 @@
       "status": "stub",
       "file": "turn3.c",
       "line": 7,
-      "decompiled_line_count": 1687,
+      "decompiled_line_count": 1682,
       "win32": false
     },
     "SaveGameState": {
@@ -7581,7 +7591,7 @@
       "status": "stub",
       "file": "battle.c",
       "line": 816,
-      "decompiled_line_count": 424,
+      "decompiled_line_count": 423,
       "win32": false
     },
     "SetAiFleetIdealSpeed": {
@@ -7610,7 +7620,7 @@
       "proto": "void SetFileSeeds(int32_t, int32_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 549,
+      "line": 591,
       "decompiled_line_count": 12,
       "win32": false
     },
@@ -7620,7 +7630,7 @@
       "proto": "void SetFileXorStream(int32_t, int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 560,
+      "line": 602,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -7860,7 +7870,7 @@
       "proto": "void SetWindowIniString(char *, uint16_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 3634,
+      "line": 3685,
       "decompiled_line_count": 52,
       "win32": true
     },
@@ -7900,7 +7910,7 @@
       "proto": "void ShowProgressGauge(void)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 251,
+      "line": 253,
       "decompiled_line_count": 15,
       "win32": false
     },
@@ -8010,7 +8020,7 @@
       "proto": "void StickyDlgPos(uint16_t, POINT *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 1472,
+      "line": 1518,
       "decompiled_line_count": 43,
       "win32": true
     },
@@ -8040,7 +8050,7 @@
       "proto": "void SweepForMines(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 187,
+      "line": 232,
       "decompiled_line_count": 231,
       "win32": false
     },
@@ -8110,7 +8120,7 @@
       "proto": "void ThingDecay(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 51,
+      "line": 96,
       "decompiled_line_count": 166,
       "win32": false
     },
@@ -8120,7 +8130,7 @@
       "proto": "int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 721,
+      "line": 772,
       "decompiled_line_count": 336,
       "win32": true
     },
@@ -8140,7 +8150,7 @@
       "proto": "void TossNonAutoBuildItems(PLANET *32)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 110,
+      "line": 155,
       "decompiled_line_count": 57,
       "win32": false
     },
@@ -8170,8 +8180,8 @@
       "proto": "void TransferToOthers(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 548,
-      "decompiled_line_count": 149,
+      "line": 584,
+      "decompiled_line_count": 148,
       "win32": false
     },
     "TurnLog": {
@@ -8230,7 +8240,7 @@
       "proto": "void UnmarkMineFields(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 678,
+      "line": 714,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -8260,7 +8270,7 @@
       "proto": "void UpdateGuesses(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 226,
+      "line": 271,
       "decompiled_line_count": 76,
       "win32": false
     },
@@ -8280,7 +8290,7 @@
       "proto": "void UpdatePlayerScores(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 206,
+      "line": 251,
       "decompiled_line_count": 258,
       "win32": false
     },
@@ -8290,7 +8300,7 @@
       "proto": "void UpdatePopulations(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 172,
+      "line": 217,
       "decompiled_line_count": 73,
       "win32": false
     },
@@ -8300,7 +8310,7 @@
       "proto": "void UpdateProgressGauge(int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 802,
+      "line": 844,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -8310,7 +8320,7 @@
       "proto": "void UpdateResearchStatus(int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 117,
+      "line": 162,
       "decompiled_line_count": 318,
       "win32": false
     },
@@ -8380,7 +8390,7 @@
       "proto": "void VerifyTurns(void)",
       "status": "stub",
       "file": "mdi.c",
-      "line": 49,
+      "line": 50,
       "decompiled_line_count": 108,
       "win32": false
     },
@@ -8420,7 +8430,7 @@
       "proto": "void WrapTextOut(uint16_t, int16_t *, int16_t *, char *, int16_t, int16_t, int16_t, int16_t *, int16_t, int16_t)",
       "status": "stub",
       "file": "utilgen.c",
-      "line": 1590,
+      "line": 1636,
       "decompiled_line_count": 72,
       "win32": true
     },
@@ -8470,7 +8480,7 @@
       "proto": "void WriteIniSettings(void)",
       "status": "implemented",
       "file": "mdi.c",
-      "line": 2308,
+      "line": 2359,
       "decompiled_line_count": 302,
       "win32": true
     },
@@ -8480,7 +8490,7 @@
       "proto": "void WriteMemRt(int16_t, int16_t, void *)",
       "status": "implemented",
       "file": "log.c",
-      "line": 21,
+      "line": 22,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -8610,7 +8620,7 @@
       "proto": "void XorFileBuf(char *, int16_t)",
       "status": "implemented",
       "file": "utilgen.c",
-      "line": 588,
+      "line": 630,
       "decompiled_line_count": 38,
       "win32": false
     },
@@ -8632,16 +8642,6 @@
       "file": "produce.c",
       "line": 616,
       "decompiled_line_count": 298,
-      "win32": true
-    },
-    "_Draw3dFrame": {
-      "addr": "1040:336a",
-      "segment": "MEMORY_UTILGEN",
-      "proto": "void _Draw3dFrame(uint16_t, RECT *, int16_t)",
-      "status": "stub",
-      "file": "utilgen.c",
-      "line": 1280,
-      "decompiled_line_count": null,
       "win32": true
     },
     "iAddAttackFleet": {

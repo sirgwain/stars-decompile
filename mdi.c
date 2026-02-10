@@ -5,6 +5,7 @@
 #include "resource.h"
 #include "types.h"
 
+#include "ai.h"
 #include "create.h"
 #include "file.h"
 #include "init.h"
@@ -363,8 +364,58 @@ void EnsureAis(void) {
     int16_t fSubmitSav;
     int16_t iPlayer;
     MDPLR   rgmdplr[16];
+    int16_t pctProgress;
 
-    /* TODO: implement */
+    fSubmitSav = gd.fSubmit;
+    fWorkDone = false;
+
+    if (!gd.fAisDone) {
+        fHostSav = gd.fHostMode;
+
+        if (!gd.fHostMode) {
+            DestroyCurGame();
+            FLoadGame(szBase, mpdtsz[dtHost]);
+        }
+
+        fErrSav = fFileErrSilent;
+
+        for (iPlayer = 0; iPlayer < game.cPlayer; iPlayer++) {
+            rgmdplr[iPlayer].wRaw_0000 = rgplr[iPlayer].wMdPlr;
+        }
+
+        gd.fSubmit = 1;
+        fFileErrSilent = 1;
+
+        for (iPlayer = 0; iPlayer < game.cPlayer; iPlayer++) {
+            pctProgress = MulDiv(340, iPlayer + 1, game.cPlayer);
+            UpdateProgressGauge(pctProgress);
+
+            if (rgmdplr[iPlayer].fAi) {
+                fWorkDone = true;
+                gd.fGeneratingTurn = 1;
+                gd.fHostMode = 1;
+                fOpened = FOpenFile(dtLog, iPlayer, 0x20);
+                gd.fGeneratingTurn = 0;
+                gd.fHostMode = fHostSav;
+
+                if (!fOpened) {
+                    DoAiTurn(iPlayer, rgmdplr[iPlayer].wRaw_0000);
+                } else {
+                    StreamClose();
+                }
+            }
+        }
+
+        gd.fSubmit = fSubmitSav;
+
+        if (fWorkDone) {
+            DestroyCurGame();
+            FLoadGame(szBase, mpdtsz[dtHost]);
+        }
+
+        gd.fAisDone = 1;
+        fFileErrSilent = fErrSav;
+    }
 }
 
 int16_t CTurnsOutSafe(void) {

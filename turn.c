@@ -195,7 +195,7 @@ int16_t FGenerateTurn(void) {
         /* if (FLoadLogFile(szWork)) { if (!FRunLogFile()) { AlertSz(PszFormatIds(...),0x10); goto TURN_FreeStuffUp; } } */
         if (FLoadLogFile(szWork) != 0) {
             if (FRunLogFile() == 0) {
-                AlertSz(PszFormatIds(idsPlayerLogFileAppearsCorruptUnableLoad, NULL), 0x10);
+                Error(idsPlayerLogFileAppearsCorruptUnableLoad);
                 goto FreeStuffUp;
             }
         }
@@ -610,8 +610,8 @@ int16_t FGenerateTurn(void) {
                 int16_t cloakPct = PctCloakFromHuldef(&sbdef->hul, iplr, NULL);
                 int32_t cloakInv = (int32_t)(100 - cloakPct);
 
-                sbdef->lPower = cloakInv;
-                sbdef->lPower = (int32_t)((int64_t)sbdef->lPower * (int64_t)sbdef->lPower);
+                sbdef->lVisible = cloakInv;
+                sbdef->lVisible = (int32_t)((int64_t)sbdef->lVisible * (int64_t)sbdef->lVisible);
             }
         }
 
@@ -654,7 +654,7 @@ int16_t FGenerateTurn(void) {
         UpdateProgressGauge(j);
 
         /* j += 0x11 / (game.cPlayer + 1) */
-        j += (int16_t)(0x11 / (game.cPlayer + 1));
+        j += (int16_t)(17 / (game.cPlayer + 1));
 
         /* After last player, run one final “host/global” pass */
         if (i >= game.cPlayer) {
@@ -668,7 +668,7 @@ int16_t FGenerateTurn(void) {
             strcpy(pchBak, ".hst");
         } else {
             /* Per-player filenames: ".xN" */
-            wsprintf(pchCur, ".x%d", i + 1);
+            sprintf(pchCur, ".x%d", i + 1);
             strcpy(pchBak, pchCur);
 
             /* Remove any existing backup target */
@@ -710,7 +710,7 @@ int16_t FGenerateTurn(void) {
 
     while (!fDone) {
         UpdateProgressGauge(j);
-        j = (int16_t)(j + (int16_t)(0x7a / (game.cPlayer + 1)));
+        j = (int16_t)(j + (int16_t)(122 / (game.cPlayer + 1)));
 
         if (i >= game.cPlayer) {
             i = -1;

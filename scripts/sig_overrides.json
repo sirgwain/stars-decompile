@@ -19,6 +19,9 @@
   "CancelMemRt": { "rt": "RecordType" },
   "WritePlanet": { "rt": "RecordType" },
 
+  "StreamOpen": { "mdOpen": "MdOpenFlags" },
+  "FOpenFile": { "md": "MdOpenFlags" },
+
   "GetVCCheck": { "vc": "VictoryCondition" },
   "GetVCVal": { "vc": "VictoryCondition" },
   "SetVCCheck": { "vc": "VictoryCondition" },

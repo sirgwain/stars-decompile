@@ -21637,9 +21637,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ScoreXDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -22195,9 +22193,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t GetFuelFree(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -22404,9 +22400,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t About(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -22543,10 +22537,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t PopupWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -24483,9 +24474,7 @@
       "types": {
         "typind": 4719,
         "proto": "int32_t CostOfDevelopingItem(char *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -25091,9 +25080,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t FindDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -25320,10 +25307,7 @@
       "types": {
         "typind": 4243,
         "proto": "int32_t ReportDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -27661,10 +27645,7 @@
       "types": {
         "typind": 4143,
         "proto": "int32_t FakeComboProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -28458,9 +28439,7 @@
       "types": {
         "typind": 4389,
         "proto": "FLEET *32 LpflFindClosestEnum(FLEET *32, int16_t (*32)(FLEET *32, FLEET *32))",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "FLEET *32",
@@ -28603,9 +28582,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t PrintMapDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -29161,9 +29138,7 @@
       "types": {
         "typind": 4392,
         "proto": "PLANET *32 LpplFindClosestEnum(PLANET *32, int16_t (*32)(PLANET *32, PLANET *32))",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PLANET *32",
@@ -29306,9 +29281,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t BattlePlansDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -29452,9 +29425,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t GetCargoFree(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -29865,9 +29836,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t PasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -29981,9 +29950,7 @@
       "types": {
         "typind": 5679,
         "proto": "FLEET *32 LpflFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "FLEET *32",
@@ -30116,9 +30083,7 @@
       "types": {
         "typind": 5664,
         "proto": "PLANET *32 LpplFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PLANET *32",
@@ -30221,9 +30186,7 @@
       "types": {
         "typind": 5663,
         "proto": "THING *32 LpthFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "THING *32",
@@ -30535,9 +30498,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg6(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -30682,9 +30643,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg5(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -30844,9 +30803,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg4(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -31011,9 +30968,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -31161,9 +31116,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -31405,9 +31358,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RaceWizardDlg1(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -31909,9 +31860,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t SlotDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -33387,10 +33336,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t ScannerWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -33919,9 +33865,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t NewPlanNameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -34398,9 +34342,7 @@
       "types": {
         "typind": 5548,
         "proto": "int32_t XferSupply(int16_t, int32_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -34493,9 +34435,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ProgressGaugeDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -34856,9 +34796,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t TutorDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -36255,9 +36193,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RenameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -37572,9 +37508,7 @@
       "types": {
         "typind": 5704,
         "proto": "int32_t LCalcFuelGainFromRamScoops(FLEET *32, int16_t, int32_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -38358,9 +38292,7 @@
       "types": {
         "typind": 4712,
         "proto": "int32_t GetTechLevelCost(int16_t, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -41328,9 +41260,7 @@
       "types": {
         "typind": 5535,
         "proto": "int32_t LGetFleetStat(FLEET *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -42229,7 +42159,7 @@
             "kind": "param",
             "typind": 114,
             "c_type": "int16_t",
-            "c_decl": "int16_t mdOpen",
+            "c_decl": "MdOpenFlags mdOpen",
             "size": 2,
             "is_far_ptr": false,
             "bp_off": 8
@@ -42308,9 +42238,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ResearchDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -45269,9 +45197,7 @@
       "types": {
         "typind": 4661,
         "proto": "int32_t ScoreGuessBattleDamage(TOK *32, uint8_t, int16_t, uint16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -46047,9 +45973,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t PctTerraFromLpfl(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -47333,9 +47257,7 @@
       "types": {
         "typind": 4560,
         "proto": "uint32_t GetDiskSerialNumber(void)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "uint32_t",
@@ -47477,9 +47399,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t OrderInfoDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -48138,9 +48058,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ProductionDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -48716,10 +48634,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t TbWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -49226,9 +49141,7 @@
       "types": {
         "typind": 5565,
         "proto": "int32_t EstFuelUse(FLEET *32, int16_t, int16_t, int32_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -50219,9 +50132,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t HostModeDialog(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -51672,9 +51583,7 @@
       "types": {
         "typind": 4433,
         "proto": "BTLDATA *32 BtlDataGet(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "BTLDATA *32",
@@ -53450,9 +53359,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ZipProdDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -54614,9 +54521,7 @@
       "types": {
         "typind": 5671,
         "proto": "int32_t LComputePower(SHDEF *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -56143,9 +56048,7 @@
       "types": {
         "typind": 4221,
         "proto": "int32_t CMineSweepFromLphul(HUL *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -56268,9 +56171,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t CShipsScanVis(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -57751,10 +57652,7 @@
       "types": {
         "typind": 4143,
         "proto": "int32_t FakeEditProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -58400,9 +58298,7 @@
       "types": {
         "typind": 4557,
         "proto": "int32_t LSaltFromSz(char *)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -59201,9 +59097,7 @@
       "types": {
         "typind": 4818,
         "proto": "POINT PtDisplayResourceInfo(uint16_t, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -60633,9 +60527,7 @@
       "types": {
         "typind": 4815,
         "proto": "POINT PtDisplayPlanetStateInfo(uint16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -62297,9 +62189,7 @@
       "types": {
         "typind": 5764,
         "proto": "int16_t WinMain(uint16_t, uint16_t, char *32, int16_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -62423,9 +62313,7 @@
       "types": {
         "typind": 4747,
         "proto": "HULDEF *32 LphuldefFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "HULDEF *32",
@@ -62570,9 +62458,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t PanicDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -63032,10 +62918,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t TitleWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -64471,10 +64354,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t FrameWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -65537,9 +65417,7 @@
       "types": {
         "typind": 4663,
         "proto": "int32_t ScoreFromGiveAndTakeAndTactic(int32_t, int32_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -65902,9 +65780,7 @@
       "types": {
         "typind": 5711,
         "proto": "int32_t LongFromSerialCh(char)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -66478,9 +66354,7 @@
       "types": {
         "typind": 4253,
         "proto": "int32_t LFetchScoreXVal(SCOREX *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -69866,9 +69740,7 @@
       "types": {
         "typind": 4364,
         "proto": "uint32_t UlFleetPower(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "uint32_t",
@@ -70727,9 +70599,7 @@
       "types": {
         "typind": 4692,
         "proto": "HB *32 LphbReAlloc(HB *32)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "HB *32",
@@ -70832,9 +70702,7 @@
       "types": {
         "typind": 4703,
         "proto": "PL *32 LpplReAlloc(PL *32, uint16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PL *32",
@@ -70896,9 +70764,7 @@
       "types": {
         "typind": 4443,
         "proto": "int32_t LdpFromItokDv(int16_t, DV *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -71420,9 +71286,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RelationsDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -72193,9 +72057,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t TransferDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -72794,9 +72656,7 @@
       "types": {
         "typind": 4437,
         "proto": "int32_t CBattleKills(BTLDATA *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -73001,9 +72861,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t WtFromLpfl(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -74855,9 +74713,7 @@
       "types": {
         "typind": 4435,
         "proto": "int32_t CBattleUnits(BTLDATA *32, uint16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -77400,9 +77256,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t NewGameDlg3(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -77550,9 +77404,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t NewGameDlg2(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -77907,9 +77759,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t NewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -78312,9 +78162,7 @@
       "types": {
         "typind": 4669,
         "proto": "int32_t CTorpHit(int32_t, TOK *32, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -79332,7 +79180,7 @@
       }
     },
     {
-      "name": "_Draw3dFrame",
+      "name": "Draw3dFrame",
       "cv": {
         "seg": 9,
         "off": 13162,
@@ -79342,7 +79190,7 @@
       },
       "types": {
         "typind": 4514,
-        "proto": "void _Draw3dFrame(uint16_t, RECT *, int16_t)",
+        "proto": "void Draw3dFrame(uint16_t, RECT *, int16_t)",
         "tags": [],
         "is_pascal": false,
         "ret": {
@@ -79520,9 +79368,7 @@
       "types": {
         "typind": 4747,
         "proto": "HULDEF *32 LphuldefSBFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "HULDEF *32",
@@ -80015,9 +79861,7 @@
       "types": {
         "typind": 4219,
         "proto": "int32_t CLayMinesFromLpfl(FLEET *32, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -80779,9 +80623,7 @@
       "types": {
         "typind": 4696,
         "proto": "HB *32 LphbFromLpHt(void *32, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "HB *32",
@@ -81469,9 +81311,7 @@
       "types": {
         "typind": 4717,
         "proto": "int32_t ProjectedResearchSpending(int32_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -82780,10 +82620,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -83294,9 +83131,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t SimpleNewGameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -84879,9 +84714,7 @@
       "types": {
         "typind": 4798,
         "proto": "SHDEF *32 NthValidShdef(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SHDEF *32",
@@ -85766,9 +85599,7 @@
       "types": {
         "typind": 5749,
         "proto": "void HostTimerProc(uint16_t, uint16_t, uint16_t, uint32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "void",
@@ -86806,7 +86637,7 @@
       }
     },
     {
-      "name": "CopyFile",
+      "name": "CopyStarsFile",
       "cv": {
         "seg": 9,
         "off": 8186,
@@ -86816,7 +86647,7 @@
       },
       "types": {
         "typind": 4476,
-        "proto": "void CopyFile(char *, char *)",
+        "proto": "void CopyStarsFile(char *, char *)",
         "tags": [],
         "is_pascal": false,
         "ret": {
@@ -87164,9 +86995,7 @@
       "types": {
         "typind": 5546,
         "proto": "int32_t ChgCargo(int16_t, int16_t, int16_t, int32_t, void *)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -88700,9 +88529,7 @@
       "types": {
         "typind": 5594,
         "proto": "int32_t CalcPlanetMaxPop(int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -89051,9 +88878,7 @@
       "types": {
         "typind": 4473,
         "proto": "int32_t LGetNextFileXor(void)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -90584,7 +90409,7 @@
       },
       "types": {
         "typind": 4589,
-        "proto": "int16_t FOpenFile(uint16_t, int16_t, int16_t)",
+        "proto": "int16_t FOpenFile(uint16_t, int16_t, MdOpenFlags)",
         "tags": [],
         "is_pascal": false,
         "ret": {
@@ -90618,8 +90443,8 @@
             "name": "md",
             "kind": "param",
             "typind": 114,
-            "c_type": "int16_t",
-            "c_decl": "int16_t md",
+            "c_type": "MdOpenFlags",
+            "c_decl": "MdOpenFlags md",
             "size": 2,
             "is_far_ptr": false,
             "bp_off": 10
@@ -91357,9 +91182,7 @@
       "types": {
         "typind": 4363,
         "proto": "THING *32 LpthWormFind(POINT *, int32_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "THING *32",
@@ -92933,9 +92756,7 @@
       "types": {
         "typind": 4798,
         "proto": "SHDEF *32 NthValidEnemyShdef(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SHDEF *32",
@@ -93265,9 +93086,7 @@
       "types": {
         "typind": 4150,
         "proto": "int16_t AskSaveDialog(void)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -94931,9 +94750,7 @@
       "types": {
         "typind": 4752,
         "proto": "SHDEF *32 LpshdefT(void)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SHDEF *32",
@@ -97075,9 +96892,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RandomSeedDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -100150,9 +99965,7 @@
       "types": {
         "typind": 4694,
         "proto": "void *32 LpAlloc(uint16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "void *32",
@@ -100441,9 +100254,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t MsgDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -103012,9 +102823,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t VCRDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -103324,9 +103133,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t MergeFleetsDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -103450,9 +103257,7 @@
       "types": {
         "typind": 4863,
         "proto": "PLAYER *32 LpplrComp(int16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PLAYER *32",
@@ -103514,9 +103319,7 @@
       "types": {
         "typind": 4755,
         "proto": "PLANETARY *32 LpplanetaryFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PLANETARY *32",
@@ -103568,9 +103371,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t CMineFromLpfl(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -105451,9 +105252,7 @@
       "types": {
         "typind": 5535,
         "proto": "int32_t DpOfLpflIshdef(FLEET *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -106476,9 +106275,7 @@
       "types": {
         "typind": 4752,
         "proto": "SHDEF *32 LpshdefSBT(void)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SHDEF *32",
@@ -106519,9 +106316,7 @@
       "types": {
         "typind": 4566,
         "proto": "char *32 PszGetLine(char *32 *)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "char *32",
@@ -107226,9 +107021,7 @@
       "types": {
         "typind": 5736,
         "proto": "POINT InvertPaneBorder(uint16_t, int16_t, POINT, POINT *)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -107476,10 +107269,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t MineWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -109199,9 +108989,7 @@
       "types": {
         "typind": 5690,
         "proto": "FLEET *32 LpflNew(int16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "FLEET *32",
@@ -109304,9 +109092,7 @@
       "types": {
         "typind": 4231,
         "proto": "THING *32 LpthNew(int16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "THING *32",
@@ -109905,9 +109691,7 @@
       "types": {
         "typind": 4639,
         "proto": "SHDEF *32 LpshdefFromTok(TOK *32)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SHDEF *32",
@@ -111297,9 +111081,7 @@
       "types": {
         "typind": 4818,
         "proto": "POINT PtDisplayString(uint16_t, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -111661,9 +111443,7 @@
       "types": {
         "typind": 4698,
         "proto": "void *32 LpReAlloc(void *32, uint16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "void *32",
@@ -111776,9 +111556,7 @@
       "types": {
         "typind": 4690,
         "proto": "HB *32 LphbAlloc(uint16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "HB *32",
@@ -111933,9 +111711,7 @@
       "types": {
         "typind": 4705,
         "proto": "PL *32 LpplAlloc(uint16_t, uint16_t, int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PL *32",
@@ -112164,9 +111940,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t BrowserDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -112465,9 +112239,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t ZipOrderDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -112998,10 +112770,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t TooltipWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -116569,9 +116338,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t HostOptionsDialog(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -116686,9 +116453,7 @@
       "types": {
         "typind": 4563,
         "proto": "int32_t LDistance2(POINT, POINT)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -118241,9 +118006,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t RenameZipDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -119715,9 +119478,7 @@
       "types": {
         "typind": 4203,
         "proto": "int16_t NewPasswordDlg(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL"
-        ],
+        "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {
           "c_type": "int16_t",
@@ -121133,10 +120894,7 @@
       "types": {
         "typind": 4143,
         "proto": "int32_t FakeListProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -122930,9 +122688,7 @@
       "types": {
         "typind": 5672,
         "proto": "int32_t DpShieldOfShdef(SHDEF *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -124053,9 +123809,7 @@
       "types": {
         "typind": 4751,
         "proto": "SCANNER *32 LpscannerFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "SCANNER *32",
@@ -125243,10 +124997,7 @@
       "types": {
         "typind": 4143,
         "proto": "int32_t FakeCEProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -127888,9 +127639,7 @@
       "types": {
         "typind": 4815,
         "proto": "POINT PtDisplayPlanetPopInfo(uint16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -128064,9 +127813,7 @@
       "types": {
         "typind": 4213,
         "proto": "int32_t CMineSweepFromLpfl(FLEET *32)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -128749,10 +128496,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t BrowserWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -129502,9 +129246,7 @@
       "types": {
         "typind": 4392,
         "proto": "PLANET *32 LpplFindBestEnum(PLANET *32, int16_t (*32)(PLANET *32, PLANET *32))",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "PLANET *32",
@@ -130098,9 +129840,7 @@
       "types": {
         "typind": 4512,
         "proto": "int32_t LDrawGauge(uint16_t, RECT *, int16_t, int32_t *, uint16_t *, int32_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -130532,9 +130272,7 @@
       "types": {
         "typind": 5715,
         "proto": "int32_t ChgPopFromPlanet(PLANET *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -131038,9 +130776,7 @@
       "types": {
         "typind": 4653,
         "proto": "int32_t DpFromPtokBrcToBrc(TOK *32, uint8_t, uint8_t, TOK *32, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -131263,9 +130999,7 @@
       "types": {
         "typind": 4608,
         "proto": "int32_t LInnateRaceHabitability(PLAYER *)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -132633,9 +132367,7 @@
       "types": {
         "typind": 4748,
         "proto": "ENGINE *32 LpengineFromId(int16_t)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "ENGINE *32",
@@ -132687,9 +132419,7 @@
       "types": {
         "typind": 4219,
         "proto": "int32_t LFuelUseToWaypoint(FLEET *32, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -132902,9 +132632,7 @@
       "types": {
         "typind": 4818,
         "proto": "POINT PtDisplayZipOrdInfo(uint16_t, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -135376,9 +135104,7 @@
       "types": {
         "typind": 5707,
         "proto": "int32_t CalcPlayerScore(int16_t, SCORE *)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "int32_t",
@@ -138182,10 +137908,7 @@
       "types": {
         "typind": 4119,
         "proto": "int32_t MessageWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
-        "tags": [
-          "PASCAL",
-          "RET32"
-        ],
+        "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
           "c_type": "int32_t",
@@ -138673,9 +138396,7 @@
       "types": {
         "typind": 5691,
         "proto": "FLEET *32 LpflNewSplit(FLEET *)",
-        "tags": [
-          "RETFAR"
-        ],
+        "tags": ["RETFAR"],
         "is_pascal": false,
         "ret": {
           "c_type": "FLEET *32",
@@ -138748,9 +138469,7 @@
       "types": {
         "typind": 4818,
         "proto": "POINT PtDisplayFactoryMineInfo(uint16_t, int16_t, int16_t)",
-        "tags": [
-          "RET32"
-        ],
+        "tags": ["RET32"],
         "is_pascal": false,
         "ret": {
           "c_type": "POINT",
@@ -154994,7 +154713,7 @@
         "rectyp": 265,
         "flags": 0,
         "from": "LABEL",
-        "proc": "CopyFile"
+        "proc": "CopyStarsFile"
       },
       "segmap": {
         "frame": 9,

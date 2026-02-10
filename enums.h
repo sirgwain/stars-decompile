@@ -607,6 +607,26 @@ typedef enum DtFileType {
     dtRace = 5, /* History file: .r1 */
 } DtFileType;
 
+/* mdOpen flags (passed to StreamOpen / FOpenFile)
+ *
+ * These mirror Win16 OpenFile() constants:
+ *   bits 0-2: access mode (OF_READ=0, OF_WRITE=1, OF_READWRITE=2)
+ *   bits 4-6: share mode  (OF_SHARE_EXCLUSIVE=0x10, OF_SHARE_DENY_WRITE=0x20)
+ *   bit 12:   OF_CREATE=0x1000
+ *   bit 14:   mdNoOpenErr (Stars!-specific, not a Win16 flag)
+ */
+typedef enum MdOpenFlags {
+    /* access + share combinations */
+    mdRead = 0x0020,      /* OF_READ | OF_SHARE_DENY_WRITE */
+    mdReadWrite = 0x0012, /* OF_READWRITE | OF_SHARE_EXCLUSIVE */
+
+    /* create/truncate */
+    mdCreate = 0x1012, /* OF_CREATE | OF_READWRITE | OF_SHARE_EXCLUSIVE */
+
+    /* Stars!-specific modifier */
+    mdNoOpenErr = 0x4000,
+} MdOpenFlags;
+
 typedef enum VictoryCondition {
     vcOwnsPercentPlanets = 0,     /* "Owns % of all planets." */
     vcAttainsTechLevel = 1,       /* "Attains Tech X in Y fields." (level) */

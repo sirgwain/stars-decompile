@@ -22,7 +22,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional, Set
+from typing import Optional, Set, List
 
 SCRIPT_DIR = Path(__file__).parent
 CALL_GRAPH_PATH = SCRIPT_DIR / "call_graph.json"
@@ -30,6 +30,7 @@ IMPL_STATUS_PATH = SCRIPT_DIR / "implementation_status.json"
 
 # ANSI colors
 RESET = "\033[0m"
+BRIGHT_CYAN = "\033[96m"
 BRIGHT_GREEN = "\033[92m"
 BRIGHT_YELLOW = "\033[93m"
 BRIGHT_RED = "\033[91m"
@@ -69,6 +70,41 @@ def get_func_status(impl_status: dict, func_name: str) -> str:
     return info.get("status", STATUS_MISSING)
 
 
+def get_decompiled_line_count(impl_status: dict, func_name: str) -> Optional[int]:
+    """Return decompiled line count for a function if available."""
+    funcs = impl_status.get("functions", {})
+    info = funcs.get(func_name)
+    if not info:
+        return None
+    return info.get("decompiled_line_count")
+
+
+def _ansi_256_color(n: int) -> str:
+    return f"\033[38;5;{n}m"
+
+
+def _stub_color_for_loc(loc: Optional[int]) -> str:
+    """Color stub functions by decompiled LOC using simple thresholds.
+
+    Green  : < 50 LOC
+    Yellow : 51–200 LOC
+    Red    : > 200 LOC
+
+    If LOC is missing, fall back to BRIGHT_YELLOW.
+    """
+    if loc is None:
+        return BRIGHT_YELLOW
+
+    loc = int(loc)
+
+    if loc < 50:
+        return BRIGHT_GREEN
+    elif loc <= 200:
+        return BRIGHT_YELLOW
+    else:
+        return BRIGHT_RED
+
+
 def parse_csv_set(s: Optional[str]) -> Set[str]:
     """Parse a comma-separated list into a set of non-empty strings."""
     if not s:
@@ -86,10 +122,20 @@ def status_tag(status: str) -> str:
 
 def color_for_status(status: str) -> str:
     if status == STATUS_IMPLEMENTED:
-        return BRIGHT_GREEN
+        return BRIGHT_CYAN
     if status == STATUS_STUB:
         return BRIGHT_YELLOW
     return BRIGHT_RED
+
+
+def color_for_func(impl_status: dict, func_name: str) -> str:
+    st = get_func_status(impl_status, func_name)
+    if st == STATUS_IMPLEMENTED:
+        return BRIGHT_CYAN
+    if st == STATUS_MISSING:
+        return BRIGHT_RED
+    # STUB: color-scale by LOC if available
+    return _stub_color_for_loc(get_decompiled_line_count(impl_status, func_name))
 
 
 def is_hidden_symbol(
@@ -113,13 +159,16 @@ def is_implemented(impl_status: dict, func_name: str) -> bool:
 
 
 def format_name(impl_status: dict, func_name: str) -> str:
-    st = get_func_status(impl_status, func_name)
-    c = color_for_status(st)
+    c = color_for_func(impl_status, func_name)
     return f"{c}{func_name}{RESET}"
 
 
 def format_status(impl_status: dict, func_name: str) -> str:
     st = get_func_status(impl_status, func_name)
+    if st == STATUS_STUB:
+        loc = get_decompiled_line_count(impl_status, func_name)
+        if loc is not None:
+            return f"[{status_tag(st)}, {loc} loc]"
     return f"[{status_tag(st)}]"
 
 
@@ -231,7 +280,9 @@ def print_function_tree(
     star = format_asterisk(worst)
 
     if is_root:
-        print(f"{format_name(impl_status, func_name)}{star} {format_status(impl_status, func_name)}")
+        print(
+            f"{format_name(impl_status, func_name)}{star} {format_status(impl_status, func_name)}"
+        )
     else:
         calls = [
             c
@@ -342,6 +393,7 @@ def todo_frontiers(
     include_missing: bool = False,
     max_depth: Optional[int] = None,
     exclude_branches: Optional[Set[str]] = None,
+    sort_stubs_by_loc: bool = False,
 ) -> None:
     """Show the next implementation work under a root.
 
@@ -359,20 +411,31 @@ def todo_frontiers(
 
     exclude_branches = exclude_branches or set()
 
-    def print_line(indent: str, fn: str) -> None:
-        print(f"{indent}{format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+    def print_node(prefix: str, fn: str, *, is_root: bool, is_last: bool) -> None:
+        """Print a node in the todo tree.
 
-    def print_arrow(indent: str, fn: str) -> None:
-        print(f"{indent}└─→ {format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+        Unlike the old formatting (which only showed arrows for stub/missing), we
+        always render an explicit parent→child connector so the structure is
+        unambiguous.
+        """
+        if is_root:
+            print(f"{format_name(impl_status, fn)} {format_status(impl_status, fn)}")
+            return
+
+        connector = "└─→ " if is_last else "├─→ "
+        print(
+            f"{prefix}{connector}{format_name(impl_status, fn)} {format_status(impl_status, fn)}"
+        )
 
     def dfs_node(
         fn: str,
-        indent: str,
+        prefix: str,
         *,
         printed: bool,
         in_unimpl_expand: bool,
         is_root: bool,
         depth: int,
+        is_last: bool,
     ) -> None:
         if fn in visited:
             return
@@ -380,7 +443,7 @@ def todo_frontiers(
 
         st = get_func_status(impl_status, fn)
         if not printed:
-            print_line(indent, fn)
+            print_node(prefix, fn, is_root=is_root, is_last=is_last)
 
         # Branch pruning: if this node is explicitly excluded, stop here.
         # (We still print the node itself, but we do not traverse its callees.)
@@ -402,41 +465,77 @@ def todo_frontiers(
         if max_depth is not None and depth >= max_depth:
             return
 
-        for callee in sorted(functions.get(fn, {}).get("calls", [])):
-            if is_hidden_symbol(
-                callee,
+        callees_raw: List[str] = functions.get(fn, {}).get("calls", [])
+        callees: List[str] = [
+            c
+            for c in callees_raw
+            if not is_hidden_symbol(
+                c,
                 impl_status,
                 include_externals=include_externals,
                 include_missing=include_missing,
-            ):
-                continue
+            )
+        ]
 
+        if sort_stubs_by_loc and callees:
+            stubs: List[str] = []
+            others: List[str] = []
+            for c in callees:
+                if get_func_status(impl_status, c) == STATUS_STUB:
+                    stubs.append(c)
+                else:
+                    others.append(c)
+
+            stubs.sort(
+                key=lambda name: (
+                    (
+                        get_decompiled_line_count(impl_status, name)
+                        if get_decompiled_line_count(impl_status, name) is not None
+                        else 10**9
+                    ),
+                    name,
+                )
+            )
+
+            # Put stubs first (sorted by LOC), followed by remaining callees in their natural order.
+            callees = stubs + others
+        for i, callee in enumerate(callees):
+            last_child = i == (len(callees) - 1)
+            child_prefix = prefix + ("    " if is_last else "│   ")
+
+            # Always print the child with an explicit connector.
+            # Then decide whether/how to expand.
             cst = get_func_status(impl_status, callee)
             if cst == STATUS_IMPLEMENTED:
-                # In normal mode, implemented nodes expand so we can reach the
-                # frontier(s). In unimplemented-expansion mode, implemented
-                # nodes also expand so we can find deeper stubs.
                 dfs_node(
                     callee,
-                    indent + "  ",
+                    child_prefix,
                     printed=False,
                     in_unimpl_expand=in_unimpl_expand,
                     is_root=False,
                     depth=depth + 1,
+                    is_last=last_child,
                 )
             else:
-                # Unimplemented child: print as an arrow from this node.
-                print_arrow(indent + "  ", callee)
                 dfs_node(
                     callee,
-                    indent + "  " + "  ",
-                    printed=True,
+                    child_prefix,
+                    printed=False,
                     in_unimpl_expand=True,
                     is_root=False,
                     depth=depth + 1,
+                    is_last=last_child,
                 )
 
-    dfs_node(root, "", printed=False, in_unimpl_expand=False, is_root=True, depth=0)
+    dfs_node(
+        root,
+        "",
+        printed=False,
+        in_unimpl_expand=False,
+        is_root=True,
+        depth=0,
+        is_last=True,
+    )
 
 
 def cmd_unimplemented(args) -> None:
@@ -446,7 +545,9 @@ def cmd_unimplemented(args) -> None:
 
     func_name = args.function
     if func_name not in functions:
-        print(f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr)
+        print(
+            f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr
+        )
         sys.exit(1)
 
     unimplemented = collect_unimplemented(
@@ -468,7 +569,9 @@ def cmd_function_tree(args) -> None:
 
     func_name = args.function
     if func_name not in functions:
-        print(f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr)
+        print(
+            f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr
+        )
         sys.exit(1)
 
     print_function_tree(
@@ -487,7 +590,9 @@ def cmd_todo(args) -> None:
 
     func_name = args.function
     if func_name not in functions:
-        print(f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr)
+        print(
+            f"Error: Function '{func_name}' not found in call graph.", file=sys.stderr
+        )
         sys.exit(1)
 
     todo_frontiers(
@@ -498,11 +603,14 @@ def cmd_todo(args) -> None:
         include_missing=args.include_missing,
         max_depth=args.max_depth,
         exclude_branches=parse_csv_set(args.exclude_branches),
+        sort_stubs_by_loc=args.sort_stubs_by_loc,
     )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Call graph analysis tool for Stars! decompilation project.")
+    parser = argparse.ArgumentParser(
+        description="Call graph analysis tool for Stars! decompilation project."
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     def add_common_flags(p: argparse.ArgumentParser) -> None:
@@ -521,7 +629,9 @@ def main() -> None:
         "function-tree",
         help="Display a (collapsed) tree of functions called by a given function",
     )
-    tree_parser.add_argument("--function", "-f", required=True, help="Name of the function to analyze")
+    tree_parser.add_argument(
+        "--function", "-f", required=True, help="Name of the function to analyze"
+    )
     add_common_flags(tree_parser)
     tree_parser.set_defaults(func=cmd_function_tree)
 
@@ -529,7 +639,9 @@ def main() -> None:
         "unimplemented",
         help="List all unimplemented functions in a function's call tree",
     )
-    unimpl_parser.add_argument("--function", "-f", required=True, help="Name of the function to analyze")
+    unimpl_parser.add_argument(
+        "--function", "-f", required=True, help="Name of the function to analyze"
+    )
     add_common_flags(unimpl_parser)
     unimpl_parser.set_defaults(func=cmd_unimplemented)
 
@@ -537,12 +649,19 @@ def main() -> None:
         "todo",
         help="Show implementation frontiers (implemented -> first unimplemented)",
     )
-    todo_parser.add_argument("--function", "-f", required=True, help="Name of the function to analyze")
+    todo_parser.add_argument(
+        "--function", "-f", required=True, help="Name of the function to analyze"
+    )
     todo_parser.add_argument(
         "--max-depth",
         type=int,
         default=None,
         help="Stop expanding the todo graph past this call depth from the root (root=0).",
+    )
+    todo_parser.add_argument(
+        "--sort-stubs-by-loc",
+        action="store_true",
+        help="Within each node, list STUB callees first, ordered by decompiled LOC (ascending).",
     )
     todo_parser.add_argument(
         "--exclude-branches",

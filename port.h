@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "enums.h"
+
 /* io.h is Windows-specific; use unistd.h on other platforms or when using stubs */
 #if defined(_WIN32) && !defined(STARS_USE_WIN_STUBS)
 #include <io.h>
@@ -29,7 +31,7 @@ int Stars_strnicmp(const char *a, const char *b, size_t n);
 /* ------------------------------------------------------------------ */
 /* Path utilities                                                      */
 /* ------------------------------------------------------------------ */
-
+char Stars_PathSepChar(void);
 bool Stars_PathJoin(char *out, size_t out_sz, const char *base, const char *leaf);
 bool Stars_PathExists(const char *path);
 bool Stars_EnsureDirRecursive(const char *path);
@@ -65,21 +67,7 @@ typedef struct StarsFile {
 
 extern StarsFile hf;
 
-/* mdOpen flags (passed to StreamOpen / FOpenFile)
- *
- * These mirror Win16 OpenFile() constants:
- *   bits 0-2: access mode (OF_READ=0, OF_WRITE=1, OF_READWRITE=2)
- *   bits 4-6: share mode  (OF_SHARE_EXCLUSIVE=0x10, OF_SHARE_DENY_WRITE=0x20)
- *   bit 12:   OF_CREATE=0x1000
- *   bit 14:   mdNoOpenErr (Stars!-specific, not a Win16 flag)
- */
-typedef enum MdOpenFlags {
-    mdRead = 0x0020,       /* OF_READ | OF_SHARE_DENY_WRITE */
-    mdCreate = 0x1012,     /* OF_CREATE | OF_SHARE_EXCLUSIVE | OF_READWRITE */
-    mdNoOpenErr = 0x4000,
-} MdOpenFlags;
-
-int      Stars_OpenFile(StarsFile *h, const char *path, int16_t mdOpen);
+int      Stars_OpenFile(StarsFile *h, const char *path, MdOpenFlags mdOpen);
 void     Stars_CloseFile(StarsFile *h);
 size_t   Stars_Read(StarsFile *h, void *dst, size_t cb);
 int      Stars_Seek(StarsFile *h, long offset, int whence);

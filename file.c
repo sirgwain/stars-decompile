@@ -41,7 +41,7 @@ void FileError(StringId ids) {
     }
 }
 
-void StreamOpen(const char *szFile, int16_t mdOpen) {
+void StreamOpen(const char *szFile, MdOpenFlags mdOpen) {
     uint32_t deadline = 0;
 
     bool fNoErr = (mdOpen & mdNoOpenErr) != 0;
@@ -1510,7 +1510,7 @@ void ReadRt(void) {
     }
 }
 
-bool FOpenFile(DtFileType dt, int16_t iPlayer, int16_t md) {
+bool FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md) {
     MemJump  env;
     MemJump *penvMemSav;
     bool     fSilentSav = fFileErrSilent;

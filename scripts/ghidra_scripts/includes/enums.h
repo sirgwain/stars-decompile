@@ -3600,3 +3600,15 @@ typedef enum VictoryCondition {
     vcMeetsNumCriteria = 8,       /* "Winner must meet X of the above selected criteria." */
     vcMinYearsBeforeWin = 9       /* "At least X years must pass before a winner is declared." */
 } VictoryCondition;
+
+typedef enum MdOpenFlags {
+    /* access + share combinations */
+    mdRead = 0x0020,      /* OF_READ | OF_SHARE_DENY_WRITE */
+    mdReadWrite = 0x0012, /* OF_READWRITE | OF_SHARE_EXCLUSIVE */
+
+    /* create/truncate */
+    mdCreate = 0x1012, /* OF_CREATE | OF_READWRITE | OF_SHARE_EXCLUSIVE */
+
+    /* Stars!-specific modifier */
+    mdNoOpenErr = 0x4000,
+} MdOpenFlags;
