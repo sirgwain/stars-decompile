@@ -10,12 +10,14 @@
 #define cDefenseCount   5
 #define iPlanetPartNone -1
 
-typedef enum CostType {
+typedef enum MineralType {
     Ironium = 0,
     Boranium = 1,
     Germanium = 2,
-    Resources = 3,
-} CostType;
+    Resources = 3, // for cost
+    Colonists = 3, // for cargo
+    Fuel = 4,
+} MineralType;
 
 typedef enum EnvType {
     Gravity = 0,
@@ -94,11 +96,26 @@ typedef enum DetType {
 } DetType;
 
 typedef enum GrobjClass {
-    grobjNone = 0x0,
-    grobjPlanet = 0x1,
-    grobjFleet = 0x2,
-    grobjOther = 0x4,
-    grobjThing = 0x8,
+    /* ------------------------------------------------------------
+     * Object class mask (low nibble)
+     * ------------------------------------------------------------ */
+    grobjNone = 0x0000,
+    grobjPlanet = 0x0001,
+    grobjFleet = 0x0002,
+    grobjOther = 0x0004,
+    grobjThing = 0x0008,
+
+    grobjMask = 0x000F,
+
+    /* ------------------------------------------------------------
+     * Mode flags (high bits)
+     * ------------------------------------------------------------ */
+    mdNoRecurse = 0x0020,  /* inhibit recursive fill-in */
+    mdScanRadius = 0x0040, /* limit search to scanner radius */
+    mdExact = 0x0080,      /* exact-position (zero-radius) match */
+
+    /* Common composite used by recursion */
+    mdRecurseMask = mdNoRecurse | mdExact, /* 0x00A0 */
 } GrobjClass;
 
 typedef enum HullSlotType {
@@ -221,6 +238,14 @@ typedef enum BattleUnitFlags {
 
     grBuClassAll = 0x00F8
 } BattleUnitFlags;
+
+typedef enum AttackWho {
+    iplrAttackNobody = 0,
+    iplrAttackEnemies = 1,
+    iplrAttackNeutralsEnemies = 2,
+    iplrAttackEveryone = 3,
+    iplrAttackPlayer = 4,
+} AttackWho;
 
 typedef enum GrStat {
     grStatFuel = 1,
@@ -650,5 +675,44 @@ typedef enum VictoryCondition {
     vcMeetsNumCriteria = 8,       /* "Winner must meet X of the above selected criteria." */
     vcMinYearsBeforeWin = 9       /* "At least X years must pass before a winner is declared." */
 } VictoryCondition;
+
+typedef enum TaskType {
+    grTaskNone = 0,
+    grTaskXfer = 1, /* transport / transfer cargo */
+    grTaskColonize = 2,
+    grTaskMine = 3, /* remote mining */
+    grTaskMerge = 4,
+    grTaskScrap = 5,
+    grTaskLayMines = 6,
+    grTaskPatrol = 7,
+    grTaskAutoRoute = 8, /* auto-route / auto-order */
+    grTaskGive = 9,
+} TaskType;
+
+typedef enum XferActionType {
+    iActionNone = 0, /* implicit / cleared */
+
+    iActionLoadAll = 1,     /* "Load All Available"        */
+    iActionUnloadAll = 2,   /* "Unload All"                */
+    iActionLoadExact = 3,   /* "Load Exactly..."           */
+    iActionUnloadExact = 4, /* "Unload Exactly..."         */
+    iActionFillPercent = 5, /* "Fill Up to %..."           */
+    iActionWaitPercent = 6, /* "Wait for %..."             */
+    iActionLoadDunnage = 7, /* "Load Dunnage"              */
+    iActionSetAmount = 8,   /* "Set Amount to..."          */
+    iActionSetWaypoint = 9, /* "Set Waypoint to..."        */
+    /* iActionLoadOptimal is encoded via iActionLoadDunnage + fuel path */
+} XferActionType;
+
+typedef enum MdTarget {
+    mdTargetNone = 0,              /* "None/Disengage" */
+    mdTargetAny = 1,               /* "Any" */
+    mdTargetStarbase = 2,          /* "Starbase" */
+    mdTargetArmedShips = 3,        /* "Armed Ships" */
+    mdTargetBombersFreighters = 4, /* "Bombers/Freighters" */
+    mdTargetUnarmedShips = 5,      /* "Unarmed Ships" */
+    mdTargetFuelTransports = 6,    /* "Fuel Transports" */
+    mdTargetFreighters = 7,        /* "Freighters" */
+} MdTarget;
 
 #endif /* ENUMS_H_ */

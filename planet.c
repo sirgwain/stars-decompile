@@ -7,6 +7,7 @@
 #include "planet.h"
 #include "produce.h"
 #include "race.h"
+#include "ship2.h"
 #include "util.h"
 #include "utilgen.h"
 
@@ -17,14 +18,60 @@
 int32_t PopFromLppl(PLANET *lppl) { return lppl->rgwtMin[3]; }
 
 int16_t PctCloakFromHuldef(HUL *lphul, int16_t iplr, int16_t *ppctSteal) {
-    int16_t chs;
+    uint8_t chs;
     HS     *lphs;
     int32_t cPts;
-    int16_t cScore;
+    int16_t pctCloak;
     int16_t j;
 
-    /* TODO: implement */
-    return 0;
+    chs = lphul->chs;
+    if (iplr == -1 || lphul->ihuldef < ihuldefCount || GetRaceGrbit(&rgplr[iplr], ibitRaceISB) == 0) {
+        cPts = 0;
+    } else {
+        // starbases get default cloaking
+        cPts = 40;
+    }
+    if (iplr != -1 && GetRaceStat(&rgplr[iplr], rsMajorAdv) == raStealth) {
+        cPts += 300;
+    }
+    if (ppctSteal != NULL) {
+        *ppctSteal = 0;
+    }
+    lphs = lphul->rghs;
+    for (j = 0; j < (int16_t)chs; j = j + 1) {
+        cPts += (int32_t)CPtsCloakFromLphs(lphs);
+        if (lphs->grhst == hstScanner && ppctSteal != NULL) {
+            if (lphs->iItem == iscannerPickPocketScanner) {
+                if (*ppctSteal < 70) {
+                    *ppctSteal = 70;
+                }
+            } else if (lphs->iItem == iscannerRobberBaronScanner && *ppctSteal < 80) {
+                *ppctSteal = 80;
+            }
+        }
+        lphs = lphs + 1;
+    }
+    if (cPts == 0) {
+        pctCloak = 0;
+    } else if (cPts < 0 || cPts > 25000) {
+        pctCloak = 0;
+    } else if (cPts < 101) {
+        pctCloak = (int16_t)cPts >> 1;
+    } else if (cPts - 100 < 201) {
+        pctCloak = (int16_t)(cPts - 100) / 8 + 50;
+    } else if (cPts - 300 < 0x139) {
+        pctCloak = (int16_t)(cPts - 300) / 24 + 75;
+    } else {
+        int16_t rem = (int16_t)(cPts - 612);
+        if (rem < 513) {
+            pctCloak = (rem >> 6) + 88;
+        } else if (rem < 1000) {
+            pctCloak = (767 < rem) + 96;
+        } else {
+            pctCloak = 98;
+        }
+    }
+    return pctCloak;
 }
 
 int16_t PctPlanetOptValue(PLANET *lppl, int16_t iPlr) {
@@ -150,8 +197,22 @@ int16_t FGetBestDefensePart(PART *ppart) {
     int16_t i;
     PART    part;
 
-    /* TODO: implement */
-    return 0;
+    part.hs.grhst = hstPlanetary;
+    part.hs.iItem = iplanetarySDI;
+    i = 0;
+    while (i < 5 && FLookupPart(&part) == LookupOk) {
+        i = i + 1;
+        part.hs.iItem = (part.hs.iItem + 1) & 0xff;
+    }
+    fRet = (0 < i);
+    if (fRet) {
+        i = i - 1;
+    }
+    part.hs.iItem = (i + iplanetarySDI) & 0xff;
+    FLookupPart(&part);
+    ppart->hs = part.hs;
+    ppart->pplanetary = part.pplanetary;
+    return fRet;
 }
 
 int16_t PctPlanetDesirability(PLANET *lppl, int16_t iPlr) {
@@ -324,14 +385,48 @@ int16_t CMaxOperableDefenses(PLANET *lppl, int16_t iplr, int16_t fNextYear) {
 char *PszProductionETA(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *etaFirst, int16_t *etaLast) {
     int16_t iTurnEnd;
     int16_t iTurnBegin;
-    int16_t c;
     int16_t ids;
+    int16_t len;
+    char   *psz;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x3160 */
-
-    /* TODO: implement */
-    return NULL;
+    if (lpplprod == NULL) {
+        lpplprod = lppl->lpplprod;
+    }
+    EstimateItemProdSched(lppl, lpplprod, iItem, &iTurnBegin, &iTurnEnd);
+    if (iTurnBegin == 100) {
+        if (lpplprod == NULL || lpplprod->iprodMac <= iItem || lpplprod->rgprod[iItem].grobj != grobjPlanet || lpplprod->rgprod[iItem].iItem > iobjPacket) {
+            ids = idsNever;
+        } else {
+            ids = idsUnknown2;
+        }
+        CchGetString(ids, szWork);
+    } else if (iTurnEnd == 100) {
+        psz = PszGetCompressedString(idsDYears);
+        wsprintf(szWork, psz, iTurnBegin);
+    } else if (iTurnBegin == iTurnEnd) {
+        if (iTurnBegin == 0) {
+            CchGetString(idsSkipped, szWork);
+        } else if (iTurnBegin == -1) {
+            CchGetString(idsNeeded, szWork);
+        } else {
+            psz = PszGetCompressedString(idsDYear);
+            len = wsprintf(szWork, psz, iTurnBegin);
+            if (iTurnBegin != 1) {
+                szWork[len] = 's';
+                szWork[len + 1] = '\0';
+            }
+        }
+    } else {
+        psz = PszGetCompressedString(idsDDYears);
+        wsprintf(szWork, psz, iTurnBegin, iTurnEnd);
+    }
+    if (etaFirst != NULL) {
+        *etaFirst = iTurnBegin;
+    }
+    if (etaLast != NULL) {
+        *etaLast = iTurnEnd;
+    }
+    return szWork;
 }
 
 int16_t FCanTerraformLppl(PLANET *lppl, int16_t *rgEnvMin, int16_t *rgEnvMax, int16_t *rgEnvCost, int16_t fHelp) {
@@ -815,11 +910,29 @@ int16_t StargateRangeFromLppl(PLANET *lppl, int16_t iplr, int16_t ish) {
     HUL    *lphul;
     PART    part;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_PLANET:0x7e3b */
-
-    /* TODO: implement */
-    return 0;
+    if (lppl == NULL) {
+        lphul = &rglpshdefSB[iplr][ish].hul;
+    } else {
+        if (lppl->iPlayer == iNoPlayer || !lppl->fStarbase) {
+            return 0;
+        }
+        lphul = &rglpshdefSB[lppl->iPlayer][lppl->isb].hul;
+    }
+    i = 0;
+    while (true) {
+        if (lphul->chs <= i) {
+            return 0;
+        }
+        if (lphul->rghs[i].grhst == hstSpecialSB && lphul->rghs[i].cItem != 0 && lphul->rghs[i].iItem <= ispecialSBStargateAnyAny)
+            break;
+        i = i + 1;
+    }
+    part.hs = lphul->rghs[i];
+    FLookupPart(&part);
+    if (part.pspecialsb->grAbility2 != -1) {
+        return part.pspecialsb->grAbility2;
+    }
+    return 10000;
 }
 
 int16_t CMaxOperableMines(PLANET *lppl, int16_t iplr, int16_t fNextYear) {
@@ -871,11 +984,21 @@ int16_t CMinesOperating(PLANET *lppl) {
 }
 
 int16_t PctPlanetCapacity(PLANET *lppl) {
-    int32_t pctCap;
     int32_t lPopMax;
+    int16_t pctCap;
 
-    /* TODO: implement */
-    return 0;
+    lPopMax = CalcPlanetMaxPop(lppl->id, idPlayer);
+    if (lPopMax < 1) {
+        pctCap = 0;
+    } else {
+        int32_t halfPop = lPopMax / 2;
+        int32_t result = ((uint32_t)lppl->rgwtMin[3] * 100 + halfPop) / lPopMax;
+        pctCap = (int16_t)result;
+        if (result > 999) {
+            pctCap = 999;
+        }
+    }
+    return pctCap;
 }
 
 int16_t CFactoriesOperating(PLANET *lppl) {

@@ -10,6 +10,7 @@
 #include "planet.h"
 #include "race.h"
 #include "report.h"
+#include "scan.h"
 #include "ship.h"
 #include "strings.h"
 #include "tutor.h"
@@ -1651,8 +1652,21 @@ int16_t FFleetCanJumpgate(FLEET *lpfl) {
     int16_t i;
     int16_t j;
 
-    /* TODO: implement */
-    return 0;
+    for (i = 0; i <= cShdefMax; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphs = rglpshdef[lpfl->iPlayer][i].hul.rghs;
+            chs = rglpshdef[lpfl->iPlayer][i].hul.chs;
+            for (j = 0; j < chs; j++) {
+                if (lphs->cItem != 0 && lphs->grhst == hstSpecialM && lphs->iItem == ispecialMJumpGate)
+                    break;
+                lphs++;
+            }
+            if (j == chs) {
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
 
 int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore) {
@@ -1809,28 +1823,240 @@ int16_t GetFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDet
     return 0;
 }
 
-int16_t FFindNearestObject(POINT pt, GrobjClass grobj, SCAN *pscan) {
-    POINT   ptWp;
-    POINT  *ppt;
-    int16_t dy;
-    int32_t lTry;
-    THING  *lpth;
-    FLEET  *lpfl;
-    int16_t i;
-    THING  *lpthMac;
-    int32_t lSquare;
-    SCAN    scanT;
-    int16_t iNearest;
-    int16_t dx;
-    SCAN    scan;
+int16_t FFindNearestObject(STARSPOINT pt, GrobjClass grobj, SCAN *pscan) {
+    STARSPOINT  ptWp;
+    STARSPOINT *ppt;
+    int16_t     dx;
+    int16_t     dy;
+    int16_t     i;
+    int32_t     lTry;
+    int32_t     lSquare;
+    int16_t     iNearest;
+    THING      *lpth;
+    THING      *lpthMac;
+    FLEET      *lpfl;
+    SCAN        scan;
+    SCAN        scanT;
+    STARSPOINT  pt_00;
 
-    /* debug symbols */
-    /* label SelectThing @ MEMORY_UTIL:0x4523 */
-    /* label SelectSpace @ MEMORY_UTIL:0x46c3 */
-    /* label SelectShip @ MEMORY_UTIL:0x439d */
+    /* ------------------------------------------------------------
+     * asm: 1038:4070..40b1
+     * ------------------------------------------------------------ */
+    lSquare = 1000000000L;
 
-    /* TODO: implement */
-    return 0;
+    ppt = (STARSPOINT *)rgptPlan;
+
+    scan.grobjFull = grobjNone;
+    scan.grobj = grobjNone;
+    scan.pt.x = 0;
+    scan.pt.y = 0;
+    scan.ith = -1;
+    scan.iwp = -1;
+    scan.ifl = -1;
+    scan.idpl = 0;
+
+    /* ------------------------------------------------------------
+     * Initial radius handling (mdScanRadius / mdExact)
+     * asm: 1038:40b4..4107
+     * ------------------------------------------------------------ */
+    if (grobj & mdScanRadius) {
+        int16_t s = ScanToPt(0x14);
+        lSquare = (int32_t)s * s;
+    } else if (grobj & mdExact) {
+        lSquare = 0;
+    }
+
+    /* ------------------------------------------------------------
+     * Planets
+     * asm: 1038:4107..4207
+     * ------------------------------------------------------------ */
+    if (grobj & grobjPlanet) {
+        for (i = 0; i < game.cPlanMax; i++) {
+            dx = pt.x - ppt->x;
+            dy = pt.y - ppt->y;
+
+            lTry = (int32_t)dx * dx + (int32_t)dy * dy;
+
+            if (lTry <= lSquare) {
+                if (lTry != lSquare || lSquare == 0) {
+                    scan.pt = *ppt;
+                    scan.idpl = i;
+                    scan.grobj = grobjPlanet;
+                    scan.grobjFull = grobjPlanet;
+                    lSquare = lTry;
+                }
+            }
+
+            ppt++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * Fleets
+     * ------------------------------------------------------------ */
+    if (grobj & grobjFleet) {
+        for (i = 0; i < cFleet; i++) {
+            lpfl = ((FLEET **)rglpfl)[i];
+            if (lpfl == NULL)
+                break;
+
+            dx = pt.x - lpfl->pt.x;
+            dy = pt.y - lpfl->pt.y;
+
+            lTry = (int32_t)dx * dx;
+            if (lTry <= lSquare) {
+                lTry += (int32_t)dy * dy;
+                if (lTry <= lSquare) {
+                    if (((lTry == lSquare) && !(scan.grobj & grobjPlanet)) || (lpfl->pt.x == scan.pt.x && lpfl->pt.y == scan.pt.y)) {
+
+                        if (!(scan.grobjFull & grobjFleet) || (((FLEET **)rglpfl)[scan.ifl]->iPlayer != idPlayer && lpfl->iPlayer == idPlayer)) {
+
+                            scan.ifl = i;
+                            scan.grobjFull |= grobjFleet;
+
+                            if (scan.grobj == grobjNone)
+                                goto UTIL_SelectShip;
+                        }
+                    } else if (lTry < lSquare) {
+                    UTIL_SelectShip:
+                        scan.pt = lpfl->pt;
+                        scan.ifl = i;
+                        scan.idpl = -1;
+                        scan.grobj = grobjFleet;
+                        scan.grobjFull = grobjFleet;
+                        lSquare = lTry;
+                    }
+                }
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * Things
+     * ------------------------------------------------------------ */
+    if (grobj & grobjThing) {
+        lpth = (THING *)lpThings;
+        lpthMac = lpth + cThing;
+
+        while (lpth < lpthMac) {
+            dx = pt.x - lpth->pt.x;
+            dy = pt.y - lpth->pt.y;
+
+            lTry = (int32_t)dx * dx;
+            if (lTry <= lSquare) {
+                lTry += (int32_t)dy * dy;
+                if (lTry <= lSquare) {
+                    if (((lTry == lSquare) && !(scan.grobj & (grobjFleet | grobjPlanet))) || (lpth->pt.x == scan.pt.x && lpth->pt.y == scan.pt.y)) {
+
+                        if (!(scan.grobjFull & grobjThing)) {
+                            scan.ith = (int16_t)(lpth - (THING *)lpThings);
+                            scan.grobjFull |= grobjThing;
+
+                            if (scan.grobj == grobjNone)
+                                goto UTIL_SelectThing;
+                        }
+                    } else if (lTry < lSquare) {
+                    UTIL_SelectThing:
+                        scan.pt = lpth->pt;
+                        scan.ith = (int16_t)(lpth - (THING *)lpThings);
+                        scan.ifl = -1;
+                        scan.idpl = -1;
+                        scan.grobj = grobjThing;
+                        scan.grobjFull = grobjThing;
+                        lSquare = lTry;
+                    }
+                }
+            }
+
+            lpth++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * Waypoints ("Other")
+     * ------------------------------------------------------------ */
+    if ((grobj & grobjOther) && sel.grobj == grobjFleet) {
+        i = sel.fl.cord;
+
+    LAB_1038_46f2:
+        i--;
+        if (i >= 0) {
+            ptWp = sel.fl.lpplord->rgord[i].pt;
+
+            dx = pt.x - ptWp.x;
+            dy = pt.y - ptWp.y;
+
+            lTry = (int32_t)dx * dx;
+            if (lTry <= lSquare) {
+                lTry += (int32_t)dy * dy;
+                if (lTry <= lSquare) {
+                    if (((lTry == lSquare) && !(scan.grobj & (grobjThing | grobjFleet | grobjPlanet))) || (ptWp.x == scan.pt.x && ptWp.y == scan.pt.y)) {
+
+                        if ((scan.grobjFull & grobjOther) && i != sel.scan.iwp)
+                            goto LAB_1038_46f2;
+
+                        scan.iwp = i;
+                        scan.grobjFull |= grobjOther;
+
+                        if (scan.grobj != grobjNone)
+                            goto LAB_1038_46f2;
+                    } else if (lSquare <= lTry) {
+                        goto LAB_1038_46f2;
+                    }
+
+                    lSquare = lTry;
+                    scan.pt = ptWp;
+                    scan.iwp = i;
+                    scan.ith = -1;
+                    scan.ifl = -1;
+                    scan.idpl = -1;
+                    scan.grobj = grobjOther;
+                    scan.grobjFull = grobjOther;
+                }
+            }
+            goto LAB_1038_46f2;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * Recursive fill-in pass (mdNoRecurse)
+     * ------------------------------------------------------------ */
+    if (!(grobj & mdNoRecurse) && scan.grobj != grobjNone) {
+        pt_00 = scan.pt;
+
+        {
+            GrobjClass grobjRecurse = (grobj & grobjMask) ^ (grobjThing | grobjOther | grobjFleet | grobjPlanet);
+
+            grobjRecurse |= mdRecurseMask;
+
+            if (FFindNearestObject(pt_00, grobjRecurse, &scanT)) {
+                if (scanT.idpl != -1)
+                    scan.idpl = scanT.idpl;
+                if (scanT.ifl != -1)
+                    scan.ifl = scanT.ifl;
+                if (scanT.iwp != -1)
+                    scan.iwp = scanT.iwp;
+                if (scanT.ith != -1)
+                    scan.ith = scanT.ith;
+
+                scan.grobjFull |= scanT.grobjFull;
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * Copy out SCAN (8-word copy, asm-accurate)
+     * ------------------------------------------------------------ */
+    if (pscan) {
+        SCAN *src = &scan;
+        for (i = 8; i != 0; i--) {
+            pscan->pt.x = src->pt.x;
+            pscan = (SCAN *)&pscan->pt.y;
+            src = (SCAN *)&src->pt.y;
+        }
+    }
+
+    return scan.grobj != grobjNone;
 }
 
 #ifdef _WIN32

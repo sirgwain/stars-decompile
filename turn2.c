@@ -1593,85 +1593,107 @@ int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBui
             return 0;
         }
 
-        if (lppl->idFling == 0) {
-            FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0);
-            return 0;
-        }
+        /* NOTE: For mineral packets, the destination (+1 encoding) and requested warp live in
+         * the HIWORD of PLANET.lStarbase (offset +0x2e), NOT in the low-word idFling/iWarpFling overlay.
+         *
+         * asm:
+         *   destPlus1 = word[lppl+0x2e] & 0x03ff
+         *   warpAsked = ((word[lppl+0x2e] >> 10) & 0x0f) + 4
+         */
+        {
+            uint16_t hi = (uint16_t)(lppl->lStarbase >> 16);
+            uint16_t destPlus1 = (uint16_t)(hi & 0x03ffu);
 
-        if (iItem == iobjPacket)
-            iItem = iobjPacketMixed; /* auto-packet → mixed */
-
-        if (iItem == iobjPacketMixed) {
-            cSize = (raMajor == raMassAccel) ? 25 : 40;
-        } else {
-            cSize = (raMajor == raMassAccel) ? 70 : 100;
-        }
-
-        for (i = 0; i < 3; i++) {
-            if (i == iItem - 0xe || iItem == 0x11) {
-                int32_t wt = (int32_t)cSize * (int32_t)cBuilt;
-                if (wt > 32760)
-                    wt = 32760;
-                rgwt[i] = (int16_t)wt;
-            } else {
-                rgwt[i] = 0;
+            if (destPlus1 == 0) {
+                FSendPlrMsg2(lppl->iPlayer, idmMineralPacketFormedHasDisintegratedBecauseDidnt, lppl->id, lppl->id, 0);
+                return 0;
             }
-        }
 
-        iWarpAsked = lppl->iWarpFling + 4;
-        if (iWarpAsked < 5 || iWarpAsked > iWarpMA + 3)
-            iWarpAsked = iWarpMA + fTwoMAs;
-        if (iWarpAsked > iWarpMA + fTwoMAs)
-            iDecayRate = (iWarpAsked - iWarpMA) - fTwoMAs;
-        else
-            iDecayRate = 0;
+            /* destination planet id (0-based), as stored in THING.thp.idPlanet */
+            int16_t idDest = (int16_t)(destPlus1 - 1);
 
-        if (raMajor == raStargate && iDecayRate < 3)
-            iDecayRate++;
+            if (iItem == iobjPacket)
+                iItem = iobjPacketMixed; /* auto-packet → mixed */
 
-        int16_t iWarpPkt = iWarpAsked - 4;
-
-        /* Search for existing matching mineral packet */
-        lpth = lpThings;
-        lpthMac = lpThings + cThing;
-        while (lpth < lpthMac) {
-            // TODO: verify this lpth->thp.idPlanet == lppl->idFling - 1 condition. I think it's correct... not sure about the -1
-            if (lpth->iplr == lppl->iPlayer && lpth->ith == ithMineralPacket && lpth->pt.x == rgptPlan[lppl->id].x && lpth->pt.y == rgptPlan[lppl->id].y &&
-                lpth->thp.iWarp == (uint16_t)iWarpPkt && lpth->thp.idPlanet == lppl->idFling - 1 && lpth->thp.iDecayRate == (uint16_t)iDecayRate &&
-                lpth->thp.wtMax < 1630)
-                break;
-            lpth++;
-        }
-
-        if (lpth >= lpthMac) {
-            /* Create new mineral packet THING */
-            THING *lpthNew = LpthNew(lppl->iPlayer, ithMineralPacket);
-            if (lpthNew == NULL) {
-                FSendPlrMsg2(lppl->iPlayer, idmHasOrdersBuildMineralPacketEitherDoesnt, lppl->id, lppl->id, 0);
+            if (iItem == iobjPacketMixed) {
+                cSize = (raMajor == raMassAccel) ? 25 : 40;
             } else {
-                uint16_t wtAccum = 0;
-                for (i = 0; i < 3; i++) {
-                    lpthNew->thp.rgwtMin[i] = rgwt[i];
-                    wtAccum += (rgwt[i] + 9) / 10;
-                }
-                lpthNew->thp.iWarp = iWarpPkt & 0xf;
-                lpthNew->thp.wtMax = wtAccum;
-                lpthNew->thp.iDecayRate = iDecayRate;
-                lpthNew->thp.idPlanet = lppl->idFling - 1;
-                lpthNew->pt.x = rgptPlan[lppl->id].x;
-                lpthNew->pt.y = rgptPlan[lppl->id].y;
-                FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasDestination, lppl->id, lppl->id, lppl->idFling - 1);
+                cSize = (raMajor == raMassAccel) ? 70 : 100;
             }
-        } else {
-            /* Merge into existing packet */
-            lpth->thp.wtMax = 0;
+
             for (i = 0; i < 3; i++) {
-                lpth->thp.rgwtMin[i] += rgwt[i];
-                if (lpth->thp.rgwtMin[i] < 0)
-                    lpth->thp.rgwtMin[i] = 32760;
-                lpth->thp.wtMax += (lpth->thp.rgwtMin[i] + 9) / 10;
+                if (i == iItem - iobjPacketIron || iItem == iobjPacketMixed) {
+                    int32_t wt = (int32_t)cSize * (int32_t)cBuilt;
+                    if (wt > 32760)
+                        wt = 32760;
+                    rgwt[i] = (int16_t)wt;
+                } else {
+                    rgwt[i] = 0;
+                }
             }
-            FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasCombined, lppl->id, lppl->id, lppl->idFling - 1);
+
+            /* asm: iWarpAsked = (((word[lppl+0x2e] >> 10) & 0x0f) + 4) */
+            iWarpAsked = (int16_t)((((hi >> 10) & 0x0fu)) + 4);
+
+            if (iWarpAsked < 5 || iWarpAsked > iWarpMA + 3)
+                iWarpAsked = iWarpMA + fTwoMAs;
+
+            if (iWarpAsked > iWarpMA + fTwoMAs)
+                iDecayRate = (iWarpAsked - iWarpMA) - fTwoMAs;
+            else
+                iDecayRate = 0;
+
+            if (raMajor == raStargate && iDecayRate < 3)
+                iDecayRate++;
+
+            int16_t iWarpPkt = iWarpAsked - 4;
+
+            /* Search for existing matching mineral packet */
+            lpth = lpThings;
+            lpthMac = lpThings + cThing;
+            while (lpth < lpthMac) {
+                if (lpth->iplr == lppl->iPlayer && lpth->ith == ithMineralPacket && lpth->pt.x == rgptPlan[lppl->id].x && lpth->pt.y == rgptPlan[lppl->id].y &&
+                    lpth->thp.iWarp == (uint16_t)iWarpPkt && lpth->thp.idPlanet == idDest && lpth->thp.iDecayRate == (uint16_t)iDecayRate &&
+                    lpth->thp.wtMax < 1630) {
+                    break;
+                }
+                lpth++;
+            }
+
+            if (lpth >= lpthMac) {
+                /* Create new mineral packet THING */
+                THING *lpthNew = LpthNew(lppl->iPlayer, ithMineralPacket);
+                if (lpthNew == NULL) {
+                    FSendPlrMsg2(lppl->iPlayer, idmHasOrdersBuildMineralPacketEitherDoesnt, lppl->id, lppl->id, 0);
+                } else {
+                    uint16_t wtAccum = 0;
+                    for (i = 0; i < 3; i++) {
+                        lpthNew->thp.rgwtMin[i] = rgwt[i];
+                        wtAccum += (rgwt[i] + 9) / 10;
+                    }
+
+                    lpthNew->thp.iWarp = iWarpPkt & 0x0f;
+                    lpthNew->thp.wtMax = wtAccum;
+                    lpthNew->thp.iDecayRate = iDecayRate;
+                    lpthNew->thp.idPlanet = idDest;
+                    lpthNew->pt.x = rgptPlan[lppl->id].x;
+                    lpthNew->pt.y = rgptPlan[lppl->id].y;
+
+                    /* asm: msg 0x00d3, last param = (word[lppl+0x2e]&0x3ff)-1 */
+                    FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasDestination, lppl->id, lppl->id, idDest);
+                }
+            } else {
+                /* Merge into existing packet */
+                lpth->thp.wtMax = 0;
+                for (i = 0; i < 3; i++) {
+                    lpth->thp.rgwtMin[i] += rgwt[i];
+                    if (lpth->thp.rgwtMin[i] < 0)
+                        lpth->thp.rgwtMin[i] = 32760;
+                    lpth->thp.wtMax += (lpth->thp.rgwtMin[i] + 9) / 10;
+                }
+
+                FSendPlrMsg2(lppl->iPlayer, idmHasProducedMineralPacketWhichHasCombined, lppl->id, lppl->id, idDest);
+            }
         }
         break;
     }
@@ -1920,8 +1942,49 @@ void BreedColonistsInTransit(void) {
     FLEET  *lpfl;
     int16_t i;
     int32_t lColGainAct;
+    int16_t stat;
 
-    /* TODO: implement */
+    fNoBreeders = 1;
+    for (i = 0; i < game.cPlayer; i++) {
+        stat = GetRaceStat(&rgplr[i], rsMajorAdv);
+        grfBreeder[i] = stat == raDefend;
+        if (stat == raDefend)
+            fNoBreeders = 0;
+    }
+    if (fNoBreeders)
+        return;
+
+    FORFLEETS(lpfl, ifl) {
+        if (lpfl->fDead)
+            continue;
+        if (!grfBreeder[lpfl->iPlayer])
+            continue;
+        if (lpfl->rgwtMin[3] == 0)
+            continue;
+
+        lColGain = (int32_t)((uint32_t)lpfl->rgwtMin[3] * (uint32_t)(int32_t)rgplr[lpfl->iPlayer].pctIdealGrowth) / 200;
+        if (lColGain < 1) {
+            if (Random(3) != 0)
+                continue;
+            lColGain = 1;
+        }
+        lColGainAct = ChgCargo(grobjFleet, lpfl->id, 3, lColGain, NULL);
+        if (lColGainAct > 0) {
+            FSendPlrMsg2(lpfl->iPlayer, idmColonistsHaveMadeGoodUseTimeIncreasing,
+                         lpfl->id | 0x8000, lpfl->id, (int16_t)lColGainAct);
+        }
+        if (lColGainAct < lColGain && lpfl->idPlanet != -1) {
+            lppl = LpplFromId(lpfl->idPlanet);
+            if (lppl != NULL && lppl->iPlayer == lpfl->iPlayer) {
+                lppl->rgwtMin[3] += lColGain - lColGainAct;
+                FSendPlrMsg(lpfl->iPlayer, idmBreedingActivitiesHaveOverflowedLivingSpaceColon,
+                            lpfl->id | 0x8000, lpfl->id,
+                            (int16_t)(lColGain - lColGainAct),
+                            lpfl->idPlanet, lpfl->idPlanet,
+                            0, 0, 0);
+            }
+        }
+    }
 }
 
 void RandomEvents(void) {
@@ -1938,7 +2001,7 @@ void UnmarkMineFields(void) {
 
     end = lpThings + cThing;
     for (lpth = lpThings; lpth < end; lpth++) {
-        if (lpth->ith == 0) {
+        if (lpth->ith == ithMinefield) {
             lpth->thm.grbitPlrNow = 0;
         }
     }

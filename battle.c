@@ -171,7 +171,10 @@ uint8_t rgbrcStart[] = {
 int16_t FFleetHasTeeth(FLEET *lpfl) {
     int16_t ishdef;
 
-    /* TODO: implement */
+    for (ishdef = 0; ishdef <= cShdefMax; ishdef++) {
+        if (lpfl->rgcsh[ishdef] != 0 && FHullHasTeeth(&rglpshdef[lpfl->iplr][ishdef].hul) != 0 && rglpshdef[lpfl->iplr][ishdef].det == detAll)
+            return 1;
+    }
     return 0;
 }
 
@@ -274,11 +277,23 @@ int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint
 }
 
 int16_t FAttackPlayer(FLEET *lpfl, int16_t iplr) {
-    int16_t iplrCur;
-    int16_t iplrT;
+    int16_t  iplrCur;
+    uint16_t iplrAttack;
 
-    /* TODO: implement */
-    return 0;
+    iplrCur = lpfl->iPlayer;
+    iplrAttack = rglpbtlplan[iplrCur][lpfl->iplan].iplrAttack;
+
+    if (iplrAttack == iplrAttackNobody) {
+        return 0;
+    } else if (iplrAttack == iplrAttackEnemies) {
+        return rgplr[iplrCur].rgmdRelation[iplr] == 2;
+    } else if (iplrAttack == iplrAttackNeutralsEnemies) {
+        return rgplr[iplrCur].rgmdRelation[iplr] != 1;
+    } else if (iplrAttack == iplrAttackEveryone) {
+        return 1;
+    } else {
+        return iplr == iplrAttack - iplrAttackPlayer;
+    }
 }
 
 void CheckInitiative(TOK *ptok) {
@@ -434,10 +449,28 @@ int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
     return 0;
 }
 
-int16_t FIsTargetOfMdTarget(TOK *ptok, int16_t mdTarget) {
+int16_t FIsTargetOfMdTarget(TOK *ptok, MdTarget mdTarget) {
+    switch (mdTarget) {
+    default:
+        return 0;
 
-    /* TODO: implement */
-    return 0;
+    case mdTargetAny:
+        return 1;
+
+    case mdTargetStarbase:
+        return ptok->grobj == grobjPlanet; /* grobjStarbase */
+
+    case mdTargetArmedShips:
+    case mdTargetFuelTransports:
+    case mdTargetFreighters:
+        return ptok->mdTarget0 == mdTarget;
+
+    case mdTargetBombersFreighters:
+        return ptok->mdTarget0 == mdTargetBombersFreighters || ptok->mdTarget0 == mdTargetFreighters;
+
+    case mdTargetUnarmedShips:
+        return ptok->mdTarget0 == mdTargetUnarmedShips || ptok->mdTarget0 == mdTargetFreighters || ptok->mdTarget0 == mdTargetFuelTransports;
+    }
 }
 
 int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef) {

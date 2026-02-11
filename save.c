@@ -183,7 +183,7 @@ void WriteBattles(int16_t iPlayer) {
     SHDEF   *lpshdef;
 
     /* Early return if no player or no battle data */
-    if (iPlayer == -1 || lpbBattleLog == lpbBattleCur) {
+    if (iPlayer == iNoPlayer || lpbBattleLog == lpbBattleCur) {
         return;
     }
 
@@ -857,7 +857,7 @@ void SetVisPFInit(int16_t iPlr) {
                 if (iSteal > 1) {
                     detNew = detMore;
                 }
-                if (lpfl->fHereAllTurn && lppl->iPlayer == -1 && lpfl->lpplord->rgord[0].grTask == 3 && CMineFromLpfl(lpfl) > 0) {
+                if (lpfl->fHereAllTurn && lppl->iPlayer == iNoPlayer && lpfl->lpplord->rgord[0].grTask == 3 && CMineFromLpfl(lpfl) > 0) {
                     detNew = detMore;
                 }
                 MarkPlanet(lppl, iPlr, detNew);
@@ -968,7 +968,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     SetVisiblePlanFleet(iPlayer);
 
     /* Fix up fleet waypoints for patrolling fleets during turn generation */
-    if (gd.fGeneratingTurn && iPlayer != -1) {
+    if (gd.fGeneratingTurn && iPlayer != iNoPlayer) {
         for (i = 0; i < cFleet; i++) {
             lpfl = rglpfl[i];
             if (lpfl == NULL)
@@ -987,7 +987,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                     if (lpord->grobj == 2) { /* grobjFleet */
                         pt.y = lpord->pt.y;
                         pt.x = lpord->pt.x;
-                        if (!FFindNearestObject(*(POINT *)&pt, 0x81, &scan)) {
+                        if (!FFindNearestObject(pt, grobjPlanet | mdExact, &scan)) {
                             lpord->grobj = 4; /* grobjOther - go to position */
                             lpord->id = 0;
                         } else {
@@ -1118,13 +1118,13 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                         for (iord = 1; iord < lpfl->cord; iord++) {
                             if (lpord[iord].grobj == 8) { /* heading to thing */
                                 lpth = LpthFromId(lpord[iord].id);
-                                if (lpth == NULL || (lpth->ith == 3 && !lpth->tht.fInclude) ||        /* Mystery Trader gone */
-                                    (lpth->ith == 0 && ((1 << iPlayer) & lpth->thm.grbitPlr) == 0) || /* Minefield invisible */
-                                    (lpth->ith == 2 && !lpth->thw.fInclude)) {                        /* Wormhole gone */
+                                if (lpth == NULL || (lpth->ith == ithMysteryTrader && !lpth->tht.fInclude) ||    /* Mystery Trader gone */
+                                    (lpth->ith == ithMinefield && ((1 << iPlayer) & lpth->thm.grbitPlr) == 0) || /* Minefield invisible */
+                                    (lpth->ith == ithWormhole && !lpth->thw.fInclude)) {                         /* Wormhole gone */
 
-                                    if (lpth == NULL || lpth->ith != 2) {
-                                        if (lpth == NULL || lpth->ith != 3) {
-                                            if (lpth != NULL && lpth->ith == 0) {
+                                    if (lpth == NULL || lpth->ith != ithWormhole) {
+                                        if (lpth == NULL || lpth->ith != ithMysteryTrader) {
+                                            if (lpth != NULL && lpth->ith == ithMinefield) {
                                                 FSendPlrMsg2(lpfl->iPlayer, idmMineFieldHeadingHasVanishedOrdersHave, lpfl->id | 0x8000, lpfl->id, 0);
                                             }
                                         } else {
@@ -1134,7 +1134,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
                                         FSendPlrMsg2(lpfl->iPlayer, idmWormholeHeadingHasVanishedOrdersHaveChanged, lpfl->id | 0x8000, lpfl->id, 0);
                                     }
 
-                                    lpord[iord].grobj = 4; /* go to position */
+                                    lpord[iord].grobj = grobjOther; /* go to position */
                                     lpord[iord].id = iord;
                                 }
                             } else if (lpord[iord].grobj == grobjFleet) { /* intercept fleet */
@@ -1163,7 +1163,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
 
                                 pt.y = lpord[iord].pt.y;
                                 pt.x = lpord[iord].pt.x;
-                                if (FFindNearestObject(*(POINT *)&pt, 0x81, &scan)) {
+                                if (FFindNearestObject(pt, grobjPlanet | mdExact, &scan)) {
                                     lpord[iord].grobj = 1; /* grobjPlanet */
                                     lpord[iord].id = scan.idpl;
                                 }
@@ -1179,7 +1179,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     MarkPlanetsPlayerLost(iPlayer);
 
     /* Build filename */
-    if (iPlayer == -1) {
+    if (iPlayer == iNoPlayer) {
         sprintf(szWork, "%s.hst", pszFileBase);
     } else {
         sprintf(szWork, "%s.m%d", pszFileBase, iPlayer + 1);
@@ -1192,7 +1192,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         /* Try append or create new file */
         if (fAppend == 0) {
         LAB_CreateFile:
-            if (iPlayer == -1) {
+            if (iPlayer == iNoPlayer) {
                 dt = dtHost;
             } else {
                 dt = dtTurn;
@@ -1217,7 +1217,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         }
 
         /* Write salt for host mode */
-        if (iPlayer == -1 && lSaltCur != 0) {
+        if (iPlayer == iNoPlayer && lSaltCur != 0) {
             WriteRt(rtChgPassword, 4, &lSaltCur);
         }
 
@@ -1281,7 +1281,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         }
 
         /* Write scores */
-        if (iPlayer != -1 && vlprgScoreX != NULL) {
+        if (iPlayer != iNoPlayer && vlprgScoreX != NULL) {
             for (i = 0; i < game.cPlayer; i++) {
                 if (gd.fGameOverMan || i == iPlayer || rgplr[i].fDead || (game.fVisScores && game.turn > 0x13)) {
                     WriteRt(rtScore, 0x18, &vlprgScoreX[i]);
@@ -1293,9 +1293,9 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
         i = 0;
         lpth = lpThings;
         while (lpth < lpThings + cThing) {
-            if (iPlayer == -1 || (iPlayer == lpth->iplr && lpth->ith != 1 && lpth->ith != 3 && lpth->ith != 2) ||
-                (lpth->ith == 0 && ((1 << iPlayer) & lpth->thm.grbitPlr) != 0) || (lpth->ith == 1 && lpth->tht.ptDest.x < 0) ||
-                (lpth->ith == 3 && lpth->tht.fInclude) || (lpth->ith == 2 && lpth->thw.fInclude)) {
+            if (iPlayer == iNoPlayer || (iPlayer == lpth->iplr && lpth->ith != ithMineralPacket && lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole) ||
+                (lpth->ith == ithMinefield && ((1 << iPlayer) & lpth->thm.grbitPlr) != 0) || (lpth->ith == ithMineralPacket && lpth->tht.ptDest.x < 0) ||
+                (lpth->ith == ithMysteryTrader && lpth->tht.fInclude) || (lpth->ith == ithWormhole && lpth->thw.fInclude)) {
                 i++;
             }
             lpth++;
@@ -1305,17 +1305,18 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
             WriteRt(rtLogThingByteParam, 2, &i);
             lpth = lpThings;
             while (lpth < lpThings + cThing) {
-                if (iPlayer == -1 || (iPlayer == lpth->iplr && lpth->ith != 1 && lpth->ith != 3 && lpth->ith != 2) ||
-                    (lpth->ith == 0 && ((1 << iPlayer) & lpth->thm.grbitPlr) != 0) || (lpth->ith == 1 && lpth->tht.ptDest.x < 0) ||
-                    (lpth->ith == 3 && lpth->tht.fInclude) || (lpth->ith == 2 && lpth->thw.fInclude)) {
-                    WriteRt(rtLogThingByteParam, 0x12, lpth);
+                if (iPlayer == iNoPlayer ||
+                    (iPlayer == lpth->iplr && lpth->ith != ithMineralPacket && lpth->ith != ithMysteryTrader && lpth->ith != ithWormhole) ||
+                    (lpth->ith == ithMinefield && ((1 << iPlayer) & lpth->thm.grbitPlr) != 0) || (lpth->ith == ithMineralPacket && lpth->tht.ptDest.x < 0) ||
+                    (lpth->ith == ithMysteryTrader && lpth->tht.fInclude) || (lpth->ith == ithWormhole && lpth->thw.fInclude)) {
+                    WriteRt(rtLogThingByteParam, sizeof(THING), lpth);
                 }
                 lpth++;
             }
         }
 
         /* Write battle plans */
-        if (iPlayer == -1) {
+        if (iPlayer == iNoPlayer) {
             i = 0;
             iMax = game.cPlayer;
         } else {
@@ -1336,7 +1337,7 @@ int16_t FWriteDataFile(char *pszFileBase, int16_t iPlayer, int16_t fAppend) {
     LAB_Fail:
         idPlayer = iPlayer;
         if (fAppend == 0) {
-            if (iPlayer == -1) {
+            if (iPlayer == iNoPlayer) {
                 idPlayer = -1;
                 pcVar = PszFormatIds(idsUnableCreateHostFile, NULL);
                 AlertSz(pcVar, 0x10);
@@ -1593,7 +1594,7 @@ void SetVisPFPlanets(int16_t iPlr) {
                     continue;
 
                 /* Check starbase cloak */
-                if (lppl2->iPlayer != -1) {
+                if (lppl2->iPlayer != iNoPlayer) {
                     SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                     int32_t lVisible = lpshdefSB->lVisible;
                     int16_t hiVis = (int16_t)(lVisible >> 16);
@@ -1718,7 +1719,7 @@ void SetVisPFPlanets(int16_t iPlr) {
                 continue;
 
             /* Check starbase cloak on target */
-            if (lppl2->fStarbase && lppl2->iPlayer != -1) {
+            if (lppl2->fStarbase && lppl2->iPlayer != iNoPlayer) {
                 SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                 int32_t lVisible = lpshdefSB->lVisible;
                 int16_t hiVis = (int16_t)(lVisible >> 16);
@@ -1932,7 +1933,7 @@ void SetVisPFFleets(int16_t iPlr) {
                         continue;
 
                     /* Check starbase cloak */
-                    if (lppl->fStarbase && lppl->iPlayer != -1) {
+                    if (lppl->fStarbase && lppl->iPlayer != iNoPlayer) {
                         SHDEF  *lpshdefSB = &rglpshdefSB[lppl->iPlayer][lppl->isb];
                         int32_t lVisible = lpshdefSB->lVisible;
                         int16_t hiVis = (int16_t)(lVisible >> 16);
@@ -2041,7 +2042,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
         }
 
         /* Write population/defense guesses if owned */
-        if (lppl->iPlayer != -1) {
+        if (lppl->iPlayer != iNoPlayer) {
             put_u16(pb, lppl->uGuesses);
             pb += 2;
         }
@@ -2095,7 +2096,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
                 put_u16(&rgb[2], w2);
 
                 /* decide whether to write the 8-byte rgbImp block */
-                fHasImp = (lppl->iPlayer != -1 && lppl->iDeltaPop != 0) || lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 ||
+                fHasImp = (lppl->iPlayer != iNoPlayer && lppl->iDeltaPop != 0) || lppl->cMines != 0 || lppl->cFactories != 0 || lppl->cDefenses != 0 ||
                           lppl->iScanner != 0x1f || lppl->fArtifact != 0 || /* optional: include if you consider this “imp data” */
                           lppl->fNoResearch != 0;                           /* optional */
 
@@ -2106,7 +2107,7 @@ void WritePlanet(PLANET *lppl, RecordType rt, int16_t fHistory) {
                     pb += 8;
                 }
 
-                if (lppl->iPlayer != -1) {
+                if (lppl->iPlayer != iNoPlayer) {
                     /* Write starbase info if present */
                     if (lppl->fStarbase) {
                         put_u32(pb, (uint32_t)lppl->lStarbase);
@@ -2180,13 +2181,13 @@ void MarkPlanet(PLANET *lppl, int16_t iPlr, uint16_t det) {
     }
 
     /* Mark planet owner as known */
-    if (lppl->iPlayer != -1 && !rgplr[lppl->iPlayer].fInclude) {
+    if (lppl->iPlayer != iNoPlayer && !rgplr[lppl->iPlayer].fInclude) {
         rgplr[lppl->iPlayer].fInclude = 1;
         rgplr[lppl->iPlayer].det = detSome;
     }
 
     /* Mark starbase design as visible */
-    if (det != detObscure && lppl->iPlayer != -1 && lppl->fStarbase) {
+    if (det != detObscure && lppl->iPlayer != iNoPlayer && lppl->fStarbase) {
         lpshdef = &rglpshdefSB[lppl->iPlayer][lppl->isb];
         if (!lpshdef->fInclude) {
             lpshdef->fInclude = 1;
@@ -2341,7 +2342,7 @@ void SetVisPFThings(int16_t iPlr) {
                     continue;
 
                 /* Check starbase cloak */
-                if (lppl2->fStarbase && lppl2->iPlayer != -1) {
+                if (lppl2->fStarbase && lppl2->iPlayer != iNoPlayer) {
                     SHDEF  *lpshdefSB = &rglpshdefSB[lppl2->iPlayer][lppl2->isb];
                     int32_t lVisible = lpshdefSB->lVisible;
                     int16_t hiVis = (int16_t)(lVisible >> 16);

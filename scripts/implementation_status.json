@@ -1,10 +1,10 @@
 {
   "summary": {
     "total": 846,
-    "implemented": 348,
-    "stub": 496,
+    "implemented": 363,
+    "stub": 481,
     "missing": 2,
-    "percent_implemented": 41.1
+    "percent_implemented": 42.9
   },
   "by_file": {
     "ai.c": {
@@ -33,8 +33,8 @@
       "missing": 0
     },
     "battle.c": {
-      "implemented": 7,
-      "stub": 36,
+      "implemented": 10,
+      "stub": 33,
       "missing": 0
     },
     "build.c": {
@@ -88,8 +88,8 @@
       "missing": 0
     },
     "planet.c": {
-      "implemented": 22,
-      "stub": 26,
+      "implemented": 27,
+      "stub": 21,
       "missing": 0
     },
     "popup.c": {
@@ -158,18 +158,18 @@
       "missing": 0
     },
     "turn.c": {
-      "implemented": 1,
-      "stub": 5,
+      "implemented": 4,
+      "stub": 2,
       "missing": 0
     },
     "turn2.c": {
-      "implemented": 16,
-      "stub": 12,
+      "implemented": 17,
+      "stub": 11,
       "missing": 0
     },
     "turn3.c": {
-      "implemented": 0,
-      "stub": 1,
+      "implemented": 1,
+      "stub": 0,
       "missing": 0
     },
     "tutor.c": {
@@ -183,8 +183,8 @@
       "missing": 0
     },
     "util.c": {
-      "implemented": 38,
-      "stub": 29,
+      "implemented": 40,
+      "stub": 27,
       "missing": 0
     },
     "utilgen.c": {
@@ -320,7 +320,7 @@
       "proto": "int16_t BattlePlansDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 968,
+      "line": 1001,
       "decompiled_line_count": 444,
       "win32": true
     },
@@ -358,9 +358,9 @@
       "addr": "10b8:7e4e",
       "segment": "MEMORY_TURN2",
       "proto": "void BreedColonistsInTransit(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn2.c",
-      "line": 1914,
+      "line": 1936,
       "decompiled_line_count": 98,
       "win32": false
     },
@@ -460,7 +460,7 @@
       "proto": "int16_t CFactoriesOperating(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 881,
+      "line": 1004,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -490,7 +490,7 @@
       "proto": "int16_t CMaxDefenses(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 644,
+      "line": 739,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -500,7 +500,7 @@
       "proto": "int16_t CMaxFactories(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 564,
+      "line": 659,
       "decompiled_line_count": 32,
       "win32": false
     },
@@ -510,7 +510,7 @@
       "proto": "int16_t CMaxMines(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 613,
+      "line": 708,
       "decompiled_line_count": 32,
       "win32": false
     },
@@ -520,7 +520,7 @@
       "proto": "int16_t CMaxOperableDefenses(PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 297,
+      "line": 358,
       "decompiled_line_count": 37,
       "win32": false
     },
@@ -530,7 +530,7 @@
       "proto": "int16_t CMaxOperableFactories(PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 536,
+      "line": 631,
       "decompiled_line_count": 45,
       "win32": false
     },
@@ -540,7 +540,7 @@
       "proto": "int16_t CMaxOperableMines(PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 825,
+      "line": 938,
       "decompiled_line_count": 45,
       "win32": false
     },
@@ -580,7 +580,7 @@
       "proto": "int16_t CMinesOperating(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 852,
+      "line": 965,
       "decompiled_line_count": 44,
       "win32": false
     },
@@ -620,7 +620,7 @@
       "proto": "int16_t CResourcesAtPlanet(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 244,
+      "line": 305,
       "decompiled_line_count": 85,
       "win32": false
     },
@@ -630,7 +630,7 @@
       "proto": "int32_t CShipsScanVis(FLEET *32)",
       "status": "stub",
       "file": "scan.c",
-      "line": 211,
+      "line": 245,
       "decompiled_line_count": 76,
       "win32": true
     },
@@ -640,7 +640,7 @@
       "proto": "int32_t CTorpHit(int32_t, TOK *32, int16_t, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 419,
+      "line": 434,
       "decompiled_line_count": 79,
       "win32": false
     },
@@ -660,7 +660,7 @@
       "proto": "void CalcPctSurvive(PLANET *32, float *, float *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 760,
+      "line": 761,
       "decompiled_line_count": 56,
       "win32": false
     },
@@ -670,7 +670,7 @@
       "proto": "int32_t CalcPlanetMaxPop(int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 747,
+      "line": 842,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -680,7 +680,7 @@
       "proto": "int32_t CalcPlayerScore(int16_t, SCORE *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1658,
+      "line": 1672,
       "decompiled_line_count": 175,
       "win32": false
     },
@@ -700,7 +700,7 @@
       "proto": "int16_t CchGetETA(uint16_t, FLEET *32, char *, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1839,
+      "line": 2065,
       "decompiled_line_count": 109,
       "win32": true
     },
@@ -740,7 +740,7 @@
       "proto": "void ChangeMainObjSel(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1152,
+      "line": 1275,
       "decompiled_line_count": 127,
       "win32": true
     },
@@ -780,7 +780,7 @@
       "proto": "void CheckInitiative(TOK *32)",
       "status": "stub",
       "file": "battle.c",
-      "line": 284,
+      "line": 299,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -790,7 +790,7 @@
       "proto": "void CheckTarget(TOK *32, FLEET *32, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 187,
+      "line": 190,
       "decompiled_line_count": 61,
       "win32": false
     },
@@ -800,7 +800,7 @@
       "proto": "void CheckWeapons(TOK *32, int16_t *, uint8_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 691,
+      "line": 724,
       "decompiled_line_count": 202,
       "win32": false
     },
@@ -820,7 +820,7 @@
       "proto": "int32_t ChgPopFromPlanet(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1501,
+      "line": 1502,
       "decompiled_line_count": 176,
       "win32": false
     },
@@ -860,7 +860,7 @@
       "proto": "void ClearFile(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 364,
+      "line": 365,
       "decompiled_line_count": 23,
       "win32": false
     },
@@ -870,7 +870,7 @@
       "proto": "uint16_t ClickInPlanetOrders(POINT, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1271,
+      "line": 1394,
       "decompiled_line_count": 205,
       "win32": true
     },
@@ -910,7 +910,7 @@
       "proto": "void ComputeShdefPowers(void)",
       "status": "stub",
       "file": "util.c",
-      "line": 1098,
+      "line": 1099,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -940,7 +940,7 @@
       "proto": "int16_t CplrBattle(FLEET *32, uint16_t *, uint16_t *, uint16_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 725,
+      "line": 758,
       "decompiled_line_count": 269,
       "win32": false
     },
@@ -980,7 +980,7 @@
       "proto": "void CreateSalvage(FLEET *, THING *32 *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 196,
+      "line": 199,
       "decompiled_line_count": 134,
       "win32": false
     },
@@ -990,7 +990,7 @@
       "proto": "void CreateShip(int16_t, FLEET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1905,
+      "line": 1927,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -1050,7 +1050,7 @@
       "proto": "double DGetDistance(int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 568,
+      "line": 569,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -1060,7 +1060,7 @@
       "proto": "void DecorateHullName(int16_t, int16_t, char *)",
       "status": "stub",
       "file": "util.c",
-      "line": 825,
+      "line": 826,
       "decompiled_line_count": 46,
       "win32": false
     },
@@ -1190,7 +1190,7 @@
       "proto": "void DiscoverNewMinerals(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1787,
+      "line": 1809,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -1230,7 +1230,7 @@
       "proto": "void DoBattles(int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 209,
+      "line": 212,
       "decompiled_line_count": 58,
       "win32": false
     },
@@ -1240,7 +1240,7 @@
       "proto": "void DoBombing(void)",
       "status": "stub",
       "file": "battle.c",
-      "line": 568,
+      "line": 601,
       "decompiled_line_count": 494,
       "win32": false
     },
@@ -1298,9 +1298,9 @@
       "addr": "10b0:179a",
       "segment": "MEMORY_TURN",
       "proto": "void DoOrders(int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn.c",
-      "line": 30,
+      "line": 32,
       "decompiled_line_count": 54,
       "win32": false
     },
@@ -1350,7 +1350,7 @@
       "proto": "int32_t DpFromPtokBrcToBrc(TOK *32, uint8_t, uint8_t, TOK *32, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 883,
+      "line": 916,
       "decompiled_line_count": 161,
       "win32": false
     },
@@ -1360,7 +1360,7 @@
       "proto": "int32_t DpOfLpflIshdef(FLEET *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1016,
+      "line": 1017,
       "decompiled_line_count": 26,
       "win32": false
     },
@@ -1370,7 +1370,7 @@
       "proto": "int32_t DpShieldOfShdef(SHDEF *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1435,
+      "line": 1436,
       "decompiled_line_count": 69,
       "win32": false
     },
@@ -1390,7 +1390,7 @@
       "proto": "void DrawABunchOfStars(uint16_t, RECT *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1857,
+      "line": 2083,
       "decompiled_line_count": 68,
       "win32": true
     },
@@ -1440,7 +1440,7 @@
       "proto": "void DrawCBEntireItem(DRAWITEMSTRUCT *32, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1045,
+      "line": 1168,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -1570,7 +1570,7 @@
       "proto": "void DrawMassWarpGauge(uint16_t, RECT *, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1053,
+      "line": 1176,
       "decompiled_line_count": 49,
       "win32": true
     },
@@ -1620,7 +1620,7 @@
       "proto": "void DrawPlanShip(uint16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 944,
+      "line": 1067,
       "decompiled_line_count": 91,
       "win32": true
     },
@@ -1630,7 +1630,7 @@
       "proto": "void DrawPlanShipBitmap(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1086,
+      "line": 1209,
       "decompiled_line_count": 99,
       "win32": true
     },
@@ -1640,7 +1640,7 @@
       "proto": "void DrawPlanetMinSum(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1032,
+      "line": 1155,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1650,7 +1650,7 @@
       "proto": "void DrawPlanetPrintDot(uint16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1870,
+      "line": 2096,
       "decompiled_line_count": 20,
       "win32": true
     },
@@ -1660,7 +1660,7 @@
       "proto": "void DrawPlanetProduction(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1065,
+      "line": 1188,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1670,7 +1670,7 @@
       "proto": "void DrawPlanetShipList(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 989,
+      "line": 1112,
       "decompiled_line_count": 6,
       "win32": true
     },
@@ -1680,7 +1680,7 @@
       "proto": "void DrawPlanetStarbase(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1012,
+      "line": 1135,
       "decompiled_line_count": 207,
       "win32": true
     },
@@ -1690,7 +1690,7 @@
       "proto": "void DrawPlanetStats(uint16_t, TILE *, OBJ)",
       "status": "stub",
       "file": "planet.c",
-      "line": 964,
+      "line": 1087,
       "decompiled_line_count": 254,
       "win32": true
     },
@@ -1730,7 +1730,7 @@
       "proto": "void DrawProductionItem(uint16_t, RECT *, char *, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1161,
+      "line": 1284,
       "decompiled_line_count": 184,
       "win32": true
     },
@@ -1780,7 +1780,7 @@
       "proto": "void DrawRadarCircle(DRAWCIR *, RECT *)",
       "status": "stub",
       "file": "scan.c",
-      "line": 136,
+      "line": 170,
       "decompiled_line_count": 163,
       "win32": true
     },
@@ -1850,7 +1850,7 @@
       "proto": "void DrawScannerSBar(uint16_t, RECT *, SBAR *, int16_t)",
       "status": "stub",
       "file": "scan.c",
-      "line": 106,
+      "line": 140,
       "decompiled_line_count": 263,
       "win32": true
     },
@@ -1910,7 +1910,7 @@
       "proto": "void DrawShipScanPath(uint16_t, int16_t)",
       "status": "stub",
       "file": "scan.c",
-      "line": 225,
+      "line": 259,
       "decompiled_line_count": 337,
       "win32": true
     },
@@ -2020,7 +2020,7 @@
       "proto": "void DropSalvage(THING *32 *, int32_t *32, int16_t, POINT *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 178,
+      "line": 181,
       "decompiled_line_count": 141,
       "win32": false
     },
@@ -2090,7 +2090,7 @@
       "proto": "int16_t DxyFromSpdRound(uint16_t, int16_t)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 401,
+      "line": 416,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -2100,7 +2100,7 @@
       "proto": "int16_t DxyMoveTokTo(TOK *32, int16_t, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 905,
+      "line": 938,
       "decompiled_line_count": 263,
       "win32": false
     },
@@ -2110,7 +2110,7 @@
       "proto": "int16_t DzFromBrcBrc(uint8_t, uint8_t)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 870,
+      "line": 903,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -2120,7 +2120,7 @@
       "proto": "int16_t DzMoveRangeToConsider(TOK *32, uint16_t, uint8_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 623,
+      "line": 656,
       "decompiled_line_count": 111,
       "win32": false
     },
@@ -2250,7 +2250,7 @@
       "proto": "void EnsureTileSize(int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1263,
+      "line": 1386,
       "decompiled_line_count": 79,
       "win32": true
     },
@@ -2370,7 +2370,7 @@
       "proto": "int16_t FAppendFile(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1360,
+      "line": 1361,
       "decompiled_line_count": 16,
       "win32": false
     },
@@ -2390,7 +2390,7 @@
       "proto": "int16_t FAttack(int16_t, int16_t, BTLREC *32, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 327,
+      "line": 342,
       "decompiled_line_count": 708,
       "win32": false
     },
@@ -2398,9 +2398,9 @@
       "addr": "10f0:ae06",
       "segment": "MEMORY_BATTLE",
       "proto": "int16_t FAttackPlayer(FLEET *32, int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "battle.c",
-      "line": 276,
+      "line": 279,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -2440,7 +2440,7 @@
       "proto": "int16_t FCalcFleetBombDamage(FLEET *32, int32_t *, int32_t *, int32_t *, int32_t *, int32_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1402,
+      "line": 1403,
       "decompiled_line_count": 187,
       "win32": false
     },
@@ -2450,7 +2450,7 @@
       "proto": "int16_t FCanBuildShdef(SHDEF *32, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 834,
+      "line": 835,
       "decompiled_line_count": 52,
       "win32": false
     },
@@ -2460,7 +2460,7 @@
       "proto": "int16_t FCanFleetUseStargates(FLEET *32, POINT, POINT)",
       "status": "stub",
       "file": "util.c",
-      "line": 97,
+      "line": 98,
       "decompiled_line_count": 131,
       "win32": false
     },
@@ -2470,7 +2470,7 @@
       "proto": "int16_t FCanKillTok(TOK *32, TOK *32)",
       "status": "stub",
       "file": "battle.c",
-      "line": 429,
+      "line": 444,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -2510,7 +2510,7 @@
       "proto": "int16_t FCanTerraformLppl(PLANET *32, int16_t *, int16_t *, int16_t *, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 337,
+      "line": 432,
       "decompiled_line_count": 183,
       "win32": false
     },
@@ -2810,7 +2810,7 @@
       "proto": "int16_t FCreateFile(uint16_t, int16_t, char *)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1432,
+      "line": 1433,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -2840,7 +2840,7 @@
       "proto": "int16_t FDamageTok(TOK *32, int16_t, int32_t *, int32_t, uint16_t, int16_t, int32_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 780,
+      "line": 813,
       "decompiled_line_count": 294,
       "win32": false
     },
@@ -2860,7 +2860,7 @@
       "proto": "int16_t FDeleteBattlePlan(int16_t, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 291,
+      "line": 306,
       "decompiled_line_count": 80,
       "win32": false
     },
@@ -2870,7 +2870,7 @@
       "proto": "int16_t FDeleteFleet(int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 580,
+      "line": 581,
       "decompiled_line_count": 93,
       "win32": false
     },
@@ -2890,7 +2890,7 @@
       "proto": "int16_t FDoCoolBattle(FLEET *32, int16_t, uint16_t *, uint16_t, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 653,
+      "line": 686,
       "decompiled_line_count": 354,
       "win32": false
     },
@@ -2900,7 +2900,7 @@
       "proto": "int16_t FDoesPrimaryTargetTypeExist(TOK *32, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 848,
+      "line": 881,
       "decompiled_line_count": 84,
       "win32": false
     },
@@ -2910,7 +2910,7 @@
       "proto": "int16_t FDrawTileNC(uint16_t, TILE *, RECT *, char *)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1104,
+      "line": 1227,
       "decompiled_line_count": 52,
       "win32": true
     },
@@ -2920,7 +2920,7 @@
       "proto": "int16_t FDumpCargo(FLEET *32)",
       "status": "stub",
       "file": "battle.c",
-      "line": 311,
+      "line": 326,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -2930,7 +2930,7 @@
       "proto": "int16_t FDupFleet(FLEET *32, FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 628,
+      "line": 629,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -2940,7 +2940,7 @@
       "proto": "int16_t FDupPlanet(PLANET *32, PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 667,
+      "line": 668,
       "decompiled_line_count": 55,
       "win32": false
     },
@@ -3108,9 +3108,9 @@
       "addr": "1038:4070",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FFindNearestObject(POINT, int16_t, SCAN *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
-      "line": 1812,
+      "line": 1826,
       "decompiled_line_count": 228,
       "win32": false
     },
@@ -3148,9 +3148,9 @@
       "addr": "1038:7960",
       "segment": "MEMORY_UTIL",
       "proto": "int16_t FFleetCanJumpgate(FLEET *32)",
-      "status": "stub",
+      "status": "implemented",
       "file": "util.c",
-      "line": 1648,
+      "line": 1649,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -3160,7 +3160,7 @@
       "proto": "int16_t FFleetHasBombs(FLEET *32)",
       "status": "stub",
       "file": "battle.c",
-      "line": 392,
+      "line": 407,
       "decompiled_line_count": 35,
       "win32": false
     },
@@ -3168,7 +3168,7 @@
       "addr": "10f0:1fbe",
       "segment": "MEMORY_BATTLE",
       "proto": "int16_t FFleetHasTeeth(FLEET *32)",
-      "status": "stub",
+      "status": "implemented",
       "file": "battle.c",
       "line": 171,
       "decompiled_line_count": 27,
@@ -3190,7 +3190,7 @@
       "proto": "int16_t FFleetMergeAll(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 864,
+      "line": 865,
       "decompiled_line_count": 119,
       "win32": false
     },
@@ -3210,7 +3210,7 @@
       "proto": "int16_t FFleetSplitAll(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1032,
+      "line": 1033,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -3220,7 +3220,7 @@
       "proto": "int16_t FFuelTanker(SHDEF *32)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 646,
+      "line": 679,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -3230,7 +3230,7 @@
       "proto": "int16_t FGenerateTurn(void)",
       "status": "implemented",
       "file": "turn.c",
-      "line": 54,
+      "line": 93,
       "decompiled_line_count": 632,
       "win32": false
     },
@@ -3248,9 +3248,9 @@
       "addr": "1048:21f6",
       "segment": "MEMORY_PLANET",
       "proto": "int16_t FGetBestDefensePart(PART *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "planet.c",
-      "line": 148,
+      "line": 195,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -3380,7 +3380,7 @@
       "proto": "int16_t FHullHasBombs(HUL *32)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 946,
+      "line": 979,
       "decompiled_line_count": 30,
       "win32": false
     },
@@ -3390,7 +3390,7 @@
       "proto": "int16_t FHullHasTeeth(HUL *32)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 378,
+      "line": 393,
       "decompiled_line_count": 24,
       "win32": false
     },
@@ -3448,9 +3448,9 @@
       "addr": "10f0:587a",
       "segment": "MEMORY_BATTLE",
       "proto": "int16_t FIsTargetOfMdTarget(TOK *32, int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "battle.c",
-      "line": 437,
+      "line": 452,
       "decompiled_line_count": 45,
       "win32": false
     },
@@ -3490,7 +3490,7 @@
       "proto": "int16_t FLookupFleet(int16_t, FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1313,
+      "line": 1314,
       "decompiled_line_count": 70,
       "win32": false
     },
@@ -3500,7 +3500,7 @@
       "proto": "int16_t FLookupObject(int16_t, int16_t, void *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1787,
+      "line": 1801,
       "decompiled_line_count": 19,
       "win32": false
     },
@@ -3510,7 +3510,7 @@
       "proto": "int16_t FLookupOrbitingXfer(int16_t, int16_t, XFER *, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1378,
+      "line": 1379,
       "decompiled_line_count": 74,
       "win32": false
     },
@@ -3520,7 +3520,7 @@
       "proto": "int16_t FLookupPart(PART *)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3003,
+      "line": 2923,
       "decompiled_line_count": 352,
       "win32": false
     },
@@ -3530,7 +3530,7 @@
       "proto": "int16_t FLookupPartX(PART *, uint16_t, uint16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3299,
+      "line": 3219,
       "decompiled_line_count": 16,
       "win32": false
     },
@@ -3540,7 +3540,7 @@
       "proto": "int16_t FLookupPlanet(int16_t, PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1675,
+      "line": 1689,
       "decompiled_line_count": 91,
       "win32": false
     },
@@ -3550,7 +3550,7 @@
       "proto": "int16_t FLookupSelPlanet(PLANET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1272,
+      "line": 1273,
       "decompiled_line_count": 28,
       "win32": false
     },
@@ -3560,7 +3560,7 @@
       "proto": "int16_t FLookupSelShip(FLEET *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 350,
+      "line": 351,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -3570,7 +3570,7 @@
       "proto": "int16_t FLookupThing(int16_t, THING *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1279,
+      "line": 1280,
       "decompiled_line_count": 52,
       "win32": false
     },
@@ -3590,7 +3590,7 @@
       "proto": "int16_t FMatchTarget(FLEET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 356,
+      "line": 357,
       "decompiled_line_count": 80,
       "win32": false
     },
@@ -3720,7 +3720,7 @@
       "proto": "int16_t FProdIsTerra(PROD *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 637,
+      "line": 732,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -4070,7 +4070,7 @@
       "proto": "int16_t FTravelThroughMineFields(FLEET *32, int16_t *, THING *32)",
       "status": "stub",
       "file": "turn.c",
-      "line": 840,
+      "line": 1643,
       "decompiled_line_count": 535,
       "win32": false
     },
@@ -4120,7 +4120,7 @@
       "proto": "int16_t FValidSerialNo(char *, int32_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 739,
+      "line": 740,
       "decompiled_line_count": 91,
       "win32": false
     },
@@ -4280,7 +4280,7 @@
       "proto": "void FillPlanetProdLB(uint16_t, PLPROD *32, PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 1189,
+      "line": 1312,
       "decompiled_line_count": 133,
       "win32": true
     },
@@ -4310,7 +4310,7 @@
       "proto": "void FillShipDD(int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1142,
+      "line": 1265,
       "decompiled_line_count": 66,
       "win32": true
     },
@@ -4330,7 +4330,7 @@
       "proto": "int16_t FindDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "scan.c",
-      "line": 98,
+      "line": 132,
       "decompiled_line_count": 64,
       "win32": true
     },
@@ -4460,7 +4460,7 @@
       "proto": "void FuelFleets(void)",
       "status": "stub",
       "file": "turn.c",
-      "line": 37,
+      "line": 76,
       "decompiled_line_count": 92,
       "win32": false
     },
@@ -4500,7 +4500,7 @@
       "proto": "int16_t GetCachedFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 304,
+      "line": 305,
       "decompiled_line_count": 58,
       "win32": false
     },
@@ -4560,7 +4560,7 @@
       "proto": "int16_t GetFleetScannerRange(FLEET *32, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1798,
+      "line": 1812,
       "decompiled_line_count": 53,
       "win32": false
     },
@@ -4600,7 +4600,7 @@
       "proto": "int16_t GetPlanetScannerRange(PLANET *32, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1105,
+      "line": 1106,
       "decompiled_line_count": 75,
       "win32": false
     },
@@ -4660,7 +4660,7 @@
       "proto": "void GetScanFleetOrientation(FLEET *32, POINT *, POINT *)",
       "status": "stub",
       "file": "scan.c",
-      "line": 267,
+      "line": 301,
       "decompiled_line_count": 32,
       "win32": true
     },
@@ -4670,7 +4670,7 @@
       "proto": "int16_t GetShdefScannerRange(SHDEF *32, int16_t, int16_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1456,
+      "line": 1457,
       "decompiled_line_count": 184,
       "win32": false
     },
@@ -4690,7 +4690,7 @@
       "proto": "void GetTrueHullCost(int16_t, HUL *32, uint16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1447,
+      "line": 1448,
       "decompiled_line_count": 16,
       "win32": false
     },
@@ -4770,7 +4770,7 @@
       "proto": "void HandleFocusState(DRAWITEMSTRUCT *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 1122,
+      "line": 1245,
       "decompiled_line_count": 18,
       "win32": true
     },
@@ -4810,7 +4810,7 @@
       "proto": "void HealShips(void)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 1891,
+      "line": 1913,
       "decompiled_line_count": 124,
       "win32": false
     },
@@ -4910,7 +4910,7 @@
       "proto": "int16_t IBestRemoteTerra(PLANET *32, int16_t, int16_t)",
       "status": "stub",
       "file": "turn2.c",
-      "line": 1741,
+      "line": 1763,
       "decompiled_line_count": 65,
       "win32": false
     },
@@ -4920,7 +4920,7 @@
       "proto": "int16_t IBestTerraform(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 661,
+      "line": 756,
       "decompiled_line_count": 79,
       "win32": false
     },
@@ -4930,7 +4930,7 @@
       "proto": "int16_t ICompFleetPoint(void *, void *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1043,
+      "line": 1044,
       "decompiled_line_count": 32,
       "win32": false
     },
@@ -4940,7 +4940,7 @@
       "proto": "int16_t ICompFleetPoint2(void *, void *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 882,
+      "line": 883,
       "decompiled_line_count": 26,
       "win32": false
     },
@@ -5040,7 +5040,7 @@
       "proto": "int16_t IStargateFromLppl(PLANET *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 997,
+      "line": 998,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -5050,7 +5050,7 @@
       "proto": "int16_t ITechLearnATech(int16_t, int16_t, int16_t, int16_t, uint16_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 769,
+      "line": 802,
       "decompiled_line_count": 75,
       "win32": false
     },
@@ -5080,7 +5080,7 @@
       "proto": "int16_t IWarpMAFromLppl(PLANET *32, int16_t *)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 88,
+      "line": 135,
       "decompiled_line_count": 55,
       "win32": false
     },
@@ -5090,7 +5090,7 @@
       "proto": "int16_t IdFindAdjStarbase(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1130,
+      "line": 1253,
       "decompiled_line_count": 53,
       "win32": true
     },
@@ -5220,7 +5220,7 @@
       "proto": "int16_t IflFromLpfl(FLEET *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1424,
+      "line": 1425,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -5260,7 +5260,7 @@
       "proto": "int16_t InitFromHuldef(HUL *32, int16_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 228,
+      "line": 231,
       "decompiled_line_count": 62,
       "win32": false
     },
@@ -5350,7 +5350,7 @@
       "proto": "void InitializeBoard(FLEET *32, int16_t, uint16_t, uint8_t *, int16_t *, int16_t *)",
       "status": "stub",
       "file": "battle.c",
-      "line": 602,
+      "line": 635,
       "decompiled_line_count": 177,
       "win32": false
     },
@@ -5430,7 +5430,7 @@
       "proto": "int16_t IpctCanTerraformLppl(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 722,
+      "line": 817,
       "decompiled_line_count": 31,
       "win32": false
     },
@@ -5460,7 +5460,7 @@
       "proto": "int16_t IshFindSimilarDesign(HUL *32, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 816,
+      "line": 817,
       "decompiled_line_count": 43,
       "win32": false
     },
@@ -5490,7 +5490,7 @@
       "proto": "int16_t IshdefPrimaryFromLpfl(FLEET *32, int16_t *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 270,
+      "line": 271,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -5540,7 +5540,7 @@
       "proto": "void KillShips(TOK *32, int16_t, int16_t, FLEET *32, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 807,
+      "line": 840,
       "decompiled_line_count": 83,
       "win32": false
     },
@@ -5560,7 +5560,7 @@
       "proto": "int32_t LCalcFuelGainFromRamScoops(FLEET *32, int16_t, int32_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 211,
+      "line": 212,
       "decompiled_line_count": 77,
       "win32": false
     },
@@ -5570,7 +5570,7 @@
       "proto": "int32_t LComputePower(SHDEF *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 396,
+      "line": 397,
       "decompiled_line_count": 100,
       "win32": false
     },
@@ -5670,7 +5670,7 @@
       "proto": "void LinkFleets(int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 1388,
+      "line": 1389,
       "decompiled_line_count": 103,
       "win32": false
     },
@@ -5800,7 +5800,7 @@
       "proto": "int32_t LongFromSerialCh(char)",
       "status": "implemented",
       "file": "util.c",
-      "line": 518,
+      "line": 519,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -5810,7 +5810,7 @@
       "proto": "void LookupBestPlanetaryScanner(PART *)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 2908,
+      "line": 2828,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -5840,7 +5840,7 @@
       "proto": "ENGINE *32 LpengineFromId(int16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3314,
+      "line": 3234,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -5860,7 +5860,7 @@
       "proto": "FLEET *32 LpflFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 120,
+      "line": 121,
       "decompiled_line_count": 40,
       "win32": false
     },
@@ -5870,7 +5870,7 @@
       "proto": "FLEET *32 LpflNew(int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1117,
+      "line": 1118,
       "decompiled_line_count": 95,
       "win32": false
     },
@@ -5880,7 +5880,7 @@
       "proto": "FLEET *32 LpflNewSplit(FLEET *)",
       "status": "stub",
       "file": "util.c",
-      "line": 1770,
+      "line": 1784,
       "decompiled_line_count": 41,
       "win32": false
     },
@@ -5920,7 +5920,7 @@
       "proto": "HULDEF *32 LphuldefFromId(int16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3227,
+      "line": 3147,
       "decompiled_line_count": 17,
       "win32": false
     },
@@ -5930,7 +5930,7 @@
       "proto": "HULDEF *32 LphuldefSBFromId(int16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3283,
+      "line": 3203,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -5970,7 +5970,7 @@
       "proto": "PLANET *32 LpplFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 165,
+      "line": 166,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -5990,7 +5990,7 @@
       "proto": "PLANETARY *32 LpplanetaryFromId(int16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3292,
+      "line": 3212,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -6010,7 +6010,7 @@
       "proto": "SCANNER *32 LpscannerFromId(int16_t)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3309,
+      "line": 3229,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -6020,7 +6020,7 @@
       "proto": "SHDEF *32 LpshdefFromTok(TOK *32)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 713,
+      "line": 746,
       "decompiled_line_count": 27,
       "win32": false
     },
@@ -6030,7 +6030,7 @@
       "proto": "SHDEF *32 LpshdefSBT(void)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3297,
+      "line": 3217,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -6040,7 +6040,7 @@
       "proto": "SHDEF *32 LpshdefT(void)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3290,
+      "line": 3210,
       "decompiled_line_count": 10,
       "win32": false
     },
@@ -6050,7 +6050,7 @@
       "proto": "THING *32 LpthFromId(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 201,
+      "line": 202,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -6090,7 +6090,7 @@
       "proto": "void MarkFleet(FLEET *32, int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 2146,
+      "line": 2147,
       "decompiled_line_count": 42,
       "win32": false
     },
@@ -6100,7 +6100,7 @@
       "proto": "void MarkPlanet(PLANET *32, int16_t, uint16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 2170,
+      "line": 2171,
       "decompiled_line_count": 51,
       "win32": false
     },
@@ -6200,7 +6200,7 @@
       "proto": "void MeteorStrike(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1807,
+      "line": 1829,
       "decompiled_line_count": 157,
       "win32": false
     },
@@ -6238,9 +6238,9 @@
       "addr": "10b0:32ce",
       "segment": "MEMORY_TURN",
       "proto": "void MoveFleets(void)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn.c",
-      "line": 773,
+      "line": 812,
       "decompiled_line_count": 844,
       "win32": false
     },
@@ -6248,9 +6248,9 @@
       "addr": "10b0:18f4",
       "segment": "MEMORY_TURN",
       "proto": "void MoveThings(int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn.c",
-      "line": 900,
+      "line": 1703,
       "decompiled_line_count": 648,
       "win32": false
     },
@@ -6340,7 +6340,7 @@
       "proto": "int16_t NewPlanNameDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 985,
+      "line": 1018,
       "decompiled_line_count": 51,
       "win32": true
     },
@@ -6420,7 +6420,7 @@
       "proto": "void OutputSz(int16_t, char *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1051,
+      "line": 1052,
       "decompiled_line_count": 29,
       "win32": false
     },
@@ -6468,9 +6468,9 @@
       "addr": "1048:88c0",
       "segment": "MEMORY_PLANET",
       "proto": "int16_t PctCloakFromHuldef(HUL *32, int16_t, int16_t *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "planet.c",
-      "line": 19,
+      "line": 20,
       "decompiled_line_count": 77,
       "win32": false
     },
@@ -6498,9 +6498,9 @@
       "addr": "1048:6aca",
       "segment": "MEMORY_PLANET",
       "proto": "int16_t PctPlanetCapacity(PLANET *32)",
-      "status": "stub",
+      "status": "implemented",
       "file": "planet.c",
-      "line": 873,
+      "line": 986,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -6510,7 +6510,7 @@
       "proto": "int16_t PctPlanetDesirability(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 157,
+      "line": 218,
       "decompiled_line_count": 108,
       "win32": false
     },
@@ -6520,7 +6520,7 @@
       "proto": "int16_t PctPlanetOptValue(PLANET *32, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 30,
+      "line": 77,
       "decompiled_line_count": 52,
       "win32": false
     },
@@ -6570,7 +6570,7 @@
       "proto": "void PlanetClick(int16_t, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1286,
+      "line": 1409,
       "decompiled_line_count": 219,
       "win32": true
     },
@@ -6580,7 +6580,7 @@
       "proto": "int32_t PlanetWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 904,
+      "line": 1027,
       "decompiled_line_count": 666,
       "win32": true
     },
@@ -6590,7 +6590,7 @@
       "proto": "void PlanetaryClimateChange(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1750,
+      "line": 1772,
       "decompiled_line_count": 60,
       "win32": false
     },
@@ -6730,7 +6730,7 @@
       "proto": "char * PszCalcEnvVar(int16_t, int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 514,
+      "line": 609,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -6740,7 +6740,7 @@
       "proto": "char * PszCalcGravity(int16_t)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 592,
+      "line": 687,
       "decompiled_line_count": 24,
       "win32": false
     },
@@ -6750,7 +6750,7 @@
       "proto": "char * PszFleetNameFromWord(uint16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 708,
+      "line": 709,
       "decompiled_line_count": 37,
       "win32": false
     },
@@ -6860,7 +6860,7 @@
       "proto": "char * PszGetDistance(int16_t, int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "util.c",
-      "line": 751,
+      "line": 752,
       "decompiled_line_count": 34,
       "win32": false
     },
@@ -6880,7 +6880,7 @@
       "proto": "char * PszGetFleetName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 412,
+      "line": 413,
       "decompiled_line_count": 63,
       "win32": false
     },
@@ -6900,7 +6900,7 @@
       "proto": "char * PszGetLocName(int16_t, int16_t, int16_t, int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 79,
+      "line": 80,
       "decompiled_line_count": 33,
       "win32": false
     },
@@ -6920,7 +6920,7 @@
       "proto": "char * PszGetPlanetName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 613,
+      "line": 614,
       "decompiled_line_count": 24,
       "win32": false
     },
@@ -6940,7 +6940,7 @@
       "proto": "char * PszGetThingName(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 462,
+      "line": 463,
       "decompiled_line_count": 63,
       "win32": false
     },
@@ -6960,7 +6960,7 @@
       "proto": "char * PszPlayerName(int16_t, int16_t, int16_t, int16_t, int16_t, PLAYER *)",
       "status": "implemented",
       "file": "util.c",
-      "line": 916,
+      "line": 917,
       "decompiled_line_count": 72,
       "win32": false
     },
@@ -6968,9 +6968,9 @@
       "addr": "1048:310c",
       "segment": "MEMORY_PLANET",
       "proto": "char * PszProductionETA(PLANET *32, PLPROD *32, int16_t, int16_t *, int16_t *)",
-      "status": "stub",
+      "status": "implemented",
       "file": "planet.c",
-      "line": 324,
+      "line": 385,
       "decompiled_line_count": 71,
       "win32": false
     },
@@ -7040,7 +7040,7 @@
       "proto": "int16_t PtToScan(int16_t)",
       "status": "implemented",
       "file": "scan.c",
-      "line": 277,
+      "line": 311,
       "decompiled_line_count": 39,
       "win32": true
     },
@@ -7160,7 +7160,7 @@
       "proto": "void RandomEvents(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1927,
+      "line": 1990,
       "decompiled_line_count": 14,
       "win32": false
     },
@@ -7200,7 +7200,7 @@
       "proto": "void RandomizeTokOrder(void)",
       "status": "stub",
       "file": "battle.c",
-      "line": 220,
+      "line": 223,
       "decompiled_line_count": 61,
       "win32": false
     },
@@ -7300,7 +7300,7 @@
       "proto": "void ReflowColumn(int16_t, int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1322,
+      "line": 1445,
       "decompiled_line_count": 74,
       "win32": true
     },
@@ -7310,7 +7310,7 @@
       "proto": "void RegenShield(TOK *32)",
       "status": "stub",
       "file": "battle.c",
-      "line": 304,
+      "line": 319,
       "decompiled_line_count": 35,
       "win32": false
     },
@@ -7320,7 +7320,7 @@
       "proto": "int16_t RelationsDlg(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 992,
+      "line": 1025,
       "decompiled_line_count": 119,
       "win32": true
     },
@@ -7468,9 +7468,9 @@
       "addr": "10b0:6798",
       "segment": "MEMORY_TURN",
       "proto": "void SatisfyOrders(int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "turn3.c",
-      "line": 7,
+      "line": 15,
       "decompiled_line_count": 1682,
       "win32": false
     },
@@ -7500,9 +7500,9 @@
       "proto": "int16_t ScanToPt(int16_t)",
       "status": "implemented",
       "file": "scan.c",
-      "line": 320,
+      "line": 46,
       "decompiled_line_count": 39,
-      "win32": true
+      "win32": false
     },
     "ScannerWndProc": {
       "addr": "1058:0032",
@@ -7510,7 +7510,7 @@
       "proto": "int32_t ScannerWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
       "status": "stub",
       "file": "scan.c",
-      "line": 48,
+      "line": 82,
       "decompiled_line_count": 494,
       "win32": true
     },
@@ -7520,7 +7520,7 @@
       "proto": "int32_t ScoreFromGiveAndTakeAndTactic(int32_t, int32_t, int16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 320,
+      "line": 335,
       "decompiled_line_count": 40,
       "win32": false
     },
@@ -7530,7 +7530,7 @@
       "proto": "int32_t ScoreGuessBattleDamage(TOK *32, uint8_t, int16_t, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 241,
+      "line": 244,
       "decompiled_line_count": 156,
       "win32": false
     },
@@ -7570,7 +7570,7 @@
       "proto": "void SelectAdjPlanet(int16_t, int16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1309,
+      "line": 1432,
       "decompiled_line_count": 73,
       "win32": true
     },
@@ -7580,7 +7580,7 @@
       "proto": "void SelectOursAtObject(POINT *)",
       "status": "stub",
       "file": "util.c",
-      "line": 602,
+      "line": 603,
       "decompiled_line_count": 80,
       "win32": false
     },
@@ -7590,7 +7590,7 @@
       "proto": "void SendBattleMessages(FLEET *32, int16_t, int16_t, uint16_t *, int16_t, int16_t, int16_t, uint16_t)",
       "status": "stub",
       "file": "battle.c",
-      "line": 816,
+      "line": 849,
       "decompiled_line_count": 423,
       "win32": false
     },
@@ -7710,7 +7710,7 @@
       "proto": "void SetPlanetTitleBar(uint16_t)",
       "status": "stub",
       "file": "planet.c",
-      "line": 1115,
+      "line": 1238,
       "decompiled_line_count": 26,
       "win32": true
     },
@@ -7750,7 +7750,7 @@
       "proto": "void SetScanScrollBars(uint16_t)",
       "status": "implemented",
       "file": "scan.c",
-      "line": 158,
+      "line": 192,
       "decompiled_line_count": 44,
       "win32": true
     },
@@ -7810,7 +7810,7 @@
       "proto": "void SetVisPFFinish(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1370,
+      "line": 1371,
       "decompiled_line_count": 71,
       "win32": false
     },
@@ -7820,7 +7820,7 @@
       "proto": "void SetVisPFFleets(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1739,
+      "line": 1740,
       "decompiled_line_count": 319,
       "win32": false
     },
@@ -7840,7 +7840,7 @@
       "proto": "void SetVisPFPlanets(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1458,
+      "line": 1459,
       "decompiled_line_count": 404,
       "win32": false
     },
@@ -7850,7 +7850,7 @@
       "proto": "void SetVisPFThings(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 2202,
+      "line": 2203,
       "decompiled_line_count": 229,
       "win32": false
     },
@@ -7860,7 +7860,7 @@
       "proto": "void SetVisiblePlanFleet(int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 2452,
+      "line": 2453,
       "decompiled_line_count": 28,
       "win32": false
     },
@@ -7970,7 +7970,7 @@
       "proto": "void SpankTheCheaters(void)",
       "status": "stub",
       "file": "battle.c",
-      "line": 754,
+      "line": 787,
       "decompiled_line_count": 154,
       "win32": false
     },
@@ -7980,7 +7980,7 @@
       "proto": "int16_t SpdOfShip(FLEET *32, int16_t, TOK *32, int16_t, SHDEF *32)",
       "status": "implemented",
       "file": "battle.c",
-      "line": 443,
+      "line": 476,
       "decompiled_line_count": 137,
       "win32": false
     },
@@ -7998,9 +7998,9 @@
       "addr": "1048:7cfa",
       "segment": "MEMORY_PLANET",
       "proto": "int16_t StargateRangeFromLppl(PLANET *32, int16_t, int16_t)",
-      "status": "stub",
+      "status": "implemented",
       "file": "planet.c",
-      "line": 813,
+      "line": 908,
       "decompiled_line_count": 46,
       "win32": false
     },
@@ -8060,7 +8060,7 @@
       "proto": "char * SzVersion(void)",
       "status": "implemented",
       "file": "util.c",
-      "line": 65,
+      "line": 66,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -8100,7 +8100,7 @@
       "proto": "int16_t TechStatus(char *32)",
       "status": "implemented",
       "file": "parts.c",
-      "line": 3241,
+      "line": 3161,
       "decompiled_line_count": 43,
       "win32": false
     },
@@ -8190,7 +8190,7 @@
       "proto": "void TurnLog(int16_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 905,
+      "line": 906,
       "decompiled_line_count": 21,
       "win32": false
     },
@@ -8230,7 +8230,7 @@
       "proto": "void UninhabitPlanet(PLANET *32)",
       "status": "implemented",
       "file": "planet.c",
-      "line": 791,
+      "line": 886,
       "decompiled_line_count": 51,
       "win32": false
     },
@@ -8240,7 +8240,7 @@
       "proto": "void UnmarkMineFields(void)",
       "status": "implemented",
       "file": "turn2.c",
-      "line": 1935,
+      "line": 1998,
       "decompiled_line_count": 22,
       "win32": false
     },
@@ -8330,7 +8330,7 @@
       "proto": "void UpdateShdefCost(SHDEF *32)",
       "status": "implemented",
       "file": "util.c",
-      "line": 1182,
+      "line": 1183,
       "decompiled_line_count": 97,
       "win32": false
     },
@@ -8380,7 +8380,7 @@
       "proto": "void ValidateWaypoints(void)",
       "status": "stub",
       "file": "util.c",
-      "line": 1482,
+      "line": 1483,
       "decompiled_line_count": 182,
       "win32": false
     },
@@ -8400,7 +8400,7 @@
       "proto": "uint16_t WFromLpfl(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 1778,
+      "line": 1792,
       "decompiled_line_count": 20,
       "win32": false
     },
@@ -8410,7 +8410,7 @@
       "proto": "uint16_t WPackLong(int32_t)",
       "status": "implemented",
       "file": "util.c",
-      "line": 554,
+      "line": 555,
       "decompiled_line_count": 25,
       "win32": false
     },
@@ -8510,7 +8510,7 @@
       "proto": "void WritePlanet(PLANET *32, int16_t, int16_t)",
       "status": "implemented",
       "file": "save.c",
-      "line": 1960,
+      "line": 1961,
       "decompiled_line_count": 165,
       "win32": false
     },
@@ -8540,7 +8540,7 @@
       "proto": "void WriteRtPlr(PLAYER *, uint8_t *)",
       "status": "implemented",
       "file": "save.c",
-      "line": 2403,
+      "line": 2404,
       "decompiled_line_count": 58,
       "win32": false
     },
@@ -8570,7 +8570,7 @@
       "proto": "int32_t WtFromLpfl(FLEET *32)",
       "status": "stub",
       "file": "util.c",
-      "line": 594,
+      "line": 595,
       "decompiled_line_count": 31,
       "win32": false
     },

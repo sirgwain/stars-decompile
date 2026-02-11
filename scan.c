@@ -43,6 +43,40 @@ int16_t IWarpBestForWaypoint(FLEET *lpfl, ORDER *lpord) {
     return 0;
 }
 
+int16_t ScanToPt(int16_t d) {
+    if (iScanZoom != 0) {
+        switch (iScanZoom) {
+        case 1:
+            d = (d << 2) / 5;
+            break;
+        case 2:
+            d = (d << 1) / 3;
+            break;
+        case 3:
+            d = d >> 1;
+            break;
+        case 4:
+            d = d >> 2;
+            break;
+        case -4:
+            d = d << 2;
+            break;
+        case -3:
+            d = (d << 3) / 3;
+            break;
+        case -2:
+            d = d << 1;
+            break;
+        case -1:
+            d = (d << 2) / 3;
+            break;
+        default:
+            break;
+        }
+    }
+    return d;
+}
+
 #ifdef _WIN32
 
 LRESULT CALLBACK ScannerWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -314,40 +348,6 @@ int16_t PtToScan(int16_t d) {
         }
     }
 
-    return d;
-}
-
-int16_t ScanToPt(int16_t d) {
-    if (iScanZoom != 0) {
-        switch (iScanZoom) {
-        case 1:
-            d = (d << 2) / 5;
-            break;
-        case 2:
-            d = (d << 1) / 3;
-            break;
-        case 3:
-            d = d >> 1;
-            break;
-        case 4:
-            d = d >> 2;
-            break;
-        case -4:
-            d = d << 2;
-            break;
-        case -3:
-            d = (d << 3) / 3;
-            break;
-        case -2:
-            d = d << 1;
-            break;
-        case -1:
-            d = (d << 2) / 3;
-            break;
-        default:
-            break;
-        }
-    }
     return d;
 }
 
