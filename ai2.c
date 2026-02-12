@@ -127,7 +127,7 @@ int16_t FPotentISWarFleet(FLEET *lpfl, int16_t iPotency) {
     return 0;
 }
 
-void EnsureCAShdefs(int16_t iroCur) { /* TODO: implement */ }
+void EnsureCAShdefs(int16_t iroCur) { /* empty in original */ }
 
 void EnsureISShdefs(int16_t iroCur) {
     SHDEF   shdef;

@@ -60,6 +60,7 @@
 #define cbPackedMsgSize      20
 #define cbPackedMsgAllocSize 65480
 #define cbLogAllocSize       32000
+#define cMaxSimulDrops       1000
 
 // progress guage sentinels
 #define pctProgressStepSmall (-927)

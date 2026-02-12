@@ -8,6 +8,7 @@
 #include "msg.h"
 #include "parts.h"
 #include "planet.h"
+#include "save.h"
 #include "strings.h"
 #include "util.h"
 #include "utilgen.h"
@@ -203,10 +204,12 @@ int16_t PackageUpMsg(uint8_t *pb, int16_t iPlr, MessageId iMsg, int16_t iObj, in
 
 char *PszGetMessageN(int16_t iMsg) {
     MSGBIG mb;
-    char  *psz;
 
-    /* TODO: implement */
-    return NULL;
+    if (FGetNMsgbig(iMsg, &mb) == 0) {
+        szMsgBuf[0] = '\0';
+        return szMsgBuf;
+    }
+    return PszFormatMessage(mb.iMsg, mb.rgParam);
 }
 
 int16_t IdmGetMessageN(int16_t iMsg) {
@@ -237,16 +240,42 @@ void MarkPlanetsPlayerLost(int16_t iPlayer) {
     uint16_t w;
     uint8_t *lpb;
 
-    /* debug symbols */
-    /* label LLookupPlanet @ MEMORY_MSG:0x9489 */
+    lpb = (uint8_t *)lpMsg;
+    lpbMax = (uint8_t *)lpMsg + imemMsgCur;
 
-    /* TODO: implement */
+    // TODO: update these iMsg constants to enums
+    while (lpb < lpbMax) {
+        if ((*lpb & 0xf) == iPlayer) {
+            uint16_t iMsg = *(uint16_t *)(lpb + 1) & 0x1ff;
+            if (iMsg == 7 || iMsg == 0x23 || iMsg == 0x40) {
+                w = *(uint16_t *)(lpb + 3);
+            } else if (iMsg == 0x8f) {
+                uint16_t grWord = *(uint16_t *)(lpb + 1) >> 9;
+                lpbT = lpb + 6 + ((grWord & 1) == 1);
+                if ((grWord & 2) == 0) {
+                    w = (uint16_t)*lpbT;
+                } else {
+                    w = *(uint16_t *)lpbT;
+                }
+            } else {
+                goto LNext;
+            }
+            lppl = LpplFromId((int16_t)w);
+            if (lppl != NULL) {
+                MarkPlanet(lppl, iPlayer, 3);
+            }
+        }
+    LNext:
+        lpb += (*lpb >> 4) + 5;
+    }
 }
 
 char *PszFormatMessage(MessageId idm, int16_t *pParams) {
+    char *psz;
 
-    /* TODO: implement */
-    return NULL;
+    psz = PszGetCompressedMessage(idm);
+    psz = PszFormatString(psz, pParams);
+    return psz;
 }
 
 void SetFilteringGroups(MessageId idm, int16_t fSet) {
@@ -442,17 +471,32 @@ void ReadPlayerMessages(void) {
 }
 
 int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {
-    uint8_t rgbWork[40];
-    int16_t cbMsg;
+    uint8_t  rgbWork[40];
+    uint16_t cbMsg;
 
-    /* TODO: implement */
-    return 0;
+    cbMsg = PackageUpMsg(rgbWork, iPlr, iMsg, iObj, p1, p2, p3, p4, p5, p6, p7);
+    if (cbMsg < 1) {
+        return cbMsg == 0;
+    }
+    memmove((uint8_t *)lpMsg + cbMsg, lpMsg, imemMsgCur);
+    memmove(lpMsg, rgbWork, cbMsg);
+    imemMsgCur = imemMsgCur + cbMsg;
+    cMsg++;
+    return 1;
 }
 
 void MarkPlayersThatSentMsgs(int16_t iPlayer) {
     MSGPLR *lpmp;
 
-    /* TODO: implement */
+    if (iPlayer == -1)
+        return;
+
+    for (lpmp = vlpmsgplrOut; lpmp != NULL; lpmp = lpmp->lpmsgplrNext) {
+        if ((lpmp->iPlrTo == 0 && lpmp->iPlrFrom != iPlayer) || (lpmp->iPlrTo - 1 == iPlayer && !rgplr[lpmp->iPlrFrom].fInclude)) {
+            rgplr[lpmp->iPlrFrom].fInclude = 1;
+            rgplr[lpmp->iPlrFrom].det = 3;
+        }
+    }
 }
 
 void ResetMessages(void) {
@@ -889,7 +933,33 @@ void WritePlayerMessages(int16_t iPlayer) {
     MSGPLR  *lpmp;
     uint8_t *lpb;
 
-    /* TODO: implement */
+    cbMsg = 0;
+    if (iPlayer == -1)
+        return;
+
+        // TODO: verify this and check sizeofs
+    lpbMax = (uint8_t *)lpMsg + imemMsgCur;
+    for (lpb = (uint8_t *)lpMsg; lpb < lpbMax; lpb += (*lpb >> 4) + 5) {
+        if (cbMsg + 0x14 > 0x3ff) {
+            WriteRt(rtMsg, cbMsg, rgb);
+            cbMsg = 0;
+        }
+        if ((*lpb & 0xf) == iPlayer && (*(uint16_t *)(lpb + 1) & 0x1ff) != 0x1ff) {
+            int16_t cbEntry = (*lpb >> 4) + 4;
+            memcpy(rgb + cbMsg, lpb + 1, cbEntry);
+            cbMsg += cbEntry;
+        }
+    }
+    if (cbMsg != 0) {
+        WriteRt(rtMsg, cbMsg, rgb);
+    }
+
+    for (lpmp = vlpmsgplrOut; lpmp != NULL; lpmp = lpmp->lpmsgplrNext) {
+        if ((lpmp->iPlrTo == 0 && lpmp->iPlrFrom != iPlayer) || (lpmp->iPlrTo - 1 == iPlayer)) {
+            int16_t cbLen = (int16_t)abs(lpmp->cLen);
+            WriteRt(rtPlrMsg, cbLen + 12, lpmp);
+        }
+    }
 }
 
 int16_t IMsgPrev(int16_t fFilteredOnly) {

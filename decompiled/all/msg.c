@@ -9,7 +9,6 @@
 // Segment: MEMORY_MSG
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: lpmsgplr */
 /* WARNING: Type propagation algorithm not settling */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
@@ -35,8 +34,6 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
     undefined2 *puVar15;
     undefined1 *puVar16;
     undefined1 *puVar17;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     undefined2  unaff_SS;
     bool        bVar18;
     ulong       uVar19;
@@ -234,7 +231,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
     }
     if (message == WM_SIZE) {
         local_2e.x = (short)(THING *)lParam;
-        uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+        uVar19 = __aFulshr(lParam, 0x10);
         local_2e.y = (short)uVar19;
         for (i = 0; i < 3; i = i + 1) {
             stack0xffc8 = (MSGPLR *)CONCAT22(auStack_36._0_2_, (MSGPLR *)(dyArial8 * 2));
@@ -593,26 +590,26 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
         } else {
             if (message == WM_COMMAND) {
                 uVar5 = 0x1118;
-                uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+                uVar19 = __aFulshr(lParam, 0x10);
                 if ((int)uVar19 == 0) {
                     uVar5 = 0x14f8;
                     SetFocus(hwndFrame);
                 }
                 if ((THING *)lParam == (THING *)rghwndMsgBtn[0]) {
                     uVar5 = 0x1118;
-                    uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+                    uVar19 = __aFulshr(lParam, 0x10);
                     if ((int)uVar19 == 0)
                         goto MSG_PrevMsg;
                 }
                 if ((THING *)lParam == (THING *)rghwndMsgBtn[2]) {
                     uVar5 = 0x1118;
-                    uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+                    uVar19 = __aFulshr(lParam, 0x10);
                     if ((int)uVar19 == 0)
                         goto MSG_NextMsg;
                 }
                 if ((THING *)lParam == (THING *)rghwndMsgBtn[3]) {
                     uVar5 = 0x1118;
-                    uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+                    uVar19 = __aFulshr(lParam, 0x10);
                     if ((int)uVar19 == 0) {
                         FFinishPlrMsgEntry(1000);
                         puVar15 = &stack0xff84;
@@ -633,7 +630,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                     return LVar21;
                 }
                 uVar5 = 0x1118;
-                uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+                uVar19 = __aFulshr(lParam, 0x10);
                 puVar17 = &stack0xff84;
                 if ((int)uVar19 != 0)
                     goto MSG_Default_9;
@@ -642,7 +639,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             if ((message != WM_LBUTTONDOWN) && (puVar17 = &stack0xff84, message != WM_LBUTTONDBLCLK))
                 goto MSG_Default_9;
             local_2e.x = (short)(THING *)lParam;
-            uVar19 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), (ushort)(MSGPLR *)lpmsgplr);
+            uVar19 = __aFulshr(lParam, 0x10);
             local_2e.y = (short)uVar19;
             pt_00.y = (short)uVar19;
             pt_00.x = local_2e.x;
@@ -1520,31 +1517,26 @@ char *PszGetMessageN(short iMsg)
 char *PszFormatString(char *pszFormat, short *pParamsReal)
 
 {
-    char       cVar1;
-    short     *psVar2;
-    short      sVar3;
-    int        iPlayer;
-    char      *pcVar4;
-    ushort     uVar5;
-    uint       uVar6;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    bool       bVar7;
-    long       lVar8;
-    long       lVar9;
-    uint       in_stack_0000fe00;
-    PART       local_1fe;
-    char      *pch;
-    ushort     w;
-    char       szBuf[480];
-    char      *pchT;
-    short     *pParams;
-    short      i;
-    short      c;
-    short      cOut;
-    short      iMineral;
+    char   cVar1;
+    short *psVar2;
+    short  sVar3;
+    int    iPlayer;
+    char  *pcVar4;
+    ushort uVar5;
+    uint   uVar6;
+    bool   bVar7;
+    long   lVar8;
+    PART   local_1fe;
+    char  *pch;
+    ushort w;
+    char   szBuf[480];
+    char  *pchT;
+    short *pParams;
+    short  i;
+    short  c;
+    short  cOut;
+    short  iMineral;
 
-    lVar9 = CONCAT22(unaff_SI, unaff_DI);
     iMineral = -1;
     pParams = pParamsReal;
     pch = (char *)szMsgBuf;
@@ -1626,7 +1618,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
         case 0x31:
             local_1fe.hs.grhst = *pParams;
             local_1fe.hs.wFlags_0x2 = 0;
-            lVar8 = __aFlshl(lVar9, in_stack_0000fe00);
+            lVar8 = __aFlshl((ulong)(uint)((short *)pParams)[1], 0x10);
             local_1fe.u_PART_0x0004.parmor._0_2_ = (ARMOR *)((HullSlotType)lVar8 | local_1fe.hs.grhst);
             local_1fe.u_PART_0x0004._2_2_ = (uint)((ulong)lVar8 >> 0x10) | local_1fe.hs.wFlags_0x2;
             pParams = (short *)pParams + 2;
@@ -1736,8 +1728,7 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
         case 0x26:
             local_1fe.hs.grhst = *pParams;
             pParams = (short *)pParams + 1;
-            in_stack_0000fe00 = *pParams;
-            local_1fe.hs.wFlags_0x2 = local_1fe.hs.wFlags_0x2 & 0xff00 | in_stack_0000fe00 & 0xff;
+            local_1fe.hs.wFlags_0x2 = local_1fe.hs.wFlags_0x2 & 0xff00 | *pParams & 0xffU;
             FLookupPart(&local_1fe);
             __fstrcpy(pch, (char *)CONCAT22(local_1fe.u_PART_0x0004._2_2_, (local_1fe.u_PART_0x0004.parmor._0_2_)->szName));
             uVar5 = __fstrlen((char *)CONCAT22(local_1fe.u_PART_0x0004._2_2_, (local_1fe.u_PART_0x0004.parmor._0_2_)->szName));
@@ -1819,16 +1810,12 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
 // Segment: MEMORY_MSG
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: ps */
-
 short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
     HWND        HVar1;
     short       sVar2;
     char       *sz;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     undefined2  unaff_SS;
     ulong       uVar3;
     PAINTSTRUCT ps;
@@ -1858,7 +1845,7 @@ short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     }
     if (message != WM_ERASEBKGND) {
         if (message == WM_CTLCOLOR) {
-            uVar3 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), ps.hdc);
+            uVar3 = __aFulshr(lParam, 0x10);
             if ((int)uVar3 == 6) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;

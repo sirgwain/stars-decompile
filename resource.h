@@ -385,9 +385,9 @@
  * resource type 0x2710 (10000). Keep that numeric constant named.
  */
 #define IDT_TUTORIAL_BLOB 10000
-#define IDR_TUTORIAL_HST 10001 // res/tutorial/10001-tutorail.hst
-#define IDR_TUTORIAL_M1  10003 // res/tutorial/10003-tutorail.m1
-#define IDR_TUTORIAL_M2  10005 // res/tutorial/10005-tutorail.m2
+#define IDR_TUTORIAL_HST  10001 // res/tutorial/10001-tutorail.hst
+#define IDR_TUTORIAL_M1   10003 // res/tutorial/10003-tutorail.m1
+#define IDR_TUTORIAL_M2   10005 // res/tutorial/10005-tutorail.m2
 
 // ---------------- Common Controls ----------
 #define IDC_HELP     118

@@ -2,6 +2,9 @@
 #include "types.h"
 
 #include "aiutil.h"
+#include "globals.h"
+#include "planet.h"
+#include "util.h"
 
 /* globals */
 uint8_t vrgSBAip[85];       /* MEMORY_AIU:0x7688 */
@@ -430,14 +433,14 @@ void GetResourcesAvailable(PLANET *lppl, int32_t *rgRes) {
 }
 
 int16_t IshdefAiSBLatest(void) {
-
-    /* TODO: implement */
+    if (!rglpshdefSB[idPlayer][5].fFree && rglpshdefSB[idPlayer][0].turn < rglpshdefSB[idPlayer][5].turn)
+        return 5;
     return 0;
 }
 
 int16_t FEnumOurStarbase(PLANET *lpplSrc, PLANET *lpplTest) {
-
-    /* TODO: implement */
+    if (lpplTest->iPlayer == idPlayer && lpplTest->fStarbase)
+        return 1;
     return 0;
 }
 
@@ -509,7 +512,15 @@ THING *LpthWormFind(POINT *ppt, int32_t d2) {
     return NULL;
 }
 
-void ClearAiCurrentTask(FLEET *lpfl, int16_t fChangeSel) { /* TODO: implement */ }
+void ClearAiCurrentTask(FLEET *lpfl, int16_t fChangeSel) {
+#ifdef _WIN32
+    if (fChangeSel != 0) {
+        ChangeMainObjSel(grobjFleet, lpfl->id);
+    }
+#endif
+    sel.fl.lpplord->rgord[0].grTask = 0;
+    FLookupFleet(-1, &sel.fl);
+}
 
 int16_t FCreateAiStarbase(int16_t ishdef, int16_t iLevel, int16_t aisb, int16_t isb) {
     int16_t i;
@@ -579,9 +590,9 @@ void EnsureMacintiStarbaseDesigns(uint8_t *rgSB) {
 }
 
 int16_t IshdefAiSBLatestOF(void) {
-
-    /* TODO: implement */
-    return 0;
+    if (!rglpshdefSB[idPlayer][6].fFree && rglpshdefSB[idPlayer][1].turn < rglpshdefSB[idPlayer][6].turn)
+        return 6;
+    return 1;
 }
 
 int16_t FQueueAiScanner(PLANET *lppl, int32_t *rgResAvail, int32_t *rgResCost) {

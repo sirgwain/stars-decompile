@@ -408,7 +408,6 @@ short PctWormholeMoves(THING *lpth)
 // Segment: MEMORY_THING
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: cGive */
 /* WARNING: Removing unreachable block (ram,0x11100ed1) */
 /* WARNING: Removing unreachable block (ram,0x11101776) */
 /* WARNING: Removing unreachable block (ram,0x11101129) */
@@ -436,9 +435,7 @@ void DoThingInteractions(short fPostMove)
     undefined2 *puVar18;
     FLEET      *pFVar19;
     PLORD      *pPVar20;
-    undefined2  unaff_SI;
     HUL        *pHVar21;
-    undefined2  unaff_DI;
     SHDEF      *pSVar22;
     undefined2  uVar23;
     undefined2  uVar24;
@@ -455,7 +452,6 @@ void DoThingInteractions(short fPostMove)
     short       p5;
     short       p6;
     short       p7;
-    long        lVar32;
     short       cGive;
     FLEET      *lpflNew;
     SHDEF      *lpshdefDest;
@@ -487,7 +483,6 @@ void DoThingInteractions(short fPostMove)
     ushort      grbitPlrTrader;
     long        wtThreshhold;
 
-    lVar32 = CONCAT22(unaff_SI, unaff_DI);
     if (fPostMove != 0) {
         local_4e = (PLANET *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
         lpthMac._0_2_ = (THING *)lpThings + cThing;
@@ -642,7 +637,7 @@ void DoThingInteractions(short fPostMove)
                                             local_56._2_2_ = puVar18[1];
                                             wtNext = lVar26;
                                             idPlayer = sVar31;
-                                            lVar26 = __aFlshl(lVar32, cGive);
+                                            lVar26 = __aFlshl(CONCAT22(local_56._2_2_, (undefined2)local_56), 1);
                                             if (0 < wtNext) {
                                                 lVar26 = lVar26 + wtNext;
                                             }

@@ -42,9 +42,9 @@ void DumpShDef(const SHDEF *s, int idx);
 /* ------------------------------------------------------------------ */
 
 typedef struct GameBlock {
-    uint16_t rt;       /* record type */
-    uint16_t cb;       /* payload size */
-    uint8_t *data;     /* heap-allocated payload (NULL if cb==0) */
+    uint16_t rt;   /* record type */
+    uint16_t cb;   /* payload size */
+    uint8_t *data; /* heap-allocated payload (NULL if cb==0) */
 } GameBlock;
 
 typedef struct GameBlockList {

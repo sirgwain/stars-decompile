@@ -97,8 +97,6 @@ void DrawPopup(HWND hwnd, HDC hdc)
     ushort      uVar4;
     int         x;
     char       *pcVar5;
-    ushort      unaff_SI;
-    uint        unaff_DI;
     undefined2  unaff_SS;
     COLORREF    CVar6;
     COLORREF    CVar7;
@@ -135,7 +133,7 @@ void DrawPopup(HWND hwnd, HDC hdc)
     switch (GlobalPD.grPopup) {
     case 1:
         sVar15 = 0;
-        lVar9 = __aFlshl((ulong)unaff_DI << 0x10, unaff_SI);
+        lVar9 = __aFlshl(GlobalPD.u_POPUPDATA_0x0002.rgi[0], 1);
         CtrTextOut(hdc, rc.right >> 1, 4, (char *)*(undefined2 *)((int)lVar9 + 0x4cc), sVar15);
         SelectObject(hdc, rghfontArial8[0]);
         pcVar5 = PszGetCompressedString(idsMineralConcentration);

@@ -439,9 +439,6 @@ short FGetSystemColors(void)
     COLORREF   CVar6;
     char      *pcVar7;
     ulong      uVar8;
-    undefined2 uVar9;
-    undefined2 uVar10;
-    ushort     uVar11;
     HDC        hdc;
 
     if (hbrButtonFace != 0) {
@@ -484,11 +481,8 @@ short FGetSystemColors(void)
     hbrWindow = HbrGet(crWindow);
     crWindowText = GetSysColor(8);
     hbrWindowText = HbrGet(crWindowText);
-    uVar11 = 4;
     dyTitleBar = GetSystemMetrics(4);
-    uVar10 = 0x20;
     dxWinFrame = GetSystemMetrics(0x20);
-    uVar9 = 0x21;
     dyWinFrame = GetSystemMetrics(0x21);
     if (hdibPlaque != 0) {
         pcVar7 = GlobalLock(hdibPlaque);
@@ -496,7 +490,7 @@ short FGetSystemColors(void)
         pcVar1 = (char *)pcVar7;
         pcVar1[0x40e] = (char)crButtonFace;
         pcVar1[0x40d] = (char)(crButtonFace >> 8);
-        uVar8 = __aFulshr(CONCAT22(uVar10, uVar9), uVar11);
+        uVar8 = __aFulshr(crButtonFace, 0x10);
         pcVar1[0x40c] = (char)uVar8;
         GlobalUnlock(hdibPlaque);
     }
@@ -506,7 +500,7 @@ short FGetSystemColors(void)
         pcVar1 = (char *)pcVar7;
         pcVar1[0x41e] = (char)crButtonFace;
         pcVar1[0x41d] = (char)(crButtonFace >> 8);
-        uVar8 = __aFulshr(CONCAT22(uVar10, uVar9), uVar11);
+        uVar8 = __aFulshr(crButtonFace, 0x10);
         pcVar1[0x41c] = (char)uVar8;
         GlobalUnlock(hdibToolbar);
     }
@@ -728,8 +722,6 @@ char *SzVersion(void)
 // Segment: MEMORY_MAIN
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: hwndCtl */
-
 short About(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
@@ -737,8 +729,6 @@ short About(HWND hwnd, WMType message, ushort wParam, long lParam)
     char      *pcVar2;
     short      sVar3;
     HDC        hdc;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 unaff_SS;
     ulong      uVar4;
     FARPROC    lpDlgProc;
@@ -752,7 +742,7 @@ short About(HWND hwnd, WMType message, ushort wParam, long lParam)
         sVar3 = 1;
     } else {
         if (message == WM_CTLCOLOR) {
-            uVar4 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), hwndCtl);
+            uVar4 = __aFulshr(lParam, 0x10);
             if ((int)uVar4 == 6) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;
@@ -826,14 +816,10 @@ short About(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_MAIN
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: rc */
-
 short OrderInfoDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
     short      sVar1;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 unaff_SS;
     ulong      uVar2;
     RECT       rc;
@@ -844,7 +830,7 @@ short OrderInfoDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         sVar1 = 1;
     } else {
         if (message == WM_CTLCOLOR) {
-            uVar2 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), rc.left);
+            uVar2 = __aFulshr(lParam, 0x10);
             if ((int)uVar2 == 6) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;

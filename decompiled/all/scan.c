@@ -37,8 +37,6 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     undefined1 *puVar12;
     undefined1 *puVar13;
     undefined1 *puVar14;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     undefined2  uVar15;
     undefined2  unaff_SS;
     bool        bVar16;
@@ -46,7 +44,6 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     ulong       uVar18;
     LRESULT     LVar19;
     short       dy;
-    ushort      in_stack_0000fdda;
     short       id;
     THING      *lpthMac;
     short       iSel;
@@ -67,7 +64,6 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
     uVar15 = 0x1058;
     puVar14 = &stack0xfdd6;
-    uVar18 = CONCAT22(unaff_SI, unaff_DI);
     if (msg == WM_CREATE) {
         yScanTop = 1000;
         xScanTop = 1000;
@@ -188,7 +184,7 @@ long ScannerWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
         } else if ((((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) || (msg == WM_RBUTTONDOWN)) || (msg == WM_MBUTTONDOWN)) {
             SetFocus(hwndFrame);
             pt.x = (int)lParam;
-            uVar18 = __aFulshr(uVar18, in_stack_0000fdda);
+            uVar18 = __aFulshr(lParam, 0x10);
             pt.y = (short)uVar18;
             GetClientRect(hwnd, &rc);
             if (pt.y < rc.bottom - dySBar) {
@@ -1534,7 +1530,7 @@ short DrawScanner(HDC hdc, RECT *prc)
                                     pTVar32 = (THING *)*(int *)((int)pPVar30->rgwtMin + 0xe);
                                     local_48a = (THING *)CONCAT22((int)pPVar30->rgwtMin[3], (THING *)local_48a);
                                 } else {
-                                    lVar39 = __aFlshl(CONCAT22(unaff_SI, unaff_DI), (ushort)in_stack_0000f586);
+                                    lVar39 = __aFlshl((ulong)(pPVar30->uGuesses & 0xfff), 2);
                                     pTVar32 = (THING *)((ulong)lVar39 >> 0x10);
                                     local_48a = (THING *)CONCAT22((int)lVar39, (THING *)local_48a);
                                 }
@@ -2157,7 +2153,7 @@ void DrawShipScanPath(HDC hdc, short fShow)
     ORDER     *pOVar12;
     short     *psVar13;
     undefined2 unaff_SI;
-    ushort     unaff_DI;
+    undefined2 unaff_DI;
     undefined2 uVar14;
     undefined2 unaff_SS;
     bool       bVar15;
@@ -2331,15 +2327,15 @@ void DrawShipScanPath(HDC hdc, short fShow)
             j = 5;
         } else {
             uVar18 = CONCAT62(CONCAT42(10, i >> 0xf), i);
-            __aFulmul((long)sVar5, (ulong)uVar18);
+            uVar16 = __aFulmul((long)sVar5, (ulong)uVar18);
             lVar19 = (long)((ulonglong)uVar18 >> 0x20);
-            lVar17 = __aFlshl(lVar19, unaff_DI);
+            lVar17 = __aFlshl(uVar16, 1);
             lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar19, (int)((ulong)(lVar17 + j) >> 0x10)), (int)(lVar17 + j)), lVar19);
             pt.x = (int)lVar17 + ptCur.x;
             uVar18 = CONCAT62(CONCAT42(10, i >> 0xf), i);
-            __aFulmul((long)-sVar6, (ulong)uVar18);
+            uVar16 = __aFulmul((long)-sVar6, (ulong)uVar18);
             lVar19 = (long)((ulonglong)uVar18 >> 0x20);
-            lVar17 = __aFlshl(lVar19, unaff_DI);
+            lVar17 = __aFlshl(uVar16, 1);
             lVar17 = __aFldiv((long)CONCAT62(CONCAT42(lVar19, (int)((ulong)(lVar17 + j) >> 0x10)), (int)(lVar17 + j)), lVar19);
             pt.y = (int)lVar17 + ptCur.y;
             if (i < 1) {
@@ -4413,16 +4409,12 @@ short FGetNextObjHere(SCAN *pscan, short fOnlyOurs)
 // Segment: MEMORY_SCAN
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: rc */
-
 short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
 {
     short      sVar1;
     char      *sz;
     HWND       HVar2;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 unaff_SS;
     ulong      uVar3;
     RECT       rc;
@@ -4434,7 +4426,7 @@ short FindDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
         return 1;
     }
     if (msg == WM_CTLCOLOR) {
-        uVar3 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), rc.left);
+        uVar3 = __aFulshr(lParam, 0x10);
         if ((int)uVar3 == 6) {
             SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
             return hbrButtonFace;

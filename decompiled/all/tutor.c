@@ -86,13 +86,9 @@ short TutorDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_TUTOR
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: rc */
-
 short PanicDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 unaff_SS;
     ulong      uVar1;
     RECT       rc;
@@ -103,7 +99,7 @@ short PanicDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
         return 1;
     }
     if (message == WM_CTLCOLOR) {
-        uVar1 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), rc.left);
+        uVar1 = __aFulshr(lParam, 0x10);
         if ((int)uVar1 == 6) {
             SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
             return hbrButtonFace;
@@ -4035,46 +4031,49 @@ short FCheckXferWP(ushort ifl, short iord, short id, ushort iWarp, ITEMACTION *l
 // ======================================================================
 
 /* WARNING: Removing unreachable block (ram,0x10f8750f) */
-/* WARNING: Variable defined which should be unmapped: idhSav */
 
 short FCheckQueue(short ipl, short iprod, GrobjClass grobj, ushort iItem, ushort cItem, ushort fNoResearch)
 
 {
-    uint       uVar1;
-    PLANET    *pPVar2;
-    short      sVar3;
-    short      sVar4;
+    undefined2 uVar1;
+    uint       uVar2;
+    uint       uVar3;
+    PLANET    *pPVar4;
     short      sVar5;
-    int        iVar6;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    PLANET    *pPVar7;
-    ulong      uVar8;
-    ulong      uVar9;
+    short      sVar6;
+    short      sVar7;
+    int        iVar8;
+    uint      *puVar9;
+    PLANET    *pPVar10;
+    ulong      uVar11;
     short      idhSav;
     short      idh;
     PROD       prod;
     PLANET    *lppl;
     short      fRet;
 
-    sVar3 = tutor.idh;
-    uVar9 = CONCAT22(unaff_SI, unaff_DI);
+    sVar5 = tutor.idh;
     fRet = 0;
     if (game.turn < 2) {
         tutor.idh = 0x5e3;
     } else {
         tutor.idh = 0x423;
     }
-    pPVar7 = LpplFromId(ipl);
-    iVar6 = (int)((ulong)pPVar7 >> 0x10);
-    pPVar2 = (PLANET *)pPVar7;
-    if ((((pPVar2 != 0) || (iVar6 != 0)) && ((*(int *)&pPVar2->lpplprod != 0 || (*(int *)((int)&pPVar2->lpplprod + 2) != 0)))) &&
-        (iprod < (int)(uint)((PLPROD *)pPVar2->lpplprod)->iprodMac)) {
-        uVar1 = *(uint *)(*(int *)&pPVar2->lpplprod + 4 + iprod * 4);
-        uVar8 = __aFulshr(uVar9, sVar3);
-        if ((((GrobjClass)uVar8 & (grobjOther | grobjFleet | grobjPlanet)) == grobj) && (uVar8 = __aFulshr(uVar9, sVar3), ((uint)uVar8 & 0x7f) == iItem)) {
-            if ((uVar1 & 0x3ff) == cItem) {
-                if ((fNoResearch == 0xffff) || (uVar9 = __aFulshr(uVar9, sVar3), ((uint)uVar9 & 1) == fNoResearch)) {
+    pPVar10 = LpplFromId(ipl);
+    iVar8 = (int)((ulong)pPVar10 >> 0x10);
+    pPVar4 = (PLANET *)pPVar10;
+    if ((((pPVar4 != 0) || (iVar8 != 0)) && ((*(int *)&pPVar4->lpplprod != 0 || (*(int *)((int)&pPVar4->lpplprod + 2) != 0)))) &&
+        (iprod < (int)(uint)((PLPROD *)pPVar4->lpplprod)->iprodMac)) {
+        uVar1 = *(undefined2 *)((int)&pPVar4->lpplprod + 2);
+        puVar9 = (uint *)(*(int *)&pPVar4->lpplprod + 4 + iprod * 4);
+        uVar2 = *puVar9;
+        uVar3 = puVar9[1];
+        uVar11 = __aFulshr(CONCAT22(uVar3, uVar2), 0x11);
+        if ((((GrobjClass)uVar11 & (grobjOther | grobjFleet | grobjPlanet)) == grobj) &&
+            (uVar11 = __aFulshr(CONCAT22(uVar3, uVar2), 10), ((uint)uVar11 & 0x7f) == iItem)) {
+            if ((uVar2 & 0x3ff) == cItem) {
+                if ((fNoResearch == 0xffff) || (uVar11 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar4->rgbImp + 6), *(undefined2 *)(pPVar4->rgbImp + 4)), 0x17),
+                                                ((uint)uVar11 & 1) == fNoResearch)) {
                     fRet = 1;
                 } else {
                     TutorError(0x519);
@@ -4086,15 +4085,15 @@ short FCheckQueue(short ipl, short iprod, GrobjClass grobj, ushort iItem, ushort
             TutorError(0x1eb);
         }
     }
-    sVar4 = tutor.idh;
-    if ((fRet == 0) && (sVar5 = FCheckSelection(grobjPlanet, ipl), sVar5 == 0)) {
-        sVar4 = tutor.idh;
+    sVar6 = tutor.idh;
+    if ((fRet == 0) && (sVar7 = FCheckSelection(grobjPlanet, ipl), sVar7 == 0)) {
+        sVar6 = tutor.idh;
     }
-    tutor.idh = sVar4;
+    tutor.idh = sVar6;
     if (fRet == 0) {
-        sVar3 = tutor.idh;
+        sVar5 = tutor.idh;
     }
-    tutor.idh = sVar3;
+    tutor.idh = sVar5;
     return fRet;
 }
 

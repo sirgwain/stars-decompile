@@ -4,10 +4,12 @@
 
 #include "ship2.h"
 
+#include "msg.h"
 #include "parts.h"
 #include "race.h"
 #include "ship.h"
 #include "util.h"
+#include "utilgen.h"
 
 /* functions */
 int16_t FScout(FLEET *lpfl) {
@@ -26,32 +28,343 @@ int16_t FScout(FLEET *lpfl) {
     return 0;
 }
 
+/* --------------------------------------------------------------------------
+ * FStargateJump
+ *
+ * Resolve and apply stargate “mis-jump” damage for a fleet attempting to jump.
+ *
+ * Inputs:
+ *   lpfl     Fleet attempting to use a stargate (updated in-place on success/failure).
+ *   isbsSrc  Source starbase index/id (passed through to MdCalcStargateDamage).
+ *   isbsDst  Destination starbase index/id (passed through to MdCalcStargateDamage).
+ *   dDist    Jump distance (passed through to MdCalcStargateDamage).
+ *
+ * High-level flow:
+ *   1) Make a working copy of the fleet (flSrc) and clear per-design damage percentages (rgpct[]).
+ *
+ *   2) Determine the destination planet id used for messaging:
+ *      - Look at lpfl->lpplord->rgord[1]. If it targets a planet (grobjPlanet), use rgord[1].id.
+ *      - Otherwise interpret rgord[1].pt as a coordinate and scan rgptPlan[] to find a matching
+ *        planet index (0..game.cPlanMax-1). (If no match, id ends up == game.cPlanMax.)
+ *
+ *   3) For each ship design slot ishdef that has ships in the fleet:
+ *      - Accumulate total ship count (cshOrig).
+ *      - Call MdCalcStargateDamage(isbsSrc, isbsDst, dDist, wtEmpty, &rgpct[ishdef]) to compute
+ *        a per-design damage percentage and an overall status:
+ *          * -2: jump not possible due to ship(s) -> send idmAttemptedUseStargateReachCouldBecauseShips, return 0
+ *          * -1: jump not possible due to destination -> send idmAttemptedUseStargateReachCouldBecauseDestination, return 0
+ *          *  0: design unaffected (doesn’t count toward “survivors”)
+ *          *  1: design affected and marks flSrc.fNoHeal (no healing)
+ *          *  >0: design affected
+ *        Track how many distinct designs are “in play” (cshdef).
+ *
+ *   4) If no designs survive/are eligible (cshdef == 0):
+ *      - Mark the original fleet dead (lpfl->fDead = 1),
+ *      - Send idmHeedlessDangerAttemptedUseStargateReachFleet,
+ *      - Return 0.
+ *
+ *   5) Otherwise, compute ship losses and updated damage state per affected design:
+ *      - If rgpct[ishdef] == 100: all ships of that design are destroyed.
+ *      - Else:
+ *          * Compute a per-ship random kill chance pctKill (rgpct/3), except races with raStargate
+ *            take no random-kill chance.
+ *          * Track “already damaged” ships using flSrc.rgdv[ishdef].pctDp (old damage %), and update
+ *            (pctDp,pctSh) based on weighted old/new damage-per-ship (dpPerShdefOld/dpPerShdefNew)
+ *            derived from hull dp and damage percentages.
+ *          * Update ship counts, clear DV if a design is wiped out, and accumulate total ships killed
+ *            (cshKill). Record per-design killed counts into flDead.rgcsh[] for cargo balancing.
+ *
+ *   6) If the process kills every remaining design (cshdef becomes 0), fall back to the same
+ *      “killed them all” handling as step (4).
+ *
+ *   7) If any ships were lost (cshKill != 0):
+ *      - Choose and send an appropriate “lost ships in jump” message based on magnitude of losses
+ *        versus cshOrig (including a special “unbelievable” path when cshKill doesn’t fit in 16 bits).
+ *      - Prepare a “dead fleet” record (flDead: detAll, fInclude=1, fDead=1, etc.) and call
+ *        FleetTransferCargoBalance(&flSrc, &flDead) to proportionally shed cargo corresponding
+ *        to destroyed ships.
+ *
+ *   8) Copy the modified working fleet back to *lpfl and return 1 (jump proceeds with updated fleet).
+ *
+ * Returns:
+ *   1 if the jump proceeds (fleet updated in-place, possibly with losses/damage),
+ *   0 if the jump is aborted or the fleet is destroyed (and an appropriate message is sent).
+ * -------------------------------------------------------------------------- */
 int16_t FStargateJump(FLEET *lpfl, int16_t isbsSrc, int16_t isbsDst, int16_t dDist) {
-    int16_t dpPerShdefNew;
-    int16_t dpShdef;
-    POINT   pt;
-    int16_t id;
-    FLEET   flSrc;
-    int16_t cshT;
-    uint8_t pctKill;
-    int16_t i;
-    int32_t cshOrig;
-    int16_t idm;
-    int32_t cshKill;
-    int16_t pct;
-    int16_t rgpct[16];
-    int16_t cshdef;
-    int16_t ishdef;
-    int32_t dp;
-    int16_t dpPerShdefOld;
-    int16_t cshDamagedOld;
-    FLEET   flDead;
+    int16_t    dpPerShdefNew;
+    int16_t    dpShdef;
+    STARSPOINT pt;
+    int16_t    id;
+    FLEET      flSrc;
+    int16_t    cshT;
+    uint8_t    pctKill;
+    int16_t    i;
+    int32_t    cshOrig;
+    int16_t    idm;
+    int32_t    cshKill;
+    int16_t    pct;
+    int16_t    rgpct[16];
+    int16_t    cshdef;
+    int16_t    ishdef;
+    int32_t    dp;
+    int16_t    dpPerShdefOld;
+    int16_t    cshDamagedOld;
+    FLEET      flDead;
 
     /* debug symbols */
     /* label LKilledEmAll @ MEMORY_SHIP2:0x0f06 */
 
-    /* TODO: implement */
-    return 0;
+    /* ------------------------------------------------------------
+     * asm: 1080:0d07..0d37
+     * ------------------------------------------------------------ */
+    cshdef = 0;
+    cshKill = 0;
+    cshOrig = 0;
+    memset(rgpct, 0, sizeof(rgpct));
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0d3a..0d4e  (MOVSW.REP 0x3e words)
+     * ------------------------------------------------------------ */
+    memcpy(&flSrc, lpfl, sizeof(FLEET));
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0d53..0dc4  (resolve destination planet id)
+     *   If ((*(word*)(lpplord+0x1c) >> 8) & 0xF) == 1:
+     *       id = *(word*)(lpplord+0x1a)
+     *   else:
+     *       find id by matching coords *(word*)(+0x16),(+0x18) against rgptPlan[]
+     * ------------------------------------------------------------ */
+    {
+        PLORD *plord = flSrc.lpplord;
+        ORDER *wp1 = &plord->rgord[1];
+
+        /* asm: (word at +0x1c >> 8) & 0xF == 1  ==> wp1->grobj == 1 */
+        if (wp1->grobj == grobjPlanet) {
+            /* asm: id = word at +0x1a ==> wp1->id */
+            id = wp1->id;
+        } else {
+            /* asm: pt = words at +0x16/+0x18 ==> wp1->pt */
+            pt = wp1->pt;
+
+            id = 0;
+            while (id < game.cPlanMax) {
+                if (rgptPlan[id].x == pt.x && rgptPlan[id].y == pt.y)
+                    break;
+                id++;
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0dc4..0efc  (scan designs, compute rgpct via MdCalcStargateDamage)
+     * ------------------------------------------------------------ */
+    ishdef = 0;
+    while (ishdef < cShdefMax) {
+        if (flSrc.rgcsh[ishdef] != 0) {
+            int16_t cshdefTry = (int16_t)(cshdef + 1);
+            cshOrig += (int32_t)flSrc.rgcsh[ishdef];
+
+            uint16_t wt = rglpshdef[flSrc.iPlayer][ishdef].hul.wtEmpty;
+
+            {
+                int16_t md = MdCalcStargateDamage(isbsSrc, isbsDst, dDist, wt, &rgpct[ishdef]);
+
+                if (md == -2) {
+                    FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseShips, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, ishdef, 0, 0, 0);
+                    return 0;
+                }
+                if (md == -1) {
+                    FSendPlrMsg(flSrc.iPlayer, idmAttemptedUseStargateReachCouldBecauseDestination, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0,
+                                0);
+                    return 0;
+                }
+                if (md == 0) {
+                    cshdef = cshdefTry - 1;
+                } else {
+                    cshdef = cshdefTry;
+                    if (md == 1) {
+                        /* asm: flSrc.wFlags_0x4 = (.. &0xbfff) | 0x4000 */
+                        flSrc.fNoHeal = 1;
+                    }
+                }
+            }
+        }
+
+        ishdef = ishdef + 1;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0efc..0f50  LKilledEmAll case (no eligible ship designs)
+     * ------------------------------------------------------------ */
+    if (cshdef == 0) {
+    LKilledEmAll:
+        /* asm: lpfl->wFlags_0x4 = (.. &0xfbff) | 0x0400 */
+        lpfl->fDead = 1;
+
+        FSendPlrMsg(flSrc.iPlayer, idmHeedlessDangerAttemptedUseStargateReachFleet, flSrc.id | 0x8000, flSrc.id, flSrc.idPlanet, id, 0, 0, 0, 0);
+        return 0;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0f53..0f65
+     * ------------------------------------------------------------ */
+    memset(&flDead, 0, sizeof(FLEET));
+
+    /* ------------------------------------------------------------
+     * asm: 1080:0f68..139a  (apply losses/damage per design)
+     * ------------------------------------------------------------ */
+    for (ishdef = 0; ishdef < cShdefMax; ishdef = ishdef + 1) {
+        if (flSrc.rgcsh[ishdef] == 0)
+            continue;
+        if (rgpct[ishdef] == 0)
+            continue;
+
+        if (rgpct[ishdef] == 100) {
+            cshKill += (int32_t)flSrc.rgcsh[ishdef];
+            flSrc.rgcsh[ishdef] = 0;
+            flSrc.rgdv[ishdef].dp = 0;
+            cshdef = (int16_t)(cshdef - 1);
+        } else {
+            cshT = flSrc.rgcsh[ishdef];
+
+            /* pctKill = (rgpct/3) unless RA=Stargate then 0 */
+            {
+                int16_t ra = GetRaceStat((PLAYER *)rgplr + lpfl->iPlayer, rsMajorAdv);
+                if (ra == raStargate) {
+                    pctKill = 0;
+                } else {
+                    pctKill = (uint8_t)(rgpct[ishdef] / 3);
+                }
+            }
+
+            /* dpShdef := shdef[ishdef].(word+0x38) (asm reads +0x38) */
+            dpShdef = rglpshdef[lpfl->iPlayer][ishdef].hul.dp;
+
+            /* cshDamagedOld = (cshT * pctDp)/100, min 1 if nonzero pctDp */
+            if (flSrc.rgdv[ishdef].pctDp == 0) {
+                cshDamagedOld = 0;
+            } else {
+                cshDamagedOld = (int16_t)(((int32_t)cshT * (int32_t)flSrc.rgdv[ishdef].pctDp) / 100);
+                if (cshDamagedOld == 0)
+                    cshDamagedOld = 1;
+            }
+
+            /* kill-loop */
+            if (pctKill != 0) {
+                for (i = 0; i < flSrc.rgcsh[ishdef]; i = (int16_t)(i + 1)) {
+                    int16_t r = Random(100);
+                    if (r < (int16_t)pctKill) {
+                        cshT = (int16_t)(cshT - 1);
+
+                        if (cshDamagedOld != 0) {
+                            uint16_t r2 = (uint16_t)Random(500);
+                            if (r2 < (uint16_t)flSrc.rgdv[ishdef].pctDp) {
+                                cshDamagedOld = (int16_t)(cshDamagedOld - 1);
+                            }
+                        }
+                    }
+                }
+
+                cshKill += (int32_t)(flSrc.rgcsh[ishdef] - cshT);
+            }
+
+            if (cshT != 0) {
+                /* dpPerShdefOld = (dpShdef * pctDp)/500, min 1 if nonzero pctDp */
+                if (flSrc.rgdv[ishdef].pctDp == 0) {
+                    dpPerShdefOld = 0;
+                } else {
+                    dpPerShdefOld = (int16_t)(((int32_t)dpShdef * (int32_t)flSrc.rgdv[ishdef].pctDp) / 500);
+                    if (dpPerShdefOld == 0)
+                        dpPerShdefOld = 1;
+                }
+
+                /* dpPerShdefNew = (dpShdef * rgpct)/100, min 1 */
+                dpPerShdefNew = (int16_t)(((int32_t)dpShdef * (int32_t)rgpct[ishdef]) / 100);
+                if (dpPerShdefNew == 0)
+                    dpPerShdefNew = 1;
+
+                /* if damaged ships exist and dpShdef <= dpPerShdefNew+dpPerShdefOld, kill damaged ships outright */
+                if (cshDamagedOld != 0) {
+                    if (dpShdef <= (int16_t)(dpPerShdefNew + dpPerShdefOld)) {
+                        cshKill += (int32_t)cshDamagedOld;
+                        cshT = (int16_t)(cshT - cshDamagedOld);
+                    }
+                }
+
+                if (cshT != 0) {
+                    /* recompute pctDp; set pctSh=100 */
+                    dp = (int32_t)dpPerShdefOld * (int32_t)cshDamagedOld + (int32_t)dpPerShdefNew * (int32_t)cshT;
+
+                    pct = (int16_t)((((dp / (int32_t)cshT) * 500) / (int32_t)dpShdef));
+                    if (pct == 0)
+                        pct = 1;
+
+                    flSrc.rgdv[ishdef].pctDp = (uint16_t)pct;
+                    flSrc.rgdv[ishdef].pctSh = 100;
+                }
+            }
+
+            flSrc.rgcsh[ishdef] = cshT;
+            if (cshT == 0) {
+                flSrc.rgdv[ishdef].dp = 0;
+                cshdef = (int16_t)(cshdef - 1);
+            }
+        }
+
+        /* flDead.rgcsh[ishdef] = orig - new */
+        flDead.rgcsh[ishdef] = (int16_t)(lpfl->rgcsh[ishdef] - flSrc.rgcsh[ishdef]);
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 1080:139a..150c  (messages, cargo transfer, write-back)
+     * ------------------------------------------------------------ */
+    if (cshdef == 0) {
+        goto LKilledEmAll;
+    }
+
+    if (cshKill != 0) {
+        /* choose message id based on cshOrig>>2 and cshKill */
+        if ((cshKill >> 16) != 0) {
+            /* asm uses 0xeb when count is “unbelievable” (needs highword) */
+            FSendPlrMsg(lpfl->iPlayer, idmUsedStargateReachLosingUnbelievableShipsJump, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, (uint16_t)cshKill,
+                        (int16_t)((uint32_t)cshKill >> 16), 0, 0);
+        } else {
+            int32_t thr2 = (cshOrig >> 2);
+            if (thr2 < 0 || (thr2 < 0x10000 && (uint16_t)thr2 <= (uint16_t)cshKill)) {
+                int32_t thr1 = (cshOrig >> 1);
+                if (thr1 < 0x10000 && (thr1 < 0 || (uint16_t)thr1 < (uint16_t)cshKill)) {
+                    idm = idmUsedStargateReachUnfortunatelyLosingShipsGreat;
+                } else {
+                    idm = idmUsedStargateReachLosingShipsUnforgivingVoid;
+                }
+            } else {
+                idm = idmUsedStargateReachLosingShipsTreacherousVoid;
+            }
+
+            FSendPlrMsg(lpfl->iPlayer, idm, lpfl->id | 0x8000, lpfl->id, lpfl->idPlanet, id, (uint16_t)cshKill, 0, 0, 0);
+        }
+
+        flDead.iPlayer = flSrc.iPlayer;
+
+        /* asm:
+         *   flDead.wFlags_0x4 = (flDead.wFlags_0x4 & 0xfb00) | 0x0407;
+         * => det=7, fInclude=1, fDead=1, rest 0
+         */
+        flDead.det = detAll;
+        flDead.fInclude = 1;
+        flDead.fDead = 1;
+        flDead.fRepOrders = 0;
+        flDead.fDone = 0;
+        flDead.fBombed = 0;
+        flDead.fHereAllTurn = 0;
+        flDead.fNoHeal = 0;
+        flDead.fMark = 0;
+
+        FleetTransferCargoBalance(&flSrc, &flDead);
+    }
+
+    memcpy(lpfl, &flSrc, sizeof(FLEET));
+    return 1;
 }
 
 int32_t PctTerraFromLpfl(FLEET *lpfl) {
@@ -63,11 +376,22 @@ int32_t PctTerraFromLpfl(FLEET *lpfl) {
     int16_t chs;
     HS     *lphs;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_SHIP2:0x2794 */
-
-    /* TODO: implement */
-    return 0;
+    pctTot = 0;
+    for (i = 0; i < cShdefMax; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lphuldef = &rglpshdef[lpfl->iPlayer][i].hul;
+            pct = 0;
+            lphs = lphuldef->rghs;
+            for (j = 0; j < (int16_t)lphuldef->chs; j++) {
+                if (lphs->grhst == hstMining && lphs->iItem == iminingOrbitalAdjuster) {
+                    pct += lphs->cItem;
+                }
+                lphs++;
+            }
+            pctTot += (uint32_t)pct * (int32_t)lpfl->rgcsh[i];
+        }
+    }
+    return pctTot;
 }
 
 void AutoFleetOrder(FLEET *lpfl, PLANET *lppl) {
@@ -201,7 +525,21 @@ void NoAutoTrackFleet(FLEET *lpflTarget) {
     int16_t ifl;
     FLEET  *lpfl;
 
-    /* TODO: implement */
+    iplr = lpflTarget->iPlayer;
+    idTarget = lpflTarget->id;
+
+    FORFLEETS(lpfl, ifl) {
+        if (lpfl->iPlayer != iplr && lpfl->cord > 1) {
+            lpord = &lpfl->lpplord->rgord[1];
+            for (i = 1; i < lpfl->cord; i++) {
+                if (lpord->grobj == grobjFleet && lpord->id == idTarget) {
+                    lpord->fNoAutoTrack = 1;
+                    lpord->pt = lpflTarget->pt;
+                }
+                lpord++;
+            }
+        }
+    }
 }
 
 int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
@@ -373,18 +711,86 @@ int16_t CPtsCloakFromLphs(HS *lphs) {
     int16_t cPts;
     PART    part;
 
-    /* TODO: implement */
-    return 0;
+    cPts = 0;
+
+    if (lphs->cItem == 0)
+        return 0;
+
+    switch (lphs->grhst) {
+    case hstEngine:
+        if (lphs->iItem == iengineEnigmaPulsar)
+            cPts = 20;
+        break;
+
+    case hstScanner:
+        if (lphs->iItem == iscannerChameleonScanner)
+            cPts = 40;
+        break;
+
+    case hstShield:
+        if (lphs->iItem == ishieldShadowShield)
+            cPts = 70;
+        else if (lphs->iItem == ishieldLangstonShell)
+            cPts = 20;
+        break;
+
+    case hstArmor:
+        if (lphs->iItem == iarmorDepletedNeutronium)
+            cPts = 50;
+        else if (lphs->iItem == iarmorMegaPolyShell)
+            cPts = 40;
+        break;
+
+    case hstBeam:
+        if (lphs->iItem == ibeamMultiContainedMunition)
+            cPts = 20;
+        break;
+
+    case hstMining:
+        if (lphs->iItem == iminingAlienMiner)
+            cPts = 60;
+        else if (lphs->iItem == iminingOrbitalAdjuster)
+            cPts = 50;
+        break;
+
+    case hstSpecialE:
+        if (lphs->iItem <= ispecialEUltraStealthCloak) { /* 0..4 are the cloaking/pod group */
+            part.hs = *lphs;
+            FLookupPart(&part);
+            cPts = part.pspecial->grAbility;
+        }
+        break;
+
+    case hstSpecialM:
+        if (lphs->iItem == ispecialMMultiCargoPod)
+            cPts = 20;
+        break;
+
+    default:
+        break;
+    }
+
+    if (lphs->cItem > 1)
+        cPts = (int16_t)(cPts * lphs->cItem);
+
+    return cPts;
 }
 
 int32_t CMineSweepFromLpfl(FLEET *lpfl) {
     int32_t lPowTot;
     int16_t i;
-    HUL    *lphul;
     int32_t lPow;
 
-    /* TODO: implement */
-    return 0;
+    lPowTot = 0;
+    for (i = 0; i < cShdefMax; i++) {
+        if (lpfl->rgcsh[i] > 0) {
+            lPow = CMineSweepFromLphul(&rglpshdef[lpfl->iPlayer][i].hul);
+            lPowTot += (uint32_t)lPow * (int32_t)lpfl->rgcsh[i];
+        }
+    }
+    if (lPowTot < 1)
+        lPowTot = 0;
+    return lPowTot;
 }
 
 #ifdef _WIN32

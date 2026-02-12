@@ -3,7 +3,9 @@
 #include "types.h"
 
 #include "debuglog.h"
+#include "file.h"
 #include "memory.h"
+#include "port.h"
 #include "stars.h"
 #include "strings.h"
 #include "utilgen.h"
@@ -13,22 +15,58 @@
 int16_t FSetUpBatchProcessing(void) {
     char   *pch;
     MemJump env;
-    ;
     int16_t fSuccess;
     int16_t cb;
 
-    /* debug symbols */
-    /* label LError @ MEMORY_MAIN:0x0785 */
-
-    /* TODO: implement */
-    return 0;
+    fSuccess = 0;
+    penvMem = &env;
+    if (setjmp(env.env) == 0) {
+        StreamOpen(szBase, mdRead);
+        {
+            long pos = ftell(hf.fp);
+            fseek(hf.fp, 0, SEEK_END);
+            cb = (int16_t)ftell(hf.fp);
+            fseek(hf.fp, pos, SEEK_SET);
+        }
+        lpchBatch = LpAlloc(cb, htPerm);
+        RgFromStream(lpchBatch, cb);
+        lpchBatchMac = lpchBatch + cb;
+        pch = szBase;
+        while (1) {
+            if (*lpchBatch == '\n' || (lpchBatch == lpchBatchMac))
+                break;
+            *pch = *lpchBatch;
+            lpchBatch++;
+            pch++;
+        }
+        lpchBatch++;
+        pch[-1] = '\0';
+        fSuccess = 1;
+    }
+    penvMem = NULL;
+    StreamClose();
+    if (fSuccess == 0) {
+        szBase[0] = '\0';
+    }
+    return fSuccess;
 }
 
 int16_t IPlrAlsoCheater(int16_t iplr) {
-    int16_t i;
-
-    /* TODO: implement */
-    return 0;
+    // not implementing copy protection
+    return -1;
+    // if (!FValidSerialLong(vrgts[iplr].lSerialNumber))
+    //     return -1;
+    //
+    // int16_t i;
+    // for (i = 0; i < game.cPlayer; i++) {
+    //     if (i != iplr && rgplr[i].fCheater) {
+    //         if (vrgts[iplr].lSerialNumber == vrgts[i].lSerialNumber &&
+    //             memcmp(vrgts[iplr].rgbConfig, vrgts[i].rgbConfig, 11) != 0) {
+    //             return i;
+    //         }
+    //     }
+    // }
+    // return -1;
 }
 
 #ifdef _WIN32

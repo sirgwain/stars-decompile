@@ -79,6 +79,33 @@ def get_decompiled_line_count(impl_status: dict, func_name: str) -> Optional[int
     return info.get("decompiled_line_count")
 
 
+def is_win32_function(impl_status: dict, func_name: str) -> bool:
+    """Return True if function is classified as win32 in implementation_status.json."""
+    funcs = impl_status.get("functions", {})
+    info = funcs.get(func_name)
+    if not info:
+        return False
+    return bool(info.get("win32", False))
+
+
+def get_func_file(impl_status: dict, func_name: str) -> Optional[str]:
+    """Return the source file name for a function (e.g., 'aiutil.c') if known."""
+    funcs = impl_status.get("functions", {})
+    info = funcs.get(func_name)
+    if not info:
+        return None
+    f = info.get("file")
+    return str(f) if f else None
+
+
+def is_ai_source_file(file_name: Optional[str]) -> bool:
+    """Return True if the file is in the ai*.c family (ai.c, ai2.c, aiutil.c, ...)."""
+    if not file_name:
+        return False
+    base = Path(file_name).name.lower()
+    return base.startswith("ai") and base.endswith(".c")
+
+
 def _ansi_256_color(n: int) -> str:
     return f"\033[38;5;{n}m"
 
@@ -607,6 +634,70 @@ def cmd_todo(args) -> None:
     )
 
 
+def cmd_unimplemented_all(args) -> None:
+    """List all unimplemented functions, grouped by non-win32/win32.
+
+    Sorting: decompiled LOC descending (missing/unknown LOC sorted last).
+
+    Flags:
+      --exclude-ai    : skip any functions whose source file matches ai*.c
+      --exclude-win32 : skip functions classified as win32
+    """
+    impl_status = load_implementation_status()
+
+    funcs = impl_status.get("functions", {})
+    rows = []
+    for name, info in funcs.items():
+        st = info.get("status", STATUS_MISSING)
+        if st not in (STATUS_STUB, STATUS_MISSING):
+            continue
+
+        file_name = info.get("file")
+        if getattr(args, "exclude_ai", False) and is_ai_source_file(file_name):
+            continue
+
+        win32 = bool(info.get("win32", False))
+        if getattr(args, "exclude_win32", False) and win32:
+            continue
+
+        loc = info.get("decompiled_line_count")
+        loc_i = int(loc) if isinstance(loc, int) else (int(loc) if loc is not None else None)
+
+        rows.append(
+            {
+                "name": name,
+                "status": st,
+                "win32": win32,
+                "file": str(file_name) if file_name else "?",
+                "loc": loc_i,
+            }
+        )
+
+    def sort_key(r: dict) -> tuple:
+        # LOC descending; unknown LOC sorted last.
+        loc = r["loc"]
+        loc_sort = -loc if loc is not None else 10**12
+        return (loc_sort, r["status"], r["name"])
+
+    rows.sort(key=sort_key)
+
+    def emit_group(title: str, want_win32: bool) -> None:
+        group = [r for r in rows if r["win32"] == want_win32]
+        if not group:
+            return
+        print(f"{title}:")
+        for r in group:
+            loc_s = str(r["loc"]) if r["loc"] is not None else "?"
+            print(f"  {loc_s:>5}  {status_tag(r['status']):<7}  {r['file']:<12}  {r['name']}")
+        print()
+
+    if not getattr(args, "exclude_win32", False):
+        emit_group("non-win32", False)
+        emit_group("win32", True)
+    else:
+        emit_group("non-win32", False)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Call graph analysis tool for Stars! decompilation project."
@@ -671,6 +762,25 @@ def main() -> None:
     )
     add_common_flags(todo_parser)
     todo_parser.set_defaults(func=cmd_todo)
+
+    unimpl_all_parser = subparsers.add_parser(
+        "unimplemented-all",
+        help=(
+            "List all unimplemented functions (STUB+MISSING), grouped by win32/non-win32 "
+            "and sorted by decompiled LOC (desc)."
+        ),
+    )
+    unimpl_all_parser.add_argument(
+        "--exclude-ai",
+        action="store_true",
+        help="Exclude any functions defined in ai*.c (ai.c, ai2.c, aiutil.c, ...).",
+    )
+    unimpl_all_parser.add_argument(
+        "--exclude-win32",
+        action="store_true",
+        help="Exclude functions classified as win32.",
+    )
+    unimpl_all_parser.set_defaults(func=cmd_unimplemented_all)
 
     args = parser.parse_args()
     if args.command is None:

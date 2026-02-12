@@ -389,21 +389,16 @@ short SetVCRBoard(short iStep)
     BTLDATA   *pBVar4;
     BTLREC    *pBVar5;
     TOK       *pTVar6;
-    undefined2 unaff_SI;
     ushort    *puVar7;
     long      *plVar8;
-    undefined2 unaff_DI;
     undefined2 uVar9;
     undefined2 uVar10;
     long       lVar11;
     ulong      uVar12;
-    long       lVar13;
-    uint       in_stack_0000ffee;
     short      itok;
     short      i;
     TOK       *ptok;
 
-    lVar13 = CONCAT22(unaff_SI, unaff_DI);
     if ((iStep != viStepVCRCur) || (viStepVCRCur == -1)) {
         if ((iStep < viStepVCRCur) || (viStepVCRCur == -1)) {
             i = 0;
@@ -457,10 +452,12 @@ short SetVCRBoard(short iStep)
                     if (pTVar6[itok_00].dpShield != 0) {
                         if (*(int *)((int)(BTLREC *)vlpbrVCR + i * 8 + 10) != 0) {
                             uVar12 = __aFulmul((ulong)pTVar6[itok_00].dpShield, (ulong)pTVar6[itok_00].csh);
-                            lVar11 = __aFlshl(lVar13, in_stack_0000ffee);
+                            lVar11 = __aFlshl((ulong)(*(uint *)((int)(BTLREC *)vlpbrVCR + i * 8 + 10) & 0x1fff),
+                                              (*(uint *)((int)(BTLREC *)vlpbrVCR + i * 8 + 10) >> 0xd) << 1);
                             if (lVar11 < (long)uVar12) {
                                 uVar12 = (ulong)pTVar6[itok_00].csh;
-                                lVar11 = __aFlshl(uVar12, (ushort)lVar13);
+                                lVar11 = __aFlshl((ulong)(*(uint *)((int)(BTLREC *)vlpbrVCR + i * 8 + 10) & 0x1fff),
+                                                  (*(uint *)((int)(BTLREC *)vlpbrVCR + i * 8 + 10) >> 0xd) << 1);
                                 lVar11 = __aFldiv(lVar11, uVar12);
                                 pTVar6[itok_00].dpShield = pTVar6[itok_00].dpShield - (int)lVar11;
                             } else {
@@ -490,8 +487,7 @@ short SetVCRBoard(short iStep)
                 ((TOK *)vrgtok)[vlpbrVCR->itok].brc = ((BTLREC *)vlpbrVCR)->brcDest;
                 vbrcVCRFocus = ((TOK *)vrgtok)[vlpbrVCR->itok].brc;
                 viVCRFocus = (short)vlpbrVCR->itok;
-                in_stack_0000ffee = ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags & 0xfc1f | (((BTLREC *)vlpbrVCR)->wFlags_0x4 >> 4 & 0xf) << 5;
-                ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags = in_stack_0000ffee;
+                ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags = ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags & 0xfc1f | (((BTLREC *)vlpbrVCR)->wFlags_0x4 >> 4 & 0xf) << 5;
                 if ((((TOK *)vrgtok)[vlpbrVCR->itok].wFlags >> 5 & 0x1f) == 4) {
                     ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags_0x17 = ((TOK *)vrgtok)[vlpbrVCR->itok].wFlags_0x17 & 0xf0ff;
                 }
@@ -525,14 +521,11 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     byte        brc;
     int         iVar10;
     undefined1 *puVar11;
-    ushort      unaff_SI;
-    undefined2  unaff_DI;
     undefined2  uVar12;
     undefined2  unaff_SS;
     ulong       uVar13;
     undefined1  uVar14;
     undefined1  uVar15;
-    ushort      in_stack_0000ffc0;
     undefined1  local_3e[24];
     COLORREF    local_26;
     int         local_22;
@@ -689,7 +682,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 return 0;
             }
             local_1c._4_2_ = (short)lParam;
-            uVar13 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ffc0);
+            uVar13 = __aFulshr(lParam, 0x10);
             local_1c._6_2_ = (undefined2)uVar13;
             PVar1.y = local_1c._6_2_;
             PVar1.x = local_1c._4_2_;
@@ -760,7 +753,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cCur = 1;
                 GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.fFactory = 1;
                 GlobalPD.u_POPUPDATA_0x0002.s_POPUPDATA_0x0002.cOperate = (short)((uint)((TOK *)vrgtok)[viVCRFocus].iplr != idPlayer);
-                uVar13 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ffc0);
+                uVar13 = __aFulshr(lParam, 0x10);
                 Popup(hwnd, (short)lParam, (short)uVar13);
                 return 0;
             }
@@ -779,7 +772,7 @@ short VCRDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             brc = (byte)((local_1c._6_2_ & 0xf) << 4) | (byte)local_1c._4_2_ & 0xf;
             local_14 = CONCAT11(local_14._1_1_, brc);
             if (message == WM_RBUTTONDOWN) {
-                uVar13 = __aFulshr(CONCAT22(unaff_DI, (uint)brc), unaff_SI);
+                uVar13 = __aFulshr(lParam, 0x10);
                 local_1c._2_2_ = PopupVCRMenu(hwnd, (short)lParam, (short)uVar13, brc);
                 if ((int)local_1c._2_2_ < 0) {
                     return 0;
@@ -855,8 +848,6 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
     uint       uVar3;
     int        iVar4;
     BTLREC    *pBVar5;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 uVar6;
     long       lVar7;
     SHDEF     *pSVar8;
@@ -865,8 +856,6 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
     long       lVar11;
     ulong      uVar12;
     ulong      uVar13;
-    long       lVar14;
-    ushort     in_stack_0000ffe8;
     ushort     dpShdef;
     short      cshKill;
     short      i;
@@ -875,7 +864,6 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
     DV         dv;
     short      cshT;
 
-    lVar14 = CONCAT22(unaff_SI, unaff_DI);
     uVar12 = 0;
     cshKill = 0;
     dv.dp = 0xffff;
@@ -890,7 +878,7 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
             break;
         if ((uint) * (byte *)((int)pBVar5 + i * 8 + 6) == itok) {
             cshKill = cshKill + *(int *)((int)pBVar5 + i * 8 + 8);
-            lVar7 = __aFlshl(lVar14, in_stack_0000ffe8);
+            lVar7 = __aFlshl((ulong)(*(uint *)((int)pBVar5 + i * 8 + 10) & 0x1fff), (*(uint *)((int)pBVar5 + i * 8 + 10) >> 0xd) << 1);
             uVar12 = lVar7 + uVar12;
             dv.dp = *(ushort *)((int)(BTLREC *)vlpbrVCR + i * 8 + 0xc);
         }
@@ -914,13 +902,13 @@ void GetVCRStats(short itok, long *pdpArmor, DV *pdv, long *pdpShields, short *p
         if (cshT < 1) {
             cshT = 1;
         }
-        lVar14 = 0x32;
+        lVar7 = 0x32;
         uVar13 = (ulong)cshT;
         lVar11 = 10;
         uVar10 = __aFulmul((ulong)uVar3, (ulong)(dv.dp >> 7));
         uVar10 = __aFldiv(uVar10, lVar11);
         uVar10 = __aFulmul(uVar10, uVar13);
-        lVar11 = __aFldiv(uVar10, lVar14);
+        lVar11 = __aFldiv(uVar10, lVar7);
         lVar11 = uVar9 - lVar11;
     }
     cshT = ((TOK *)vrgtok)[itok].csh - cshKill;

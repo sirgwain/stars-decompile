@@ -1225,18 +1225,18 @@ short FFillProdMinesAndFactories(PLANET *lppl)
 {
     uint       uVar1;
     int        iVar2;
-    uint       uVar3;
-    short      sVar4;
+    ushort     uVar3;
+    uint       uVar4;
     short      sVar5;
-    int        iVar6;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    bool       bVar7;
-    bool       bVar8;
-    ulong      uVar9;
-    ulong      uVar10;
-    long       lVar11;
-    ushort     in_stack_0000ff7c;
+    short      sVar6;
+    int        iVar7;
+    PROD      *pPVar8;
+    PLPROD    *pPVar9;
+    undefined2 uVar10;
+    bool       bVar11;
+    bool       bVar12;
+    ulong      uVar13;
+    long       lVar14;
     short      cAdd;
     PROD      *lpprod;
     short      fInsert;
@@ -1256,20 +1256,19 @@ short FFillProdMinesAndFactories(PLANET *lppl)
     long       rgResAvail[4];
     long       rgResCost[4];
 
-    uVar10 = CONCAT22(unaff_SI, unaff_DI);
-    bVar7 = false;
+    bVar11 = false;
     GetResourcesAvailable(lppl, rgResAvail);
     GetProdQCost(lppl, rgResCost);
     for (i = 0; i < 4; i = i + 1) {
-        uVar3 = *(uint *)(rgResAvail + i);
-        iVar6 = *(int *)((int)rgResAvail + i * 4 + 2);
+        uVar4 = *(uint *)(rgResAvail + i);
+        iVar7 = *(int *)((int)rgResAvail + i * 4 + 2);
         uVar1 = *(uint *)(rgResCost + i);
         iVar2 = *(int *)((int)rgResCost + i * 4 + 2);
-        *(uint *)(rgResLeft + i) = uVar3 - *(uint *)(rgResCost + i);
-        *(int *)((int)rgResLeft + i * 4 + 2) = (iVar6 - iVar2) - (uint)(uVar3 < uVar1);
+        *(uint *)(rgResLeft + i) = uVar4 - *(uint *)(rgResCost + i);
+        *(int *)((int)rgResLeft + i * 4 + 2) = (iVar7 - iVar2) - (uint)(uVar4 < uVar1);
     }
     if ((rgResLeft[3]._2_2_ < 1) && (rgResLeft[3]._2_2_ < 0)) {
-        uVar3 = 0;
+        uVar4 = 0;
     } else {
         iMaxTerra = 0;
         iMaxMines = 0;
@@ -1283,60 +1282,64 @@ short FFillProdMinesAndFactories(PLANET *lppl)
         rgAlchCost[3]._0_2_ = 0;
         rgAlchCost[3]._2_2_ = 0;
         lpprod = (PROD *)((PLPROD *)lpplProdGlob + 1);
-        for (i = 0; iVar6 = cProdGlob, i < (int)(uint)((PLPROD *)lpplProdGlob)->iprodMac; i = i + 1) {
-            uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-            if ((((uint)uVar9 & 7) == 1) && (uVar9 = __aFulshr(uVar10, in_stack_0000ff7c), ((uint)uVar9 & 0x7f) == 8)) {
+        for (i = 0; iVar7 = cProdGlob, i < (int)(uint)((PLPROD *)lpplProdGlob)->iprodMac; i = i + 1) {
+            uVar10 = (undefined2)((ulong)lpprod >> 0x10);
+            pPVar8 = (PROD *)lpprod;
+            uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar8->dwFlags + 2), (int)lpprod->dwFlags), 0x11);
+            if ((((uint)uVar13 & 7) == 1) &&
+                (uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar8->dwFlags + 2), (int)lpprod->dwFlags), 10), ((uint)uVar13 & 0x7f) == 8)) {
                 iAddMines = iAddMines + ((uint)lpprod->dwFlags & 0x3ff);
             }
-            uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-            if ((((uint)uVar9 & 7) == 1) && (uVar9 = __aFulshr(uVar10, in_stack_0000ff7c), ((uint)uVar9 & 0x7f) == 7)) {
+            uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar8->dwFlags + 2), (int)lpprod->dwFlags), 0x11);
+            if ((((uint)uVar13 & 7) == 1) &&
+                (uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar8->dwFlags + 2), (int)lpprod->dwFlags), 10), ((uint)uVar13 & 0x7f) == 7)) {
                 iAddFactories = iAddFactories + ((uint)lpprod->dwFlags & 0x3ff);
             }
-            lpprod = (PROD *)lpprod + 1;
+            lpprod = (PROD *)CONCAT22(uVar10, pPVar8 + 1);
         }
-        while (i = iVar6 + -1, -1 < i) {
-            uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-            iVar6 = i;
-            if (((uint)uVar9 & 7) == 1) {
-                uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-                if (((uint)uVar9 & 0x7f) == 8) {
-                    sVar4 = CMaxOperableMines(lppl, idPlayer, 0);
-                    sVar5 = CMinesOperating(lppl);
-                    if ((uint)((sVar4 - sVar5) - iAddMines) < 0x8000) {
-                        sVar4 = CMaxOperableMines(lppl, idPlayer, 0);
-                        sVar5 = CMinesOperating(lppl);
-                        iMaxMines = (sVar4 - sVar5) - iAddMines;
+        while (i = iVar7 + -1, -1 < i) {
+            uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pProdGlob[i].dwFlags + 2), (int)(pProdGlob + i)->dwFlags), 0x11);
+            iVar7 = i;
+            if (((uint)uVar13 & 7) == 1) {
+                uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pProdGlob[i].dwFlags + 2), (int)(pProdGlob + i)->dwFlags), 10);
+                if (((uint)uVar13 & 0x7f) == 8) {
+                    sVar5 = CMaxOperableMines(lppl, idPlayer, 0);
+                    sVar6 = CMinesOperating(lppl);
+                    if ((uint)((sVar5 - sVar6) - iAddMines) < 0x8000) {
+                        sVar5 = CMaxOperableMines(lppl, idPlayer, 0);
+                        sVar6 = CMinesOperating(lppl);
+                        iMaxMines = (sVar5 - sVar6) - iAddMines;
                     } else {
                         iMaxMines = 0;
                     }
                     GetProductionCosts(lppl, pProdGlob + i, rgMineCost, idPlayer, 1);
                 }
-                uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-                if (((uint)uVar9 & 0x7f) == 7) {
-                    sVar4 = CMaxOperableFactories(lppl, idPlayer, 0);
-                    sVar5 = CFactoriesOperating(lppl);
-                    if ((uint)((sVar4 - sVar5) - iAddFactories) < 0x8000) {
-                        sVar4 = CMaxOperableFactories(lppl, idPlayer, 0);
-                        sVar5 = CFactoriesOperating(lppl);
-                        iMaxFactories = (sVar4 - sVar5) - iAddFactories;
+                uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pProdGlob[i].dwFlags + 2), (int)(pProdGlob + i)->dwFlags), 10);
+                if (((uint)uVar13 & 0x7f) == 7) {
+                    sVar5 = CMaxOperableFactories(lppl, idPlayer, 0);
+                    sVar6 = CFactoriesOperating(lppl);
+                    if ((uint)((sVar5 - sVar6) - iAddFactories) < 0x8000) {
+                        sVar5 = CMaxOperableFactories(lppl, idPlayer, 0);
+                        sVar6 = CFactoriesOperating(lppl);
+                        iMaxFactories = (sVar5 - sVar6) - iAddFactories;
                     } else {
                         iMaxFactories = 0;
                     }
                     GetProductionCosts(lppl, pProdGlob + i, rgFactCost, idPlayer, 1);
                 }
-                uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-                if (((uint)uVar9 & 0x7f) == 0xb) {
+                uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pProdGlob[i].dwFlags + 2), (int)(pProdGlob + i)->dwFlags), 10);
+                if (((uint)uVar13 & 0x7f) == 0xb) {
                     GetProductionCosts(lppl, pProdGlob + i, rgAlchCost, idPlayer, 1);
                 }
-                uVar9 = __aFulshr(uVar10, in_stack_0000ff7c);
-                if (((uint)uVar9 & 0x7f) == 0xc) {
+                uVar13 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pProdGlob[i].dwFlags + 2), (int)(pProdGlob + i)->dwFlags), 10);
+                if (((uint)uVar13 & 0x7f) == 0xc) {
                     iMaxTerra = (uint)(pProdGlob + i)->dwFlags & 0x3ff;
                 }
             }
         }
         if ((iMaxTerra != 0) && (*(uint *)((int)&rgplr[0].wMdPlr + idPlayer * 0xc0) >> 0xd == 5)) {
-            lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_ + (uint)(0xffba < (uint)rgResLeft[3]), (uint)rgResLeft[3] + 0x45), 0x46);
-            cAdd = (short)lVar11;
+            lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_ + (uint)(0xffba < (uint)rgResLeft[3]), (uint)rgResLeft[3] + 0x45), 0x46);
+            cAdd = (short)lVar14;
             if (iMaxTerra < cAdd) {
                 cAdd = iMaxTerra;
             }
@@ -1349,126 +1352,132 @@ short FFillProdMinesAndFactories(PLANET *lppl)
         if (((rgResLeft[0]._2_2_ < 0) || ((((rgResLeft[0]._2_2_ < 1 && ((int)rgResLeft[0] == 0)) || (rgResLeft[1]._2_2_ < 0)) ||
                                            ((rgResLeft[1]._2_2_ < 1 && ((int)rgResLeft[1] == 0)))))) ||
             ((rgResLeft[2]._2_2_ < 1 && ((rgResLeft[2]._2_2_ < 0 || ((int)rgResLeft[2] == 0)))))) {
-            if ((((*(int *)&((PLANET *)lppl)->lpplprod != 0) || (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)) &&
-                 (uVar9 = __aFulshr(uVar10, in_stack_0000ff7c), ((uint)uVar9 & 7) == 1)) &&
-                ((uVar9 = __aFulshr(uVar10, in_stack_0000ff7c),
-                  ((uint)uVar9 & 0x7f) == 3 || (uVar10 = __aFulshr(uVar10, in_stack_0000ff7c), ((uint)uVar10 & 0x7f) == 0xb)))) {
-                return 0;
+            if ((*(int *)&((PLANET *)lppl)->lpplprod != 0) || (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)) {
+                uVar10 = (undefined2)((ulong)((PLANET *)lppl)->lpplprod >> 0x10);
+                pPVar9 = (PLPROD *)((PLANET *)lppl)->lpplprod;
+                uVar3 = (pPVar9 + 1)->wFlags;
+                uVar10 = *(undefined2 *)&pPVar9[1].iprodMax;
+                uVar13 = __aFulshr(CONCAT22(uVar10, uVar3), 0x11);
+                if ((((uint)uVar13 & 7) == 1) &&
+                    ((uVar13 = __aFulshr(CONCAT22(uVar10, uVar3), 10),
+                      ((uint)uVar13 & 0x7f) == 3 || (uVar13 = __aFulshr(CONCAT22(uVar10, uVar3), 10), ((uint)uVar13 & 0x7f) == 0xb)))) {
+                    return 0;
+                }
             }
             if (iMaxMines < 1) {
                 iAddMines = 0;
             } else {
-                lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-                if ((int)lVar11 <= iMaxMines) {
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-                    iAddMines = (short)lVar11;
+                lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+                if ((int)lVar14 <= iMaxMines) {
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+                    iAddMines = (short)lVar14;
                 }
             }
-            uVar10 = __aFulmul((long)iAddMines, CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-            bVar7 = (uint)rgResLeft[3] < (uint)uVar10;
-            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar10;
-            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar10 >> 0x10)) - (uint)bVar7;
+            uVar13 = __aFulmul((long)iAddMines, CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+            bVar11 = (uint)rgResLeft[3] < (uint)uVar13;
+            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar13;
+            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar13 >> 0x10)) - (uint)bVar11;
             iAddFactories = 0;
-            bVar7 = true;
+            bVar11 = true;
         } else {
             if (0 < iMaxFactories) {
                 if (((uint)gd.grBits >> 0xb & 1) == 0) {
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
-                    if ((int)lVar11 <= iMaxFactories) {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
-                        iMaxFactories = (short)lVar11;
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
+                    if ((int)lVar14 <= iMaxFactories) {
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
+                        iMaxFactories = (short)lVar14;
                     }
                 } else {
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                    iVar6 = iMaxFactories;
-                    if ((int)lVar11 <= iMaxFactories) {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                        iVar6 = (int)lVar11;
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                    iVar7 = iMaxFactories;
+                    if ((int)lVar14 <= iMaxFactories) {
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                        iVar7 = (int)lVar14;
                     }
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
-                    if (iVar6 < (int)lVar11) {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                        iVar6 = iMaxFactories;
-                        if ((int)lVar11 <= iMaxFactories) {
-                            lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                            iVar6 = (int)lVar11;
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
+                    if (iVar7 < (int)lVar14) {
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                        iVar7 = iMaxFactories;
+                        if ((int)lVar14 <= iMaxFactories) {
+                            lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                            iVar7 = (int)lVar14;
                         }
                     } else {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
-                        iVar6 = (int)lVar11;
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
+                        iVar7 = (int)lVar14;
                     }
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
-                    if (iVar6 < (int)lVar11) {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                        iVar6 = iMaxFactories;
-                        if ((int)lVar11 <= iMaxFactories) {
-                            lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                            iVar6 = (int)lVar11;
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
+                    if (iVar7 < (int)lVar14) {
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                        iVar7 = iMaxFactories;
+                        if ((int)lVar14 <= iMaxFactories) {
+                            lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                            iVar7 = (int)lVar14;
                         }
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
-                        if (iVar6 < (int)lVar11) {
-                            lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                            if ((int)lVar11 <= iMaxFactories) {
-                                lVar11 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
-                                iMaxFactories = (short)lVar11;
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
+                        if (iVar7 < (int)lVar14) {
+                            lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                            if ((int)lVar14 <= iMaxFactories) {
+                                lVar14 = __aFldiv(CONCAT22(rgResLeft[0]._2_2_, (int)rgResLeft[0]), CONCAT22(rgFactCost[0]._2_2_, (undefined2)rgFactCost[0]));
+                                iMaxFactories = (short)lVar14;
                             }
                         } else {
-                            lVar11 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
-                            iMaxFactories = (short)lVar11;
+                            lVar14 = __aFldiv(CONCAT22(rgResLeft[1]._2_2_, (int)rgResLeft[1]), CONCAT22(rgFactCost[1]._2_2_, (undefined2)rgFactCost[1]));
+                            iMaxFactories = (short)lVar14;
                         }
                     } else {
-                        lVar11 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
-                        iMaxFactories = (short)lVar11;
+                        lVar14 = __aFldiv(CONCAT22(rgResLeft[2]._2_2_, (int)rgResLeft[2]), CONCAT22(rgFactCost[2]._2_2_, (undefined2)rgFactCost[2]));
+                        iMaxFactories = (short)lVar14;
                     }
                 }
             }
             if (iMaxFactories < 1) {
                 iAddFactories = 0;
             } else {
-                lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
+                lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
                 iAddFactories = iMaxFactories;
-                if ((int)lVar11 <= iMaxFactories) {
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
-                    iAddFactories = (short)lVar11;
+                if ((int)lVar14 <= iMaxFactories) {
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
+                    iAddFactories = (short)lVar14;
                 }
             }
-            uVar10 = __aFulmul((long)iAddFactories, CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
-            bVar8 = (uint)rgResLeft[3] < (uint)uVar10;
-            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar10;
-            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar10 >> 0x10)) - (uint)bVar8;
+            uVar13 = __aFulmul((long)iAddFactories, CONCAT22(rgFactCost[3]._2_2_, (undefined2)rgFactCost[3]));
+            bVar12 = (uint)rgResLeft[3] < (uint)uVar13;
+            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar13;
+            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar13 >> 0x10)) - (uint)bVar12;
             if (iMaxMines < 1) {
                 iAddMines = 0;
             } else {
-                lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-                if ((int)lVar11 <= iMaxMines) {
-                    lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-                    iAddMines = (short)lVar11;
+                lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+                if ((int)lVar14 <= iMaxMines) {
+                    lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+                    iAddMines = (short)lVar14;
                 }
             }
-            uVar10 = __aFulmul((long)iAddMines, CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
-            bVar8 = (uint)rgResLeft[3] < (uint)uVar10;
-            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar10;
-            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar10 >> 0x10)) - (uint)bVar8;
+            uVar13 = __aFulmul((long)iAddMines, CONCAT22(rgMineCost[3]._2_2_, (undefined2)rgMineCost[3]));
+            bVar12 = (uint)rgResLeft[3] < (uint)uVar13;
+            rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar13;
+            rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar13 >> 0x10)) - (uint)bVar12;
         }
-        if (((rgAlchCost[3]._2_2_ < 0) ||
-             (((rgAlchCost[3]._2_2_ < 1 && ((int)rgAlchCost[3] == 0)) || (*(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) != '\x1a')))) ||
-            ((((*(char *)((int)rgplr[0].rgTech + 5 + idPlayer * 0xc0) != '\x1a' || (*(char *)((int)rgplr[0].rgTech + idPlayer * 0xc0) != '\x1a')) ||
-               (*(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0) != '\x1a')) ||
-              ((*(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0) != '\x1a' || (*(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0) != '\x1a')))))) {
+        if ((((rgAlchCost[3]._2_2_ < 0) ||
+              (((rgAlchCost[3]._2_2_ < 1 && ((int)rgAlchCost[3] == 0)) || (*(char *)((int)rgplr[0].rgTech + 3 + idPlayer * 0xc0) != '\x1a')))) ||
+             (((*(char *)((int)rgplr[0].rgTech + 5 + idPlayer * 0xc0) != '\x1a' || (*(char *)((int)rgplr[0].rgTech + idPlayer * 0xc0) != '\x1a')) ||
+               (*(char *)((int)rgplr[0].rgTech + 1 + idPlayer * 0xc0) != '\x1a')))) ||
+            ((*(char *)((int)rgplr[0].rgTech + 4 + idPlayer * 0xc0) != '\x1a' || (*(char *)((int)rgplr[0].rgTech + 2 + idPlayer * 0xc0) != '\x1a')))) {
             iAddAlchemy = 0;
         } else {
-            lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
-            if ((int)lVar11 + 1U < 0x8000) {
-                lVar11 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
-                iAddAlchemy = (int)lVar11 + 1;
+            lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
+            if ((int)lVar14 + 1U < 0x8000) {
+                lVar14 = __aFldiv(CONCAT22(rgResLeft[3]._2_2_, (uint)rgResLeft[3]), CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
+                iAddAlchemy = (int)lVar14 + 1;
             } else {
                 iAddAlchemy = 0;
             }
         }
-        uVar10 = __aFulmul((long)iAddAlchemy, CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
-        bVar8 = (uint)rgResLeft[3] < (uint)uVar10;
-        rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar10;
-        rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar10 >> 0x10)) - (uint)bVar8;
+        uVar13 = __aFulmul((long)iAddAlchemy, CONCAT22(rgAlchCost[3]._2_2_, (int)rgAlchCost[3]));
+        bVar12 = (uint)rgResLeft[3] < (uint)uVar13;
+        rgResLeft[3]._0_2_ = (uint)rgResLeft[3] - (uint)uVar13;
+        rgResLeft[3]._2_2_ = (rgResLeft[3]._2_2_ - (int)(uVar13 >> 0x10)) - (uint)bVar12;
         if (0 < iAddFactories) {
             AddItemToQueue(7, iAddFactories, grobjPlanet, 1);
         }
@@ -1476,11 +1485,11 @@ short FFillProdMinesAndFactories(PLANET *lppl)
             AddItemToQueue(8, iAddMines, grobjPlanet, 0);
         }
         if ((0 < iAddAlchemy) && (100 < game.turn)) {
-            AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, (uint)!bVar7);
+            AddItemToQueue(0xb, iAddAlchemy, grobjPlanet, (uint)!bVar11);
         }
-        uVar3 = (uint)(0 < iAddMines + iAddFactories + iAddAlchemy);
+        uVar4 = (uint)(0 < iAddMines + iAddFactories + iAddAlchemy);
     }
-    return uVar3;
+    return uVar4;
 }
 
 // ======================================================================

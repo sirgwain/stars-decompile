@@ -1293,32 +1293,31 @@ short FCanMerge(FLEET *pfl)
 void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
 
 {
-    bool        bVar1;
-    PLORD      *pPVar2;
-    PLORD      *pPVar3;
-    int         iVar4;
-    uint        uVar5;
-    char       *pcVar6;
-    int         iVar7;
-    int         iVar8;
-    int        *piVar9;
+    int         iVar1;
+    int         iVar2;
+    bool        bVar3;
+    uint        uVar4;
+    char       *pcVar5;
+    int        *piVar6;
+    undefined1 *puVar7;
+    short      *psVar8;
+    undefined1 *puVar9;
     undefined1 *puVar10;
-    undefined1 *puVar11;
-    undefined1 *puVar12;
-    long       *plVar13;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    undefined2  uVar14;
+    undefined2  uVar11;
     undefined2  unaff_SS;
-    ulong       uVar15;
-    FARPROC     pvVar16;
-    FLEET      *pFVar17;
-    LRESULT     LVar18;
-    LRESULT     LVar19;
-    long        lVar20;
-    short       sVar21;
-    ulong       uVar22;
-    ushort      in_stack_0000fb44;
+    ulong       uVar12;
+    FARPROC     pvVar13;
+    FLEET      *pFVar14;
+    LRESULT     LVar15;
+    LRESULT     LVar16;
+    long        lVar17;
+    short       sVar18;
+    short       local_4bc[504];
+    int         local_cc;
+    int         local_ca;
+    uint        local_c8;
+    int         local_c6;
+    int         local_c4;
     undefined4  local_c2;
     uint        local_be;
     int        *local_bc;
@@ -1331,30 +1330,29 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
     fn_lpProc  *lpProc;
     short       fPercent;
 
-    uVar22 = CONCAT22(unaff_SI, unaff_DI);
-    bVar1 = false;
-    uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-    if ((int)uVar15 == 0) {
+    bVar3 = false;
+    uVar12 = __aFulshr(lParam, 0x10);
+    if ((int)uVar12 == 0) {
         SetFocus(hwndFrame);
     }
-    if (((HWND)lParam == rghwndBtn[4]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    if (((HWND)lParam == rghwndBtn[4]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         SelectAdjFleet(-1, 0);
-    } else if (((HWND)lParam == rghwndBtn[5]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    } else if (((HWND)lParam == rghwndBtn[5]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         SelectAdjFleet(1, 0);
-    } else if (((HWND)lParam == rghwndBtn[6]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        pcVar6 = PszGetFleetName(sel.fl.id);
-        _strcpy((char *)szWork, pcVar6);
+    } else if (((HWND)lParam == rghwndBtn[6]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        pcVar5 = PszGetFleetName(sel.fl.id);
+        _strcpy((char *)szWork, pcVar5);
         StickyDlgPos(hwnd, (POINT *)&ptStickyRenameDlg, 0);
-        pvVar16 = MakeProcInstance(RenameDlg, hInst);
-        sVar21 = DialogBox(0, IDD_RENAME, hwndFrame, pvVar16);
-        if (sVar21 == 0) {
-            FreeProcInstance(pvVar16);
+        pvVar13 = MakeProcInstance(RenameDlg, hInst);
+        sVar18 = DialogBox(0, IDD_RENAME, hwndFrame, pvVar13);
+        if (sVar18 == 0) {
+            FreeProcInstance(pvVar13);
         } else {
-            FreeProcInstance(pvVar16);
+            FreeProcInstance(pvVar13);
             _strcpy(szT, (char *)szWork);
-            pcVar6 = PszGetFleetName(sel.fl.id);
-            sVar21 = _strcmp(szT, pcVar6);
-            if (sVar21 != 0) {
+            pcVar5 = PszGetFleetName(sel.fl.id);
+            sVar18 = _strcmp(szT, pcVar5);
+            if (sVar18 != 0) {
                 LogChangeName(grobjFleet, sel.fl.id, szT);
                 InvalidateReport(1, 1);
                 FillOrdersLB();
@@ -1364,35 +1362,35 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
                 SetMineralTitleBar(hwndMine);
             }
         }
-    } else if (((HWND)lParam == rghwndBtn[3]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    } else if (((HWND)lParam == rghwndBtn[3]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         SelectAdjPlanet(0, sel.fl.idPlanet);
         SetFleetDropDownSel(sel.fl.id);
-    } else if (((HWND)lParam == rghwndBtn[7]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    } else if (((HWND)lParam == rghwndBtn[7]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         if (sel.fl.idPlanet == -1) {
             TransferStuff(sel.fl.id, 2, -1, 4, 0);
         } else {
             TransferStuff(sel.fl.id, 2, sel.fl.idPlanet, 1, 0);
         }
     } else if ((HWND)lParam == hwndShipDD) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if ((int)uVar15 == 1) {
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 1) {
             DrawPlanShip(0, -0x7ffc);
         }
     } else if ((HWND)lParam == hwndShipLB) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if ((int)uVar15 == 1) {
-            LVar19 = SendMessage(hwndShipLB, CB_GETLBTEXTLEN, 0, 0);
-            SetScanWp((short)LVar19);
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 1) {
+            LVar16 = SendMessage(hwndShipLB, CB_GETLBTEXTLEN, 0, 0);
+            SetScanWp((short)LVar16);
         }
     } else if ((HWND)lParam == hwndFleetCompLB) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if (((int)uVar15 == 1) && (lVar20 = SendMessage(hwndFleetCompLB, CB_GETLBTEXTLEN, 0, 0), -1 < lVar20)) {
+        uVar12 = __aFulshr(lParam, 0x10);
+        if (((int)uVar12 == 1) && (lVar17 = SendMessage(hwndFleetCompLB, CB_GETLBTEXTLEN, 0, 0), -1 < lVar17)) {
             local_b6 = 0;
             while (true) {
-                lSel._2_2_ = (int)((ulong)lVar20 >> 0x10);
-                lSel._0_2_ = (int)lVar20;
+                lSel._2_2_ = (int)((ulong)lVar17 >> 0x10);
+                lSel._0_2_ = (int)lVar17;
                 if ((0xf < (int)local_b6) || ((0 < *(int *)((int)&sel.fl + 0xc + local_b6 * 2) &&
-                                               (bVar1 = lVar20 < 1, lVar20 = CONCAT22(lSel._2_2_ - (uint)((int)lSel == 0), (int)lSel + -1), bVar1))))
+                                               (bVar3 = lVar17 < 1, lVar17 = CONCAT22(lSel._2_2_ - (uint)((int)lSel == 0), (int)lSel + -1), bVar3))))
                     break;
                 local_b6 = local_b6 + 1;
             }
@@ -1406,52 +1404,52 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
             Popup(hwndFleetCompLB, 10, 10);
         }
     } else if ((HWND)lParam == hwndBattleDD) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if (((int)uVar15 == 1) && (LVar19 = SendMessage(hwndBattleDD, CB_GETCURSEL, 0, 0), LVar19 != -1)) {
-            if (LVar19 == 0) {
-                pvVar16 = MakeProcInstance(BattlePlansDlg, hInst);
-                sVar21 = DialogBox(0, IDD_BATTLE_PLANS, hwndFrame, pvVar16);
-                FreeProcInstance(pvVar16);
-                sel.fl.iplan = (byte)sVar21;
+        uVar12 = __aFulshr(lParam, 0x10);
+        if (((int)uVar12 == 1) && (LVar16 = SendMessage(hwndBattleDD, CB_GETCURSEL, 0, 0), LVar16 != -1)) {
+            if (LVar16 == 0) {
+                pvVar13 = MakeProcInstance(BattlePlansDlg, hInst);
+                sVar18 = DialogBox(0, IDD_BATTLE_PLANS, hwndFrame, pvVar13);
+                FreeProcInstance(pvVar13);
+                sel.fl.iplan = (byte)sVar18;
             } else {
-                sel.fl.iplan = (char)LVar19 - 1;
+                sel.fl.iplan = (char)LVar16 - 1;
             }
             FLookupFleet(-1, (FLEET *)&sel.fl);
         }
-    } else if (((HWND)lParam == rghwndBtn[0]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        LVar19 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
-        if ((LVar19 != -1) && (sVar21 = FLookupOrbitingXfer(sel.pl.id, (short)LVar19, &xf, sel.fl.id), sVar21 != 0)) {
+    } else if (((HWND)lParam == rghwndBtn[0]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        LVar16 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
+        if ((LVar16 != -1) && (sVar18 = FLookupOrbitingXfer(sel.pl.id, (short)LVar16, &xf, sel.fl.id), sVar18 != 0)) {
             TransferStuff(sel.fl.id, 2, xf.id, xf.grobj, 0);
         }
-    } else if (((HWND)lParam == rghwndBtn[1]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        LVar19 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
-        if ((LVar19 != -1) && ((sVar21 = FLookupOrbitingXfer(sel.pl.id, (short)LVar19, &xf, sel.fl.id), sVar21 != 0 && (xf.grobj == grobjFleet)))) {
+    } else if (((HWND)lParam == rghwndBtn[1]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        LVar16 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
+        if ((LVar16 != -1) && ((sVar18 = FLookupOrbitingXfer(sel.pl.id, (short)LVar16, &xf, sel.fl.id), sVar18 != 0 && (xf.grobj == grobjFleet)))) {
             SelectAdjFleet(0, xf.id);
         }
-    } else if (((HWND)lParam == rghwndBtn[2]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        LVar19 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
-        if ((LVar19 != -1) && ((sVar21 = FLookupOrbitingXfer(sel.pl.id, (short)LVar19, &xf, sel.fl.id), sVar21 != 0 && (xf.grobj == grobjFleet)))) {
-            uVar14 = 0x1050;
+    } else if (((HWND)lParam == rghwndBtn[2]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        LVar16 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
+        if ((LVar16 != -1) && ((sVar18 = FLookupOrbitingXfer(sel.pl.id, (short)LVar16, &xf, sel.fl.id), sVar18 != 0 && (xf.grobj == grobjFleet)))) {
+            uVar11 = 0x1050;
             TransferStuff(sel.fl.id, 2, xf.id, 2, 1);
-            puVar10 = &stack0xfb40;
+            puVar7 = &stack0xfb40;
             if ((grbitScan & 0x80) != 0) {
-                uVar14 = 0x14f8;
+                uVar11 = 0x14f8;
                 InvalidateRect(hwndScanner, 0, 1);
-                puVar10 = &stack0xfb42;
+                puVar7 = &stack0xfb42;
             }
-            *(undefined2 *)(puVar10 + -2) = 1;
-            *(undefined2 *)(puVar10 + -4) = 1;
-            *(undefined2 *)(puVar10 + -6) = uVar14;
-            *(undefined2 *)(puVar10 + -8) = 0x2dd3;
-            InvalidateReport(*(short *)(puVar10 + -4), *(short *)(puVar10 + -2));
+            *(undefined2 *)(puVar7 + -2) = 1;
+            *(undefined2 *)(puVar7 + -4) = 1;
+            *(undefined2 *)(puVar7 + -6) = uVar11;
+            *(undefined2 *)(puVar7 + -8) = 0x2dd3;
+            InvalidateReport(*(short *)(puVar7 + -4), *(short *)(puVar7 + -2));
         }
-    } else if (((HWND)lParam == rghwndBtn[8]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    } else if (((HWND)lParam == rghwndBtn[8]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         TransferStuff(sel.fl.id, 2, -1, 4, 1);
         InvalidateReport(1, 1);
         if (((uint)gd.grBits >> 0xb & 1) != 0) {
             AdvanceTutor();
         }
-    } else if (((HWND)lParam == rghwndBtn[9]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
+    } else if (((HWND)lParam == rghwndBtn[9]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
         FFleetSplitAll((FLEET *)&sel.fl);
         FillShipDD(sel.fl.id);
         local_b6 = -0x7c4b;
@@ -1459,27 +1457,27 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
         FillFleetCompLB();
         DrawPlanShip(0, local_b6);
         InvalidateRect(hwndMine, 0, 1);
-    } else if (((HWND)lParam == rghwndBtn[10]) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        vrgiflMerge = &stack0xfb44;
+    } else if (((HWND)lParam == rghwndBtn[10]) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        vrgiflMerge = local_4bc;
         vcflMerge = 0;
         for (local_b6 = 0; (int)local_b6 < cFleet; local_b6 = local_b6 + 1) {
-            iVar8 = *(int *)((FLEET **)rglpfl + local_b6);
-            iVar4 = *(int *)((int)((FLEET **)rglpfl + local_b6) + 2);
-            if ((iVar8 == 0) && (iVar4 == 0))
+            iVar1 = *(int *)((FLEET **)rglpfl + local_b6);
+            iVar2 = *(int *)((int)((FLEET **)rglpfl + local_b6) + 2);
+            if ((iVar1 == 0) && (iVar2 == 0))
                 break;
-            if ((*(int *)(iVar8 + 2) == idPlayer) &&
-                ((((*(uint *)(iVar8 + 4) >> 10 & 1) == 0 && (*(int *)(iVar8 + 8) == sel.fl.pt.x)) && (*(int *)(iVar8 + 10) == sel.fl.pt.y)))) {
-                *(uint *)(&stack0xfb44 + vcflMerge * 2) = local_b6;
+            if ((*(int *)(iVar1 + 2) == idPlayer) &&
+                ((((*(uint *)(iVar1 + 4) >> 10 & 1) == 0 && (*(int *)(iVar1 + 8) == sel.fl.pt.x)) && (*(int *)(iVar1 + 10) == sel.fl.pt.y)))) {
+                local_4bc[vcflMerge] = local_b6;
                 vcflMerge = vcflMerge + 1;
             }
         }
         uStack_ba._0_2_ = 0;
         uStack_ba._2_2_ = 0;
-        pvVar16 = MakeProcInstance(MergeFleetsDlg, hInst);
-        sVar21 = DialogBox(0, IDD_MERGE_FLEETS, hwndFrame, pvVar16);
-        pFVar17 = (FLEET *)CONCAT22(uStack_ba._2_2_, (FLEET *)uStack_ba);
-        if (sVar21 != 0) {
-            for (local_b6 = 0; pFVar17 = (FLEET *)CONCAT22(uStack_ba._2_2_, (FLEET *)uStack_ba), (int)local_b6 < vcflMerge; local_b6 = local_b6 + 1) {
+        pvVar13 = MakeProcInstance(MergeFleetsDlg, hInst);
+        sVar18 = DialogBox(0, IDD_MERGE_FLEETS, hwndFrame, pvVar13);
+        pFVar14 = (FLEET *)CONCAT22(uStack_ba._2_2_, (FLEET *)uStack_ba);
+        if (sVar18 != 0) {
+            for (local_b6 = 0; pFVar14 = (FLEET *)CONCAT22(uStack_ba._2_2_, (FLEET *)uStack_ba), (int)local_b6 < vcflMerge; local_b6 = local_b6 + 1) {
                 if (vrgiflMerge[local_b6] != -1) {
                     if (((FLEET **)rglpfl)[vrgiflMerge[local_b6]]->id == sel.fl.id) {
                         /* WARNING: Load size is inaccurate */
@@ -1489,23 +1487,23 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
                     vrgiflMerge[local_b6] = ((FLEET **)rglpfl)[vrgiflMerge[local_b6]]->id;
                 }
             }
-            for (local_b6 = 0; uStack_ba = pFVar17, (int)local_b6 < vcflMerge; local_b6 = local_b6 + 1) {
+            for (local_b6 = 0; uStack_ba = pFVar14, (int)local_b6 < vcflMerge; local_b6 = local_b6 + 1) {
                 if (vrgiflMerge[local_b6] != -1) {
-                    if (pFVar17 == 0) {
-                        pFVar17 = LpflFromId(vrgiflMerge[local_b6]);
-                    } else if (vrgiflMerge[local_b6] != pFVar17->id)
+                    if (pFVar14 == 0) {
+                        pFVar14 = LpflFromId(vrgiflMerge[local_b6]);
+                    } else if (vrgiflMerge[local_b6] != pFVar14->id)
                         break;
                 }
             }
             if (local_b6 == vcflMerge) {
-                pFVar17 = 0;
-            } else if (pFVar17->id != sel.fl.id) {
-                SelectAdjFleet(0, pFVar17->id);
-                pFVar17 = uStack_ba;
+                pFVar14 = 0;
+            } else if (pFVar14->id != sel.fl.id) {
+                SelectAdjFleet(0, pFVar14->id);
+                pFVar14 = uStack_ba;
             }
         }
-        uStack_ba = pFVar17;
-        FreeProcInstance(pvVar16);
+        uStack_ba = pFVar14;
+        FreeProcInstance(pvVar13);
         if (uStack_ba != 0) {
             FFleetMergeAll((FLEET *)&sel.fl);
             FillShipDD(sel.fl.id);
@@ -1514,56 +1512,56 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
             FillFleetCompLB();
             DrawPlanShip(0, (short)local_bc);
             InvalidateRect(hwndMine, 0, 1);
-            puVar11 = &stack0xfb42;
+            psVar8 = &stack0xfb42;
             if ((grbitScan & 0x80) != 0) {
                 InvalidateRect(hwndScanner, 0, 1);
-                puVar11 = &stack0xfb44;
+                psVar8 = local_4bc;
             }
             vrgiflMerge = 0;
             vcflMerge = 0;
             if (((uint)gd.grBits >> 0xb & 1) != 0) {
-                *(undefined2 *)(puVar11 + -2) = 0x14f8;
-                *(undefined2 *)(puVar11 + -4) = 0x3241;
+                *(undefined2 *)((int)psVar8 + -2) = 0x14f8;
+                *(undefined2 *)((int)psVar8 + -4) = 0x3241;
                 AdvanceTutor();
             }
         }
-    } else if (((HWND)lParam == hwndRepCB) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0)) {
-        LVar19 = SendMessage(hwndRepCB, WM_USER, 0, 0);
-        local_b6 = (uint)LVar19;
+    } else if (((HWND)lParam == hwndRepCB) && (uVar12 = __aFulshr(lParam, 0x10), (int)uVar12 == 0)) {
+        LVar16 = SendMessage(hwndRepCB, WM_USER, 0, 0);
+        local_b6 = (uint)LVar16;
         sel.fl.wFlags_0x4 = sel.fl.wFlags_0x4 & 0xfdff | (local_b6 & 1) << 9;
         FLookupFleet(-1, (FLEET *)&sel.fl);
     } else if ((HWND)lParam == rghwndOrderDD[0]) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if ((int)uVar15 == 1) {
-            LVar19 = SendMessage(rghwndOrderDD[0], CB_GETCURSEL, 0, 0);
-            uVar5 = (uint)LVar19;
-            puVar12 = &stack0xfb40;
-            if (uVar5 != (*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf)) {
-                if ((LVar19 == 3) || ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf) == 3)) {
-                    local_b6 = uVar5;
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 1) {
+            LVar16 = SendMessage(rghwndOrderDD[0], CB_GETCURSEL, 0, 0);
+            uVar4 = (uint)LVar16;
+            puVar9 = &stack0xfb40;
+            if (uVar4 != (*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf)) {
+                if ((LVar16 == 3) || ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf) == 3)) {
+                    local_b6 = uVar4;
                     InvalidateRect(hwndMine, 0, 1);
-                    puVar12 = &stack0xfb42;
+                    puVar9 = &stack0xfb42;
                 }
-                uStack_ba._0_2_ = (FLEET *)(*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xfff0 | uVar5 & 0xf);
+                uStack_ba._0_2_ = (FLEET *)(*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xfff0 | uVar4 & 0xf);
                 *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) = (uint)(FLEET *)uStack_ba;
-                *(undefined2 *)(puVar12 + -2) = 10;
-                *(undefined2 *)(puVar12 + -4) = 0;
+                *(undefined2 *)(puVar9 + -2) = 10;
+                *(undefined2 *)(puVar9 + -4) = 0;
                 uStack_ba._2_2_ = (PLORD *)sel.fl.lpplord + 1;
                 local_b6 = sel.fl.lpplord._2_2_;
-                *(int *)(puVar12 + -6) = sel.fl.lpplord._2_2_;
-                *(int *)(puVar12 + -8) = (int)((PLORD *)sel.fl.lpplord + 1) + sel.iwpAct * 0x12 + 8;
-                *(undefined2 *)(puVar12 + -10) = 0x14f8;
-                uVar14 = 0x1118;
-                *(undefined2 *)(puVar12 + -0xc) = 0x341d;
-                __fmemset(*(void **)(puVar12 + -8), *(short *)(puVar12 + -4), *(ushort *)(puVar12 + -2));
-                if (uVar5 == 7) {
+                *(int *)(puVar9 + -6) = sel.fl.lpplord._2_2_;
+                *(int *)(puVar9 + -8) = (int)((PLORD *)sel.fl.lpplord + 1) + sel.iwpAct * 0x12 + 8;
+                *(undefined2 *)(puVar9 + -10) = 0x14f8;
+                uVar11 = 0x1118;
+                *(undefined2 *)(puVar9 + -0xc) = 0x341d;
+                __fmemset(*(void **)(puVar9 + -8), *(short *)(puVar9 + -4), *(ushort *)(puVar9 + -2));
+                if (uVar4 == 7) {
                     *(undefined2 *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xe) = 0;
                     *(undefined2 *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc) = 0;
-                } else if (uVar5 == 9) {
+                } else if (uVar4 == 9) {
                     *(undefined2 *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc) = 0;
-                } else if (uVar5 == 6) {
+                } else if (uVar4 == 6) {
                     *(undefined2 *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc) = 5;
-                } else if ((uVar5 == 4) && ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) >> 8 & 0xf) != 2)) {
+                } else if ((uVar4 == 4) && ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) >> 8 & 0xf) != 2)) {
                     local_c2 = 0;
                     local_be = 0;
                     for (local_b6 = 1; (int)local_b6 < 0x10; local_b6 = local_b6 + 1) {
@@ -1576,8 +1574,8 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
                         uStack_ba._0_2_ = (FLEET *)*(uint *)((int)((FLEET **)rglpfl + (int)uStack_ba._2_2_) + 2);
                         if ((local_bc == 0) && ((FLEET *)uStack_ba == 0))
                             break;
-                        piVar9 = (int *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
-                        if ((local_bc[4] == *piVar9) && ((((local_bc[5] == piVar9[1] && (local_bc[1] == idPlayer)) && (((uint)local_bc[2] >> 10 & 1) == 0)) &&
+                        piVar6 = (int *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
+                        if ((local_bc[4] == *piVar6) && ((((local_bc[5] == piVar6[1] && (local_bc[1] == idPlayer)) && (((uint)local_bc[2] >> 10 & 1) == 0)) &&
                                                           (*(int *)CONCAT22((FLEET *)uStack_ba, local_bc) != sel.fl.id)))) {
                             if (local_bc[local_be + 6] < 1) {
                                 if ((((int *)local_c2 == 0) && (local_c2._2_2_ == 0)) || ((1 < ((int *)local_c2)[0x31] && (local_bc[0x31] == 1)))) {
@@ -1593,39 +1591,40 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
                     if (((int *)local_c2 != 0) || (local_c2._2_2_ != 0)) {
                         *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) =
                             *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf0ff | 0x200;
+                        local_c4 = *local_c2;
                         *(int *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 8) = *local_c2;
-                        *(undefined2 *)(puVar12 + -2) = 0x4972;
-                        *(undefined2 *)(puVar12 + -4) = 0xffff;
-                        *(undefined2 *)(puVar12 + -6) = 0x1118;
-                        *(undefined2 *)(puVar12 + -8) = 0x3728;
-                        FLookupFleet(*(short *)(puVar12 + -4), *(FLEET **)(puVar12 + -2));
-                        *(undefined2 *)(puVar12 + -2) = 0x1038;
-                        uVar14 = 0x1050;
-                        *(undefined2 *)(puVar12 + -4) = 0x3730;
+                        *(undefined2 *)(puVar9 + -2) = 0x4972;
+                        *(undefined2 *)(puVar9 + -4) = 0xffff;
+                        *(undefined2 *)(puVar9 + -6) = 0x1118;
+                        *(undefined2 *)(puVar9 + -8) = 0x3728;
+                        FLookupFleet(*(short *)(puVar9 + -4), *(FLEET **)(puVar9 + -2));
+                        *(undefined2 *)(puVar9 + -2) = 0x1038;
+                        uVar11 = 0x1050;
+                        *(undefined2 *)(puVar9 + -4) = 0x3730;
                         FillOrdersLB();
                     }
                 }
-                *(undefined2 *)(puVar12 + -2) = 0x4972;
-                *(undefined2 *)(puVar12 + -4) = 0xffff;
-                *(undefined2 *)(puVar12 + -6) = uVar14;
-                *(undefined2 *)(puVar12 + -8) = 0x373d;
-                FLookupFleet(*(short *)(puVar12 + -4), *(FLEET **)(puVar12 + -2));
-                *(undefined2 *)(puVar12 + -2) = 1;
-                *(undefined2 *)(puVar12 + -4) = 0x1038;
-                *(undefined2 *)(puVar12 + -6) = 0x3749;
-                UpdateOrdersDDs(*(short *)(puVar12 + -2));
-                *(undefined2 *)(puVar12 + -2) = 0x8100;
-                *(undefined2 *)(puVar12 + -4) = 0;
-                *(undefined2 *)(puVar12 + -6) = 0x1050;
-                *(undefined2 *)(puVar12 + -8) = 0x3759;
-                DrawPlanShip(*(HDC *)(puVar12 + -4), *(short *)(puVar12 + -2));
+                *(undefined2 *)(puVar9 + -2) = 0x4972;
+                *(undefined2 *)(puVar9 + -4) = 0xffff;
+                *(undefined2 *)(puVar9 + -6) = uVar11;
+                *(undefined2 *)(puVar9 + -8) = 0x373d;
+                FLookupFleet(*(short *)(puVar9 + -4), *(FLEET **)(puVar9 + -2));
+                *(undefined2 *)(puVar9 + -2) = 1;
+                *(undefined2 *)(puVar9 + -4) = 0x1038;
+                *(undefined2 *)(puVar9 + -6) = 0x3749;
+                UpdateOrdersDDs(*(short *)(puVar9 + -2));
+                *(undefined2 *)(puVar9 + -2) = 0x8100;
+                *(undefined2 *)(puVar9 + -4) = 0;
+                *(undefined2 *)(puVar9 + -6) = 0x1050;
+                *(undefined2 *)(puVar9 + -8) = 0x3759;
+                DrawPlanShip(*(HDC *)(puVar9 + -4), *(short *)(puVar9 + -2));
             }
         }
     } else if ((HWND)lParam == rghwndOrderDD[1]) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if ((int)uVar15 == 1) {
-            LVar19 = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0, 0);
-            local_b6 = (uint)LVar19;
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 1) {
+            LVar16 = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0, 0);
+            local_b6 = (uint)LVar16;
             if ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf) == 7) {
                 *(undefined2 *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xe) = local_b6;
                 FLookupFleet(-1, (FLEET *)&sel.fl);
@@ -1644,96 +1643,103 @@ void ShipCommandProc(HWND hwnd, ushort wParam, long lParam)
             }
         }
     } else if ((HWND)lParam == rghwndOrderDD[2]) {
-        uVar15 = __aFulshr(uVar22, in_stack_0000fb44);
-        if ((int)uVar15 == 1) {
-            LVar19 = SendMessage(rghwndOrderDD[2], CB_GETCURSEL, 0, 0);
-            LVar18 = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0, 0);
-            lSel._0_2_ = (int)LVar19;
-            if (LVar18 == 0) {
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 1) {
+            LVar16 = SendMessage(rghwndOrderDD[2], CB_GETCURSEL, 0, 0);
+            LVar15 = SendMessage(rghwndOrderDD[1], CB_GETCURSEL, 0, 0);
+            lSel._0_2_ = (int)LVar16;
+            if (LVar15 == 0) {
                 lMin._0_2_ = 4;
                 lMin._2_2_ = 0;
             } else {
-                lMin._0_2_ = (int)LVar18 + -1;
-                lMin._2_2_ = (int)((ulong)LVar18 >> 0x10) - (uint)((int)LVar18 == 0);
+                lMin._0_2_ = (int)LVar15 + -1;
+                lMin._2_2_ = (int)((ulong)LVar15 >> 0x10) - (uint)((int)LVar15 == 0);
             }
             local_b6 = (int)lSel;
             uStack_ba._2_2_ = (PLORD *)((int)lSel << 0xc);
             local_bc = (int *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
             uStack_ba._0_2_ = (FLEET *)sel.fl.lpplord._2_2_;
-            lVar20 = __aFlshl(uVar22, in_stack_0000fb44);
-            iVar8 = sel.fl.lpplord._2_2_;
-            pPVar2 = (PLORD *)sel.fl.lpplord;
-            uVar5 = *(uint *)((int)local_bc + (int)lVar20) & 0xfff | (uint)uStack_ba._2_2_;
-            iVar4 = sel.iwpAct * 0x12;
-            lVar20 = __aFlshl(uVar22, in_stack_0000fb44);
-            *(uint *)((int)pPVar2 + (int)lVar20 + iVar4 + 0xc) = uVar5;
+            lVar17 = __aFlshl(CONCAT22(lMin._2_2_, (int)lMin), 1);
+            local_be = *(uint *)((int)local_bc + (int)lVar17) & 0xfff | (uint)uStack_ba._2_2_;
+            local_c2._0_2_ = (int *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
+            local_c2._2_2_ = sel.fl.lpplord._2_2_;
+            lVar17 = __aFlshl(CONCAT22(lMin._2_2_, (int)lMin), 1);
+            *(uint *)((int)(int *)local_c2 + (int)lVar17) = local_be;
             FLookupFleet(-1, (FLEET *)&sel.fl);
             UpdateOrdersDDs(3);
             DrawPlanShip(0, 0x100);
         }
-    } else if (((HWND)lParam == hwndOrderED) && (uVar15 = __aFulshr(uVar22, in_stack_0000fb44), (int)uVar15 == 0x300)) {
-        LVar19 = SendMessage(rghwndOrderDD[2], CB_GETCURSEL, 0, 0);
-        if ((LVar19 == 5) || (LVar19 == 6)) {
-            bVar1 = true;
-        }
-        GetWindowText(hwndOrderED, (LPSTR)&local_bc, 8);
-        uVar14 = 0x1118;
-        uVar5 = _atoi(&local_bc);
-        plVar13 = &stack0xfb38;
-        local_be = uVar5;
-        if (0x7fff < uVar5) {
-            local_be = 0;
-        }
-        if (bVar1) {
-            if (100 < (int)local_be) {
-                local_be = 100;
+    } else if ((HWND)lParam == hwndOrderED) {
+        uVar12 = __aFulshr(lParam, 0x10);
+        if ((int)uVar12 == 0x300) {
+            LVar16 = SendMessage(rghwndOrderDD[2], CB_GETCURSEL, 0, 0);
+            if ((LVar16 == 5) || (LVar16 == 6)) {
+                bVar3 = true;
             }
-        } else if (4000 < (int)local_be) {
-            local_be = 4000;
+            GetWindowText(hwndOrderED, (LPSTR)&local_bc, 8);
+            uVar11 = 0x1118;
+            local_c2._2_2_ = _atoi(&local_bc);
+            puVar10 = &stack0xfb38;
+            local_be = local_c2._2_2_;
+            if (0x7fff < local_c2._2_2_) {
+                local_be = 0;
+            }
+            if (bVar3) {
+                if (100 < (int)local_be) {
+                    local_be = 100;
+                }
+            } else {
+                if (4000 < (int)local_be) {
+                    local_be = 4000;
+                }
+            }
+            if (local_c2._2_2_ != local_be) {
+                sVar18 = 0x10;
+                pcVar5 = PszFormatIds(idsAmountCargoMaySpecifyHereMustBetween, 0);
+                AlertSz(pcVar5, sVar18);
+                _wsprintf(szWork, PCTD);
+                uVar11 = 0x14f8;
+                SetWindowText(hwndOrderED, szWork);
+                puVar10 = &stack0xfb32;
+            }
+            *(ushort *)(puVar10 + -2) = rghwndOrderDD[1];
+            *(undefined2 *)(puVar10 + -4) = 0x407;
+            *(undefined2 *)(puVar10 + -6) = 0;
+            *(undefined2 *)(puVar10 + -8) = 0;
+            *(undefined2 *)(puVar10 + -10) = 0;
+            *(undefined2 *)(puVar10 + -0xc) = uVar11;
+            *(undefined2 *)(puVar10 + -0xe) = 0x3c47;
+            LVar16 = SendMessage(*(HWND *)(puVar10 + -2), *(WMType *)(puVar10 + -4), *(WParamMessageId *)(puVar10 + -6), *(LPARAM *)(puVar10 + -10));
+            if (LVar16 == 0) {
+                lMin._0_2_ = 4;
+                lMin._2_2_ = 0;
+            } else {
+                lMin._0_2_ = (int)LVar16 + -1;
+                lMin._2_2_ = (int)((ulong)LVar16 >> 0x10) - (uint)((int)LVar16 == 0);
+            }
+            iVar2 = lMin._2_2_;
+            iVar1 = (int)lMin;
+            local_c2 = (int *)(CONCAT22(local_c2._2_2_, local_be) & 0xffff0fff);
+            local_c6 = (int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc;
+            local_c4 = sel.fl.lpplord._2_2_;
+            *(undefined2 *)(puVar10 + -2) = 0x14f8;
+            *(undefined2 *)(puVar10 + -4) = 0x3cba;
+            lVar17 = __aFlshl(CONCAT22(iVar2, iVar1), 1);
+            iVar2 = lMin._2_2_;
+            iVar1 = (int)lMin;
+            local_c8 = *(uint *)(local_c6 + (int)lVar17) & 0xf000 | (uint)(int *)local_c2;
+            local_cc = (int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc;
+            local_ca = sel.fl.lpplord._2_2_;
+            *(undefined2 *)(puVar10 + -2) = 0x1118;
+            *(undefined2 *)(puVar10 + -4) = 0x3d09;
+            lVar17 = __aFlshl(CONCAT22(iVar2, iVar1), 1);
+            *(uint *)(local_cc + (int)lVar17) = local_c8;
+            *(undefined2 *)(puVar10 + -2) = 0x4972;
+            *(undefined2 *)(puVar10 + -4) = 0xffff;
+            *(undefined2 *)(puVar10 + -6) = 0x1118;
+            *(undefined2 *)(puVar10 + -8) = 0x3d29;
+            FLookupFleet(*(short *)(puVar10 + -4), *(FLEET **)(puVar10 + -2));
         }
-        if (uVar5 != local_be) {
-            sVar21 = 0x10;
-            pcVar6 = PszFormatIds(idsAmountCargoMaySpecifyHereMustBetween, 0);
-            AlertSz(pcVar6, sVar21);
-            _wsprintf(szWork, PCTD);
-            uVar14 = 0x14f8;
-            SetWindowText(hwndOrderED, szWork);
-            plVar13 = &stack0xfb32;
-        }
-        *(ushort *)((int)plVar13 + -2) = rghwndOrderDD[1];
-        *(undefined2 *)(plVar13 + -1) = 0x407;
-        *(undefined2 *)((int)plVar13 + -6) = 0;
-        *(undefined2 *)(plVar13 + -2) = 0;
-        *(undefined2 *)((int)plVar13 + -10) = 0;
-        *(undefined2 *)(plVar13 + -3) = uVar14;
-        *(undefined2 *)((int)plVar13 + -0xe) = 0x3c47;
-        LVar19 = SendMessage(*(HWND *)((int)plVar13 + -2), *(WMType *)(plVar13 + -1), *(WParamMessageId *)((int)plVar13 + -6), *(LPARAM *)((int)plVar13 + -10));
-        iVar8 = sel.fl.lpplord._2_2_;
-        pPVar2 = (PLORD *)sel.fl.lpplord;
-        if (LVar19 == 0) {
-            lMin._0_2_ = 4;
-            lMin._2_2_ = 0;
-        } else {
-            lMin._0_2_ = (int)LVar19 + -1;
-            lMin._2_2_ = (int)((ulong)LVar19 >> 0x10) - (uint)((int)LVar19 == 0);
-        }
-        iVar7 = sel.iwpAct * 0x12;
-        *(undefined2 *)((int)plVar13 + -2) = 0x14f8;
-        *(undefined2 *)(plVar13 + -1) = 0x3cba;
-        lVar20 = __aFlshl(*plVar13, *(ushort *)(plVar13 + 1));
-        iVar4 = sel.fl.lpplord._2_2_;
-        pPVar3 = (PLORD *)sel.fl.lpplord;
-        uVar5 = *(uint *)((int)pPVar2 + (int)lVar20 + iVar7 + 0xc);
-        iVar8 = sel.iwpAct * 0x12;
-        *(undefined2 *)((int)plVar13 + -2) = 0x1118;
-        *(undefined2 *)(plVar13 + -1) = 0x3d09;
-        lVar20 = __aFlshl(*plVar13, *(ushort *)(plVar13 + 1));
-        *(uint *)((int)pPVar3 + (int)lVar20 + iVar8 + 0xc) = uVar5 & 0xf000 | local_be & 0xfff;
-        *(undefined2 *)((int)plVar13 + -2) = 0x4972;
-        *(undefined2 *)(plVar13 + -1) = 0xffff;
-        *(undefined2 *)((int)plVar13 + -6) = 0x1118;
-        *(undefined2 *)(plVar13 + -2) = 0x3d29;
-        FLookupFleet((short)plVar13[-1], (FLEET *)*(undefined2 *)((int)plVar13 + -2));
     }
     return;
 }
@@ -2523,8 +2529,6 @@ short TransferDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     short       sVar5;
     uint        uVar6;
     undefined1 *puVar7;
-    ushort      unaff_SI;
-    undefined2  unaff_DI;
     undefined2  unaff_SS;
     ulong       uVar8;
     RECT        rc;
@@ -2621,7 +2625,7 @@ short TransferDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 return 1;
             }
         } else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-            uVar8 = __aFulshr(CONCAT22(unaff_DI, wParam), unaff_SI);
+            uVar8 = __aFulshr(lParam, 0x10);
             sVar5 = FTrackXfer(hwnd, (short)lParam, (short)uVar8, wParam);
             return sVar5;
         }
@@ -3681,33 +3685,30 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
     long        lVar4;
     long        lVar5;
     undefined2  uVar6;
-    BOOL        BVar7;
-    char       *pcVar8;
-    uint        uVar9;
+    long        lVar7;
+    BOOL        BVar8;
+    char       *pcVar9;
+    uint        uVar10;
     HDC         hdc_00;
-    short       sVar10;
-    GrobjClass  GVar11;
-    HCURSOR     HVar12;
-    int         iVar13;
-    PLORD      *pPVar14;
-    short      *psVar15;
-    THING      *pTVar16;
-    char      **ppcVar17;
-    undefined1 *puVar18;
-    undefined2  unaff_SI;
-    ZIPORDER   *pZVar19;
-    undefined2  unaff_DI;
-    ushort     *puVar20;
-    undefined2  uVar21;
+    short       sVar11;
+    GrobjClass  GVar12;
+    HCURSOR     HVar13;
+    int         iVar14;
+    PLORD      *pPVar15;
+    short      *psVar16;
+    THING      *pTVar17;
+    char      **ppcVar18;
+    undefined1 *puVar19;
+    ZIPORDER   *pZVar20;
+    ushort     *puVar21;
+    undefined2  uVar22;
     undefined2  unaff_SS;
-    LRESULT     LVar22;
-    ulong       uVar23;
-    long        lVar24;
+    LRESULT     LVar23;
+    ulong       uVar24;
     long        lVar25;
     ulong       uVar26;
     long        lVar27;
     int         iVar28;
-    THING      *in_stack_0000fd54;
     SCAN        scan;
     THING      *lpthMac;
     short       iChecked;
@@ -3747,50 +3748,49 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
     HDC         hdc;
     long        lCur;
 
-    uVar23 = CONCAT22(lMax._2_2_, (undefined2)lMax);
-    lVar25 = CONCAT22(unaff_SI, unaff_DI);
+    uVar24 = CONCAT22(lMax._2_2_, (undefined2)lMax);
     lTempMin._0_2_ = 0;
     lTempMin._2_2_ = 0;
     irc = -1;
     if (sel.grobj == grobjNone) {
-        HVar12 = 0;
-        lVar24 = sel.fl.rgwtMin[4];
+        HVar13 = 0;
+        lVar25 = sel.fl.rgwtMin[4];
         goto LAB_1050_915f;
     }
-    BVar7 = PtInRect(rgrcRef + 5, pt);
-    if (BVar7 == 0) {
-        BVar7 = PtInRect(rgrcRef + 0xc, pt);
-        lVar24 = sel.fl.rgwtMin[4];
-        if (BVar7 == 0) {
+    BVar8 = PtInRect(rgrcRef + 5, pt);
+    if (BVar8 == 0) {
+        BVar8 = PtInRect(rgrcRef + 0xc, pt);
+        lVar25 = sel.fl.rgwtMin[4];
+        if (BVar8 == 0) {
             if (fRightBtn != 0) {
-                HVar12 = 0;
+                HVar13 = 0;
                 goto LAB_1050_915f;
             }
-            BVar7 = PtInRect(rgrcRef, pt);
-            if (BVar7 == 0) {
-                BVar7 = PtInRect(rgrcRef + 0xf, pt);
-                if (BVar7 == 0) {
-                    BVar7 = PtInRect(rgrcRef + 1, pt);
-                    if (BVar7 == 0) {
-                        BVar7 = PtInRect(rgrcRef + 3, pt);
-                        if (BVar7 != 0) {
-                            HVar12 = hcurHand;
-                            lVar24 = sel.fl.rgwtMin[4];
+            BVar8 = PtInRect(rgrcRef, pt);
+            if (BVar8 == 0) {
+                BVar8 = PtInRect(rgrcRef + 0xf, pt);
+                if (BVar8 == 0) {
+                    BVar8 = PtInRect(rgrcRef + 1, pt);
+                    if (BVar8 == 0) {
+                        BVar8 = PtInRect(rgrcRef + 3, pt);
+                        if (BVar8 != 0) {
+                            HVar13 = hcurHand;
+                            lVar25 = sel.fl.rgwtMin[4];
                             if (fCursor == 0) {
                                 if (sel.fl.idPlanet == -1) {
                                     local_f4 = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
                                     local_fe = (THING *)CONCAT22((THING *)lpThings, (THING *)local_fe);
                                     local_f6 = lpThings._2_2_;
-                                    pTVar16 = (THING *)lpThings + cThing;
-                                    local_fa = (short *)CONCAT22(pTVar16, lpThings._2_2_);
+                                    pTVar17 = (THING *)lpThings + cThing;
+                                    local_fa = (short *)CONCAT22(pTVar17, lpThings._2_2_);
                                     while (true) {
-                                        if ((pTVar16 <= (THING *)local_f4) ||
+                                        if ((pTVar17 <= (THING *)local_f4) ||
                                             (((local_f4->idFull >> 0xd == 1 && (sel.fl.pt.x == (&((THING *)local_f4)->pt)->x)) &&
                                               (sel.fl.pt.y == (((THING *)local_f4)->pt).y))))
                                             break;
                                         local_f4 = (THING *)local_f4 + 1;
                                     }
-                                    if (((THING *)local_f4 == pTVar16) && (local_f4._2_2_ == lpThings._2_2_)) {
+                                    if (((THING *)local_f4 == pTVar17) && (local_f4._2_2_ == lpThings._2_2_)) {
                                         TransferStuff(sel.fl.id, 2, -1, 4, 0);
                                     } else {
                                         MessageBeep(0);
@@ -3798,42 +3798,42 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                                 } else {
                                     TransferStuff(sel.fl.id, 2, sel.fl.idPlanet, 1, 0);
                                 }
-                                HVar12 = 0;
-                                lVar24 = sel.fl.rgwtMin[4];
+                                HVar13 = 0;
+                                lVar25 = sel.fl.rgwtMin[4];
                             }
                             goto LAB_1050_915f;
                         }
-                        BVar7 = PtInRect(rgrcRef + 4, pt);
-                        if (BVar7 != 0) {
-                            HVar12 = hcurHand;
-                            lVar24 = sel.fl.rgwtMin[4];
+                        BVar8 = PtInRect(rgrcRef + 4, pt);
+                        if (BVar8 != 0) {
+                            HVar13 = hcurHand;
+                            lVar25 = sel.fl.rgwtMin[4];
                             if (fCursor == 0) {
                                 local_f4 = (THING *)SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
                                 if (((int)local_f4 == -1) && ((int)((ulong)local_f4 >> 0x10) == -1)) {
-                                    HVar12 = 0;
-                                    lVar24 = sel.fl.rgwtMin[4];
+                                    HVar13 = 0;
+                                    lVar25 = sel.fl.rgwtMin[4];
                                 } else {
-                                    sVar10 = sel.fl.id;
+                                    sVar11 = sel.fl.id;
                                     if (sel.grobj != grobjFleet) {
-                                        sVar10 = -1;
+                                        sVar11 = -1;
                                     }
-                                    sVar10 = FLookupOrbitingXfer(sel.pl.id, (int)local_f4, &xf, sVar10);
-                                    if (sVar10 != 0) {
+                                    sVar11 = FLookupOrbitingXfer(sel.pl.id, (int)local_f4, &xf, sVar11);
+                                    if (sVar11 != 0) {
                                         TransferStuff(sel.id, sel.grobj, xf.id, xf.grobj, 0);
                                     }
-                                    HVar12 = 0;
-                                    lVar24 = sel.fl.rgwtMin[4];
+                                    HVar13 = 0;
+                                    lVar25 = sel.fl.rgwtMin[4];
                                 }
                             }
                             goto LAB_1050_915f;
                         }
-                        BVar7 = PtInRect(rgrcRef + 0x12, pt);
-                        uVar23 = CONCAT22(lMax._2_2_, (undefined2)lMax);
-                        lVar24 = sel.fl.rgwtMin[4];
-                        if (BVar7 != 0) {
+                        BVar8 = PtInRect(rgrcRef + 0x12, pt);
+                        uVar24 = CONCAT22(lMax._2_2_, (undefined2)lMax);
+                        lVar25 = sel.fl.rgwtMin[4];
+                        if (BVar8 != 0) {
                             if (((sel.grobj != grobjFleet) && (fCursor != 0)) ||
                                 ((*(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xf) != 7)) {
-                                HVar12 = 0;
+                                HVar13 = 0;
                                 goto LAB_1050_915f;
                             }
                             irc = 0x12;
@@ -3842,7 +3842,7 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                             lCur._2_2_ = 0;
                             grbit = 7;
                             local_170 = (FARPROC)CONCAT22(local_170._2_2_, (void *)local_170);
-                            uVar23 = 10;
+                            uVar24 = 10;
                         }
                     } else {
                         if (sel.grobj == grobjFleet) {
@@ -3852,30 +3852,30 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                             iSkip = -1;
                             idPlan = sel.pl.id;
                         }
-                        LVar22 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
-                        FLookupOrbitingXfer(idPlan, (short)LVar22, &xf, iSkip);
+                        LVar23 = SendMessage(hwndShipDD, CB_GETCURSEL, 0, 0);
+                        FLookupOrbitingXfer(idPlan, (short)LVar23, &xf, iSkip);
                         if ((xf.grobj != grobjFleet) || (xf.u_XFER_0x0004.fl.iPlayer != idPlayer)) {
-                            HVar12 = 0;
-                            lVar24 = sel.fl.rgwtMin[4];
+                            HVar13 = 0;
+                            lVar25 = sel.fl.rgwtMin[4];
                             goto LAB_1050_915f;
                         }
                         irc = 1;
-                        uVar23 = LGetFleetStat(&(&xf.u_XFER_0x0004)->fl, grStatFuel);
+                        uVar24 = LGetFleetStat(&(&xf.u_XFER_0x0004)->fl, grStatFuel);
                         uVar6 = xf.u_XFER_0x0004.fl.rgwtMin[4]._2_2_;
-                        uVar21 = xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_;
+                        uVar22 = xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_;
                         lCur._0_2_ = xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_;
                         lCur._2_2_ = xf.u_XFER_0x0004.fl.rgwtMin[4]._2_2_;
                         grbit = 4;
                         if (sel.grobj == grobjFleet) {
                             lTempMax = sel.fl.rgwtMin[4] + CONCAT22(xf.u_XFER_0x0004.fl.rgwtMin[4]._2_2_, xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_);
-                            lVar24 = LGetFleetStat(&sel.fl, grStatFuel);
-                            uVar9 = (uint)(lVar24 - sel.fl.rgwtMin[4]);
-                            lTempMin._0_2_ = uVar21 - uVar9;
-                            lTempMin._2_2_ = (uVar6 - (int)((ulong)(lVar24 - sel.fl.rgwtMin[4]) >> 0x10)) - (uint)((uint)uVar21 < uVar9);
+                            lVar25 = LGetFleetStat(&sel.fl, grStatFuel);
+                            uVar10 = (uint)(lVar25 - sel.fl.rgwtMin[4]);
+                            lTempMin._0_2_ = uVar22 - uVar10;
+                            lTempMin._2_2_ = (uVar6 - (int)((ulong)(lVar25 - sel.fl.rgwtMin[4]) >> 0x10)) - (uint)((uint)uVar22 < uVar10);
                         } else {
                             lTempMax = CONCAT22(xf.u_XFER_0x0004.fl.rgwtMin[4]._2_2_, xf.u_XFER_0x0004.fl.rgwtMin[4]._0_2_);
                         }
-                        lVar24 = sel.fl.rgwtMin[4];
+                        lVar25 = sel.fl.rgwtMin[4];
                     }
                 } else {
                     irc = 0xf;
@@ -3885,13 +3885,13 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                     lTempMin._2_2_ = 0;
                     lCur._0_2_ = sel.pl.lStarbase._2_2_ >> 10 & 0xf;
                     lCur._2_2_ = 0;
-                    uVar23 = (long)(iWarp + -1);
-                    lVar24 = sel.fl.rgwtMin[4];
+                    uVar24 = (long)(iWarp + -1);
+                    lVar25 = sel.fl.rgwtMin[4];
                 }
             } else {
-                lVar24 = sel.fl.rgwtMin[4];
+                lVar25 = sel.fl.rgwtMin[4];
                 if ((sel.grobj != grobjFleet) && (fCursor != 0)) {
-                    HVar12 = 0;
+                    HVar13 = 0;
                     goto LAB_1050_915f;
                 }
                 irc = 0;
@@ -3899,10 +3899,10 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                 lCur._0_2_ = *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) >> 4 & 0xf;
                 lCur._2_2_ = 0;
                 grbit = 6;
-                uVar23 = 0xb;
+                uVar24 = 0xb;
             }
         } else {
-            HVar12 = hcurArrowHelp;
+            HVar13 = hcurArrowHelp;
             if (fCursor != 0)
                 goto LAB_1050_915f;
             if (fRightBtn == 0) {
@@ -3913,9 +3913,9 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                 Popup(hwndPlanet, pt.x, pt.y);
             } else {
                 iChecked = -1;
-                psVar15 = (short *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
-                local_fa = (short *)CONCAT22(sel.fl.lpplord._2_2_, psVar15);
-                pt_00.y = psVar15[1];
+                psVar16 = (short *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 4);
+                local_fa = (short *)CONCAT22(sel.fl.lpplord._2_2_, psVar16);
+                pt_00.y = psVar16[1];
                 pt_00.x = *local_fa;
                 FFindNearestObject(pt_00, 0x8f, &scan);
                 if (scan.idpl == -1) {
@@ -3928,26 +3928,26 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                 local_290[1] = 0xffff;
                 local_290[2] = 0xffff;
                 local_f6 = 2;
-                uVar21 = (undefined2)((ulong)local_fa >> 0x10);
+                uVar22 = (undefined2)((ulong)local_fa >> 0x10);
                 if ((((uint)((short *)local_fa)[3] >> 8 & 0xf) == 1) || (((uint)((short *)local_fa)[3] >> 8 & 0xf) == 4)) {
                     iChecked = 0;
                 }
-                for (local_f4._0_2_ = 0; uVar9 = local_f6, (int)(THING *)local_f4 < cFleet; local_f4._0_2_ = (THING *)((int)(THING *)local_f4 + 1)) {
-                    puVar20 = *(ushort **)((FLEET **)rglpfl + (int)(THING *)local_f4);
-                    iVar13 = *(int *)((int)((FLEET **)rglpfl + (int)(THING *)local_f4) + 2);
-                    local_102 = (ushort *)CONCAT22(iVar13, puVar20);
-                    if ((puVar20 == 0) && (iVar13 == 0))
+                for (local_f4._0_2_ = 0; uVar10 = local_f6, (int)(THING *)local_f4 < cFleet; local_f4._0_2_ = (THING *)((int)(THING *)local_f4 + 1)) {
+                    puVar21 = *(ushort **)((FLEET **)rglpfl + (int)(THING *)local_f4);
+                    iVar14 = *(int *)((int)((FLEET **)rglpfl + (int)(THING *)local_f4) + 2);
+                    local_102 = (ushort *)CONCAT22(iVar14, puVar21);
+                    if ((puVar21 == 0) && (iVar14 == 0))
                         break;
-                    if ((scan.pt.x == puVar20[4]) && ((scan.pt.y == puVar20[5] && (*local_102 != sel.fl.id)))) {
-                        uVar21 = (undefined2)((ulong)local_fa >> 0x10);
+                    if ((scan.pt.x == puVar21[4]) && ((scan.pt.y == puVar21[5] && (*local_102 != sel.fl.id)))) {
+                        uVar22 = (undefined2)((ulong)local_fa >> 0x10);
                         if ((((uint)((short *)local_fa)[3] >> 8 & 0xf) == 2) && (((short *)local_fa)[2] == *local_102)) {
                             iChecked = local_f6;
                         }
                         uVar3 = *local_102;
-                        iVar13 = local_f6 * 2;
+                        iVar14 = local_f6 * 2;
                         local_f6 = local_f6 + 1;
-                        (&local_292)[iVar13] = uVar3;
-                        local_290[uVar9 * 2] = (int)uVar3 >> 0xf | 0x8000;
+                        (&local_292)[iVar14] = uVar3;
+                        local_290[uVar10 * 2] = (int)uVar3 >> 0xf | 0x8000;
                         if (99 < (int)local_f6)
                             break;
                     }
@@ -3957,60 +3957,59 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                 }
                 local_f4 = (THING *)(ulong)CONCAT12(local_f6 == 0, (THING *)local_f4);
                 local_fe = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
-                while (uVar9 = local_f6, (THING *)local_fe < (THING *)lpThings + cThing) {
-                    uVar21 = (undefined2)((ulong)local_fe >> 0x10);
+                while (uVar10 = local_f6, (THING *)local_fe < (THING *)lpThings + cThing) {
+                    uVar22 = (undefined2)((ulong)local_fe >> 0x10);
                     if ((scan.pt.x == (&((THING *)local_fe)->pt)->x) && (scan.pt.y == (((THING *)local_fe)->pt).y)) {
                         if (local_f4._2_2_ == 0) {
                             if (99 < (int)local_f6)
                                 break;
-                            iVar13 = local_f6 * 2;
+                            iVar14 = local_f6 * 2;
                             local_f6 = local_f6 + 1;
-                            (&local_292)[iVar13] = 0xffff;
-                            local_290[uVar9 * 2] = 0xffff;
+                            (&local_292)[iVar14] = 0xffff;
+                            local_290[uVar10 * 2] = 0xffff;
                             local_f4 = (THING *)CONCAT22(1, (THING *)local_f4);
                         }
-                        uVar9 = local_f6;
+                        uVar10 = local_f6;
                         if (99 < (int)local_f6)
                             break;
-                        iVar13 = local_f6 * 2;
+                        iVar14 = local_f6 * 2;
                         local_f6 = local_f6 + 1;
-                        (&local_292)[iVar13] = local_fe->idFull;
-                        local_290[uVar9 * 2] = 0x2000;
+                        (&local_292)[iVar14] = local_fe->idFull;
+                        local_290[uVar10 * 2] = 0x2000;
                     }
                     local_fe = (THING *)local_fe + 1;
                 }
-                in_stack_0000fd54 = (THING *)lpThings;
-                sVar10 = PopupMenu(hwndPlanet, pt.x, pt.y, local_f6, &local_292, 0, iChecked, 1);
-                local_f4 = (THING *)CONCAT22(local_f4._2_2_, sVar10);
-                if (-1 < sVar10) {
-                    psVar15 = (short *)local_fa;
-                    uVar21 = (undefined2)((ulong)local_fa >> 0x10);
-                    if (((sVar10 == 0) && (local_292 == 0)) && (local_290[0] == 0x1000)) {
-                        psVar15[3] = psVar15[3] & 0xf0ffU | 0x400;
-                        psVar15[2] = -1;
-                    } else if ((local_290[sVar10 * 2] & 0x2000) == 0) {
-                        if ((local_290[sVar10 * 2] & 0x8000) == 0) {
-                            psVar15[3] = psVar15[3] & 0xf0ffU | 0x100;
-                            psVar15[2] = local_292;
+                sVar11 = PopupMenu(hwndPlanet, pt.x, pt.y, local_f6, &local_292, 0, iChecked, 1);
+                local_f4 = (THING *)CONCAT22(local_f4._2_2_, sVar11);
+                if (-1 < sVar11) {
+                    psVar16 = (short *)local_fa;
+                    uVar22 = (undefined2)((ulong)local_fa >> 0x10);
+                    if (((sVar11 == 0) && (local_292 == 0)) && (local_290[0] == 0x1000)) {
+                        psVar16[3] = psVar16[3] & 0xf0ffU | 0x400;
+                        psVar16[2] = -1;
+                    } else if ((local_290[sVar11 * 2] & 0x2000) == 0) {
+                        if ((local_290[sVar11 * 2] & 0x8000) == 0) {
+                            psVar16[3] = psVar16[3] & 0xf0ffU | 0x100;
+                            psVar16[2] = local_292;
                         } else {
-                            psVar15[3] = psVar15[3] & 0xf0ffU | 0x200;
-                            psVar15[2] = (&local_292)[sVar10 * 2];
+                            psVar16[3] = psVar16[3] & 0xf0ffU | 0x200;
+                            psVar16[2] = (&local_292)[sVar11 * 2];
                         }
                     } else {
-                        psVar15[3] = psVar15[3] & 0xf0ffU | 0x800;
-                        psVar15[2] = (&local_292)[sVar10 * 2];
+                        psVar16[3] = psVar16[3] & 0xf0ffU | 0x800;
+                        psVar16[2] = (&local_292)[sVar11 * 2];
                     }
                     FLookupFleet(-1, (FLEET *)&sel.fl);
                     FillOrdersLB();
                     SetOrdersLbSel(sel.iwpAct);
                 }
             }
-            uVar23 = CONCAT22(lMax._2_2_, (undefined2)lMax);
-            lVar24 = sel.fl.rgwtMin[4];
+            uVar24 = CONCAT22(lMax._2_2_, (undefined2)lMax);
+            lVar25 = sel.fl.rgwtMin[4];
         }
     } else {
-        HVar12 = hcurArrowHelp;
-        lVar24 = sel.fl.rgwtMin[4];
+        HVar13 = hcurArrowHelp;
+        lVar25 = sel.fl.rgwtMin[4];
         if (fCursor != 0)
             goto LAB_1050_915f;
         if (fRightBtn == 0) {
@@ -4025,23 +4024,23 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
             local_f4._2_2_ = 5;
             for (local_f6 = 0; (int)local_f6 < 4; local_f6 = local_f6 + 1) {
                 if (*(char *)((int)&vrgZip[0].fValid + local_f6 * 0x18) != '\0') {
-                    ppcVar17 = local_10c + local_f4._2_2_;
+                    ppcVar18 = local_10c + local_f4._2_2_;
                     local_f4._2_2_ = local_f4._2_2_ + 1;
-                    *ppcVar17 = (char *)(local_f6 * 0x18 + 0x526e);
+                    *ppcVar18 = (char *)(local_f6 * 0x18 + 0x526e);
                 }
             }
             if (5 < local_f4._2_2_) {
-                ppcVar17 = local_10c + local_f4._2_2_;
+                ppcVar18 = local_10c + local_f4._2_2_;
                 local_f4._2_2_ = local_f4._2_2_ + 1;
-                *ppcVar17 = &local_f4;
+                *ppcVar18 = &local_f4;
             }
-            pcVar8 = PszGetCompressedString(idsCustomize);
-            iVar13 = local_f4._2_2_;
+            pcVar9 = PszGetCompressedString(idsCustomize);
+            iVar14 = local_f4._2_2_;
             local_f4 = (THING *)CONCAT22(local_f4._2_2_ + 1, (THING *)local_f4);
-            local_10c[iVar13] = pcVar8;
+            local_10c[iVar14] = pcVar9;
             local_f6 = PopupMenu(hwndPlanet, pt.x, pt.y, local_f4._2_2_, 0, local_10c, -1, 1);
-            uVar21 = sel.fl.lpplord._2_2_;
-            sVar10 = sel.iwpAct;
+            uVar22 = sel.fl.lpplord._2_2_;
+            sVar11 = sel.iwpAct;
             if (local_f6 == local_f4._2_2_ - 1U) {
                 _memcpy(local_16c, (ZIPORDER *)vrgZip, 0x60);
                 local_170 = MakeProcInstance(ZipOrderDlg, hInst);
@@ -4056,30 +4055,30 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                         goto LAB_1050_8237;
                     local_114 = (PLORD *)sel.fl.lpplord + 1;
                     local_112 = sel.fl.lpplord._2_2_;
-                    pPVar14 = (PLORD *)((int)local_114 + sel.iwpAct * 0x12 + 8);
-                    _local_110 = (PLORD *)CONCAT22(sel.fl.lpplord._2_2_, pPVar14);
+                    pPVar15 = (PLORD *)((int)local_114 + sel.iwpAct * 0x12 + 8);
+                    _local_110 = (PLORD *)CONCAT22(sel.fl.lpplord._2_2_, pPVar15);
                     if (local_f6 == 0) {
                         *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) = *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) & 0xfff | 0x7000;
                         for (local_f6 = 0; (int)local_f6 < 3; local_f6 = local_f6 + 1) {
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xfff | 0x1000;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xfff | 0x1000;
                         }
-                        *(uint *)((int)local_114 + sVar10 * 0x12 + 0xe) = *(uint *)((int)local_114 + sVar10 * 0x12 + 0xe) & 0xfff;
+                        *(uint *)((int)local_114 + sVar11 * 0x12 + 0xe) = *(uint *)((int)local_114 + sVar11 * 0x12 + 0xe) & 0xfff;
                     } else if (local_f6 == 1) {
                         *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) = *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) & 0xfff | 0x7000;
                         for (local_f6 = 0; (int)local_f6 < 4; local_f6 = local_f6 + 1) {
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xfff | 0x2000;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xfff | 0x2000;
                         }
                     } else if (local_f6 == 2) {
                         *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) = *(uint *)((int)local_114 + sel.iwpAct * 0x12 + 0x10) & 0xfff | 0x7000;
                         for (local_f6 = 0; (int)local_f6 < 3; local_f6 = local_f6 + 1) {
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xfff | 0x6000;
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xf000 | 100;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xfff | 0x6000;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xf000 | 100;
                         }
-                        *(uint *)((int)local_114 + sVar10 * 0x12 + 0xe) = *(uint *)((int)local_114 + sVar10 * 0x12 + 0xe) & 0xfff;
+                        *(uint *)((int)local_114 + sVar11 * 0x12 + 0xe) = *(uint *)((int)local_114 + sVar11 * 0x12 + 0xe) & 0xfff;
                     } else if (local_f6 == 3) {
                         for (local_f6 = 0; (int)local_f6 < 5; local_f6 = local_f6 + 1) {
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xfff;
-                            (&pPVar14->wFlags)[local_f6] = (&pPVar14->wFlags)[local_f6] & 0xf000;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xfff;
+                            (&pPVar15->wFlags)[local_f6] = (&pPVar15->wFlags)[local_f6] & 0xf000;
                         }
                     }
                 } else {
@@ -4088,13 +4087,13 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                     while ((local_f6 != 0 && ((*(char *)((int)&vrgZip[0].fValid + iSkip * 0x18) == '\0' || (local_f6 = local_f6 - 1, local_f6 != 0))))) {
                         iSkip = iSkip + 1;
                     }
-                    pZVar19 = (ZIPORDER *)vrgZip + iSkip;
-                    puVar20 = (ushort *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
-                    for (iVar13 = 5; iVar13 != 0; iVar13 = iVar13 + -1) {
-                        puVar2 = puVar20;
-                        puVar20 = puVar20 + 1;
-                        pZVar1 = pZVar19;
-                        pZVar19 = (pZVar19->txp).rgia + 1;
+                    pZVar20 = (ZIPORDER *)vrgZip + iSkip;
+                    puVar21 = (ushort *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc);
+                    for (iVar14 = 5; iVar14 != 0; iVar14 = iVar14 + -1) {
+                        puVar2 = puVar21;
+                        puVar21 = puVar21 + 1;
+                        pZVar1 = pZVar20;
+                        pZVar20 = (pZVar20->txp).rgia + 1;
                         *puVar2 = (pZVar1->txp).rgia[0].wFlags;
                     }
                     _local_110 = (PLORD *)CONCAT22(sel.fl.lpplord._2_2_, (PLORD *)sel.fl.lpplord + 1);
@@ -4105,50 +4104,50 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
             }
         }
     LAB_1050_8237:
-        lVar24 = sel.fl.rgwtMin[4];
+        lVar25 = sel.fl.rgwtMin[4];
     }
     if (irc == -1) {
-        HVar12 = 0;
+        HVar13 = 0;
     } else {
-        HVar12 = hcurHand;
+        HVar13 = hcurHand;
         if (fCursor == 0) {
             dx._0_2_ = (*(int *)((int)&rgrcRef[0].right + irc * 8) - ((RECT *)rgrcRef + irc)->left) + -2;
             dx._2_2_ = (int)dx >> 0xf;
-            sel.fl.rgwtMin[4] = lVar24;
-            __aFldiv((long)(int)dx, uVar23 + 1);
-            lVar25 = __aFlshr(lVar25, (ushort)in_stack_0000fd54);
+            sel.fl.rgwtMin[4] = lVar25;
+            lVar25 = __aFldiv((long)(int)dx, uVar24 + 1);
+            lVar25 = __aFlshr(lVar25, 1);
             hdc_00 = GetDC(hwndPlanet);
             SetCapture(hwndPlanet);
-            puVar18 = &stack0xfd50;
+            puVar19 = &stack0xfd50;
             ptOld.y = -1;
             ptOld.x = -1;
-            if ((long)uVar23 < lTempMax) {
-                lTempMax = uVar23;
+            if ((long)uVar24 < lTempMax) {
+                lTempMax = uVar24;
             }
             if ((lTempMin._2_2_ < 1) && (lTempMin._2_2_ < 0)) {
                 lTempMin._0_2_ = 0;
                 lTempMin._2_2_ = 0;
             }
             fFirst = 1;
-            lVar24 = CONCAT22(lCur._2_2_, (uint)lCur);
+            lVar7 = CONCAT22(lCur._2_2_, (uint)lCur);
         LAB_1050_8c8b:
-            lVar5 = lVar24;
+            lVar5 = lVar7;
             lCur._0_2_ = (uint)lVar5;
             if (fFirst == 0) {
-                uVar21 = 0x1040;
-                sVar10 = FGetMouseMove(&pt);
-                if (sVar10 == 0)
+                uVar22 = 0x1040;
+                sVar11 = FGetMouseMove(&pt);
+                if (sVar11 == 0)
                     goto LAB_1050_8f9c;
             }
             fFirst = 0;
-            lVar24 = lVar5;
+            lVar7 = lVar5;
             if ((pt.x != ptOld.x) || (pt.y != ptOld.y)) {
                 ptOld.x = pt.x;
                 ptOld.y = pt.y;
-                iVar13 = (int)dx;
+                iVar14 = (int)dx;
                 iVar28 = dx._2_2_;
-                uVar26 = __aFulmul(lVar25 + (pt.x - ((RECT *)rgrcRef + irc)->left), uVar23);
-                lVar27 = __aFldiv(uVar26, CONCAT22(iVar28, iVar13));
+                uVar26 = __aFulmul(lVar25 + (pt.x - ((RECT *)rgrcRef + irc)->left), uVar24);
+                lVar27 = __aFldiv(uVar26, CONCAT22(iVar28, iVar14));
                 lNew = CONCAT22(lTempMin._2_2_, (int)lTempMin);
                 lVar4 = lTempMax;
                 if (lVar27 < lTempMax) {
@@ -4157,33 +4156,33 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                 if ((lNew <= lVar4) && (lNew = lTempMax, lVar27 < lTempMax)) {
                     lNew = lVar27;
                 }
-                uVar9 = (uint)lNew;
+                uVar10 = (uint)lNew;
                 if (lVar5 != lNew) {
                     if (irc == 0) {
-                        local_f6 = (uVar9 & 0xf) << 4;
-                        local_f4 = (THING *)CONCAT22(uVar9, local_f6);
+                        local_f6 = (uVar10 & 0xf) << 4;
+                        local_f4 = (THING *)CONCAT22(uVar10, local_f6);
                         local_f6 = *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) & 0xff0f | local_f6;
                         *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 10) = local_f6;
                         DrawPlanShip(0, 0x4020);
-                        lVar24 = lNew;
+                        lVar7 = lNew;
                     } else if (irc == 0x12) {
-                        local_f4 = (THING *)CONCAT22(uVar9, (THING *)local_f4);
-                        *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc) = uVar9;
+                        local_f4 = (THING *)CONCAT22(uVar10, (THING *)local_f4);
+                        *(uint *)((int)(PLORD *)sel.fl.lpplord + sel.iwpAct * 0x12 + 0xc) = uVar10;
                         DrawPlanShip(0, 0x4100);
-                        lVar24 = lNew;
+                        lVar7 = lNew;
                     } else if (irc == 0xf) {
-                        iVar13 = iWarp;
+                        iVar14 = iWarp;
                         if (fTwoMAs != 0) {
-                            iVar13 = -iWarp;
+                            iVar14 = -iWarp;
                         }
-                        DrawMassWarpGauge(hdc_00, (RECT *)(rgrcRef + 0xf), iVar13, uVar9 + 4);
-                        lVar24 = lNew;
+                        DrawMassWarpGauge(hdc_00, (RECT *)(rgrcRef + 0xf), iVar14, uVar10 + 4);
+                        lVar7 = lNew;
                     } else if (irc == 2) {
                         sel.fl.rgwtMin[4] = lNew;
                         DrawFleetGauge(hdc_00, (RECT *)(rgrcRef + 2), 0, grbit);
-                        lVar24 = lNew;
+                        lVar7 = lNew;
                     } else {
-                        lVar24 = lNew;
+                        lVar7 = lNew;
                         if (irc == 1) {
                             if (sel.grobj == grobjFleet) {
                                 sel.fl.rgwtMin[4] = sel.fl.rgwtMin[4] - (lNew - lVar5);
@@ -4193,7 +4192,7 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
                             }
                             xf.u_XFER_0x0004.fl.rgwtMin[4] = lNew;
                             DrawFleetGauge(hdc_00, (RECT *)rgrcRef + irc, &(&xf.u_XFER_0x0004)->fl, grbit);
-                            lVar24 = lNew;
+                            lVar7 = lNew;
                         }
                     }
                 }
@@ -4202,66 +4201,66 @@ ushort ClickInShipOrders(POINT pt, short sks, short fCursor, short fRightBtn)
         }
     }
 LAB_1050_915f:
-    sel.fl.rgwtMin[4]._2_2_ = (undefined2)((ulong)lVar24 >> 0x10);
-    sel.fl.rgwtMin[4]._0_2_ = (undefined2)lVar24;
-    return HVar12;
+    sel.fl.rgwtMin[4]._2_2_ = (undefined2)((ulong)lVar25 >> 0x10);
+    sel.fl.rgwtMin[4]._0_2_ = (undefined2)lVar25;
+    return HVar13;
 LAB_1050_8f9c:
-    GVar11 = sel.scan.grobjFull;
+    GVar12 = sel.scan.grobjFull;
     if (sel.scan.grobj != grobjOther) {
-        GVar11 = sel.scan.grobj;
+        GVar12 = sel.scan.grobj;
     }
     if (irc == 2) {
         FLookupFleet(-1, (FLEET *)&sel.fl);
         FLookupPlanet(-1, &pl);
-        uVar21 = 0x1048;
+        uVar22 = 0x1048;
         DrawPlanShip(0, 0x4220);
-        if (((GVar11 & grobjPlanet) == grobjNone) || (sel.fl.idPlanet != sel.scan.idpl)) {
-            puVar18 = &stack0xfd50;
-            if (((GVar11 & grobjFleet) != grobjNone) && (puVar18 = &stack0xfd50, sel.fl.id == ((FLEET **)rglpfl)[sel.scan.ifl]->id)) {
-                uVar21 = 0x14f8;
+        if (((GVar12 & grobjPlanet) == grobjNone) || (sel.fl.idPlanet != sel.scan.idpl)) {
+            puVar19 = &stack0xfd50;
+            if (((GVar12 & grobjFleet) != grobjNone) && (puVar19 = &stack0xfd50, sel.fl.id == ((FLEET **)rglpfl)[sel.scan.ifl]->id)) {
+                uVar22 = 0x14f8;
                 InvalidateRect(hwndMine, 0, 1);
-                puVar18 = &stack0xfd52;
+                puVar19 = &stack0xfd52;
             }
         } else {
         SHIP_FixMinWin:
-            uVar21 = 0x1028;
+            uVar22 = 0x1028;
             InvalidateMineralBars();
-            puVar18 = &stack0xfd50;
+            puVar19 = &stack0xfd50;
         }
     } else if (irc == 1) {
         FLookupFleet(-1, &xf.u_XFER_0x0004.fl);
         if (sel.grobj == grobjFleet) {
             FLookupFleet(-1, (FLEET *)&sel.fl);
-            uVar21 = 0x1048;
+            uVar22 = 0x1048;
             DrawPlanShip(0, 0x4221);
-            puVar18 = &stack0xfd50;
+            puVar19 = &stack0xfd50;
         } else {
-            uVar21 = 0x1038;
+            uVar22 = 0x1038;
             FLookupPlanet(-1, (PLANET *)&sel.pl);
-            puVar18 = &stack0xfd50;
-            if (((GVar11 & grobjPlanet) != grobjNone) && (puVar18 = &stack0xfd50, sel.pl.id == sel.scan.idpl))
+            puVar19 = &stack0xfd50;
+            if (((GVar12 & grobjPlanet) != grobjNone) && (puVar19 = &stack0xfd50, sel.pl.id == sel.scan.idpl))
                 goto SHIP_FixMinWin;
         }
     } else if ((irc == 0) || (irc == 0x12)) {
-        uVar21 = 0x1038;
+        uVar22 = 0x1038;
         FLookupFleet(-1, (FLEET *)&sel.fl);
-        puVar18 = &stack0xfd50;
-    } else if ((irc == 0xf) && (puVar18 = &stack0xfd50, (uint)lCur != (sel.pl.lStarbase._2_2_ >> 10 & 0xf))) {
+        puVar19 = &stack0xfd50;
+    } else if ((irc == 0xf) && (puVar19 = &stack0xfd50, (uint)lCur != (sel.pl.lStarbase._2_2_ >> 10 & 0xf))) {
         local_f4 = (THING *)CONCAT22((uint)lCur, (THING *)local_f4);
         sel.pl.lStarbase._2_2_ = sel.pl.lStarbase._2_2_ & 0xc3ff | ((uint)lCur & 0xf) << 10;
-        uVar21 = 0x1038;
+        uVar22 = 0x1038;
         FLookupPlanet(-1, (PLANET *)&sel.pl);
-        puVar18 = &stack0xfd50;
+        puVar19 = &stack0xfd50;
     }
-    *(undefined2 *)(puVar18 + -2) = uVar21;
-    *(undefined2 *)(puVar18 + -4) = 0x9153;
+    *(undefined2 *)(puVar19 + -2) = uVar22;
+    *(undefined2 *)(puVar19 + -4) = 0x9153;
     ReleaseCapture();
-    *(HWND *)(puVar18 + -2) = hwndPlanet;
-    *(HDC *)(puVar18 + -4) = hdc_00;
-    *(undefined2 *)(puVar18 + -6) = 0x14f8;
-    *(undefined2 *)(puVar18 + -8) = 0x915f;
-    HVar12 = ReleaseDC(*(HWND *)(puVar18 + -2), *(HDC *)(puVar18 + -4));
-    lVar24 = sel.fl.rgwtMin[4];
+    *(HWND *)(puVar19 + -2) = hwndPlanet;
+    *(HDC *)(puVar19 + -4) = hdc_00;
+    *(undefined2 *)(puVar19 + -6) = 0x14f8;
+    *(undefined2 *)(puVar19 + -8) = 0x915f;
+    HVar13 = ReleaseDC(*(HWND *)(puVar19 + -2), *(HDC *)(puVar19 + -4));
+    lVar25 = sel.fl.rgwtMin[4];
     goto LAB_1050_915f;
 }
 
@@ -5672,26 +5671,21 @@ void RemoveIshdefFromAllQueues(short ishdef, short fSpaceDocks)
     undefined2  uVar1;
     undefined2  uVar2;
     PLANET     *pPVar3;
-    undefined2 *puVar4;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    undefined2  uVar5;
+    PROD       *pPVar4;
+    undefined2 *puVar5;
     undefined2  uVar6;
-    ulong       uVar7;
+    undefined2  uVar7;
     ulong       uVar8;
-    PLANET     *pPVar9;
     PROD       *lpprod;
     PLANET     *lpplMac;
     short       iDst;
     PLANET     *lppl;
     short       iprod;
 
-    uVar8 = CONCAT22(unaff_SI, unaff_DI);
     pPVar3 = (PLANET *)lpPlanets + cPlanet;
     lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-    pPVar9 = (PLANET *)lpPlanets;
     while ((PLANET *)lppl < pPVar3) {
-        uVar5 = (undefined2)((ulong)lppl >> 0x10);
+        uVar6 = (undefined2)((ulong)lppl >> 0x10);
         if (((((*(int *)&((PLANET *)lppl)->lpplprod != 0) || (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)) &&
               (((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac != 0)) &&
              ((((PLANET *)lppl)->iPlayer == idPlayer && ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) &&
@@ -5700,19 +5694,21 @@ void RemoveIshdefFromAllQueues(short ishdef, short fSpaceDocks)
             iprod = 0;
             lpprod = (PROD *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2), (PROD *)(*(int *)&((PLANET *)lppl)->lpplprod + 4));
             for (; iprod < (int)(uint)((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac; iprod = iprod + 1) {
-                uVar7 = __aFulshr(uVar8, (ushort)pPVar9);
-                uVar6 = (undefined2)((ulong)lpprod >> 0x10);
-                if ((((uint)uVar7 & 7) != 2) || (uVar7 = __aFulshr(uVar8, (ushort)pPVar9), ((uint)uVar7 & 0x7f) != ishdef)) {
+                uVar7 = (undefined2)((ulong)lpprod >> 0x10);
+                pPVar4 = (PROD *)lpprod;
+                uVar8 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar4->dwFlags + 2), (int)lpprod->dwFlags), 0x11);
+                if ((((uint)uVar8 & 7) != 2) ||
+                    (uVar8 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar4->dwFlags + 2), (int)lpprod->dwFlags), 10), ((uint)uVar8 & 0x7f) != ishdef)) {
                     if (iDst != iprod) {
-                        uVar1 = *(undefined2 *)((int)&((PROD *)lpprod)->dwFlags + 2);
+                        uVar1 = *(undefined2 *)((int)&pPVar4->dwFlags + 2);
                         uVar2 = *(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2);
-                        puVar4 = (undefined2 *)(*(int *)&((PLANET *)lppl)->lpplprod + 4 + iDst * 4);
-                        *puVar4 = (int)lpprod->dwFlags;
-                        puVar4[1] = uVar1;
+                        puVar5 = (undefined2 *)(*(int *)&((PLANET *)lppl)->lpplprod + 4 + iDst * 4);
+                        *puVar5 = (int)lpprod->dwFlags;
+                        puVar5[1] = uVar1;
                     }
                     iDst = iDst + 1;
                 }
-                lpprod = (PROD *)CONCAT22(uVar6, (PROD *)lpprod + 1);
+                lpprod = (PROD *)CONCAT22(uVar7, pPVar4 + 1);
             }
             if (iDst == 0) {
                 FreePl((PL *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2), *(PL **)&((PLANET *)lppl)->lpplprod));
@@ -5722,7 +5718,7 @@ void RemoveIshdefFromAllQueues(short ishdef, short fSpaceDocks)
                 ((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac = (byte)iDst;
             }
         }
-        lppl = (PLANET *)CONCAT22(uVar5, (PLANET *)lppl + 1);
+        lppl = (PLANET *)CONCAT22(uVar6, (PLANET *)lppl + 1);
     }
     if ((sel.grobj == grobjPlanet) && (((PLPROD *)sel.pl.lpplprod != 0 || (sel.pl.lpplprod._2_2_ != 0)))) {
         FLookupPlanet(sel.pl.id, (PLANET *)&sel.pl);
@@ -5744,26 +5740,22 @@ short CshQueued(short ishdef, short *pfProgress, short fSpaceDocks)
 
 {
     PLANET    *pPVar1;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    undefined2 uVar2;
-    ulong      uVar3;
-    ulong      uVar4;
-    PLANET    *pPVar5;
+    PROD      *pPVar2;
+    undefined2 uVar3;
+    undefined2 uVar4;
+    ulong      uVar5;
     PROD      *lpprod;
     PLANET    *lpplMac;
     short      csh;
     PLANET    *lppl;
     short      iprod;
 
-    uVar4 = CONCAT22(unaff_SI, unaff_DI);
     csh = 0;
     *pfProgress = 0;
     pPVar1 = (PLANET *)lpPlanets + cPlanet;
     lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-    pPVar5 = (PLANET *)lpPlanets;
     while ((PLANET *)lppl < pPVar1) {
-        uVar2 = (undefined2)((ulong)lppl >> 0x10);
+        uVar3 = (undefined2)((ulong)lppl >> 0x10);
         if (((((*(int *)&((PLANET *)lppl)->lpplprod != 0) || (*(int *)((int)&((PLANET *)lppl)->lpplprod + 2) != 0)) &&
               (((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac != 0)) &&
              ((((PLANET *)lppl)->iPlayer == idPlayer && ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)))) &&
@@ -5771,18 +5763,21 @@ short CshQueued(short ishdef, short *pfProgress, short fSpaceDocks)
             iprod = 0;
             lpprod = (PROD *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2), (PROD *)(*(int *)&((PLANET *)lppl)->lpplprod + 4));
             for (; iprod < (int)(uint)((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac; iprod = iprod + 1) {
-                uVar3 = __aFulshr(uVar4, (ushort)pPVar5);
-                if ((((uint)uVar3 & 7) == 2) && (uVar3 = __aFulshr(uVar4, (ushort)pPVar5), ((uint)uVar3 & 0x7f) == ishdef)) {
+                uVar4 = (undefined2)((ulong)lpprod >> 0x10);
+                pPVar2 = (PROD *)lpprod;
+                uVar5 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar2->dwFlags + 2), (int)lpprod->dwFlags), 0x11);
+                if ((((uint)uVar5 & 7) == 2) &&
+                    (uVar5 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar2->dwFlags + 2), (int)lpprod->dwFlags), 10), ((uint)uVar5 & 0x7f) == ishdef)) {
                     csh = csh + ((uint)lpprod->dwFlags & 0x3ff);
-                    uVar3 = __aFulshr(uVar4, (ushort)pPVar5);
-                    if ((uVar3 & 0x7f) != 0) {
+                    uVar5 = __aFulshr(CONCAT22(*(undefined2 *)((int)&pPVar2->dwFlags + 2), (int)lpprod->dwFlags), 0x14);
+                    if ((uVar5 & 0x7f) != 0) {
                         *pfProgress = 1;
                     }
                 }
-                lpprod = (PROD *)lpprod + 1;
+                lpprod = (PROD *)CONCAT22(uVar4, pPVar2 + 1);
             }
         }
-        lppl = (PLANET *)CONCAT22(uVar2, (PLANET *)lppl + 1);
+        lppl = (PLANET *)CONCAT22(uVar3, (PLANET *)lppl + 1);
     }
     return csh;
 }

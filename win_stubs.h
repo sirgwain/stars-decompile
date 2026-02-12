@@ -12,9 +12,9 @@
 #ifndef WIN_STUBS_H
 #define WIN_STUBS_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /* MSVC-style secure CRT compatibility used by a few ported call sites. */
 int localtime_s(struct tm *result, const time_t *timep);
@@ -96,16 +96,16 @@ typedef const void *LPCVOID;
 
 /* System colors (GetSysColor). */
 #ifndef COLOR_SCROLLBAR
-#define COLOR_SCROLLBAR 0
-#define COLOR_BACKGROUND 1
-#define COLOR_WINDOWFRAME 6
-#define COLOR_WINDOW 5
-#define COLOR_WINDOWTEXT 8
-#define COLOR_BTNFACE 15
-#define COLOR_BTNSHADOW 16
-#define COLOR_BTNTEXT 18
+#define COLOR_SCROLLBAR    0
+#define COLOR_BACKGROUND   1
+#define COLOR_WINDOWFRAME  6
+#define COLOR_WINDOW       5
+#define COLOR_WINDOWTEXT   8
+#define COLOR_BTNFACE      15
+#define COLOR_BTNSHADOW    16
+#define COLOR_BTNTEXT      18
 #define COLOR_BTNHIGHLIGHT 20
-#define COLOR_DESKTOP COLOR_BACKGROUND
+#define COLOR_DESKTOP      COLOR_BACKGROUND
 #endif
 #ifndef COLOR_APPWORKSPACE
 #define COLOR_APPWORKSPACE 12
@@ -366,7 +366,7 @@ typedef struct tagMINMAXINFO {
     POINT ptMaxTrackSize;
 } MINMAXINFO;
 typedef MINMAXINFO *LPMINMAXINFO;
-typedef MSG *LPMSG;
+typedef MSG        *LPMSG;
 
 /* PAINTSTRUCT - for BeginPaint/EndPaint */
 typedef struct tagPAINTSTRUCT {
@@ -754,28 +754,28 @@ typedef struct tagTIMERINFO {
 #define WM_USER            0x0400
 
 // WM_SIZE wParam values
-#define SIZE_RESTORED      0
-#define SIZE_MINIMIZED     1
-#define SIZE_MAXIMIZED     2
+#define SIZE_RESTORED  0
+#define SIZE_MINIMIZED 1
+#define SIZE_MAXIMIZED 2
 
 // WM_SYSCOMMAND ids (mask with 0xFFF0)
-#define SC_RESTORE         0xF120
-#define SC_MINIMIZE        0xF020
-#define SC_MAXIMIZE        0xF030
-#define SC_CLOSE           0xF060
+#define SC_RESTORE  0xF120
+#define SC_MINIMIZE 0xF020
+#define SC_MAXIMIZE 0xF030
+#define SC_CLOSE    0xF060
 
 /* Combo box messages / notifications */
-#define CB_GETCURSEL       0x0147
-#define CB_ADDSTRING       0x0143
-#define CB_SETCURSEL       0x014E
-#define CBN_SELCHANGE      1
+#define CB_GETCURSEL  0x0147
+#define CB_ADDSTRING  0x0143
+#define CB_SETCURSEL  0x014E
+#define CBN_SELCHANGE 1
 
 /* Button states */
-#define BST_CHECKED        1
+#define BST_CHECKED 1
 
 /* Font selection for controls */
-#define WM_SETFONT         0x0030
-#define WM_GETFONT         0x0031
+#define WM_SETFONT 0x0030
+#define WM_GETFONT 0x0031
 
 /* ========================================================================
  * GDI Constants
@@ -993,16 +993,16 @@ BOOL WINAPI GetOpenFileName(OPENFILENAME FAR *lpofn);
 BOOL WINAPI GetSaveFileName(OPENFILENAME FAR *lpofn);
 
 /* Misc C runtime / kernel-ish helpers used by the Win32 code paths. */
-DWORD WINAPI    GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
-LPSTR WINAPI    CharLowerA(LPSTR lpsz);
-int             localtime_s(struct tm *out_tm, const time_t *timep);
+DWORD WINAPI GetCurrentDirectory(DWORD nBufferLength, LPSTR lpBuffer);
+LPSTR WINAPI CharLowerA(LPSTR lpsz);
+int          localtime_s(struct tm *out_tm, const time_t *timep);
 
 HMONITOR WINAPI MonitorFromWindow(HWND hwnd, DWORD dwFlags);
 BOOL WINAPI     GetMonitorInfoA(HMONITOR hMonitor, MONITORINFO *lpmi);
 BOOL WINAPI     SystemParametersInfoA(UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni);
 
-int WINAPI      SetStretchBltMode(HDC hdc, int mode);
-int WINAPI      GetDlgCtrlID(HWND hwnd);
+int WINAPI  SetStretchBltMode(HDC hdc, int mode);
+int WINAPI  GetDlgCtrlID(HWND hwnd);
 BOOL WINAPI PrintDlg(PRINTDLG FAR *lppd);
 
 /* ----- GDI ----- */
@@ -1123,27 +1123,27 @@ HWND WINAPI     CreateWindow(LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwSt
 #ifndef CreateWindowA
 #define CreateWindowA CreateWindow
 #endif
-LRESULT WINAPI  DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+LRESULT WINAPI DefWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
 #ifndef DefWindowProcA
 #define DefWindowProcA DefWindowProc
 #endif
-BOOL WINAPI     DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags);
-BOOL WINAPI     DestroyCursor(HCURSOR hCursor);
-BOOL WINAPI     DestroyIcon(HICON hIcon);
-BOOL WINAPI     DestroyMenu(HMENU hMenu);
-BOOL WINAPI     DestroyWindow(HWND hWnd);
-int WINAPI      DialogBox(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc);
-LONG WINAPI     DispatchMessage(const MSG FAR *lpMsg);
-BOOL WINAPI     DrawIcon(HDC hDC, int x, int y, HICON hIcon);
-void WINAPI     DrawMenuBar(HWND hWnd);
-int WINAPI      DrawText(HDC hdc, LPCSTR lpchText, int cchText, RECT FAR *lprc, UINT format);
+BOOL WINAPI DeleteMenu(HMENU hMenu, UINT uPosition, UINT uFlags);
+BOOL WINAPI DestroyCursor(HCURSOR hCursor);
+BOOL WINAPI DestroyIcon(HICON hIcon);
+BOOL WINAPI DestroyMenu(HMENU hMenu);
+BOOL WINAPI DestroyWindow(HWND hWnd);
+int WINAPI  DialogBox(HINSTANCE hInstance, LPCSTR lpTemplate, HWND hWndParent, DLGPROC lpDialogFunc);
+LONG WINAPI DispatchMessage(const MSG FAR *lpMsg);
+BOOL WINAPI DrawIcon(HDC hDC, int x, int y, HICON hIcon);
+void WINAPI DrawMenuBar(HWND hWnd);
+int WINAPI  DrawText(HDC hdc, LPCSTR lpchText, int cchText, RECT FAR *lprc, UINT format);
 
 /* Common Win32 "A" aliases used throughout the codebase. */
-#define DrawTextA DrawText
+#define DrawTextA           DrawText
 #define SendDlgItemMessageA SendDlgItemMessage
-#define ExtTextOutA ExtTextOut
-#define WinHelpA WinHelp
+#define ExtTextOutA         ExtTextOut
+#define WinHelpA            WinHelp
 
 /* DrawText() format flags (subset used by Stars!). */
 #ifndef DT_NOPREFIX
@@ -1256,29 +1256,29 @@ HACCEL WINAPI   LoadAccelerators(HINSTANCE hInstance, LPCSTR lpTableName);
 #ifndef LoadAcceleratorsA
 #define LoadAcceleratorsA LoadAccelerators
 #endif
-HBITMAP WINAPI  LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName);
+HBITMAP WINAPI LoadBitmap(HINSTANCE hInstance, LPCSTR lpBitmapName);
 #ifndef LoadBitmapA
 #define LoadBitmapA LoadBitmap
 #endif
-HCURSOR WINAPI  LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName);
+HCURSOR WINAPI LoadCursor(HINSTANCE hInstance, LPCSTR lpCursorName);
 #ifndef LoadCursorA
 #define LoadCursorA LoadCursor
 #endif
-HICON WINAPI    LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName);
+HICON WINAPI LoadIcon(HINSTANCE hInstance, LPCSTR lpIconName);
 #ifndef LoadIconA
 #define LoadIconA LoadIcon
 #endif
-void WINAPI     MapWindowPoints(HWND hWndFrom, HWND hWndTo, POINT FAR *lpPoints, UINT cPoints);
-void WINAPI     MessageBeep(UINT uType);
-int WINAPI      MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
-BOOL WINAPI     MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, BOOL bRepaint);
-void WINAPI     OffsetRect(RECT FAR *lprc, int dx, int dy);
-BOOL WINAPI     PeekMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
-BOOL WINAPI     PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-void WINAPI     PostQuitMessage(int nExitCode);
-BOOL WINAPI     PtInRect(const RECT FAR *lprc, POINT pt);
-UINT WINAPI     RealizePalette(HDC hdc);
-ATOM WINAPI     RegisterClass(const WNDCLASS FAR *lpWndClass);
+void WINAPI MapWindowPoints(HWND hWndFrom, HWND hWndTo, POINT FAR *lpPoints, UINT cPoints);
+void WINAPI MessageBeep(UINT uType);
+int WINAPI  MessageBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
+BOOL WINAPI MoveWindow(HWND hWnd, int x, int y, int nWidth, int nHeight, BOOL bRepaint);
+void WINAPI OffsetRect(RECT FAR *lprc, int dx, int dy);
+BOOL WINAPI PeekMessage(MSG FAR *lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT wMsgFilterMax, UINT wRemoveMsg);
+BOOL WINAPI PostMessage(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+void WINAPI PostQuitMessage(int nExitCode);
+BOOL WINAPI PtInRect(const RECT FAR *lprc, POINT pt);
+UINT WINAPI RealizePalette(HDC hdc);
+ATOM WINAPI RegisterClass(const WNDCLASS FAR *lpWndClass);
 
 #ifndef RegisterClassA
 #define RegisterClassA RegisterClass

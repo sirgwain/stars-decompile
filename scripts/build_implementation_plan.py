@@ -3,11 +3,13 @@
 an implementation plan sorted by call-graph depth and line count.
 
 Flags:
-  --exclude-ai   Exclude AI-related functions (files: ai.c, ai2.c, ai3.c, ai4.c, aiutil.c, aiu.c)
+  --exclude-ai            Exclude AI-related functions (files: ai.c, ai2.c, ai3.c, ai4.c, aiutil.c, aiu.c)
+  --no-update-impl-locs   Do not rewrite implementation_status.json with root/decompiled file+line locations
 """
 
 import json
 import os
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -16,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CALL_GRAPH = ROOT / "scripts" / "call_graph.json"
 IMPL_STATUS = ROOT / "scripts" / "implementation_status.json"
 DECOMPILED_DIR = ROOT / "decompiled" / "all"
+PROJECT_INDEX = ROOT / "scripts" / "project_index_lite.json"
 OUTPUT = ROOT / "notes" / "implementation-plan.md"
 
 AI_FILES = {"ai.c", "ai2.c", "ai3.c", "ai4.c", "aiutil.c", "aiu.c"}
@@ -48,8 +51,122 @@ def is_ai_function(info):
                     "MEMORY_AIU")
 
 
-def build_plan(exclude_ai=False):
+def _load_project_index():
+    # Optional: project_index_lite.json maps function -> {file,line,signature,kind}
+    try:
+        with open(PROJECT_INDEX) as f:
+            return json.load(f)
+    except OSError:
+        return None
+
+
+def _find_decompiled_def_line(path: Path, func_name: str):
+    """Return 1-based line number of the first likely function definition for func_name in path."""
+    try:
+        s = path.read_text(errors="replace")
+    except OSError:
+        return None
+
+    pat = re.compile(r"^\s*(?:static\s+)?(?:inline\s+)?[A-Za-z_][\w\s\*\(\)\[\],]*\b" +
+                     re.escape(func_name) + r"\s*\(", re.MULTILINE)
+    m = pat.search(s)
+    if not m:
+        return None
+    return s.count("\n", 0, m.start()) + 1
+
+
+def enrich_implementation_status_with_locations(cg: dict, impl: dict):
+    """Populate root/decompiled file+line fields in impl['functions'] and backfill missing root file/line.
+
+    Returns (changed: bool, stats: dict).
+    """
+    changed = False
+    stats = {"backfilled_root": 0, "set_decompiled_file": 0, "set_decompiled_line": 0}
+
+    funcs = impl.get("functions", {})
+    cg_funcs = (cg or {}).get("functions", {})
+
+    proj = _load_project_index()
+    proj_funcs = (proj or {}).get("functions", {})
+
+    # project_index_lite.json stores a single entry per function; full project_index.json stores a list.
+    def _proj_def(name: str):
+        v = proj_funcs.get(name)
+        if v is None:
+            return None
+        if isinstance(v, dict):
+            return v if v.get("kind") == "definition" else v
+        if isinstance(v, list):
+            for it in v:
+                if it.get("kind") == "definition":
+                    return it
+            return v[0] if v else None
+        return None
+
+    for name, info in funcs.items():
+        # Root location: prefer existing file/line, otherwise try project index.
+        if info.get("file") is None or info.get("line") is None:
+            pd = _proj_def(name)
+            if pd and pd.get("file") is not None and pd.get("line") is not None:
+                if info.get("file") is None:
+                    info["file"] = pd["file"]
+                if info.get("line") is None:
+                    info["line"] = pd["line"]
+                stats["backfilled_root"] += 1
+                changed = True
+
+        if "root_file" not in info:
+            info["root_file"] = info.get("file")
+            changed = True
+        if "root_line" not in info:
+            info["root_line"] = info.get("line")
+            changed = True
+
+        # Decompiled location
+        seg = info.get("segment")
+        dec_path = get_decompiled_file_for_segment(seg)
+        dec_rel = None
+        if dec_path:
+            try:
+                dec_rel = str(dec_path.relative_to(ROOT))
+            except ValueError:
+                dec_rel = str(dec_path)
+
+        if "decompiled_file" not in info and dec_rel is not None:
+            info["decompiled_file"] = dec_rel
+            stats["set_decompiled_file"] += 1
+            changed = True
+
+        if "decompiled_line" not in info:
+            if dec_path and dec_path.exists():
+                dec_line = _find_decompiled_def_line(dec_path, name)
+            else:
+                dec_line = None
+            if dec_line is not None:
+                info["decompiled_line"] = dec_line
+                stats["set_decompiled_line"] += 1
+                changed = True
+
+        # Keep addr if missing.
+        if "addr" not in info:
+            cg_info = cg_funcs.get(name)
+            if cg_info and "addr" in cg_info:
+                info["addr"] = cg_info["addr"]
+                changed = True
+
+    return changed, stats
+
+
+def build_plan(exclude_ai=False, update_impl_locations=True):
     cg, impl = load_data()
+
+    if update_impl_locations:
+        changed, stats = enrich_implementation_status_with_locations(cg, impl)
+        if changed:
+            IMPL_STATUS.parent.mkdir(parents=True, exist_ok=True)
+            IMPL_STATUS.write_text(json.dumps(impl, indent=2, sort_keys=True) + "\n")
+            print(f"Updated {IMPL_STATUS} with root/decompiled locations (backfilled_root={stats['backfilled_root']}, decompiled_file={stats['set_decompiled_file']}, decompiled_line={stats['set_decompiled_line']})")
+
     cg_funcs = cg["functions"]
     impl_funcs = impl["functions"]
 
@@ -183,4 +300,5 @@ def build_plan(exclude_ai=False):
 
 if __name__ == "__main__":
     exclude_ai = "--exclude-ai" in sys.argv
-    build_plan(exclude_ai=exclude_ai)
+    update_impl_locations = "--no-update-impl-locs" not in sys.argv
+    build_plan(exclude_ai=exclude_ai, update_impl_locations=update_impl_locations)

@@ -386,20 +386,18 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     short       sVar4;
     HICON       HVar5;
     BOOL        BVar6;
-    HGDIOBJ     HVar7;
-    int         iVar8;
-    ushort      uVar9;
-    undefined1 *puVar10;
-    undefined1 *puVar11;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    undefined2  uVar12;
+    ushort      uVar7;
+    undefined1 *puVar8;
+    undefined1 *puVar9;
+    undefined2  uVar10;
     undefined2  unaff_SS;
-    ulong       uVar13;
-    POINT       PVar14;
-    LRESULT     LVar15;
-    char       *pcVar16;
-    ushort      in_stack_0000ff9e;
+    ulong       uVar11;
+    POINT       PVar12;
+    LRESULT     LVar13;
+    char       *pcVar14;
+    char        local_62[52];
+    HGDIOBJ     local_2e;
+    int         local_2c;
     undefined1  local_2a[6];
     int         local_24;
     short       local_22;
@@ -413,9 +411,9 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     short       i;
     HDC         hdc;
 
-    uVar12 = 0x1020;
-    puVar11 = &stack0xff9a;
-    puVar10 = &stack0xff9a;
+    uVar10 = 0x1020;
+    puVar9 = &stack0xff9a;
+    puVar8 = &stack0xff9a;
     if (msg == WM_CREATE) {
         hdc = GetDC(hwnd);
         FCreateFonts(hdc);
@@ -447,21 +445,21 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     if (msg == WM_SIZE) {
         if ((wParam == 2) || (wParam == 0)) {
             vfs.dx = (int)lParam;
-            uVar13 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ff9e);
-            vfs.dy = (short)uVar13;
+            uVar11 = __aFulshr(lParam, 0x10);
+            vfs.dy = (short)uVar11;
             RefitFrameChildren();
             return 0;
         }
     MDI_Default_5:
-        *(HWND *)(puVar11 + -2) = hwnd;
-        *(WMType *)(puVar11 + -4) = msg;
-        *(ushort *)(puVar11 + -6) = wParam;
-        *(undefined2 *)(puVar11 + -8) = lParam._2_2_;
-        *(int *)(puVar11 + -10) = (int)lParam;
-        *(undefined2 *)(puVar11 + -0xc) = uVar12;
-        *(undefined2 *)(puVar11 + -0xe) = 0x1d6a;
-        LVar15 = DefWindowProc(*(HWND *)(puVar11 + -2), *(UINT *)(puVar11 + -4), *(WPARAM *)(puVar11 + -6), *(LPARAM *)(puVar11 + -10));
-        return LVar15;
+        *(HWND *)(puVar9 + -2) = hwnd;
+        *(WMType *)(puVar9 + -4) = msg;
+        *(ushort *)(puVar9 + -6) = wParam;
+        *(undefined2 *)(puVar9 + -8) = lParam._2_2_;
+        *(int *)(puVar9 + -10) = (int)lParam;
+        *(undefined2 *)(puVar9 + -0xc) = uVar10;
+        *(undefined2 *)(puVar9 + -0xe) = 0x1d6a;
+        LVar13 = DefWindowProc(*(HWND *)(puVar9 + -2), *(UINT *)(puVar9 + -4), *(WPARAM *)(puVar9 + -6), *(LPARAM *)(puVar9 + -10));
+        return LVar13;
     }
     if (msg == WM_ACTIVATE) {
         return 0;
@@ -470,7 +468,7 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
         BVar6 = IsIconic(hwnd);
         if (BVar6 == 0) {
             hdc = BeginPaint(hwnd, local_2a);
-            HVar7 = SelectObject(hdc, hbrButtonShadow);
+            local_2e = SelectObject(hdc, hbrButtonShadow);
             if ((iWindowLayout == 0) || ((iWindowLayout != 1 && (iWindowLayout != 2)))) {
                 PatBlt(hdc, vfs.xTop + 5, 0, 2, vfs.dy, 0xf00021);
                 PatBlt(hdc, 0, vfs.y1 + 5, vfs.xTop + 2, 2, 0xf00021);
@@ -483,21 +481,21 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 PatBlt(hdc, vfs.xTop + 1, vfs.y2 + 6, 1, (vfs.dy - vfs.y2) + -6, 0xf00021);
             } else {
                 if ((int)gd.grBits._2_2_ < 0) {
-                    iVar8 = 0x24;
+                    local_2c = 0x24;
                 } else {
-                    iVar8 = 0;
+                    local_2c = 0;
                 }
-                PatBlt(hdc, vfs.xTop + 5, iVar8, 2, (vfs.y2 + 2) - iVar8, 0xf00021);
+                PatBlt(hdc, vfs.xTop + 5, local_2c, 2, (vfs.y2 + 2) - local_2c, 0xf00021);
                 PatBlt(hdc, 0, vfs.y1 + 5, vfs.xTop + 2, 2, 0xf00021);
                 PatBlt(hdc, vfs.xTop + 5, vfs.y2 + 5, (vfs.dx - vfs.xTop) + -5, 2, 0xf00021);
                 PatBlt(hdc, vfs.xTop + 5, vfs.y2 + 6, 2, (vfs.dy - vfs.y2) + -5, 0xf00021);
                 SelectObject(hdc, hbrButtonHilite);
-                PatBlt(hdc, vfs.xTop + 1, iVar8, 1, (vfs.y1 + 2) - iVar8, 0xf00021);
+                PatBlt(hdc, vfs.xTop + 1, local_2c, 1, (vfs.y1 + 2) - local_2c, 0xf00021);
                 PatBlt(hdc, 0, vfs.y1 + 1, vfs.xTop + 1, 1, 0xf00021);
                 PatBlt(hdc, vfs.xTop + 1, vfs.y1 + 6, 1, (vfs.dy - vfs.y1) + -6, 0xf00021);
                 PatBlt(hdc, vfs.xTop + 6, vfs.y2 + 1, (vfs.dx - vfs.xTop) + -6, 1, 0xf00021);
             }
-            SelectObject(hdc, HVar7);
+            SelectObject(hdc, local_2e);
             EndPaint(hwnd, local_2a);
             return 0;
         }
@@ -535,19 +533,19 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     }
     if (msg == WM_SETCURSOR) {
         local_12._6_2_ = 0;
-        uVar12 = 0x14f8;
+        uVar10 = 0x14f8;
         BVar6 = IsIconic(hwnd);
-        puVar11 = &stack0xff98;
+        puVar9 = &stack0xff98;
         if (BVar6 == 0) {
             GetCursorPos((POINT *)((int)&local_12 + 2));
             ScreenToClient(hwndFrame, (POINT *)((int)&local_12 + 2));
             GetClientRect(hwnd, local_1a + 2);
-            uVar12 = 0x14f8;
-            PVar14.y = local_12._4_2_;
-            PVar14.x = local_12._2_2_;
-            BVar6 = PtInRect(local_1a + 2, PVar14);
+            uVar10 = 0x14f8;
+            PVar12.y = local_12._4_2_;
+            PVar12.x = local_12._2_2_;
+            BVar6 = PtInRect(local_1a + 2, PVar12);
             if (BVar6 != 0) {
-                uVar12 = 0x1020;
+                uVar10 = 0x1020;
                 pt.y = local_12._4_2_;
                 pt.x = local_12._2_2_;
                 local_12._6_2_ = HcrsFromFrameWindowPt(pt, 0);
@@ -556,7 +554,7 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                     return 1;
                 }
             }
-            puVar11 = &stack0xff94;
+            puVar9 = &stack0xff94;
         }
         goto MDI_Default_5;
     }
@@ -632,15 +630,15 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 uTimerId = 0;
                 CreateChildWindows();
             }
-            uVar12 = 0x1020;
+            uVar10 = 0x1020;
             if (idPlayer != -1) {
-                uVar12 = 0x1070;
+                uVar10 = 0x1070;
                 sVar4 = FNewTurnAvail(idPlayer);
                 if (sVar4 != 0) {
                     if (local_12._2_2_ == 0) {
-                        pcVar16 = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 1;
+                        pcVar14 = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 1;
                         pcVar3 = PszFormatIds(idsNewTurnAvailableWouldLikeLoad, 0);
-                        local_12._4_2_ = AlertSz(pcVar3, (short)pcVar16);
+                        local_12._4_2_ = AlertSz(pcVar3, (short)pcVar14);
                     } else {
                         sVar4 = 0x40;
                         pcVar3 = PszFormatIds(idsNewTurnAvailable, 0);
@@ -666,23 +664,23 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                         }
                         return 1;
                     }
-                    uVar12 = 0x14f8;
+                    uVar10 = 0x14f8;
                     SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
-                    puVar11 = &stack0xff9a;
+                    puVar9 = &stack0xff9a;
                     goto MDI_Default_5;
                 }
             }
             if (local_12._2_2_ != 0) {
                 if (uTimerType == 0xd) {
-                    uVar12 = 0x14f8;
+                    uVar10 = 0x14f8;
                     PostMessage(hwnd, WM_STARS_HOST, 0, 0);
-                    puVar11 = &stack0xff9a;
+                    puVar9 = &stack0xff9a;
                     goto MDI_Default_5;
                 }
                 if (uTimerType == 0xe) {
-                    pcVar16 = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 1;
+                    pcVar14 = (char *)"M6102: MATH\r\n- floating-point error: denormal\r\n" + 1;
                     pcVar3 = PszFormatIds(idsTurnHasSubmittedChangesMadeAfterTurn, 0);
-                    local_12._4_2_ = AlertSz(pcVar3, (short)pcVar16);
+                    local_12._4_2_ = AlertSz(pcVar3, (short)pcVar14);
                     if ((local_12._4_2_ == 6) && (sVar4 = FMarkFile(dtLog, idPlayer, 2, 0), sVar4 == 0)) {
                         sVar4 = 0x10;
                         pcVar3 = PszFormatIds(idsNewTurnCurrentlyGeneratedHostNewTurn, 0);
@@ -702,17 +700,17 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                         return 1;
                     }
                 }
-                uVar12 = 0x14f8;
+                uVar10 = 0x14f8;
                 SendMessage(hwndFrame, WM_COMMAND, IDM_FRAME_POST_OPEN, 0);
                 if ((1000 < sel.pt.x) && (1000 < sel.pt.y)) {
-                    uVar12 = 0x1058;
+                    uVar10 = 0x1058;
                     pt_00.y = sel.pt.y;
                     pt_00.x = sel.pt.x;
                     CtrPointScan(pt_00, 1);
                 }
             }
         }
-        puVar11 = &stack0xff9a;
+        puVar9 = &stack0xff9a;
         goto MDI_Default_5;
     }
     if (msg == WM_INITMENU) {
@@ -727,12 +725,12 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     }
     if (msg == WM_LBUTTONDOWN) {
         local_16._2_2_ = (int)lParam;
-        uVar13 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ff9e);
-        local_12._0_2_ = (char *)uVar13;
+        uVar11 = __aFulshr(lParam, 0x10);
+        local_12._0_2_ = (char *)uVar11;
         pt_01.y = (short)(char *)local_12;
         pt_01.x = local_16._2_2_;
-        uVar9 = HcrsFromFrameWindowPt(pt_01, (short *)((int)&local_12 + 2));
-        if (uVar9 == 0) {
+        uVar7 = HcrsFromFrameWindowPt(pt_01, (short *)((int)&local_12 + 2));
+        if (uVar7 == 0) {
             return 0;
         }
         hdc = GetDC(hwnd);
@@ -758,10 +756,10 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 local_24 = (int)(char *)local_12 - local_12._6_2_;
                 dpt.y = local_1a._0_2_;
                 dpt.x = local_1c;
-                PVar14 = InvertPaneBorder(hdc, local_12._2_2_, dpt, local_2a + 4);
+                PVar12 = InvertPaneBorder(hdc, local_12._2_2_, dpt, local_2a + 4);
                 local_12._4_2_ = local_16._2_2_;
                 local_12._6_2_ = (ushort)(char *)local_12;
-                unique0x10001a78 = PVar14;
+                unique0x10001a50 = PVar12;
             }
         }
         dpt_00.y = local_1a._0_2_;
@@ -802,8 +800,8 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     if (msg == WM_QUERYNEWPALETTE) {
     MDI_MapIt_2:
         if (hwndTitle != 0) {
-            LVar15 = SendMessage(hwndTitle, msg, wParam, lParam);
-            return LVar15;
+            LVar13 = SendMessage(hwndTitle, msg, wParam, lParam);
+            return LVar13;
         }
         hdc = GetDC(hwnd);
         hpalSav = SelectPalette(hdc, vhpal, 0);
@@ -827,7 +825,7 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
             BringUpHostDlg();
             return 1;
         }
-        puVar11 = &stack0xff9a;
+        puVar9 = &stack0xff9a;
         if (msg == WM_STARS_CONTINUE) {
             ShowTutor(0);
             game.fDirty = 0;
@@ -878,25 +876,25 @@ long FrameWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
                 VerifyTurns();
                 DestroyCurGame();
                 EnsureAis();
-                _wsprintf((char *)&stack0xff9e, "\"%s\" Year: %d");
-                OutputSz(7, (char *)&stack0xff9e);
+                _wsprintf(local_62, "\"%s\" Year: %d");
+                OutputSz(7, local_62);
                 for (i = 0; i < game.cPlayer; i = i + 1) {
                     if (((short *)rgOut)[i] + 1 < 4) {
-                        local_12._6_2_ = _wsprintf((char *)&stack0xff9e, "%d: ");
+                        local_12._6_2_ = _wsprintf(local_62, "%d: ");
                     } else {
-                        local_12._6_2_ = _wsprintf((char *)&stack0xff9e, "Error: %d: ");
+                        local_12._6_2_ = _wsprintf(local_62, "Error: %d: ");
                     }
                     if ((gd.grBits2._2_2_ >> 6 & 1) == 0) {
                         PszPlayerName(i, 1, 1, 1, 0, 0);
-                        sVar4 = _wsprintf((char *)(&stack0xff9e + local_12._6_2_), "\"%s\" ");
+                        sVar4 = _wsprintf(local_62 + local_12._6_2_, "\"%s\" ");
                         local_12._6_2_ = local_12._6_2_ + sVar4;
                     }
                     pcVar3 = PszGetCompressedString(((short *)rgOut)[i] + idsTurned);
-                    _strcat(&stack0xff9e, pcVar3);
+                    _strcat(local_62, pcVar3);
                     if ((*(uint *)((int)&rgplr[0].wFlags + i * 0xc0) >> 4 & 1) != 0) {
-                        _strcat(&stack0xff9e, (char *)" - HACKER");
+                        _strcat(local_62, (char *)" - HACKER");
                     }
-                    OutputSz(7, (char *)&stack0xff9e);
+                    OutputSz(7, local_62);
                 }
             }
         MDI_LExit:
@@ -1004,29 +1002,29 @@ MDI_LNop:
         vSerialNumber._0_2_ = 0;
         vSerialNumber._2_2_ = 0;
         _memcpy((byte *)vrgbMachineConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
-        uVar12 = 0x14f8;
+        uVar10 = 0x14f8;
         PostQuitMessage(vretExitValue);
-        puVar10 = &stack0xff98;
+        puVar8 = &stack0xff98;
     } else {
-        uVar12 = 0x1038;
+        uVar10 = 0x1038;
         sVar4 = FValidSerialNo((char *)szWork, &local_1c);
         if (sVar4 == 0) {
-            if (((int)vSerialNumber == 0) && (puVar10 = &stack0xff9a, vSerialNumber._2_2_ == 0)) {
+            if (((int)vSerialNumber == 0) && (puVar8 = &stack0xff9a, vSerialNumber._2_2_ == 0)) {
                 _memcpy((byte *)vrgbMachineConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
-                uVar12 = 0x14f8;
+                uVar10 = 0x14f8;
                 PostQuitMessage(vretExitValue);
-                puVar10 = &stack0xff98;
+                puVar8 = &stack0xff98;
             }
         } else {
             vSerialNumber._0_2_ = local_1c;
             vSerialNumber._2_2_ = local_1a._0_2_;
-            uVar12 = 0x1118;
+            uVar10 = 0x1118;
             _memcpy((byte *)vrgbMachineConfig, (byte_0_ *)&vrgbEnvCur, 0xb);
-            puVar10 = &stack0xff9a;
+            puVar8 = &stack0xff9a;
         }
     }
-    *(undefined2 *)(puVar10 + -2) = uVar12;
-    *(undefined2 *)(puVar10 + -4) = 0xeae;
+    *(undefined2 *)(puVar8 + -2) = uVar10;
+    *(undefined2 *)(puVar8 + -4) = 0xeae;
     WriteIniSettings();
     return 0;
 }
@@ -1330,20 +1328,17 @@ void RestoreSelection(void)
 // Segment: MEMORY_MDI
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: b64 */
-
 void FormatSerialAndEnv(long lSerial, byte *pbEnv, char *pszOut)
 
 {
     bool       bVar1;
-    short      sVar2;
-    uint       uVar3;
+    byte       bVar2;
+    short      sVar3;
+    uint       uVar4;
     undefined2 unaff_SI;
     undefined2 unaff_DI;
-    long       lVar4;
-    long       lNew2;
+    long       lVar5;
     byte       b64;
-    undefined1 uStack_41;
     byte       rgbRaw2[21];
     long       lTank;
     short      iPass;
@@ -1354,9 +1349,8 @@ void FormatSerialAndEnv(long lSerial, byte *pbEnv, char *pszOut)
     short      j;
     byte       rgbRaw[21];
 
-    lNew2 = CONCAT22(unaff_SI, unaff_DI);
     bVar1 = false;
-    PushRandom(0x11000b, lNew2);
+    PushRandom(0x11000b, CONCAT22(unaff_SI, unaff_DI));
     Randomize(lSerial);
     rgbRaw._0_4_ = lSerial;
     _memcpy(rgbRaw + 4, pbEnv, 0xb);
@@ -1366,12 +1360,12 @@ void FormatSerialAndEnv(long lSerial, byte *pbEnv, char *pszOut)
             Random(0x10);
         }
         if (bVar1) {
-            uVar3 = Random(0x10);
-            rgbRaw[iRaw] = rgbRaw[iRaw] | (byte)((uVar3 & 0xf) << 4);
+            uVar4 = Random(0x10);
+            rgbRaw[iRaw] = rgbRaw[iRaw] | (byte)((uVar4 & 0xf) << 4);
             iRaw = iRaw + 1;
         } else {
-            sVar2 = Random(0x10);
-            rgbRaw[iRaw] = (byte)sVar2;
+            sVar3 = Random(0x10);
+            rgbRaw[iRaw] = (byte)sVar3;
         }
         bVar1 = (bool)(bVar1 + 1U & 1);
     }
@@ -1386,28 +1380,35 @@ void FormatSerialAndEnv(long lSerial, byte *pbEnv, char *pszOut)
     }
     iRaw = 0;
     cBits = 0;
-    lVar4 = 0;
-    for (i = 0; lTank._0_1_ = (byte)lVar4, i < 0x1c; i = i + 1) {
+    lVar5 = 0;
+    i = 0;
+    while (true) {
+        lTank._2_2_ = (uint)((ulong)lVar5 >> 0x10);
+        lTank._0_2_ = (uint)lVar5;
+        if (0x1b < i)
+            break;
         if (cBits < 6) {
-            lTank._0_1_ = (byte)lTank | rgbRaw2[iRaw] << ((byte)cBits & 0x1f);
+            uVar4 = (uint)rgbRaw2[iRaw] << ((byte)cBits & 0x1f);
+            lVar5 = CONCAT22(lTank._2_2_ | (int)uVar4 >> 0xf, (uint)lTank | uVar4);
             cBits = cBits + 8;
             iRaw = iRaw + 1;
         }
-        _b64 = CONCAT11(uStack_41, (byte)lTank) & 0xff3f;
-        lVar4 = __aFlshr(lNew2, _b64);
+        bVar2 = (byte)lVar5 & 0x3f;
+        lVar5 = __aFlshr(lVar5, 6);
         cBits = cBits + -6;
-        if (b64 < 0x1a) {
-            *pszOut = b64 + 0x41;
-        } else if (b64 < 0x34) {
-            *pszOut = b64 + 0x47;
-        } else if (b64 < 0x3e) {
-            *pszOut = b64 - 4;
-        } else if (b64 == 0x3e) {
+        if (bVar2 < 0x1a) {
+            *pszOut = bVar2 + 0x41;
+        } else if (bVar2 < 0x34) {
+            *pszOut = bVar2 + 0x47;
+        } else if (bVar2 < 0x3e) {
+            *pszOut = bVar2 - 4;
+        } else if (bVar2 == 0x3e) {
             *pszOut = '-';
         } else {
             *pszOut = '*';
         }
         pszOut = pszOut + 1;
+        i = i + 1;
     }
     *pszOut = '\0';
     return;
@@ -1422,15 +1423,14 @@ void FormatSerialAndEnv(long lSerial, byte *pbEnv, char *pszOut)
 short FSerialAndEnvFromSz(long *plSerial, byte *pbEnv, char *pszIn)
 
 {
-    bool       bVar1;
-    short      sVar2;
+    byte       bVar1;
+    bool       bVar2;
     uint       uVar3;
-    uint       uVar4;
+    short      sVar4;
     undefined2 unaff_SI;
     undefined2 unaff_DI;
-    ulong      uVar5;
+    long       lVar5;
     long       lNew2;
-    ushort     in_stack_0000ffb6;
     byte       b64;
     byte       rgbRaw2[21];
     long       lTank;
@@ -1445,15 +1445,19 @@ short FSerialAndEnvFromSz(long *plSerial, byte *pbEnv, char *pszIn)
     byte       rgbRaw[21];
 
     lNew2 = CONCAT22(unaff_SI, unaff_DI);
-    bVar1 = false;
+    bVar2 = false;
     *(undefined2 *)plSerial = 0;
     *(undefined2 *)((int)plSerial + 2) = 0;
     _memset(pbEnv, 0, 0xb);
     iRaw = 0;
     cBits = 0;
-    uVar5 = 0;
+    lVar5 = 0;
     for (i = 0; i < 0x15; i = i + 1) {
-        for (; lTank._0_2_ = (uint)uVar5, cBits < 8; cBits = cBits + 6) {
+        while (true) {
+            lTank._2_2_ = (uint)((ulong)lVar5 >> 0x10);
+            lTank._0_2_ = (uint)lVar5;
+            if (7 < cBits)
+                break;
             if ((*pszIn < 'A') || ('Z' < *pszIn)) {
                 if ((*pszIn < 'a') || ('z' < *pszIn)) {
                     if ((*pszIn < '0') || ('9' < *pszIn)) {
@@ -1471,19 +1475,21 @@ short FSerialAndEnvFromSz(long *plSerial, byte *pbEnv, char *pszIn)
             } else {
                 b64 = *pszIn + 0xbf;
             }
-            uVar5 = (ulong)((uint)lTank | (uint)b64 << ((byte)cBits & 0x1f));
+            uVar3 = (uint)b64 << ((byte)cBits & 0x1f);
+            lVar5 = CONCAT22(lTank._2_2_ | (int)uVar3 >> 0xf, (uint)lTank | uVar3);
+            cBits = cBits + 6;
             pszIn = pszIn + 1;
         }
-        rgbRaw2[iRaw] = (byte)uVar5;
+        rgbRaw2[iRaw] = (byte)lVar5;
         cBits = cBits + -8;
-        uVar5 = __aFlshr(lNew2, in_stack_0000ffb6);
+        lVar5 = __aFlshr(lVar5, 8);
         iRaw = iRaw + 1;
     }
     for (i = 0; i < 0x15; i = i + 1) {
         rgbRaw[((byte *)vrgbShuffleSerial)[i]] = rgbRaw2[i];
     }
-    sVar2 = FValidSerialLong(CONCAT22(rgbRaw._2_2_, rgbRaw._0_2_));
-    if (sVar2 == 0) {
+    sVar4 = FValidSerialLong(CONCAT22(rgbRaw._2_2_, rgbRaw._0_2_));
+    if (sVar4 == 0) {
         fSuccess = 0;
     } else {
         fSuccess = 1;
@@ -1494,21 +1500,21 @@ short FSerialAndEnvFromSz(long *plSerial, byte *pbEnv, char *pszIn)
             for (j = (short)rgbRaw[i + 4]; 0 < j; j = j + -1) {
                 Random(0x10);
             }
-            if (bVar1) {
-                uVar3 = (int)(uint)rgbRaw[iRaw] >> 4;
-                uVar4 = Random(0x10);
-                if (uVar3 != (uVar4 & 0xff)) {
+            if (bVar2) {
+                bVar1 = rgbRaw[iRaw];
+                uVar3 = Random(0x10);
+                if ((int)(uint)bVar1 >> 4 != (uVar3 & 0xff)) {
                     fSuccess = 0;
                 }
                 iRaw = iRaw + 1;
             } else {
-                uVar3 = rgbRaw[iRaw] & 0xf;
-                uVar4 = Random(0x10);
-                if (uVar3 != (uVar4 & 0xff)) {
+                bVar1 = rgbRaw[iRaw];
+                uVar3 = Random(0x10);
+                if ((bVar1 & 0xf) != (uVar3 & 0xff)) {
                     fSuccess = 0;
                 }
             }
-            bVar1 = (bool)(bVar1 + 1U & 1);
+            bVar2 = (bool)(bVar2 + 1U & 1);
         }
         bXor = 0;
         for (i = 0; i < 0xf; i = i + 1) {

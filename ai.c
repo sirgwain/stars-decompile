@@ -44,12 +44,12 @@ uint8_t  vrgTDIshAip[19] = {0x00, 0x02, 0x06, 0x0d, 0x14, 0x1b, 0x22, 0x29, 0x30
 
 /* functions */
 void DoAiTurn(int16_t iPlayer, uint16_t wMdPlr) {
-    char       szExt[4];
-    PROD       rgprod[64];
-    int16_t    idSav;
-    uint8_t   *lpbSavPlanet;
-    PLANET   **lppplSavAi;
-    int16_t    fLoaded;
+    char     szExt[4];
+    PROD     rgprod[64];
+    int16_t  idSav;
+    uint8_t *lpbSavPlanet;
+    PLANET **lppplSavAi;
+    int16_t  fLoaded;
 
     /* debug symbols */
     /* label Cleanup @ MEMORY_AI:0x0239 */
@@ -256,11 +256,7 @@ int16_t FEnumCalcMinerDest(PLANET *lpplSrc, PLANET *lpplTest) {
     return 0;
 }
 
-int16_t FEnumCalcEnemyFleets(FLEET *lpflSrc, FLEET *lpflTest) {
-
-    /* TODO: implement */
-    return 0;
-}
+int16_t FEnumCalcEnemyFleets(FLEET *lpflSrc, FLEET *lpflTest) { return lpflTest->iPlayer != idPlayer; }
 
 int16_t IdTargetArmada(FLEET *lpfl) {
     int16_t cshWar;

@@ -3,9 +3,11 @@
 #include "types.h"
 
 #include "battle.h"
+#include "memory.h"
 #include "parts.h"
 #include "race.h"
 #include "ship.h"
+#include "util.h"
 #include "utilgen.h"
 
 #define BrcFromXY(x, y) ((uint8_t)((((y) & 0x0F) << 4) | ((x) & 0x0F)))
@@ -193,7 +195,34 @@ void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef) {
     int16_t  ibp;
     SHDEF   *lpshdef;
 
-    /* TODO: implement */
+    iplr = (int16_t)(lpfl->id >> 9) & 0xf;
+    lpshdef = &rglpshdef[iplr][ishdef];
+
+    /* Classify ship type -> mdTarget0 */
+    if (FHullHasTeeth(&lpshdef->hul)) {
+        ptok->mdTarget0 = mdTargetArmedShips;
+    } else if (FHullHasBombs(&lpshdef->hul)) {
+        ptok->mdTarget0 = mdTargetBombersFreighters;
+    } else if (FFuelTanker(lpshdef)) {
+        ptok->mdTarget0 = mdTargetFuelTransports;
+    } else if (WtMaxShdefStat(lpshdef, grStatCargo) == 0) {
+        ptok->mdTarget0 = mdTargetUnarmedShips;
+    } else {
+        ptok->mdTarget0 = mdTargetFreighters;
+    }
+
+    /* Copy battle plan targets/tactic */
+    lpbtlplan = &rglpbtlplan[iplr][lpfl->iplan];
+    ptok->mdTarget1 = lpbtlplan->mdTarget1;
+    ptok->mdTarget2 = lpbtlplan->mdTarget2;
+    if (ptok->mdTarget0 == mdTargetArmedShips) {
+        ptok->mdTactic = lpbtlplan->mdTactic;
+    } else {
+        ptok->mdTactic = 0;
+    }
+    if (ptok->mdTactic == 0) {
+        ptok->dzDis = 7;
+    }
 }
 
 void CreateSalvage(FLEET *pfl, THING **plpth) {
@@ -217,7 +246,36 @@ void DoBattles(int16_t fPostMovement) {
     uint16_t grfPlayer;
     uint16_t rggrfAttack[16];
 
-    /* TODO: implement */
+    LinkFleets(fPostMovement);
+    vrgtok = LpAlloc(0x1d00, htMisc);
+    vlpwtCargo = LpAlloc(0x200, htMisc);
+
+    FORFLEETS(lpfl, ifl) {
+        lpfl->fBombed = 0;
+        if (!lpfl->fDead && !lpfl->fDone && lpfl->lpflNext != NULL) {
+            cplr = CplrBattle(lpfl, rggrfAttack, &grfPlayer, &grfSpectator);
+            if (cplr != -1 && cplr != 0) {
+                FDoCoolBattle(lpfl, cplr, rggrfAttack, grfPlayer, grfSpectator);
+            }
+        }
+    }
+
+    FreeLp(vlpwtCargo, htMisc);
+    FreeLp(vrgtok, htMisc);
+    vlpwtCargo = NULL;
+    vrgtok = NULL;
+
+    if (lpbBattleT != NULL) {
+        lpbBattleT[0] = 0xff;
+        lpbBattleT[1] = 0xff;
+        FreeLp(lpbBattleT, htBattle);
+        lpbBattleT = NULL;
+    }
+    if (lpbBattleCur != NULL) {
+        lpbBattleCur[0] = 0xff;
+        lpbBattleCur[1] = 0xff;
+    }
+    DoBombing();
 }
 
 void RandomizeTokOrder(void) {
@@ -225,7 +283,14 @@ void RandomizeTokOrder(void) {
     int16_t itokSwap;
     int16_t itok;
 
-    /* TODO: implement */
+    for (itok = 0; itok < vctok; itok++) {
+        itokSwap = Random(vctok - itok) + itok;
+        if (itokSwap != itok) {
+            tok = vrgtok[itokSwap];
+            vrgtok[itokSwap] = vrgtok[itok];
+            vrgtok[itok] = tok;
+        }
+    }
 }
 
 int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
@@ -237,8 +302,39 @@ int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC) {
     int16_t pctBC;
     PART    part;
 
-    /* TODO: implement */
-    return 0;
+    pct = 0;
+    cbc = 0;
+    HULDEF *lphuldef = LphuldefFromId(lphul->ihuldef);
+
+    for (ihs = 0; ihs < (int16_t)lphul->chs; ihs++) {
+        part.hs = lphul->rghs[ihs];
+        if (part.hs.cItem != 0) {
+            if ((part.hs.grhst & hstSpecialE) == hstNone) {
+                if ((part.hs.grhst & hstBeam) != hstNone && part.hs.iItem == ibeamMultiContainedMunition) {
+                    for (i = 0; i < (int16_t)part.hs.cItem; i++) {
+                        pct = pct + ((100 - pct) * 10) / 100;
+                    }
+                }
+            } else {
+                uint16_t iItem = part.hs.iItem;
+                if (iItem == ispecialEBattleComputer || iItem == ispecialEBattleSuperComputer || iItem == ispecialEBattleNexus) {
+                    FLookupPart(&part);
+                    cbc = cbc + (part.hs.iItem - 4) * (int16_t)part.hs.cItem;
+                    for (i = 0; i < (int16_t)part.hs.cItem; i++) {
+                        pct = pct + ((100 - pct) * part.pspecial->grAbility) / 100;
+                    }
+                }
+            }
+        }
+    }
+    if (ppctBC != NULL) {
+        *ppctBC = pct;
+    }
+    initBase = (int16_t)lphuldef->init + cbc;
+    if (initBase > 63) {
+        initBase = 63;
+    }
+    return initBase;
 }
 
 int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint16_t grfAttack) {
@@ -300,7 +396,11 @@ void CheckInitiative(TOK *ptok) {
     SHDEF  *lpshdef;
     int16_t pctBC;
 
-    /* TODO: implement */
+    lpshdef = LpshdefFromTok(ptok);
+    idPlayer = (int16_t)ptok->iplr;
+    ptok->initBase = (uint8_t)InitFromHuldef(&lpshdef->hul, &pctBC);
+    idPlayer = -1;
+    ptok->pctBC = (uint8_t)pctBC;
 }
 
 int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn) {
@@ -317,10 +417,19 @@ int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn) {
 }
 
 void RegenShield(TOK *ptok) {
+    int32_t dpMax;
     int32_t dpNew;
-    int32_t dpOrig;
+    SHDEF  *lpshdef;
 
-    /* TODO: implement */
+    lpshdef = LpshdefFromTok(ptok);
+    dpMax = DpShieldOfShdef(lpshdef, ptok->iplr);
+
+    if (ptok->dpShield != 0) {
+        dpNew = dpMax / 10 + (uint32_t)ptok->dpShield;
+        if (dpNew > dpMax)
+            dpNew = dpMax;
+        ptok->dpShield = (uint16_t)dpNew;
+    }
 }
 
 int16_t FDumpCargo(FLEET *lpfl) {
@@ -328,15 +437,58 @@ int16_t FDumpCargo(FLEET *lpfl) {
     PLANET *lppl;
     int16_t i;
 
-    /* TODO: implement */
-    return 0;
+    /* Check if fleet has any minerals */
+    for (i = 0; i < 3; i++) {
+        if (lpfl->rgwtMin[i] != 0)
+            break;
+    }
+    if (i >= 3)
+        return 0;
+
+    /* Check if battle plan says to dump cargo */
+    int16_t iplr = (int16_t)(lpfl->id >> 9) & 0xf;
+    if (!rglpbtlplan[iplr][lpfl->iplan].fDumpCargo)
+        return 0;
+
+    if (lpfl->idPlanet == -1) {
+        pt.x = lpfl->pt.x;
+        pt.y = lpfl->pt.y;
+        DropSalvage(&lpthBattle, lpfl->rgwtMin, iplr, &pt);
+    } else {
+        lppl = LpplFromId(lpfl->idPlanet);
+        for (i = 0; i < 3; i++) {
+            lppl->rgwtMin[i] += lpfl->rgwtMin[i];
+        }
+    }
+    for (i = 0; i < 3; i++) {
+        lpfl->rgwtMin[i] = 0;
+    }
+    return 1;
 }
 
 int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t mdTactic) {
-    int32_t score;
-
-    /* TODO: implement */
-    return 0;
+    // TODO: add mdTactic enum
+    switch (mdTactic) {
+    case 0:
+    case 2:
+        break;
+    case 1:
+    case 5:
+        dpTake = -dpGive;
+        break;
+    case 3:
+    case 4:
+        if (-dpGive != 0) {
+            dpTake = (int32_t)((uint32_t)(-dpGive) * 100u) / (dpTake + 1);
+            if (dpTake > -1)
+                dpTake = -1;
+        }
+        break;
+    default:
+        dpTake = 0;
+        break;
+    }
+    return dpTake;
 }
 
 int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack) {
@@ -406,10 +558,17 @@ int16_t FHullHasTeeth(HUL *lphul) {
 
 int16_t FFleetHasBombs(FLEET *lpfl) {
     HUL    *lphul;
-    int16_t imd;
     int16_t ishdef;
 
-    /* TODO: implement */
+    for (ishdef = 0; ishdef < cShdefMax; ishdef++) {
+        if (lpfl->rgcsh[ishdef] != 0) {
+            int16_t iplr = (int16_t)(lpfl->id >> 9) & 0xf;
+            lphul = &rglpshdef[iplr][ishdef].hul;
+            LphuldefFromId(lphul->ihuldef);
+            if (FHullHasBombs(lphul))
+                return 1;
+        }
+    }
     return 0;
 }
 
@@ -442,10 +601,26 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
 }
 
 int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
+    SHDEF  *lpshdef1;
+    SHDEF  *lpshdef2;
     int32_t lp1;
     int32_t lp2;
 
-    /* TODO: implement */
+    // TODO: verify this
+    lpshdef1 = LpshdefFromTok(ptok1);
+    lpshdef2 = LpshdefFromTok(ptok2);
+    lp1 = lpshdef1->lPower;
+    lp2 = lpshdef2->lPower;
+
+    if (lp1 >= lp2) {
+        if ((lp1 & 0x7fff0000) < (lp2 & 0x7fff0000) || ((lp1 & 0x7fff0000) == (lp2 & 0x7fff0000) && (lp1 & 0xf000) <= (lp2 & 0xf000))) {
+            if ((lp1 & 0xff00) == (lp2 & 0xff00) && (lp1 & 0x7fff0000) == (lp2 & 0x7fff0000) && ptok2->cTarget <= ptok1->cTarget) {
+                return 1;
+            }
+            return 0;
+        }
+        return 1;
+    }
     return 0;
 }
 

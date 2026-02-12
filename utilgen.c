@@ -250,7 +250,15 @@ int16_t FCompressUserString(char *szIn, char *szOut, int16_t *pcOut) {
 
 /* functions */
 
-void ShowProgressGauge(void) { /* TODO: implement */ }
+void ShowProgressGauge(void) {
+#ifdef _WIN32
+    if (hwndProgressGauge == 0) {
+        CreateDialog(NULL, MAKEINTRESOURCE(IDD_Gauge), hwndFrame, ProgressGaugeDlg);
+    } else {
+        UpdateProgressGauge(0);
+    }
+#endif
+}
 
 int16_t FCheckPassword(void) {
     HWND    hwndParent;
@@ -338,12 +346,34 @@ int16_t ReadBigBlock(int16_t hFile, char *lpBuffer, uint32_t dwSize) {
 }
 
 char *PszFromLongK(int32_t l, int16_t *pcch) {
-    int16_t fExtraLarge;
     int16_t fLarge;
+    int16_t fExtraLarge;
     char   *psz;
 
-    /* TODO: implement */
-    return NULL;
+    fLarge = l > 9999;
+    fExtraLarge = l > 999999;
+
+    if (fExtraLarge) {
+        l = (l + 500000) / 1000000;
+        if (l > 999)
+            l = 999;
+    } else if (fLarge) {
+        l = (l + 500) / 1000;
+        if (l > 999)
+            l = 999;
+    }
+
+    psz = PszFromInt((int16_t)l, pcch);
+
+    if (fExtraLarge) {
+        psz[*pcch] = 'M';
+        *pcch += 1;
+    } else if (fLarge) {
+        psz[*pcch] = 'k';
+        *pcch += 1;
+    }
+
+    return psz;
 }
 
 uint32_t GetDiskSerialNumber(void) {
@@ -794,7 +824,33 @@ void ChopLastWord(char *pBeg, char **ppEnd) {
     }
 }
 
-void IntToRoman(int16_t i, char *pszOut) { /* TODO: implement */ }
+void IntToRoman(int16_t i, char *pszOut) {
+    if (i < 1) {
+        *pszOut = '\0';
+        return;
+    }
+
+    for (; i > 9; i -= 10) {
+        *pszOut++ = 'X';
+    }
+    if (i == 9) {
+        *pszOut++ = 'I';
+        *pszOut++ = 'X';
+    } else {
+        if (i > 3) {
+            if (i == 4) {
+                *pszOut++ = 'I';
+            }
+            *pszOut++ = 'V';
+            i -= 5;
+        }
+        while (i > 0) {
+            *pszOut++ = 'I';
+            i--;
+        }
+    }
+    *pszOut = '\0';
+}
 
 void OutputFileString(char *szFile, char *sz) {
     FILE  *fp;
@@ -837,8 +893,35 @@ int16_t CommaFormatLong(char *psz, int32_t l) {
     char   *pchOut;
     char   *pch;
 
-    /* TODO: implement */
-    return 0;
+    c = (int16_t)sprintf(rgch, "%ld", (long)l);
+    pch = rgch;
+    pchOut = psz;
+    cSkip = c % 3;
+    if (cSkip == 0) {
+        cSkip = 3;
+    } else if (cSkip == 1 && l < 0x10000 && l < 0) {
+        cSkip = 4;
+    }
+    while (cSkip > 0) {
+        *pchOut = *pch;
+        pch++;
+        pchOut++;
+        cSkip--;
+    }
+    while (*pch != '\0') {
+        cSkip = 3;
+        *pchOut = ',';
+        while (1) {
+            pchOut++;
+            if (cSkip < 1)
+                break;
+            *pchOut = *pch;
+            pch++;
+            cSkip--;
+        }
+    }
+    *pchOut = '\0';
+    return (int16_t)(pchOut - psz);
 }
 
 void UpdateProgressGauge(int16_t pctX10) {

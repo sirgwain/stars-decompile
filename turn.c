@@ -7,6 +7,7 @@
 #include "memory.h"
 #include "mine.h"
 #include "msg.h"
+#include "parts.h"
 #include "planet.h"
 #include "port.h"
 #include "race.h"
@@ -34,9 +35,7 @@ void DoOrders(int16_t fPostMovement) {
     PLANET *lpplMac;
     int16_t iPass;
 
-    FORPLANETS(lppl, lpplMac) {
-        lppl->fWasInhabited = (lppl->iPlayer != -1);
-    }
+    FORPLANETS(lppl, lpplMac) { lppl->fWasInhabited = (lppl->iPlayer != -1); }
 
     if (fPostMovement) {
         idBattle = (game.turn & 0xf) * 0x100 + 1;
@@ -46,9 +45,7 @@ void DoOrders(int16_t fPostMovement) {
     DoThingInteractions(fPostMovement);
 
     if (fPostMovement) {
-        FORPLANETS(lppl, lpplMac) {
-            lppl->turn = 0;
-        }
+        FORPLANETS(lppl, lpplMac) { lppl->turn = 0; }
     }
 
     if (!fPostMovement) {
@@ -178,7 +175,7 @@ int16_t FGenerateTurn(void) {
     /* Allocate working buffers                                    */
     /* ------------------------------------------------------------ */
 
-    lpcd = LpAlloc(12000, htMisc);
+    lpcd = LpAlloc(sizeof(COLDROP) * cMaxSimulDrops, htMisc);
     lpxf = LpAlloc(25000, htMisc);
 
     vrgPlanResExtra = LpAlloc(game.cPlanMax * sizeof(uint16_t), htMisc);
@@ -1685,18 +1682,482 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
     int16_t  dmgPer;
     int16_t  rgFieldS[3][8];
     int16_t  cEngines;
-    uint16_t ibit;
+    uint16_t ibit; /* stack-overlap with cEngines per NB09 (block-local in asm) */
     int32_t  dmgPerShip;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TURN:0x590c */
-    /* block (block) @ MEMORY_TURN:0x6184 */
-    /* label LHitSkip2 @ MEMORY_TURN:0x57f1 */
-    /* label LHitSkip1 @ MEMORY_TURN:0x5591 */
-    /* label LDoNext @ MEMORY_TURN:0x676d */
-    /* label LFinishHit @ MEMORY_TURN:0x5d7f */
+    /* ------------------------------------------------------------
+     * asm: 10b0:4f60..  prologue / init locals
+     * ------------------------------------------------------------ */
+    lpthSalvage = NULL;
+    dTravel = *pdTravel;
+    cishInc = 0;
 
-    /* TODO: implement */
+    /* owner player */
+    iPlayer = lpfl->iPlayer;
+
+    /* ------------------------------------------------------------
+     * asm: 10b0:4f94..4fe3  raMajor = GetRaceStat(rgplr+iPlayer, rsMajorAdv)
+     *      fMineExpert = (raMajor==raMines)*2 + (raMajor==raStealth)
+     * ------------------------------------------------------------ */
+    raMajor = GetRaceStat(&rgplr[iPlayer], rsMajorAdv);
+    fMineExpert = (raMajor == raMines) ? 2 : 0;
+    fMineExpert = fMineExpert + ((raMajor == raStealth) ? 1 : 0);
+
+    /* ------------------------------------------------------------
+     * asm: 10b0:4fe7..  branch on lpthHit
+     * ------------------------------------------------------------ */
+    if (lpthHit == NULL) {
+        /* src/dst */
+        ptSrc.x = lpfl->pt.x;
+        ptSrc.y = lpfl->pt.y;
+
+        /* NOTE: ghidra had odd PLORD indexing; real intent is first order point. */
+        ptDst.x = lpfl->lpplord->rgord[0].pt.x;
+        ptDst.y = lpfl->lpplord->rgord[0].pt.y;
+
+        /* --------------------------------------------------------
+         * asm: (loop) choose iWarp from dTravel
+         * for (iWarp=3; iWarp<10 && iWarp*iWarp < dTravel-1; ++iWarp) {}
+         * -------------------------------------------------------- */
+        for (iWarp = 3; (iWarp < 10) && ((iWarp * iWarp) < (dTravel - 1)); iWarp = iWarp + 1) {
+        }
+
+        /* --------------------------------------------------------
+         * asm: early out if warp too low OR no movement
+         * if (iWarp <= fMineExpert+3) return 1;
+         * if (ptSrc==ptDst) return 1;
+         * -------------------------------------------------------- */
+        if (iWarp <= (fMineExpert + 3))
+            return 1;
+        if (ptSrc.x == ptDst.x && ptSrc.y == ptDst.y)
+            return 1;
+
+        /* --------------------------------------------------------
+         * asm: zero rgcField[0..2]
+         * -------------------------------------------------------- */
+        for (i = 0; i < 3; i = i + 1)
+            rgcField[i] = 0;
+
+        /* --------------------------------------------------------
+         * asm: iterate THINGs; build per-type interval lists rgFieldS/E
+         * - must be minefield: lpth->ith==0
+         * - not owned by iPlayer
+         * - not relation==1 (rgplr[owner].rgmdRelation[iPlayer] != 1)
+         * - and FIntersectCircleLine(...) yields [dStart,dEnd]
+         * - insert/merge interval in sorted order for that type
+         * -------------------------------------------------------- */
+        lpthMac = lpThings + cThing;
+        for (lpth = lpThings; lpth < lpthMac; ++lpth) {
+            if (lpth->iplr != iPlayer && lpth->ith == 0 && rgplr[lpth->iplr].rgmdRelation[iPlayer] != 1) {
+
+                POINT ptL1, ptL2, ptC;
+                ptL1 = ptSrc;
+                ptL2 = ptDst;
+                ptC.x = lpth->pt.x;
+                ptC.y = lpth->pt.y;
+
+                if (FIntersectCircleLine(ptL1, ptL2, ptC, lpth->thm.cMines, dTravel, &dStart, &dEnd)) {
+                    iType = lpth->thm.iType;
+
+                    /* find insert position by start */
+                    for (i = 0; (i < rgcField[iType]) && (rgFieldE[iType][i] < dStart); i = i + 1) {
+                    }
+
+                    if (i == rgcField[iType]) {
+                        if (i < 8) {
+                            rgFieldS[iType][i] = dStart;
+                            rgFieldE[iType][i] = dEnd;
+                            rgcField[iType] = rgcField[iType] + 1;
+                        }
+                    } else if (dEnd < (rgFieldS[iType][i] - 1)) {
+                        if (rgcField[iType] < 8) {
+                            for (j = rgcField[iType]; i < j; j = j - 1) {
+                                rgFieldS[iType][j] = rgFieldS[iType][j - 1];
+                                rgFieldE[iType][j] = rgFieldE[iType][j - 1];
+                            }
+                            rgFieldS[iType][i] = dStart;
+                            rgFieldE[iType][i] = dEnd;
+                            rgcField[iType] = rgcField[iType] + 1;
+                        }
+                    } else {
+                        if (dStart < rgFieldS[iType][i])
+                            rgFieldS[iType][i] = dStart;
+
+                        if (rgFieldE[iType][i] < dEnd) {
+                            rgFieldE[iType][i] = dEnd;
+
+                            for (j = i + 1; (j < rgcField[iType]) && (rgFieldS[iType][j] <= dEnd); j = j + 1) {
+                            }
+
+                            if (dEnd < rgFieldE[iType][j - 1])
+                                rgFieldE[iType][i] = rgFieldE[iType][j - 1];
+
+                            /* collapse */
+                            {
+                                int16_t iDst = i;
+                                for (; j < rgcField[iType]; j = j + 1) {
+                                    ++iDst;
+                                    rgFieldS[iType][iDst] = rgFieldS[iType][j];
+                                    rgFieldE[iType][iDst] = rgFieldE[iType][j];
+                                }
+                                rgcField[iType] = rgcField[iType] - (j - (i + 1));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        cFields = rgcField[0] + rgcField[1] + rgcField[2];
+        if (cFields == 0)
+            return 1;
+    } else {
+        /* asm: else-path sets iWarp=0 (hit is forced / detonating minefield) */
+        iWarp = 0;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10b0: (ship-count + ram-scoop detection)
+     * csh = sum(rgcsh[i])
+     * if any engine fuelUsed[4]==0 => fHasRamScoop=1
+     * engine id lives in shdef->hul.rghs[0].iItem (matches +0x3c &0xff)
+     * ------------------------------------------------------------ */
+    fHasRamScoop = 0;
+    csh = 0;
+    for (i = 0; i < 16; i = i + 1) {
+        if (lpfl->rgcsh[i] > 0) {
+            SHDEF  *pshdef = &rglpshdef[iPlayer][i];
+            ENGINE *pengine;
+
+            csh += lpfl->rgcsh[i];
+
+            pengine = LpengineFromId(pshdef->hul.rghs[0].iItem);
+            if (pengine->rgcFuelUsed[4] == 0)
+                fHasRamScoop = 1;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: interval merge / probabilistic hit search (only if lpthHit==NULL)
+     * chooses earliest hit distance dEnd and jumps into hit handler
+     * ------------------------------------------------------------ */
+    if (lpthHit == NULL) {
+        rgi[0] = rgi[1] = rgi[2] = 0;
+
+        for (; cFields > 0; cFields = cFields - 1) {
+            dStart = 10000;
+            iType = -1;
+
+            for (i = 0; i < 3; i = i + 1) {
+                if (rgi[i] < rgcField[i] && rgFieldS[i][rgi[i]] < dStart) {
+                    dStart = rgFieldS[i][rgi[i]];
+                    iType = i;
+                }
+            }
+
+            dEnd = rgFieldE[iType][rgi[iType]] - rgFieldS[iType][rgi[iType]];
+
+            if ((rgiWarpSafe[iType] + fMineExpert) < iWarp) {
+                int16_t warpSafe = rgiWarpSafe[iType];
+                int16_t pctHit = rgpctMineHit[iType];
+
+                for (i = 0; i < dEnd; i = i + 1) {
+                    if (Random(1000) < (((iWarp - warpSafe) - fMineExpert) * pctHit))
+                        break;
+                }
+
+                if (i != dEnd) {
+                    dEnd = dStart + i;
+                    goto LHitSkip2; /* NB09 label */
+                }
+            }
+
+            rgi[iType] = rgi[iType] + 1;
+        }
+
+        /* no hit */
+        return 1;
+    } else {
+        iType = lpthHit->thm.iType;
+        /* fallthrough */
+    }
+
+LHitSkip2:
+    /* ------------------------------------------------------------
+     * asm: minefield impact / apply damage (labels: LHitSkip2, LFinishHit)
+     * ------------------------------------------------------------ */
+    cshDead = 0;
+    dmgReduce = 0;
+
+    dmgPer = rgrgdmgMine[iType][fHasRamScoop];
+    if (dmgPer != 0) {
+        /* dmgExtra = rgrgdmgMinMine - dmgPer*csh ; clamped per asm conditions */
+        dmgExtra = rgrgdmgMinMine[iType][fHasRamScoop] - (dmgPer * csh);
+        if ((csh > 4) || (dmgExtra < 1))
+            dmgExtra = 0;
+
+        /* copy lpfl -> flSrc (asm uses REP MOVSW across 0x7c bytes) */
+        flSrc = *lpfl;
+
+        /* memset flDead, set iPlayer, set det/fDead per mask (&0xfb00|0x407) */
+        memset(&flDead, 0, sizeof(flDead));
+        flDead.iPlayer = flSrc.iPlayer;
+        flDead.det = 7;
+        flDead.fDead = 1;
+
+        /* --------------------------------------------------------
+         * asm: per-stack damage loop
+         * - builds rgishInc[] list (used for raMines visibility update)
+         * - kills or damages each stack updating flSrc.rgdv[i]
+         * -------------------------------------------------------- */
+        for (i = 0; i < 16; i = i + 1) {
+            if (lpfl->rgcsh[i] <= 0)
+                continue;
+
+            /* skip some hulls when detonating own minefield (matches ghidra ihuldef==0x1b/0x1c check) */
+            if (lpthHit != NULL && lpthHit->iplr == lpfl->iPlayer) {
+                int16_t ihuldef = rglpshdef[iPlayer][i].hul.ihuldef;
+                if (ihuldef == 0x1b || ihuldef == 0x1c)
+                    continue;
+            }
+
+            cshT = lpfl->rgcsh[i];
+
+            rgishInc[cishInc] = i;
+            cishInc = cishInc + 1;
+
+            /* engines count: HS slot0 cItem (matches +0x3c >> 8) */
+            cEngines = rglpshdef[iPlayer][i].hul.rghs[0].cItem;
+
+            /* total shield points for this stack */
+            dpShield = cshT * DpShieldOfShdef(&rglpshdef[iPlayer][i], iPlayer);
+
+            /* damage applied to this stack (scaled by engines like asm mul chain) */
+            dmgToApply = cshT * dmgPer + dmgExtra;
+            dmgToApply = dmgToApply * cEngines;
+
+            dmgReduce += dmgToApply;
+
+            /* absorb by shields */
+            dpsh = dmgToApply;
+            if (dpsh > dpShield)
+                dpsh = dpShield;
+
+            /* ----------------------------------------------------
+             * asm: compute per-ship damage threshold using DV bits
+             * (original uses dv packed in rgdv; here we use bitfields)
+             * ---------------------------------------------------- */
+            {
+                int32_t pctSh = flSrc.rgdv[i].pctSh; /* 0..100 */
+                int32_t pctDp = flSrc.rgdv[i].pctDp; /* 0..511 (packed) */
+                int32_t dpBase = rglpshdef[iPlayer][i].hul.dp;
+
+                int32_t shUnits = (cshT * pctSh) / 100;
+                int32_t dpUnits = (dpBase * pctDp * shUnits) / 500;
+
+                dmgPerShip = (dpUnits + (dmgToApply - dpsh)) / cshT;
+
+                if ((dmgPerShip < 0) || (dmgPerShip > dpBase)) {
+                    /* dead */
+                    cshDead = cshDead + cshT;
+                    flDead.rgcsh[i] = cshT;
+                    flSrc.rgcsh[i] = 0;
+                } else {
+                    /* damaged */
+                    flSrc.rgdv[i].pctSh = 100;
+                    flSrc.rgdv[i].pctDp = (dmgPerShip * 500) / dpBase;
+                    if (flSrc.rgdv[i].pctDp == 0)
+                        flSrc.rgdv[i].pctDp = 1;
+                }
+            }
+
+            dmgExtra = 0; /* asm zeros dmgExtra after first application */
+        }
+
+        /* asm: if detonating (lpthHit!=NULL) and no damage computed => return 0 */
+        if (lpthHit != NULL && dmgReduce == 0)
+            return 0;
+
+        /* transfer cargo from survivors into flDead */
+        if (cshDead != csh)
+            FleetTransferCargoBalance(&flSrc, &flDead);
+
+        /* write flSrc back */
+        *lpfl = flSrc;
+
+        /* if all dead set fDead */
+        if (cshDead == csh)
+            lpfl->fDead = 1;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: compute ptAct + salvage drop + find closest minefield of same type
+     * only for non-forced (lpthHit==NULL) hits
+     * ------------------------------------------------------------ */
+    if (lpthHit == NULL) {
+        int16_t dist;
+
+        dx = ptDst.x - ptSrc.x;
+        dy = ptDst.y - ptSrc.y;
+
+        d2 = (int32_t)dx * dx + (int32_t)dy * dy;
+
+        /* asm uses _sqrt(double) then __ftol */
+        dist = (int16_t)(int32_t)(sqrt((double)d2));
+
+        ptAct.x = ptSrc.x + MulDiv(dx, dEnd, dist);
+        ptAct.y = ptSrc.y + MulDiv(dy, dEnd, dist);
+
+        if (cshDead != 0) {
+            /* find existing salvage packet at ptAct: ith==1 and thp.iWarp==0 */
+            lpthSalvage = lpThings;
+            while (lpthSalvage < lpThings + cThing) {
+                if (lpthSalvage->pt.x == ptAct.x && lpthSalvage->pt.y == ptAct.y && lpthSalvage->ith == 1 && lpthSalvage->thp.iWarp == 0) {
+                    break;
+                }
+                ++lpthSalvage;
+            }
+            if (lpthSalvage == lpThings + cThing)
+                lpthSalvage = NULL;
+
+            DropSalvage(&lpthSalvage, lpfl->rgwtMin, flSrc.iplr, &ptAct);
+        }
+
+        /* d2Closest = 100000000 (0x05f5e100) */
+        d2Closest = 100000000L;
+
+        lpthClosest = NULL;
+        for (lpth = lpThings; lpth < lpThings + cThing; ++lpth) {
+            if (lpth->iplr != iPlayer && lpth->ith == 0 && rgplr[lpth->iplr].rgmdRelation[iPlayer] != 1 && lpth->thm.iType == iType) {
+
+                dx = lpth->pt.x - ptAct.x;
+                dy = lpth->pt.y - ptAct.y;
+
+                d2 = (int32_t)dx * dx + (int32_t)dy * dy - lpth->thm.cMines;
+                if (d2 <= d2Closest) {
+                    d2Closest = d2;
+                    lpthClosest = lpth;
+                }
+            }
+        }
+
+        /* d2 = minefield.cMines / 20 (0x14), clamped per asm */
+        d2 = (lpthClosest != NULL) ? (lpthClosest->thm.cMines / 20) : 0;
+        if (d2 < 0x33) {
+            if (d2 < 10)
+                d2 = 10;
+        } else {
+            d2 = (lpthClosest->thm.cMines / 100);
+            if (d2 < 0x32)
+                d2 = 0x32;
+        }
+    } else {
+        ptAct.x = lpthHit->pt.x;
+        ptAct.y = lpthHit->pt.y;
+        lpthClosest = lpthHit;
+        /* d2 already set from earlier path in asm; keep as-is */
+    }
+
+    /* ------------------------------------------------------------
+     * asm: if minefield owner has raMines => reveal owner bit into SHDEF.grbitPlr
+     * (bit is 1<<owner)
+     * ------------------------------------------------------------ */
+    if (GetRaceStat(&rgplr[lpthClosest->iplr], rsMajorAdv) == raMines) {
+        ibit = 1u << lpthClosest->iplr;
+
+        if (cishInc == 0) {
+            for (i = 0; i < 16; i = i + 1) {
+                if (lpfl->rgcsh[i] > 0)
+                    rglpshdef[iPlayer][i].grbitPlr |= ibit;
+            }
+        } else {
+            for (i = 0; i < cishInc; i = i + 1) {
+                rglpshdef[iPlayer][rgishInc[i]].grbitPlr |= ibit;
+            }
+        }
+    }
+
+    /* clamp dmgReduce to 0x7ff8 then dmgTot low word */
+    if (dmgReduce > 0x7ff8)
+        dmgReduce = 0x7ff8;
+    dmgTot = (int16_t)dmgReduce;
+
+    /* ------------------------------------------------------------
+     * asm: messaging cases (exact ids preserved from decompile)
+     * ------------------------------------------------------------ */
+    if (dmgReduce == 0) {
+        if (iPlayer != lpthClosest->iplr) {
+            FSendPlrMsg(iPlayer, idmHasStoppedMineField, lpfl->id | 0x8000, lpfl->id | 0x8000, lpthClosest->iplr, iType, ptAct.x, ptAct.y, 0, 0);
+        }
+        FSendPlrMsg(lpthClosest->iplr, idmHasStoppedMineField2, lpfl->id | 0x8000, lpfl->id | 0x8000, iType, ptAct.x, ptAct.y, 0, 0, 0);
+        dmgReduce = d2;
+    } else if (cshDead == 0) {
+        MessageId mid;
+
+        if (iPlayer != lpthClosest->iplr) {
+            mid = (lpthHit == NULL) ? idmHasStoppedMineFieldFleetHasTaken : idmHasDamagedDetonatingMineFieldFleetHas;
+            FSendPlrMsg(iPlayer, mid, lpfl->id | 0x8000, lpfl->id | 0x8000, lpthClosest->iplr, iType, ptAct.x, ptAct.y, dmgTot, 0);
+        }
+
+        mid = (lpthHit == NULL) ? idmHasStoppedMineFieldMinesHaveInflicted : idmHasDamagedDetonatingMineFieldMinesHave;
+        FSendPlrMsg(lpthClosest->iplr, mid, lpfl->id | 0x8000, lpfl->id | 0x8000, iType, ptAct.x, ptAct.y, dmgTot, 0, 0);
+        dmgReduce = d2;
+    } else if (cshDead >= csh) {
+        /* annihilated */
+        flDead.id = lpfl->id;
+
+        if (lpthSalvage == NULL) {
+            if (iPlayer != lpthClosest->iplr) {
+                FSendPlrMsg(iPlayer, idmHasAnnihilatedMineField3, -1, WFromLpfl(&flDead), lpthClosest->iplr, iType, ptAct.x, ptAct.y, 0, 0);
+            }
+            if (iPlayer == lpthClosest->iplr) {
+                FSendPlrMsg(lpthClosest->iplr, idmHasAnnihilatedMineField4, -1, WFromLpfl(&flDead), iType, ptAct.x, ptAct.y, 0, 0, 0);
+                dmgReduce = d2;
+            } else {
+                FSendPlrMsg(lpthClosest->iplr, idmHasAnnihilatedMineField2, -6, lpthClosest->idFull, lpfl->id, iType, ptAct.x, ptAct.y, 0, 0);
+                dmgReduce = d2;
+            }
+        } else {
+            if (iPlayer != lpthClosest->iplr) {
+                FSendPlrMsg(iPlayer, idmHasAnnihilatedMineField, -6, lpthSalvage->idFull, WFromLpfl(&flDead), lpthClosest->iplr, iType, ptAct.x, ptAct.y, 0);
+            }
+            FSendPlrMsg(lpthClosest->iplr, idmHasAnnihilatedMineField2, -6, lpthSalvage->idFull, lpfl->id, iType, ptAct.x, ptAct.y, 0, 0);
+            dmgReduce = d2;
+        }
+    } else {
+        MessageId mid;
+
+        if (iPlayer != lpthClosest->iplr) {
+            mid = (lpthHit == NULL) ? idmHasStoppedMineFieldFleetHasTaken2 : idmHasTakenDamageDetonatingMineFieldFleet;
+            FSendPlrMsg(iPlayer, mid, lpfl->id | 0x8000, lpfl->id | 0x8000, lpthClosest->iplr, iType, ptAct.x, ptAct.y, dmgTot, cshDead);
+        }
+
+        mid = (lpthHit == NULL) ? idmHasStoppedMineFieldMinesHaveInflicted2 : idmHasDamagedDetonatingMineFieldMinesHave2;
+        FSendPlrMsg(lpthClosest->iplr, mid, lpfl->id | 0x8000, lpfl->id | 0x8000, iType, ptAct.x, ptAct.y, dmgTot, cshDead, 0);
+        dmgReduce = d2;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: reduce minefield size or free it; set seen bits; update *pdTravel
+     * ------------------------------------------------------------ */
+    if (lpthHit == NULL) {
+        if (dmgReduce < lpthClosest->thm.cMines) {
+            lpthClosest->thm.cMines -= dmgReduce;
+            lpthClosest->thm.grbitPlrNow |= 1u << iPlayer;
+            lpthClosest->thm.grbitPlr |= 1u << iPlayer;
+        } else {
+            dmgReduce = lpthClosest->thm.cMines;
+            FreeLpth(lpthClosest);
+        }
+        *pdTravel = dEnd;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: set fleet flags: clear fMark, set fNoHeal (wRaw &0xbfff |0x4000)
+     * ------------------------------------------------------------ */
+    lpfl->fMark = 0;
+    lpfl->fNoHeal = 1;
+
     return 0;
 }
 

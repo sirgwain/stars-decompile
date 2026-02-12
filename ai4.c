@@ -2,6 +2,7 @@
 #include "types.h"
 
 #include "ai4.h"
+#include "globals.h"
 
 /* globals */
 uint8_t vrgAiCybertronResOrder[42] = {0x64, 0x42, 0x83, 0xa3, 0x23, 0x46, 0x66, 0x86, 0x0a, 0x6a, 0x48, 0x6d, 0x26, 0xa9,
@@ -136,9 +137,9 @@ int16_t FAddPacketToQueue(PLANET *lppl) {
 }
 
 int16_t FEnumCalcEnemyPlanets(PLANET *lpplSrc, PLANET *lpplTest) {
-
-    /* TODO: implement */
-    return 0;
+    if (lpplTest->iPlayer == idPlayer || lpplTest->iPlayer == -1)
+        return 0;
+    return 1;
 }
 
 void DoCyberPackets(void) {

@@ -1,9 +1,11 @@
 
 #include "types.h"
 
+#include "build.h"
 #include "globals.h"
 #include "parts.h"
 #include "race.h"
+#include "report.h"
 #include "ship.h"
 #include "util.h"
 
@@ -30,11 +32,30 @@ int32_t GetCargoFree(FLEET *lpfl) {
 
 int32_t XferSupply(int16_t iSupply, int32_t cQuan) {
     int16_t iSrc;
-    int32_t dChg;
+    int16_t iDst;
     int32_t cAvailable;
+    int32_t lRemainder;
 
-    /* TODO: implement */
-    return 0;
+    if (cQuan == 0)
+        return 0;
+
+    iSrc = (0 < cQuan);
+    if (!iSrc)
+        cQuan = -cQuan;
+
+    cAvailable = ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, 0, &pxfer[iSrc].fl);
+    if (cAvailable < cQuan)
+        cQuan = cAvailable;
+
+    if (cQuan == 0)
+        return 0;
+
+    iDst = !iSrc;
+    lRemainder = ChgCargo(pxfer[iDst].grobj, pxfer[iDst].id, iSupply, cQuan, &pxfer[iDst].fl);
+    if (lRemainder != 0) {
+        ChgCargo(pxfer[iSrc].grobj, pxfer[iSrc].id, iSupply, -lRemainder, &pxfer[iSrc].fl);
+    }
+    return lRemainder;
 }
 
 int16_t CshQueued(int16_t ishdef, int16_t *pfProgress, int16_t fSpaceDocks) {
@@ -44,8 +65,24 @@ int16_t CshQueued(int16_t ishdef, int16_t *pfProgress, int16_t fSpaceDocks) {
     PLANET *lpplMac;
     PROD   *lpprod;
 
-    /* TODO: implement */
-    return 0;
+    csh = 0;
+    *pfProgress = 0;
+    FORPLANETS(lppl, lpplMac) {
+        if (lppl->lpplprod != NULL && lppl->lpplprod->iprodMac != 0 && lppl->iPlayer == idPlayer && lppl->fStarbase &&
+            (fSpaceDocks == 0 || rglpshdefSB[idPlayer][lppl->isb].hul.ihuldef == (ihuldefCount + ihuldefSBSpaceDock))) {
+            lpprod = lppl->lpplprod->rgprod;
+            for (iprod = 0; iprod < (int16_t)lppl->lpplprod->iprodMac; iprod++) {
+                if (lpprod->grobj == grobjFleet && lpprod->iItem == ishdef) {
+                    csh += lpprod->cItem;
+                    if (lpprod->pct != 0) {
+                        *pfProgress = 1;
+                    }
+                }
+                lpprod++;
+            }
+        }
+    }
+    return csh;
 }
 
 int32_t LGetFleetStat(FLEET *lpfl, GrStat grStat) {
@@ -320,7 +357,22 @@ void Merge2Fleets(FLEET *lpflDst, FLEET *lpflDel, int16_t fNoDelete) {
     FLEET   rgfl[2];
     int16_t i;
 
-    /* TODO: implement */
+    memcpy(&rgfl[0], lpflDst, sizeof(FLEET));
+    memcpy(&rgfl[1], lpflDel, sizeof(FLEET));
+    for (i = 0; i < cShdefMax; i++) {
+        rgfl[0].rgcsh[i] = rgfl[0].rgcsh[i] + rgfl[1].rgcsh[i];
+        rgfl[1].rgcsh[i] = 0;
+    }
+    FleetTransferCargoBalance(&rgfl[0], &rgfl[1]);
+    for (i = 0; i < 2; i++) {
+        FLookupFleet(-1, &rgfl[i]);
+    }
+    if (fNoDelete == 0) {
+        FDeleteFleet(rgfl[1].id, 2, rgfl[0].id);
+        InvalidateReport(1, 2);
+    } else {
+        lpflDel->fDone = 1;
+    }
 }
 
 void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
@@ -422,7 +474,28 @@ int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops) {
 void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle) {
     ORDER ord;
 
-    /* TODO: implement */
+    // TODO: re-check this decompile
+    if (fRecycle) {
+        if (iDel != 0x56 && lpfl->cord != 2) {
+            ORDER *pordDel = &lpfl->lpplord->rgord[iDel];
+            ORDER *pordLast = &lpfl->lpplord->rgord[lpfl->cord - 1];
+            if (pordLast->pt.x != pordDel->pt.x || pordLast->pt.y != pordDel->pt.y) {
+                ord = *pordDel;
+                goto do_memmove;
+            }
+        }
+        fRecycle = 0;
+    }
+
+do_memmove:
+    memmove(&lpfl->lpplord->rgord[iDel], &lpfl->lpplord->rgord[iDel + 1], (lpfl->cord - iDel - 1) * sizeof(ORDER));
+
+    if (!fRecycle) {
+        lpfl->cord--;
+        lpfl->lpplord->iordMac--;
+    } else {
+        lpfl->lpplord->rgord[lpfl->cord - 1] = ord;
+    }
 }
 
 int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj) {
@@ -617,8 +690,19 @@ int16_t FCanMerge(FLEET *pfl) {
     int16_t cfl;
     int16_t ishdef;
 
-    /* TODO: implement */
-    return 0;
+    cfl = 0;
+    csh = 0;
+    FORFLEETS(lpfl, i) {
+        if (lpfl->iPlayer == pfl->iPlayer && lpfl->pt.x == sel.fl.pt.x && lpfl->pt.y == sel.fl.pt.y) {
+            cfl++;
+            for (ishdef = 0; ishdef < cShdefMax; ishdef++) {
+                csh += lpfl->rgcsh[ishdef];
+            }
+        }
+    }
+    if (cfl == 1 || csh > 0x7ffe - ((int16_t)rgplr[pfl->iPlayer].cFleet - 1))
+        return 0;
+    return 1;
 }
 
 void DestroyAllIshdef(int16_t ishdef, int16_t iplr) {
@@ -700,23 +784,58 @@ int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat) {
 }
 
 int16_t FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet) {
-    POINT    pt;
     int16_t  i;
     int16_t  grbit;
     FLEET    fl;
     int16_t  j;
-    RTXFERX *prtxferx;
     RTXFER  *prtxfer;
+    RTXFERX *prtxferx;
 
-    /* TODO: implement */
-    return 0;
+    if (rt == rtLogCargoXfer8 || rt == rtLogCargoXfer16) {
+        prtxfer = (RTXFER *)lprt;
+        if ((prtxfer->grobj1 == grobjFleet) && (prtxfer->grobj2 == grobjOther)) {
+            int16_t ptx, pty;
+            if (!FLookupFleet(iFleet, &fl))
+                return 1;
+            ptx = fl.pt.x;
+            pty = fl.pt.y;
+            if (!FLookupFleet(prtxfer->id1, &fl))
+                return 1;
+            if (fl.pt.x != ptx || fl.pt.y != pty)
+                return 1;
+
+            grbit = (int16_t)prtxfer->grbitItems;
+            prtxferx = (RTXFERX *)lprt;
+            j = 0;
+            for (i = 0; i < 5; i++) {
+                if (grbit & 1) {
+                    int32_t qty;
+                    if (rt == rtLogCargoXfer8) {
+                        qty = (int32_t)prtxfer->rgcQuan[j];
+                    } else {
+                        qty = (int32_t)prtxferx->rgcQuan[j];
+                    }
+                    lppl->rgwtMin[i] -= qty;
+                    j++;
+                }
+                grbit >>= 1;
+            }
+        }
+    }
+    return 1;
 }
 
 void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr) {
     PLANET *lppl;
     PLANET *lpplMac;
 
-    /* TODO: implement */
+    FORPLANETS(lppl, lpplMac) {
+        if (lppl->iPlayer == iplr && lppl->fStarbase && lppl->isb == ishdefSB) {
+            lppl->fStarbase = 0;
+            KillQueuedShips(lppl);
+            KillQueuedMassPackets(lppl);
+        }
+    }
 }
 
 void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t rgCosts[static 4]) {
@@ -964,16 +1083,42 @@ int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo) {
 }
 
 void FleetOrdersChangeTarget(FLEET *lpflOld) {
-    int16_t id;
-    POINT   pt;
-    int16_t fChg;
-    FLEET  *lpfl;
-    int16_t iord;
-    int16_t iflMac;
-    SCAN    scan;
-    int16_t grobj;
+    int16_t    id;
+    STARSPOINT pt;
+    FLEET     *lpfl;
+    int16_t    iord;
+    int16_t    iflMac;
+    SCAN       scan;
+    int16_t    grobj;
 
-    /* TODO: implement */
+    for (iflMac = 0; iflMac < cFleet; iflMac++) {
+        lpfl = rglpfl[iflMac];
+        if (lpfl == NULL)
+            return;
+        if (lpfl->lpplord != NULL) {
+            for (iord = lpfl->cord - 1; iord >= 0; iord--) {
+                ORDER *pord = &lpfl->lpplord->rgord[iord];
+                if (pord->grobj == grobjFleet && pord->id == lpflOld->id) {
+                    pt.x = lpflOld->pt.x;
+                    pt.y = lpflOld->pt.y;
+                    lpflOld->pt.x++;
+                    if (!FFindNearestObject(pt, 0x83, &scan)) {
+                        grobj = 4;
+                        id = iord;
+                    } else if ((scan.grobjFull & grobjFleet) == grobjNone) {
+                        grobj = grobjPlanet;
+                        id = scan.idpl;
+                    } else {
+                        grobj = grobjFleet;
+                        id = rglpfl[scan.ifl]->id;
+                    }
+                    lpflOld->pt.x--;
+                    pord->id = id;
+                    pord->grobj = grobj;
+                }
+            }
+        }
+    }
 }
 
 #ifdef _WIN32

@@ -32,6 +32,7 @@ typedef enum TechFieldType {
     Construction = 3,
     Electronics = 4,
     Biotechnology = 5,
+    TechFieldCount = 6,
 } TechFieldType;
 
 typedef enum RaceAttribute {
@@ -404,52 +405,6 @@ typedef enum iplanetary {
     iplanetaryCount = 15,
 } iplanetary;
 
-typedef enum ProdItemType {
-    iobjMine = 0,
-    iobjFactory = 1,
-    iobjDefense = 2,
-    iobjAlchemy = 3,
-    iobjMinTerraform = 4,
-    iobjMaxTerraform = 5,
-    iobjPacket = 6,
-    mdIdleFactory = 7,
-    mdIdleMine = 8,
-    mdIdleDefense = 9,
-    /* 10 unused ? */
-    mdIdleAlchemy = 11,
-    mdIdleTerraform = 12,
-    iobjGenesis = 13,
-    iobjPacketIron = 14,
-    iobjPacketBor = 15,
-    iobjPacketGerm = 16,
-    iobjPacketMixed = 17,
-
-    iobjPlanetaryScannerFirst = 18,
-    iobjPlanetaryScannerViewer50 = 18,
-    iobjPlanetaryScannerViewer90 = 19,
-    iobjPlanetaryScannerScoper150 = 20,
-    iobjPlanetaryScannerScoper220 = 21,
-    iobjPlanetaryScannerScoper280 = 22,
-    iobjPlanetaryScannerSnooper320X = 23,
-    iobjPlanetaryScannerSnooper400X = 24,
-    iobjPlanetaryScannerSnooper500X = 25,
-    iobjPlanetaryScannerSnooper620X = 26,
-    iobjPlanetaryScannerLast = 26,
-    iobjPlanetaryScanner = 27,
-    iobjUnknown = 31,
-} ProdItemType;
-
-typedef enum mdProdStat {
-    mdProdStatComplete = 0,
-    mdProdStatCompleteAuto = 1,
-    mdProdStatSkippedAuto = 2,
-    mdProdStatSomeAuto = 3,
-    mdProdStatNoneAuto = 4,
-    mdProdStatSome = 5,
-    mdProdStatBlockedDiff = 6,
-    mdProdStatBlockedSame = 7,
-} mdProdStat;
-
 typedef enum iterra {
     iterraTotalTerraform3 = 0,
     iterraTotalTerraform5 = 1,
@@ -574,6 +529,52 @@ typedef enum GrbitTrader {
     grbitTraderLifeboat = 0x1000,
     grbitTraderAll = 0x1fff,
 } GrbitTrader;
+
+typedef enum ProdItemType {
+    iobjMine = 0,
+    iobjFactory = 1,
+    iobjDefense = 2,
+    iobjAlchemy = 3,
+    iobjMinTerraform = 4,
+    iobjMaxTerraform = 5,
+    iobjPacket = 6,
+    mdIdleFactory = 7,
+    mdIdleMine = 8,
+    mdIdleDefense = 9,
+    /* 10 unused ? */
+    mdIdleAlchemy = 11,
+    mdIdleTerraform = 12,
+    iobjGenesis = 13,
+    iobjPacketIron = 14,
+    iobjPacketBor = 15,
+    iobjPacketGerm = 16,
+    iobjPacketMixed = 17,
+
+    iobjPlanetaryScannerFirst = 18,
+    iobjPlanetaryScannerViewer50 = 18,
+    iobjPlanetaryScannerViewer90 = 19,
+    iobjPlanetaryScannerScoper150 = 20,
+    iobjPlanetaryScannerScoper220 = 21,
+    iobjPlanetaryScannerScoper280 = 22,
+    iobjPlanetaryScannerSnooper320X = 23,
+    iobjPlanetaryScannerSnooper400X = 24,
+    iobjPlanetaryScannerSnooper500X = 25,
+    iobjPlanetaryScannerSnooper620X = 26,
+    iobjPlanetaryScannerLast = 26,
+    iobjPlanetaryScanner = 27,
+    iobjUnknown = 31,
+} ProdItemType;
+
+typedef enum mdProdStat {
+    mdProdStatComplete = 0,
+    mdProdStatCompleteAuto = 1,
+    mdProdStatSkippedAuto = 2,
+    mdProdStatSomeAuto = 3,
+    mdProdStatNoneAuto = 4,
+    mdProdStatSome = 5,
+    mdProdStatBlockedDiff = 6,
+    mdProdStatBlockedSame = 7,
+} mdProdStat;
 
 typedef enum LookupResult { LookupInvalid = 0, LookupDisallowed = -1, LookupOk = 1, LookupNear = 2, LookupNeedMany = 99 } LookupResult;
 

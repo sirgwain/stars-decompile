@@ -2003,18 +2003,6 @@ RetryAll:
 
 PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi) { return &vrgplrComp[idAi][lvlAi]; }
 
-int16_t FGetNewGameName(char *szFileSuggest) {
-    char     szXY[3];
-    uint16_t i;
-    char     szFileTitle[256];
-    char     szFile[256];
-    char     szFilter[256];
-    // OFN ofn;
-
-    /* TODO: implement */
-    return 0;
-}
-
 int16_t GenNewGameFromFile(char *pszFile) {
     int32_t  rgl[10];
     int16_t  rgplrbmp[16];
@@ -2464,6 +2452,56 @@ LError:
 }
 
 #ifdef _WIN32
+
+int16_t FGetNewGameName(char *szFileSuggest) {
+    char         szXY[3];
+    uint16_t     i;
+    char         szFileTitle[256];
+    char         szFile[256];
+    char         szFilter[256];
+    OPENFILENAME ofn;
+
+    if (szFileSuggest == NULL) {
+        szFile[0] = '\0';
+    } else {
+        strcpy(szFile, szFileSuggest);
+    }
+
+    CchGetString(idsStarsGameFilesXy, szFilter);
+    for (i = 0; szFilter[i] != '\0'; i++) {
+        if (szFilter[i] == '|')
+            szFilter[i] = '\0';
+    }
+
+    memset(&ofn, 0, sizeof(ofn));
+    szXY[0] = 'x';
+    szXY[1] = 'y';
+    szXY[2] = '\0';
+
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = hwndFrame;
+    ofn.lpstrFilter = szFilter;
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = 256;
+    ofn.lpstrFileTitle = szFileTitle;
+    ofn.nMaxFileTitle = 256;
+    ofn.lpstrInitialDir = szDirName;
+    ofn.lpstrTitle = "Choose New Game Name";
+    ofn.lpstrDefExt = szXY;
+    ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST;
+
+    if (!GetSaveFileName(&ofn))
+        return 0;
+
+    if (ofn.nFileExtension == 0) {
+        strcat(szFile, szXY);
+    } else {
+        strcpy(szFile + ofn.nFileExtension, szXY);
+    }
+    strcpy(szFileSuggest, szFile);
+    return 1;
+}
 
 void SetNGWTitle(HWND hwnd, int16_t iStep) {
     int16_t cch;

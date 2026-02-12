@@ -198,7 +198,6 @@ void ReadRtPlr(PLAYER *pplr, byte *pbIn)
 /* WARNING: Removing unreachable block (ram,0x10701634) */
 /* WARNING: Removing unreachable block (ram,0x10702d82) */
 /* WARNING: Removing unreachable block (ram,0x10702da7) */
-/* WARNING: Variable defined which should be unmapped: szEntry */
 /* WARNING: Restarted to delay deadcode elimination for space: ram */
 
 short FLoadGame(char *pszFileName, char *pszExt)
@@ -224,14 +223,12 @@ short FLoadGame(char *pszFileName, char *pszExt)
     ushort     uVar18;
     int        iVar19;
     undefined2 uVar20;
-    undefined2 unaff_SI;
     char      *pcVar21;
     int       *piVar22;
     int       *piVar23;
     FLEET    **ppFVar24;
     ushort    *puVar25;
     SCOREX    *pSVar26;
-    undefined2 unaff_DI;
     GAME      *pGVar27;
     undefined2 uVar28;
     undefined2 unaff_SS;
@@ -242,7 +239,6 @@ short FLoadGame(char *pszFileName, char *pszExt)
     THING     *pTVar32;
     void      *pvVar33;
     ulong      uVar34;
-    ulong      uVar35;
     char       szEntry[16];
     char      *psz;
     char       szSection[16];
@@ -255,8 +251,7 @@ short FLoadGame(char *pszFileName, char *pszExt)
     uint       local_60;
     PLANET    *local_58;
     uint       local_56;
-    int        local_54;
-    undefined2 uStack_52;
+    undefined4 local_54;
     uint       local_50;
     uint       local_4e;
     undefined4 local_4c;
@@ -281,7 +276,6 @@ short FLoadGame(char *pszFileName, char *pszExt)
     short    cPlanetHist;
     short    iplrSav;
 
-    uVar35 = CONCAT22(unaff_SI, unaff_DI);
     grf = 0;
     cturn = 0;
     _strcpy((char *)szBase, pszFileName);
@@ -310,9 +304,9 @@ short FLoadGame(char *pszFileName, char *pszExt)
                     RgFromStream(&sp, 4);
                     x = x + ((uint)sp.dwFlags & 0x3ff);
                     ((POINT *)rgptPlan + i)->x = x;
-                    uVar34 = __aFulshr(uVar35, szEntry._0_2_);
+                    uVar34 = __aFulshr(CONCAT22(sp.dwFlags._2_2_, (uint)sp.dwFlags), 10);
                     *(uint *)((int)&rgptPlan[0].y + i * 4) = (uint)uVar34 & 0xfff;
-                    uVar34 = __aFulshr(uVar35, szEntry._0_2_);
+                    uVar34 = __aFulshr(CONCAT22(sp.dwFlags._2_2_, (uint)sp.dwFlags), 0x16);
                     ((short *)rgidPlan)[i] = (uint)uVar34 & 0x3ff;
                     if (((dGal + 1000 <= x) || (dGal + 1000 <= *(int *)((int)&rgptPlan[0].y + i * 4))) || (999 < ((short *)rgidPlan)[i]))
                         goto IO_XYCorrupt;
@@ -1265,9 +1259,9 @@ LAB_1070_2a56:
                          *(int *)(*(int *)(iVar19 + rglpshdefSB) + (*(uint *)&((PLANET *)lppl)->lStarbase & 0xf) * 0x93) != 0x20)) {
                         local_4c._2_2_ = 0;
                         local_4c._0_2_ = 0;
-                        local_54 = *(int *)&((PLANET *)lppl)->lpplprod;
-                        uStack_52 = *(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2);
-                        for (; local_54 = local_54 + 4, (int)(PLANET *)local_4c < (int)(uint)((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac;
+                        local_54 = (undefined2 *)CONCAT22(*(undefined2 *)((int)&((PLANET *)lppl)->lpplprod + 2),
+                                                          (undefined2 *)(*(int *)&((PLANET *)lppl)->lpplprod + 4));
+                        for (; (int)(PLANET *)local_4c < (int)(uint)((PLPROD *)((PLANET *)lppl)->lpplprod)->iprodMac;
                              local_4c._0_2_ = (PLANET *)((int)&((PLANET *)local_4c)->id + 1)) {
                             EstimateItemProdSched(lppl, 0, (short)(PLANET *)local_4c, &local_4e, &local_50);
                             if (1 < (int)local_50) {
@@ -1275,15 +1269,16 @@ LAB_1070_2a56:
                                 break;
                             }
                             if (local_50 == 1) {
-                                uVar34 = __aFulshr(uVar35, szEntry._0_2_);
+                                uVar34 = __aFulshr(CONCAT22(((undefined2 *)local_54)[1], *local_54), 0x11);
                                 if (((uint)uVar34 & 7) == 1) {
-                                    uVar34 = __aFulshr(uVar35, szEntry._0_2_);
+                                    uVar34 = __aFulshr(CONCAT22(((undefined2 *)local_54)[1], *local_54), 10);
                                     if (((uint)uVar34 & 0x7f) < 7)
                                         goto LAB_1070_2cf9;
                                 }
                                 local_4c._2_2_ = 1;
                             }
                         LAB_1070_2cf9:
+                            local_54 = (undefined2 *)local_54 + 2;
                         }
                         if (local_4c._2_2_ != 0) {
                             FSendPlrMsg2XGen(0, idmStarbaseScheduledCompleteRemainingProductionItem, lppl->id, lppl->id, 0);
@@ -1426,10 +1421,7 @@ short FReadPlanet(short iPlayer, PLANET *lppl, short fHistory, short fPreInited)
     uint       uVar5;
     short      sVar6;
     short      sVar7;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     long       lVar8;
-    ushort     in_stack_0000ffea;
     short      pct;
     short      pctOpt;
     short      idm;
@@ -1439,7 +1431,6 @@ short FReadPlanet(short iPlayer, PLANET *lppl, short fHistory, short fPreInited)
     short      fRouting;
     short      fFirstYear;
 
-    lVar8 = CONCAT22(unaff_SI, unaff_DI);
     bVar3 = false;
     if (fPreInited == 0) {
         __fmemset(lppl, 0, 0x38);
@@ -1543,7 +1534,7 @@ short FReadPlanet(short iPlayer, PLANET *lppl, short fHistory, short fPreInited)
             }
             if ((uint)hdrCur >> 10 != 0xe) {
                 if (((uint)rgbCur._2_2_ >> 0xb & 1) == 0) {
-                    lVar8 = __aFlshl(lVar8, in_stack_0000ffea);
+                    lVar8 = __aFlshl((ulong)((uint)rgbCur._2_2_ >> 0xc & 1), 0x16);
                     uVar1 = *(uint *)(((PLANET *)lppl)->rgbImp + 6);
                     *(uint *)(((PLANET *)lppl)->rgbImp + 4) = *(uint *)(((PLANET *)lppl)->rgbImp + 4) | (uint)lVar8;
                     *(uint *)(((PLANET *)lppl)->rgbImp + 6) = uVar1 & 0xffbf | (uint)((ulong)lVar8 >> 0x10);
@@ -3536,72 +3527,65 @@ void WritePlanet(PLANET *lppl, RecordType rt, short fHistory)
     byte      *pbVar3;
     uint       uVar4;
     uint       uVar5;
-    uint       uVar6;
-    PLANET    *pPVar7;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    undefined2 uVar8;
+    PLANET    *pPVar6;
+    undefined2 uVar7;
     undefined2 unaff_SS;
-    ulong      uVar9;
-    ulong      uVar10;
+    ulong      uVar8;
     byte      *pb;
     short      i;
     byte      *pbBase;
     byte       rgb[80];
     byte       bMask;
 
-    uVar10 = CONCAT22(unaff_SI, unaff_DI);
     _memset(rgb, 0, 0x50);
-    uVar8 = (undefined2)((ulong)lppl >> 0x10);
-    pPVar7 = (PLANET *)lppl;
-    rgb._0_2_ = lppl->id & 0x7ffU | pPVar7->iPlayer << 0xb;
-    uVar5 = rgb._2_2_ & 0xff80;
-    rgb._2_2_ = uVar5 | pPVar7->wFlags_0x4 & 0x7f;
-    if ((rt == rtPlanetB) && (3 < (pPVar7->wFlags_0x4 & 0xff))) {
+    uVar7 = (undefined2)((ulong)lppl >> 0x10);
+    pPVar6 = (PLANET *)lppl;
+    rgb._0_2_ = lppl->id & 0x7ffU | pPVar6->iPlayer << 0xb;
+    uVar4 = rgb._2_2_ & 0xff80;
+    rgb._2_2_ = uVar4 | pPVar6->wFlags_0x4 & 0x7f;
+    if ((rt == rtPlanetB) && (3 < (pPVar6->wFlags_0x4 & 0xff))) {
         if (fHistory == 0) {
-            uVar4 = 4;
+            uVar5 = 4;
         } else {
-            uVar4 = 3;
+            uVar5 = 3;
         }
-        rgb._2_2_ = uVar5 | uVar4;
+        rgb._2_2_ = uVar4 | uVar5;
     }
-    uVar4 = (uint)((pPVar7->wRouting & 0x3ff) != 0);
-    uVar6 = rgb._2_2_ & 0x3c7f | (pPVar7->wFlags_0x4 >> 8 & 1) << 8 | (pPVar7->wFlags_0x4 >> 9 & 1) << 9 | (pPVar7->wFlags_0x4 >> 10 & 1) << 7 |
-            (pPVar7->wFlags_0x4 >> 0xb) << 0xf | uVar4 << 0xe;
+    uVar5 = rgb._2_2_ & 0x3c7f | (pPVar6->wFlags_0x4 >> 8 & 1) << 8 | (pPVar6->wFlags_0x4 >> 9 & 1) << 9 | (pPVar6->wFlags_0x4 >> 10 & 1) << 7 |
+            (pPVar6->wFlags_0x4 >> 0xb) << 0xf | (uint)((pPVar6->wRouting & 0x3ff) != 0) << 0xe;
     pb = rgb + 4;
-    uVar5 = rgb._2_2_ & 0x7f;
-    rgb._2_2_ = uVar6;
-    if (1 < uVar5) {
+    uVar4 = rgb._2_2_ & 0x7f;
+    rgb._2_2_ = uVar5;
+    if (1 < uVar4) {
         pb = rgb + 5;
         bMask = 3;
         for (i = 0; i < 3; i = i + 1) {
-            if (pPVar7->rgpctMinLevel[i] != 0) {
+            if (pPVar6->rgpctMinLevel[i] != 0) {
                 rgb[4] = rgb[4] | bMask & 0x55;
-                *pb = pPVar7->rgpctMinLevel[i];
+                *pb = pPVar6->rgpctMinLevel[i];
                 pb = pb + 1;
             }
             bMask = bMask << 2;
         }
         for (i = 0; i < 3; i = i + 1) {
-            *pb = pPVar7->rgMinConc[i];
+            *pb = pPVar6->rgMinConc[i];
             pb = pb + 1;
         }
         for (i = 0; i < 3; i = i + 1) {
-            *pb = pPVar7->rgEnvVar[i];
-            uVar4 = (uint)pPVar7->rgEnvVar[i];
-            if (uVar4 != (int)pPVar7->rgEnvVarOrig[i]) {
+            *pb = pPVar6->rgEnvVar[i];
+            if (pPVar6->rgEnvVar[i] != pPVar6->rgEnvVarOrig[i]) {
                 rgb._2_2_ = rgb._2_2_ & 0xfbff | 0x400;
             }
             pb = pb + 1;
         }
         if (((uint)rgb._2_2_ >> 10 & 1) != 0) {
             for (i = 0; i < 3; i = i + 1) {
-                *pb = pPVar7->rgEnvVarOrig[i];
+                *pb = pPVar6->rgEnvVarOrig[i];
                 pb = pb + 1;
             }
         }
-        if (pPVar7->iPlayer != -1) {
-            *(ushort *)pb = pPVar7->uGuesses;
+        if (pPVar6->iPlayer != -1) {
+            *(ushort *)pb = pPVar6->uGuesses;
             pb = pb + 2;
         }
         pbVar3 = pb;
@@ -3609,24 +3593,24 @@ void WritePlanet(PLANET *lppl, RecordType rt, short fHistory)
             pb = pb + 1;
             bMask = 3;
             for (i = 0; i < 4; i = i + 1) {
-                if ((i != 3) || (6 < (pPVar7->wFlags_0x4 & 0xff))) {
-                    iVar1 = *(int *)((int)(pPVar7->rgwtMin + i) + 2);
-                    if ((-1 < iVar1) && ((0 < iVar1 || ((int)pPVar7->rgwtMin[i] != 0)))) {
-                        uVar5 = *(uint *)((int)(pPVar7->rgwtMin + i) + 2);
-                        if (((int)uVar5 < 0) || (((int)uVar5 < 1 && (*(uint *)(pPVar7->rgwtMin + i) < 0x100)))) {
+                if ((i != 3) || (6 < (pPVar6->wFlags_0x4 & 0xff))) {
+                    iVar1 = *(int *)((int)(pPVar6->rgwtMin + i) + 2);
+                    if ((-1 < iVar1) && ((0 < iVar1 || ((int)pPVar6->rgwtMin[i] != 0)))) {
+                        uVar4 = *(uint *)((int)(pPVar6->rgwtMin + i) + 2);
+                        if (((int)uVar4 < 0) || (((int)uVar4 < 1 && (*(uint *)(pPVar6->rgwtMin + i) < 0x100)))) {
                             *pbVar3 = *pbVar3 | bMask & 0x55;
-                            *pb = (byte)(int)pPVar7->rgwtMin[i];
+                            *pb = (byte)(int)pPVar6->rgwtMin[i];
                             pb = pb + 1;
                         } else {
-                            iVar1 = *(int *)((int)pPVar7->rgwtMin + i * 4 + 2);
+                            iVar1 = *(int *)((int)pPVar6->rgwtMin + i * 4 + 2);
                             if ((iVar1 < 0) || (iVar1 < 1)) {
                                 *pbVar3 = *pbVar3 | bMask & 0xaa;
-                                *(int *)pb = (int)pPVar7->rgwtMin[i];
+                                *(int *)pb = (int)pPVar6->rgwtMin[i];
                                 pb = pb + 2;
                             } else {
                                 *pbVar3 = *pbVar3 | bMask;
-                                uVar2 = *(undefined2 *)((int)(pPVar7->rgwtMin + i) + 2);
-                                *(int *)pb = (int)pPVar7->rgwtMin[i];
+                                uVar2 = *(undefined2 *)((int)(pPVar6->rgwtMin + i) + 2);
+                                *(int *)pb = (int)pPVar6->rgwtMin[i];
                                 *(undefined2 *)(pb + 2) = uVar2;
                                 pb = pb + 4;
                             }
@@ -3641,26 +3625,29 @@ void WritePlanet(PLANET *lppl, RecordType rt, short fHistory)
             }
             pb = pbVar3;
             if (rt != rtPlanetB) {
-                uVar9 = __aFulshr(uVar10, uVar4);
-                uVar5 = (uint)uVar9 & 1;
-                rgb._2_2_ = rgb._2_2_ & 0xefff | uVar5 << 0xc;
-                if ((((pPVar7->iPlayer != -1) && (((*(uint *)pPVar7->rgbImp & 0xff) != 0 || (uVar9 = __aFulshr(uVar10, uVar5), (uVar9 & 1) != 0)))) ||
-                     (uVar9 = __aFulshr(uVar10, uVar5), (uVar9 & 0xfff) != 0)) ||
-                    (((uVar9 = __aFulshr(uVar10, uVar5), (uVar9 & 0xfff) != 0 || ((*(uint *)(pPVar7->rgbImp + 4) & 0xfff) != 0)) ||
-                      (uVar10 = __aFulshr(uVar10, uVar5), ((uint)uVar10 & 0x1f) != 0x1f)))) {
+                uVar8 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar6->rgbImp + 6), *(undefined2 *)(pPVar6->rgbImp + 4)), 0x16);
+                rgb._2_2_ = rgb._2_2_ & 0xefff | ((uint)uVar8 & 1) << 0xc;
+                if ((((pPVar6->iPlayer != -1) &&
+                      (((*(uint *)pPVar6->rgbImp & 0xff) != 0 ||
+                        (uVar8 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar6->rgbImp + 6), *(undefined2 *)(pPVar6->rgbImp + 4)), 0x17), (uVar8 & 1) != 0)))) ||
+                     (uVar8 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar6->rgbImp + 2), *(undefined2 *)pPVar6->rgbImp), 8), (uVar8 & 0xfff) != 0)) ||
+                    (((uVar8 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar6->rgbImp + 2), *(undefined2 *)pPVar6->rgbImp), 0x14),
+                       (uVar8 & 0xfff) != 0 || ((*(uint *)(pPVar6->rgbImp + 4) & 0xfff) != 0)) ||
+                      (uVar8 = __aFulshr(CONCAT22(*(undefined2 *)(pPVar6->rgbImp + 6), *(undefined2 *)(pPVar6->rgbImp + 4)), 0xc),
+                       ((uint)uVar8 & 0x1f) != 0x1f)))) {
                     rgb._2_2_ = rgb._2_2_ & 0xf7ff | 0x800;
-                    __fmemmove(pb, (byte *)CONCAT22(uVar8, pPVar7->rgbImp), 8);
+                    __fmemmove(pb, (byte *)CONCAT22(uVar7, pPVar6->rgbImp), 8);
                     pb = pb + 8;
                 }
-                if (pPVar7->iPlayer != -1) {
-                    if ((pPVar7->wFlags_0x4 >> 9 & 1) != 0) {
-                        uVar2 = *(undefined2 *)((int)&pPVar7->lStarbase + 2);
-                        *(int *)pb = (int)pPVar7->lStarbase;
+                if (pPVar6->iPlayer != -1) {
+                    if ((pPVar6->wFlags_0x4 >> 9 & 1) != 0) {
+                        uVar2 = *(undefined2 *)((int)&pPVar6->lStarbase + 2);
+                        *(int *)pb = (int)pPVar6->lStarbase;
                         *(undefined2 *)(pb + 2) = uVar2;
                         pb = pb + 4;
                     }
-                    if ((pPVar7->wRouting & 0x3ff) != 0) {
-                        *(ushort *)pb = pPVar7->wRouting;
+                    if ((pPVar6->wRouting & 0x3ff) != 0) {
+                        *(ushort *)pb = pPVar6->wRouting;
                         pb = pb + 2;
                     }
                 }
@@ -3669,12 +3656,12 @@ void WritePlanet(PLANET *lppl, RecordType rt, short fHistory)
             }
         }
     }
-    if ((pPVar7->wFlags_0x4 >> 9 & 1) != 0) {
-        *pb = (byte)(int)pPVar7->lStarbase & 0xf;
+    if ((pPVar6->wFlags_0x4 >> 9 & 1) != 0) {
+        *pb = (byte)(int)pPVar6->lStarbase & 0xf;
         pb = pb + 1;
     }
     if (fHistory != 0) {
-        *(short *)pb = pPVar7->turn;
+        *(short *)pb = pPVar6->turn;
         pb = pb + 2;
     }
     WriteRt(rtPlanetB, (int)pb - (int)rgb, rgb);
@@ -4575,7 +4562,6 @@ void SetVisPFInit(short iPlr)
 // Segment: MEMORY_IO
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: lVis2 */
 /* WARNING: Removing unreachable block (ram,0x1070a8f0) */
 /* WARNING: Removing unreachable block (ram,0x1070a90b) */
 /* WARNING: Removing unreachable block (ram,0x1070aae0) */
@@ -4601,8 +4587,6 @@ void SetVisPFFleets(short iPlr)
     THING     *pTVar6;
     PLANET    *pPVar7;
     int        iVar8;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
     undefined2 uVar9;
     ulong      uVar10;
     ulong      uVar11;
@@ -4611,7 +4595,6 @@ void SetVisPFFleets(short iPlr)
     undefined2 uVar14;
     undefined2 uVar15;
     undefined2 uVar16;
-    long       lVar17;
     long       lVis2;
     long       l;
     short      pctDetect;
@@ -4637,7 +4620,6 @@ void SetVisPFFleets(short iPlr)
 
     uVar10 = CONCAT22(lRadPlanet2._2_2_, (undefined2)lRadPlanet2);
     uVar11 = CONCAT22(lRadius2._2_2_, (undefined2)lRadius2);
-    lVar17 = CONCAT22(unaff_SI, unaff_DI);
     if (iPlr == -1) {
         grbitPlr = 0;
     } else {
@@ -4765,7 +4747,6 @@ void SetVisPFFleets(short iPlr)
                         dy = _abs(pt.y - (((THING *)lpth)->pt).y);
                         uVar10 = __aFulmul((long)dy, (long)dy);
                         uVar11 = __aFulmul((long)dx, (long)dx);
-                        lVis2._0_2_ = (ushort)uVar10;
                         lVar13 = uVar11 + uVar10;
                         uVar10 = lRadPlanet2;
                         if ((lVar13 <= lRadius2) || (lpth->idFull >> 0xd == 0)) {
@@ -4786,7 +4767,7 @@ void SetVisPFFleets(short iPlr)
                             } else {
                                 if (lpth->idFull >> 0xd != 2) {
                                     if ((((*(uint *)((int)&pTVar6->u_THING_0x0006 + 4) & grbitPlr) == 0) || (lRadius2 < lVar13)) && (lRadPlanet2 < lVar13)) {
-                                        lVar12 = __aFlshr(lVar17, (ushort)lVis2);
+                                        lVar12 = __aFlshr(lRadius2, 4);
                                         if ((lVar12 < lVar13) && (uVar9 = (undefined2)((ulong)lpth >> 0x10), uVar10 = lRadPlanet2,
                                                                   CONCAT22(*(undefined2 *)((int)&((THING *)lpth)->u_THING_0x0006 + 2),
                                                                            ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags) < lVar13))
@@ -4800,7 +4781,7 @@ void SetVisPFFleets(short iPlr)
                                     goto IO_LThIncPlr;
                                 }
                                 if ((*(uint *)((int)&pTVar6->u_THING_0x0006 + 2) & grbitPlr) == 0) {
-                                    lVar12 = __aFlshr(lVar17, (ushort)lVis2);
+                                    lVar12 = __aFlshr(lRadius2, 4);
                                     if ((lVar12 < lVar13) && (uVar10 = lRadPlanet2, lRadPlanet2 < lVar13))
                                         goto LAB_1070_a96d;
                                 }
@@ -4923,24 +4904,21 @@ void SetVisPFPlanets(short iPlr)
     short      sVar8;
     short      sVar9;
     int        iVar10;
-    ushort     uVar11;
-    PLANET    *pPVar12;
-    THING     *pTVar13;
-    PLANET    *pPVar14;
+    PLANET    *pPVar11;
+    THING     *pTVar12;
+    PLANET    *pPVar13;
+    int        iVar14;
     int        iVar15;
-    int        iVar16;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    undefined2 uVar17;
+    undefined2 uVar16;
+    ulong      uVar17;
     ulong      uVar18;
     ulong      uVar19;
-    ulong      uVar20;
-    long       lVar21;
+    long       lVar20;
+    ulong      uVar21;
     long       lVar22;
     undefined2 uVar23;
     undefined2 uVar24;
     undefined2 uVar25;
-    long       lVar26;
     short      rgStargateRange[16];
     ushort     grbitPlr;
     PLANET    *lpplMac2;
@@ -4964,7 +4942,6 @@ void SetVisPFPlanets(short iPlr)
     short      iRadPlanet;
     long       lRadPlanet2;
 
-    lVar26 = CONCAT22(unaff_SI, unaff_DI);
     if (iPlr == -1) {
         uVar6 = 0;
     } else {
@@ -4987,78 +4964,76 @@ void SetVisPFPlanets(short iPlr)
     if (iPlr != -1) {
         UpdateProgressGauge(-0x39f);
     }
-    uVar19 = CONCAT22(lRadPlanet2._2_2_, (undefined2)lRadPlanet2);
+    uVar18 = CONCAT22(lRadPlanet2._2_2_, (undefined2)lRadPlanet2);
     lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-    pPVar12 = (PLANET *)lpPlanets + cPlanet;
+    pPVar11 = (PLANET *)lpPlanets + cPlanet;
     do {
-        lRadPlanet2 = uVar19;
-        if (pPVar12 <= (PLANET *)lppl) {
+        lRadPlanet2 = uVar18;
+        if (pPVar11 <= (PLANET *)lppl) {
             if (iPlr != -1) {
                 UpdateProgressGauge(-0x39f);
-                uVar19 = lRadPlanet2;
+                uVar18 = lRadPlanet2;
             }
             lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-            pPVar12 = (PLANET *)lpPlanets + cPlanet;
+            pPVar11 = (PLANET *)lpPlanets + cPlanet;
             do {
-                lRadPlanet2 = uVar19;
-                if (pPVar12 <= (PLANET *)lppl) {
+                lRadPlanet2 = uVar18;
+                if (pPVar11 <= (PLANET *)lppl) {
                     if (iPlr != -1) {
                         UpdateProgressGauge(-0x39f);
-                        uVar19 = lRadPlanet2;
+                        uVar18 = lRadPlanet2;
                     }
                     lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-                    pPVar12 = (PLANET *)lpPlanets + cPlanet;
+                    pPVar11 = (PLANET *)lpPlanets + cPlanet;
                     do {
-                        lRadPlanet2 = uVar19;
-                        if (pPVar12 <= (PLANET *)lppl) {
+                        lRadPlanet2 = uVar18;
+                        if (pPVar11 <= (PLANET *)lppl) {
                             if (iPlr != -1) {
                                 UpdateProgressGauge(-0x39f);
-                                uVar19 = lRadPlanet2;
+                                uVar18 = lRadPlanet2;
                             }
                             lppl = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-                            pPVar12 = (PLANET *)lpPlanets + cPlanet;
+                            pPVar11 = (PLANET *)lpPlanets + cPlanet;
                             do {
-                                if (pPVar12 <= (PLANET *)lppl) {
+                                if (pPVar11 <= (PLANET *)lppl) {
                                     return;
                                 }
-                                uVar17 = (undefined2)((ulong)lppl >> 0x10);
+                                uVar16 = (undefined2)((ulong)lppl >> 0x10);
                                 if (((PLANET *)lppl)->iPlayer == iPlr) {
-                                    lRadPlanet2 = uVar19;
+                                    lRadPlanet2 = uVar18;
                                     sVar7 = GetPlanetScannerRange(lppl, &iRadPlanet);
                                     __aFulmul((long)sVar7, (long)sVar7);
-                                    uVar18 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
+                                    uVar17 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
                                     sVar7 = iRadPlanet;
                                     iVar2 = ((POINT *)rgptPlan + lppl->id)->x;
                                     iVar3 = *(int *)((int)&rgptPlan[0].y + lppl->id * 4);
-                                    uVar19 = uVar18;
+                                    uVar18 = uVar17;
                                     if (0 < iRadPlanet) {
-                                        pPVar14 = (PLANET *)lpPlanets + cPlanet;
+                                        pPVar13 = (PLANET *)lpPlanets + cPlanet;
                                         lppl2 = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-                                        lRadPlanet2 = uVar18;
-                                        while (uVar19 = lRadPlanet2, (PLANET *)lppl2 < pPVar14) {
+                                        lRadPlanet2 = uVar17;
+                                        while (uVar18 = lRadPlanet2, (PLANET *)lppl2 < pPVar13) {
                                             uVar23 = (undefined2)((ulong)lppl2 >> 0x10);
                                             if (((((PLANET *)lppl2)->wFlags_0x4 >> 8 & 1) == 0) || ((((PLANET *)lppl2)->wFlags_0x4 & 0xff) < 3)) {
                                                 sVar8 = _abs(((POINT *)rgptPlan + lppl2->id)->x - iVar2);
                                                 if (sVar8 <= sVar7) {
                                                     sVar9 = _abs(*(int *)((int)&rgptPlan[0].y + lppl2->id * 4) - iVar3);
                                                     if (sVar9 <= sVar7) {
-                                                        uVar19 = __aFulmul((long)sVar9, (long)sVar9);
-                                                        uVar24 = (undefined2)uVar19;
-                                                        uVar20 = __aFulmul((long)sVar8, (long)sVar8);
-                                                        lVar26 = uVar20 + CONCAT22((int)(uVar19 >> 0x10), uVar24);
-                                                        if (lVar26 <= (long)uVar18) {
+                                                        uVar18 = __aFulmul((long)sVar9, (long)sVar9);
+                                                        uVar19 = __aFulmul((long)sVar8, (long)sVar8);
+                                                        if ((long)(uVar19 + uVar18) <= (long)uVar17) {
                                                             if (((((PLANET *)lppl2)->wFlags_0x4 >> 9 & 1) != 0) && (((PLANET *)lppl2)->iPlayer != -1)) {
-                                                                iVar16 = ((PLANET *)lppl2)->iPlayer * 4;
-                                                                uVar24 = *(undefined2 *)(iVar16 + rglpshdefSB_0x2);
-                                                                iVar16 = *(int *)(iVar16 + rglpshdefSB) + (*(uint *)&((PLANET *)lppl2)->lStarbase & 0xf) * 0x93;
-                                                                uVar6 = *(uint *)(iVar16 + 0x87);
-                                                                iVar16 = *(int *)(iVar16 + 0x89);
-                                                                if ((iVar16 < 1) && ((iVar16 < 0 || (uVar6 < 10000)))) {
+                                                                iVar15 = ((PLANET *)lppl2)->iPlayer * 4;
+                                                                uVar24 = *(undefined2 *)(iVar15 + rglpshdefSB_0x2);
+                                                                iVar15 = *(int *)(iVar15 + rglpshdefSB) + (*(uint *)&((PLANET *)lppl2)->lStarbase & 0xf) * 0x93;
+                                                                uVar6 = *(uint *)(iVar15 + 0x87);
+                                                                iVar15 = *(int *)(iVar15 + 0x89);
+                                                                if ((iVar15 < 1) && ((iVar15 < 0 || (uVar6 < 10000)))) {
                                                                     uVar25 = 0;
                                                                     uVar24 = 10000;
-                                                                    uVar19 = __aFulmul(uVar18, CONCAT22(iVar16, uVar6));
-                                                                    lVar22 = __aFldiv(uVar19, CONCAT22(uVar25, uVar24));
-                                                                    if (lVar22 < lVar26) {
+                                                                    uVar21 = __aFulmul(uVar17, CONCAT22(iVar15, uVar6));
+                                                                    lVar22 = __aFldiv(uVar21, CONCAT22(uVar25, uVar24));
+                                                                    if (lVar22 < (long)(uVar19 + uVar18)) {
                                                                         MarkPlanet(lppl2, iPlr, 2);
                                                                         goto LAB_1070_b9c4;
                                                                     }
@@ -5074,46 +5049,44 @@ void SetVisPFPlanets(short iPlr)
                                         }
                                     }
                                 }
-                                lppl = (PLANET *)CONCAT22(uVar17, (PLANET *)lppl + 1);
+                                lppl = (PLANET *)CONCAT22(uVar16, (PLANET *)lppl + 1);
                             } while (true);
                         }
-                        uVar17 = (undefined2)((ulong)lppl >> 0x10);
+                        uVar16 = (undefined2)((ulong)lppl >> 0x10);
                         if (((PLANET *)lppl)->iPlayer == iPlr) {
                             sVar7 = GetPlanetScannerRange(lppl, &iRadPlanet);
                             __aFulmul((long)sVar7, (long)sVar7);
-                            uVar19 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
-                            lRadPlanet2 = uVar19;
+                            uVar18 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
+                            lRadPlanet2 = uVar18;
                             iVar2 = ((POINT *)rgptPlan + lppl->id)->x;
                             iVar3 = *(int *)((int)&rgptPlan[0].y + lppl->id * 4);
                             if (((bVar5) && ((((PLANET *)lppl)->wFlags_0x4 >> 9 & 1) != 0)) &&
                                 (0 < rgStargateRange[*(uint *)&((PLANET *)lppl)->lStarbase & 0xf])) {
-                                iVar16 = rgStargateRange[*(uint *)&((PLANET *)lppl)->lStarbase & 0xf];
-                                uVar18 = __aFulmul((long)iVar16, (long)iVar16);
-                                pPVar14 = (PLANET *)lpPlanets + cPlanet;
+                                iVar15 = rgStargateRange[*(uint *)&((PLANET *)lppl)->lStarbase & 0xf];
+                                uVar17 = __aFulmul((long)iVar15, (long)iVar15);
+                                pPVar13 = (PLANET *)lpPlanets + cPlanet;
                                 lppl2 = (PLANET *)CONCAT22(lpPlanets._2_2_, (PLANET *)lpPlanets);
-                                uVar19 = lRadPlanet2;
-                                while ((PLANET *)lppl2 < pPVar14) {
+                                uVar18 = lRadPlanet2;
+                                while ((PLANET *)lppl2 < pPVar13) {
                                     uVar23 = (undefined2)((ulong)lppl2 >> 0x10);
                                     if ((((((PLANET *)lppl2)->wFlags_0x4 >> 8 & 1) == 0) || ((((PLANET *)lppl2)->wFlags_0x4 & 0xff) < 3)) &&
                                         ((((PLANET *)lppl2)->wFlags_0x4 >> 9 & 1) != 0)) {
-                                        lRadPlanet2 = uVar19;
+                                        lRadPlanet2 = uVar18;
                                         sVar7 = StargateRangeFromLppl(lppl2, 0, 0);
-                                        uVar19 = lRadPlanet2;
+                                        uVar18 = lRadPlanet2;
                                         if (sVar7 != 0) {
-                                            if (9999 < iVar16)
+                                            if (9999 < iVar15)
                                                 goto IO_LMarkStargate;
                                             sVar7 = _abs(((POINT *)rgptPlan + lppl2->id)->x - iVar2);
-                                            uVar19 = lRadPlanet2;
-                                            if (sVar7 <= iVar16) {
+                                            uVar18 = lRadPlanet2;
+                                            if (sVar7 <= iVar15) {
                                                 sVar8 = _abs(*(int *)((int)&rgptPlan[0].y + lppl2->id * 4) - iVar3);
-                                                uVar19 = lRadPlanet2;
-                                                if (sVar8 <= iVar16) {
+                                                uVar18 = lRadPlanet2;
+                                                if (sVar8 <= iVar15) {
                                                     uVar19 = __aFulmul((long)sVar8, (long)sVar8);
-                                                    uVar24 = (undefined2)uVar19;
-                                                    uVar20 = __aFulmul((long)sVar7, (long)sVar7);
-                                                    lVar26 = uVar20 + CONCAT22((int)(uVar19 >> 0x10), uVar24);
-                                                    uVar19 = lRadPlanet2;
-                                                    if (lVar26 <= (long)uVar18) {
+                                                    uVar21 = __aFulmul((long)sVar7, (long)sVar7);
+                                                    uVar18 = lRadPlanet2;
+                                                    if ((long)(uVar21 + uVar19) <= (long)uVar17) {
                                                         iVar10 = ((PLANET *)lppl2)->iPlayer * 4;
                                                         uVar24 = *(undefined2 *)(iVar10 + rglpshdefSB_0x2);
                                                         iVar10 = *(int *)(iVar10 + rglpshdefSB) + (*(uint *)&((PLANET *)lppl2)->lStarbase & 0xf) * 0x93;
@@ -5122,15 +5095,15 @@ void SetVisPFPlanets(short iPlr)
                                                         if ((iVar10 < 1) && ((iVar10 < 0 || (uVar6 < 10000)))) {
                                                             uVar25 = 0;
                                                             uVar24 = 10000;
-                                                            uVar19 = __aFulmul(uVar18, CONCAT22(iVar10, uVar6));
-                                                            lVar22 = __aFldiv(uVar19, CONCAT22(uVar25, uVar24));
-                                                            uVar19 = lRadPlanet2;
-                                                            if (lVar22 < lVar26)
+                                                            uVar18 = __aFulmul(uVar17, CONCAT22(iVar10, uVar6));
+                                                            lVar22 = __aFldiv(uVar18, CONCAT22(uVar25, uVar24));
+                                                            uVar18 = lRadPlanet2;
+                                                            if (lVar22 < (long)(uVar21 + uVar19))
                                                                 goto LAB_1070_b70c;
                                                         }
                                                     IO_LMarkStargate:
                                                         MarkPlanet(lppl2, iPlr, 3);
-                                                        uVar19 = lRadPlanet2;
+                                                        uVar18 = lRadPlanet2;
                                                     }
                                                 }
                                             }
@@ -5141,19 +5114,19 @@ void SetVisPFPlanets(short iPlr)
                                 }
                             }
                         }
-                        lppl = (PLANET *)CONCAT22(uVar17, (PLANET *)lppl + 1);
+                        lppl = (PLANET *)CONCAT22(uVar16, (PLANET *)lppl + 1);
                     } while (true);
                 }
-                uVar17 = (undefined2)((ulong)lppl >> 0x10);
+                uVar16 = (undefined2)((ulong)lppl >> 0x10);
                 if (((PLANET *)lppl)->iPlayer == iPlr) {
                     sVar7 = GetPlanetScannerRange(lppl, &iRadPlanet);
-                    uVar18 = __aFulmul((long)sVar7, (long)sVar7);
-                    uVar19 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
+                    uVar17 = __aFulmul((long)sVar7, (long)sVar7);
+                    uVar18 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
                     iVar2 = ((POINT *)rgptPlan + lppl->id)->x;
                     iVar3 = *(int *)((int)&rgptPlan[0].y + lppl->id * 4);
-                    pTVar13 = (THING *)lpThings + cThing;
+                    pTVar12 = (THING *)lpThings + cThing;
                     lpth = (THING *)CONCAT22(lpThings._2_2_, (THING *)lpThings);
-                    while ((THING *)lpth < pTVar13) {
+                    while ((THING *)lpth < pTVar12) {
                         uVar23 = (undefined2)((ulong)lpth >> 0x10);
                         if (((((iPlr != -1) &&
                                ((((lpth->idFull >> 0xd == 0 || (lpth->idFull >> 0xd == 1)) || (lpth->idFull >> 0xd == 3)) || (lpth->idFull >> 0xd == 2)))) &&
@@ -5161,24 +5134,23 @@ void SetVisPFPlanets(short iPlr)
                              ((lpth->idFull >> 0xd != 3 || ((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 4) >> 4 & 1) == 0)))) &&
                             (((lpth->idFull >> 0xd != 1 || (-1 < ((&((THING *)lpth)->u_THING_0x0006)->tht).ptDest.x)) &&
                               ((lpth->idFull >> 0xd != 2 || ((((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags >> 0xd & 1) == 0)))))) {
-                            lRadPlanet2 = uVar19;
+                            lRadPlanet2 = uVar18;
                             sVar8 = _abs(iVar2 - (&((THING *)lpth)->pt)->x);
-                            uVar19 = lRadPlanet2;
+                            uVar18 = lRadPlanet2;
                             if (sVar8 <= sVar7) {
                                 sVar9 = _abs(iVar3 - (((THING *)lpth)->pt).y);
-                                uVar19 = lRadPlanet2;
+                                uVar18 = lRadPlanet2;
                                 if (sVar9 <= sVar7) {
-                                    uVar19 = __aFulmul((long)sVar9, (long)sVar9);
-                                    uVar11 = (ushort)uVar19;
-                                    uVar20 = __aFulmul((long)sVar8, (long)sVar8);
-                                    lVar22 = uVar20 + CONCAT22((int)(uVar19 >> 0x10), uVar11);
-                                    uVar19 = lRadPlanet2;
-                                    if (lVar22 <= (long)uVar18) {
+                                    uVar18 = __aFulmul((long)sVar9, (long)sVar9);
+                                    uVar19 = __aFulmul((long)sVar8, (long)sVar8);
+                                    lVar22 = uVar19 + uVar18;
+                                    uVar18 = lRadPlanet2;
+                                    if (lVar22 <= (long)uVar17) {
                                         if (lpth->idFull >> 0xd == 1) {
                                             ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags =
                                                 ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags & 0x7fff | 0x8000;
                                         IO_LThIncPlr2:
-                                            uVar19 = lRadPlanet2;
+                                            uVar18 = lRadPlanet2;
                                             if ((*(uint *)((int)&rgplr[0].wMdPlr + (lpth->idFull >> 9 & 0xf) * 0xc0) >> 8 & 1) == 0) {
                                                 *(uint *)((int)&rgplr[0].wMdPlr + (lpth->idFull >> 9 & 0xf) * 0xc0) =
                                                     *(uint *)((int)&rgplr[0].wMdPlr + (lpth->idFull >> 9 & 0xf) * 0xc0) & 0xfeff | 0x100;
@@ -5191,9 +5163,9 @@ void SetVisPFPlanets(short iPlr)
                                         } else {
                                             if (lpth->idFull >> 0xd != 2) {
                                                 if (((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 4) & uVar6) == 0) && (lRadPlanet2 < lVar22)) {
-                                                    lVar21 = __aFlshr(lVar26, uVar11);
-                                                    uVar19 = lRadPlanet2;
-                                                    if (lVar21 < lVar22)
+                                                    lVar20 = __aFlshr(uVar17, 4);
+                                                    uVar18 = lRadPlanet2;
+                                                    if (lVar20 < lVar22)
                                                         goto LAB_1070_b409;
                                                 }
                                                 puVar1 = (uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 4);
@@ -5203,15 +5175,15 @@ void SetVisPFPlanets(short iPlr)
                                                 goto IO_LThIncPlr2;
                                             }
                                             if ((*(uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 2) & uVar6) == 0) {
-                                                lVar21 = __aFlshr(lVar26, uVar11);
-                                                if ((lVar21 < lVar22) && (uVar19 = lRadPlanet2, lRadPlanet2 < lVar22))
+                                                lVar20 = __aFlshr(uVar17, 4);
+                                                if ((lVar20 < lVar22) && (uVar18 = lRadPlanet2, lRadPlanet2 < lVar22))
                                                     goto LAB_1070_b409;
                                             }
                                             puVar1 = (uint *)((int)&((THING *)lpth)->u_THING_0x0006 + 2);
                                             *puVar1 = *puVar1 | uVar6;
                                             ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags =
                                                 ((&((THING *)lpth)->u_THING_0x0006)->thp).wFlags & 0xdfff | 0x2000;
-                                            uVar19 = lRadPlanet2;
+                                            uVar18 = lRadPlanet2;
                                         }
                                     }
                                 }
@@ -5221,68 +5193,67 @@ void SetVisPFPlanets(short iPlr)
                         lpth = (THING *)CONCAT22(uVar23, (THING *)lpth + 1);
                     }
                 }
-                lppl = (PLANET *)CONCAT22(uVar17, (PLANET *)lppl + 1);
+                lppl = (PLANET *)CONCAT22(uVar16, (PLANET *)lppl + 1);
             } while (true);
         }
-        uVar17 = (undefined2)((ulong)lppl >> 0x10);
+        uVar16 = (undefined2)((ulong)lppl >> 0x10);
         if (((PLANET *)lppl)->iPlayer == iPlr) {
             sVar7 = GetPlanetScannerRange(lppl, &iRadPlanet);
-            uVar18 = __aFulmul((long)sVar7, (long)sVar7);
-            uVar19 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
+            uVar17 = __aFulmul((long)sVar7, (long)sVar7);
+            uVar18 = __aFulmul((long)iRadPlanet, (long)iRadPlanet);
             iVar2 = ((POINT *)rgptPlan + lppl->id)->x;
             iVar3 = *(int *)((int)&rgptPlan[0].y + lppl->id * 4);
             for (j = 0; j < cFleet; j = j + 1) {
                 /* WARNING: Load size is inaccurate */
                 pFVar4 = ((FLEET **)rglpfl)[j];
-                iVar16 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
-                if ((pFVar4 == 0) && (iVar16 == 0))
+                iVar15 = *(int *)((int)((FLEET **)rglpfl + j) + 2);
+                if ((pFVar4 == 0) && (iVar15 == 0))
                     break;
                 if (((pFVar4->wFlags_0x4 >> 8 & 1) == 0) && ((pFVar4->wFlags_0x4 >> 10 & 1) == 0)) {
-                    lRadPlanet2 = uVar19;
+                    lRadPlanet2 = uVar18;
                     sVar8 = _abs(iVar2 - (&pFVar4->pt)->x);
-                    uVar19 = lRadPlanet2;
+                    uVar18 = lRadPlanet2;
                     if (sVar8 <= sVar7) {
                         sVar9 = _abs(iVar3 - (pFVar4->pt).y);
-                        uVar19 = lRadPlanet2;
+                        uVar18 = lRadPlanet2;
                         if (sVar9 <= sVar7) {
-                            uVar19 = __aFulmul((long)sVar9, (long)sVar9);
-                            uVar23 = (undefined2)uVar19;
-                            uVar20 = __aFulmul((long)sVar8, (long)sVar8);
-                            lVar22 = uVar20 + CONCAT22((int)(uVar19 >> 0x10), uVar23);
-                            uVar19 = lRadPlanet2;
-                            if ((lVar22 <= (long)uVar18) && ((pFVar4->idPlanet == -1 || (lVar22 <= lRadPlanet2)))) {
-                                sVar8 = PctCloakFromLpfl((FLEET *)CONCAT22(iVar16, pFVar4));
+                            uVar18 = __aFulmul((long)sVar9, (long)sVar9);
+                            uVar19 = __aFulmul((long)sVar8, (long)sVar8);
+                            lVar22 = uVar19 + uVar18;
+                            uVar18 = lRadPlanet2;
+                            if ((lVar22 <= (long)uVar17) && ((pFVar4->idPlanet == -1 || (lVar22 <= lRadPlanet2)))) {
+                                sVar8 = PctCloakFromLpfl((FLEET *)CONCAT22(iVar15, pFVar4));
                                 if (sVar8 == 0) {
-                                    MarkFleet((FLEET *)CONCAT22(iVar16, pFVar4), 3);
-                                    uVar19 = lRadPlanet2;
+                                    MarkFleet((FLEET *)CONCAT22(iVar15, pFVar4), 3);
+                                    uVar18 = lRadPlanet2;
                                 } else {
                                     uVar24 = 0;
                                     uVar23 = 100;
                                     iVar10 = 100 - sVar8;
-                                    iVar15 = iVar10 >> 0xf;
-                                    lVar21 = 100;
-                                    uVar19 = __aFulmul(uVar18, (long)(100 - sVar8));
-                                    uVar19 = __aFldiv(uVar19, lVar21);
-                                    uVar19 = __aFulmul(uVar19, CONCAT22(iVar15, iVar10));
-                                    lVar21 = __aFldiv(uVar19, CONCAT22(uVar24, uVar23));
-                                    uVar19 = lRadPlanet2;
-                                    if (lVar22 <= lVar21) {
+                                    iVar14 = iVar10 >> 0xf;
+                                    lVar20 = 100;
+                                    uVar18 = __aFulmul(uVar17, (long)(100 - sVar8));
+                                    uVar18 = __aFldiv(uVar18, lVar20);
+                                    uVar18 = __aFulmul(uVar18, CONCAT22(iVar14, iVar10));
+                                    lVar20 = __aFldiv(uVar18, CONCAT22(uVar24, uVar23));
+                                    uVar18 = lRadPlanet2;
+                                    if (lVar22 <= lVar20) {
                                         if (pFVar4->idPlanet != -1) {
                                             uVar24 = 0;
                                             uVar23 = 100;
                                             iVar10 = 100 - sVar8;
-                                            iVar15 = iVar10 >> 0xf;
-                                            lVar21 = 100;
-                                            uVar19 = __aFulmul(lRadPlanet2, (long)(100 - sVar8));
-                                            uVar19 = __aFldiv(uVar19, lVar21);
-                                            uVar19 = __aFulmul(uVar19, CONCAT22(iVar15, iVar10));
-                                            lVar21 = __aFldiv(uVar19, CONCAT22(uVar24, uVar23));
-                                            uVar19 = lRadPlanet2;
-                                            if (lVar21 < lVar22)
+                                            iVar14 = iVar10 >> 0xf;
+                                            lVar20 = 100;
+                                            uVar18 = __aFulmul(lRadPlanet2, (long)(100 - sVar8));
+                                            uVar18 = __aFldiv(uVar18, lVar20);
+                                            uVar18 = __aFulmul(uVar18, CONCAT22(iVar14, iVar10));
+                                            lVar20 = __aFldiv(uVar18, CONCAT22(uVar24, uVar23));
+                                            uVar18 = lRadPlanet2;
+                                            if (lVar20 < lVar22)
                                                 goto LAB_1070_ad5d;
                                         }
-                                        MarkFleet((FLEET *)CONCAT22(iVar16, pFVar4), 3);
-                                        uVar19 = lRadPlanet2;
+                                        MarkFleet((FLEET *)CONCAT22(iVar15, pFVar4), 3);
+                                        uVar18 = lRadPlanet2;
                                     }
                                 }
                             }
@@ -5292,7 +5263,7 @@ void SetVisPFPlanets(short iPlr)
             LAB_1070_ad5d:
             }
         }
-        lppl = (PLANET *)CONCAT22(uVar17, (PLANET *)lppl + 1);
+        lppl = (PLANET *)CONCAT22(uVar16, (PLANET *)lppl + 1);
     } while (true);
 }
 

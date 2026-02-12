@@ -69,49 +69,45 @@ short GenerateWorld(short fBatchMode)
     char        *pcVar2;
     int         *piVar3;
     undefined2  *puVar4;
-    undefined2   uVar5;
-    THING       *pTVar6;
-    void        *pvVar7;
-    POINT       *pPVar8;
-    THING       *pTVar9;
-    undefined1   uVar10;
-    char         cVar11;
-    ushort       uVar12;
-    short        sVar13;
-    uint         uVar14;
-    int          iVar15;
+    THING       *pTVar5;
+    void        *pvVar6;
+    POINT       *pPVar7;
+    THING       *pTVar8;
+    undefined1   uVar9;
+    char         cVar10;
+    ushort       uVar11;
+    short        sVar12;
+    uint         uVar13;
+    int          iVar14;
+    uint         uVar15;
     uint         uVar16;
-    uint         uVar17;
-    short        sVar18;
-    StartingShip SVar19;
-    char        *pcVar20;
-    POINT       *pPVar21;
-    long        *plVar22;
-    int          iVar23;
-    int         *piVar24;
-    uint        *puVar25;
+    short        sVar17;
+    StartingShip SVar18;
+    char        *pcVar19;
+    POINT       *pPVar20;
+    long        *plVar21;
+    int          iVar22;
+    int         *piVar23;
+    uint        *puVar24;
+    undefined2  *puVar25;
     undefined2  *puVar26;
-    undefined2  *puVar27;
-    PLANET      *pPVar28;
-    undefined2   unaff_SI;
-    undefined2   unaff_DI;
-    undefined2  *puVar29;
+    PLANET      *pPVar27;
+    undefined2  *puVar28;
     undefined2   unaff_SS;
     undefined2   unaff_DS;
-    bool         bVar30;
-    ulong        uVar31;
-    long         lVar32;
-    void        *pvVar33;
-    ulong        uVar34;
-    long         lVar35;
-    undefined2  *puVar36;
-    SHDEF       *pSVar37;
-    ulong        uVar38;
-    DWORD        DVar39;
+    bool         bVar29;
+    ulong        uVar30;
+    long         lVar31;
+    void        *pvVar32;
+    ulong        uVar33;
+    long         lVar34;
+    undefined2  *puVar35;
+    SHDEF       *pSVar36;
+    ulong        uVar37;
+    DWORD        DVar38;
+    undefined2   uVar39;
     undefined2   uVar40;
     undefined2   uVar41;
-    long         lVar42;
-    uint         in_stack_0000fec6;
     short        l;
     undefined4   local_134;
     undefined4   local_130;
@@ -162,16 +158,15 @@ short GenerateWorld(short fBatchMode)
     short iBest;
     long *pl;
 
-    lVar42 = CONCAT22(unaff_SI, unaff_DI);
     iMin = 0;
     cKill = 0;
     *(short *)&dGal = *(int *)&game.mdSize * 400 + 400;
     *(short *)&dGalInv = *(int *)&dGal + 2000;
-    uVar40 = 0;
-    pcVar20 = (char *)"Stars!" + 3;
-    uVar31 = __aFulmul((long)*(int *)&dGal, (long)*(int *)&dGal);
-    lVar32 = __aFldiv(uVar31, (long)CONCAT22(uVar40, pcVar20));
-    cPlanMax = (int)lVar32 + ((int)lVar32 / 4) * (*(int *)&game.mdDensity + -1);
+    uVar39 = 0;
+    pcVar19 = (char *)"Stars!" + 3;
+    uVar30 = __aFulmul((long)*(int *)&dGal, (long)*(int *)&dGal);
+    lVar31 = __aFldiv(uVar30, (long)CONCAT22(uVar39, pcVar19));
+    cPlanMax = (int)lVar31 + ((int)lVar31 / 4) * (*(int *)&game.mdDensity + -1);
     if (2 < *(int *)&game.mdDensity) {
         cPlanMax = cPlanMax + cPlanMax / 4;
     }
@@ -180,27 +175,27 @@ short GenerateWorld(short fBatchMode)
     }
     dGalMinSq = *(int *)&dGalMinDist * *(int *)&dGalMinDist;
     if (cPlanMax / 7 + cPlanMax < 999) {
-        uVar12 = cPlanMax / 7 + cPlanMax;
+        uVar11 = cPlanMax / 7 + cPlanMax;
     } else {
-        uVar12 = 999;
+        uVar11 = 999;
     }
     dx = 1010;
     dy = *(int *)&dGal + -19;
-    for (i = 0; i < (int)uVar12; i = i + 1) {
-        sVar13 = Random(dy);
-        ((POINT *)rgptPlan + i)->x = sVar13 + dx;
-        sVar13 = Random(dy);
-        *(int *)((int)&rgptPlan[0].y + i * 4) = sVar13 + dx;
+    for (i = 0; i < (int)uVar11; i = i + 1) {
+        sVar12 = Random(dy);
+        ((POINT *)rgptPlan + i)->x = sVar12 + dx;
+        sVar12 = Random(dy);
+        *(int *)((int)&rgptPlan[0].y + i * 4) = sVar12 + dx;
     }
-    _qsort((POINT *)rgptPlan, uVar12, 4, (void *)((int)(double *)&DOUBLE_0_0001__1120_1d6e + 6));
-    pPVar21 = (POINT *)rgptPlan + uVar12;
-    for (ppt = (POINT *)rgptPlan; ppt < pPVar21; ppt = ppt + 1) {
+    _qsort((POINT *)rgptPlan, uVar11, 4, (void *)((int)(double *)&DOUBLE_0_0001__1120_1d6e + 6));
+    pPVar20 = (POINT *)rgptPlan + uVar11;
+    for (ppt = (POINT *)rgptPlan; ppt < pPVar20; ppt = ppt + 1) {
         if (-1 < ppt->y) {
             iNewLine = ppt->x + *(int *)&dGalMinDist;
-            pPVar8 = ppt;
-            while ((pptT = pPVar8 + 1, pptT < pPVar21 && (pptT->x <= iNewLine))) {
-                dy = _abs(ppt->y - pPVar8[1].y);
-                pPVar8 = pptT;
+            pPVar7 = ppt;
+            while ((pptT = pPVar7 + 1, pptT < pPVar20 && (pptT->x <= iNewLine))) {
+                dy = _abs(ppt->y - pPVar7[1].y);
+                pPVar7 = pptT;
                 if (dy <= *(int *)&dGalMinDist) {
                     dx = ppt->x - pptT->x;
                     local_11a = (THING *)CONCAT22(dy * dy, (THING *)local_11a);
@@ -212,26 +207,26 @@ short GenerateWorld(short fBatchMode)
             }
         }
     }
-    cKillMax = uVar12 - cPlanMax;
+    cKillMax = uVar11 - cPlanMax;
     while (true) {
         if (cKillMax <= cKill)
             break;
-        i = Random(uVar12);
+        i = Random(uVar11);
         if (-1 < *(int *)((int)&rgptPlan[0].y + i * 4)) {
             *(undefined2 *)((int)&rgptPlan[0].y + i * 4) = 0xff9c;
             cKill = cKill + 1;
         }
     }
     pptT = (POINT *)rgptPlan;
-    for (ppt = (POINT *)rgptPlan; ppt < pPVar21; ppt = ppt + 1) {
+    for (ppt = (POINT *)rgptPlan; ppt < pPVar20; ppt = ppt + 1) {
         if (-1 < ppt->y) {
-            sVar13 = ppt->y;
+            sVar12 = ppt->y;
             pptT->x = ppt->x;
-            pptT->y = sVar13;
+            pptT->y = sVar12;
             pptT = pptT + 1;
         }
     }
-    cPlanMax = uVar12 - cKill;
+    cPlanMax = uVar11 - cKill;
     if ((*(uint *)&game.wCrap >> 8 & 1) != 0) {
         for (i = 0; i < cPlanMax; i = i + 1) {
             lBest._0_2_ = 0x9680;
@@ -245,8 +240,8 @@ short GenerateWorld(short fBatchMode)
                     dx = pt.x - ((POINT *)rgptPlan + k)->x;
                     dy = pt.y - *(int *)((int)&rgptPlan[0].y + k * 4);
                     local_11a = (THING *)__aFulmul((long)dy, (long)dy);
-                    uVar31 = __aFulmul((long)dx, (long)dx);
-                    uStack_114 = (long)&local_11a->idFull + uVar31;
+                    uVar30 = __aFulmul((long)dx, (long)dx);
+                    uStack_114 = (long)&local_11a->idFull + uVar30;
                     if ((long)uStack_114 < lBest) {
                         iBest = k;
                         lBest = uStack_114;
@@ -289,14 +284,14 @@ short GenerateWorld(short fBatchMode)
     }
     *(short *)&cPlanet = cPlanMax;
     *(short (**)[9]) & penvMem = &env;
-    sVar13 = __setjmp(env);
-    if (sVar13 != 0) {
+    sVar12 = __setjmp(env);
+    if (sVar12 != 0) {
         DestroyCurGame();
         return 0;
     }
-    pvVar33 = LpAlloc(cPlanMax * 0x38, htPlanets);
-    *(void **)(PLANET **)&lpPlanets = (void *)pvVar33;
-    *(undefined2 *)((int)(PLANET **)&lpPlanets + 2) = (int)((ulong)pvVar33 >> 0x10);
+    pvVar32 = LpAlloc(cPlanMax * 0x38, htPlanets);
+    *(void **)(PLANET **)&lpPlanets = (void *)pvVar32;
+    *(undefined2 *)((int)(PLANET **)&lpPlanets + 2) = (int)((ulong)pvVar32 >> 0x10);
     /* WARNING: Load size is inaccurate */
     __fmemset((void *)CONCAT22(*(undefined2 *)((int)(PLANET **)&lpPlanets + 2), *(PLANET **)&lpPlanets), 0, cPlanMax * 0x38);
     i = 0;
@@ -304,67 +299,67 @@ short GenerateWorld(short fBatchMode)
     lppl = (PLANET *)CONCAT22(*(undefined2 *)((int)(PLANET **)&lpPlanets + 2), *(PLANET **)&lpPlanets);
     for (; i < cPlanMax; i = i + 1) {
         lppl->id = i;
-        uVar40 = (undefined2)((ulong)lppl >> 0x10);
-        pPVar28 = (PLANET *)lppl;
-        pPVar28->iPlayer = -1;
-        pPVar28->wFlags_0x4 = pPVar28->wFlags_0x4 & 0xff00 | 7;
-        uVar17 = *(uint *)(pPVar28->rgbImp + 6);
-        *(uint *)(pPVar28->rgbImp + 4) = *(uint *)(pPVar28->rgbImp + 4) & 0xfff | 0xf000;
-        *(uint *)(pPVar28->rgbImp + 6) = uVar17 & 0xfffe | 1;
+        uVar39 = (undefined2)((ulong)lppl >> 0x10);
+        pPVar27 = (PLANET *)lppl;
+        pPVar27->iPlayer = -1;
+        pPVar27->wFlags_0x4 = pPVar27->wFlags_0x4 & 0xff00 | 7;
+        uVar16 = *(uint *)(pPVar27->rgbImp + 6);
+        *(uint *)(pPVar27->rgbImp + 4) = *(uint *)(pPVar27->rgbImp + 4) & 0xfff | 0xf000;
+        *(uint *)(pPVar27->rgbImp + 6) = uVar16 & 0xfffe | 1;
         if ((*(uint *)&game.wCrap >> 7 & 1) == 0) {
-            sVar13 = Random(3);
-            local_11a = (THING *)(ulong)(sVar13 == 0);
-            lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-            uVar40 = (undefined2)((ulong)lppl >> 0x10);
-            pPVar28 = (PLANET *)lppl;
-            uVar17 = *(uint *)(pPVar28->rgbImp + 4) | (uint)lVar32;
-            local_122._6_2_ = *(uint *)(pPVar28->rgbImp + 6) & 0xffbf | (uint)((ulong)lVar32 >> 0x10);
-            local_122._4_2_ = uVar17;
-            *(uint *)(pPVar28->rgbImp + 4) = uVar17;
-            *(undefined2 *)(pPVar28->rgbImp + 6) = local_122._6_2_;
+            sVar12 = Random(3);
+            local_11a = (THING *)(ulong)(uint)(sVar12 == 0);
+            lVar31 = __aFlshl((ulong)(uint)(sVar12 == 0), 0x16);
+            uVar39 = (undefined2)((ulong)lppl >> 0x10);
+            pPVar27 = (PLANET *)lppl;
+            uVar16 = *(uint *)(pPVar27->rgbImp + 4) | (uint)lVar31;
+            local_122._6_2_ = *(uint *)(pPVar27->rgbImp + 6) & 0xffbf | (uint)((ulong)lVar31 >> 0x10);
+            local_122._4_2_ = uVar16;
+            *(uint *)(pPVar27->rgbImp + 4) = uVar16;
+            *(undefined2 *)(pPVar27->rgbImp + 6) = local_122._6_2_;
         }
-        sVar13 = Random(0x5a);
-        ((PLANET *)lppl)->rgEnvVar[0] = (char)sVar13 + '\x01';
-        sVar13 = Random(10);
-        uVar40 = (undefined2)((ulong)lppl >> 0x10);
-        pPVar28 = (PLANET *)lppl;
-        pPVar28->rgEnvVar[0] = pPVar28->rgEnvVar[0] + (char)sVar13;
-        pPVar28->rgEnvVarOrig[0] = pPVar28->rgEnvVar[0];
-        sVar13 = Random(0x5a);
-        ((PLANET *)lppl)->rgEnvVar[1] = (char)sVar13 + '\x01';
-        sVar13 = Random(10);
-        uVar40 = (undefined2)((ulong)lppl >> 0x10);
-        pPVar28 = (PLANET *)lppl;
-        pPVar28->rgEnvVar[1] = pPVar28->rgEnvVar[1] + (char)sVar13;
-        pPVar28->rgEnvVarOrig[1] = pPVar28->rgEnvVar[1];
-        sVar13 = Random(99);
-        cVar11 = (char)sVar13 + '\x01';
-        uVar40 = (undefined2)((ulong)lppl >> 0x10);
-        pPVar28 = (PLANET *)lppl;
-        pPVar28->rgEnvVarOrig[2] = cVar11;
-        pPVar28->rgEnvVar[2] = cVar11;
+        sVar12 = Random(0x5a);
+        ((PLANET *)lppl)->rgEnvVar[0] = (char)sVar12 + '\x01';
+        sVar12 = Random(10);
+        uVar39 = (undefined2)((ulong)lppl >> 0x10);
+        pPVar27 = (PLANET *)lppl;
+        pPVar27->rgEnvVar[0] = pPVar27->rgEnvVar[0] + (char)sVar12;
+        pPVar27->rgEnvVarOrig[0] = pPVar27->rgEnvVar[0];
+        sVar12 = Random(0x5a);
+        ((PLANET *)lppl)->rgEnvVar[1] = (char)sVar12 + '\x01';
+        sVar12 = Random(10);
+        uVar39 = (undefined2)((ulong)lppl >> 0x10);
+        pPVar27 = (PLANET *)lppl;
+        pPVar27->rgEnvVar[1] = pPVar27->rgEnvVar[1] + (char)sVar12;
+        pPVar27->rgEnvVarOrig[1] = pPVar27->rgEnvVar[1];
+        sVar12 = Random(99);
+        cVar10 = (char)sVar12 + '\x01';
+        uVar39 = (undefined2)((ulong)lppl >> 0x10);
+        pPVar27 = (PLANET *)lppl;
+        pPVar27->rgEnvVarOrig[2] = cVar10;
+        pPVar27->rgEnvVar[2] = cVar10;
         if ((*(uint *)&game.wCrap >> 3 & 1) != 0) {
             if (i == 5) {
                 for (j = 0; j < 3; j = j + 1) {
-                    pPVar28->rgEnvVar[j] = pPVar28->rgEnvVar[j] + -5;
-                    pPVar28->rgEnvVarOrig[j] = pPVar28->rgEnvVar[j];
+                    pPVar27->rgEnvVar[j] = pPVar27->rgEnvVar[j] + -5;
+                    pPVar27->rgEnvVarOrig[j] = pPVar27->rgEnvVar[j];
                 }
             } else if (i == 0xb) {
-                pPVar28->rgEnvVar[0] = pPVar28->rgEnvVar[0] + '\x14';
-                pPVar28->rgEnvVarOrig[0] = pPVar28->rgEnvVar[0];
+                pPVar27->rgEnvVar[0] = pPVar27->rgEnvVar[0] + '\x14';
+                pPVar27->rgEnvVarOrig[0] = pPVar27->rgEnvVar[0];
             }
         }
         for (j = 0; j < 3; j = j + 1) {
             if ((*(uint *)&game.wCrap & 1) == 0) {
                 *(undefined2 *)(((PLANET *)lppl)->rgwtMin + j) = 0;
                 *(undefined2 *)((int)(((PLANET *)lppl)->rgwtMin + j) + 2) = 0;
-                sVar13 = Random(0x2d);
-                local_11a = (THING *)CONCAT22(sVar13, (THING *)local_11a);
-                sVar13 = Random(0x2d);
-                ((PLANET *)lppl)->rgMinConc[j] = (char)sVar13 + (char)((ulong)local_11a >> 0x10) + 0x1f;
+                sVar12 = Random(0x2d);
+                local_11a = (THING *)CONCAT22(sVar12, (THING *)local_11a);
+                sVar12 = Random(0x2d);
+                ((PLANET *)lppl)->rgMinConc[j] = (char)sVar12 + (char)((ulong)local_11a >> 0x10) + 0x1f;
                 if ('Y' < ((PLANET *)lppl)->rgEnvVar[2]) {
-                    sVar13 = Random(99 - (uint)((PLANET *)lppl)->rgMinConc[j]);
-                    ((PLANET *)lppl)->rgMinConc[j] = ((PLANET *)lppl)->rgMinConc[j] + (char)(sVar13 / 2);
+                    sVar12 = Random(99 - (uint)((PLANET *)lppl)->rgMinConc[j]);
+                    ((PLANET *)lppl)->rgMinConc[j] = ((PLANET *)lppl)->rgMinConc[j] + (char)(sVar12 / 2);
                 }
             } else {
                 ((PLANET *)lppl)->rgMinConc[j] = 100;
@@ -384,14 +379,14 @@ short GenerateWorld(short fBatchMode)
         if (iT < 0x12) {
             if (iT < 9) {
                 for (iT = iT + 1; iT < 0x10; iT = iT << 1) {
-                    sVar13 = Random(0x1e);
-                    local_11a = (THING *)CONCAT22(sVar13, (THING *)local_11a);
+                    sVar12 = Random(0x1e);
+                    local_11a = (THING *)CONCAT22(sVar12, (THING *)local_11a);
                     j = Random(3);
                     ((PLANET *)lppl)->rgMinConc[j] = (char)((ulong)local_11a >> 0x10) + 1;
                 }
             } else {
-                sVar13 = Random(0x1e);
-                local_11a = (THING *)CONCAT22(sVar13, (THING *)local_11a);
+                sVar12 = Random(0x1e);
+                local_11a = (THING *)CONCAT22(sVar12, (THING *)local_11a);
                 j = Random(3);
                 ((PLANET *)lppl)->rgMinConc[j] = (char)((ulong)local_11a >> 0x10) + 1;
             }
@@ -399,83 +394,83 @@ short GenerateWorld(short fBatchMode)
         lppl = (PLANET *)lppl + 1;
     }
     for (j = 0; j < 3; j = j + 1) {
-        sVar13 = Random((uint) * (byte *)(*(int *)(PLANET **)&lpPlanets + 9 + j) * 10);
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        piVar24 = (int *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-        *piVar24 = sVar13 + 10;
-        piVar24[1] = sVar13 + 10 >> 0xf;
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        puVar25 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-        uVar17 = puVar25[1];
-        if (((int)uVar17 < 1) && (((int)uVar17 < 0 || (*puVar25 < 200)))) {
-            sVar13 = Random(0x96);
-            uVar14 = sVar13 + 0x9b;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            puVar25 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-            puVar1 = puVar25;
-            uVar17 = *puVar1;
-            *puVar1 = *puVar1 + uVar14;
-            puVar1 = puVar25 + 1;
-            *puVar1 = *puVar1 + ((int)uVar14 >> 0xf) + (uint)CARRY2(uVar17, uVar14);
+        sVar12 = Random((uint) * (byte *)(*(int *)(PLANET **)&lpPlanets + 9 + j) * 10);
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        piVar23 = (int *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+        *piVar23 = sVar12 + 10;
+        piVar23[1] = sVar12 + 10 >> 0xf;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        puVar24 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+        uVar16 = puVar24[1];
+        if (((int)uVar16 < 1) && (((int)uVar16 < 0 || (*puVar24 < 200)))) {
+            sVar12 = Random(0x96);
+            uVar13 = sVar12 + 0x9b;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            puVar24 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+            puVar1 = puVar24;
+            uVar16 = *puVar1;
+            *puVar1 = *puVar1 + uVar13;
+            puVar1 = puVar24 + 1;
+            *puVar1 = *puVar1 + ((int)uVar13 >> 0xf) + (uint)CARRY2(uVar16, uVar13);
         }
         if ((*(uint *)&game.wCrap >> 5 & 1) != 0) {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            puVar26 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-            lVar32 = __aFldiv(CONCAT22(puVar26[1], *puVar26), 4);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            puVar25 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-            puVar1 = puVar25;
-            uVar17 = *puVar1;
-            *puVar1 = *puVar1 + (uint)lVar32;
-            puVar1 = puVar25 + 1;
-            *puVar1 = *puVar1 + (int)((ulong)lVar32 >> 0x10) + (uint)CARRY2(uVar17, (uint)lVar32);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            puVar25 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+            lVar31 = __aFldiv(CONCAT22(puVar25[1], *puVar25), 4);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            puVar24 = (uint *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+            puVar1 = puVar24;
+            uVar16 = *puVar1;
+            *puVar1 = *puVar1 + (uint)lVar31;
+            puVar1 = puVar24 + 1;
+            *puVar1 = *puVar1 + (int)((ulong)lVar31 >> 0x10) + (uint)CARRY2(uVar16, (uint)lVar31);
         }
     }
-    uVar31 = __aFulmul((long)*(int *)&dGal, 6);
-    iVar15 = *(int *)&game.cPlayer;
-    iVar23 = iVar15 >> 0xf;
-    uStack_114 = uVar31;
-    uVar31 = __aFulmul((long)*(int *)&dGal, (long)*(int *)&dGal);
-    lVar32 = __aFldiv(uVar31, CONCAT22(iVar23, iVar15));
-    uVar31 = lVar32 - uStack_114;
-    if (((long)uVar31 < 0x10000) && ((long)uVar31 < 0)) {
-        uVar31 = 0;
+    uVar30 = __aFulmul((long)*(int *)&dGal, 6);
+    iVar14 = *(int *)&game.cPlayer;
+    iVar22 = iVar14 >> 0xf;
+    uStack_114 = uVar30;
+    uVar30 = __aFulmul((long)*(int *)&dGal, (long)*(int *)&dGal);
+    lVar31 = __aFldiv(uVar30, CONCAT22(iVar22, iVar14));
+    uVar30 = lVar31 - uStack_114;
+    if (((long)uVar30 < 0x10000) && ((long)uVar30 < 0)) {
+        uVar30 = 0;
     } else {
-        uVar41 = 0;
-        uVar40 = 10;
-        uVar31 = __aFulmul(uVar31, 9);
-        uVar31 = __aFldiv(uVar31, CONCAT22(uVar41, uVar40));
+        uVar40 = 0;
+        uVar39 = 10;
+        uVar30 = __aFulmul(uVar30, 9);
+        uVar30 = __aFldiv(uVar30, CONCAT22(uVar40, uVar39));
     }
-    uVar41 = 0;
-    uVar40 = 3;
-    uVar31 = __aFulmul(uVar31, (long)*(int *)&game.mdStartDist);
-    lVar32 = __aFldiv(uVar31, CONCAT22(uVar41, uVar40));
-    uVar31 = lVar32 + uStack_114;
-    uVar41 = 0;
-    uVar40 = 10;
-    uVar34 = __aFulmul(uVar31, 9);
-    lDistMin2 = __aFldiv(uVar34, CONCAT22(uVar41, uVar40));
-    uVar41 = 0;
-    uVar40 = 6;
-    uVar34 = __aFulmul(uVar31, 7);
-    lVar32 = __aFldiv(uVar34, CONCAT22(uVar41, uVar40));
+    uVar40 = 0;
+    uVar39 = 3;
+    uVar30 = __aFulmul(uVar30, (long)*(int *)&game.mdStartDist);
+    lVar31 = __aFldiv(uVar30, CONCAT22(uVar40, uVar39));
+    uVar30 = lVar31 + uStack_114;
+    uVar40 = 0;
+    uVar39 = 10;
+    uVar33 = __aFulmul(uVar30, 9);
+    lDistMin2 = __aFldiv(uVar33, CONCAT22(uVar40, uVar39));
+    uVar40 = 0;
+    uVar39 = 6;
+    uVar33 = __aFulmul(uVar30, 7);
+    lVar31 = __aFldiv(uVar33, CONCAT22(uVar40, uVar39));
 CREATE_RetryAll:
     lBest = 100000000;
-    iVar15 = *(int *)&dGal / 4 + 1000;
+    iVar14 = *(int *)&dGal / 4 + 1000;
     dMax = (*(int *)&dGal * 3) / 4 + 1000;
     for (i = 0; i < 50; i = i + 1) {
         rgi[0] = Random(cPlanMax);
         pt.x = ((POINT *)rgptPlan + rgi[0])->x;
         pt.y = *(int *)((int)&rgptPlan[0].y + rgi[0] * 4);
-        if (pt.x < iVar15) {
-            dx = iVar15 - pt.x;
+        if (pt.x < iVar14) {
+            dx = iVar14 - pt.x;
         } else if (dMax < pt.x) {
             dx = pt.x - dMax;
         } else {
             dx = 0;
         }
-        if (pt.y < iVar15) {
-            dy = iVar15 - pt.y;
+        if (pt.y < iVar14) {
+            dy = iVar14 - pt.y;
         } else if (dMax < pt.y) {
             dy = pt.y - dMax;
         } else {
@@ -484,8 +479,8 @@ CREATE_RetryAll:
         if ((dx == 0) && (dy == 0))
             break;
         local_11a = (THING *)__aFulmul((long)dy, (long)dy);
-        uVar34 = __aFulmul((long)dx, (long)dx);
-        uStack_114 = (long)&local_11a->idFull + uVar34;
+        uVar33 = __aFulmul((long)dx, (long)dx);
+        uStack_114 = (long)&local_11a->idFull + uVar33;
         if ((long)uStack_114 < lBest) {
             iBest = rgi[0];
             lBest = uStack_114;
@@ -496,41 +491,41 @@ CREATE_RetryAll:
     }
     if (*(int *)&game.cPlayer < 5) {
         if (*(int *)&game.cPlayer < 3) {
-            sVar13 = MulDiv(*(short *)&dGal, 3, 0x14);
-            dMin = sVar13 + 1000;
-            sVar13 = MulDiv(*(short *)&dGal, 0x11, 0x14);
-            dMax = sVar13 + 1000;
+            sVar12 = MulDiv(*(short *)&dGal, 3, 0x14);
+            dMin = sVar12 + 1000;
+            sVar12 = MulDiv(*(short *)&dGal, 0x11, 0x14);
+            dMax = sVar12 + 1000;
         } else {
             dMin = *(int *)&dGal / 10 + 1000;
-            sVar13 = MulDiv(*(short *)&dGal, 9, 10);
-            dMax = sVar13 + 1000;
+            sVar12 = MulDiv(*(short *)&dGal, 9, 10);
+            dMax = sVar12 + 1000;
         }
     } else {
         dMin = *(int *)&dGal / 0x14 + 1000;
-        sVar13 = MulDiv(*(short *)&dGal, 0x13, 0x14);
-        dMax = sVar13 + 1000;
+        sVar12 = MulDiv(*(short *)&dGal, 0x13, 0x14);
+        dMax = sVar12 + 1000;
     }
     for (i = 1; i < *(int *)&game.cPlayer; i = i + 1) {
         for (j = 0; j < 0x32; j = j + 1) {
-            sVar13 = Random(cPlanMax);
-            rgi[i] = sVar13;
+            sVar12 = Random(cPlanMax);
+            rgi[i] = sVar12;
             pt.x = ((POINT *)rgptPlan + rgi[i])->x;
             pt.y = *(int *)((int)&rgptPlan[0].y + rgi[i] * 4);
             if ((((dMin <= pt.x) && (dMin <= pt.y)) && (pt.x <= dMax)) && (pt.y <= dMax)) {
-                bVar30 = false;
+                bVar29 = false;
                 for (k = 0; k < i; k = k + 1) {
                     dx = pt.x - ((POINT *)rgptPlan + rgi[k])->x;
                     dy = pt.y - *(int *)((int)&rgptPlan[0].y + rgi[k] * 4);
                     local_11a = (THING *)__aFulmul((long)dy, (long)dy);
-                    uVar34 = __aFulmul((long)dx, (long)dx);
-                    uStack_114 = (long)&local_11a->idFull + uVar34;
+                    uVar33 = __aFulmul((long)dx, (long)dx);
+                    uStack_114 = (long)&local_11a->idFull + uVar33;
                     if (((long)uStack_114 < 1) || ((long)uStack_114 < lDistMin2))
                         break;
-                    if ((long)uStack_114 <= lVar32) {
-                        bVar30 = true;
+                    if ((long)uStack_114 <= lVar31) {
+                        bVar29 = true;
                     }
                 }
-                if ((k == i) && (bVar30))
+                if ((k == i) && (bVar29))
                     break;
             }
         }
@@ -538,41 +533,41 @@ CREATE_RetryAll:
             iBest = rgi[i];
             do {
                 do {
-                    piVar24 = rgi + i;
-                    piVar3 = piVar24;
+                    piVar23 = rgi + i;
+                    piVar3 = piVar23;
                     *piVar3 = *piVar3 + 1;
-                    if ((*piVar24 == iBest) || ((cPlanMax <= rgi[i] && (rgi[i] = 0, iBest == 0))))
+                    if ((*piVar23 == iBest) || ((cPlanMax <= rgi[i] && (rgi[i] = 0, iBest == 0))))
                         goto LAB_1078_1566;
                     pt.x = ((POINT *)rgptPlan + rgi[i])->x;
                     pt.y = *(int *)((int)&rgptPlan[0].y + rgi[i] * 4);
                 } while ((pt.x < dMin) || (((pt.y < dMin || (dMax < pt.x)) || (dMax < pt.y))));
-                bVar30 = false;
+                bVar29 = false;
                 for (k = 0; k < i; k = k + 1) {
                     dx = pt.x - ((POINT *)rgptPlan + rgi[k])->x;
                     dy = pt.y - *(int *)((int)&rgptPlan[0].y + rgi[k] * 4);
                     local_11a = (THING *)__aFulmul((long)dy, (long)dy);
-                    uVar34 = __aFulmul((long)dx, (long)dx);
-                    uStack_114 = (long)&local_11a->idFull + uVar34;
+                    uVar33 = __aFulmul((long)dx, (long)dx);
+                    uStack_114 = (long)&local_11a->idFull + uVar33;
                     if (((long)uStack_114 < 1) || ((long)uStack_114 < lDistMin2))
                         break;
-                    if ((long)uStack_114 <= lVar32) {
-                        bVar30 = true;
+                    if ((long)uStack_114 <= lVar31) {
+                        bVar29 = true;
                     }
                 }
-            } while ((k != i) || (!bVar30));
+            } while ((k != i) || (!bVar29));
         LAB_1078_1566:
             if (iBest == rgi[i])
                 goto LAB_1078_157c;
         }
     }
     for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
-        sVar13 = Random(*(int *)&game.cPlayer - i);
-        j = sVar13 + i;
-        sVar13 = rgi[j];
+        sVar12 = Random(*(int *)&game.cPlayer - i);
+        j = sVar12 + i;
+        sVar12 = rgi[j];
         rgi[j] = rgi[i];
-        rgi[i] = sVar13;
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceAIPlayer);
-        if (sVar13 != 0) {
+        rgi[i] = sVar12;
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceAIPlayer);
+        if (sVar12 != 0) {
             CreateRandomRace((PLAYER *)rgplr + i);
         }
         local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)&rgplr[0].wFlags + i * 0xc0), (THING *)local_11a) & 0xfffeffff);
@@ -582,12 +577,12 @@ CREATE_RetryAll:
         *(undefined2 *)((int)&rgplr[0].grbitTrader + i * 0xc0) = 0;
         for (j = 0; j < 6; j = j + 1) {
             *(undefined1 *)(i * 0xc0 + 0x59bc + j) = 0;
-            puVar26 = (undefined2 *)(i * 0xc0 + 0x59c2 + j * 4);
-            *puVar26 = 0;
-            puVar26[1] = 0;
+            puVar25 = (undefined2 *)(i * 0xc0 + 0x59c2 + j * 4);
+            *puVar25 = 0;
+            puVar25[1] = 0;
         }
-        sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-        switch (sVar13) {
+        sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+        switch (sVar12) {
         case 1:
             *(undefined1 *)((int)rgplr[0].rgTech + 4 + i * 0xc0) = 5;
             break;
@@ -622,28 +617,28 @@ CREATE_RetryAll:
                 *(undefined1 *)(i * 0xc0 + 0x59bc + j) = 3;
             }
         }
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceTech3);
-        if (sVar13 != 0) {
-            sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-            local_11a = (THING *)CONCAT22((sVar13 == 9) + 3, (THING *)local_11a);
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceTech3);
+        if (sVar12 != 0) {
+            sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+            local_11a = (THING *)CONCAT22((sVar12 == 9) + 3, (THING *)local_11a);
             for (j = 0; j < 6; j = j + 1) {
                 if ((int)*(char *)(i * 0xc0 + 0x59bc + j) < (int)local_11a._2_2_) {
-                    sVar13 = GetRaceStat((PLAYER *)rgplr + i, j + rsTechBonus1);
-                    pTVar9 = local_11a;
-                    if (sVar13 == 0) {
+                    sVar12 = GetRaceStat((PLAYER *)rgplr + i, j + rsTechBonus1);
+                    pTVar8 = local_11a;
+                    if (sVar12 == 0) {
                         local_11a = (THING *)CONCAT22(local_11a._2_2_, local_11a._2_2_);
-                        *(undefined1 *)(i * 0xc0 + 0x59bc + j) = (char)((ulong)pTVar9 >> 0x10);
+                        *(undefined1 *)(i * 0xc0 + 0x59bc + j) = (char)((ulong)pTVar8 >> 0x10);
                     }
                 }
             }
         }
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceCheapEngines);
-        if (sVar13 != 0) {
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceCheapEngines);
+        if (sVar12 != 0) {
             pcVar2 = (char *)((int)rgplr[0].rgTech + 2 + i * 0xc0);
             *pcVar2 = *pcVar2 + '\x01';
         }
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceIFE);
-        if ((sVar13 != 0) && ((*(uint *)&game.wCrap >> 3 & 1) == 0)) {
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceIFE);
+        if ((sVar12 != 0) && ((*(uint *)&game.wCrap >> 3 & 1) == 0)) {
             pcVar2 = (char *)((int)rgplr[0].rgTech + 2 + i * 0xc0);
             *pcVar2 = *pcVar2 + '\x01';
         }
@@ -656,168 +651,168 @@ CREATE_RetryAll:
         *(short *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 2) = i;
         *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 4) = *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 4) & 0xfdff | 0x200;
         *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x2c) = *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x2c) & 0xfff0;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar14 + 0x1a), *(undefined2 *)(iVar14 + 0x18)) & 0xffbfffff);
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        *(undefined2 *)(iVar14 + 0x18) = (THING *)local_11a;
+        *(undefined2 *)(iVar14 + 0x1a) = local_11a._2_2_;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        uVar30 = CONCAT22(*(undefined2 *)(iVar14 + 0x16), *(undefined2 *)(iVar14 + 0x14)) & 0xfffff;
+        local_11a._2_2_ = (THING *)((uint)(uVar30 >> 0x10) | 0xa0);
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        local_11a._0_2_ = (THING *)uVar30;
+        *(undefined2 *)(iVar14 + 0x14) = (THING *)local_11a;
+        *(uint *)(iVar14 + 0x16) = (uint)local_11a._2_2_;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        uVar30 = CONCAT22(*(undefined2 *)(iVar14 + 0x16), *(undefined2 *)(iVar14 + 0x14)) & 0xfff000ff;
+        local_11a._0_2_ = (THING *)((uint)uVar30 | 0xa00);
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        local_11a._2_2_ = (THING *)(uVar30 >> 0x10);
+        *(uint *)(iVar14 + 0x14) = (uint)(THING *)local_11a;
+        *(undefined2 *)(iVar14 + 0x16) = local_11a._2_2_;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        uVar16 = *(uint *)(iVar14 + 0x18);
+        uVar39 = *(undefined2 *)(iVar14 + 0x1a);
         uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar15 + 0x1a), *(undefined2 *)(iVar15 + 0x18)) & 0xffbfffff);
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        *(undefined2 *)(iVar15 + 0x18) = (THING *)local_11a;
-        *(undefined2 *)(iVar15 + 0x1a) = local_11a._2_2_;
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        uVar31 = CONCAT22(*(undefined2 *)(iVar15 + 0x16), *(undefined2 *)(iVar15 + 0x14)) & 0xfffff;
-        local_11a._2_2_ = (THING *)((uint)(uVar31 >> 0x10) | 0xa0);
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        local_11a._0_2_ = (THING *)uVar31;
-        *(undefined2 *)(iVar15 + 0x14) = (THING *)local_11a;
-        *(uint *)(iVar15 + 0x16) = (uint)local_11a._2_2_;
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        uVar31 = CONCAT22(*(undefined2 *)(iVar15 + 0x16), *(undefined2 *)(iVar15 + 0x14)) & 0xfff000ff;
-        local_11a._0_2_ = (THING *)((uint)uVar31 | 0xa00);
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        local_11a._2_2_ = (THING *)(uVar31 >> 0x10);
-        *(uint *)(iVar15 + 0x14) = (uint)(THING *)local_11a;
-        *(undefined2 *)(iVar15 + 0x16) = local_11a._2_2_;
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        uVar17 = *(uint *)(iVar15 + 0x18);
-        uVar40 = *(undefined2 *)(iVar15 + 0x1a);
-        uVar41 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        *(uint *)(iVar15 + 0x18) = uVar17 & 0xf000 | 10;
-        *(undefined2 *)(iVar15 + 0x1a) = uVar40;
-        local_11a = (THING *)(CONCAT22(*(undefined2 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 4), uVar17) & 0xfbfff000 | 0x400000a);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        *(uint *)(iVar14 + 0x18) = uVar16 & 0xf000 | 10;
+        *(undefined2 *)(iVar14 + 0x1a) = uVar39;
+        local_11a = (THING *)(CONCAT22(*(undefined2 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 4), uVar16) & 0xfbfff000 | 0x400000a);
         *(undefined2 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 4) = local_11a._2_2_;
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceLowStartingPop);
-        if (sVar13 == 0) {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(undefined2 *)(iVar15 + hbrBlue) = 0xfa;
-            *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = 0;
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceLowStartingPop);
+        if (sVar12 == 0) {
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(undefined2 *)(iVar14 + hbrBlue) = 0xfa;
+            *(undefined2 *)(iVar14 + lpfnTutorDlgProc) = 0;
         } else {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(undefined2 *)(iVar15 + hbrBlue) = 0xaf;
-            *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = 0;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(undefined2 *)(iVar14 + hbrBlue) = 0xaf;
+            *(undefined2 *)(iVar14 + lpfnTutorDlgProc) = 0;
         }
         local_122._6_2_ =
             *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) & 0xf000 | *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x28) / 4 & 0xfff;
         *(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) = local_122._6_2_;
         for (j = 0; j < 3; j = j + 1) {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            puVar26 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-            uVar41 = puVar26[1];
-            uVar5 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            puVar27 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x1c + j * 4);
-            *puVar27 = *puVar26;
-            puVar27[1] = uVar41;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            puVar25 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+            uVar40 = puVar25[1];
+            uVar41 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            puVar26 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x1c + j * 4);
+            *puVar26 = *puVar25;
+            puVar26[1] = uVar40;
             if (((uint)((GDATA *)&gd)->grBits >> 0xb & 1) == 0) {
                 if (*(byte *)(*(int *)(PLANET **)&lpPlanets + 9 + j) < 0x1e) {
-                    uVar10 = 0x1e;
+                    uVar9 = 0x1e;
                 } else {
-                    uVar10 = *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + 9 + j);
+                    uVar9 = *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + 9 + j);
                 }
-                *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 9 + j) = uVar10;
+                *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 9 + j) = uVar9;
             } else {
                 if (*(byte *)(*(int *)(PLANET **)&lpPlanets + 9 + j) < 0x19) {
-                    uVar10 = 0x19;
+                    uVar9 = 0x19;
                 } else {
-                    uVar10 = *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + 9 + j);
+                    uVar9 = *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + 9 + j);
                 }
-                *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 9 + j) = uVar10;
+                *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 9 + j) = uVar9;
             }
         }
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar15 + 0x1a), *(undefined2 *)(iVar15 + 0x18)) & 0xfffe0fff);
-        uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-        iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-        *(undefined2 *)(iVar15 + 0x18) = (THING *)local_11a;
-        *(undefined2 *)(iVar15 + 0x1a) = local_11a._2_2_;
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar14 + 0x1a), *(undefined2 *)(iVar14 + 0x18)) & 0xfffe0fff);
+        uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+        iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+        *(undefined2 *)(iVar14 + 0x18) = (THING *)local_11a;
+        *(undefined2 *)(iVar14 + 0x1a) = local_11a._2_2_;
         FSendPlrMsg(i, idmHomePlanetPeopleReadyLeaveNestExplore, iMin, iMin, 0, 0, 0, 0, 0, 0);
-        sVar13 = CAdvantagePoints((PLAYER *)rgplr + i);
-        if (sVar13 < 0x33) {
+        sVar12 = CAdvantagePoints((PLAYER *)rgplr + i);
+        if (sVar12 < 0x33) {
             iT = CAdvantagePoints((PLAYER *)rgplr + i);
         } else {
             iT = 0x32;
         }
         if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) != 0) && (iT = 0x32, 2 < (*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 10 & 7))) {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            local_11a = (THING *)__aFldiv(CONCAT22(*(undefined2 *)(iVar15 + lpfnTutorDlgProc), *(undefined2 *)(iVar15 + hbrBlue)), 10);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            puVar1 = (uint *)(iVar15 + hbrBlue);
-            uVar17 = *puVar1;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            local_11a = (THING *)__aFldiv(CONCAT22(*(undefined2 *)(iVar14 + lpfnTutorDlgProc), *(undefined2 *)(iVar14 + hbrBlue)), 10);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            puVar1 = (uint *)(iVar14 + hbrBlue);
+            uVar16 = *puVar1;
             *puVar1 = *puVar1 + (uint)local_11a;
-            piVar3 = (int *)(iVar15 + lpfnTutorDlgProc);
-            *piVar3 = *piVar3 + (int)((ulong)local_11a >> 0x10) + (uint)CARRY2(uVar17, (uint)local_11a);
+            piVar3 = (int *)(iVar14 + lpfnTutorDlgProc);
+            *piVar3 = *piVar3 + (int)((ulong)local_11a >> 0x10) + (uint)CARRY2(uVar16, (uint)local_11a);
         }
         if ((*(uint *)&game.wCrap >> 5 & 1) != 0) {
-            sVar13 = PctTrueMaxGrowth(i);
-            iVar15 = sVar13 * 2 + 10;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar23 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            local_11a._2_2_ = (THING *)iVar15;
-            join_0x00000008_0x00000000_ = __aFulmul(CONCAT22(*(undefined2 *)(iVar23 + lpfnTutorDlgProc), *(undefined2 *)(iVar23 + hbrBlue)), (long)iVar15);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(undefined2 *)(iVar15 + hbrBlue) = (int)join_0x00000008_0x00000000_;
-            *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = (int)(join_0x00000008_0x00000000_ >> 0x10);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            lVar32 = __aFldiv(CONCAT22(*(undefined2 *)(iVar15 + lpfnTutorDlgProc), *(undefined2 *)(iVar15 + hbrBlue)), 10);
-            local_122._6_2_ = (undefined2)lVar32;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(uint *)(iVar15 + hbrBlue) = local_122._6_2_;
-            *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = (int)((ulong)lVar32 >> 0x10);
-            uVar17 = (*(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) & 0x3ff) << 2;
-            local_11a = (THING *)CONCAT22(local_11a._2_2_, uVar17);
+            sVar12 = PctTrueMaxGrowth(i);
+            iVar14 = sVar12 * 2 + 10;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar22 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            local_11a._2_2_ = (THING *)iVar14;
+            join_0x00000008_0x00000000_ = __aFulmul(CONCAT22(*(undefined2 *)(iVar22 + lpfnTutorDlgProc), *(undefined2 *)(iVar22 + hbrBlue)), (long)iVar14);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(undefined2 *)(iVar14 + hbrBlue) = (int)join_0x00000008_0x00000000_;
+            *(undefined2 *)(iVar14 + lpfnTutorDlgProc) = (int)(join_0x00000008_0x00000000_ >> 0x10);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            lVar31 = __aFldiv(CONCAT22(*(undefined2 *)(iVar14 + lpfnTutorDlgProc), *(undefined2 *)(iVar14 + hbrBlue)), 10);
+            local_122._6_2_ = (undefined2)lVar31;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(uint *)(iVar14 + hbrBlue) = local_122._6_2_;
+            *(undefined2 *)(iVar14 + lpfnTutorDlgProc) = (int)((ulong)lVar31 >> 0x10);
+            uVar16 = (*(uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12) & 0x3ff) << 2;
+            local_11a = (THING *)CONCAT22(local_11a._2_2_, uVar16);
             puVar1 = (uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12);
             *puVar1 = *puVar1 & 0xf000;
             puVar1 = (uint *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x12);
-            *puVar1 = *puVar1 | uVar17;
+            *puVar1 = *puVar1 | uVar16;
         }
         j = GetRaceStat((PLAYER *)rgplr + i, rsUseLeftover);
         if (j == 0) {
         LAB_1078_2167:
-            iVar15 = iT * 10;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar23 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            plVar22 = (long *)(iVar23 + 0x1c);
-            pl = (long *)CONCAT22(uVar40, plVar22);
-            if ((*(int *)(iVar23 + hbrGray) < *(int *)(iVar23 + 0x1e)) ||
-                ((*(int *)(iVar23 + hbrGray) <= *(int *)(iVar23 + 0x1e) && (*(uint *)(iVar23 + hbrLightGray) <= (uint)*pl)))) {
-                if ((*(int *)(iVar23 + hbrGreen) < *(int *)(iVar23 + hbrGray)) ||
-                    ((*(int *)(iVar23 + hbrGreen) <= *(int *)(iVar23 + hbrGray) && (*(uint *)(iVar23 + hbrRed) <= *(uint *)(iVar23 + hbrLightGray))))) {
+            iVar14 = iT * 10;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar22 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            plVar21 = (long *)(iVar22 + 0x1c);
+            pl = (long *)CONCAT22(uVar39, plVar21);
+            if ((*(int *)(iVar22 + hbrGray) < *(int *)(iVar22 + 0x1e)) ||
+                ((*(int *)(iVar22 + hbrGray) <= *(int *)(iVar22 + 0x1e) && (*(uint *)(iVar22 + hbrLightGray) <= (uint)*pl)))) {
+                if ((*(int *)(iVar22 + hbrGreen) < *(int *)(iVar22 + hbrGray)) ||
+                    ((*(int *)(iVar22 + hbrGreen) <= *(int *)(iVar22 + hbrGray) && (*(uint *)(iVar22 + hbrRed) <= *(uint *)(iVar22 + hbrLightGray))))) {
                     iLow = 2;
                 } else {
                     iLow = 1;
                 }
-            } else if ((*(int *)(iVar23 + hbrGreen) < *(int *)(iVar23 + 0x1e)) ||
-                       ((*(int *)(iVar23 + hbrGreen) <= *(int *)(iVar23 + 0x1e) && (*(uint *)(iVar23 + hbrRed) <= (uint)*pl)))) {
+            } else if ((*(int *)(iVar22 + hbrGreen) < *(int *)(iVar22 + 0x1e)) ||
+                       ((*(int *)(iVar22 + hbrGreen) <= *(int *)(iVar22 + 0x1e) && (*(uint *)(iVar22 + hbrRed) <= (uint)*pl)))) {
                 iLow = 2;
             } else {
                 iLow = 0;
             }
-            local_11a = (THING *)(CONCAT22(iVar15, (THING *)local_11a) & 0x3ffff);
-            uVar14 = iVar15 >> 2;
-            uVar16 = uVar14 + (int)local_11a._2_2_;
-            puVar1 = (uint *)(plVar22 + iLow);
-            uVar17 = *puVar1;
-            *puVar1 = *puVar1 + uVar16;
-            puVar1 = (uint *)((int)(plVar22 + iLow) + 2);
-            *puVar1 = *puVar1 + ((int)uVar16 >> 0xf) + (uint)CARRY2(uVar17, uVar16);
+            local_11a = (THING *)(CONCAT22(iVar14, (THING *)local_11a) & 0x3ffff);
+            uVar13 = iVar14 >> 2;
+            uVar15 = uVar13 + (int)local_11a._2_2_;
+            puVar1 = (uint *)(plVar21 + iLow);
+            uVar16 = *puVar1;
+            *puVar1 = *puVar1 + uVar15;
+            puVar1 = (uint *)((int)(plVar21 + iLow) + 2);
+            *puVar1 = *puVar1 + ((int)uVar15 >> 0xf) + (uint)CARRY2(uVar16, uVar15);
             for (j = 0; j < 3; j = j + 1) {
-                puVar1 = (uint *)(plVar22 + j);
-                uVar17 = *puVar1;
-                *puVar1 = *puVar1 + uVar14;
-                puVar1 = (uint *)((int)(plVar22 + j) + 2);
-                *puVar1 = *puVar1 + (iVar15 >> 0xf) + (uint)CARRY2(uVar17, uVar14);
+                puVar1 = (uint *)(plVar21 + j);
+                uVar16 = *puVar1;
+                *puVar1 = *puVar1 + uVar13;
+                puVar1 = (uint *)((int)(plVar21 + j) + 2);
+                *puVar1 = *puVar1 + (iVar14 >> 0xf) + (uint)CARRY2(uVar16, uVar13);
             }
             if (((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) != 0) && (1 < (*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 10 & 7))) {
             CREATE_LConcentrations:
@@ -844,100 +839,100 @@ CREATE_RetryAll:
             if (j == 1)
                 goto CREATE_LConcentrations;
             if (j == 2) {
-                lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                local_122._6_2_ = (undefined2)((ulong)lVar32 >> 0x10);
-                uVar17 = (uint)lVar32;
-                local_122._4_2_ = uVar17;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar1 = (uint *)(iVar15 + 0x14);
-                local_11a = (THING *)(CONCAT22(local_122._6_2_ + *(int *)(iVar15 + 0x16) + (uint)CARRY2(uVar17, *puVar1), uVar17 + *puVar1) & 0xfff00);
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar1 = (uint *)(iVar15 + 0x14);
+                lVar31 = __aFlshl(CONCAT22(iT >> 0xf, iT >> 1), 8);
+                local_122._6_2_ = (undefined2)((ulong)lVar31 >> 0x10);
+                uVar16 = (uint)lVar31;
+                local_122._4_2_ = uVar16;
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar1 = (uint *)(iVar14 + 0x14);
+                local_11a = (THING *)(CONCAT22(local_122._6_2_ + *(int *)(iVar14 + 0x16) + (uint)CARRY2(uVar16, *puVar1), uVar16 + *puVar1) & 0xfff00);
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar1 = (uint *)(iVar14 + 0x14);
                 *puVar1 = *puVar1 & 0xff;
-                puVar1 = (uint *)(iVar15 + 0x16);
+                puVar1 = (uint *)(iVar14 + 0x16);
                 *puVar1 = *puVar1 & 0xfff0;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar1 = (uint *)(iVar15 + 0x14);
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar1 = (uint *)(iVar14 + 0x14);
                 *puVar1 = *puVar1 | (uint)(THING *)local_11a;
-                puVar1 = (uint *)(iVar15 + 0x16);
+                puVar1 = (uint *)(iVar14 + 0x16);
                 *puVar1 = *puVar1 | (uint)local_11a._2_2_;
             } else if (j == 3) {
-                lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                local_122._6_2_ = (undefined2)((ulong)lVar32 >> 0x10);
-                local_122._4_2_ = (uint)lVar32;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                uVar17 = local_122._6_2_ + *(int *)(iVar15 + 0x16) + (uint)CARRY2((uint)lVar32, *(uint *)(iVar15 + 0x14)) & 0xfff0;
-                local_11a = (THING *)((ulong)uVar17 << 0x10);
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar36 = (undefined2 *)(iVar15 + 0x14);
-                *puVar36 = *puVar36;
-                puVar1 = (uint *)(iVar15 + 0x16);
+                lVar31 = __aFlshl((long)(iT / 5), 0x14);
+                local_122._6_2_ = (undefined2)((ulong)lVar31 >> 0x10);
+                local_122._4_2_ = (uint)lVar31;
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                uVar16 = local_122._6_2_ + *(int *)(iVar14 + 0x16) + (uint)CARRY2((uint)lVar31, *(uint *)(iVar14 + 0x14)) & 0xfff0;
+                local_11a = (THING *)((ulong)uVar16 << 0x10);
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar35 = (undefined2 *)(iVar14 + 0x14);
+                *puVar35 = *puVar35;
+                puVar1 = (uint *)(iVar14 + 0x16);
                 *puVar1 = *puVar1 & 0xf;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar36 = (undefined2 *)(iVar15 + 0x14);
-                *puVar36 = *puVar36;
-                puVar1 = (uint *)(iVar15 + 0x16);
-                *puVar1 = *puVar1 | uVar17;
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar35 = (undefined2 *)(iVar14 + 0x14);
+                *puVar35 = *puVar35;
+                puVar1 = (uint *)(iVar14 + 0x16);
+                *puVar1 = *puVar1 | uVar16;
             } else {
                 if (j != 4)
                     goto LAB_1078_2167;
-                lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                local_122._6_2_ = (undefined2)((ulong)lVar32 >> 0x10);
-                local_122._4_2_ = (int)lVar32;
-                uVar17 = (int)lVar32 + *(int *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x18) & 0xfff;
-                local_11a = (THING *)(ulong)uVar17;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar1 = (uint *)(iVar15 + 0x18);
+                lVar31 = __aFlshl((long)((iT + 5) / 10), 0);
+                local_122._6_2_ = (undefined2)((ulong)lVar31 >> 0x10);
+                local_122._4_2_ = (int)lVar31;
+                uVar16 = (int)lVar31 + *(int *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0x18) & 0xfff;
+                local_11a = (THING *)(ulong)uVar16;
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar1 = (uint *)(iVar14 + 0x18);
                 *puVar1 = *puVar1 & 0xf000;
-                puVar36 = (undefined2 *)(iVar15 + 0x1a);
-                *puVar36 = *puVar36;
-                uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-                puVar1 = (uint *)(iVar15 + 0x18);
-                *puVar1 = *puVar1 | uVar17;
-                puVar36 = (undefined2 *)(iVar15 + 0x1a);
-                *puVar36 = *puVar36;
+                puVar35 = (undefined2 *)(iVar14 + 0x1a);
+                *puVar35 = *puVar35;
+                uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+                puVar1 = (uint *)(iVar14 + 0x18);
+                *puVar1 = *puVar1 | uVar16;
+                puVar35 = (undefined2 *)(iVar14 + 0x1a);
+                *puVar35 = *puVar35;
             }
         }
-        sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-        if (sVar13 == 8) {
+        sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+        if (sVar12 == 8) {
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar14 + 0x16), *(undefined2 *)(iVar14 + 0x14)) & 0xfff000ff);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(undefined2 *)(iVar14 + 0x14) = (THING *)local_11a;
+            *(undefined2 *)(iVar14 + 0x16) = local_11a._2_2_;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar14 + 0x16), *(undefined2 *)(iVar14 + 0x14)) & 0xfffff);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(undefined2 *)(iVar14 + 0x14) = (THING *)local_11a;
+            *(undefined2 *)(iVar14 + 0x16) = local_11a._2_2_;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            uVar16 = *(uint *)(iVar14 + 0x18);
+            uVar39 = *(undefined2 *)(iVar14 + 0x1a);
+            local_11a = (THING *)(CONCAT22(uVar39, uVar16) & 0xfffff000);
             uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar15 + 0x16), *(undefined2 *)(iVar15 + 0x14)) & 0xfff000ff);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(undefined2 *)(iVar15 + 0x14) = (THING *)local_11a;
-            *(undefined2 *)(iVar15 + 0x16) = local_11a._2_2_;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            local_11a = (THING *)(CONCAT22(*(undefined2 *)(iVar15 + 0x16), *(undefined2 *)(iVar15 + 0x14)) & 0xfffff);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(undefined2 *)(iVar15 + 0x14) = (THING *)local_11a;
-            *(undefined2 *)(iVar15 + 0x16) = local_11a._2_2_;
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            uVar17 = *(uint *)(iVar15 + 0x18);
-            uVar40 = *(undefined2 *)(iVar15 + 0x1a);
-            local_11a = (THING *)(CONCAT22(uVar40, uVar17) & 0xfffff000);
-            uVar41 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
-            *(uint *)(iVar15 + 0x18) = uVar17 & 0xf000;
-            *(undefined2 *)(iVar15 + 0x1a) = uVar40;
+            iVar14 = *(int *)(PLANET **)&lpPlanets + iMin * 0x38;
+            *(uint *)(iVar14 + 0x18) = uVar16 & 0xf000;
+            *(undefined2 *)(iVar14 + 0x1a) = uVar39;
         }
         local_11a = (THING *)CONCAT22(i, (THING *)local_11a);
         ((PLAYER *)rgplr + i)->iPlayer = (char)i;
         *(short *)((int)&rgplr[0].idPlanetHome + i * 0xc0) = iMin;
         if (*(char *)((int)rgplr[0].rgEnvVarMax + i * 0xc0) == -1) {
-            sVar13 = Random(99);
-            iT = sVar13 + 1;
+            sVar12 = Random(99);
+            iT = sVar12 + 1;
         } else {
             iT = (int)*(char *)((int)rgplr[0].rgEnvVarMin + i * 0xc0) +
                  ((int)*(char *)((int)rgplr[0].rgEnvVarMax + i * 0xc0) - (int)*(char *)((int)rgplr[0].rgEnvVarMin + i * 0xc0)) / 2;
@@ -946,8 +941,8 @@ CREATE_RetryAll:
         local_11a = (THING *)CONCAT22(iT, iT);
         *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0xc) = (char)iT;
         if (*(char *)((int)rgplr[0].rgEnvVarMax + 1 + i * 0xc0) == -1) {
-            sVar13 = Random(99);
-            iT = sVar13 + 1;
+            sVar12 = Random(99);
+            iT = sVar12 + 1;
         } else {
             iT = (int)*(char *)((int)rgplr[0].rgEnvVarMin + 1 + i * 0xc0) +
                  ((int)*(char *)((int)rgplr[0].rgEnvVarMax + 1 + i * 0xc0) - (int)*(char *)((int)rgplr[0].rgEnvVarMin + 1 + i * 0xc0)) / 2;
@@ -956,8 +951,8 @@ CREATE_RetryAll:
         local_11a = (THING *)CONCAT22(iT, iT);
         *(undefined1 *)(*(int *)(PLANET **)&lpPlanets + iMin * 0x38 + 0xd) = (char)iT;
         if (*(char *)((int)rgplr[0].rgEnvVarMax + 2 + i * 0xc0) == -1) {
-            sVar13 = Random(99);
-            iT = sVar13 + 1;
+            sVar12 = Random(99);
+            iT = sVar12 + 1;
         } else {
             iT = (int)*(char *)((int)rgplr[0].rgEnvVarMin + 2 + i * 0xc0) +
                  ((int)*(char *)((int)rgplr[0].rgEnvVarMax + 2 + i * 0xc0) - (int)*(char *)((int)rgplr[0].rgEnvVarMin + 2 + i * 0xc0)) / 2;
@@ -969,146 +964,146 @@ CREATE_RetryAll:
         }
         local_11a = (THING *)(CONCAT22((int)*(char *)((int)&rgplr[0].iTechCur + i * 0xc0), iT) & 0xfff0ffff);
         *(undefined1 *)((int)&rgplr[0].iTechCur + i * 0xc0) = (char)((ulong)local_11a >> 0x10);
-        uVar31 = CONCAT22((int)*(char *)((int)&rgplr[0].iTechCur + i * 0xc0), (THING *)local_11a) & 0xff0fffff;
-        *(byte *)((int)&rgplr[0].iTechCur + i * 0xc0) = (byte)(uVar31 >> 0x10) | 0x60;
+        uVar30 = CONCAT22((int)*(char *)((int)&rgplr[0].iTechCur + i * 0xc0), (THING *)local_11a) & 0xff0fffff;
+        *(byte *)((int)&rgplr[0].iTechCur + i * 0xc0) = (byte)(uVar30 >> 0x10) | 0x60;
         *(undefined2 *)((int)&rgplr[0].lResLastYear + i * 0xc0) = 0;
         *(undefined2 *)((int)&rgplr[0].lResLastYear + 2 + i * 0xc0) = 0;
         *(undefined2 *)((int)&rgplr[0].wScore + i * 0xc0) = 0;
         for (j = 0; j < *(int *)&game.cPlayer; j = j + 1) {
             *(undefined1 *)(i * 0xc0 + 0x5a12 + j) = 0;
         }
-        local_11a._0_2_ = (THING *)uVar31;
+        local_11a._0_2_ = (THING *)uVar30;
         local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0), (THING *)local_11a) & 0xfffffff | rgPalGray);
         *(undefined2 *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) = local_11a._2_2_;
-        puVar36 = LpAlloc(0x5be, htShips);
-        uVar40 = (undefined2)((ulong)puVar36 >> 0x10);
-        puVar26 = (undefined2 *)puVar36;
-        uVar12 = 0x24c;
-        pSVar37 = LpshdefSBT();
-        __fmemmove(puVar36, pSVar37, uVar12);
-        __fmemset((undefined2 *)CONCAT22(uVar40, puVar26 + 0x126), 0, 0x372);
-        *(undefined2 *)((int)puVar26 + 0x7f) = 1;
-        *(undefined2 *)((int)puVar26 + 0x81) = 0;
-        *(undefined2 *)((int)puVar26 + 0x83) = 1;
-        *(undefined2 *)((int)puVar26 + 0x85) = 0;
-        *(undefined2 *)(i * 4 + rglpshdefSB) = puVar26;
-        *(undefined2 *)(i * 4 + rglpshdefSB_0x2) = uVar40;
+        puVar35 = LpAlloc(0x5be, htShips);
+        uVar39 = (undefined2)((ulong)puVar35 >> 0x10);
+        puVar25 = (undefined2 *)puVar35;
+        uVar11 = 0x24c;
+        pSVar36 = LpshdefSBT();
+        __fmemmove(puVar35, pSVar36, uVar11);
+        __fmemset((undefined2 *)CONCAT22(uVar39, puVar25 + 0x126), 0, 0x372);
+        *(undefined2 *)((int)puVar25 + 0x7f) = 1;
+        *(undefined2 *)((int)puVar25 + 0x81) = 0;
+        *(undefined2 *)((int)puVar25 + 0x83) = 1;
+        *(undefined2 *)((int)puVar25 + 0x85) = 0;
+        *(undefined2 *)(i * 4 + rglpshdefSB) = puVar25;
+        *(undefined2 *)(i * 4 + rglpshdefSB_0x2) = uVar39;
         for (j = 1; j < 10; j = j + 1) {
-            local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)puVar26 + j * 0x93 + 0x7b), (THING *)local_11a) & 0xfdffffff | 0x2000000);
-            *(undefined2 *)((int)puVar26 + j * 0x93 + 0x7b) = local_11a._2_2_;
+            local_11a = (THING *)(CONCAT22(*(undefined2 *)((int)puVar25 + j * 0x93 + 0x7b), (THING *)local_11a) & 0xfdffffff | 0x2000000);
+            *(undefined2 *)((int)puVar25 + j * 0x93 + 0x7b) = local_11a._2_2_;
         }
-        sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-        if (sVar13 == 6) {
-            puVar26[0x1e] = puVar26[0x1e] & 0xff00 | 7;
-            puVar26[0x1e] = puVar26[0x1e] & 0xff | 0x100;
+        sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+        if (sVar12 == 6) {
+            puVar25[0x1e] = puVar25[0x1e] & 0xff00 | 7;
+            puVar25[0x1e] = puVar25[0x1e] & 0xff | 0x100;
             if (0 < *(int *)&game.mdSize) {
-                puVar26[0x87] = puVar26[0x87] & 0xfdff;
+                puVar25[0x87] = puVar25[0x87] & 0xfdff;
                 local_11a = (THING *)(CONCAT22(*(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) + 0x1000, (THING *)local_11a) & 0xf000ffff);
                 puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                 *puVar1 = *puVar1 & 0xfff;
                 puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                 *puVar1 = *puVar1 | (uint)local_11a._2_2_;
-                puVar26[0x8b] = 1;
-                puVar26[0x8c] = 0;
-                puVar26[0x89] = 1;
-                puVar26[0x8a] = 0;
+                puVar25[0x8b] = 1;
+                puVar25[0x8c] = 0;
+                puVar25[0x89] = 1;
+                puVar25[0x8a] = 0;
             }
         } else {
-            sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-            if ((sVar13 == 7) && ((*(uint *)&game.wCrap >> 3 & 1) == 0)) {
-                puVar26[0x1e] = puVar26[0x1e] & 0xff00;
-                puVar26[0x1e] = puVar26[0x1e] & 0xff | 0x100;
+            sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+            if ((sVar12 == 7) && ((*(uint *)&game.wCrap >> 3 & 1) == 0)) {
+                puVar25[0x1e] = puVar25[0x1e] & 0xff00;
+                puVar25[0x1e] = puVar25[0x1e] & 0xff | 0x100;
                 if (0 < *(int *)&game.mdSize) {
-                    puVar27 = puVar26 + 0x93;
-                    puVar29 = (undefined2 *)((int)puVar26 + 0x93);
-                    for (iVar15 = 0x49; iVar15 != 0; iVar15 = iVar15 + -1) {
-                        puVar4 = puVar29;
-                        puVar29 = puVar29 + 1;
-                        puVar36 = puVar27;
-                        puVar27 = puVar27 + 1;
-                        *puVar4 = *puVar36;
+                    puVar26 = puVar25 + 0x93;
+                    puVar28 = (undefined2 *)((int)puVar25 + 0x93);
+                    for (iVar14 = 0x49; iVar14 != 0; iVar14 = iVar14 + -1) {
+                        puVar4 = puVar28;
+                        puVar28 = puVar28 + 1;
+                        puVar35 = puVar26;
+                        puVar26 = puVar26 + 1;
+                        *puVar4 = *puVar35;
                     }
-                    *(undefined1 *)puVar29 = *(undefined1 *)puVar27;
-                    puVar26[0x87] = puVar26[0x87] & 0x83ff | 0x4400;
-                    puVar26[0x87] = puVar26[0x87] & 0xfdff;
+                    *(undefined1 *)puVar28 = *(undefined1 *)puVar26;
+                    puVar25[0x87] = puVar25[0x87] & 0x83ff | 0x4400;
+                    puVar25[0x87] = puVar25[0x87] & 0xfdff;
                     local_11a = (THING *)(CONCAT22(*(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) + 0x1000, (THING *)local_11a) & 0xf000ffff);
                     puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                     *puVar1 = *puVar1 & 0xfff;
                     puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                     *puVar1 = *puVar1 | (uint)local_11a._2_2_;
-                    puVar26[0x8b] = 1;
-                    puVar26[0x8c] = 0;
-                    puVar26[0x89] = 1;
-                    puVar26[0x8a] = 0;
+                    puVar25[0x8b] = 1;
+                    puVar25[0x8c] = 0;
+                    puVar25[0x89] = 1;
+                    puVar25[0x8a] = 0;
                 }
             } else {
-                sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-                if (sVar13 == 8) {
-                    uVar41 = *(undefined2 *)((int)&rgplr[0].idPlanetHome + i * 0xc0);
-                    puVar29 = (undefined2 *)((int)puVar26 + 0x93);
-                    puVar27 = puVar26;
-                    for (iVar15 = 0x49; iVar15 != 0; iVar15 = iVar15 + -1) {
-                        puVar4 = puVar29;
-                        puVar29 = puVar29 + 1;
-                        puVar36 = puVar27;
-                        puVar27 = puVar27 + 1;
-                        *puVar4 = *puVar36;
+                sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+                if (sVar12 == 8) {
+                    uVar40 = *(undefined2 *)((int)&rgplr[0].idPlanetHome + i * 0xc0);
+                    puVar28 = (undefined2 *)((int)puVar25 + 0x93);
+                    puVar26 = puVar25;
+                    for (iVar14 = 0x49; iVar14 != 0; iVar14 = iVar14 + -1) {
+                        puVar4 = puVar28;
+                        puVar28 = puVar28 + 1;
+                        puVar35 = puVar26;
+                        puVar26 = puVar26 + 1;
+                        *puVar4 = *puVar35;
                     }
-                    *(undefined1 *)puVar29 = *(undefined1 *)puVar27;
-                    puVar26[0x87] = puVar26[0x87] & 0x83ff | 0x4400;
-                    puVar27 = (undefined2 *)((int)puVar26 + 0x1b9);
-                    puVar29 = puVar26;
-                    for (iVar15 = 0x49; iVar15 != 0; iVar15 = iVar15 + -1) {
-                        puVar4 = puVar29;
-                        puVar29 = puVar29 + 1;
-                        puVar36 = puVar27;
-                        puVar27 = puVar27 + 1;
-                        *puVar4 = *puVar36;
+                    *(undefined1 *)puVar28 = *(undefined1 *)puVar26;
+                    puVar25[0x87] = puVar25[0x87] & 0x83ff | 0x4400;
+                    puVar26 = (undefined2 *)((int)puVar25 + 0x1b9);
+                    puVar28 = puVar25;
+                    for (iVar14 = 0x49; iVar14 != 0; iVar14 = iVar14 + -1) {
+                        puVar4 = puVar28;
+                        puVar28 = puVar28 + 1;
+                        puVar35 = puVar26;
+                        puVar26 = puVar26 + 1;
+                        *puVar4 = *puVar35;
                     }
-                    *(undefined1 *)puVar29 = *(undefined1 *)puVar27;
-                    *(uint *)((int)puVar26 + 0x7b) = *(uint *)((int)puVar26 + 0x7b) & 0x83ff | 0x4000;
-                    *(uint *)((int)puVar26 + 0x7b) = *(uint *)((int)puVar26 + 0x7b) & 0xfdff;
-                    local_11a = (THING *)(CONCAT22(uVar41, *(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) + 0x1000) & 0xfffff000);
+                    *(undefined1 *)puVar28 = *(undefined1 *)puVar26;
+                    *(uint *)((int)puVar25 + 0x7b) = *(uint *)((int)puVar25 + 0x7b) & 0x83ff | 0x4000;
+                    *(uint *)((int)puVar25 + 0x7b) = *(uint *)((int)puVar25 + 0x7b) & 0xfdff;
+                    local_11a = (THING *)(CONCAT22(uVar40, *(int *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0) + 0x1000) & 0xfffff000);
                     puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                     *puVar1 = *puVar1 & 0xfff;
                     puVar1 = (uint *)((int)&rgplr[0].wFlags_0x4 + i * 0xc0);
                     *puVar1 = *puVar1 | (uint)(THING *)local_11a;
-                    *(undefined2 *)((int)puVar26 + 0x83) = 0;
-                    *(undefined2 *)((int)puVar26 + 0x85) = 0;
-                    *(undefined2 *)((int)puVar26 + 0x7f) = 0;
-                    *(undefined2 *)((int)puVar26 + 0x81) = 0;
-                    uVar31 = CONCAT22(local_11a._2_2_, *(undefined2 *)(*(int *)(PLANET **)&lpPlanets + (int)local_11a._2_2_ * 0x38 + 0x2c)) & 0xfffffff0;
-                    local_11a = (THING *)(uVar31 | 1);
-                    pTVar9 = local_11a;
-                    local_11a._2_2_ = (THING *)(uVar31 >> 0x10);
-                    local_11a._0_2_ = (THING *)pTVar9;
+                    *(undefined2 *)((int)puVar25 + 0x83) = 0;
+                    *(undefined2 *)((int)puVar25 + 0x85) = 0;
+                    *(undefined2 *)((int)puVar25 + 0x7f) = 0;
+                    *(undefined2 *)((int)puVar25 + 0x81) = 0;
+                    uVar30 = CONCAT22(local_11a._2_2_, *(undefined2 *)(*(int *)(PLANET **)&lpPlanets + (int)local_11a._2_2_ * 0x38 + 0x2c)) & 0xfffffff0;
+                    local_11a = (THING *)(uVar30 | 1);
+                    pTVar8 = local_11a;
+                    local_11a._2_2_ = (THING *)(uVar30 >> 0x10);
+                    local_11a._0_2_ = (THING *)pTVar8;
                     *(undefined2 *)(*(int *)(PLANET **)&lpPlanets + (int)local_11a._2_2_ * 0x38 + 0x2c) = (THING *)local_11a;
-                    local_11a = pTVar9;
+                    local_11a = pTVar8;
                 }
             }
         }
     }
     *(short *)&cFleet = 0;
-    pvVar33 = LpAlloc(4, htMisc);
-    *(void **)(FLEET ***)&rglpfl = (void *)pvVar33;
-    *(undefined2 *)((int)(FLEET ***)&rglpfl + 2) = (int)((ulong)pvVar33 >> 0x10);
+    pvVar32 = LpAlloc(4, htMisc);
+    *(void **)(FLEET ***)&rglpfl = (void *)pvVar32;
+    *(undefined2 *)((int)(FLEET ***)&rglpfl + 2) = (int)((ulong)pvVar32 >> 0x10);
     i = 0;
     do {
         if (*(int *)&game.cPlayer <= i) {
             *(short *)&idPlayer = -1;
             if (((PLANET *)*(PLANET **)&lpPlanets)->iPlayer == -1) {
                 for (j = 0; j < 3; j = j + 1) {
-                    uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-                    puVar26 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
-                    *puVar26 = 0;
-                    puVar26[1] = 0;
+                    uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+                    puVar25 = (undefined2 *)(*(int *)(PLANET **)&lpPlanets + 0x1c + j * 4);
+                    *puVar25 = 0;
+                    puVar25[1] = 0;
                 }
             }
             for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
                 ((byte *)rgcbtlplan)[i] = 5;
-                pvVar33 = LpAlloc(0x240, htShips);
-                *(void **)((BTLPLAN **)rglpbtlplan + i) = (void *)pvVar33;
-                *(undefined2 *)((int)(BTLPLAN **)rglpbtlplan + i * 4 + 2) = (int)((ulong)pvVar33 >> 0x10);
+                pvVar32 = LpAlloc(0x240, htShips);
+                *(void **)((BTLPLAN **)rglpbtlplan + i) = (void *)pvVar32;
+                *(undefined2 *)((int)(BTLPLAN **)rglpbtlplan + i * 4 + 2) = (int)((ulong)pvVar32 >> 0x10);
                 for (j = 0; j < 5; j = j + 1) {
                     InitBattlePlan((BTLPLAN *)CONCAT22(*(undefined2 *)((int)(BTLPLAN **)rglpbtlplan + i * 4 + 2),
                                                        (BTLPLAN *)(*(int *)((BTLPLAN **)rglpbtlplan + i) + j * 0x24)),
@@ -1117,9 +1112,9 @@ CREATE_RetryAll:
             }
             *(short *)&game.cPlanMax = cPlanMax;
             if ((*(uint *)&game.wCrap >> 7 & 1) == 0) {
-                sVar13 = Random((uint) * (byte *)(*(int *)&game.mdSize + 6));
-                local_11a = (THING *)CONCAT22(sVar13, (THING *)local_11a);
-                iBest = (uint) * (byte *)*(undefined2 *)&game.mdSize + sVar13;
+                sVar12 = Random((uint) * (byte *)(*(int *)&game.mdSize + 6));
+                local_11a = (THING *)CONCAT22(sVar12, (THING *)local_11a);
+                iBest = (uint) * (byte *)*(undefined2 *)&game.mdSize + sVar12;
             } else {
                 iBest = 0;
             }
@@ -1128,7 +1123,7 @@ CREATE_RetryAll:
                     for (j = 0; j < 2; j = j + 1) {
                         local_11a = LpthNew(0, ithWormhole);
                         local_122._0_2_ = Random(3);
-                        uVar40 = (undefined2)((ulong)local_11a >> 0x10);
+                        uVar39 = (undefined2)((ulong)local_11a >> 0x10);
                         ((&((THING *)local_11a)->u_THING_0x0006)->thp).wFlags =
                             ((&((THING *)local_11a)->u_THING_0x0006)->thp).wFlags &
                                 (hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE | hstSBHull | hstSpecialSB | hstMines | hstMining | hstBomb |
@@ -1143,24 +1138,24 @@ CREATE_RetryAll:
                         }
                         k = 0;
                         iMax = 0x10;
-                        while (iVar15 = k + 1, k < 100) {
-                            sVar13 = Random(*(short *)&dGal);
-                            (&((THING *)local_11a)->pt)->x = sVar13 + 1000;
-                            sVar13 = Random(*(short *)&dGal);
-                            (((THING *)local_11a)->pt).y = sVar13 + 1000;
+                        while (iVar14 = k + 1, k < 100) {
+                            sVar12 = Random(*(short *)&dGal);
+                            (&((THING *)local_11a)->pt)->x = sVar12 + 1000;
+                            sVar12 = Random(*(short *)&dGal);
+                            (((THING *)local_11a)->pt).y = sVar12 + 1000;
                             iLow = IValidateWormholePos(local_11a);
                             if (iLow == 0)
                                 break;
-                            k = iVar15;
+                            k = iVar14;
                             if (iLow < iMax) {
-                                uVar40 = (undefined2)((ulong)local_11a >> 0x10);
+                                uVar39 = (undefined2)((ulong)local_11a >> 0x10);
                                 pt.x = (&((THING *)local_11a)->pt)->x;
                                 pt.y = (((THING *)local_11a)->pt).y;
                                 iMax = iLow;
                             }
                         }
                         if (iLow != 0) {
-                            uVar40 = (undefined2)((ulong)local_11a >> 0x10);
+                            uVar39 = (undefined2)((ulong)local_11a >> 0x10);
                             (&((THING *)local_11a)->pt)->x = pt.x;
                             (((THING *)local_11a)->pt).y = pt.y;
                         }
@@ -1189,12 +1184,12 @@ CREATE_RetryAll:
                 }
             }
             if ((i == *(int *)&game.cPlayer) && (iplrSingle != -1)) {
-                iVar15 = 1;
+                iVar14 = 1;
             } else {
-                iVar15 = 0;
+                iVar14 = 0;
             }
-            local_11a = (THING *)CONCAT22(iVar15, (THING *)local_11a);
-            *(uint *)&game.wCrap = *(uint *)&game.wCrap & 0xfffb | iVar15 << 2;
+            local_11a = (THING *)CONCAT22(iVar14, (THING *)local_11a);
+            *(uint *)&game.wCrap = *(uint *)&game.wCrap & 0xfffb | iVar14 << 2;
             if ((*(uint *)&game.wCrap >> 2 & 1) != 0) {
                 for (i = 0; i < *(int *)&game.cPlayer; i = i + 1) {
                     for (j = 0; j < *(int *)&game.cPlayer; j = j + 1) {
@@ -1205,28 +1200,29 @@ CREATE_RetryAll:
                 }
             }
             if ((*(uint *)&game.wCrap >> 3 & 1) == 0) {
-                DVar39 = GetTickCount();
-                *&((GAME *)&game)->lid = (int)DVar39;
-                *(undefined2 *)((int)&game.lid + 2) = (int)(DVar39 >> 0x10);
+                DVar38 = GetTickCount();
+                *&((GAME *)&game)->lid = (int)DVar38;
+                *(undefined2 *)((int)&game.lid + 2) = (int)(DVar38 >> 0x10);
             }
             _wsprintf((char *)szWork, (char *)"%s.xy", (char *)szBase, unaff_DS);
-            sVar13 = FCreateFile(dtXY, -1, 0);
-            if (sVar13 != 0) {
+            sVar12 = FCreateFile(dtXY, -1, 0);
+            if (sVar12 != 0) {
                 WriteRt(rtGame, 0x40, (GAME *)&game);
                 xOld = 1000;
                 for (i = 0; i < cPlanMax; i = i + 1) {
-                    local_11a = (THING *)(long)*(int *)((int)&rgptPlan[0].y + i * 4);
-                    lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0x3ff | (uint)lVar32;
-                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ & 0xffc0 | (uint)((ulong)lVar32 >> 0x10);
+                    uVar16 = *(uint *)((int)&rgptPlan[0].y + i * 4);
+                    local_11a = (THING *)(long)(int)uVar16;
+                    lVar31 = __aFlshl((ulong)(uVar16 & 0xfff), 10);
+                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0x3ff | (uint)lVar31;
+                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ & 0xffc0 | (uint)((ulong)lVar31 >> 0x10);
                     local_11a = (THING *)(long)((short *)rgidPlan)[i];
-                    lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags | (uint)lVar32;
-                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ & 0x3f | (uint)((ulong)lVar32 >> 0x10);
+                    lVar31 = __aFlshl((ulong)(((short *)rgidPlan)[i] & 0x3ff), 0x16);
+                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags | (uint)lVar31;
+                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ & 0x3f | (uint)((ulong)lVar31 >> 0x10);
                     dx = ((POINT *)rgptPlan + i)->x - xOld;
-                    lVar32 = __aFlshl(lVar42, in_stack_0000fec6);
-                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0xfc00 | (uint)lVar32;
-                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ | (uint)((ulong)lVar32 >> 0x10);
+                    lVar31 = __aFlshl((ulong)(dx & 0x3ff), 0);
+                    starpack.dwFlags._0_2_ = (uint)starpack.dwFlags & 0xfc00 | (uint)lVar31;
+                    starpack.dwFlags._2_2_ = starpack.dwFlags._2_2_ | (uint)((ulong)lVar31 >> 0x10);
                     RgToStream(&starpack, 4);
                     xOld = ((POINT *)rgptPlan + i)->x;
                 }
@@ -1244,11 +1240,11 @@ CREATE_RetryAll:
                     } else {
                         DestroyCurGame();
                         _wsprintf((char *)&local_11a, *(char **)&MPCTD, iplrSingle + 1);
-                        sVar13 = FLoadGame((char *)szBase, &local_11a);
-                        if (sVar13 == 0) {
-                            sVar13 = 0x10;
-                            pcVar20 = PszFormatIds(idsUnableOpenNewTurnFile, 0);
-                            AlertSz(pcVar20, sVar13);
+                        sVar12 = FLoadGame((char *)szBase, &local_11a);
+                        if (sVar12 == 0) {
+                            sVar12 = 0x10;
+                            pcVar19 = PszFormatIds(idsUnableOpenNewTurnFile, 0);
+                            AlertSz(pcVar19, sVar12);
                             return 0;
                         }
                         *(short *)&idPlayer = iplrSingle;
@@ -1259,125 +1255,125 @@ CREATE_RetryAll:
                 }
                 return 1;
             }
-            sVar13 = 0x10;
-            pcVar20 = PszFormatIds(idsUnableCreateUniverseDefinitionFile, 0);
-            AlertSz(pcVar20, sVar13);
+            sVar12 = 0x10;
+            pcVar19 = PszFormatIds(idsUnableCreateUniverseDefinitionFile, 0);
+            AlertSz(pcVar19, sVar12);
             DestroyCurGame();
             return 0;
         }
         *(short *)&idPlayer = i;
-        pvVar33 = LpAlloc(0x930, htShips);
-        uVar40 = (undefined2)((ulong)pvVar33 >> 0x10);
-        pvVar7 = (void *)pvVar33;
-        __fmemset(pvVar33, 0, 0x930);
+        pvVar32 = LpAlloc(0x930, htShips);
+        uVar39 = (undefined2)((ulong)pvVar32 >> 0x10);
+        pvVar6 = (void *)pvVar32;
+        __fmemset(pvVar32, 0, 0x930);
         for (j = 0; j < 0x10; j = j + 1) {
-            local_126 = (HullSlotType *)(CONCAT22(*(undefined2 *)((int)pvVar7 + j * 0x93 + 0x7b), (HullSlotType *)local_126) & 0xfdffffff | 0x2000000);
-            *(undefined2 *)((int)pvVar7 + j * 0x93 + 0x7b) = local_126._2_2_;
+            local_126 = (HullSlotType *)(CONCAT22(*(undefined2 *)((int)pvVar6 + j * 0x93 + 0x7b), (HullSlotType *)local_126) & 0xfdffffff | 0x2000000);
+            *(undefined2 *)((int)pvVar6 + j * 0x93 + 0x7b) = local_126._2_2_;
         }
-        *(int *)(i * 4 + rglpshdef) = (int)pvVar7;
-        *(undefined2 *)(i * 4 + rglpshdef_0x2) = uVar40;
+        *(int *)(i * 4 + rglpshdef) = (int)pvVar6;
+        *(undefined2 *)(i * 4 + rglpshdef_0x2) = uVar39;
         local_11a = (THING *)CONCAT22(local_11a._2_2_, (THING *)*(undefined2 *)((int)&rgplr[0].idPlanetHome + i * 0xc0));
-        sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-        if (sVar13 == 6) {
+        sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+        if (sVar12 == 6) {
             CreateStartupShip(i, (short)(THING *)local_11a, LongRangeScout, 1);
             local_126 =
                 (HullSlotType *)(CONCAT22(*(undefined2 *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x2e), (HullSlotType *)local_126) &
                                      0xc3ffffff |
                                  0x4000000);
             *(undefined2 *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x2e) = local_126._2_2_;
-        } else if (sVar13 == 2) {
+        } else if (sVar12 == 2) {
             CreateStartupShip(i, (short)(THING *)local_11a, ArmedProbe, 1);
             if ('\x02' < *(char *)((int)rgplr[0].rgTech + 3 + i * 0xc0)) {
                 CreateStartupShip(i, (short)(THING *)local_11a, StalwartDefender, 1);
                 CreateStartupShip(i, (short)(THING *)local_11a, Gadfly, 1);
             }
-        } else if (sVar13 == 9) {
+        } else if (sVar12 == 9) {
             CreateStartupShip(i, (short)(THING *)local_11a, ArmedProbe, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, LongRangeScout, 1);
-        } else if (sVar13 == 1) {
+        } else if (sVar12 == 1) {
             if (*(char *)((int)rgplr[0].rgTech + i * 0xc0) < '\x02') {
-                SVar19 = SmaugarianPeepingTom;
+                SVar18 = SmaugarianPeepingTom;
             } else {
-                SVar19 = ShadowSleuth;
+                SVar18 = ShadowSleuth;
             }
-            CreateStartupShip(i, (short)(THING *)local_11a, SVar19, 1);
+            CreateStartupShip(i, (short)(THING *)local_11a, SVar18, 1);
             if ((*(uint *)((int)&rgplr[0].wMdPlr + i * 0xc0) >> 9 & 1) == 0) {
                 CreateStartupShip(i, (short)(THING *)local_11a, ShadowTransport, 1);
             }
         } else {
             CreateStartupShip(i, (short)(THING *)local_11a, SmaugarianPeepingTom, 1);
         }
-        if (sVar13 == 0) {
-            sVar18 = CreateStartupShip(i, (short)(THING *)local_11a, SporeCloud, 1);
-            local_11a = (THING *)CONCAT22(sVar18, (THING *)local_11a);
+        if (sVar12 == 0) {
+            sVar17 = CreateStartupShip(i, (short)(THING *)local_11a, SporeCloud, 1);
+            local_11a = (THING *)CONCAT22(sVar17, (THING *)local_11a);
             for (j = 1; j < 3; j = j + 1) {
                 CreateStartupShip(i, (short)(THING *)local_11a, (StartingShip)local_11a._2_2_, 0);
             }
-        } else if (sVar13 == 7) {
+        } else if (sVar12 == 7) {
             CreateStartupShip(i, (short)(THING *)local_11a, Mayflower, 1);
-        } else if (sVar13 == 8) {
+        } else if (sVar12 == 8) {
             CreateStartupShip(i, (short)(THING *)local_11a, Pinta, 1);
         } else {
-            sVar18 = CreateStartupShip(i, (short)(THING *)local_11a, SantaMaria, 1);
-            local_11a = (THING *)CONCAT22(sVar18, (THING *)local_11a);
+            sVar17 = CreateStartupShip(i, (short)(THING *)local_11a, SantaMaria, 1);
+            local_11a = (THING *)CONCAT22(sVar17, (THING *)local_11a);
         }
-        if (sVar13 == 5) {
+        if (sVar12 == 5) {
             CreateStartupShip(i, (short)(THING *)local_11a, LittleHen, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, SpeedTurtle, 1);
-        } else if (sVar13 == 3) {
+        } else if (sVar12 == 3) {
             CreateStartupShip(i, (short)(THING *)local_11a, ChangeofHeart, 1);
-        } else if (sVar13 == 7) {
+        } else if (sVar12 == 7) {
             CreateStartupShip(i, (short)(THING *)local_11a, StalwartDefender, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, Swashbuckler, 1);
             if (0 < *(int *)&game.mdSize)
                 goto CREATE_LGive2ndPlanet;
-        } else if ((sVar13 == 6) && (0 < *(int *)&game.mdSize)) {
+        } else if ((sVar12 == 6) && (0 < *(int *)&game.mdSize)) {
         CREATE_LGive2ndPlanet:
             local_130 = 0;
             local_128 = 0;
             local_12c = ((POINT *)rgptPlan + (int)(THING *)local_11a)->x;
             local_12a = *(uint *)((int)&rgptPlan[0].y + (int)(THING *)local_11a * 4);
             local_126 = 0;
-            uVar41 = 0;
-            uVar40 = 100;
-            uVar31 = __aFulmul((long)*(int *)&dGal, 0xf);
-            uVar31 = __aFldiv(uVar31, CONCAT22(uVar41, uVar40));
-            lDistMin2 = uVar31;
-            uVar31 = __aFulmul(uVar31, uVar31);
-            uVar41 = 0;
-            uVar40 = 100;
-            lDistMin2 = uVar31;
-            uVar31 = __aFulmul((long)*(int *)&dGal, 0x17);
-            uVar31 = __aFldiv(uVar31, CONCAT22(uVar41, uVar40));
-            uVar31 = __aFulmul(uVar31, uVar31);
-            uVar41 = 0;
-            uVar40 = 100;
-            uVar34 = __aFulmul((long)*(int *)&dGal, 0x14);
-            uVar34 = __aFldiv(uVar34, CONCAT22(uVar41, uVar40));
-            __aFulmul(uVar34, uVar34);
+            uVar40 = 0;
+            uVar39 = 100;
+            uVar30 = __aFulmul((long)*(int *)&dGal, 0xf);
+            uVar30 = __aFldiv(uVar30, CONCAT22(uVar40, uVar39));
+            lDistMin2 = uVar30;
+            uVar30 = __aFulmul(uVar30, uVar30);
+            uVar40 = 0;
+            uVar39 = 100;
+            lDistMin2 = uVar30;
+            uVar30 = __aFulmul((long)*(int *)&dGal, 0x17);
+            uVar30 = __aFldiv(uVar30, CONCAT22(uVar40, uVar39));
+            uVar30 = __aFulmul(uVar30, uVar30);
+            uVar40 = 0;
+            uVar39 = 100;
+            uVar33 = __aFulmul((long)*(int *)&dGal, 0x14);
+            uVar33 = __aFldiv(uVar33, CONCAT22(uVar40, uVar39));
+            __aFulmul(uVar33, uVar33);
             lBest = 10000000;
-            pPVar21 = (POINT *)rgptPlan + cPlanMax;
+            pPVar20 = (POINT *)rgptPlan + cPlanMax;
             ppt = (POINT *)rgptPlan;
             /* WARNING: Load size is inaccurate */
             lppl = (PLANET *)CONCAT22(*(undefined2 *)((int)(PLANET **)&lpPlanets + 2), *(PLANET **)&lpPlanets);
-            for (; ppt < pPVar21; ppt = ppt + 1) {
+            for (; ppt < pPVar20; ppt = ppt + 1) {
                 if (((PLANET *)lppl)->iPlayer == -1) {
                     dx = ppt->x - local_12c;
                     dy = ppt->y - local_12a;
-                    uVar34 = __aFulmul((long)dy, (long)dy);
-                    uVar38 = __aFulmul((long)dx, (long)dx);
-                    local_134 = uVar38 + uVar34;
-                    if ((local_134 < lDistMin2) || ((long)uVar31 < local_134)) {
+                    uVar33 = __aFulmul((long)dy, (long)dy);
+                    uVar37 = __aFulmul((long)dx, (long)dx);
+                    local_134 = uVar37 + uVar33;
+                    if ((local_134 < lDistMin2) || ((long)uVar30 < local_134)) {
                         if (((PLANET *)local_130 == 0) && ((local_130._2_2_ == 0 && (local_134 < lBest)))) {
                             local_128 = (PLANET *)lppl;
                             local_126 = (HullSlotType *)CONCAT22(local_126._2_2_, lppl._2_2_);
                             lBest = local_134;
                         }
                     } else {
-                        iVar15 = local_126._2_2_ + 1;
-                        local_126 = (HullSlotType *)CONCAT22(iVar15, (HullSlotType *)local_126);
-                        sVar13 = Random(iVar15);
-                        if (sVar13 == 0) {
+                        iVar14 = local_126._2_2_ + 1;
+                        local_126 = (HullSlotType *)CONCAT22(iVar14, (HullSlotType *)local_126);
+                        sVar12 = Random(iVar14);
+                        if (sVar12 == 0) {
                             local_130 = lppl;
                         }
                     }
@@ -1387,22 +1383,22 @@ CREATE_RetryAll:
             if (((PLANET *)local_130 == 0) && (local_130._2_2_ == 0)) {
                 local_130 = (PLANET *)CONCAT22((HullSlotType *)local_126, local_128);
             }
-            uVar40 = (undefined2)((ulong)local_130 >> 0x10);
+            uVar39 = (undefined2)((ulong)local_130 >> 0x10);
             *(uint *)((int)&((PLANET *)local_130)->lStarbase + 2) = *(uint *)((int)&((PLANET *)local_130)->lStarbase + 2) & 0xc3ff | 0x400;
             local_126 = (HullSlotType *)((ulong)local_126 & 0xffff);
             while (true) {
-                sVar13 = PctPlanetDesirability(local_130, i);
-                if (9 < sVar13)
+                sVar12 = PctPlanetDesirability(local_130, i);
+                if (9 < sVar12)
                     break;
-                iVar15 = local_126._2_2_;
+                iVar14 = local_126._2_2_;
                 local_126 = (HullSlotType *)CONCAT22(local_126._2_2_ + 1, (HullSlotType *)local_126);
-                if (99 < iVar15)
+                if (99 < iVar14)
                     break;
                 for (j = 0; j < 3; j = j + 1) {
-                    sVar13 = Random(0x61);
-                    cVar11 = (char)sVar13 + '\x02';
-                    ((PLANET *)local_130)->rgEnvVarOrig[j] = cVar11;
-                    ((PLANET *)local_130)->rgEnvVar[j] = cVar11;
+                    sVar12 = Random(0x61);
+                    cVar10 = (char)sVar12 + '\x02';
+                    ((PLANET *)local_130)->rgEnvVarOrig[j] = cVar10;
+                    ((PLANET *)local_130)->rgEnvVar[j] = cVar10;
                 }
             }
             if (99 < local_126._2_2_) {
@@ -1414,63 +1410,67 @@ CREATE_RetryAll:
             ((PLANET *)local_130)->iPlayer = i;
             ((PLANET *)local_130)->wFlags_0x4 = ((PLANET *)local_130)->wFlags_0x4 & 0xfdff | 0x200;
             *(uint *)&((PLANET *)local_130)->lStarbase = *(uint *)&((PLANET *)local_130)->lStarbase & 0xfff0 | 1;
-            uVar17 = *(uint *)(((PLANET *)local_130)->rgbImp + 6);
+            uVar16 = *(uint *)(((PLANET *)local_130)->rgbImp + 6);
             *(undefined2 *)(((PLANET *)local_130)->rgbImp + 4) = *(undefined2 *)(((PLANET *)local_130)->rgbImp + 4);
-            *(uint *)(((PLANET *)local_130)->rgbImp + 6) = uVar17 & 0xffbf;
-            uVar17 = *(uint *)(((PLANET *)local_130)->rgbImp + 2);
+            *(uint *)(((PLANET *)local_130)->rgbImp + 6) = uVar16 & 0xffbf;
+            uVar16 = *(uint *)(((PLANET *)local_130)->rgbImp + 2);
             *(undefined2 *)((PLANET *)local_130)->rgbImp = *(undefined2 *)((PLANET *)local_130)->rgbImp;
-            *(uint *)(((PLANET *)local_130)->rgbImp + 2) = uVar17 & 0xf | 0x40;
-            uVar17 = *(uint *)(((PLANET *)local_130)->rgbImp + 2);
+            *(uint *)(((PLANET *)local_130)->rgbImp + 2) = uVar16 & 0xf | 0x40;
+            uVar16 = *(uint *)(((PLANET *)local_130)->rgbImp + 2);
             *(uint *)((PLANET *)local_130)->rgbImp = *(uint *)((PLANET *)local_130)->rgbImp & 0xff | 0xa00;
-            *(uint *)(((PLANET *)local_130)->rgbImp + 2) = uVar17 & 0xfff0;
+            *(uint *)(((PLANET *)local_130)->rgbImp + 2) = uVar16 & 0xfff0;
             uVar41 = 0;
             uVar40 = 5;
-            lVar32 = __aFlshl(5, (ushort)lVar42);
-            lVar32 = __aFldiv(lVar32, CONCAT22(uVar41, uVar40));
-            uVar40 = (undefined2)((ulong)local_130 >> 0x10);
-            pPVar28 = (PLANET *)local_130;
-            *(int *)(pPVar28->rgwtMin + 3) = (int)lVar32;
-            *(undefined2 *)((int)pPVar28->rgwtMin + 0xe) = (int)((ulong)lVar32 >> 0x10);
-            pPVar28->uGuesses = pPVar28->uGuesses & 0xf000 | *(uint *)(pPVar28->rgwtMin + 3) / 4 & 0xfff;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
+            lVar31 = __aFlshl(CONCAT22(*(undefined2 *)(iVar14 + lpfnTutorDlgProc), *(undefined2 *)(iVar14 + hbrBlue)), 1);
+            lVar31 = __aFldiv(lVar31, CONCAT22(uVar41, uVar40));
+            uVar39 = (undefined2)((ulong)local_130 >> 0x10);
+            pPVar27 = (PLANET *)local_130;
+            *(int *)(pPVar27->rgwtMin + 3) = (int)lVar31;
+            *(undefined2 *)((int)pPVar27->rgwtMin + 0xe) = (int)((ulong)lVar31 >> 0x10);
+            pPVar27->uGuesses = pPVar27->uGuesses & 0xf000 | *(uint *)(pPVar27->rgwtMin + 3) / 4 & 0xfff;
             for (j = 0; j < 3; j = j + 1) {
-                sVar13 = Random(200);
-                *(short *)(((PLANET *)local_130)->rgwtMin + j) = sVar13 + 100;
-                *(int *)((int)(((PLANET *)local_130)->rgwtMin + j) + 2) = sVar13 + 100 >> 0xf;
+                sVar12 = Random(200);
+                *(short *)(((PLANET *)local_130)->rgwtMin + j) = sVar12 + 100;
+                *(int *)((int)(((PLANET *)local_130)->rgwtMin + j) + 2) = sVar12 + 100 >> 0xf;
             }
-            uVar40 = (undefined2)((ulong)local_130 >> 0x10);
-            pPVar28 = (PLANET *)local_130;
-            uVar17 = *(uint *)(pPVar28->rgbImp + 6);
-            *(uint *)(pPVar28->rgbImp + 4) = *(uint *)(pPVar28->rgbImp + 4) & 0xfff;
-            *(uint *)(pPVar28->rgbImp + 6) = uVar17 & 0xfffe;
+            uVar39 = (undefined2)((ulong)local_130 >> 0x10);
+            pPVar27 = (PLANET *)local_130;
+            uVar16 = *(uint *)(pPVar27->rgbImp + 6);
+            *(uint *)(pPVar27->rgbImp + 4) = *(uint *)(pPVar27->rgbImp + 4) & 0xfff;
+            *(uint *)(pPVar27->rgbImp + 6) = uVar16 & 0xfffe;
             uVar41 = 0;
             uVar40 = 5;
-            lVar32 = __aFlshl(5, (ushort)lVar42);
-            lVar32 = __aFldiv(lVar32, CONCAT22(uVar41, uVar40));
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
-            *(undefined2 *)(iVar15 + hbrBlue) = (int)lVar32;
-            *(undefined2 *)(iVar15 + lpfnTutorDlgProc) = (int)((ulong)lVar32 >> 0x10);
-            in_stack_0000fec6 = *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x12) & 0xf000 |
-                                *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x28) / 4 & 0xfff;
-            *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x12) = in_stack_0000fec6;
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
+            lVar31 = __aFlshl(CONCAT22(*(undefined2 *)(iVar14 + lpfnTutorDlgProc), *(undefined2 *)(iVar14 + hbrBlue)), 2);
+            lVar31 = __aFldiv(lVar31, CONCAT22(uVar41, uVar40));
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
+            *(undefined2 *)(iVar14 + hbrBlue) = (int)lVar31;
+            *(undefined2 *)(iVar14 + lpfnTutorDlgProc) = (int)((ulong)lVar31 >> 0x10);
+            *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x12) =
+                *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x12) & 0xf000 |
+                *(uint *)(*(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38 + 0x28) / 4 & 0xfff;
             CreateStartupShip(i, local_130->id, LilliputianFreighter, 0);
-        } else if (sVar13 == 9) {
+        } else if (sVar12 == 9) {
             if (*(char *)((int)rgplr[0].rgTech + 3 + i * 0xc0) < '\x04') {
-                SVar19 = Teamster;
+                SVar18 = Teamster;
             } else {
-                SVar19 = Swashbuckler;
+                SVar18 = Swashbuckler;
             }
-            CreateStartupShip(i, (short)(THING *)local_11a, SVar19, 1);
+            CreateStartupShip(i, (short)(THING *)local_11a, SVar18, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, StalwartDefender, 1);
             CreateStartupShip(i, (short)(THING *)local_11a, CottonPicker, 1);
         }
-        sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceOBRM);
-        if (sVar13 == 0) {
-            sVar13 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceARM);
-            if (sVar13 != 0) {
-                SVar19 = CreateStartupShip(i, (short)(THING *)local_11a, PotatoBug, 1);
-                local_11a = (THING *)CONCAT22(SVar19, (THING *)local_11a);
-                CreateStartupShip(i, (short)(THING *)local_11a, SVar19, 0);
+        sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceOBRM);
+        if (sVar12 == 0) {
+            sVar12 = GetRaceGrbit((PLAYER *)rgplr + i, ibitRaceARM);
+            if (sVar12 != 0) {
+                SVar18 = CreateStartupShip(i, (short)(THING *)local_11a, PotatoBug, 1);
+                local_11a = (THING *)CONCAT22(SVar18, (THING *)local_11a);
+                CreateStartupShip(i, (short)(THING *)local_11a, SVar18, 0);
             }
         }
         for (j = 0; j < *(char *)((int)&rgplr[0].cShDef + i * 0xc0); j = j + 1) {
@@ -1479,31 +1479,31 @@ CREATE_RetryAll:
             for (k = 0; k < (int)local_128; k = k + 1) {
                 local_12a = 0;
                 local_122._0_2_ = *local_126;
-                pTVar6 = (THING *)((HullSlotType *)local_126)[1];
-                local_122._2_2_ = pTVar6;
+                pTVar5 = (THING *)((HullSlotType *)local_126)[1];
+                local_122._2_2_ = pTVar5;
                 if (local_122._0_2_ == hstEngine) {
-                    if (((uint)pTVar6 & 0xff) == 1) {
+                    if (((uint)pTVar5 & 0xff) == 1) {
                         if (((*(char *)((int)rgplr[0].rgEnvVar + 2 + i * 0xc0) == -1) || (*(int *)(*(int *)(i * 4 + rglpshdef) + j * 0x93) != 0xf)) ||
                             ('T' < *(char *)((int)rgplr[0].rgEnvVar + 2 + i * 0xc0))) {
                             local_12a = 1;
                             /* WARNING: Ignoring partial resolution of indirect */
                             local_134._0_2_ = 10;
                         }
-                        iVar15 = local_12a * 2;
+                        iVar14 = local_12a * 2;
                         local_12a = local_12a + 1;
-                        *(undefined2 *)((int)&local_134 + iVar15) = 5;
-                        iVar15 = local_12a * 2;
+                        *(undefined2 *)((int)&local_134 + iVar14) = 5;
+                        iVar14 = local_12a * 2;
                         local_12a = local_12a + 1;
-                        *(undefined2 *)((int)&local_134 + iVar15) = 4;
-                        iVar15 = local_12a * 2;
+                        *(undefined2 *)((int)&local_134 + iVar14) = 4;
+                        iVar14 = local_12a * 2;
                         local_12a = local_12a + 1;
-                        *(undefined2 *)((int)&local_134 + iVar15) = 2;
-                        uVar17 = local_12a;
+                        *(undefined2 *)((int)&local_134 + iVar14) = 2;
+                        uVar16 = local_12a;
                         local_12a = local_12a + 1;
-                        *(undefined2 *)((int)&local_134 + uVar17 * 2) = 3;
+                        *(undefined2 *)((int)&local_134 + uVar16 * 2) = 3;
                     }
                 } else if (local_122._0_2_ == hstScanner) {
-                    if ((((uint)pTVar6 & 0xff) == 0) || (((uint)pTVar6 & 0xff) == 1)) {
+                    if ((((uint)pTVar5 & 0xff) == 0) || (((uint)pTVar5 & 0xff) == 1)) {
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 4;
                         /* WARNING: Ignoring partial resolution of indirect */
@@ -1513,7 +1513,7 @@ CREATE_RetryAll:
                         local_130._0_2_ = (PLANET *)0x1;
                     }
                 } else if (local_122._0_2_ == hstShield) {
-                    if ((((uint)pTVar6 & 0xff) == 0) || (((uint)pTVar6 & 0xff) == 1)) {
+                    if ((((uint)pTVar5 & 0xff) == 0) || (((uint)pTVar5 & 0xff) == 1)) {
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 2;
                         local_12a = 2;
@@ -1521,7 +1521,7 @@ CREATE_RetryAll:
                         local_134._2_2_ = 1;
                     }
                 } else if (local_122._0_2_ == hstArmor) {
-                    if ((((uint)pTVar6 & 0xff) == 0) || (((uint)pTVar6 & 0xff) == 1)) {
+                    if ((((uint)pTVar5 & 0xff) == 0) || (((uint)pTVar5 & 0xff) == 1)) {
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 2;
                         local_12a = 2;
@@ -1529,7 +1529,7 @@ CREATE_RetryAll:
                         local_134._2_2_ = 1;
                     }
                 } else if (local_122._0_2_ == hstBeam) {
-                    if ((((uint)pTVar6 & 0xff) == 0) || (((uint)pTVar6 & 0xff) == 1)) {
+                    if ((((uint)pTVar5 & 0xff) == 0) || (((uint)pTVar5 & 0xff) == 1)) {
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 3;
                         local_12a = 2;
@@ -1537,22 +1537,22 @@ CREATE_RetryAll:
                         local_134._2_2_ = 1;
                     }
                 } else if (local_122._0_2_ == hstTorp) {
-                    bVar30 = ((uint)pTVar6 & 0xff) == 0;
-                    if (bVar30) {
+                    bVar29 = ((uint)pTVar5 & 0xff) == 0;
+                    if (bVar29) {
                         local_12a = 1;
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 1;
                     }
-                    local_12a = (uint)bVar30;
+                    local_12a = (uint)bVar29;
                 } else if (local_122._0_2_ == hstBomb) {
-                    bVar30 = ((uint)pTVar6 & 0xff) == 0;
-                    if (bVar30) {
+                    bVar29 = ((uint)pTVar5 & 0xff) == 0;
+                    if (bVar29) {
                         local_12a = 1;
                         /* WARNING: Ignoring partial resolution of indirect */
                         local_134._0_2_ = 1;
                     }
-                    local_12a = (uint)bVar30;
-                } else if ((local_122._0_2_ == hstMining) && ((((uint)pTVar6 & 0xff) == 0 || (((uint)pTVar6 & 0xff) == 1)))) {
+                    local_12a = (uint)bVar29;
+                } else if ((local_122._0_2_ == hstMining) && ((((uint)pTVar5 & 0xff) == 0 || (((uint)pTVar5 & 0xff) == 1)))) {
                     /* WARNING: Ignoring partial resolution of indirect */
                     local_134._0_2_ = 2;
                     local_12a = 2;
@@ -1561,9 +1561,9 @@ CREATE_RetryAll:
                 }
                 for (l = 0; l < (int)local_12a; l = l + 1) {
                     local_122._2_2_ = (THING *)(local_122._2_2_ & 0xff00 | *(uint *)((int)&local_134 + l * 2) & 0xff);
-                    sVar13 = FLookupPart(local_122);
-                    if (sVar13 == 1) {
-                        uVar40 = (undefined2)((ulong)local_126 >> 0x10);
+                    sVar12 = FLookupPart(local_122);
+                    if (sVar12 == 1) {
+                        uVar39 = (undefined2)((ulong)local_126 >> 0x10);
                         ((HullSlotType *)local_126)[1] = ((HullSlotType *)local_126)[1] & (hstPlanetary | hstHull | hstTerra | hstSpecialM | hstSpecialE |
                                                                                            hstSBHull | hstSpecialSB | hstMines) |
                                                          *(HullSlotType *)((int)&local_134 + l * 2) &
@@ -1574,26 +1574,26 @@ CREATE_RetryAll:
                 local_126 = (HullSlotType *)local_126 + 2;
             }
         }
-        sVar13 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
-        if (sVar13 == 8) {
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
-            uVar31 = CONCAT22(*(undefined2 *)(iVar15 + 0x1a), *(undefined2 *)(iVar15 + 0x18)) & 0xfffe0fff;
-            local_126._0_2_ = (HullSlotType *)((uint)uVar31 | 0xf000);
-            uVar17 = (uint)(HullSlotType *)local_126;
-            local_126 = (HullSlotType *)(uVar31 | 0x1f000);
-            uVar40 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
-            iVar15 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
-            *(uint *)(iVar15 + 0x18) = uVar17;
-            *(undefined2 *)(iVar15 + 0x1a) = local_126._2_2_;
+        sVar12 = GetRaceStat((PLAYER *)rgplr + i, rsMajorAdv);
+        if (sVar12 == 8) {
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
+            uVar30 = CONCAT22(*(undefined2 *)(iVar14 + 0x1a), *(undefined2 *)(iVar14 + 0x18)) & 0xfffe0fff;
+            local_126._0_2_ = (HullSlotType *)((uint)uVar30 | 0xf000);
+            uVar16 = (uint)(HullSlotType *)local_126;
+            local_126 = (HullSlotType *)(uVar30 | 0x1f000);
+            uVar39 = *(undefined2 *)((int)(PLANET **)&lpPlanets + 2);
+            iVar14 = *(int *)(PLANET **)&lpPlanets + (int)(THING *)local_11a * 0x38;
+            *(uint *)(iVar14 + 0x18) = uVar16;
+            *(undefined2 *)(iVar14 + 0x1a) = local_126._2_2_;
         }
         i = i + 1;
     } while (true);
 LAB_1078_157c:
-    lVar35 = __aFldiv(uVar31, 0x23);
-    lDistMin2 = lDistMin2 - lVar35;
-    lVar35 = __aFldiv(uVar31, 0x23);
-    lVar32 = lVar32 + lVar35;
+    lVar34 = __aFldiv(uVar30, 0x23);
+    lDistMin2 = lDistMin2 - lVar34;
+    lVar34 = __aFldiv(uVar30, 0x23);
+    lVar31 = lVar31 + lVar34;
     goto CREATE_RetryAll;
 }
 
@@ -2875,7 +2875,6 @@ short FGetNewGameName(char *szFileSuggest)
 // Segment: MEMORY_CREATE
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: ps */
 /* WARNING: Removing unreachable block (ram,0x10787db7) */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
@@ -2892,10 +2891,8 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     short           sVar8;
     UINT            UVar9;
     int             iVar10;
-    undefined2      unaff_SI;
     undefined2     *puVar11;
     PLAYER         *pPVar12;
-    undefined2      unaff_DI;
     PLAYER         *pPVar13;
     undefined2      unaff_SS;
     ulong           uVar14;
@@ -2910,7 +2907,6 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     RECT            rc;
     short           i;
 
-    uVar14 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
         local_10 = BeginPaint(hwnd, &ps);
         HVar7 = GetDlgItem(hwnd, 200);
@@ -2988,7 +2984,7 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     }
                 }
             }
-            if ((i == -1) || (uVar14 = __aFulshr(uVar14, ps.hdc), (int)uVar14 == 6)) {
+            if ((i == -1) || (uVar14 = __aFulshr(lParam, 0x10), (int)uVar14 == 6)) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;
             }
@@ -3104,7 +3100,6 @@ short SimpleNewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_CREATE
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: ps */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
@@ -3115,8 +3110,6 @@ short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     short       sVar2;
     UINT        UVar3;
     undefined1 *puVar4;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     undefined2  uVar5;
     undefined2  unaff_SS;
     ulong       uVar6;
@@ -3129,7 +3122,6 @@ short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
     uVar5 = 0x1078;
     puVar4 = &stack0xffc2;
-    uVar6 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
         hdc = BeginPaint(hwnd, &ps);
         HVar1 = GetDlgItem(hwnd, 1000);
@@ -3186,7 +3178,7 @@ short NewGameDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             while ((i < 0x3fe && (HVar1 = GetDlgItem(hwnd, i), (HWND)lParam != HVar1))) {
                 i = i + 1;
             }
-            if (((i < 0x3fe) || (uVar6 = __aFulshr(uVar6, ps.hdc), (int)uVar6 == 6)) || (HVar1 = GetDlgItem(hwnd, IDC_U16_0x041A), (HWND)lParam == HVar1)) {
+            if (((i < 0x3fe) || (uVar6 = __aFulshr(lParam, 0x10), (int)uVar6 == 6)) || (HVar1 = GetDlgItem(hwnd, IDC_U16_0x041A), (HWND)lParam == HVar1)) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;
             }
@@ -3335,30 +3327,26 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
     undefined2 *puVar1;
-    byte        bVar2;
-    char        cVar3;
-    HWND        HVar4;
-    UINT        UVar5;
-    HMENU       HVar6;
-    uint        uVar7;
-    BOOL        BVar8;
-    char       *pcVar9;
+    char        cVar2;
+    HWND        HVar3;
+    UINT        UVar4;
+    HMENU       HVar5;
+    uint        uVar6;
+    BOOL        BVar7;
+    char       *pcVar8;
+    int         iVar9;
     int         iVar10;
-    int         iVar11;
-    undefined1 *puVar12;
-    undefined2  unaff_SI;
-    undefined2 *puVar13;
-    undefined2  unaff_DI;
+    RECT      **ppRVar11;
+    undefined2 *puVar12;
     PLAYER     *pplr16;
-    undefined2  uVar14;
+    undefined2  uVar13;
     undefined2  unaff_SS;
-    ulong       uVar15;
-    UINT        UVar16;
+    ulong       uVar14;
+    UINT        UVar15;
+    HMENU       HVar16;
     HMENU       HVar17;
-    HMENU       HVar18;
-    short       sVar19;
-    ushort      in_stack_0000ffac;
-    RECT       *pRVar20;
+    short       sVar18;
+    RECT       *local_54;
     short       iCurVal;
     short       iDiamond;
     MSG         msg;
@@ -3373,7 +3361,6 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     PLAYER     *pplr13;
     PLAYER     *pplr3;
 
-    uVar15 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
         local_16._6_2_ = BeginPaint(hwnd, local_30);
         DrawNewGame2(hwnd, local_16._6_2_, -1);
@@ -3388,11 +3375,11 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_CTLCOLOR) {
         for (i = 0x191; i < 0x1c1; i = i + 1) {
             local_16._6_2_ = (HWND)lParam;
-            HVar4 = GetDlgItem(hwnd, i);
-            if (local_16._6_2_ == HVar4)
+            HVar3 = GetDlgItem(hwnd, i);
+            if (local_16._6_2_ == HVar3)
                 break;
         }
-        if ((0x1c0 < i) && (uVar15 = __aFulshr(uVar15, in_stack_0000ffac), (int)uVar15 != 6)) {
+        if ((0x1c0 < i) && (uVar14 = __aFulshr(lParam, 0x10), (int)uVar14 != 6)) {
             return 0;
         }
         SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
@@ -3426,8 +3413,8 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (message == WM_INITDIALOG) {
         SetNGWTitle(hwnd, 2);
         local_30._22_2_ = (dyArial8 + 4) * 0x10 + 8;
-        HVar4 = GetDlgItem(hwnd, _rgidRaceBtn);
-        GetWindowRect(HVar4, &rc);
+        HVar3 = GetDlgItem(hwnd, _rgidRaceBtn);
+        GetWindowRect(HVar3, &rc);
         local_18 = rc.bottom - rc.top;
         GetWindowRect(hwnd, &local_16);
         local_30._20_2_ = local_16._6_2_ - local_16._2_2_;
@@ -3461,9 +3448,9 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
             return 0;
         }
         if (((i != 0) && (vrgplrTypeNew[0] == 0)) && (fRCWReadOnly == 0)) {
-            sVar19 = 0x10;
-            pcVar9 = PszFormatIds(idsMustHaveLeastOnePlayerGame, 0);
-            AlertSz(pcVar9, sVar19);
+            sVar18 = 0x10;
+            pcVar8 = PszFormatIds(idsMustHaveLeastOnePlayerGame, 0);
+            AlertSz(pcVar8, sVar18);
             return 0;
         }
         StickyDlgPos(hwnd, (POINT *)&ptStickyNewDlg, 0);
@@ -3477,8 +3464,8 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
         return 0;
     }
     local_16._2_2_ = (HWND)lParam;
-    uVar15 = __aFulshr(uVar15, in_stack_0000ffac);
-    local_16._4_2_ = (int)uVar15;
+    uVar14 = __aFulshr(lParam, 0x10);
+    local_16._4_2_ = (int)uVar14;
     if ((int)local_16._2_2_ < xNewGameDiamond) {
         return 0;
     }
@@ -3495,12 +3482,11 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     if (dyArial8 + 1 <= (local_16._4_2_ + -6) % (dyArial8 + 4)) {
         return 0;
     }
-    bVar2 = ((byte *)vrgplrTypeNew)[iDiamond];
-    iCurVal = (short)bVar2;
+    iCurVal = (short)((byte *)vrgplrTypeNew)[iDiamond];
     ClientToScreen(hwnd, (POINT *)((int)&local_16 + 2));
     local_3a[0] = CreatePopupMenu();
     for (local_16._0_2_ = 0; (int)local_16 < 6; local_16._0_2_ = (int)local_16 + 1) {
-        if (iCurVal == (int)local_16 * 4 + 1U) {
+        if (iCurVal == (int)local_16 * 4 + 1) {
             local_30._18_2_ = 8;
         } else {
             local_30._18_2_ = 0;
@@ -3508,29 +3494,29 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
         local_30._22_2_ = PszGetCompressedString((int)local_16 + idsHumanoid);
         AppendMenu(local_3a[0], local_30._18_2_, (int)local_16 + 0x3aa8, (LPCSTR)local_30._22_2_);
     }
-    UVar5 = (int)local_16 + 0x3aa8;
-    UVar16 = local_30._18_2_;
-    HVar6 = local_3a[0];
-    pcVar9 = PszGetCompressedString(idsRandom);
-    AppendMenu(HVar6, UVar16, UVar5, pcVar9);
-    UVar5 = (int)local_16 + 0x3aa9;
-    UVar16 = local_30._18_2_;
-    HVar6 = local_3a[0];
-    pcVar9 = PszGetCompressedString(idsExpansionPlayer);
-    AppendMenu(HVar6, UVar16, UVar5, pcVar9);
-    HVar6 = CreatePopupMenu();
-    UVar5 = 0;
-    UVar16 = 15000;
-    local_3a[1] = HVar6;
-    pcVar9 = PszGetCompressedString(idsNew);
-    AppendMenu(HVar6, UVar5, UVar16, pcVar9);
-    UVar5 = 0;
-    UVar16 = 0x3a99;
-    HVar6 = local_3a[1];
-    pcVar9 = PszGetCompressedString(idsOpen);
-    AppendMenu(HVar6, UVar5, UVar16, pcVar9);
+    UVar4 = (int)local_16 + 0x3aa8;
+    UVar15 = local_30._18_2_;
+    HVar5 = local_3a[0];
+    pcVar8 = PszGetCompressedString(idsRandom);
+    AppendMenu(HVar5, UVar15, UVar4, pcVar8);
+    UVar4 = (int)local_16 + 0x3aa9;
+    UVar15 = local_30._18_2_;
+    HVar5 = local_3a[0];
+    pcVar8 = PszGetCompressedString(idsExpansionPlayer);
+    AppendMenu(HVar5, UVar15, UVar4, pcVar8);
+    HVar5 = CreatePopupMenu();
+    UVar4 = 0;
+    UVar15 = 15000;
+    local_3a[1] = HVar5;
+    pcVar8 = PszGetCompressedString(idsNew);
+    AppendMenu(HVar5, UVar4, UVar15, pcVar8);
+    UVar4 = 0;
+    UVar15 = 0x3a99;
+    HVar5 = local_3a[1];
+    pcVar8 = PszGetCompressedString(idsOpen);
+    AppendMenu(HVar5, UVar4, UVar15, pcVar8);
     for (local_16._0_2_ = 0; (int)local_16 < vcplrNew; local_16._0_2_ = (int)local_16 + 1) {
-        if (iCurVal == (int)local_16 * 4 + 2U) {
+        if (iCurVal == (int)local_16 * 4 + 2) {
             local_30._18_2_ = 8;
         } else {
             local_30._18_2_ = 0;
@@ -3540,10 +3526,10 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
     }
     local_3a[2] = CreatePopupMenu();
     for (local_16._0_2_ = 0; (int)local_16 < 7; local_16._0_2_ = (int)local_16 + 1) {
-        HVar6 = CreatePopupMenu();
-        local_3a[(int)local_16 + 5] = HVar6;
+        HVar5 = CreatePopupMenu();
+        local_3a[(int)local_16 + 5] = HVar5;
         for (local_18 = 0; local_18 < 5; local_18 = local_18 + 1) {
-            if (iCurVal == local_18 * 0x20 + (int)local_16 * 4 + 5U) {
+            if (iCurVal == local_18 * 0x20 + (int)local_16 * 4 + 5) {
                 local_30._18_2_ = 8;
             } else {
                 local_30._18_2_ = 0;
@@ -3558,71 +3544,71 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
         }
         AppendMenu(local_3a[2], local_30._18_2_ | 0x10, local_3a[(int)local_16 + 5], (char *)*(undefined2 *)((int)local_16 * 2 + vrgszComputerPlayers));
     }
-    HVar6 = CreatePopupMenu();
+    HVar5 = CreatePopupMenu();
     iPopMenuSel = -1;
     if ((iCurVal & 3U) == 1) {
         local_30._18_2_ = 8;
     } else {
         local_30._18_2_ = 0;
     }
-    uVar7 = local_30._18_2_ | 0x10;
-    HVar17 = local_3a[0];
-    HVar18 = HVar6;
-    pcVar9 = PszGetCompressedString(idsPredefinedRace);
-    AppendMenu(HVar18, uVar7, HVar17, pcVar9);
+    uVar6 = local_30._18_2_ | 0x10;
+    HVar16 = local_3a[0];
+    HVar17 = HVar5;
+    pcVar8 = PszGetCompressedString(idsPredefinedRace);
+    AppendMenu(HVar17, uVar6, HVar16, pcVar8);
     if ((iCurVal & 3U) == 2) {
         local_30._18_2_ = 8;
     } else {
         local_30._18_2_ = 0;
     }
-    uVar7 = local_30._18_2_ | 0x10;
-    HVar17 = local_3a[1];
-    HVar18 = HVar6;
-    pcVar9 = PszGetCompressedString(idsCustomRace);
-    AppendMenu(HVar18, uVar7, HVar17, pcVar9);
+    uVar6 = local_30._18_2_ | 0x10;
+    HVar16 = local_3a[1];
+    HVar17 = HVar5;
+    pcVar8 = PszGetCompressedString(idsCustomRace);
+    AppendMenu(HVar17, uVar6, HVar16, pcVar8);
     if (((iCurVal & 3U) == 1) || ((iCurVal & 3U) == 2)) {
-        UVar5 = 0;
-        UVar16 = 0x3a9a;
-        HVar17 = HVar6;
-        pcVar9 = PszGetCompressedString(idsEditRace);
-        AppendMenu(HVar17, UVar5, UVar16, pcVar9);
+        UVar4 = 0;
+        UVar15 = 0x3a9a;
+        HVar16 = HVar5;
+        pcVar8 = PszGetCompressedString(idsEditRace);
+        AppendMenu(HVar16, UVar4, UVar15, pcVar8);
     }
-    AppendMenu(HVar6, 0x800, 0, 0);
+    AppendMenu(HVar5, 0x800, 0, 0);
     if ((iCurVal & 3U) == 3) {
         local_30._18_2_ = 8;
     } else {
         local_30._18_2_ = 0;
     }
-    uVar7 = local_30._18_2_ | 0x10;
-    HVar17 = local_3a[2];
-    HVar18 = HVar6;
-    pcVar9 = PszGetCompressedString(idsComputerPlayer);
-    AppendMenu(HVar18, uVar7, HVar17, pcVar9);
-    AppendMenu(HVar6, 0x800, 0, 0);
-    if ((bVar2 & 3) == 0) {
-        UVar16 = 8;
+    uVar6 = local_30._18_2_ | 0x10;
+    HVar16 = local_3a[2];
+    HVar17 = HVar5;
+    pcVar8 = PszGetCompressedString(idsComputerPlayer);
+    AppendMenu(HVar17, uVar6, HVar16, pcVar8);
+    AppendMenu(HVar5, 0x800, 0, 0);
+    if ((iCurVal & 3U) == 0) {
+        UVar15 = 8;
     } else {
-        UVar16 = 0;
+        UVar15 = 0;
     }
-    UVar5 = 0x3a9b;
-    HVar17 = HVar6;
-    local_30._18_2_ = UVar16;
-    pcVar9 = PszGetCompressedString(idsPlayer);
-    AppendMenu(HVar17, UVar16, UVar5, pcVar9);
+    UVar4 = 0x3a9b;
+    HVar16 = HVar5;
+    local_30._18_2_ = UVar15;
+    pcVar8 = PszGetCompressedString(idsPlayer);
+    AppendMenu(HVar16, UVar15, UVar4, pcVar8);
     if (message == WM_LBUTTONDOWN) {
         local_30._20_2_ = 0;
     } else {
         local_30._20_2_ = 2;
     }
-    TrackPopupMenu(HVar6, local_30._20_2_ | 4, local_16._2_2_, local_16._4_2_, 0, hwnd, 0);
-    DestroyMenu(HVar6);
+    TrackPopupMenu(HVar5, local_30._20_2_ | 4, local_16._2_2_, local_16._4_2_, 0, hwnd, 0);
+    DestroyMenu(HVar5);
     for (local_16._0_2_ = 0; (int)local_16 < 6; local_16._0_2_ = (int)local_16 + 1) {
         DestroyMenu(local_3a[(int)local_16]);
     }
-    uVar14 = 0x14f8;
-    BVar8 = PeekMessage(&msg, hwnd, 0x111, 0x111, 2);
-    puVar12 = &stack0xffaa;
-    if (((BVar8 != 0) && (14999 < msg.wParam)) && (msg.wParam < 0x3afc)) {
+    uVar13 = 0x14f8;
+    BVar7 = PeekMessage(&msg, hwnd, 0x111, 0x111, 2);
+    ppRVar11 = &stack0xffaa;
+    if (((BVar7 != 0) && (14999 < msg.wParam)) && (msg.wParam < 0x3afc)) {
         iPopMenuSel = msg.wParam + 0xc568;
     }
     local_16._6_2_ = 0xffff;
@@ -3630,21 +3616,25 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
         if (iPopMenuSel == 0) {
             pplr13 = (PLAYER *)vrgplrDef;
             pplr16 = (PLAYER *)&vplr;
-            for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
+            for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
                 pplr3 = pplr16;
                 pplr16 = &pplr16->cPlanet;
                 lpplr2 = pplr13;
                 pplr13 = &pplr13->cPlanet;
-                cVar3 = lpplr2->cShDef;
+                cVar2 = lpplr2->cShDef;
                 pplr3->iPlayer = lpplr2->iPlayer;
-                pplr3->cShDef = cVar3;
+                pplr3->cShDef = cVar2;
             }
             CchGetString(idsHumanoid, (char *)vplr.szName);
             _wsprintf(vplr.szNames, "%ss", 0x501a, 0x1120);
-            uVar14 = 0x10e0;
-            sVar19 = RaceCreationWizard(hwnd, 0, 0);
-            if (sVar19 == 0)
+            local_54 = vrgrcRCW;
+            uVar13 = 0x10e0;
+            sVar18 = RaceCreationWizard(hwnd, 0, 0);
+            if (sVar18 == 0) {
+                vrgrcRCW = local_54;
                 goto LAB_1078_9035;
+            }
+            vrgrcRCW = local_54;
         CREATE_PlaceNew:
             if (vcplrNew < 0x10) {
                 local_16._6_2_ = vcplrNew;
@@ -3662,90 +3652,92 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
             pplr16 = vrgplrNew + local_16._6_2_;
             pplr13 = (PLAYER *)&vplr;
-            for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
+            for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
                 pplr3 = pplr16;
                 pplr16 = &pplr16->cPlanet;
                 lpplr2 = pplr13;
                 pplr13 = &pplr13->cPlanet;
-                cVar3 = lpplr2->cShDef;
+                cVar2 = lpplr2->cShDef;
                 pplr3->iPlayer = lpplr2->iPlayer;
-                pplr3->cShDef = cVar3;
+                pplr3->cShDef = cVar2;
             }
-            uVar14 = 0x1118;
+            uVar13 = 0x1118;
             _strcpy(vrgszFileNew + local_16._6_2_ * 0xd, (char *)szRaceFile);
             local_16._6_2_ = local_16._6_2_ << 2 | 2;
         } else {
         LAB_1078_9035:
             if (iPopMenuSel == 1) {
-                uVar14 = 0x1020;
-                sVar19 = FOpenGame(hwnd, 1);
-                if (0 < sVar19)
+                uVar13 = 0x1020;
+                sVar18 = FOpenGame(hwnd, 1);
+                if (0 < sVar18)
                     goto CREATE_PlaceNew;
             } else if (iPopMenuSel == 2) {
-                iVar10 = iCurVal >> 2;
+                iVar9 = iCurVal >> 2;
                 if ((iCurVal & 3U) == 1) {
-                    puVar13 = (undefined2 *)(iVar10 * 0xc0 + vrgplrDef);
+                    puVar12 = (undefined2 *)(iVar9 * 0xc0 + vrgplrDef);
                     pplr13 = (PLAYER *)&vplr;
-                    for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
+                    for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
                         lpplr2 = pplr13;
                         pplr13 = &pplr13->cPlanet;
-                        puVar1 = puVar13;
-                        puVar13 = puVar13 + 1;
-                        uVar14 = *puVar1;
-                        lpplr2->iPlayer = (char)uVar14;
-                        lpplr2->cShDef = (char)((uint)uVar14 >> 8);
+                        puVar1 = puVar12;
+                        puVar12 = puVar12 + 1;
+                        uVar13 = *puVar1;
+                        lpplr2->iPlayer = (char)uVar13;
+                        lpplr2->cShDef = (char)((uint)uVar13 >> 8);
                     }
-                    CchGetString(iVar10 + idsHumanoid, (char *)vplr.szName);
+                    CchGetString(iVar9 + idsHumanoid, (char *)vplr.szName);
                     _wsprintf(vplr.szNames, "%ss", 0x501a, 0x1120);
                 } else {
-                    pplr13 = vrgplrNew + iVar10;
+                    pplr13 = vrgplrNew + iVar9;
                     pplr16 = (PLAYER *)&vplr;
-                    for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
+                    for (iVar10 = 0x60; iVar10 != 0; iVar10 = iVar10 + -1) {
                         pplr3 = pplr16;
                         pplr16 = &pplr16->cPlanet;
                         lpplr2 = pplr13;
                         pplr13 = &pplr13->cPlanet;
-                        cVar3 = lpplr2->cShDef;
+                        cVar2 = lpplr2->cShDef;
                         pplr3->iPlayer = lpplr2->iPlayer;
-                        pplr3->cShDef = cVar3;
+                        pplr3->cShDef = cVar2;
                     }
-                    _strcpy((char *)szRaceFile, vrgszFileNew + iVar10 * 0xd);
+                    _strcpy((char *)szRaceFile, vrgszFileNew + iVar9 * 0xd);
                 }
                 lSaltCur._0_2_ = (int)vplr.lSalt;
                 lSaltCur._2_2_ = vplr.lSalt._2_2_;
                 lSaltLast._0_2_ = 0;
                 lSaltLast._2_2_ = 0;
-                uVar14 = 0x1040;
-                sVar19 = FCheckPassword();
-                if (sVar19 == 0)
+                uVar13 = 0x1040;
+                sVar18 = FCheckPassword();
+                if (sVar18 == 0)
                     goto CREATE_FinishClick;
                 if (((int)vplr.lSalt == 0) && (vplr.lSalt._2_2_ == 0)) {
                     szRacePass[0] = '\0';
                 } else {
                     _strcpy((char *)szRacePass, (char *)szPassLast);
                 }
-                uVar14 = 0x10e0;
-                sVar19 = RaceCreationWizard(hwnd, 0, 0);
-                if (sVar19 != 0) {
-                    if (((iCurVal & 3U) == 1) || (pRVar20 = vrgrcRCW, sVar19 = _strcmp((char *)szRaceFile, vrgszFileNew + iVar10 * 0xd), sVar19 != 0))
+                local_54 = vrgrcRCW;
+                uVar13 = 0x10e0;
+                sVar18 = RaceCreationWizard(hwnd, 0, 0);
+                if (sVar18 != 0) {
+                    vrgrcRCW = local_54;
+                    if (((iCurVal & 3U) == 1) || (sVar18 = _strcmp((char *)szRaceFile, vrgszFileNew + (iCurVal >> 2) * 0xd), sVar18 != 0))
                         goto CREATE_PlaceNew;
-                    pplr16 = vrgplrNew + iVar10;
+                    pplr16 = vrgplrNew + (iCurVal >> 2);
                     pplr13 = (PLAYER *)&vplr;
-                    for (iVar11 = 0x60; iVar11 != 0; iVar11 = iVar11 + -1) {
+                    for (iVar9 = 0x60; iVar9 != 0; iVar9 = iVar9 + -1) {
                         pplr3 = pplr16;
                         pplr16 = &pplr16->cPlanet;
                         lpplr2 = pplr13;
                         pplr13 = &pplr13->cPlanet;
-                        cVar3 = lpplr2->cShDef;
+                        cVar2 = lpplr2->cShDef;
                         pplr3->iPlayer = lpplr2->iPlayer;
-                        pplr3->cShDef = cVar3;
+                        pplr3->cShDef = cVar2;
                     }
-                    uVar14 = 0x1118;
-                    _strcpy(vrgszFileNew + iVar10 * 0xd, (char *)szRaceFile);
-                    vrgrcRCW = pRVar20;
+                    uVar13 = 0x1118;
+                    _strcpy(vrgszFileNew + (iCurVal >> 2) * 0xd, (char *)szRaceFile);
                     local_16._6_2_ = iCurVal;
                     iCurVal = -1;
                 }
+                vrgrcRCW = local_54;
             } else if (iPopMenuSel == 3) {
                 local_16._6_2_ = 0;
             } else if ((iPopMenuSel < 0x10) || (0x1f < iPopMenuSel)) {
@@ -3761,29 +3753,33 @@ short NewGameDlg2(HWND hwnd, WMType message, ushort wParam, long lParam)
             }
         }
     }
-    puVar12 = &stack0xffaa;
-    if ((local_16._6_2_ != 0xffff) && (puVar12 = &stack0xffaa, local_16._6_2_ != iCurVal)) {
+    ppRVar11 = &stack0xffaa;
+    if ((local_16._6_2_ != 0xffff) && (ppRVar11 = &stack0xffaa, local_16._6_2_ != iCurVal)) {
         ((byte *)vrgplrTypeNew)[iDiamond] = (byte)local_16._6_2_;
         if (local_16._6_2_ == 0) {
-            while (iDiamond + 1 < 0x10) {
+            while (iVar9 = iDiamond + 1, iVar9 < 0x10) {
                 ((byte *)vrgplrTypeNew + 1)[iDiamond] = 0;
-                iDiamond = iDiamond + 1;
+                iDiamond = iVar9;
             }
-        } else if (0 < iDiamond) {
-            while ((-1 < iDiamond + -1 && (*(char *)((int)(short **)&vrgiflMerge + iDiamond + 1) == '\0'))) {
-                *(byte *)((int)(short **)&vrgiflMerge + iDiamond + 1) = (byte)local_16._6_2_;
-                iDiamond = iDiamond + -1;
+        } else {
+            iVar9 = iDiamond;
+            if (0 < iDiamond) {
+                while ((iVar9 = iDiamond + -1, -1 < iVar9 && (*(char *)((int)(short **)&vrgiflMerge + iDiamond + 1) == '\0'))) {
+                    *(byte *)((int)(short **)&vrgiflMerge + iDiamond + 1) = (byte)local_16._6_2_;
+                    iDiamond = iVar9;
+                }
             }
         }
-        uVar14 = 0x14f8;
+        iDiamond = iVar9;
+        uVar13 = 0x14f8;
         InvalidateRect(hwnd, 0, 1);
-        puVar12 = &stack0xffac;
+        ppRVar11 = &local_54;
     }
 CREATE_FinishClick:
-    *(HWND *)(puVar12 + -2) = hwnd;
-    *(undefined2 *)(puVar12 + -4) = uVar14;
-    *(undefined2 *)(puVar12 + -6) = 0x93fe;
-    SetFocus(*(HWND *)(puVar12 + -2));
+    *(HWND *)((int)ppRVar11 + -2) = hwnd;
+    *(undefined2 *)((int)ppRVar11 + -4) = uVar13;
+    *(undefined2 *)((int)ppRVar11 + -6) = 0x93fe;
+    SetFocus(*(HWND *)((int)ppRVar11 + -2));
     return 0;
 }
 
@@ -3942,22 +3938,19 @@ short NewGameDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
     WParamMessageId WVar1;
     HWND            HVar2;
     short           sVar3;
-    undefined2      unaff_SI;
-    undefined2      unaff_DI;
     undefined2      unaff_SS;
     ulong           uVar4;
     LRESULT         LVar5;
     WMType          WVar6;
-    ushort          in_stack_0000ffd0;
-    POINT           local_12;
+    undefined1      local_30[32];
+    HWND            local_10;
     RECT            rc;
     short           i;
 
-    uVar4 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_PAINT) {
-        local_12.y = BeginPaint(hwnd, &stack0xffd0);
-        DrawNewGame3(hwnd, local_12.y, -1);
-        EndPaint(hwnd, &stack0xffd0);
+        local_10 = BeginPaint(hwnd, local_30);
+        DrawNewGame3(hwnd, local_10, -1);
+        EndPaint(hwnd, local_30);
         sVar3 = 1;
     } else if (message == WM_ERASEBKGND) {
         GetClientRect(hwnd, &rc);
@@ -3966,20 +3959,20 @@ short NewGameDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
     } else {
         if (message == WM_CTLCOLOR) {
             for (i = 0x123; i < 0x12a; i = i + 1) {
-                local_12.y = (HWND)lParam;
+                local_10 = (HWND)lParam;
                 HVar2 = GetDlgItem(hwnd, i);
-                if (local_12.y == HVar2)
+                if (local_10 == HVar2)
                     break;
             }
-            if ((i < 0x12a) || (uVar4 = __aFulshr(uVar4, in_stack_0000ffd0), (int)uVar4 == 6)) {
+            if ((i < 0x12a) || (uVar4 = __aFulshr(lParam, 0x10), (int)uVar4 == 6)) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;
             }
         } else if (message == WM_SETCURSOR) {
-            GetCursorPos(&local_12);
-            ScreenToClient(hwnd, &local_12);
-            pt.y = local_12.y;
-            pt.x = local_12.x;
+            GetCursorPos(local_30 + 0x1e);
+            ScreenToClient(hwnd, local_30 + 0x1e);
+            pt.y = local_10;
+            pt.x = local_30._30_2_;
             sVar3 = IrcRaceDlgHitTest(pt);
             if (-1 < sVar3) {
                 SetCursor(hcurHand);
@@ -4022,11 +4015,11 @@ short NewGameDlg3(HWND hwnd, WMType message, ushort wParam, long lParam)
                     DrawNewGame3(hwnd, 0, 8);
                 }
             } else if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-                local_12.x = (HWND)lParam;
-                uVar4 = __aFulshr(uVar4, in_stack_0000ffd0);
-                local_12.y = (short)uVar4;
-                pt_00.y = local_12.y;
-                pt_00.x = local_12.x;
+                local_30._30_2_ = (HWND)lParam;
+                uVar4 = __aFulshr(lParam, 0x10);
+                local_10 = (HWND)uVar4;
+                pt_00.y = local_10;
+                pt_00.x = local_30._30_2_;
                 sVar3 = FTrackNewGameDlg3(hwnd, pt_00, wParam);
                 return sVar3;
             }

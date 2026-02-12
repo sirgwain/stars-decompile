@@ -9,7 +9,6 @@
 // Segment: MEMORY_TB
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: pct */
 /* WARNING: Enum "WParamMessageId": Some values do not have unique names */
 
 long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
@@ -26,8 +25,6 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     HDC                   HVar7;
     WMType               *pWVar8;
     WMType               *pWVar9;
-    undefined2            unaff_SI;
-    undefined2            unaff_DI;
     undefined2            unaff_SS;
     fn_lpfnRealComboProc *pfVar10;
     fn_lpfnRealCEProc    *pfVar11;
@@ -50,7 +47,6 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
     short                 fInside;
     HDC                   hdc;
 
-    uVar12 = CONCAT22(unaff_SI, unaff_DI);
     if (msg == WM_CREATE) {
         x = 4;
         pWVar9 = &stack0xffae;
@@ -217,14 +213,14 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
         }
         if (msg == WM_COMMAND) {
             if ((HWND)lParam == hwndTBRadar) {
-                uVar12 = __aFulshr(uVar12, pct);
+                uVar12 = __aFulshr(lParam, 0x10);
                 if ((int)uVar12 == 8) {
                     PostMessage(hwnd, 0x5f4, 0, 0);
                 }
             }
         } else if (msg == WM_MOUSEMOVE) {
             pt.x = (HWND)lParam;
-            uVar12 = __aFulshr(uVar12, pct);
+            uVar12 = __aFulshr(lParam, 0x10);
             pt.y = (short)uVar12;
             if (hwnd != hwndTb) {
                 MapWindowPoints(hwnd, hwndTb, &pt, 1);
@@ -251,7 +247,7 @@ long TbWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
         } else if ((msg == WM_LBUTTONDOWN) || (msg == WM_LBUTTONDBLCLK)) {
             ShowTooltip(~idsUniverseDefinitionFileSeemsMissingCorrupt, 0);
             pt.x = (HWND)lParam;
-            uVar12 = __aFulshr(uVar12, pct);
+            uVar12 = __aFulshr(lParam, 0x10);
             ptBtn.y = (short)uVar12;
             ptBtn.x = pt.x;
             pt.y = ptBtn.y;

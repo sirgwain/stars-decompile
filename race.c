@@ -2,12 +2,12 @@
 #include "globals.h"
 #include "types.h"
 
+#include "msg.h"
 #include "planet.h"
 #include "race.h"
 #include "save.h"
 #include "strings.h"
 #include "utilgen.h"
-#include "msg.h"
 
 /* globals */
 int16_t rgRaceAdvDisPts[14] = {-235, -25, -159, -201, 40, -240, -155, 160, 240, 255, 325, 180, 70, 30};

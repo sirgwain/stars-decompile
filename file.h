@@ -41,7 +41,7 @@ bool    FReadFleet(FLEET *lpfl);                                           /* ME
 bool    FLoadGame(const char *pszFileName, char *pszExt);                  /* MEMORY_IO:0x0810 */
 bool    FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);       /* MEMORY_IO:0x0006 */
 void    ReadRt(void);                                                      /* MEMORY_IO:0x5168 */
-bool    FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md);             /* MEMORY_IO:0x4ac2 */
+bool    FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md);         /* MEMORY_IO:0x4ac2 */
 int16_t AskSaveDialog(void); /* PASCAL */                                  /* MEMORY_IO:0x432a */
 void    StreamClose(void);                                                 /* MEMORY_IO:0x53cc */
 

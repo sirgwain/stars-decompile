@@ -543,12 +543,8 @@ void ReadIniSettings(void)
     short       sVar10;
     uint        uVar11;
     int         iVar12;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     undefined2  unaff_SS;
     long        lVar13;
-    long        lVar14;
-    ushort      in_stack_0000ffb0;
     short       cpq;
     short       cch;
     char        szSection[16];
@@ -561,7 +557,6 @@ void ReadIniSettings(void)
     short       i;
     ushort      uDateCur;
 
-    lVar14 = CONCAT22(unaff_SI, unaff_DI);
     ini.wFlags = ini.wFlags & 0xffe3;
     CchGetString(idsWindows, szSection);
     CchGetString(idsStarsIni, szIniFile);
@@ -742,7 +737,7 @@ LAB_1000_1995:
     sVar7 = GetPrivateProfileString(szSection, szEntry, s_0_1120_0742, szWork, 10, szIniFile);
     lVar13 = 0;
     for (i = 0; ini.lid = lVar13, i < sVar7; i = i + 1) {
-        lVar13 = __aFlshl(lVar14, in_stack_0000ffb0);
+        lVar13 = __aFlshl(lVar13, 4);
         if ((((char *)szWork)[i] < '0') || ('9' < ((char *)szWork)[i])) {
             if (('`' < ((char *)szWork)[i]) && (((char *)szWork)[i] < 'g')) {
                 lVar13 = lVar13 + (((char *)szWork)[i] + -0x57);

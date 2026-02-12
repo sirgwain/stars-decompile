@@ -863,8 +863,8 @@ int DumpGameFileBlocks(const char *path) { return DumpGameFileBlocksEx(path, fal
 /* ------------------------------------------------------------------ */
 
 int ReadGameFileBlocks(const char *path, GameBlockList *out) {
-    FILE    *fp;
-    uint8_t  hdr_buf[2];
+    FILE   *fp;
+    uint8_t hdr_buf[2];
 
     if (path == NULL || out == NULL)
         return 2;
@@ -893,7 +893,7 @@ int ReadGameFileBlocks(const char *path, GameBlockList *out) {
 
         /* Grow array if needed */
         if (out->count >= out->capacity) {
-            int newcap = out->capacity * 2;
+            int        newcap = out->capacity * 2;
             GameBlock *nb = (GameBlock *)realloc(out->blocks, newcap * sizeof(GameBlock));
             if (!nb) {
                 fclose(fp);
@@ -948,31 +948,25 @@ void FreeGameBlockList(GameBlockList *list) {
 /* ------------------------------------------------------------------ */
 
 /* Helper: compare and print a single field.  Increments fdiffs if different. */
-#define DIFF_FIELD_FMT(label, valA, valB, fmt)                                    \
-    do {                                                                           \
-        if ((valA) != (valB)) {                                                    \
-            printf("    " label ": " fmt " -> " fmt "\n", (valA), (valB));         \
-            fdiffs++;                                                              \
-        }                                                                          \
+#define DIFF_FIELD_FMT(label, valA, valB, fmt)                                                                                                                 \
+    do {                                                                                                                                                       \
+        if ((valA) != (valB)) {                                                                                                                                \
+            printf("    " label ": " fmt " -> " fmt "\n", (valA), (valB));                                                                                     \
+            fdiffs++;                                                                                                                                          \
+        }                                                                                                                                                      \
     } while (0)
 
-#define DIFF_I(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (int)(a).field, (int)(b).field, "%d")
+#define DIFF_I(label, a, b, field) DIFF_FIELD_FMT(label, (int)(a).field, (int)(b).field, "%d")
 
-#define DIFF_U(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "%u")
+#define DIFF_U(label, a, b, field) DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "%u")
 
-#define DIFF_X16(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%04x")
+#define DIFF_X16(label, a, b, field) DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%04x")
 
-#define DIFF_X32(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%08x")
+#define DIFF_X32(label, a, b, field) DIFF_FIELD_FMT(label, (unsigned)(a).field, (unsigned)(b).field, "0x%08x")
 
-#define DIFF_U32(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (uint32_t)(a).field, (uint32_t)(b).field, "%u")
+#define DIFF_U32(label, a, b, field) DIFF_FIELD_FMT(label, (uint32_t)(a).field, (uint32_t)(b).field, "%u")
 
-#define DIFF_I32(label, a, b, field) \
-    DIFF_FIELD_FMT(label, (int32_t)(a).field, (int32_t)(b).field, "%d")
+#define DIFF_I32(label, a, b, field) DIFF_FIELD_FMT(label, (int32_t)(a).field, (int32_t)(b).field, "%d")
 
 int DiffGame(const GAME *a, const GAME *b) {
     int fdiffs = 0;
@@ -1122,10 +1116,8 @@ int DiffPlayer(const PLAYER *a, const PLAYER *b, int iplr) {
 
 static void DiffHS(const HS *a, const HS *b, const char *label, int idx, int *pDiffs) {
     if (a->grhst != b->grhst || a->wRaw_0002 != b->wRaw_0002) {
-        printf("      %s[%d]: grhst=0x%04x iItem=%u cItem=%u -> grhst=0x%04x iItem=%u cItem=%u\n",
-               label, idx,
-               (unsigned)a->grhst, (unsigned)a->iItem, (unsigned)a->cItem,
-               (unsigned)b->grhst, (unsigned)b->iItem, (unsigned)b->cItem);
+        printf("      %s[%d]: grhst=0x%04x iItem=%u cItem=%u -> grhst=0x%04x iItem=%u cItem=%u\n", label, idx, (unsigned)a->grhst, (unsigned)a->iItem,
+               (unsigned)a->cItem, (unsigned)b->grhst, (unsigned)b->iItem, (unsigned)b->cItem);
         (*pDiffs)++;
     }
 }
@@ -1286,8 +1278,8 @@ static int DiffProdQ(const PLPROD *a, const PLPROD *b, const char *prefix) {
     uint8_t mac = (a->iprodMac < b->iprodMac) ? a->iprodMac : b->iprodMac;
     for (uint8_t i = 0; i < mac; i++) {
         if (a->rgprod[i].dwRaw_0000 != b->rgprod[i].dwRaw_0000) {
-            printf("    %s prodQ[%u]: 0x%08" PRIx32 " -> 0x%08" PRIx32 "\n", prefix, (unsigned)i,
-                   (uint32_t)a->rgprod[i].dwRaw_0000, (uint32_t)b->rgprod[i].dwRaw_0000);
+            printf("    %s prodQ[%u]: 0x%08" PRIx32 " -> 0x%08" PRIx32 "\n", prefix, (unsigned)i, (uint32_t)a->rgprod[i].dwRaw_0000,
+                   (uint32_t)b->rgprod[i].dwRaw_0000);
             fdiffs++;
         }
     }
@@ -1365,9 +1357,8 @@ static int DiffPlanetOne(const PLANET *a, const PLANET *b, int16_t id) {
     }
 
     if (a->uPopGuess != b->uPopGuess || a->uDefGuess != b->uDefGuess) {
-        printf("    guesses: uPopGuess=%u uDefGuess=%u -> uPopGuess=%u uDefGuess=%u\n",
-               (unsigned)a->uPopGuess, (unsigned)a->uDefGuess,
-               (unsigned)b->uPopGuess, (unsigned)b->uDefGuess);
+        printf("    guesses: uPopGuess=%u uDefGuess=%u -> uPopGuess=%u uDefGuess=%u\n", (unsigned)a->uPopGuess, (unsigned)a->uDefGuess, (unsigned)b->uPopGuess,
+               (unsigned)b->uDefGuess);
         fdiffs++;
     }
 
@@ -1428,19 +1419,13 @@ static int DiffOrderOne(const ORDER *a, const ORDER *b, int idx, const char *pre
     if (memcmp(a, b, sizeof(*a)) == 0)
         return 0;
 
-    printf("      %s ord[%d]: pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n",
-           prefix,
-           idx,
-           (int)a->pt.x, (int)a->pt.y,
-           (int)a->id,
-           (unsigned)a->grTask, (unsigned)a->iWarp, (unsigned)a->grobj,
-           (unsigned)a->fValidTask, (unsigned)a->fNoAutoTrack, (unsigned)a->fUnused, (unsigned)a->wRaw_0006);
+    printf("      %s ord[%d]: pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n", prefix, idx, (int)a->pt.x, (int)a->pt.y,
+           (int)a->id, (unsigned)a->grTask, (unsigned)a->iWarp, (unsigned)a->grobj, (unsigned)a->fValidTask, (unsigned)a->fNoAutoTrack, (unsigned)a->fUnused,
+           (unsigned)a->wRaw_0006);
 
-    printf("              -> pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n",
-           (int)b->pt.x, (int)b->pt.y,
-           (int)b->id,
-           (unsigned)b->grTask, (unsigned)b->iWarp, (unsigned)b->grobj,
-           (unsigned)b->fValidTask, (unsigned)b->fNoAutoTrack, (unsigned)b->fUnused, (unsigned)b->wRaw_0006);
+    printf("              -> pt=(%d,%d) id=%d task=%u warp=%u grobj=%u valid=%u noauto=%u unused=%u raw=0x%04x\n", (int)b->pt.x, (int)b->pt.y, (int)b->id,
+           (unsigned)b->grTask, (unsigned)b->iWarp, (unsigned)b->grobj, (unsigned)b->fValidTask, (unsigned)b->fNoAutoTrack, (unsigned)b->fUnused,
+           (unsigned)b->wRaw_0006);
 
     return 1;
 }
@@ -1529,10 +1514,8 @@ static int DiffFleetOne(const FLEET *a, const FLEET *b, int16_t id) {
     if (a->det >= detAll || b->det >= detAll) {
         for (int i = 0; i < 16; i++) {
             if (memcmp(&a->rgdv[i], &b->rgdv[i], sizeof(DV)) != 0) {
-                printf("    rgdv[%d]: dp=%u pct=%u -> dp=%u pct=%u\n",
-                       i,
-                       (unsigned)a->rgdv[i].dp, (unsigned)a->rgdv[i].pctDp,
-                       (unsigned)b->rgdv[i].dp, (unsigned)b->rgdv[i].pctDp);
+                printf("    rgdv[%d]: dp=%u pct=%u -> dp=%u pct=%u\n", i, (unsigned)a->rgdv[i].dp, (unsigned)a->rgdv[i].pctDp, (unsigned)b->rgdv[i].dp,
+                       (unsigned)b->rgdv[i].pctDp);
                 fdiffs++;
             }
         }
@@ -1604,18 +1587,18 @@ typedef struct DumpSnapshot {
 
     STARSPOINT rgptPlan[999];
 
-    int16_t cPlanet;
-    PLANET *rgpl; /* length cPlanet */
+    int16_t  cPlanet;
+    PLANET  *rgpl;     /* length cPlanet */
     PLPROD **rgplprod; /* parallel array, owned */
 
-    int16_t cFleet;
-    FLEET  *rgfl;       /* length cFleet */
-    PLORD **rgflord;    /* parallel, owned */
-    char  **rgflname;   /* parallel, owned */
-    int16_t *rgflid;    /* parallel, owned */
+    int16_t  cFleet;
+    FLEET   *rgfl;     /* length cFleet */
+    PLORD  **rgflord;  /* parallel, owned */
+    char   **rgflname; /* parallel, owned */
+    int16_t *rgflid;   /* parallel, owned */
 
-    SHDEF  *rglpshdef[16];
-    SHDEF  *rglpshdefSB[16];
+    SHDEF *rglpshdef[16];
+    SHDEF *rglpshdefSB[16];
 } DumpSnapshot;
 
 static void SnapshotFree(DumpSnapshot *s) {
@@ -1675,8 +1658,8 @@ static bool SnapshotTake(DumpSnapshot *s) {
 
             if (lpPlanets[i].lpplprod != NULL) {
                 const PLPROD *pq = lpPlanets[i].lpplprod;
-                size_t cb = sizeof(PLPROD) + (size_t)pq->iprodMac * sizeof(PROD);
-                PLPROD *copy = (PLPROD *)malloc(cb);
+                size_t        cb = sizeof(PLPROD) + (size_t)pq->iprodMac * sizeof(PROD);
+                PLPROD       *copy = (PLPROD *)malloc(cb);
                 if (copy == NULL)
                     return false;
                 memcpy(copy, pq, cb);
@@ -1714,7 +1697,7 @@ static bool SnapshotTake(DumpSnapshot *s) {
 
             if (src->lpplord != NULL) {
                 const PLORD *po = src->lpplord;
-                uint8_t nord = po->iordMax;
+                uint8_t      nord = po->iordMax;
                 if (nord == 0)
                     nord = (uint8_t)(src->cord + 1);
                 size_t cb = sizeof(PLORD) + (size_t)nord * sizeof(ORDER);
@@ -1782,9 +1765,9 @@ static const FLEET *SnapshotFindFleet(const DumpSnapshot *s, int16_t id, const P
 }
 
 int DiffGameFileBlocks(const char *pathA, const char *pathB) {
-    char    baseA[1024], extA[16];
-    char    baseB[1024], extB[16];
-    int     diffs = 0;
+    char baseA[1024], extA[16];
+    char baseB[1024], extB[16];
+    int  diffs = 0;
 
     /* Split paths into base + extension for FLoadGame */
     if (!Stars_PathSplitExt(pathA, baseA, sizeof(baseA), extA, sizeof(extA))) {
@@ -1828,7 +1811,8 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
 
     /* --- Diff PLAYER structs --- */
     int maxPlr = (snapA.game.cPlayer > game.cPlayer) ? snapA.game.cPlayer : game.cPlayer;
-    if (maxPlr > 16) maxPlr = 16;
+    if (maxPlr > 16)
+        maxPlr = 16;
 
     printf("\nPLAYERS:\n");
     int plrDiffs = 0;
@@ -1841,7 +1825,7 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
 
     /* --- Diff PLANET structs (matched by planet id) --- */
     printf("\nPLANETS:\n");
-    int planetDiffs = 0;
+    int     planetDiffs = 0;
     int16_t maxPlanId = snapA.game.cPlanMax;
     if (game.cPlanMax > maxPlanId)
         maxPlanId = game.cPlanMax;
@@ -1879,8 +1863,8 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
             }
         }
 
-        PLANET ta;
-        PLANET tb;
+        PLANET        ta;
+        PLANET        tb;
         const PLANET *pTa = pa;
         const PLANET *pTb = pb;
         if (pa != NULL) {
@@ -1902,7 +1886,7 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
 
     /* --- Diff FLEET structs (matched by fleet id) --- */
     printf("\nFLEETS:\n");
-    int fleetDiffs = 0;
+    int   fleetDiffs = 0;
     bool *seen = NULL;
     if (cFleet > 0) {
         seen = (bool *)calloc((size_t)cFleet, sizeof(bool));
@@ -1952,8 +1936,8 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
             continue;
 
         for (int j = 0; j < ishdefMax; j++) {
-            SHDEF tmpA;
-            SHDEF tmpB;
+            SHDEF        tmpA;
+            SHDEF        tmpB;
             const SHDEF *pa = a;
             const SHDEF *pb = b;
 
@@ -1985,8 +1969,8 @@ int DiffGameFileBlocks(const char *pathA, const char *pathB) {
             continue;
 
         for (int j = 0; j < ishdefSBMax; j++) {
-            SHDEF tmpA;
-            SHDEF tmpB;
+            SHDEF        tmpA;
+            SHDEF        tmpB;
             const SHDEF *pa = a;
             const SHDEF *pb = b;
 

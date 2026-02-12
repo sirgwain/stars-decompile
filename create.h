@@ -3,7 +3,6 @@
 
 #include "types.h"
 
-/* globals */
 extern uint8_t vrgWormholeMin[5];
 extern uint8_t vrgWormholeVar[5];
 extern BTLPLAN rgbtlplanT[5];
@@ -11,7 +10,6 @@ extern char    rgNG3Width[9][2];
 extern PLAYER  vrgplrComp[6][4];
 extern int16_t vrgvcMax[10];
 
-/* functions */
 int16_t CreateStartupShip(int16_t iplr, int16_t idPlanet, int16_t ishdef, int16_t fAddShdef);
 int16_t GetVCCheck(GAME *pgame, VictoryCondition vc);
 int16_t GetVCVal(GAME *pgame, VictoryCondition vc, int16_t fRaw);
@@ -23,10 +21,10 @@ void    CreateTutorWorld(void);
 void    CreateTinyTestWorld(void);
 int16_t GenerateWorld(int16_t fBatchMode);
 PLAYER *LpplrComp(int16_t idAi, int16_t lvlAi); /* RETFAR */
-int16_t FGetNewGameName(char *szFileSuggest);
 int16_t GenNewGameFromFile(char *pszFile);
 
 #ifdef _WIN32
+int16_t          FGetNewGameName(char *szFileSuggest);
 void             SetNGWTitle(HWND hwnd, int16_t iStep);
 int16_t          FTrackNewGameDlg3(HWND hwnd, POINT pt, int16_t kbd);
 void             NewGameWizard(HWND hwnd, int16_t fReadOnly);

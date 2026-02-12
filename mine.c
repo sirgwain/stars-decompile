@@ -121,11 +121,7 @@ void EstMineralsMined(PLANET *lppl, int32_t *plQuan, int32_t cMines, int16_t fAp
                     }
 
                     /* Check fleet is at this planet, owned by planet owner, not dead, orbiting, with Remote Mining task (grTask == 3) */
-                    if (lpfl->idPlanet == lppl->id &&
-                        lpfl->iPlayer == lppl->iPlayer &&
-                        !lpfl->fDead &&
-                        lpfl->cord < 2 &&
-                        lpfl->lpplord->rgord[0].grTask == 3) {
+                    if (lpfl->idPlanet == lppl->id && lpfl->iPlayer == lppl->iPlayer && !lpfl->fDead && lpfl->cord < 2 && lpfl->lpplord->rgord[0].grTask == 3) {
 
                         int32_t lFleetMines = CMineFromLpfl(lpfl);
                         if (lFleetMines >= 0 && lFleetMines > 0) {

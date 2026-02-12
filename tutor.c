@@ -2,7 +2,9 @@
 #include "globals.h"
 #include "types.h"
 
+#include "strings.h"
 #include "tutor.h"
+#include "utilgen.h"
 
 /* globals */
 ITEMACTION rgiaQuikDrop[5];     /* MEMORY_TUTOR:0x0f94 */
@@ -14,17 +16,50 @@ ZIPPRODQ1  rgzpqTut[2];         /* MEMORY_TUTOR:0x663a */
 char mpishdefishTutor[6] = {3, 4, 9, 6, 7, 14};
 
 void AdvanceTutor(void) {
+#ifdef _WIN32
     char    szTitle[50];
     int16_t fRedraw;
-    int16_t idtT;
-    int16_t fTaskDone;
     RECT    rc;
 
-    /* debug symbols */
-    /* label LUpdatePage @ MEMORY_TUTOR:0x0b55 */
-    /* label SkipToNext @ MEMORY_TUTOR:0x0a9e */
+    int16_t idtOld = tutor.idtBold;
+    tutor.wFlags &= ~0x0004;
 
-    /* TODO: implement */
+    fRedraw = 0;
+    if (FTutorTaskDone()) {
+        if (!(tutor.wFlags & 0x0008)) {
+            do {
+                tutor.idt += 8;
+                tutor.idsError = -1;
+                tutor.wFlags = (tutor.wFlags & ~0x0420) | 0x20;
+                tutor.idtBold = tutor.idt;
+            } while (FTutorTaskDone() && !(tutor.wFlags & 0x0008));
+            fRedraw = 1;
+            tutor.wFlags &= ~0x0020;
+        } else {
+            tutor.idh = 0xdb6;
+        }
+        if (tutor.idt > 0x27f || (tutor.wFlags & 0x0010)) {
+            if (tutor.idsError != 0x20a) {
+                TutorError(0x20a);
+            }
+            EndTutor(0);
+            return;
+        }
+    }
+
+    if (fRedraw || idtOld != tutor.idtBold) {
+        int16_t iPage = tutor.idt / 8 + 1;
+        char   *psz = PszGetCompressedString(idsStarsTutorPageD80);
+        sprintf(szTitle, psz, iPage);
+        SetWindowText(tutor.hwnd, szTitle);
+        ShowTutor(1);
+        GetWindowRect(tutor.hwnd, &rc);
+        ScreenToClient(tutor.hwnd, (POINT *)&rc);
+        ScreenToClient(tutor.hwnd, (POINT *)&rc.right);
+        ExpandRc(&rc, -dyArial8, dyArial8 * -2);
+        InvalidateRect(tutor.hwnd, &rc, 1);
+    }
+#endif
 }
 
 #ifdef _WIN32

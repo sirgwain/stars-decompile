@@ -90,7 +90,20 @@ int16_t PctJammerFromHul(HUL *lphul) {
 void MakeNewName(char *lpsz) {
     int16_t cLen;
 
-    /* TODO: implement */
+    cLen = (int16_t)strlen(lpsz);
+    if (cLen < 28) {
+        if (lpsz[cLen - 1] == ')' && isdigit(lpsz[cLen - 2]) && lpsz[cLen - 3] == '(') {
+            if (lpsz[cLen - 2] == '9')
+                lpsz[cLen - 2] = '0';
+            else
+                lpsz[cLen - 2]++;
+        } else {
+            strcpy(lpsz + cLen, " (2)");
+        }
+    }
+#ifdef _WIN32
+    FStringFitsScreen(lpsz, 0xa0);
+#endif
 }
 
 void KillQueuedShips(PLANET *lppl) {

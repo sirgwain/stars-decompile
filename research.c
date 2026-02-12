@@ -4,8 +4,10 @@
 #include "types.h"
 
 #include "mdi.h"
-#include "race.h"
 #include "parts.h"
+#include "planet.h"
+#include "produce.h"
+#include "race.h"
 #include "research.h"
 #include "strings.h"
 #include "tutor.h"
@@ -20,15 +22,45 @@ int32_t  rglTechCost[27] = {0,     50,    80,    130,   210,   340,   550,   890
 /* functions */
 int32_t CostOfDevelopingItem(char *rgTech) {
     int32_t lSpent;
-    char   *pTech;
     char    rgTechSav[6];
     int32_t lCost;
-    int16_t fUnreachable;
     int16_t i;
-    int32_t lCur;
+    int32_t lTotal;
 
-    /* TODO: implement */
-    return 0;
+    /* Check if any required tech level exceeds 26 */
+    for (i = 0; i < TechFieldCount; i++) {
+        if (rgTech[i] > 26)
+            break;
+    }
+    if (i < 6)
+        return -1;
+
+    lTotal = 0;
+    for (i = 0; i < TechFieldCount; i++) {
+        rgTechSav[i] = rgplr[idPlayer].rgTech[i];
+        if (rgplr[idPlayer].rgTech[i] < rgTech[i]) {
+            lSpent = (int32_t)rgplr[idPlayer].rgResSpent[i];
+            if (game.fSlowTech) {
+                lSpent <<= 1;
+            }
+            int32_t lRemaining = -lSpent;
+            while (rgplr[idPlayer].rgTech[i] < rgTech[i]) {
+                lCost = GetTechLevelCost(i, rgplr[idPlayer].rgTech[i] + 1, idPlayer);
+                lRemaining += lCost;
+                rgplr[idPlayer].rgTech[i]++;
+            }
+            if (lRemaining < 0x10000 && lRemaining < 0)
+                lRemaining = 0;
+            lTotal += lRemaining;
+        }
+    }
+
+    /* Restore saved tech levels */
+    for (i = 0; i < 6; i++) {
+        rgplr[idPlayer].rgTech[i] = rgTechSav[i];
+    }
+
+    return lTotal;
 }
 
 int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
@@ -42,7 +74,7 @@ int32_t GetTechLevelCost(int16_t iTech, int16_t iLevel, int16_t iplr) {
         cTech += rgplr[iplr].rgTech[i];
     }
 
-    lCost = (int32_t)(cTech * 10) + rglTechCost[iLevel];
+    lCost = (int32_t)(int16_t)(cTech * 10) + rglTechCost[iLevel];
 
     bonus = GetRaceStat(&rgplr[iplr], iTech + rsTechBonus1) - 1;
     if (bonus != 0) {
@@ -69,8 +101,24 @@ int32_t ProjectedResearchSpending(int32_t pct) {
     char    pctSav;
     int16_t cBogus;
 
-    /* TODO: implement */
-    return 0;
+    lSpend = 0;
+    pctSav = rgplr[idPlayer].pctResearch;
+    rgplr[idPlayer].pctResearch = (int8_t)pct;
+
+    FORPLANETS(lppl, lpplMac) {
+        if (lppl->iPlayer == idPlayer) {
+            lRes = (int32_t)CResourcesAtPlanet(lppl, idPlayer);
+            if (lppl->lpplprod == NULL || lppl->lpplprod->iprodMac == 0) {
+                lSpend += lRes;
+            } else {
+                EstimateItemProdSched(lppl, 0, -1, &cRes, &cBogus);
+                lSpend += (int32_t)cRes;
+            }
+        }
+    }
+
+    rgplr[idPlayer].pctResearch = pctSav;
+    return lSpend;
 }
 
 int16_t FShouldPartBeHidden(PART *ppart) {

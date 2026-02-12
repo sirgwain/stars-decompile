@@ -1021,8 +1021,28 @@ int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists) {
     int16_t  iColDrop;
     COLDROP *lpcdT;
 
-    /* TODO: implement */
-    return 0;
+    if (cColonists < 1)
+        cColonists = 1;
+
+    iColDrop = 0;
+    lpcdT = lpcd;
+    while (iColDrop < cColDrop && !(lpcdT->idFleetSrc == lpfl->id && lpcdT->idPlanetDst == lppl->id)) {
+        lpcdT++;
+        iColDrop++;
+    }
+    if (iColDrop == cColDrop) {
+        if (cColDrop >= cMaxSimulDrops)
+            return 0;
+        lpcdT->idFleetSrc = lpfl->id;
+        lpcdT->idPlr = lpfl->iPlayer;
+        lpcdT->idPlanetDst = lppl->id;
+        lpcdT->cColonist = 0;
+        lpcdT->fCanColonize = 1;
+        cColDrop++;
+    }
+    lpcdT->cColonist += cColonists;
+
+    return (int16_t)cColonists;
 }
 
 int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly) {
@@ -1765,8 +1785,25 @@ int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp) {
     int16_t i;
     PLAYER  plrSav;
 
-    /* TODO: implement */
-    return 0;
+    /* Save the planet owner's player record */
+    plrSav = rgplr[lppl->iPlayer];
+
+    /* Copy the terraforming player's record over the planet owner's */
+    rgplr[lppl->iPlayer] = rgplr[iplr];
+
+    /* Restore the planet owner's env vars from saved copy */
+    for (i = 0; i < 3; i++) {
+        rgplr[lppl->iPlayer].rgEnvVar[i] = plrSav.rgEnvVar[i];
+        rgplr[lppl->iPlayer].rgEnvVarMin[i] = plrSav.rgEnvVarMin[i];
+        rgplr[lppl->iPlayer].rgEnvVarMax[i] = plrSav.rgEnvVarMax[i];
+    }
+
+    iBest = IBestTerraform(lppl, fHelp);
+
+    /* Restore the planet owner's player record */
+    rgplr[lppl->iPlayer] = plrSav;
+
+    return iBest;
 }
 
 void PlanetaryClimateChange(void) {
@@ -1970,18 +2007,14 @@ void BreedColonistsInTransit(void) {
         }
         lColGainAct = ChgCargo(grobjFleet, lpfl->id, 3, lColGain, NULL);
         if (lColGainAct > 0) {
-            FSendPlrMsg2(lpfl->iPlayer, idmColonistsHaveMadeGoodUseTimeIncreasing,
-                         lpfl->id | 0x8000, lpfl->id, (int16_t)lColGainAct);
+            FSendPlrMsg2(lpfl->iPlayer, idmColonistsHaveMadeGoodUseTimeIncreasing, lpfl->id | 0x8000, lpfl->id, (int16_t)lColGainAct);
         }
         if (lColGainAct < lColGain && lpfl->idPlanet != -1) {
             lppl = LpplFromId(lpfl->idPlanet);
             if (lppl != NULL && lppl->iPlayer == lpfl->iPlayer) {
                 lppl->rgwtMin[3] += lColGain - lColGainAct;
-                FSendPlrMsg(lpfl->iPlayer, idmBreedingActivitiesHaveOverflowedLivingSpaceColon,
-                            lpfl->id | 0x8000, lpfl->id,
-                            (int16_t)(lColGain - lColGainAct),
-                            lpfl->idPlanet, lpfl->idPlanet,
-                            0, 0, 0);
+                FSendPlrMsg(lpfl->iPlayer, idmBreedingActivitiesHaveOverflowedLivingSpaceColon, lpfl->id | 0x8000, lpfl->id, (int16_t)(lColGain - lColGainAct),
+                            lpfl->idPlanet, lpfl->idPlanet, 0, 0, 0);
             }
         }
     }

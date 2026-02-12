@@ -24,9 +24,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     HBRUSH      HVar8;
     PLANET     *pPVar9;
     undefined1 *puVar10;
-    ulong      *puVar11;
-    ushort      unaff_SI;
-    undefined2  unaff_DI;
+    undefined1 *puVar11;
     undefined2  uVar12;
     undefined2  uVar13;
     undefined2  unaff_SS;
@@ -35,7 +33,6 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     DWORD       DVar16;
     ulong       uVar17;
     LRESULT     LVar18;
-    ushort      in_stack_0000ffac;
     RECT        rcWindow;
     char       *psz;
     HFONT       hfontSav;
@@ -86,7 +83,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             if (local_38.y == HVar6)
                 break;
         }
-        if ((i < 0x437) || (uVar17 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), in_stack_0000ffac), (int)uVar17 == 6)) {
+        if ((i < 0x437) || (uVar17 = __aFulshr(lParam, 0x10), (int)uVar17 == 6)) {
             SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
             HVar8 = hbrButtonFace;
             lVar1 = CONCAT22(lResBudget._2_2_, (undefined2)lResBudget);
@@ -360,7 +357,7 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             puVar11 = &stack0xffa8;
             if (message != WM_COMMAND) {
                 if ((message == WM_LBUTTONDOWN) || (message == WM_LBUTTONDBLCLK)) {
-                    uVar17 = __aFulshr(CONCAT22(unaff_DI, wParam), unaff_SI);
+                    uVar17 = __aFulshr(lParam, 0x10);
                     HVar8 = FTrackResearchDlg(hwnd, (HWND)lParam, (short)uVar17, wParam);
                     lVar1 = CONCAT22(lResBudget._2_2_, (undefined2)lResBudget);
                     goto LAB_10d8_0901;
@@ -368,49 +365,48 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 goto LAB_10d8_08fb;
             }
         }
-        *(undefined2 *)((int)puVar11 + -2) = uVar13;
-        *(undefined2 *)(puVar11 + -1) = 0x653;
-        uVar17 = __aFulshr(*puVar11, (ushort)puVar11[1]);
+        *(undefined2 *)(puVar11 + -2) = uVar13;
+        *(undefined2 *)(puVar11 + -4) = 0x653;
+        uVar17 = __aFulshr(lParam, 0x10);
         if ((((int)uVar17 == 0) && (0x430 < wParam)) && (wParam < 0x437)) {
-            *(HWND *)((int)puVar11 + -2) = hwnd;
-            *(ushort *)(puVar11 + -1) = wParam;
-            *(undefined2 *)((int)puVar11 + -6) = 0x1118;
-            *(undefined2 *)(puVar11 + -2) = 0x681;
-            UVar7 = IsDlgButtonChecked(*(HWND *)((int)puVar11 + -2), (short)puVar11[-1]);
+            *(HWND *)(puVar11 + -2) = hwnd;
+            *(ushort *)(puVar11 + -4) = wParam;
+            *(undefined2 *)(puVar11 + -6) = 0x1118;
+            *(undefined2 *)(puVar11 + -8) = 0x681;
+            UVar7 = IsDlgButtonChecked(*(HWND *)(puVar11 + -2), *(short *)(puVar11 + -4));
             if (UVar7 != 0) {
                 iResTechNow = wParam - 0x431;
-                *(HWND *)((int)puVar11 + -2) = hwnd;
-                *(undefined2 *)(puVar11 + -1) = unaff_SS;
-                *(int *)((int)puVar11 + -6) = (int)&rc;
-                *(undefined2 *)(puVar11 + -2) = 0x14f8;
-                *(undefined2 *)((int)puVar11 + -10) = 0x6a1;
-                GetClientRect(*(HWND *)((int)puVar11 + -2), (RECT *)*(undefined4 *)((int)puVar11 + -6));
-                *(undefined2 *)((int)puVar11 + -2) = 4;
-                *(RECT **)(puVar11 + -1) = &rc;
-                *(undefined2 *)((int)puVar11 + -6) = 0;
                 *(HWND *)(puVar11 + -2) = hwnd;
-                *(undefined2 *)((int)puVar11 + -10) = 0x14f8;
-                *(undefined2 *)(puVar11 + -3) = 0x6b5;
-                DrawResearchDlg((HWND)puVar11[-2], *(HDC *)((int)puVar11 + -6), *(RECT **)(puVar11 + -1), *(short *)((int)puVar11 + -2));
+                *(undefined2 *)(puVar11 + -4) = unaff_SS;
+                *(RECT **)(puVar11 + -6) = &rc;
+                *(undefined2 *)(puVar11 + -8) = 0x14f8;
+                *(undefined2 *)(puVar11 + -10) = 0x6a1;
+                GetClientRect(*(HWND *)(puVar11 + -2), *(RECT **)(puVar11 + -6));
+                *(undefined2 *)(puVar11 + -2) = 4;
+                *(RECT **)(puVar11 + -4) = &rc;
+                *(undefined2 *)(puVar11 + -6) = 0;
+                *(HWND *)(puVar11 + -8) = hwnd;
+                *(undefined2 *)(puVar11 + -10) = 0x14f8;
+                *(undefined2 *)(puVar11 + -0xc) = 0x6b5;
+                DrawResearchDlg(*(HWND *)(puVar11 + -8), *(HDC *)(puVar11 + -6), *(RECT **)(puVar11 + -4), *(short *)(puVar11 + -2));
             }
         } else {
             if (wParam == 2) {
                 local_38.x = 0;
-                *(HWND *)((int)puVar11 + -2) = hwnd;
-                *(undefined2 *)(puVar11 + -1) = 0x43b;
-                *(undefined2 *)((int)puVar11 + -6) = 0x1118;
-                *(undefined2 *)(puVar11 + -2) = 0x6d5;
-                HVar6 = GetDlgItem(*(HWND *)((int)puVar11 + -2), *(ControlId *)(puVar11 + -1));
-                *(HWND *)((int)puVar11 + -2) = HVar6;
-                *(undefined2 *)(puVar11 + -1) = 0x407;
-                *(undefined2 *)((int)puVar11 + -6) = 0;
-                *(undefined2 *)(puVar11 + -2) = 0;
-                *(undefined2 *)((int)puVar11 + -10) = 0;
-                *(undefined2 *)(puVar11 + -3) = 0x14f8;
+                *(HWND *)(puVar11 + -2) = hwnd;
+                *(undefined2 *)(puVar11 + -4) = 0x43b;
+                *(undefined2 *)(puVar11 + -6) = 0x1118;
+                *(undefined2 *)(puVar11 + -8) = 0x6d5;
+                HVar6 = GetDlgItem(*(HWND *)(puVar11 + -2), *(ControlId *)(puVar11 + -4));
+                *(HWND *)(puVar11 + -2) = HVar6;
+                *(undefined2 *)(puVar11 + -4) = 0x407;
+                *(undefined2 *)(puVar11 + -6) = 0;
+                *(undefined2 *)(puVar11 + -8) = 0;
+                *(undefined2 *)(puVar11 + -10) = 0;
+                *(undefined2 *)(puVar11 + -0xc) = 0x14f8;
                 uVar13 = 0x14f8;
-                *(undefined2 *)((int)puVar11 + -0xe) = 0x6eb;
-                LVar18 = SendMessage(*(HWND *)((int)puVar11 + -2), *(WMType *)(puVar11 + -1), *(WParamMessageId *)((int)puVar11 + -6),
-                                     *(LPARAM *)((int)puVar11 + -10));
+                *(undefined2 *)(puVar11 + -0xe) = 0x6eb;
+                LVar18 = SendMessage(*(HWND *)(puVar11 + -2), *(WMType *)(puVar11 + -4), *(WParamMessageId *)(puVar11 + -6), *(LPARAM *)(puVar11 + -10));
                 local_38.y = (short)LVar18;
                 if (local_38.y == 0) {
                     local_38.y = 6;
@@ -424,37 +420,37 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) = *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) & 0xf0 | (byte)iResTechNow;
                     *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) = *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) & 0xf | (byte)(local_38.y << 4);
                     i = *(char *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) * 0x100 + pctResGlob;
-                    *(int *)((int)puVar11 + -2) = (int)&i;
-                    *(undefined2 *)(puVar11 + -1) = 2;
-                    *(undefined2 *)((int)puVar11 + -6) = 0x22;
-                    *(undefined2 *)(puVar11 + -2) = 0x14f8;
+                    *(short **)(puVar11 + -2) = &i;
+                    *(undefined2 *)(puVar11 + -4) = 2;
+                    *(undefined2 *)(puVar11 + -6) = 0x22;
+                    *(undefined2 *)(puVar11 + -8) = 0x14f8;
                     uVar13 = 0x1048;
-                    *(undefined2 *)((int)puVar11 + -10) = 0x80d;
-                    WriteMemRt(*(short *)((int)puVar11 + -6), (short)puVar11[-1], (void *)*(undefined2 *)((int)puVar11 + -2));
+                    *(undefined2 *)(puVar11 + -10) = 0x80d;
+                    WriteMemRt(*(short *)(puVar11 + -6), *(short *)(puVar11 + -4), *(void **)(puVar11 + -2));
                     local_38.x = 1;
                     if ((((uint)gd.grBits >> 0xb & 1) != 0) && (idPlayer == 0)) {
                         tutor.wFlags = tutor.wFlags & 0xfffbU | 4;
-                        *(undefined2 *)((int)puVar11 + -2) = 0x1048;
+                        *(undefined2 *)(puVar11 + -2) = 0x1048;
                         uVar13 = 0x10f8;
-                        *(undefined2 *)(puVar11 + -1) = 0x843;
+                        *(undefined2 *)(puVar11 + -4) = 0x843;
                         AdvanceTutor();
                     }
                 }
-                *(undefined2 *)((int)puVar11 + -2) = 0;
-                *(undefined2 *)(puVar11 + -1) = 0xd08;
-                *(HWND *)((int)puVar11 + -6) = hwnd;
-                *(undefined2 *)(puVar11 + -2) = uVar13;
-                *(undefined2 *)((int)puVar11 + -10) = 0x853;
-                StickyDlgPos(*(HWND *)((int)puVar11 + -6), *(POINT **)(puVar11 + -1), *(short *)((int)puVar11 + -2));
-                *(HWND *)((int)puVar11 + -2) = hwnd;
-                *(short *)(puVar11 + -1) = local_38.x;
-                *(undefined2 *)((int)puVar11 + -6) = 0x1040;
-                *(undefined2 *)(puVar11 + -2) = 0x861;
-                EndDialog(*(HWND *)((int)puVar11 + -2), (short)puVar11[-1]);
+                *(undefined2 *)(puVar11 + -2) = 0;
+                *(undefined2 *)(puVar11 + -4) = 0xd08;
+                *(HWND *)(puVar11 + -6) = hwnd;
+                *(undefined2 *)(puVar11 + -8) = uVar13;
+                *(undefined2 *)(puVar11 + -10) = 0x853;
+                StickyDlgPos(*(HWND *)(puVar11 + -6), *(POINT **)(puVar11 + -4), *(short *)(puVar11 + -2));
+                *(HWND *)(puVar11 + -2) = hwnd;
+                *(short *)(puVar11 + -4) = local_38.x;
+                *(undefined2 *)(puVar11 + -6) = 0x1040;
+                *(undefined2 *)(puVar11 + -8) = 0x861;
+                EndDialog(*(HWND *)(puVar11 + -2), *(short *)(puVar11 + -4));
                 pctResGlob = -1;
                 if (((uint)gd.grBits >> 0xb & 1) != 0) {
-                    *(undefined2 *)((int)puVar11 + -2) = 0x14f8;
-                    *(undefined2 *)(puVar11 + -1) = 0x87f;
+                    *(undefined2 *)(puVar11 + -2) = 0x14f8;
+                    *(undefined2 *)(puVar11 + -4) = 0x87f;
                     AdvanceTutor();
                 }
                 HVar8 = 1;
@@ -462,15 +458,15 @@ short ResearchDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 goto LAB_10d8_0901;
             }
             if (wParam == 0x76) {
-                *(HWND *)((int)puVar11 + -2) = hwnd;
-                *(undefined2 *)(puVar11 + -1) = 0x1120;
-                *(undefined2 *)((int)puVar11 + -6) = szHelpFile;
-                *(undefined2 *)(puVar11 + -2) = 1;
-                *(undefined2 *)((int)puVar11 + -10) = 0;
-                *(undefined2 *)(puVar11 + -3) = 0x42e;
-                *(undefined2 *)((int)puVar11 + -0xe) = 0x1118;
-                *(undefined2 *)(puVar11 + -4) = 0x8ac;
-                WinHelp(*(HWND *)((int)puVar11 + -2), (LPCSTR) * (undefined4 *)((int)puVar11 + -6), (UINT)puVar11[-2], puVar11[-3]);
+                *(HWND *)(puVar11 + -2) = hwnd;
+                *(undefined2 *)(puVar11 + -4) = 0x1120;
+                *(char **)(puVar11 + -6) = szHelpFile;
+                *(undefined2 *)(puVar11 + -8) = 1;
+                *(undefined2 *)(puVar11 + -10) = 0;
+                *(undefined2 *)(puVar11 + -0xc) = 0x42e;
+                *(undefined2 *)(puVar11 + -0xe) = 0x1118;
+                *(undefined2 *)(puVar11 + -0x10) = 0x8ac;
+                WinHelp(*(HWND *)(puVar11 + -2), *(LPCSTR *)(puVar11 + -6), *(UINT *)(puVar11 + -8), *(DWORD *)(puVar11 + -0xc));
                 HVar8 = 1;
                 lVar1 = CONCAT22(lResBudget._2_2_, (undefined2)lResBudget);
                 goto LAB_10d8_0901;
@@ -497,29 +493,30 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, short grbitDraw)
 {
     HS         *pHVar1;
     byte        bVar2;
-    uint        uVar3;
-    HGDIOBJ     HVar4;
-    short       sVar5;
-    ushort      uVar6;
-    int         iVar7;
-    HGDIOBJ     HVar8;
-    undefined2  uVar9;
-    HWND        HVar10;
-    short       sVar11;
-    int         iVar12;
-    undefined2 *puVar13;
-    int         iVar14;
-    long       *plVar15;
+    undefined2  uVar3;
+    uint        uVar4;
+    HGDIOBJ     HVar5;
+    short       sVar6;
+    ushort      uVar7;
+    int         iVar8;
+    HGDIOBJ     HVar9;
+    undefined2  uVar10;
+    HWND        HVar11;
+    short       sVar12;
+    int         iVar13;
+    undefined2 *puVar14;
+    int         iVar15;
+    undefined1 *puVar16;
     undefined2  unaff_SS;
-    bool        bVar16;
-    COLORREF    CVar17;
+    bool        bVar17;
     COLORREF    CVar18;
-    DWORD       DVar19;
-    long        lVar20;
+    COLORREF    CVar19;
+    DWORD       DVar20;
     long        lVar21;
-    char       *pcVar22;
-    undefined2  uVar23;
-    HDC         HVar24;
+    long        lVar22;
+    char       *pcVar23;
+    undefined2  uVar24;
+    HDC         HVar25;
     uint        local_c0;
     int         local_be;
     RECT        rc;
@@ -545,44 +542,44 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, short grbitDraw)
     char        szTemp[60];
     short       dxCurrent;
 
-    bVar16 = hdc == 0;
-    if (bVar16) {
+    bVar17 = hdc == 0;
+    if (bVar17) {
         hdc = GetDC(hwnd);
     }
-    plVar15 = &stack0xff3c;
-    HVar4 = SelectObject(hdc, rghfontArial8[1]);
-    CVar17 = SetTextColor(hdc, 0);
-    CVar18 = SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
+    puVar16 = &stack0xff3c;
+    HVar5 = SelectObject(hdc, rghfontArial8[1]);
+    CVar18 = SetTextColor(hdc, 0);
+    CVar19 = SetBkColor(hdc, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
     if ((grbitDraw & 0xffU) != 0) {
-        sVar5 = CchGetString(idsCurrent, (char *)szWork);
-        DVar19 = GetTextExtent(hdc, szWork, sVar5);
+        sVar6 = CchGetString(idsCurrent, (char *)szWork);
+        DVar20 = GetTextExtent(hdc, szWork, sVar6);
         SetRect(&rc, 8, dyArial8, dxResLeft + -8, dyArial8 * 0xd);
         if ((grbitDraw & 3U) != 0) {
             Draw3dFrame(hdc, &rc, -1);
-            sVar5 = CchGetString(idsTechnologyStatus, (char *)szWork);
-            TextOut(hdc, rc.left + 8, rc.top - (dyArial8 >> 1), szWork, sVar5);
+            sVar6 = CchGetString(idsTechnologyStatus, (char *)szWork);
+            TextOut(hdc, rc.left + 8, rc.top - (dyArial8 >> 1), szWork, sVar6);
             rc.top = rc.top + (dyArial8 >> 1);
-            sVar5 = CchGetString(idsCurrent, (char *)szWork);
-            TextOut(hdc, (rc.right + -8) - (int)DVar19, rc.top, szWork, sVar5);
+            sVar6 = CchGetString(idsCurrent, (char *)szWork);
+            TextOut(hdc, (rc.right + -8) - (int)DVar20, rc.top, szWork, sVar6);
             rc.top = rc.top + dyArial8;
-            sVar5 = CchGetString(idsFieldStudy, (char *)szWork);
-            TextOut(hdc, rc.left + 0x1a, rc.top, szWork, sVar5);
-            iVar12 = (rc.right + -8) - ((int)DVar19 >> 1);
-            sVar5 = CchGetString(idsLevel, (char *)szWork);
-            CtrTextOut(hdc, iVar12, rc.top, (char *)szWork, sVar5);
+            sVar6 = CchGetString(idsFieldStudy, (char *)szWork);
+            TextOut(hdc, rc.left + 0x1a, rc.top, szWork, sVar6);
+            iVar13 = (rc.right + -8) - ((int)DVar20 >> 1);
+            sVar6 = CchGetString(idsLevel, (char *)szWork);
+            CtrTextOut(hdc, iVar13, rc.top, (char *)szWork, sVar6);
             PatBlt(hdc, rc.left + 8, rc.top + dyArial8, (rc.right - rc.left) + -0x10, 1, 0x42);
             rc.top = rc.top + (dyArial8 >> 2) + dyArial8 + 2;
             for (i = 0; i < 6; i = i + 1) {
-                sVar5 = _wsprintf(szWork, PCTD, (int)*(char *)(idPlayer * 0xc0 + 0x59bc + i));
-                CtrTextOut(hdc, iVar12, rc.top, (char *)szWork, sVar5);
+                sVar6 = _wsprintf(szWork, PCTD, (int)*(char *)(idPlayer * 0xc0 + 0x59bc + i));
+                CtrTextOut(hdc, iVar13, rc.top, (char *)szWork, sVar6);
                 rc.top = rc.top + (dyArial8 * 3) / 2;
             }
         }
         SetRect(&rc, 8, (dyArial8 * 3) / 2 + rc.bottom, dxResLeft + -8, prc->bottom + -8);
         if (((grbitDraw & 4U) == 0) || ((grbitDraw & 3U) != 0)) {
             Draw3dFrame(hdc, &rc, -1);
-            sVar5 = CchGetString(idsExpectedResearchBenefits, (char *)szWork);
-            TextOut(hdc, rc.left + 8, rc.top - (dyArial8 >> 1), szWork, sVar5);
+            sVar6 = CchGetString(idsExpectedResearchBenefits, (char *)szWork);
+            TextOut(hdc, rc.left + 8, rc.top - (dyArial8 >> 1), szWork, sVar6);
             bVar2 = *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0);
             cFutureTech = 0;
             yTopFutureTech = rc.top + dyArial8;
@@ -606,29 +603,29 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, short grbitDraw)
                         part.hs.grhst = grbitCur;
                         while (true) {
                             part.hs.wFlags_0x2 = part.hs.wFlags_0x2 & 0xff00 | i & 0xffU;
-                            sVar5 = FLookupPart(&part);
-                            if ((sVar5 == 0) ||
-                                (((part.hs.grhst == hstTerra && (sVar11 = GetRaceGrbit((PLAYER *)rgplr + idPlayer, ibitRaceTT), sVar11 != 0)) &&
+                            sVar6 = FLookupPart(&part);
+                            if ((sVar6 == 0) ||
+                                (((part.hs.grhst == hstTerra && (sVar12 = GetRaceGrbit((PLAYER *)rgplr + idPlayer, ibitRaceTT), sVar12 != 0)) &&
                                   (((part.hs.wFlags_0x2 & 0xff) == 8 || (((part.hs.wFlags_0x2 & 0xff) == 0xc || ((part.hs.wFlags_0x2 & 0xff) == 0x10))))))))
                                 break;
-                            if ((iter <= sVar5 + -1) && (sVar5 + -1 <= iMax)) {
+                            if ((iter <= sVar6 + -1) && (sVar6 + -1 <= iMax)) {
                                 rc.top = rc.top + dyArial8;
                                 if (rc.bottom < rc.top + dyArial8)
                                     goto RESEARCH_TooManyToFinish;
                                 __fstrcpy(szWork, (char *)CONCAT22(part.u_PART_0x0004._2_2_, (part.u_PART_0x0004.parmor._0_2_)->szName));
-                                iVar12 = rc.left + 8;
-                                uVar23 = 0x1120;
-                                pcVar22 = (char *)szWork;
-                                sVar5 = rc.top;
-                                HVar24 = hdc;
-                                uVar6 = _strlen((char *)szWork);
-                                TextOut(HVar24, iVar12, sVar5, (LPCSTR)CONCAT22(uVar23, pcVar22), uVar6);
+                                iVar13 = rc.left + 8;
+                                uVar24 = 0x1120;
+                                pcVar23 = (char *)szWork;
+                                sVar6 = rc.top;
+                                HVar25 = hdc;
+                                uVar7 = _strlen((char *)szWork);
+                                TextOut(HVar25, iVar13, sVar6, (LPCSTR)CONCAT22(uVar24, pcVar23), uVar7);
                                 if (cFutureTech < 8) {
-                                    iVar12 = cFutureTech * 4;
+                                    iVar13 = cFutureTech * 4;
                                     pHVar1 = (HS *)rghsFutureTech + cFutureTech;
                                     cFutureTech = cFutureTech + 1;
                                     pHVar1->grhst = part.hs.grhst;
-                                    *(ushort *)((int)&rghsFutureTech[0].wFlags_0x2 + iVar12) = part.hs.wFlags_0x2;
+                                    *(ushort *)((int)&rghsFutureTech[0].wFlags_0x2 + iVar13) = part.hs.wFlags_0x2;
                                 }
                             }
                             i = i + 1;
@@ -639,752 +636,741 @@ void DrawResearchDlg(HWND hwnd, HDC hdc, RECT *prc, short grbitDraw)
         RESEARCH_TooManyToFinish:
             *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) = *(byte *)((int)&rgplr[0].iTechCur + idPlayer * 0xc0) & 0xf0 | bVar2 & 0xf;
             SetTextColor(hdc, 0);
-            plVar15 = &stack0xff3c;
+            puVar16 = &stack0xff3c;
         } else {
             ExpandRc(&rc, -6, -(dyArial8 >> 1));
             rc.top = rc.top + (dyArial8 >> 1);
             InvalidateRect(hwnd, &rc, 1);
-            plVar15 = &stack0xff3e;
+            puVar16 = &stack0xff3e;
         }
     }
-    *(undefined2 *)((int)plVar15 + -2) = unaff_SS;
-    *(RECT **)(plVar15 + -1) = &rc;
-    *(int *)((int)plVar15 + -6) = dxResLeft + 8;
-    *(short *)(plVar15 + -2) = dyArial8;
-    *(int *)((int)plVar15 + -10) = dxResLeft + dxResRight + -8;
-    *(int *)(plVar15 + -3) = (dyArial8 * 0xe) / 2 + dyArial8;
-    *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-    *(undefined2 *)(plVar15 + -4) = 0xf18;
-    crBackSav._2_2_ = (undefined2)(CVar18 >> 0x10);
-    crBackSav._0_2_ = (undefined2)CVar18;
-    crForeSav._2_2_ = (undefined2)(CVar17 >> 0x10);
-    crForeSav._0_2_ = (undefined2)CVar17;
-    SetRect((RECT *)plVar15[-1], *(short *)((int)plVar15 + -6), (short)plVar15[-2], *(short *)((int)plVar15 + -10), (short)plVar15[-3]);
-    iVar12 = rc.left + 8 + dxResStrRight;
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(undefined2 *)(plVar15 + -1) = 0x1120;
-    *(undefined2 *)((int)plVar15 + -6) = 0xd0e;
-    *(undefined2 *)(plVar15 + -2) = 6;
-    *(undefined2 *)((int)plVar15 + -10) = 0x14f8;
-    uVar23 = 0x14f8;
-    *(undefined2 *)(plVar15 + -3) = 0xf40;
-    DVar19 = GetTextExtent(*(HDC *)((int)plVar15 + -2), (LPCSTR) * (undefined4 *)((int)plVar15 + -6), (short)plVar15[-2]);
-    iVar7 = (int)DVar19 + iVar12;
+    *(undefined2 *)(puVar16 + -2) = unaff_SS;
+    *(RECT **)(puVar16 + -4) = &rc;
+    *(short *)(puVar16 + -6) = dxResLeft + 8;
+    *(short *)(puVar16 + -8) = dyArial8;
+    *(short *)(puVar16 + -10) = dxResLeft + dxResRight + -8;
+    *(int *)(puVar16 + -0xc) = (dyArial8 * 0xe) / 2 + dyArial8;
+    *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+    *(undefined2 *)(puVar16 + -0x10) = 0xf18;
+    crBackSav._2_2_ = (undefined2)(CVar19 >> 0x10);
+    crBackSav._0_2_ = (undefined2)CVar19;
+    crForeSav._2_2_ = (undefined2)(CVar18 >> 0x10);
+    crForeSav._0_2_ = (undefined2)CVar18;
+    SetRect(*(RECT **)(puVar16 + -4), *(short *)(puVar16 + -6), *(short *)(puVar16 + -8), *(short *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
+    iVar13 = rc.left + 8 + dxResStrRight;
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(undefined2 *)(puVar16 + -4) = 0x1120;
+    *(undefined2 *)(puVar16 + -6) = 0xd0e;
+    *(undefined2 *)(puVar16 + -8) = 6;
+    *(undefined2 *)(puVar16 + -10) = 0x14f8;
+    uVar24 = 0x14f8;
+    *(undefined2 *)(puVar16 + -0xc) = 0xf40;
+    DVar20 = GetTextExtent(*(HDC *)(puVar16 + -2), *(LPCSTR *)(puVar16 + -6), *(short *)(puVar16 + -8));
+    iVar8 = (int)DVar20 + iVar13;
     if (((grbitDraw & 4U) != 0) && ((grbitDraw & 3U) == 0)) {
-        *(int *)((int)plVar15 + -2) = -(dyArial8 >> 1);
-        *(undefined2 *)(plVar15 + -1) = 0xfffa;
-        *(int *)((int)plVar15 + -6) = (int)&rc;
-        *(undefined2 *)(plVar15 + -2) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -10) = 0xf7b;
-        ExpandRc((RECT *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1], *(short *)((int)plVar15 + -2));
+        *(short *)(puVar16 + -2) = -(dyArial8 >> 1);
+        *(undefined2 *)(puVar16 + -4) = 0xfffa;
+        *(RECT **)(puVar16 + -6) = &rc;
+        *(undefined2 *)(puVar16 + -8) = 0x14f8;
+        *(undefined2 *)(puVar16 + -10) = 0xf7b;
+        ExpandRc(*(RECT **)(puVar16 + -6), *(short *)(puVar16 + -4), *(short *)(puVar16 + -2));
         rc.top = rc.top + (dyArial8 >> 1);
-        *(HWND *)((int)plVar15 + -2) = hwnd;
-        *(undefined2 *)(plVar15 + -1) = unaff_SS;
-        *(int *)((int)plVar15 + -6) = (int)&rc;
-        *(undefined2 *)(plVar15 + -2) = 1;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1040;
-        uVar23 = 0x14f8;
-        *(undefined2 *)(plVar15 + -3) = 0xf9b;
-        InvalidateRect(*(HWND *)((int)plVar15 + -2), (RECT *)*(undefined4 *)((int)plVar15 + -6), (BOOL)plVar15[-2]);
-        plVar15 = (long *)((int)plVar15 + 2);
+        *(HWND *)(puVar16 + -2) = hwnd;
+        *(undefined2 *)(puVar16 + -4) = unaff_SS;
+        *(RECT **)(puVar16 + -6) = &rc;
+        *(undefined2 *)(puVar16 + -8) = 1;
+        *(undefined2 *)(puVar16 + -10) = 0x1040;
+        uVar24 = 0x14f8;
+        *(undefined2 *)(puVar16 + -0xc) = 0xf9b;
+        InvalidateRect(*(HWND *)(puVar16 + -2), *(RECT **)(puVar16 + -6), *(BOOL *)(puVar16 + -8));
+        puVar16 = puVar16 + 2;
         goto RESEARCH_CleanUp;
     }
     if ((grbitDraw & 0x300U) != 0) {
         if (*(char *)(idPlayer * 0xc0 + 0x59bc + iResTechNow) < '\x1a') {
-            *(short *)((int)plVar15 + -2) = idPlayer;
-            *(int *)(plVar15 + -1) = *(char *)(idPlayer * 0xc0 + 0x59bc + iResTechNow) + 1;
-            *(short *)((int)plVar15 + -6) = iResTechNow;
-            *(undefined2 *)(plVar15 + -2) = 0x14f8;
-            uVar23 = 0x10d8;
-            *(undefined2 *)((int)plVar15 + -10) = 0x1009;
-            lVar20 = GetTechLevelCost(*(short *)((int)plVar15 + -6), (short)plVar15[-1], *(short *)((int)plVar15 + -2));
-            puVar13 = (undefined2 *)(idPlayer * 0xc0 + 0x59c2 + iResTechNow * 4);
-            lVar21 = CONCAT22(puVar13[1], *puVar13);
+            *(short *)(puVar16 + -2) = idPlayer;
+            *(int *)(puVar16 + -4) = *(char *)(idPlayer * 0xc0 + 0x59bc + iResTechNow) + 1;
+            *(short *)(puVar16 + -6) = iResTechNow;
+            *(undefined2 *)(puVar16 + -8) = 0x14f8;
+            uVar24 = 0x10d8;
+            *(undefined2 *)(puVar16 + -10) = 0x1009;
+            lVar21 = GetTechLevelCost(*(short *)(puVar16 + -6), *(short *)(puVar16 + -4), *(short *)(puVar16 + -2));
+            puVar14 = (undefined2 *)(idPlayer * 0xc0 + 0x59c2 + iResTechNow * 4);
+            uVar10 = *puVar14;
+            uVar3 = puVar14[1];
+            lVar22 = CONCAT22(uVar3, uVar10);
             if ((game.wCrap >> 1 & 1) != 0) {
-                *(undefined2 *)((int)plVar15 + -2) = 0x10d8;
-                uVar23 = 0x1118;
-                *(undefined2 *)(plVar15 + -1) = 0x105b;
-                lVar21 = __aFlshl(*plVar15, *(ushort *)(plVar15 + 1));
+                *(undefined2 *)(puVar16 + -2) = 0x10d8;
+                uVar24 = 0x1118;
+                *(undefined2 *)(puVar16 + -4) = 0x105b;
+                lVar22 = __aFlshl(CONCAT22(uVar3, uVar10), 1);
             }
-            l._2_2_ = (int)((ulong)lVar20 >> 0x10);
-            l._0_2_ = (uint)lVar20;
-            local_be = (int)((ulong)lVar21 >> 0x10);
-            local_c0 = (uint)lVar21;
-            iVar14 = (l._2_2_ - local_be) - (uint)((uint)l < local_c0);
-            if ((iVar14 < 1) && (iVar14 < 0)) {
-                lVar20 = 0;
+            l._2_2_ = (int)((ulong)lVar21 >> 0x10);
+            l._0_2_ = (uint)lVar21;
+            local_be = (int)((ulong)lVar22 >> 0x10);
+            local_c0 = (uint)lVar22;
+            iVar15 = (l._2_2_ - local_be) - (uint)((uint)l < local_c0);
+            if ((iVar15 < 1) && (iVar15 < 0)) {
+                lVar21 = 0;
             } else {
-                lVar20 = lVar20 - lVar21;
+                lVar21 = lVar21 - lVar22;
             }
         } else {
-            lVar20 = -1;
+            lVar21 = -1;
         }
-        l._2_2_ = (int)((ulong)lVar20 >> 0x10);
-        l._0_2_ = (uint)lVar20;
+        l._2_2_ = (int)((ulong)lVar21 >> 0x10);
+        l._0_2_ = (uint)lVar21;
         if (((grbitDraw & 0x200U) == 0) || ((grbitDraw & 0xfU) != 0)) {
-            *(undefined2 *)((int)plVar15 + -2) = 0xffff;
-            *(RECT **)(plVar15 + -1) = &rc;
-            *(HDC *)((int)plVar15 + -6) = hdc;
-            *(undefined2 *)(plVar15 + -2) = uVar23;
-            *(undefined2 *)((int)plVar15 + -10) = 0x1132;
-            Draw3dFrame(*(HDC *)((int)plVar15 + -6), *(RECT **)(plVar15 + -1), *(short *)((int)plVar15 + -2));
-            *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-            *(undefined2 *)(plVar15 + -1) = 0x46;
-            *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-            *(undefined2 *)(plVar15 + -2) = 0x1142;
-            sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(short *)(plVar15 + -1) = rc.left + 8;
-            *(int *)((int)plVar15 + -6) = rc.top - (dyArial8 >> 1);
-            *(undefined2 *)(plVar15 + -2) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-            *(short *)(plVar15 + -3) = sVar5;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-            *(undefined2 *)(plVar15 + -4) = 0x116e;
-            TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                    (short)plVar15[-3]);
+            *(undefined2 *)(puVar16 + -2) = 0xffff;
+            *(RECT **)(puVar16 + -4) = &rc;
+            *(HDC *)(puVar16 + -6) = hdc;
+            *(undefined2 *)(puVar16 + -8) = uVar24;
+            *(undefined2 *)(puVar16 + -10) = 0x1132;
+            Draw3dFrame(*(HDC *)(puVar16 + -6), *(RECT **)(puVar16 + -4), *(short *)(puVar16 + -2));
+            *(char **)(puVar16 + -2) = (char *)szWork;
+            *(undefined2 *)(puVar16 + -4) = 0x46;
+            *(undefined2 *)(puVar16 + -6) = 0x1040;
+            *(undefined2 *)(puVar16 + -8) = 0x1142;
+            sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(short *)(puVar16 + -4) = rc.left + 8;
+            *(short *)(puVar16 + -6) = rc.top - (dyArial8 >> 1);
+            *(undefined2 *)(puVar16 + -8) = 0x1120;
+            *(char **)(puVar16 + -10) = (char *)szWork;
+            *(short *)(puVar16 + -0xc) = sVar6;
+            *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+            *(undefined2 *)(puVar16 + -0x10) = 0x116e;
+            TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
             rc.top = rc.top + dyArial8;
-            *(int *)((int)plVar15 + -2) = (int)szTemp;
-            *(short *)(plVar15 + -1) = iResTechNow + 0x54;
-            *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-            *(undefined2 *)(plVar15 + -2) = 0x1185;
-            CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-            *(int *)((int)plVar15 + -2) = (int)szTemp2;
-            *(undefined2 *)(plVar15 + -1) = 0x53f;
-            *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-            *(undefined2 *)(plVar15 + -2) = 0x1196;
-            CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-            *(int *)((int)plVar15 + -2) = *(char *)(idPlayer * 0xc0 + 0x59bc + iResTechNow) + 1;
-            *(undefined2 *)(plVar15 + -1) = unaff_SS;
-            *(int *)((int)plVar15 + -6) = (int)szTemp;
-            *(undefined2 *)(plVar15 + -2) = unaff_SS;
-            *(int *)((int)plVar15 + -10) = (int)szTemp2;
-            *(undefined2 *)(plVar15 + -3) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -0xe) = (char *)szWork;
-            *(undefined2 *)(plVar15 + -4) = 0x1040;
-            *(undefined2 *)((int)plVar15 + -0x12) = 0x11d1;
-            sVar5 = _wsprintf((char *)*(undefined4 *)((int)plVar15 + -0xe), (char *)*(undefined4 *)((int)plVar15 + -10));
-            *(undefined2 *)((int)plVar15 + -2) = 0;
-            *(short *)(plVar15 + -1) = sVar5;
-            *(undefined2 *)((int)plVar15 + -6) = (char *)szWork;
-            *(short *)(plVar15 + -2) = rc.top;
-            *(int *)((int)plVar15 + -10) = iVar12;
-            *(HDC *)(plVar15 + -3) = hdc;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-            *(undefined2 *)(plVar15 + -4) = 0x11f1;
-            RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6),
-                         (short)plVar15[-1], *(short *)((int)plVar15 + -2));
+            *(char **)(puVar16 + -2) = szTemp;
+            *(short *)(puVar16 + -4) = iResTechNow + 0x54;
+            *(undefined2 *)(puVar16 + -6) = 0x14f8;
+            *(undefined2 *)(puVar16 + -8) = 0x1185;
+            CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+            *(char **)(puVar16 + -2) = szTemp2;
+            *(undefined2 *)(puVar16 + -4) = 0x53f;
+            *(undefined2 *)(puVar16 + -6) = 0x1040;
+            *(undefined2 *)(puVar16 + -8) = 0x1196;
+            CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+            *(int *)(puVar16 + -2) = *(char *)(idPlayer * 0xc0 + 0x59bc + iResTechNow) + 1;
+            *(undefined2 *)(puVar16 + -4) = unaff_SS;
+            *(char **)(puVar16 + -6) = szTemp;
+            *(undefined2 *)(puVar16 + -8) = unaff_SS;
+            *(char **)(puVar16 + -10) = szTemp2;
+            *(undefined2 *)(puVar16 + -0xc) = 0x1120;
+            *(char **)(puVar16 + -0xe) = (char *)szWork;
+            *(undefined2 *)(puVar16 + -0x10) = 0x1040;
+            *(undefined2 *)(puVar16 + -0x12) = 0x11d1;
+            sVar6 = _wsprintf(*(char **)(puVar16 + -0xe), *(char **)(puVar16 + -10));
+            *(undefined2 *)(puVar16 + -2) = 0;
+            *(short *)(puVar16 + -4) = sVar6;
+            *(char **)(puVar16 + -6) = (char *)szWork;
+            *(short *)(puVar16 + -8) = rc.top;
+            *(int *)(puVar16 + -10) = iVar13;
+            *(HDC *)(puVar16 + -0xc) = hdc;
+            *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+            *(undefined2 *)(puVar16 + -0x10) = 0x11f1;
+            RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                         *(short *)(puVar16 + -2));
             rc.top = rc.top + (dyArial8 * 3) / 2;
-            *(undefined2 *)((int)plVar15 + -2) = 0;
-            *(undefined2 *)(plVar15 + -1) = 0;
-            *(undefined2 *)((int)plVar15 + -6) = 0x4c;
-            *(undefined2 *)(plVar15 + -2) = 0x1040;
-            *(undefined2 *)((int)plVar15 + -10) = 0x1216;
-            pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-            *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-            *(short *)(plVar15 + -2) = rc.top;
-            *(int *)((int)plVar15 + -10) = iVar12;
-            *(HDC *)(plVar15 + -3) = hdc;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-            *(undefined2 *)(plVar15 + -4) = 0x1229;
-            RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6),
-                         (short)plVar15[-1], *(short *)((int)plVar15 + -2));
-            if (lVar20 == -1) {
-                *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-                *(undefined2 *)(plVar15 + -1) = 0x34a;
-                *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-                uVar23 = 0x1040;
-                *(undefined2 *)(plVar15 + -2) = 0x124d;
-                c = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
+            *(undefined2 *)(puVar16 + -2) = 0;
+            *(undefined2 *)(puVar16 + -4) = 0;
+            *(undefined2 *)(puVar16 + -6) = 0x4c;
+            *(undefined2 *)(puVar16 + -8) = 0x1040;
+            *(undefined2 *)(puVar16 + -10) = 0x1216;
+            pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+            *(char **)(puVar16 + -6) = pcVar23;
+            *(short *)(puVar16 + -8) = rc.top;
+            *(int *)(puVar16 + -10) = iVar13;
+            *(HDC *)(puVar16 + -0xc) = hdc;
+            *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+            *(undefined2 *)(puVar16 + -0x10) = 0x1229;
+            RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                         *(short *)(puVar16 + -2));
+            if (lVar21 == -1) {
+                *(char **)(puVar16 + -2) = (char *)szWork;
+                *(undefined2 *)(puVar16 + -4) = 0x34a;
+                *(undefined2 *)(puVar16 + -6) = 0x1040;
+                uVar24 = 0x1040;
+                *(undefined2 *)(puVar16 + -8) = 0x124d;
+                c = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
             } else {
-                *(undefined2 *)((int)plVar15 + -2) = l._2_2_;
-                *(uint *)(plVar15 + -1) = (uint)l;
-                *(undefined2 *)((int)plVar15 + -6) = 0x1120;
-                *(char **)(plVar15 + -2) = PCTLD;
-                *(undefined2 *)((int)plVar15 + -10) = 0x1120;
-                *(char **)(plVar15 + -3) = (char *)szWork;
-                *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-                uVar23 = 0x14f8;
-                *(undefined2 *)(plVar15 + -4) = 0x1271;
-                c = _wsprintf((char *)plVar15[-3], (char *)plVar15[-2]);
+                *(int *)(puVar16 + -2) = l._2_2_;
+                *(uint *)(puVar16 + -4) = (uint)l;
+                *(undefined2 *)(puVar16 + -6) = 0x1120;
+                *(char **)(puVar16 + -8) = PCTLD;
+                *(undefined2 *)(puVar16 + -10) = 0x1120;
+                *(char **)(puVar16 + -0xc) = (char *)szWork;
+                *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+                uVar24 = 0x14f8;
+                *(undefined2 *)(puVar16 + -0x10) = 0x1271;
+                c = _wsprintf(*(char **)(puVar16 + -0xc), *(char **)(puVar16 + -8));
             }
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(int *)(plVar15 + -1) = iVar12;
-            *(short *)((int)plVar15 + -6) = rc.top;
-            *(undefined2 *)(plVar15 + -2) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-            *(short *)(plVar15 + -3) = c;
-            *(undefined2 *)((int)plVar15 + -0xe) = uVar23;
-            *(undefined2 *)(plVar15 + -4) = 0x1290;
-            TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                    (short)plVar15[-3]);
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(int *)(puVar16 + -4) = iVar13;
+            *(short *)(puVar16 + -6) = rc.top;
+            *(undefined2 *)(puVar16 + -8) = 0x1120;
+            *(char **)(puVar16 + -10) = (char *)szWork;
+            *(short *)(puVar16 + -0xc) = c;
+            *(undefined2 *)(puVar16 + -0xe) = uVar24;
+            *(undefined2 *)(puVar16 + -0x10) = 0x1290;
+            TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
             rc.top = rc.top + (dyArial8 * 3) / 2;
-            *(undefined2 *)((int)plVar15 + -2) = 0;
-            *(undefined2 *)(plVar15 + -1) = 0;
-            *(undefined2 *)((int)plVar15 + -6) = 0x4d;
-            *(undefined2 *)(plVar15 + -2) = 0x14f8;
-            *(undefined2 *)((int)plVar15 + -10) = 0x12b2;
-            pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-            *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-            *(short *)(plVar15 + -2) = rc.top;
-            *(int *)((int)plVar15 + -10) = iVar12;
-            *(HDC *)(plVar15 + -3) = hdc;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-            uVar23 = 0x1040;
-            *(undefined2 *)(plVar15 + -4) = 0x12c5;
-            RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6),
-                         (short)plVar15[-1], *(short *)((int)plVar15 + -2));
+            *(undefined2 *)(puVar16 + -2) = 0;
+            *(undefined2 *)(puVar16 + -4) = 0;
+            *(undefined2 *)(puVar16 + -6) = 0x4d;
+            *(undefined2 *)(puVar16 + -8) = 0x14f8;
+            *(undefined2 *)(puVar16 + -10) = 0x12b2;
+            pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+            *(char **)(puVar16 + -6) = pcVar23;
+            *(short *)(puVar16 + -8) = rc.top;
+            *(int *)(puVar16 + -10) = iVar13;
+            *(HDC *)(puVar16 + -0xc) = hdc;
+            *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+            uVar24 = 0x1040;
+            *(undefined2 *)(puVar16 + -0x10) = 0x12c5;
+            RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                         *(short *)(puVar16 + -2));
         } else {
             rc.top = rc.top + ((dyArial8 * 3) / 2) * 2 + dyArial8;
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(HBRUSH *)(plVar15 + -1) = hbrButtonFace;
-            *(undefined2 *)((int)plVar15 + -6) = uVar23;
-            *(undefined2 *)(plVar15 + -2) = 0x10ec;
-            HVar8 = SelectObject(*(HDC *)((int)plVar15 + -2), *(HGDIOBJ *)(plVar15 + -1));
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(int *)(plVar15 + -1) = iVar12;
-            *(short *)((int)plVar15 + -6) = rc.top;
-            *(int *)(plVar15 + -2) = iVar7 - iVar12;
-            *(short *)((int)plVar15 + -10) = dyArial8;
-            *(undefined2 *)(plVar15 + -3) = 0xf0;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x21;
-            *(undefined2 *)(plVar15 + -4) = 0x14f8;
-            *(undefined2 *)((int)plVar15 + -0x12) = 0x1112;
-            PatBlt(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (short)plVar15[-2], *(short *)((int)plVar15 + -10),
-                   *(DWORD *)((int)plVar15 + -0xe));
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(HGDIOBJ *)(plVar15 + -1) = HVar8;
-            *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-            uVar23 = 0x14f8;
-            *(undefined2 *)(plVar15 + -2) = 0x111e;
-            SelectObject(*(HDC *)((int)plVar15 + -2), *(HGDIOBJ *)(plVar15 + -1));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(HBRUSH *)(puVar16 + -4) = hbrButtonFace;
+            *(undefined2 *)(puVar16 + -6) = uVar24;
+            *(undefined2 *)(puVar16 + -8) = 0x10ec;
+            HVar9 = SelectObject(*(HDC *)(puVar16 + -2), *(HGDIOBJ *)(puVar16 + -4));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(int *)(puVar16 + -4) = iVar13;
+            *(short *)(puVar16 + -6) = rc.top;
+            *(int *)(puVar16 + -8) = iVar8 - iVar13;
+            *(short *)(puVar16 + -10) = dyArial8;
+            *(undefined2 *)(puVar16 + -0xc) = 0xf0;
+            *(undefined2 *)(puVar16 + -0xe) = 0x21;
+            *(undefined2 *)(puVar16 + -0x10) = 0x14f8;
+            *(undefined2 *)(puVar16 + -0x12) = 0x1112;
+            PatBlt(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(short *)(puVar16 + -8), *(short *)(puVar16 + -10),
+                   *(DWORD *)(puVar16 + -0xe));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(HGDIOBJ *)(puVar16 + -4) = HVar9;
+            *(undefined2 *)(puVar16 + -6) = 0x14f8;
+            uVar24 = 0x14f8;
+            *(undefined2 *)(puVar16 + -8) = 0x111e;
+            SelectObject(*(HDC *)(puVar16 + -2), *(HGDIOBJ *)(puVar16 + -4));
         }
-        iVar14 = lResBudget._2_2_;
-        uVar3 = (uint)lResBudget;
-        if (lVar20 == -1) {
-            *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-            *(undefined2 *)(plVar15 + -1) = 0x34a;
-            *(undefined2 *)((int)plVar15 + -6) = uVar23;
-            *(undefined2 *)(plVar15 + -2) = 0x12e9;
-            sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(int *)(plVar15 + -1) = iVar12;
-            *(short *)((int)plVar15 + -6) = rc.top;
-            *(undefined2 *)(plVar15 + -2) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-            *(short *)(plVar15 + -3) = sVar5;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-            *(char **)(plVar15 + -4) = (char *)szRacePass;
-            TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                    (short)plVar15[-3]);
+        iVar15 = lResBudget._2_2_;
+        uVar4 = (uint)lResBudget;
+        if (lVar21 == -1) {
+            *(char **)(puVar16 + -2) = (char *)szWork;
+            *(undefined2 *)(puVar16 + -4) = 0x34a;
+            *(undefined2 *)(puVar16 + -6) = uVar24;
+            *(undefined2 *)(puVar16 + -8) = 0x12e9;
+            sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(int *)(puVar16 + -4) = iVar13;
+            *(short *)(puVar16 + -6) = rc.top;
+            *(undefined2 *)(puVar16 + -8) = 0x1120;
+            *(char **)(puVar16 + -10) = (char *)szWork;
+            *(short *)(puVar16 + -0xc) = sVar6;
+            *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+            *(char **)(puVar16 + -0x10) = (char *)szRacePass;
+            TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
         } else {
-            if (lVar20 == 0) {
-                lVar20 = 1;
+            if (lVar21 == 0) {
+                lVar21 = 1;
             } else {
                 if (((uint)lResBudget == 0) && (lResBudget._2_2_ == 0)) {
-                    *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-                    *(undefined2 *)(plVar15 + -1) = 0x34b;
-                    *(undefined2 *)((int)plVar15 + -6) = uVar23;
-                    *(char **)(plVar15 + -2) = (char *)"15%" + 3;
-                    sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-                    *(HDC *)((int)plVar15 + -2) = hdc;
-                    *(int *)(plVar15 + -1) = iVar12;
-                    *(short *)((int)plVar15 + -6) = rc.top;
-                    *(undefined2 *)(plVar15 + -2) = 0x1120;
-                    *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-                    *(short *)(plVar15 + -3) = sVar5;
-                    *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-                    *(undefined2 *)(plVar15 + -4) = 0x1371;
-                    TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                            (short)plVar15[-3]);
+                    *(char **)(puVar16 + -2) = (char *)szWork;
+                    *(undefined2 *)(puVar16 + -4) = 0x34b;
+                    *(undefined2 *)(puVar16 + -6) = uVar24;
+                    *(char **)(puVar16 + -8) = (char *)"15%" + 3;
+                    sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+                    *(HDC *)(puVar16 + -2) = hdc;
+                    *(int *)(puVar16 + -4) = iVar13;
+                    *(short *)(puVar16 + -6) = rc.top;
+                    *(undefined2 *)(puVar16 + -8) = 0x1120;
+                    *(char **)(puVar16 + -10) = (char *)szWork;
+                    *(short *)(puVar16 + -0xc) = sVar6;
+                    *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+                    *(undefined2 *)(puVar16 + -0x10) = 0x1371;
+                    TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
                     goto LAB_10d8_144a;
                 }
                 local_c0 = (uint)lResBudget;
                 local_be = lResBudget._2_2_;
-                *(undefined2 *)((int)plVar15 + -2) = 4;
-                *(PLAYER **)(plVar15 + -1) = (PLAYER *)rgplr + idPlayer;
-                *(undefined2 *)((int)plVar15 + -6) = uVar23;
-                uVar23 = 0x10e0;
-                *(undefined2 *)(plVar15 + -2) = 0x1399;
-                sVar5 = GetRaceGrbit(*(PLAYER **)(plVar15 + -1), *(RaceGrbit *)((int)plVar15 + -2));
-                if (sVar5 != 0) {
-                    *(undefined2 *)((int)plVar15 + -2) = 0x10e0;
-                    uVar23 = 0x1118;
-                    *(undefined2 *)(plVar15 + -1) = 0x13b4;
-                    lVar21 = __aFlshr(*plVar15, *(ushort *)(plVar15 + 1));
-                    local_c0 = uVar3 - (uint)lVar21;
-                    local_be = (iVar14 - (int)((ulong)lVar21 >> 0x10)) - (uint)(uVar3 < (uint)lVar21);
+                *(undefined2 *)(puVar16 + -2) = 4;
+                *(PLAYER **)(puVar16 + -4) = (PLAYER *)rgplr + idPlayer;
+                *(undefined2 *)(puVar16 + -6) = uVar24;
+                uVar24 = 0x10e0;
+                *(undefined2 *)(puVar16 + -8) = 0x1399;
+                sVar6 = GetRaceGrbit(*(PLAYER **)(puVar16 + -4), *(RaceGrbit *)(puVar16 + -2));
+                if (sVar6 != 0) {
+                    *(undefined2 *)(puVar16 + -2) = 0x10e0;
+                    uVar24 = 0x1118;
+                    *(undefined2 *)(puVar16 + -4) = 0x13b4;
+                    lVar22 = __aFlshr(CONCAT22(iVar15, uVar4), 1);
+                    local_c0 = uVar4 - (uint)lVar22;
+                    local_be = (iVar15 - (int)((ulong)lVar22 >> 0x10)) - (uint)(uVar4 < (uint)lVar22);
                 }
-                *(int *)((int)plVar15 + -2) = local_be;
-                *(uint *)(plVar15 + -1) = local_c0;
-                lVar20 = lVar20 + CONCAT22(local_be, local_c0) + -1;
-                *(undefined2 *)((int)plVar15 + -6) = (int)((ulong)lVar20 >> 0x10);
-                *(int *)(plVar15 + -2) = (int)lVar20;
-                *(undefined2 *)((int)plVar15 + -10) = uVar23;
-                uVar23 = 0x1118;
-                *(undefined2 *)(plVar15 + -3) = 0x13e1;
-                lVar20 = __aFldiv(plVar15[-2], plVar15[-1]);
+                *(int *)(puVar16 + -2) = local_be;
+                *(uint *)(puVar16 + -4) = local_c0;
+                lVar21 = lVar21 + CONCAT22(local_be, local_c0) + -1;
+                *(int *)(puVar16 + -6) = (int)((ulong)lVar21 >> 0x10);
+                *(int *)(puVar16 + -8) = (int)lVar21;
+                *(undefined2 *)(puVar16 + -10) = uVar24;
+                uVar24 = 0x1118;
+                *(undefined2 *)(puVar16 + -0xc) = 0x13e1;
+                lVar21 = __aFldiv(*(long *)(puVar16 + -8), *(long *)(puVar16 + -4));
             }
-            l._2_2_ = (int)((ulong)lVar20 >> 0x10);
-            l._0_2_ = (uint)lVar20;
-            if (lVar20 == 1) {
-                uVar9 = 0x20;
+            l._2_2_ = (int)((ulong)lVar21 >> 0x10);
+            l._0_2_ = (uint)lVar21;
+            if (lVar21 == 1) {
+                uVar10 = 0x20;
             } else {
-                uVar9 = 0x73;
+                uVar10 = 0x73;
             }
-            *(undefined2 *)((int)plVar15 + -2) = uVar9;
-            *(int *)(plVar15 + -1) = l._2_2_;
-            *(undefined2 *)((int)plVar15 + -6) = (uint)l;
-            *(undefined2 *)(plVar15 + -2) = 0x34c;
-            *(undefined2 *)((int)plVar15 + -10) = uVar23;
-            *(short **)(plVar15 + -3) = (short *)&viSpeedVCR;
-            pcVar22 = PszGetCompressedString(*(StringId *)(plVar15 + -2));
-            *(undefined2 *)(plVar15 + -2) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -10) = pcVar22;
-            *(undefined2 *)(plVar15 + -3) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -0xe) = (char *)szWork;
-            *(undefined2 *)(plVar15 + -4) = 0x1010;
-            *(undefined2 *)((int)plVar15 + -0x12) = (char *)" (-%d)" + 2;
-            sVar5 = _wsprintf((char *)*(undefined4 *)((int)plVar15 + -0xe), (char *)*(undefined4 *)((int)plVar15 + -10));
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(int *)(plVar15 + -1) = iVar12;
-            *(short *)((int)plVar15 + -6) = rc.top;
-            *(undefined2 *)(plVar15 + -2) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-            *(short *)(plVar15 + -3) = sVar5;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-            *(undefined2 *)(plVar15 + -4) = 0x144a;
-            TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                    (short)plVar15[-3]);
+            *(undefined2 *)(puVar16 + -2) = uVar10;
+            *(int *)(puVar16 + -4) = l._2_2_;
+            *(uint *)(puVar16 + -6) = (uint)l;
+            *(undefined2 *)(puVar16 + -8) = 0x34c;
+            *(undefined2 *)(puVar16 + -10) = uVar24;
+            *(short **)(puVar16 + -0xc) = (short *)&viSpeedVCR;
+            pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -8));
+            *(undefined2 *)(puVar16 + -8) = 0x1120;
+            *(char **)(puVar16 + -10) = pcVar23;
+            *(undefined2 *)(puVar16 + -0xc) = 0x1120;
+            *(char **)(puVar16 + -0xe) = (char *)szWork;
+            *(undefined2 *)(puVar16 + -0x10) = 0x1010;
+            *(char **)(puVar16 + -0x12) = (char *)" (-%d)" + 2;
+            sVar6 = _wsprintf(*(char **)(puVar16 + -0xe), *(char **)(puVar16 + -10));
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(int *)(puVar16 + -4) = iVar13;
+            *(short *)(puVar16 + -6) = rc.top;
+            *(undefined2 *)(puVar16 + -8) = 0x1120;
+            *(char **)(puVar16 + -10) = (char *)szWork;
+            *(short *)(puVar16 + -0xc) = sVar6;
+            *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+            *(undefined2 *)(puVar16 + -0x10) = 0x144a;
+            TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
         }
     LAB_10d8_144a:
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0x52;
-        *(undefined2 *)(plVar15 + -2) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -10) = 0x145b;
-        pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-        *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-        *(short *)(plVar15 + -2) = rc.top + dyArial8 + 5;
-        *(int *)((int)plVar15 + -10) = iVar12 + -0x3c;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        *(undefined2 *)(plVar15 + -4) = 0x147a;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
-        *(HWND *)((int)plVar15 + -2) = hwnd;
-        *(undefined2 *)(plVar15 + -1) = 0x43b;
-        *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-        *(undefined2 *)(plVar15 + -2) = 0x1489;
-        HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2), *(ControlId *)(plVar15 + -1));
-        *(HWND *)((int)plVar15 + -2) = HVar10;
-        *(undefined2 *)(plVar15 + -1) = unaff_SS;
-        *(int *)((int)plVar15 + -6) = (int)&rcT;
-        *(undefined2 *)(plVar15 + -2) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1496;
-        GetClientRect(*(HWND *)((int)plVar15 + -2), (RECT *)*(undefined4 *)((int)plVar15 + -6));
-        *(HWND *)((int)plVar15 + -2) = hwnd;
-        *(undefined2 *)(plVar15 + -1) = 0x43b;
-        *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-        *(undefined2 *)(plVar15 + -2) = 0x14a2;
-        HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2), *(ControlId *)(plVar15 + -1));
-        *(HWND *)((int)plVar15 + -2) = HVar10;
-        *(HWND *)(plVar15 + -1) = hwnd;
-        *(undefined2 *)((int)plVar15 + -6) = unaff_SS;
-        *(RECT **)(plVar15 + -2) = &rcT;
-        *(undefined2 *)((int)plVar15 + -10) = 2;
-        *(undefined2 *)(plVar15 + -3) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x14b6;
-        MapWindowPoints(*(HWND *)((int)plVar15 + -2), *(HWND *)(plVar15 + -1), (POINT *)plVar15[-2], *(UINT *)((int)plVar15 + -10));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0x52;
+        *(undefined2 *)(puVar16 + -8) = 0x14f8;
+        *(undefined2 *)(puVar16 + -10) = 0x145b;
+        pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+        *(char **)(puVar16 + -6) = pcVar23;
+        *(short *)(puVar16 + -8) = rc.top + dyArial8 + 5;
+        *(int *)(puVar16 + -10) = iVar13 + -0x3c;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+        *(undefined2 *)(puVar16 + -0x10) = 0x147a;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
+        *(HWND *)(puVar16 + -2) = hwnd;
+        *(undefined2 *)(puVar16 + -4) = 0x43b;
+        *(undefined2 *)(puVar16 + -6) = 0x1040;
+        *(undefined2 *)(puVar16 + -8) = 0x1489;
+        HVar11 = GetDlgItem(*(HWND *)(puVar16 + -2), *(ControlId *)(puVar16 + -4));
+        *(HWND *)(puVar16 + -2) = HVar11;
+        *(undefined2 *)(puVar16 + -4) = unaff_SS;
+        *(RECT **)(puVar16 + -6) = &rcT;
+        *(undefined2 *)(puVar16 + -8) = 0x14f8;
+        *(undefined2 *)(puVar16 + -10) = 0x1496;
+        GetClientRect(*(HWND *)(puVar16 + -2), *(RECT **)(puVar16 + -6));
+        *(HWND *)(puVar16 + -2) = hwnd;
+        *(undefined2 *)(puVar16 + -4) = 0x43b;
+        *(undefined2 *)(puVar16 + -6) = 0x14f8;
+        *(undefined2 *)(puVar16 + -8) = 0x14a2;
+        HVar11 = GetDlgItem(*(HWND *)(puVar16 + -2), *(ControlId *)(puVar16 + -4));
+        *(HWND *)(puVar16 + -2) = HVar11;
+        *(HWND *)(puVar16 + -4) = hwnd;
+        *(undefined2 *)(puVar16 + -6) = unaff_SS;
+        *(RECT **)(puVar16 + -8) = &rcT;
+        *(undefined2 *)(puVar16 + -10) = 2;
+        *(undefined2 *)(puVar16 + -0xc) = 0x14f8;
+        *(undefined2 *)(puVar16 + -0xe) = 0x14b6;
+        MapWindowPoints(*(HWND *)(puVar16 + -2), *(HWND *)(puVar16 + -4), *(POINT **)(puVar16 + -8), *(UINT *)(puVar16 + -10));
         if (rcT.top != rc.top + dyArial8 + 2) {
-            *(HWND *)((int)plVar15 + -2) = hwnd;
-            *(undefined2 *)(plVar15 + -1) = 0x43b;
-            *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-            *(undefined2 *)(plVar15 + -2) = 0x14d5;
-            HVar10 = GetDlgItem(*(HWND *)((int)plVar15 + -2), *(ControlId *)(plVar15 + -1));
-            *(HWND *)((int)plVar15 + -2) = HVar10;
-            *(undefined2 *)(plVar15 + -1) = 0;
-            *(int *)((int)plVar15 + -6) = iVar12 + -0x3c;
-            *(short *)(plVar15 + -2) = rc.top + dyArial8 + 2;
-            *(int *)((int)plVar15 + -10) = (rc.right - iVar12) + 0x32;
-            *(short *)(plVar15 + -3) = dyArial8 * 9;
-            *(undefined2 *)((int)plVar15 + -0xe) = 0xc;
-            *(undefined2 *)(plVar15 + -4) = 0x14f8;
-            *(undefined2 *)((int)plVar15 + -0x12) = 0x1509;
-            SetWindowPos(*(HWND *)((int)plVar15 + -2), *(HWND *)(plVar15 + -1), *(short *)((int)plVar15 + -6), (short)plVar15[-2],
-                         *(short *)((int)plVar15 + -10), (short)plVar15[-3], *(UINT *)((int)plVar15 + -0xe));
+            *(HWND *)(puVar16 + -2) = hwnd;
+            *(undefined2 *)(puVar16 + -4) = 0x43b;
+            *(undefined2 *)(puVar16 + -6) = 0x14f8;
+            *(undefined2 *)(puVar16 + -8) = 0x14d5;
+            HVar11 = GetDlgItem(*(HWND *)(puVar16 + -2), *(ControlId *)(puVar16 + -4));
+            *(HWND *)(puVar16 + -2) = HVar11;
+            *(undefined2 *)(puVar16 + -4) = 0;
+            *(int *)(puVar16 + -6) = iVar13 + -0x3c;
+            *(short *)(puVar16 + -8) = rc.top + dyArial8 + 2;
+            *(short *)(puVar16 + -10) = (rc.right - iVar13) + 0x32;
+            *(short *)(puVar16 + -0xc) = dyArial8 * 9;
+            *(undefined2 *)(puVar16 + -0xe) = 0xc;
+            *(undefined2 *)(puVar16 + -0x10) = 0x14f8;
+            *(undefined2 *)(puVar16 + -0x12) = 0x1509;
+            SetWindowPos(*(HWND *)(puVar16 + -2), *(HWND *)(puVar16 + -4), *(short *)(puVar16 + -6), *(short *)(puVar16 + -8), *(short *)(puVar16 + -10),
+                         *(short *)(puVar16 + -0xc), *(UINT *)(puVar16 + -0xe));
         }
     }
     rc.top = (dyArial8 * 3) / 2 + rc.bottom;
     rc.bottom = dyArial8 * 8 + rc.top;
     if ((grbitDraw & 0x400U) != 0) {
-        *(undefined2 *)((int)plVar15 + -2) = 0xffff;
-        *(RECT **)(plVar15 + -1) = &rc;
-        *(HDC *)((int)plVar15 + -6) = hdc;
-        *(undefined2 *)(plVar15 + -2) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1551;
-        Draw3dFrame(*(HDC *)((int)plVar15 + -6), *(RECT **)(plVar15 + -1), *(short *)((int)plVar15 + -2));
-        *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-        *(undefined2 *)(plVar15 + -1) = 0x47;
-        *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-        *(undefined2 *)(plVar15 + -2) = 0x1561;
-        sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(short *)(plVar15 + -1) = rc.left + 8;
-        *(int *)((int)plVar15 + -6) = rc.top - (dyArial8 >> 1);
-        *(undefined2 *)(plVar15 + -2) = 0x1120;
-        *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-        *(short *)(plVar15 + -3) = sVar5;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-        *(undefined2 *)(plVar15 + -4) = 0x158d;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
+        *(undefined2 *)(puVar16 + -2) = 0xffff;
+        *(RECT **)(puVar16 + -4) = &rc;
+        *(HDC *)(puVar16 + -6) = hdc;
+        *(undefined2 *)(puVar16 + -8) = 0x14f8;
+        *(undefined2 *)(puVar16 + -10) = 0x1551;
+        Draw3dFrame(*(HDC *)(puVar16 + -6), *(RECT **)(puVar16 + -4), *(short *)(puVar16 + -2));
+        *(char **)(puVar16 + -2) = (char *)szWork;
+        *(undefined2 *)(puVar16 + -4) = 0x47;
+        *(undefined2 *)(puVar16 + -6) = 0x1040;
+        *(undefined2 *)(puVar16 + -8) = 0x1561;
+        sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(short *)(puVar16 + -4) = rc.left + 8;
+        *(short *)(puVar16 + -6) = rc.top - (dyArial8 >> 1);
+        *(undefined2 *)(puVar16 + -8) = 0x1120;
+        *(char **)(puVar16 + -10) = (char *)szWork;
+        *(short *)(puVar16 + -0xc) = sVar6;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+        *(undefined2 *)(puVar16 + -0x10) = 0x158d;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
     }
-    uVar23 = 0x14f8;
+    uVar24 = 0x14f8;
     rc.top = rc.top + dyArial8;
     if ((grbitDraw & 0x800U) != 0) {
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0x4e;
-        *(undefined2 *)(plVar15 + -2) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -10) = 0x15b6;
-        pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-        *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar12;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        *(char **)(plVar15 + -4) = (char *)"-- " + 3;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
-        *(undefined2 *)((int)plVar15 + -2) = lResTotal._2_2_;
-        *(undefined2 *)(plVar15 + -1) = (undefined2)lResTotal;
-        *(undefined2 *)((int)plVar15 + -6) = 0x1120;
-        *(char **)(plVar15 + -2) = PCTLD;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1120;
-        *(char **)(plVar15 + -3) = (char *)szWork;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-        *(undefined2 *)(plVar15 + -4) = 0x15e7;
-        sVar5 = _wsprintf((char *)plVar15[-3], (char *)plVar15[-2]);
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(short *)(plVar15 + -1) = sVar5;
-        *(undefined2 *)((int)plVar15 + -6) = (char *)szWork;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar7;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-        uVar23 = 0x1040;
-        *(char **)(plVar15 + -4) = (char *)"%s %d%%" + 4;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0x4e;
+        *(undefined2 *)(puVar16 + -8) = 0x14f8;
+        *(undefined2 *)(puVar16 + -10) = 0x15b6;
+        pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+        *(char **)(puVar16 + -6) = pcVar23;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar13;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+        *(char **)(puVar16 + -0x10) = (char *)"-- " + 3;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
+        *(undefined2 *)(puVar16 + -2) = lResTotal._2_2_;
+        *(undefined2 *)(puVar16 + -4) = (undefined2)lResTotal;
+        *(undefined2 *)(puVar16 + -6) = 0x1120;
+        *(char **)(puVar16 + -8) = PCTLD;
+        *(undefined2 *)(puVar16 + -10) = 0x1120;
+        *(char **)(puVar16 + -0xc) = (char *)szWork;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+        *(undefined2 *)(puVar16 + -0x10) = 0x15e7;
+        sVar6 = _wsprintf(*(char **)(puVar16 + -0xc), *(char **)(puVar16 + -8));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(short *)(puVar16 + -4) = sVar6;
+        *(char **)(puVar16 + -6) = (char *)szWork;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar8;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+        uVar24 = 0x1040;
+        *(char **)(puVar16 + -0x10) = (char *)"%s %d%%" + 4;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
     }
     rc.top = rc.top + (dyArial8 * 3) / 2;
     if ((grbitDraw & 0x1000U) != 0) {
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0x4f;
-        *(undefined2 *)(plVar15 + -2) = uVar23;
-        *(undefined2 *)((int)plVar15 + -10) = (char *)"#\tX\tY\tName\r\n" + 3;
-        pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-        *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar12;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        *(char **)(plVar15 + -4) = (char *)"%d\t%d\t%d\t%s\r\n" + 9;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
-        *(undefined2 *)((int)plVar15 + -2) = *(undefined2 *)((int)&rgplr[0].lResLastYear + 2 + idPlayer * 0xc0);
-        *(undefined2 *)(plVar15 + -1) = *(undefined2 *)((int)&rgplr[0].lResLastYear + idPlayer * 0xc0);
-        *(undefined2 *)((int)plVar15 + -6) = 0x1120;
-        *(char **)(plVar15 + -2) = PCTLD;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1120;
-        *(char **)(plVar15 + -3) = (char *)szWork;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-        *(char **)(plVar15 + -4) = (char *)s___1120_1678;
-        sVar5 = _wsprintf((char *)plVar15[-3], (char *)plVar15[-2]);
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(short *)(plVar15 + -1) = sVar5;
-        *(undefined2 *)((int)plVar15 + -6) = (char *)szWork;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar7;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-        uVar23 = 0x1040;
-        *(THING ***)(plVar15 + -4) = (THING **)&lpThings;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0x4f;
+        *(undefined2 *)(puVar16 + -8) = uVar24;
+        *(char **)(puVar16 + -10) = (char *)"#\tX\tY\tName\r\n" + 3;
+        pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+        *(char **)(puVar16 + -6) = pcVar23;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar13;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+        *(char **)(puVar16 + -0x10) = (char *)"%d\t%d\t%d\t%s\r\n" + 9;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
+        *(undefined2 *)(puVar16 + -2) = *(undefined2 *)((int)&rgplr[0].lResLastYear + 2 + idPlayer * 0xc0);
+        *(undefined2 *)(puVar16 + -4) = *(undefined2 *)((int)&rgplr[0].lResLastYear + idPlayer * 0xc0);
+        *(undefined2 *)(puVar16 + -6) = 0x1120;
+        *(char **)(puVar16 + -8) = PCTLD;
+        *(undefined2 *)(puVar16 + -10) = 0x1120;
+        *(char **)(puVar16 + -0xc) = (char *)szWork;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+        *(char **)(puVar16 + -0x10) = (char *)s___1120_1678;
+        sVar6 = _wsprintf(*(char **)(puVar16 + -0xc), *(char **)(puVar16 + -8));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(short *)(puVar16 + -4) = sVar6;
+        *(char **)(puVar16 + -6) = (char *)szWork;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar8;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+        uVar24 = 0x1040;
+        *(THING ***)(puVar16 + -0x10) = (THING **)&lpThings;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
     }
     rc.top = rc.top + (dyArial8 * 3) / 2;
     dx = 0;
     if ((grbitDraw & 0x2000U) == 0) {
         if (((grbitDraw & 0x4000U) != 0) && ((grbitDraw & 0xfU) == 0)) {
-            *(HDC *)((int)plVar15 + -2) = hdc;
-            *(undefined2 *)(plVar15 + -1) = 0x1120;
-            *(undefined2 *)((int)plVar15 + -6) = 0xd15;
-            *(undefined2 *)(plVar15 + -2) = 3;
-            *(undefined2 *)((int)plVar15 + -10) = uVar23;
-            uVar23 = 0x14f8;
-            *(undefined2 *)(plVar15 + -3) = 0x16ee;
-            DVar19 = GetTextExtent(*(HDC *)((int)plVar15 + -2), (LPCSTR) * (undefined4 *)((int)plVar15 + -6), (short)plVar15[-2]);
-            dx = (short)DVar19;
+            *(HDC *)(puVar16 + -2) = hdc;
+            *(undefined2 *)(puVar16 + -4) = 0x1120;
+            *(undefined2 *)(puVar16 + -6) = 0xd15;
+            *(undefined2 *)(puVar16 + -8) = 3;
+            *(undefined2 *)(puVar16 + -10) = uVar24;
+            uVar24 = 0x14f8;
+            *(undefined2 *)(puVar16 + -0xc) = 0x16ee;
+            DVar20 = GetTextExtent(*(HDC *)(puVar16 + -2), *(LPCSTR *)(puVar16 + -6), *(short *)(puVar16 + -8));
+            dx = (short)DVar20;
         }
     } else {
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0x50;
-        *(undefined2 *)(plVar15 + -2) = uVar23;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1705;
-        pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-        *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar12;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        uVar23 = 0x1040;
-        *(undefined2 *)(plVar15 + -4) = 0x1718;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0x50;
+        *(undefined2 *)(puVar16 + -8) = uVar24;
+        *(undefined2 *)(puVar16 + -10) = 0x1705;
+        pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+        *(char **)(puVar16 + -6) = pcVar23;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar13;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+        uVar24 = 0x1040;
+        *(undefined2 *)(puVar16 + -0x10) = 0x1718;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
     }
-    *(short *)((int)plVar15 + -2) = pctResGlob;
-    *(undefined2 *)(plVar15 + -1) = 0x1120;
-    *(undefined2 *)((int)plVar15 + -6) = PCTD;
-    *(undefined2 *)(plVar15 + -2) = 0x1120;
-    *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-    *(undefined2 *)(plVar15 + -3) = uVar23;
-    *(undefined2 *)((int)plVar15 + -0xe) = 0x1732;
-    sVar5 = _wsprintf((char *)*(undefined4 *)((int)plVar15 + -10), (char *)*(undefined4 *)((int)plVar15 + -6));
-    *(short *)((int)plVar15 + -2) = dx;
-    *(short *)(plVar15 + -1) = sVar5;
-    *(undefined2 *)((int)plVar15 + -6) = (char *)szWork;
-    *(short *)(plVar15 + -2) = rc.top;
-    *(int *)((int)plVar15 + -10) = iVar7;
-    *(HDC *)(plVar15 + -3) = hdc;
-    *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-    *(undefined2 *)(plVar15 + -4) = 0x1751;
-    RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                 *(short *)((int)plVar15 + -2));
+    *(short *)(puVar16 + -2) = pctResGlob;
+    *(undefined2 *)(puVar16 + -4) = 0x1120;
+    *(char **)(puVar16 + -6) = PCTD;
+    *(undefined2 *)(puVar16 + -8) = 0x1120;
+    *(char **)(puVar16 + -10) = (char *)szWork;
+    *(undefined2 *)(puVar16 + -0xc) = uVar24;
+    *(undefined2 *)(puVar16 + -0xe) = 0x1732;
+    sVar6 = _wsprintf(*(char **)(puVar16 + -10), *(char **)(puVar16 + -6));
+    *(short *)(puVar16 + -2) = dx;
+    *(short *)(puVar16 + -4) = sVar6;
+    *(char **)(puVar16 + -6) = (char *)szWork;
+    *(short *)(puVar16 + -8) = rc.top;
+    *(int *)(puVar16 + -10) = iVar8;
+    *(HDC *)(puVar16 + -0xc) = hdc;
+    *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+    *(undefined2 *)(puVar16 + -0x10) = 0x1751;
+    RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                 *(short *)(puVar16 + -2));
     if (((grbitDraw & 0x4000U) == 0) || ((grbitDraw & 0xfU) != 0)) {
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(undefined2 *)(plVar15 + -1) = 0x1120;
-        *(undefined2 *)((int)plVar15 + -6) = 0xd19;
-        *(undefined2 *)(plVar15 + -2) = 1;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1040;
-        *(undefined2 *)(plVar15 + -3) = 0x1786;
-        DVar19 = GetTextExtent(*(HDC *)((int)plVar15 + -2), (LPCSTR) * (undefined4 *)((int)plVar15 + -6), (short)plVar15[-2]);
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(int *)(plVar15 + -1) = iVar7;
-        *(short *)((int)plVar15 + -6) = rc.top;
-        *(undefined2 *)(plVar15 + -2) = 0x1120;
-        *(undefined2 *)((int)plVar15 + -10) = 0xd1b;
-        *(undefined2 *)(plVar15 + -3) = 1;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-        *(undefined2 *)(plVar15 + -4) = 0x17a3;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
-        iVar14 = iVar7 + (int)DVar19;
-        rcSpinTop.left = iVar14 + 4;
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(undefined2 *)(puVar16 + -4) = 0x1120;
+        *(undefined2 *)(puVar16 + -6) = 0xd19;
+        *(undefined2 *)(puVar16 + -8) = 1;
+        *(undefined2 *)(puVar16 + -10) = 0x1040;
+        *(undefined2 *)(puVar16 + -0xc) = 0x1786;
+        DVar20 = GetTextExtent(*(HDC *)(puVar16 + -2), *(LPCSTR *)(puVar16 + -6), *(short *)(puVar16 + -8));
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(int *)(puVar16 + -4) = iVar8;
+        *(short *)(puVar16 + -6) = rc.top;
+        *(undefined2 *)(puVar16 + -8) = 0x1120;
+        *(undefined2 *)(puVar16 + -10) = 0xd1b;
+        *(undefined2 *)(puVar16 + -0xc) = 1;
+        *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+        *(undefined2 *)(puVar16 + -0x10) = 0x17a3;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
+        iVar15 = iVar8 + (int)DVar20;
+        rcSpinTop.left = iVar15 + 4;
         rcSpinTop.top = rc.top + -4;
-        rcSpinTop.right = iVar14 + 0x13;
+        rcSpinTop.right = iVar15 + 0x13;
         rcSpinTop.bottom = (dyArial8 >> 1) + rc.top + 1;
-        *(undefined2 *)((int)plVar15 + -2) = 0x1120;
-        uVar23 = *(undefined2 *)((int)plVar15 + -2);
+        *(undefined2 *)(puVar16 + -2) = 0x1120;
+        uVar24 = *(undefined2 *)(puVar16 + -2);
         ((RECT *)&rcSpinBot)->left = rcSpinTop.left;
         *(short *)&rcSpinBot.top = rcSpinTop.top;
         *(short *)&rcSpinBot.right = rcSpinTop.right;
         *(short *)&rcSpinBot.bottom = rcSpinTop.bottom;
-        *(undefined2 *)((int)plVar15 + -2) = 0x1120;
-        *(RECT **)(plVar15 + -1) = (RECT *)&rcSpinBot;
-        *(undefined2 *)((int)plVar15 + -6) = 0;
-        *(short *)(plVar15 + -2) = (rcSpinTop.bottom - rcSpinTop.top) + -1;
-        *(undefined2 *)((int)plVar15 + -10) = 0x14f8;
-        *(undefined2 *)(plVar15 + -3) = 0x17fb;
-        OffsetRect((RECT *)plVar15[-1], *(short *)((int)plVar15 + -6), (short)plVar15[-2]);
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0xa0;
-        *(RECT **)(plVar15 + -2) = (RECT *)&rcSpinTop;
-        *(HDC *)((int)plVar15 + -10) = hdc;
-        *(undefined2 *)(plVar15 + -3) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1813;
-        DrawBtn(*(HDC *)((int)plVar15 + -10), *(RECT **)(plVar15 + -2), *(short *)((int)plVar15 + -6), (short)plVar15[-1],
-                (char *)*(undefined2 *)((int)plVar15 + -2));
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0xa1;
-        *(RECT **)(plVar15 + -2) = (RECT *)&rcSpinBot;
-        *(HDC *)((int)plVar15 + -10) = hdc;
-        *(undefined2 *)(plVar15 + -3) = 0x1040;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x182e;
-        DrawBtn(*(HDC *)((int)plVar15 + -10), *(RECT **)(plVar15 + -2), *(short *)((int)plVar15 + -6), (short)plVar15[-1],
-                (char *)*(undefined2 *)((int)plVar15 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0x1120;
+        *(RECT **)(puVar16 + -4) = (RECT *)&rcSpinBot;
+        *(undefined2 *)(puVar16 + -6) = 0;
+        *(short *)(puVar16 + -8) = (rcSpinTop.bottom - rcSpinTop.top) + -1;
+        *(undefined2 *)(puVar16 + -10) = 0x14f8;
+        *(undefined2 *)(puVar16 + -0xc) = 0x17fb;
+        OffsetRect(*(RECT **)(puVar16 + -4), *(short *)(puVar16 + -6), *(short *)(puVar16 + -8));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0xa0;
+        *(RECT **)(puVar16 + -8) = (RECT *)&rcSpinTop;
+        *(HDC *)(puVar16 + -10) = hdc;
+        *(undefined2 *)(puVar16 + -0xc) = 0x14f8;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1813;
+        DrawBtn(*(HDC *)(puVar16 + -10), *(RECT **)(puVar16 + -8), *(short *)(puVar16 + -6), *(short *)(puVar16 + -4), *(char **)(puVar16 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0xa1;
+        *(RECT **)(puVar16 + -8) = (RECT *)&rcSpinBot;
+        *(HDC *)(puVar16 + -10) = hdc;
+        *(undefined2 *)(puVar16 + -0xc) = 0x1040;
+        *(undefined2 *)(puVar16 + -0xe) = 0x182e;
+        DrawBtn(*(HDC *)(puVar16 + -10), *(RECT **)(puVar16 + -8), *(short *)(puVar16 + -6), *(short *)(puVar16 + -4), *(char **)(puVar16 + -2));
     }
     rc.top = rc.top + (dyArial8 * 3) / 2;
     if (((grbitDraw & 0x4000U) == 0) || ((grbitDraw & 0xfU) != 0)) {
-        *(undefined2 *)((int)plVar15 + -2) = 0;
-        *(undefined2 *)(plVar15 + -1) = 0;
-        *(undefined2 *)((int)plVar15 + -6) = 0x51;
-        *(undefined2 *)(plVar15 + -2) = 0x1040;
-        *(undefined2 *)((int)plVar15 + -10) = 0x1872;
-        pcVar22 = PszGetCompressedString(*(StringId *)((int)plVar15 + -6));
-        *(undefined2 *)((int)plVar15 + -6) = pcVar22;
-        *(short *)(plVar15 + -2) = rc.top;
-        *(int *)((int)plVar15 + -10) = iVar12;
-        *(HDC *)(plVar15 + -3) = hdc;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1010;
-        *(undefined2 *)(plVar15 + -4) = 0x1885;
-        RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                     *(short *)((int)plVar15 + -2));
+        *(undefined2 *)(puVar16 + -2) = 0;
+        *(undefined2 *)(puVar16 + -4) = 0;
+        *(undefined2 *)(puVar16 + -6) = 0x51;
+        *(undefined2 *)(puVar16 + -8) = 0x1040;
+        *(undefined2 *)(puVar16 + -10) = 0x1872;
+        pcVar23 = PszGetCompressedString(*(StringId *)(puVar16 + -6));
+        *(char **)(puVar16 + -6) = pcVar23;
+        *(short *)(puVar16 + -8) = rc.top;
+        *(int *)(puVar16 + -10) = iVar13;
+        *(HDC *)(puVar16 + -0xc) = hdc;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1010;
+        *(undefined2 *)(puVar16 + -0x10) = 0x1885;
+        RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                     *(short *)(puVar16 + -2));
     }
-    *(int *)((int)plVar15 + -2) = lResBudget._2_2_;
-    *(uint *)(plVar15 + -1) = (uint)lResBudget;
-    *(undefined2 *)((int)plVar15 + -6) = 0x1120;
-    *(char **)(plVar15 + -2) = PCTLD;
-    *(undefined2 *)((int)plVar15 + -10) = 0x1120;
-    *(char **)(plVar15 + -3) = (char *)szWork;
-    *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-    *(undefined2 *)(plVar15 + -4) = 0x18a3;
-    sVar5 = _wsprintf((char *)plVar15[-3], (char *)plVar15[-2]);
-    *(int *)((int)plVar15 + -2) = iVar7 - iVar12;
-    *(short *)(plVar15 + -1) = sVar5;
-    *(undefined2 *)((int)plVar15 + -6) = (char *)szWork;
-    *(short *)(plVar15 + -2) = rc.top;
-    *(int *)((int)plVar15 + -10) = iVar7;
-    *(HDC *)(plVar15 + -3) = hdc;
-    *(undefined2 *)((int)plVar15 + -0xe) = 0x14f8;
-    *(undefined2 *)(plVar15 + -4) = 0x18c6;
-    RightTextOut(*(HDC *)(plVar15 + -3), *(short *)((int)plVar15 + -10), (short)plVar15[-2], (char *)*(undefined2 *)((int)plVar15 + -6), (short)plVar15[-1],
-                 *(short *)((int)plVar15 + -2));
-    *(undefined2 *)((int)plVar15 + -2) = 4;
-    *(PLAYER **)(plVar15 + -1) = (PLAYER *)rgplr + idPlayer;
-    *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-    *(undefined2 *)(plVar15 + -2) = 0x18df;
-    sVar5 = GetRaceGrbit(*(PLAYER **)(plVar15 + -1), *(RaceGrbit *)((int)plVar15 + -2));
-    if (sVar5 == 0) {
-        *(undefined2 *)((int)plVar15 + -2) = 0xc;
-        *(PLAYER **)(plVar15 + -1) = (PLAYER *)rgplr + idPlayer;
-        *(undefined2 *)((int)plVar15 + -6) = 0x10e0;
-        uVar23 = 0x10e0;
-        *(undefined2 *)(plVar15 + -2) = 0x1900;
-        sVar5 = GetRaceGrbit(*(PLAYER **)(plVar15 + -1), *(RaceGrbit *)((int)plVar15 + -2));
-        if (sVar5 == 0) {
+    *(int *)(puVar16 + -2) = lResBudget._2_2_;
+    *(uint *)(puVar16 + -4) = (uint)lResBudget;
+    *(undefined2 *)(puVar16 + -6) = 0x1120;
+    *(char **)(puVar16 + -8) = PCTLD;
+    *(undefined2 *)(puVar16 + -10) = 0x1120;
+    *(char **)(puVar16 + -0xc) = (char *)szWork;
+    *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+    *(undefined2 *)(puVar16 + -0x10) = 0x18a3;
+    sVar6 = _wsprintf(*(char **)(puVar16 + -0xc), *(char **)(puVar16 + -8));
+    *(int *)(puVar16 + -2) = iVar8 - iVar13;
+    *(short *)(puVar16 + -4) = sVar6;
+    *(char **)(puVar16 + -6) = (char *)szWork;
+    *(short *)(puVar16 + -8) = rc.top;
+    *(int *)(puVar16 + -10) = iVar8;
+    *(HDC *)(puVar16 + -0xc) = hdc;
+    *(undefined2 *)(puVar16 + -0xe) = 0x14f8;
+    *(undefined2 *)(puVar16 + -0x10) = 0x18c6;
+    RightTextOut(*(HDC *)(puVar16 + -0xc), *(short *)(puVar16 + -10), *(short *)(puVar16 + -8), *(char **)(puVar16 + -6), *(short *)(puVar16 + -4),
+                 *(short *)(puVar16 + -2));
+    *(undefined2 *)(puVar16 + -2) = 4;
+    *(PLAYER **)(puVar16 + -4) = (PLAYER *)rgplr + idPlayer;
+    *(undefined2 *)(puVar16 + -6) = 0x1040;
+    *(undefined2 *)(puVar16 + -8) = 0x18df;
+    sVar6 = GetRaceGrbit(*(PLAYER **)(puVar16 + -4), *(RaceGrbit *)(puVar16 + -2));
+    if (sVar6 == 0) {
+        *(undefined2 *)(puVar16 + -2) = 0xc;
+        *(PLAYER **)(puVar16 + -4) = (PLAYER *)rgplr + idPlayer;
+        *(undefined2 *)(puVar16 + -6) = 0x10e0;
+        uVar24 = 0x10e0;
+        *(undefined2 *)(puVar16 + -8) = 0x1900;
+        sVar6 = GetRaceGrbit(*(PLAYER **)(puVar16 + -4), *(RaceGrbit *)(puVar16 + -2));
+        if (sVar6 == 0) {
             yTopTechNote = -1;
             goto RESEARCH_CleanUp;
         }
     }
-    *(int *)((int)plVar15 + -2) = (int)szTemp;
-    *(undefined2 *)(plVar15 + -1) = 0x50a;
-    *(undefined2 *)((int)plVar15 + -6) = 0x10e0;
-    *(undefined2 *)(plVar15 + -2) = 0x1918;
-    sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(ushort *)(plVar15 + -1) = rghfontArial8[1];
-    *(undefined2 *)((int)plVar15 + -6) = 0x1040;
-    *(undefined2 *)(plVar15 + -2) = 0x192b;
-    SelectObject(*(HDC *)((int)plVar15 + -2), *(HGDIOBJ *)(plVar15 + -1));
+    *(char **)(puVar16 + -2) = szTemp;
+    *(undefined2 *)(puVar16 + -4) = 0x50a;
+    *(undefined2 *)(puVar16 + -6) = 0x10e0;
+    *(undefined2 *)(puVar16 + -8) = 0x1918;
+    sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(ushort *)(puVar16 + -4) = rghfontArial8[1];
+    *(undefined2 *)(puVar16 + -6) = 0x1040;
+    *(undefined2 *)(puVar16 + -8) = 0x192b;
+    SelectObject(*(HDC *)(puVar16 + -2), *(HGDIOBJ *)(puVar16 + -4));
     yTopTechNote = rc.top + dyArial8 * 3;
     rc.top = yTopTechNote;
     rc.left = dxResLeft + 8;
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(undefined2 *)(plVar15 + -1) = unaff_SS;
-    *(int *)((int)plVar15 + -6) = (int)szTemp;
-    *(short *)(plVar15 + -2) = sVar5;
-    *(undefined2 *)((int)plVar15 + -10) = 0x14f8;
-    *(undefined2 *)(plVar15 + -3) = 0x195a;
-    DVar19 = GetTextExtent(*(HDC *)((int)plVar15 + -2), (LPCSTR) * (undefined4 *)((int)plVar15 + -6), (short)plVar15[-2]);
-    *(undefined2 *)((int)plVar15 + -2) = 4;
-    *(PLAYER **)(plVar15 + -1) = (PLAYER *)rgplr + idPlayer;
-    *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-    uVar23 = 0x10e0;
-    *(undefined2 *)(plVar15 + -2) = 0x1973;
-    sVar11 = GetRaceGrbit(*(PLAYER **)(plVar15 + -1), *(RaceGrbit *)((int)plVar15 + -2));
-    if (sVar11 != 0) {
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(short *)(plVar15 + -1) = rc.left;
-        *(short *)((int)plVar15 + -6) = rc.top;
-        *(undefined2 *)(plVar15 + -2) = unaff_SS;
-        *(int *)((int)plVar15 + -10) = (int)szTemp;
-        *(short *)(plVar15 + -3) = sVar5;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x10e0;
-        *(undefined2 *)(plVar15 + -4) = 0x1999;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
-        *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-        *(undefined2 *)(plVar15 + -1) = 0x136;
-        *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-        *(undefined2 *)(plVar15 + -2) = 0x19a6;
-        sVar11 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(short *)(plVar15 + -1) = rc.left + (int)DVar19;
-        *(short *)((int)plVar15 + -6) = rc.top;
-        *(undefined2 *)(plVar15 + -2) = 0x1120;
-        *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-        *(short *)(plVar15 + -3) = sVar11;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-        uVar23 = 0x14f8;
-        *(undefined2 *)(plVar15 + -4) = 0x19ca;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(undefined2 *)(puVar16 + -4) = unaff_SS;
+    *(char **)(puVar16 + -6) = szTemp;
+    *(short *)(puVar16 + -8) = sVar6;
+    *(undefined2 *)(puVar16 + -10) = 0x14f8;
+    *(undefined2 *)(puVar16 + -0xc) = 0x195a;
+    DVar20 = GetTextExtent(*(HDC *)(puVar16 + -2), *(LPCSTR *)(puVar16 + -6), *(short *)(puVar16 + -8));
+    *(undefined2 *)(puVar16 + -2) = 4;
+    *(PLAYER **)(puVar16 + -4) = (PLAYER *)rgplr + idPlayer;
+    *(undefined2 *)(puVar16 + -6) = 0x14f8;
+    uVar24 = 0x10e0;
+    *(undefined2 *)(puVar16 + -8) = 0x1973;
+    sVar12 = GetRaceGrbit(*(PLAYER **)(puVar16 + -4), *(RaceGrbit *)(puVar16 + -2));
+    if (sVar12 != 0) {
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(short *)(puVar16 + -4) = rc.left;
+        *(short *)(puVar16 + -6) = rc.top;
+        *(undefined2 *)(puVar16 + -8) = unaff_SS;
+        *(char **)(puVar16 + -10) = szTemp;
+        *(short *)(puVar16 + -0xc) = sVar6;
+        *(undefined2 *)(puVar16 + -0xe) = 0x10e0;
+        *(undefined2 *)(puVar16 + -0x10) = 0x1999;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
+        *(char **)(puVar16 + -2) = (char *)szWork;
+        *(undefined2 *)(puVar16 + -4) = 0x136;
+        *(undefined2 *)(puVar16 + -6) = 0x14f8;
+        *(undefined2 *)(puVar16 + -8) = 0x19a6;
+        sVar12 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(short *)(puVar16 + -4) = rc.left + (int)DVar20;
+        *(short *)(puVar16 + -6) = rc.top;
+        *(undefined2 *)(puVar16 + -8) = 0x1120;
+        *(char **)(puVar16 + -10) = (char *)szWork;
+        *(short *)(puVar16 + -0xc) = sVar12;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+        uVar24 = 0x14f8;
+        *(undefined2 *)(puVar16 + -0x10) = 0x19ca;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
         rc.top = rc.top + dyArial8 + 2;
     }
-    *(undefined2 *)((int)plVar15 + -2) = 0xc;
-    *(PLAYER **)(plVar15 + -1) = (PLAYER *)rgplr + idPlayer;
-    *(undefined2 *)((int)plVar15 + -6) = uVar23;
-    uVar23 = 0x10e0;
-    *(undefined2 *)(plVar15 + -2) = 0x19ea;
-    sVar11 = GetRaceGrbit(*(PLAYER **)(plVar15 + -1), *(RaceGrbit *)((int)plVar15 + -2));
-    if (sVar11 != 0) {
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(short *)(plVar15 + -1) = rc.left;
-        *(short *)((int)plVar15 + -6) = rc.top;
-        *(undefined2 *)(plVar15 + -2) = unaff_SS;
-        *(int *)((int)plVar15 + -10) = (int)szTemp;
-        *(short *)(plVar15 + -3) = sVar5;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x10e0;
-        *(undefined2 *)(plVar15 + -4) = 0x1a10;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
-        *(undefined2 *)((int)plVar15 + -2) = (char *)szWork;
-        *(undefined2 *)(plVar15 + -1) = 0x13e;
-        *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-        *(undefined2 *)(plVar15 + -2) = 0x1a1d;
-        sVar5 = CchGetString(*(StringId *)(plVar15 + -1), (char *)*(undefined2 *)((int)plVar15 + -2));
-        *(HDC *)((int)plVar15 + -2) = hdc;
-        *(short *)(plVar15 + -1) = rc.left + (int)DVar19;
-        *(short *)((int)plVar15 + -6) = rc.top;
-        *(undefined2 *)(plVar15 + -2) = 0x1120;
-        *(undefined2 *)((int)plVar15 + -10) = (char *)szWork;
-        *(short *)(plVar15 + -3) = sVar5;
-        *(undefined2 *)((int)plVar15 + -0xe) = 0x1040;
-        uVar23 = 0x14f8;
-        *(undefined2 *)(plVar15 + -4) = 0x1a41;
-        TextOut(*(HDC *)((int)plVar15 + -2), (short)plVar15[-1], *(short *)((int)plVar15 + -6), (LPCSTR) * (undefined4 *)((int)plVar15 + -10),
-                (short)plVar15[-3]);
+    *(undefined2 *)(puVar16 + -2) = 0xc;
+    *(PLAYER **)(puVar16 + -4) = (PLAYER *)rgplr + idPlayer;
+    *(undefined2 *)(puVar16 + -6) = uVar24;
+    uVar24 = 0x10e0;
+    *(undefined2 *)(puVar16 + -8) = 0x19ea;
+    sVar12 = GetRaceGrbit(*(PLAYER **)(puVar16 + -4), *(RaceGrbit *)(puVar16 + -2));
+    if (sVar12 != 0) {
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(short *)(puVar16 + -4) = rc.left;
+        *(short *)(puVar16 + -6) = rc.top;
+        *(undefined2 *)(puVar16 + -8) = unaff_SS;
+        *(char **)(puVar16 + -10) = szTemp;
+        *(short *)(puVar16 + -0xc) = sVar6;
+        *(undefined2 *)(puVar16 + -0xe) = 0x10e0;
+        *(undefined2 *)(puVar16 + -0x10) = 0x1a10;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
+        *(char **)(puVar16 + -2) = (char *)szWork;
+        *(undefined2 *)(puVar16 + -4) = 0x13e;
+        *(undefined2 *)(puVar16 + -6) = 0x14f8;
+        *(undefined2 *)(puVar16 + -8) = 0x1a1d;
+        sVar6 = CchGetString(*(StringId *)(puVar16 + -4), *(char **)(puVar16 + -2));
+        *(HDC *)(puVar16 + -2) = hdc;
+        *(short *)(puVar16 + -4) = rc.left + (int)DVar20;
+        *(short *)(puVar16 + -6) = rc.top;
+        *(undefined2 *)(puVar16 + -8) = 0x1120;
+        *(char **)(puVar16 + -10) = (char *)szWork;
+        *(short *)(puVar16 + -0xc) = sVar6;
+        *(undefined2 *)(puVar16 + -0xe) = 0x1040;
+        uVar24 = 0x14f8;
+        *(undefined2 *)(puVar16 + -0x10) = 0x1a41;
+        TextOut(*(HDC *)(puVar16 + -2), *(short *)(puVar16 + -4), *(short *)(puVar16 + -6), *(LPCSTR *)(puVar16 + -10), *(short *)(puVar16 + -0xc));
     }
 RESEARCH_CleanUp:
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(undefined2 *)((int)plVar15 + -4) = crBackSav._2_2_;
-    *(undefined2 *)((int)plVar15 + -6) = (undefined2)crBackSav;
-    *(undefined2 *)((int)plVar15 + -8) = uVar23;
-    *(undefined2 *)((int)plVar15 + -10) = 0x1a58;
-    SetBkColor(*(HDC *)((int)plVar15 + -2), *(COLORREF *)((int)plVar15 + -6));
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(undefined2 *)((int)plVar15 + -4) = crForeSav._2_2_;
-    *(undefined2 *)((int)plVar15 + -6) = (undefined2)crForeSav;
-    *(undefined2 *)((int)plVar15 + -8) = 0x14f8;
-    *(undefined2 *)((int)plVar15 + -10) = 0x1a66;
-    SetTextColor(*(HDC *)((int)plVar15 + -2), *(COLORREF *)((int)plVar15 + -6));
-    *(HDC *)((int)plVar15 + -2) = hdc;
-    *(HGDIOBJ *)((int)plVar15 + -4) = HVar4;
-    *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-    *(undefined2 *)((int)plVar15 + -8) = 0x1a71;
-    SelectObject(*(HDC *)((int)plVar15 + -2), *(HGDIOBJ *)((int)plVar15 + -4));
-    if (bVar16) {
-        *(HWND *)((int)plVar15 + -2) = hwnd;
-        *(HDC *)((int)plVar15 + -4) = hdc;
-        *(undefined2 *)((int)plVar15 + -6) = 0x14f8;
-        *(undefined2 *)((int)plVar15 + -8) = 0x1a85;
-        ReleaseDC(*(HWND *)((int)plVar15 + -2), *(HDC *)((int)plVar15 + -4));
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(undefined2 *)(puVar16 + -4) = crBackSav._2_2_;
+    *(undefined2 *)(puVar16 + -6) = (undefined2)crBackSav;
+    *(undefined2 *)(puVar16 + -8) = uVar24;
+    *(undefined2 *)(puVar16 + -10) = 0x1a58;
+    SetBkColor(*(HDC *)(puVar16 + -2), *(COLORREF *)(puVar16 + -6));
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(undefined2 *)(puVar16 + -4) = crForeSav._2_2_;
+    *(undefined2 *)(puVar16 + -6) = (undefined2)crForeSav;
+    *(undefined2 *)(puVar16 + -8) = 0x14f8;
+    *(undefined2 *)(puVar16 + -10) = 0x1a66;
+    SetTextColor(*(HDC *)(puVar16 + -2), *(COLORREF *)(puVar16 + -6));
+    *(HDC *)(puVar16 + -2) = hdc;
+    *(HGDIOBJ *)(puVar16 + -4) = HVar5;
+    *(undefined2 *)(puVar16 + -6) = 0x14f8;
+    *(undefined2 *)(puVar16 + -8) = 0x1a71;
+    SelectObject(*(HDC *)(puVar16 + -2), *(HGDIOBJ *)(puVar16 + -4));
+    if (bVar17) {
+        *(HWND *)(puVar16 + -2) = hwnd;
+        *(HDC *)(puVar16 + -4) = hdc;
+        *(undefined2 *)(puVar16 + -6) = 0x14f8;
+        *(undefined2 *)(puVar16 + -8) = 0x1a85;
+        ReleaseDC(*(HWND *)(puVar16 + -2), *(HDC *)(puVar16 + -4));
     }
     return;
 }
@@ -1508,24 +1494,18 @@ LAB_10d8_1d48:
 // Segment: MEMORY_RESEARCH
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: cTech */
-
 long GetTechLevelCost(short iTech, short iLevel, short iplr)
 
 {
-    uint       uVar1;
-    uint       uVar2;
-    short      sVar3;
-    int        iVar4;
-    undefined2 unaff_SI;
-    undefined2 unaff_DI;
-    long       lVar5;
-    long       lVar6;
-    short      cTech;
-    short      i;
-    long       lCost;
+    uint  uVar1;
+    uint  uVar2;
+    short sVar3;
+    int   iVar4;
+    long  lVar5;
+    short cTech;
+    short i;
+    long  lCost;
 
-    lVar6 = CONCAT22(unaff_SI, unaff_DI);
     cTech = 0;
     for (i = 0; i < 6; i = i + 1) {
         cTech = cTech + *(char *)(iplr * 0xc0 + 0x59bc + i);
@@ -1537,7 +1517,7 @@ long GetTechLevelCost(short iTech, short iLevel, short iplr)
     sVar3 = GetRaceStat((PLAYER *)rgplr + iplr, iTech + rsTechBonus1);
     if (sVar3 != 1) {
         if (sVar3 + -1 < 0) {
-            lVar5 = __aFlshr(lVar6, cTech);
+            lVar5 = __aFlshr(CONCAT22(iVar4, uVar2), 2);
             uVar1 = uVar2 - (uint)lVar5;
             lVar5 = CONCAT22(((iVar4 * 2 - (int)((ulong)lVar5 >> 0x10)) - (uint)(uVar2 < (uint)lVar5)) + (uint)CARRY2(uVar2, uVar1), uVar2 + uVar1);
         } else {
@@ -1545,7 +1525,7 @@ long GetTechLevelCost(short iTech, short iLevel, short iplr)
         }
     }
     if ((game.wCrap >> 1 & 1) != 0) {
-        lVar5 = __aFlshl(lVar6, cTech);
+        lVar5 = __aFlshl(lVar5, 1);
     }
     return lVar5;
 }
@@ -1575,20 +1555,16 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     uint            uVar11;
     UINT            UVar12;
     uint            uVar13;
-    undefined2      unaff_SI;
-    undefined2      unaff_DI;
     undefined2      unaff_SS;
     DWORD           DVar14;
     ulong           uVar15;
-    ulong           uVar16;
-    long            lVar17;
-    LRESULT         LVar18;
+    long            lVar16;
+    LRESULT         LVar17;
+    short           sVar18;
     short           sVar19;
-    short           sVar20;
-    HWND            HVar21;
-    WParamMessageId WVar22;
-    WMType          WVar23;
-    ushort          in_stack_0000ffb4;
+    HWND            HVar20;
+    WParamMessageId WVar21;
+    WMType          WVar22;
     short           iOff;
     short           fShowAll;
     short           cIter;
@@ -1603,7 +1579,6 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
     HMENU           hmenu;
     HDC             hdc;
 
-    uVar15 = CONCAT22(unaff_SI, unaff_DI);
     if (message == WM_DESTROY) {
         StickyDlgPos(hwnd, (POINT *)&ptStickyBrowserDlg, 0);
         hwndBrowser = 0;
@@ -1622,19 +1597,18 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
             return 1;
         }
         if (message == WM_CTLCOLOR) {
-            for (i = 0x10a; i < 0x10c; i = i + 1) {
-                HVar9 = GetDlgItem(hwnd, i);
-                if ((HWND)lParam == HVar9)
-                    break;
+            i = 0x10a;
+            while ((i < 0x10c && (HVar9 = GetDlgItem(hwnd, i), (HWND)lParam != HVar9))) {
+                i = i + 1;
             }
-            if ((i < 0x10c) || (uVar15 = __aFulshr(uVar15, in_stack_0000ffb4), (int)uVar15 == 6)) {
+            if ((i < 0x10c) || (uVar15 = __aFulshr(lParam, 0x10), (int)uVar15 == 6)) {
                 SetBkColor(wParam, CONCAT22(crButtonFace._2_2_, (undefined2)crButtonFace));
                 return hbrButtonFace;
             }
         } else {
             if (message == WM_INITDIALOG) {
                 hwndBrowser = hwnd;
-                HVar21 = 0;
+                HVar20 = 0;
                 HVar9 = 7;
                 sVar2 = GetSystemMetrics(7);
                 if (dyArial8 < 0xf) {
@@ -1643,11 +1617,11 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     iVar3 = 0x28;
                 }
                 iVar3 = iVar3 + 0x166 + sVar2 * 2;
-                sVar20 = 4;
+                sVar19 = 4;
                 sVar2 = GetSystemMetrics(4);
-                sVar19 = 8;
+                sVar18 = 8;
                 sVar4 = GetSystemMetrics(8);
-                SetWindowPos(HVar21, HVar9, iVar3, sVar20, sVar19, dyArial10 + dyArial8 * 0xf + 0x67 + sVar4 * 2 + sVar2, 6);
+                SetWindowPos(HVar20, HVar9, iVar3, sVar19, sVar18, dyArial10 + dyArial8 * 0xf + 0x67 + sVar4 * 2 + sVar2, 6);
                 StickyDlgPos(hwnd, (POINT *)&ptStickyBrowserDlg, 1);
                 HVar5 = GetDC(hwnd);
                 HVar6 = SelectObject(HVar5, rghfontArial8[1]);
@@ -1655,35 +1629,35 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 sVar2 = GetDlgItemText(hwnd, IDC_U16_0x042E, szWork, 0x50);
                 DVar14 = GetTextExtent(HVar5, szWork, sVar2);
                 iVar3 = (int)DVar14 + 0xe;
-                HVar21 = GetDlgItem(hwnd, IDC_U16_0x042E);
-                SetWindowPos(HVar21, 0, 6, 6, iVar3, (dyArial8 * 3) / 2, 4);
-                HVar21 = GetDlgItem(hwnd, IDC_U16_0x042E | IDOK);
+                HVar20 = GetDlgItem(hwnd, IDC_U16_0x042E);
+                SetWindowPos(HVar20, 0, 6, 6, iVar3, (dyArial8 * 3) / 2, 4);
+                HVar20 = GetDlgItem(hwnd, IDC_U16_0x042E | IDOK);
                 if (dyArial8 < 0xf) {
                     iVar7 = 0;
                 } else {
                     iVar7 = 0x28;
                 }
-                SetWindowPos(HVar21, 0, (iVar7 + 0x15e) - iVar3, 6, iVar3, (dyArial8 * 3) / 2, 4);
+                SetWindowPos(HVar20, 0, (iVar7 + 0x15e) - iVar3, 6, iVar3, (dyArial8 * 3) / 2, 4);
                 if (dyArial8 < 0xf) {
                     iVar7 = 0;
                 } else {
                     iVar7 = 0x28;
                 }
                 SetWindowPos(HVar9, 0, (int)DVar14 + 0x1a, 6, iVar7 + iVar3 * -2 + 0x14c, dyArial8 * 0x12, 4);
-                HVar21 = GetDlgItem(hwnd, IDCANCEL);
+                HVar20 = GetDlgItem(hwnd, IDCANCEL);
                 if (dyArial8 < 0xf) {
                     iVar7 = 0;
                 } else {
                     iVar7 = 0x28;
                 }
-                SetWindowPos(HVar21, 0, (iVar7 + 0x15e) - iVar3, dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 + 0x60, iVar3, (dyArial8 * 3) / 2, 4);
-                HVar21 = GetDlgItem(hwnd, 0x10a);
+                SetWindowPos(HVar20, 0, (iVar7 + 0x15e) - iVar3, dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 + 0x60, iVar3, (dyArial8 * 3) / 2, 4);
+                HVar20 = GetDlgItem(hwnd, 0x10a);
                 if (dyArial8 < 0xf) {
                     iVar7 = 0;
                 } else {
                     iVar7 = 0x28;
                 }
-                SetWindowPos(HVar21, 0, 6, dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 + 0x60, (iVar7 + 0x158) - iVar3, (dyArial8 * 3) / 2, 4);
+                SetWindowPos(HVar20, 0, 6, dyArial10 + dyArial8 * 0xc + (dyArial8 * 3) / 2 + 0x60, (iVar7 + 0x158) - iVar3, (dyArial8 * 3) / 2, 4);
                 SelectObject(HVar5, HVar6);
                 ReleaseDC(hwnd, HVar5);
                 if (fBrowserValid == 0) {
@@ -1699,11 +1673,11 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                 hwndBrowserChild =
                     CreateWindow(szBrowser, 0, 0x50000000, 6, (dyArial8 * 3) / 2 + 0xc, iVar3 + 0x158, dyArial10 + dyArial8 * 0xc + 0x4e, hwnd, 0, hInst, 0);
                 for (i = 0x43f; i < 0x450; i = i + 1) {
-                    WVar23 = CB_ADDSTRING;
-                    WVar22 = 0;
-                    HVar21 = HVar9;
+                    WVar22 = CB_ADDSTRING;
+                    WVar21 = 0;
+                    HVar20 = HVar9;
                     pcVar8 = PszGetCompressedString(i);
-                    SendMessage(HVar21, WVar23, WVar22, (LPARAM)pcVar8);
+                    SendMessage(HVar20, WVar22, WVar21, (LPARAM)pcVar8);
                 }
                 SendMessage(HVar9, CB_SETCURSEL, 0, 0);
                 if (((uint)gd.grBits >> 0xb & 1) != 0) {
@@ -1725,14 +1699,17 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     return 1;
                 }
                 if (wParam == 0x10b) {
-                    uVar16 = __aFulshr(uVar15, in_stack_0000ffb4);
-                    if ((int)uVar16 == 1) {
+                    uVar15 = __aFulshr(lParam, 0x10);
+                    if ((int)uVar15 == 1) {
                         UVar12 = IsDlgButtonChecked(hwnd, 0x10a);
                         HVar9 = GetDlgItem(hwnd, IDC_U16_0x010B);
-                        LVar18 = SendMessage(HVar9, CB_GETCURSEL, 0, 0);
-                        if ((0xffff < LVar18) || (-1 < LVar18)) {
-                            lVar17 = __aFlshl(uVar15, in_stack_0000ffb4);
-                            vpartBrowser.hs.grhst = *(HullSlotType *)((int)(ushort *)rggrbitBrParts + (int)lVar17);
+                        lVar16 = SendMessage(HVar9, CB_GETCURSEL, 0, 0);
+                        if ((0xffff < lVar16) || (-1 < lVar16)) {
+                            if (lVar16 < 2) {
+                                lVar16 = 1;
+                            }
+                            lVar16 = __aFlshl(lVar16, 1);
+                            vpartBrowser.hs.grhst = *(HullSlotType *)((int)(ushort *)rggrbitBrParts + (int)lVar16);
                             vpartBrowser.hs.wFlags_0x2 = vpartBrowser.hs.wFlags_0x2 & 0xff00;
                             while (sVar2 = FLookupPart((PART *)&vpartBrowser), sVar2 != 0) {
                                 if ((sVar2 == 1) || (UVar12 == 0))
@@ -1749,8 +1726,8 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
                     uVar11 = vpartBrowser.hs.wFlags_0x2 & 0xff;
                     cIter = 0;
                     HVar9 = GetDlgItem(hwnd, IDC_U16_0x010B);
-                    LVar18 = SendMessage(HVar9, CB_GETCURSEL, 0, 0);
-                    bVar1 = LVar18 == 0;
+                    LVar17 = SendMessage(HVar9, CB_GETCURSEL, 0, 0);
+                    bVar1 = LVar17 == 0;
                     for (i = 0; (sVar2 = i, i < 0x11 && (vpartBrowser.hs.grhst != ((ushort *)rggrbitBrParts)[i])); i = i + 1) {
                     }
                     UVar12 = IsDlgButtonChecked(hwnd, 0x10a);
@@ -1827,7 +1804,6 @@ short BrowserDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 // Segment: MEMORY_RESEARCH
 // ======================================================================
 
-/* WARNING: Variable defined which should be unmapped: rc */
 /* WARNING: Type propagation algorithm not settling */
 
 long BrowserWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
@@ -1838,8 +1814,6 @@ long BrowserWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
     HULDEF     *pHVar2;
     int         iVar3;
     undefined1 *puVar4;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
     SHDEF      *pSVar5;
     undefined2  uVar6;
     undefined2  uVar7;
@@ -1881,7 +1855,7 @@ long BrowserWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
             goto RESEARCH_Default_8;
         pt.x = (short)lParam;
         uVar7 = 0x1118;
-        uVar9 = __aFulshr(CONCAT22(unaff_SI, unaff_DI), rc.left);
+        uVar9 = __aFulshr(lParam, 0x10);
         puVar4 = &stack0xffc8;
         pt.y = (short)uVar9;
     }
@@ -3352,14 +3326,13 @@ long ProjectedResearchSpending(long pct)
 long CostOfDevelopingItem(char *rgTech)
 
 {
-    long        lVar1;
-    int         iVar2;
-    undefined2 *puVar3;
-    undefined2  unaff_SI;
-    undefined2  unaff_DI;
-    long        lVar4;
-    long        lVar5;
+    undefined2  uVar1;
+    undefined2  uVar2;
+    long        lVar3;
+    int         iVar4;
+    undefined2 *puVar5;
     long        lVar6;
+    long        lVar7;
     long        lCur;
     short       i;
     short       fUnreachable;
@@ -3368,9 +3341,8 @@ long CostOfDevelopingItem(char *rgTech)
     char       *pTech;
     long        lSpent;
 
-    lVar6 = CONCAT22(unaff_SI, unaff_DI);
-    lVar1 = 0;
-    iVar2 = idPlayer * 0xc0 + 0x59bc;
+    lVar3 = 0;
+    iVar4 = idPlayer * 0xc0 + 0x59bc;
     i = 0;
     while (true) {
         if ((5 < i) || ('\x1a' < ((char *)rgTech)[i]))
@@ -3378,35 +3350,37 @@ long CostOfDevelopingItem(char *rgTech)
         i = i + 1;
     }
     if (i < 6) {
-        lVar1 = -1;
+        lVar3 = -1;
     } else {
         for (i = 0; i < 6; i = i + 1) {
-            rgTechSav[i] = *(char *)(iVar2 + i);
-            if ((int)*(char *)(iVar2 + i) < (int)((char *)rgTech)[i]) {
-                puVar3 = (undefined2 *)(idPlayer * 0xc0 + 0x59c2 + i * 4);
-                lVar4 = CONCAT22(puVar3[1], *puVar3);
+            rgTechSav[i] = *(char *)(iVar4 + i);
+            if (*(char *)(iVar4 + i) < ((char *)rgTech)[i]) {
+                puVar5 = (undefined2 *)(idPlayer * 0xc0 + 0x59c2 + i * 4);
+                uVar1 = *puVar5;
+                uVar2 = puVar5[1];
+                lVar6 = CONCAT22(uVar2, uVar1);
                 if ((game.wCrap >> 1 & 1) != 0) {
-                    lVar4 = __aFlshl(lVar6, (int)((char *)rgTech)[i]);
+                    lVar6 = __aFlshl(CONCAT22(uVar2, uVar1), 1);
                 }
-                lSpent._2_2_ = (int)((ulong)lVar4 >> 0x10);
-                lSpent._0_2_ = (int)lVar4;
-                lVar4 = CONCAT22(-(lSpent._2_2_ + (uint)((int)lSpent != 0)), -(int)lSpent);
-                while (*(char *)(iVar2 + i) < ((char *)rgTech)[i]) {
-                    lVar5 = GetTechLevelCost(i, *(char *)(iVar2 + i) + 1, idPlayer);
-                    lVar4 = lVar5 + lVar4;
-                    *(char *)(iVar2 + i) = *(char *)(iVar2 + i) + '\x01';
+                lSpent._2_2_ = (int)((ulong)lVar6 >> 0x10);
+                lSpent._0_2_ = (int)lVar6;
+                lVar6 = CONCAT22(-(lSpent._2_2_ + (uint)((int)lSpent != 0)), -(int)lSpent);
+                while (*(char *)(iVar4 + i) < ((char *)rgTech)[i]) {
+                    lVar7 = GetTechLevelCost(i, *(char *)(iVar4 + i) + 1, idPlayer);
+                    lVar6 = lVar7 + lVar6;
+                    *(char *)(iVar4 + i) = *(char *)(iVar4 + i) + '\x01';
                 }
-                if ((lVar4 < 0x10000) && (lVar4 < 0)) {
-                    lVar4 = 0;
+                if ((lVar6 < 0x10000) && (lVar6 < 0)) {
+                    lVar6 = 0;
                 }
-                lVar1 = lVar4 + lVar1;
+                lVar3 = lVar6 + lVar3;
             }
         }
         for (i = 0; i < 6; i = i + 1) {
-            *(char *)(iVar2 + i) = rgTechSav[i];
+            *(char *)(iVar4 + i) = rgTechSav[i];
         }
     }
-    return lVar1;
+    return lVar3;
 }
 
 // ======================================================================

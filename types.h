@@ -304,7 +304,6 @@ _Static_assert(offsetof(GAME, turn) == 0x12, "offsetof(GAME,turn)");
 _Static_assert(offsetof(GAME, rgvc) == 0x14, "offsetof(GAME,rgvc)");
 _Static_assert(offsetof(GAME, szName) == 0x20, "offsetof(GAME,szName)");
 
-
 /* typind 4115 (0x1013) size=10 */
 typedef struct _gdata {
     union {
