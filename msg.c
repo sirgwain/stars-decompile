@@ -280,8 +280,62 @@ char *PszFormatMessage(MessageId idm, int16_t *pParams) {
 
 void SetFilteringGroups(MessageId idm, int16_t fSet) {
     int16_t i;
+    uint8_t bit = (fSet != 0);
+    int16_t companion;
 
-    /* TODO: implement */
+    /* Set/clear bit for idm itself */
+    bitfMsgFiltered[idm >> 3] = (bitfMsgFiltered[idm >> 3] & ~(1 << (idm & 7))) | (bit << (idm & 7));
+
+    if (idm == idmHaveBuiltFactory || idm == idmHaveBuiltFactories) {
+        companion = idm ^ 3;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmHaveBuiltMine || idm == idmHaveBuiltMines) {
+        companion = idm ^ 0xF;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmHaveBuiltDefenseOutpost || idm == idmHaveBuiltDefenseOutposts) {
+        companion = idm ^ 3;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm >= idmHasLoaded && idm <= idmHasBeamed2) {
+        for (i = idmHasLoaded; i <= idmHasBeamed2; i++) {
+            bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (bit << (i & 7));
+        }
+    } else if (idm == idmStarbaseHasBuiltNew || idm == idmStarbaseHasBuiltNewShips) {
+        companion = idm ^ 0x1F;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmSuccessfullyTransferred || idm == idmSuccessfullyTransferred2) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmSuccessfullyReceived || idm == idmSuccessfullyReceived2) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmAttemptedTransferSuccessfullyReceived || idm == idmAttemptedTransferColonistsSuccessfullyReceivedRe) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmReceivedHoweverSentRemainderLostSpace || idm == idmReceivedHoweverColonistsSentRemainsOtherColonist) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmAttemptedTransferNoneSuccessfullyReceived || idm == idmAttemptedTransferNoneColonistsSuccessfullyReceiv) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm == idmAttemptedReceiveHoweverLostDeepSpace || idm == idmAttemptedReceiveHoweverNoneColonistsSuccessfully) {
+        companion = idm ^ 1;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm >= idmHasBombedKillingColonists && idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto) {
+        for (i = idmHasBombedKillingColonists; i <= idmHasBombedKillingColonistsDestroyingDefensesFacto; i++) {
+            bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (bit << (i & 7));
+        }
+    } else if (idm >= idmHasBombedKillingColonists2 && idm <= idmHasBombedKillingColonistsDestroyingDefensesFacto3) {
+        for (i = idmHasBombedKillingColonists2; i <= idmHasBombedKillingColonistsDestroyingDefensesFacto3; i++) {
+            bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (bit << (i & 7));
+        }
+    } else if (idm == idmHasLoaded2 || idm == idmHasBeamed3) {
+        companion = idm ^ 3;
+        bitfMsgFiltered[companion >> 3] = (bitfMsgFiltered[companion >> 3] & ~(1 << (companion & 7))) | (bit << (companion & 7));
+    } else if (idm > idmHasBombedKillingColonists3 && idm < idmHomePlanetPeopleReadyLeaveNestExplore) {
+        for (i = idmBattleTookPlaceDestroyedTakingDamage; i < idmHomePlanetPeopleReadyLeaveNestExplore; i++) {
+            bitfMsgFiltered[i >> 3] = (bitfMsgFiltered[i >> 3] & ~(1 << (i & 7))) | (bit << (i & 7));
+        }
+    }
 }
 
 int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7) {

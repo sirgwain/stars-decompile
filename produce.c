@@ -13,6 +13,7 @@
 #include "resource.h"
 #include "ship.h"
 #include "turn2.h"
+#include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
 
@@ -540,7 +541,297 @@ void InitProduction(PROD *rgprod) {
     PART     part;
     PROD    *lpprod;
 
-    /* TODO: implement */
+    /* ------------------------------------------------------------
+     * asm: 10d0:0167..019c
+     * gd.fNoResearchSav = (sel.pl.fNoResearch != 0)
+     * (original asm extracts a single bit from sel.pl.rgbImp[4..7] and copies it into gd.grBits bit5)
+     * ------------------------------------------------------------ */
+    gd.fNoResearchSav = (sel.pl.fNoResearch != 0);
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:019e..01ad
+     * if rgprod == NULL, use global pProdGlob
+     * ------------------------------------------------------------ */
+    if (rgprod == NULL) {
+        rgprod = pProdGlob;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:01ad..01d7
+     * u = (sel.pl.lpplprod ? sel.pl.lpplprod->iprodMac : 2)
+     * ------------------------------------------------------------ */
+    if (sel.pl.lpplprod == NULL) {
+        u = 2;
+    } else {
+        u = sel.pl.lpplprod->iprodMac;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:01d7..01f1
+     * lpplProdGlob = LpplAlloc(4, u, htOrd)
+     * ------------------------------------------------------------ */
+    lpplProdGlob = (PLPROD *)LpplAlloc(4, (int16_t)u, htOrd);
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:01f2..023c
+     * copy old queue payload (rgprod[]) into new block, else u=0
+     * (payload starts at +4; each PROD is 4 bytes)
+     * ------------------------------------------------------------ */
+    if (sel.pl.lpplprod == NULL) {
+        u = 0;
+    } else {
+        memcpy((uint8_t *)lpplProdGlob + 4, (uint8_t *)sel.pl.lpplprod + 4, u << 2);
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:023c..0263
+     * lpplProdGlob->iprodMac = u; cProdGlob=0; pProdGlob=rgprod; memset(rgprod,0,0x100)
+     * ------------------------------------------------------------ */
+    lpplProdGlob->iprodMac = (uint8_t)u;
+    cProdGlob = 0;
+    pProdGlob = rgprod;
+    memset(rgprod, 0, 0x100);
+
+    /* ------------------------------------------------------------
+     * asm: 10d0:0266..03f0
+     * If planet has starbase and the current starbase hull has cargo capacity,
+     * add eligible ship designs (rgshdef[0..15]) that fit in that cargo capacity.
+     *
+     * (asm checks: !shdef.fFree && !shdef.fGift, and shdef.hul.wtCargoMax <= starbase.hul.wtCargoMax)
+     * Produces: cItem=0x3ff, iItem=i, grobj=2
+     * ------------------------------------------------------------ */
+    if (sel.pl.fStarbase) {
+        HULDEF *lphuldefSB = LphuldefFromId(rglpshdefSB[idPlayer][(uint16_t)sel.pl.isb].hul.ihuldef);
+        if (lphuldefSB->hul.wtCargoMax != 0) {
+            for (i = 0; i < 0x10; i++) {
+                if (!rgshdef[i].fFree && !rgshdef[i].fGift && rgshdef[i].hul.wtCargoMax <= lphuldefSB->hul.wtCargoMax) {
+                    rgprod[cProdGlob].cItem = 0x3ff;
+                    rgprod[cProdGlob].iItem = (i & 0x7f);
+                    rgprod[cProdGlob].grobj = 2;
+                    /* pct remains 0 (memset cleared) */
+                    cProdGlob++;
+                }
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: (follows after 03f0 in asm)
+     * Add up to 10 starbase designs (rglpshdefSB[idPlayer][0..9]) that are includable,
+     * excluding the current starbase design if this planet actually has a starbase.
+     *
+     * Produces: cItem=1, iItem=i+0x10, grobj=2
+     * ------------------------------------------------------------ */
+    for (i = 0; i < 10; i++) {
+        if (!rglpshdefSB[idPlayer][i].fFree && !rglpshdefSB[idPlayer][i].fGift && ((sel.pl.isb != i) || !sel.pl.fStarbase)) {
+            rgprod[cProdGlob].cItem = 1;
+            rgprod[cProdGlob].iItem = ((i + 0x10) & 0x7f);
+            rgprod[cProdGlob].grobj = 2;
+            rgprod[cProdGlob].pct = 4;
+            cProdGlob++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: part setup + FLookupPart
+     * part.hs.grhst = hstPlanetary; part.hs.iItem = 0x0e;
+     * if present, add: cItem=1, iItem=0x0d, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    part.hs.grhst = hstPlanetary;
+    part.hs.iItem = 0x0e;
+
+    if (FLookupPart(&part) == 1) {
+        rgprod[cProdGlob].cItem = 1;
+        rgprod[cProdGlob].iItem = 0x0d;
+        rgprod[cProdGlob].grobj = 1;
+        rgprod[cProdGlob].pct = 2;
+        cProdGlob++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: IWarpMAFromLppl(&sel.pl,0) gate
+     * if >0 add 4 entries: cItem=0x3ff, iItem=i+0x0e, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    iWarp = IWarpMAFromLppl(&sel.pl, 0);
+    if (iWarp > 0) {
+        for (i = 0; i < 4; i++) {
+            rgprod[cProdGlob].cItem = 0x3ff;
+            rgprod[cProdGlob].iItem = ((i + 0x0e) & 0x7f);
+            rgprod[cProdGlob].grobj = 1;
+            rgprod[cProdGlob].pct = 2;
+            cProdGlob++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: factories deficit
+     * need = CMaxFactories(sel.pl,idPlayer) - sel.pl.cFactories
+     * clamp to 0x3fc, add: cItem=need, iItem=7, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    {
+        int16_t  maxF = CMaxFactories(&sel.pl, idPlayer);
+        uint16_t need = maxF - sel.pl.cFactories;
+        if ((int16_t)need > 0) {
+            if (need > 0x3fc) {
+                need = 0x3fc;
+            }
+            rgprod[cProdGlob].cItem = need & 0x3ff;
+            rgprod[cProdGlob].iItem = 7;
+            rgprod[cProdGlob].grobj = 1;
+            rgprod[cProdGlob].pct = 2;
+            cProdGlob++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: mines deficit
+     * need = CMaxMines(sel.pl,idPlayer) - sel.pl.cMines
+     * clamp to 0x3fc, add: cItem=need, iItem=8, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    {
+        int16_t  maxM = CMaxMines(&sel.pl, idPlayer);
+        uint16_t need = maxM - sel.pl.cMines;
+        if ((int16_t)need > 0) {
+            if (need > 0x3fc) {
+                need = 0x3fc;
+            }
+            rgprod[cProdGlob].cItem = need & 0x3ff;
+            rgprod[cProdGlob].iItem = 8;
+            rgprod[cProdGlob].grobj = 1;
+            rgprod[cProdGlob].pct = 2;
+            cProdGlob++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: defenses deficit
+     * need = CMaxDefenses(sel.pl,idPlayer) - sel.pl.cDefenses
+     * add: cItem=need, iItem=9, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    {
+        int16_t  maxD = CMaxDefenses(&sel.pl, idPlayer);
+        uint16_t need = maxD - sel.pl.cDefenses;
+        if ((int16_t)need > 0) {
+            rgprod[cProdGlob].cItem = need & 0x3ff;
+            rgprod[cProdGlob].iItem = 9;
+            rgprod[cProdGlob].grobj = 1;
+            rgprod[cProdGlob].pct = 2;
+            cProdGlob++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: unconditional add: cItem=0x3ff, iItem=11, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    rgprod[cProdGlob].cItem = 0x3ff;
+    rgprod[cProdGlob].iItem = 11;
+    rgprod[cProdGlob].grobj = 1;
+    rgprod[cProdGlob].pct = 2;
+    cProdGlob++;
+
+    /* ------------------------------------------------------------
+     * asm: if sel.pl.iScanner == 31 and race major adv != Macintosh
+     * add: cItem=1, iItem=27, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    if (sel.pl.iScanner == 0x1f && GetRaceStat(&rgplr[idPlayer], rsMajorAdv) != raMacintosh) {
+        rgprod[cProdGlob].cItem = 1;
+        rgprod[cProdGlob].iItem = 27;
+        rgprod[cProdGlob].grobj = 1;
+        rgprod[cProdGlob].pct = 2;
+        cProdGlob++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: terraform option
+     * pct = IpctCanTerraformLppl(&sel.pl)
+     * if >0 add: cItem=pct, iItem=12, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    u = IpctCanTerraformLppl(&sel.pl);
+    if ((int16_t)u > 0) {
+        rgprod[cProdGlob].cItem = u & 0x3ff;
+        rgprod[cProdGlob].iItem = 12;
+        rgprod[cProdGlob].grobj = 1;
+        rgprod[cProdGlob].pct = 2;
+        cProdGlob++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: add 7 planetary build items, with race-based exclusions
+     * for i=0..6:
+     *   skip (Macintosh majoradv) for i in {0,1,2}
+     *   skip (Terra majoradv) for i in {4,5}
+     * otherwise add: cItem=0x3ff, iItem=i, grobj=1, pct=2
+     * ------------------------------------------------------------ */
+    for (i = 0; i < 7; i++) {
+        int16_t ra = GetRaceStat(&rgplr[idPlayer], rsMajorAdv);
+        if ((ra == raMacintosh && (i == 0 || i == 1 || i == 2)) || (ra == raTerra && (i == 4 || i == 5))) {
+            continue;
+        }
+
+        rgprod[cProdGlob].cItem = 0x3ff;
+        rgprod[cProdGlob].iItem = (i & 0x7f);
+        rgprod[cProdGlob].grobj = 1;
+        rgprod[cProdGlob].pct = 2;
+        cProdGlob++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: reconcile existing planet queue (lpplProdGlob->rgprod[])
+     * against allowed list (pProdGlob[0..cProdGlob)).
+     *
+     * - If an existing queued item is found in pProdGlob:
+     *     - cap existing cItem to allowed cItem
+     *     - decrement allowed cItem by existing (unless allowed==0x3ff "infinite")
+     * - Else remove the existing queued item from lpplProdGlob->rgprod
+     *
+     * asm tail also advances tutorial if gd.fTutorial && idPlayer==0 and we hit end.
+     * ------------------------------------------------------------ */
+    ipl = 0;
+    lpprod = &lpplProdGlob->rgprod[0];
+
+    for (;;) {
+        if (ipl >= (int16_t)lpplProdGlob->iprodMac) {
+            if (gd.fTutorial && idPlayer == 0) {
+                AdvanceTutor();
+            }
+            return;
+        }
+
+        /* find matching src slot */
+        iSrc = 0;
+        while (iSrc < cProdGlob) {
+            if (pProdGlob[iSrc].grobj == lpprod->grobj && pProdGlob[iSrc].iItem == lpprod->iItem) {
+                break;
+            }
+            iSrc++;
+        }
+
+        if (iSrc < cProdGlob) {
+            /* cap queued amount */
+            if (pProdGlob[iSrc].cItem < lpprod->cItem) {
+                lpprod->cItem = pProdGlob[iSrc].cItem;
+            }
+
+            /* consume from allowed amount unless "infinite" */
+            if (pProdGlob[iSrc].cItem != 0x3ff) {
+                if (pProdGlob[iSrc].cItem <= lpprod->cItem) {
+                    pProdGlob[iSrc].cItem = 0;
+                } else {
+                    pProdGlob[iSrc].cItem = (pProdGlob[iSrc].cItem - lpprod->cItem) & 0x3ff;
+                }
+            }
+        } else {
+            /* remove lpprod from planet queue by shifting down */
+            if (ipl + 1 < (int16_t)lpplProdGlob->iprodMac) {
+                memcpy(lpprod, lpprod + 1, ((uint16_t)lpplProdGlob->iprodMac - (uint16_t)(ipl + 1)) * sizeof(PROD));
+                ipl = (int16_t)(ipl - 1);
+            }
+            lpplProdGlob->iprodMac = (uint8_t)(lpplProdGlob->iprodMac - 1);
+        }
+
+        ipl = (int16_t)(ipl + 1);
+        lpprod++;
+    }
 }
 
 bool FIsAutoBuild(PROD *lpprod) {

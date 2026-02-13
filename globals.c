@@ -320,6 +320,7 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {10, 10, 10, 10, 10, 3, 10, 0, 1, 1, 1, 1, 1, 1, 0, 0},
          .grbitAttr = 0x40000000},
 };
+PLPROD    *lpplProdGlob = NULL;
 POINT      ptPlaque = {0};
 POINT      ptslotGlob = {0};
 POINT      ptSpeedVCR = {0};

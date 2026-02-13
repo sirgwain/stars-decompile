@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-02-13T02:04:48Z",
+  "generated_at_utc": "2026-02-13T03:39:07Z",
   "source_zip": null,
   "types": {
     "file": "types.h",
@@ -1428,7 +1428,7 @@
       {
         "signature": "int16_t FFleetHasTeeth(FLEET *lpfl)",
         "file": "battle.c",
-        "line": 179,
+        "line": 181,
         "kind": "definition"
       },
       {
@@ -1442,7 +1442,7 @@
       {
         "signature": "void DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, STARSPOINT *ppt)",
         "file": "battle.c",
-        "line": 189,
+        "line": 191,
         "kind": "definition"
       },
       {
@@ -1456,7 +1456,7 @@
       {
         "signature": "void CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef)",
         "file": "battle.c",
-        "line": 198,
+        "line": 200,
         "kind": "definition"
       },
       {
@@ -1470,7 +1470,7 @@
       {
         "signature": "void CreateSalvage(FLEET *pfl, THING **plpth)",
         "file": "battle.c",
-        "line": 234,
+        "line": 236,
         "kind": "definition"
       },
       {
@@ -1484,7 +1484,7 @@
       {
         "signature": "void DoBattles(int16_t fPostMovement)",
         "file": "battle.c",
-        "line": 247,
+        "line": 249,
         "kind": "definition"
       },
       {
@@ -1498,7 +1498,7 @@
       {
         "signature": "void RandomizeTokOrder(void)",
         "file": "battle.c",
-        "line": 287,
+        "line": 289,
         "kind": "definition"
       },
       {
@@ -1512,7 +1512,7 @@
       {
         "signature": "int16_t InitFromHuldef(HUL *lphul, int16_t *ppctBC)",
         "file": "battle.c",
-        "line": 302,
+        "line": 304,
         "kind": "definition"
       },
       {
@@ -1526,7 +1526,7 @@
       {
         "signature": "int32_t ScoreGuessBattleDamage(TOK *ptokSrc, uint8_t brc, int16_t fPrimary, uint16_t grfAttack)",
         "file": "battle.c",
-        "line": 346,
+        "line": 348,
         "kind": "definition"
       },
       {
@@ -1540,7 +1540,7 @@
       {
         "signature": "int16_t FAttackPlayer(FLEET *lpfl, int16_t iplr)",
         "file": "battle.c",
-        "line": 381,
+        "line": 383,
         "kind": "definition"
       },
       {
@@ -1554,7 +1554,7 @@
       {
         "signature": "void CheckInitiative(TOK *ptok)",
         "file": "battle.c",
-        "line": 401,
+        "line": 403,
         "kind": "definition"
       },
       {
@@ -1568,7 +1568,7 @@
       {
         "signature": "int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn)",
         "file": "battle.c",
-        "line": 412,
+        "line": 414,
         "kind": "definition"
       },
       {
@@ -1582,7 +1582,7 @@
       {
         "signature": "void RegenShield(TOK *ptok)",
         "file": "battle.c",
-        "line": 425,
+        "line": 465,
         "kind": "definition"
       },
       {
@@ -1596,7 +1596,7 @@
       {
         "signature": "int16_t FDumpCargo(FLEET *lpfl)",
         "file": "battle.c",
-        "line": 441,
+        "line": 481,
         "kind": "definition"
       },
       {
@@ -1610,7 +1610,7 @@
       {
         "signature": "int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, BattleTactic mdTactic)",
         "file": "battle.c",
-        "line": 475,
+        "line": 515,
         "kind": "definition"
       },
       {
@@ -1624,7 +1624,7 @@
       {
         "signature": "int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack)",
         "file": "battle.c",
-        "line": 499,
+        "line": 539,
         "kind": "definition"
       },
       {
@@ -1638,7 +1638,7 @@
       {
         "signature": "int16_t FHullHasTeeth(HUL *lphul)",
         "file": "battle.c",
-        "line": 839,
+        "line": 879,
         "kind": "definition"
       },
       {
@@ -1652,7 +1652,7 @@
       {
         "signature": "int16_t FFleetHasBombs(FLEET *lpfl)",
         "file": "battle.c",
-        "line": 853,
+        "line": 893,
         "kind": "definition"
       },
       {
@@ -1666,7 +1666,7 @@
       {
         "signature": "int16_t DxyFromSpdRound(uint16_t spd, int16_t iRound)",
         "file": "battle.c",
-        "line": 869,
+        "line": 909,
         "kind": "definition"
       },
       {
@@ -1680,7 +1680,7 @@
       {
         "signature": "int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC)",
         "file": "battle.c",
-        "line": 887,
+        "line": 927,
         "kind": "definition"
       },
       {
@@ -1694,7 +1694,7 @@
       {
         "signature": "int16_t FCanKillTok(TOK *ptok1, TOK *ptok2)",
         "file": "battle.c",
-        "line": 897,
+        "line": 975,
         "kind": "definition"
       },
       {
@@ -1708,7 +1708,7 @@
       {
         "signature": "int16_t FIsTargetOfMdTarget(TOK *ptok, MdTarget mdTarget)",
         "file": "battle.c",
-        "line": 921,
+        "line": 999,
         "kind": "definition"
       },
       {
@@ -1722,7 +1722,7 @@
       {
         "signature": "int16_t SpdOfShip(FLEET *lpfl, int16_t ishdef, TOK *ptok, int16_t fDumpCargo, SHDEF *lpshdef)",
         "file": "battle.c",
-        "line": 945,
+        "line": 1023,
         "kind": "definition"
       },
       {
@@ -1736,7 +1736,7 @@
       {
         "signature": "void DoBombing(void)",
         "file": "battle.c",
-        "line": 1070,
+        "line": 1148,
         "kind": "definition"
       },
       {
@@ -1750,7 +1750,7 @@
       {
         "signature": "void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pinit, int16_t *pinitMin, int16_t *pinitMac)",
         "file": "battle.c",
-        "line": 1405,
+        "line": 1483,
         "kind": "definition"
       },
       {
@@ -1764,7 +1764,7 @@
       {
         "signature": "int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc)",
         "file": "battle.c",
-        "line": 1426,
+        "line": 1692,
         "kind": "definition"
       },
       {
@@ -1778,7 +1778,7 @@
       {
         "signature": "int16_t FFuelTanker(SHDEF *lpshdef)",
         "file": "battle.c",
-        "line": 1449,
+        "line": 1715,
         "kind": "definition"
       },
       {
@@ -1792,7 +1792,7 @@
       {
         "signature": "int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t grfPlayer, uint16_t grfSpectator)",
         "file": "battle.c",
-        "line": 1456,
+        "line": 1722,
         "kind": "definition"
       },
       {
@@ -1806,7 +1806,7 @@
       {
         "signature": "void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit)",
         "file": "battle.c",
-        "line": 1814,
+        "line": 2080,
         "kind": "definition"
       },
       {
@@ -1820,7 +1820,7 @@
       {
         "signature": "SHDEF * LpshdefFromTok(TOK *ptok)",
         "file": "battle.c",
-        "line": 1836,
+        "line": 2297,
         "kind": "definition"
       },
       {
@@ -1834,7 +1834,7 @@
       {
         "signature": "int16_t CplrBattle(FLEET *lpfl, uint16_t *rggrfAttack, uint16_t *pgrfPlayer, uint16_t *pgrfSpectator)",
         "file": "battle.c",
-        "line": 1848,
+        "line": 2309,
         "kind": "definition"
       },
       {
@@ -1848,7 +1848,7 @@
       {
         "signature": "void SpankTheCheaters(void)",
         "file": "battle.c",
-        "line": 2182,
+        "line": 2643,
         "kind": "definition"
       },
       {
@@ -1862,7 +1862,7 @@
       {
         "signature": "int16_t ITechLearnATech(int16_t iplr, int16_t x, int16_t y, MessageId idm, uint16_t *piGoto)",
         "file": "battle.c",
-        "line": 2253,
+        "line": 2714,
         "kind": "definition"
       },
       {
@@ -1876,7 +1876,7 @@
       {
         "signature": "int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, uint16_t grfWeapon, int16_t fShieldsOnly, int32_t *pcTorp)",
         "file": "battle.c",
-        "line": 2299,
+        "line": 2760,
         "kind": "definition"
       },
       {
@@ -1890,7 +1890,7 @@
       {
         "signature": "void KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t fFallout)",
         "file": "battle.c",
-        "line": 2326,
+        "line": 3041,
         "kind": "definition"
       },
       {
@@ -1904,7 +1904,7 @@
       {
         "signature": "int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack)",
         "file": "battle.c",
-        "line": 2807,
+        "line": 3570,
         "kind": "definition"
       },
       {
@@ -1918,7 +1918,7 @@
       {
         "signature": "int16_t DzFromBrcBrc(uint8_t brc1, uint8_t brc2)",
         "file": "battle.c",
-        "line": 2819,
+        "line": 3622,
         "kind": "definition"
       },
       {
@@ -1932,7 +1932,7 @@
       {
         "signature": "int32_t DpFromPtokBrcToBrc(TOK *ptok, uint8_t brcSrc, uint8_t brcTarget, TOK *ptokTarget, int16_t fProximity)",
         "file": "battle.c",
-        "line": 2832,
+        "line": 3635,
         "kind": "definition"
       },
       {
@@ -1946,7 +1946,7 @@
       {
         "signature": "int16_t DxyMoveTokTo(TOK *ptok, int16_t spdMove, uint16_t grfAttack)",
         "file": "battle.c",
-        "line": 2854,
+        "line": 3657,
         "kind": "definition"
       },
       {
@@ -1960,7 +1960,7 @@
       {
         "signature": "int16_t FHullHasBombs(HUL *lphul)",
         "file": "battle.c",
-        "line": 3068,
+        "line": 3871,
         "kind": "definition"
       },
       {
@@ -1974,7 +1974,7 @@
       {
         "signature": "INT_PTR CALLBACK BattlePlansDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "battle.c",
-        "line": 3090,
+        "line": 3893,
         "kind": "definition"
       },
       {
@@ -1988,7 +1988,7 @@
       {
         "signature": "INT_PTR CALLBACK NewPlanNameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "battle.c",
-        "line": 3107,
+        "line": 3910,
         "kind": "definition"
       },
       {
@@ -2002,7 +2002,7 @@
       {
         "signature": "INT_PTR CALLBACK RelationsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "battle.c",
-        "line": 3114,
+        "line": 3917,
         "kind": "definition"
       },
       {
@@ -4984,7 +4984,7 @@
       {
         "signature": "int16_t FSendPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)",
         "file": "msg.c",
-        "line": 287,
+        "line": 341,
         "kind": "definition"
       },
       {
@@ -4998,7 +4998,7 @@
       {
         "signature": "int16_t FSendPlrMsg2XGen(int16_t fPrepend, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2)",
         "file": "msg.c",
-        "line": 311,
+        "line": 365,
         "kind": "definition"
       },
       {
@@ -5012,7 +5012,7 @@
       {
         "signature": "void ReadPlayerMessages(void)",
         "file": "msg.c",
-        "line": 378,
+        "line": 432,
         "kind": "definition"
       },
       {
@@ -5026,7 +5026,7 @@
       {
         "signature": "int16_t FSendPrependedPlrMsg(int16_t iPlr, MessageId iMsg, int16_t iObj, int16_t p1, int16_t p2, int16_t p3, int16_t p4, int16_t p5, int16_t p6, int16_t p7)",
         "file": "msg.c",
-        "line": 468,
+        "line": 522,
         "kind": "definition"
       },
       {
@@ -5040,7 +5040,7 @@
       {
         "signature": "void MarkPlayersThatSentMsgs(int16_t iPlayer)",
         "file": "msg.c",
-        "line": 483,
+        "line": 537,
         "kind": "definition"
       },
       {
@@ -5054,7 +5054,7 @@
       {
         "signature": "void ResetMessages(void)",
         "file": "msg.c",
-        "line": 497,
+        "line": 551,
         "kind": "definition"
       },
       {
@@ -5068,7 +5068,7 @@
       {
         "signature": "int16_t FRemovePlayerMessage(int16_t iPlr, MessageId iMsg, int16_t iObj)",
         "file": "msg.c",
-        "line": 512,
+        "line": 566,
         "kind": "definition"
       },
       {
@@ -5082,7 +5082,7 @@
       {
         "signature": "char * PszFormatString(char *pszFormat, int16_t *pParamsReal)",
         "file": "msg.c",
-        "line": 532,
+        "line": 586,
         "kind": "definition"
       },
       {
@@ -5096,7 +5096,7 @@
       {
         "signature": "char * PszGetCompressedMessage(MessageId idm)",
         "file": "msg.c",
-        "line": 915,
+        "line": 969,
         "kind": "definition"
       },
       {
@@ -5110,7 +5110,7 @@
       {
         "signature": "void WritePlayerMessages(int16_t iPlayer)",
         "file": "msg.c",
-        "line": 924,
+        "line": 978,
         "kind": "definition"
       },
       {
@@ -5124,7 +5124,7 @@
       {
         "signature": "int16_t IMsgPrev(int16_t fFilteredOnly)",
         "file": "msg.c",
-        "line": 960,
+        "line": 1014,
         "kind": "definition"
       },
       {
@@ -5138,7 +5138,7 @@
       {
         "signature": "int16_t IMsgNext(int16_t fFilteredOnly)",
         "file": "msg.c",
-        "line": 1000,
+        "line": 1054,
         "kind": "definition"
       },
       {
@@ -5152,7 +5152,7 @@
       {
         "signature": "char * PszFormatIds(StringId ids, int16_t *pParams)",
         "file": "msg.c",
-        "line": 1034,
+        "line": 1088,
         "kind": "definition"
       },
       {
@@ -5166,7 +5166,7 @@
       {
         "signature": "void DecorateMsgTitleBar(HDC hdc, RECT *prc)",
         "file": "msg.c",
-        "line": 1044,
+        "line": 1098,
         "kind": "definition"
       },
       {
@@ -5180,7 +5180,7 @@
       {
         "signature": "int16_t HtMsgBox(POINT pt)",
         "file": "msg.c",
-        "line": 1067,
+        "line": 1121,
         "kind": "definition"
       },
       {
@@ -5194,7 +5194,7 @@
       {
         "signature": "void SetMsgTitle(HWND hwnd)",
         "file": "msg.c",
-        "line": 1077,
+        "line": 1131,
         "kind": "definition"
       },
       {
@@ -5208,7 +5208,7 @@
       {
         "signature": "INT_PTR CALLBACK SerialDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "msg.c",
-        "line": 1222,
+        "line": 1276,
         "kind": "definition"
       },
       {
@@ -5222,7 +5222,7 @@
       {
         "signature": "LRESULT CALLBACK MessageWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "msg.c",
-        "line": 1332,
+        "line": 1386,
         "kind": "definition"
       },
       {
@@ -6612,7 +6612,7 @@
       {
         "signature": "char * PszNameProdItem(PROD *lpprod)",
         "file": "produce.c",
-        "line": 19,
+        "line": 20,
         "kind": "definition"
       },
       {
@@ -6626,7 +6626,7 @@
       {
         "signature": "void GetProductionCosts(PLANET *lppl, PROD *lpprod, uint32_t *rgCost, int16_t iplr, int16_t fOnlyOne)",
         "file": "produce.c",
-        "line": 64,
+        "line": 65,
         "kind": "definition"
       },
       {
@@ -6640,7 +6640,7 @@
       {
         "signature": "void EstimateItemProdSched(PLANET *lppl, PLPROD *lpplprod, int16_t iItem, int16_t *piFirst, int16_t *piLast)",
         "file": "produce.c",
-        "line": 410,
+        "line": 411,
         "kind": "definition"
       },
       {
@@ -6654,7 +6654,7 @@
       {
         "signature": "void InitProduction(PROD *rgprod)",
         "file": "produce.c",
-        "line": 534,
+        "line": 535,
         "kind": "definition"
       },
       {
@@ -6668,7 +6668,7 @@
       {
         "signature": "bool FIsAutoBuild(PROD *lpprod)",
         "file": "produce.c",
-        "line": 546,
+        "line": 760,
         "kind": "definition"
       },
       {
@@ -6682,7 +6682,7 @@
       {
         "signature": "void ProdCommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)",
         "file": "produce.c",
-        "line": 556,
+        "line": 770,
         "kind": "definition"
       },
       {
@@ -6696,7 +6696,7 @@
       {
         "signature": "int16_t ChangeProduction(int16_t fClear)",
         "file": "produce.c",
-        "line": 583,
+        "line": 797,
         "kind": "definition"
       },
       {
@@ -6710,7 +6710,7 @@
       {
         "signature": "void EnableZipProdBtns(HWND hwnd, int16_t iSel)",
         "file": "produce.c",
-        "line": 597,
+        "line": 811,
         "kind": "definition"
       },
       {
@@ -6724,7 +6724,7 @@
       {
         "signature": "INT_PTR CALLBACK ProductionDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "produce.c",
-        "line": 609,
+        "line": 823,
         "kind": "definition"
       },
       {
@@ -6738,7 +6738,7 @@
       {
         "signature": "INT_PTR CALLBACK ZipProdDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "produce.c",
-        "line": 645,
+        "line": 859,
         "kind": "definition"
       },
       {
@@ -6752,7 +6752,7 @@
       {
         "signature": "void FillProdSrcLB(HWND hwndLB, int16_t mdFill)",
         "file": "produce.c",
-        "line": 674,
+        "line": 888,
         "kind": "definition"
       },
       {
@@ -6766,7 +6766,7 @@
       {
         "signature": "void DrawProductionDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iDraw)",
         "file": "produce.c",
-        "line": 682,
+        "line": 896,
         "kind": "definition"
       },
       {
@@ -6780,7 +6780,7 @@
       {
         "signature": "void InitializeProductionDlg(HWND hwnd)",
         "file": "produce.c",
-        "line": 704,
+        "line": 918,
         "kind": "definition"
       },
       {
@@ -6794,7 +6794,7 @@
       {
         "signature": "void FillZipProdLB(HWND hwndDlg, ZIPPRODQ *pzpq)",
         "file": "produce.c",
-        "line": 713,
+        "line": 927,
         "kind": "definition"
       },
       {
@@ -8576,7 +8576,7 @@
       {
         "signature": "void SelectAdjFleet(int16_t dInc, int16_t idFleet)",
         "file": "ship.c",
-        "line": 407,
+        "line": 645,
         "kind": "definition"
       },
       {
@@ -8590,7 +8590,7 @@
       {
         "signature": "int16_t IFindIdealWarp(FLEET *lpfl, int16_t fIgnoreScoops)",
         "file": "ship.c",
-        "line": 422,
+        "line": 660,
         "kind": "definition"
       },
       {
@@ -8604,7 +8604,7 @@
       {
         "signature": "void DeleteWpFar(FLEET *lpfl, int16_t iDel, int16_t fRecycle)",
         "file": "ship.c",
-        "line": 467,
+        "line": 705,
         "kind": "definition"
       },
       {
@@ -8618,7 +8618,7 @@
       {
         "signature": "int32_t ChgCargo(GrobjClass grobj, int16_t id, int16_t iSupply, int32_t dChg, void *pobj)",
         "file": "ship.c",
-        "line": 494,
+        "line": 732,
         "kind": "definition"
       },
       {
@@ -8632,7 +8632,7 @@
       {
         "signature": "int16_t FCanSplit(int32_t cBoat)",
         "file": "ship.c",
-        "line": 667,
+        "line": 905,
         "kind": "definition"
       },
       {
@@ -8646,7 +8646,7 @@
       {
         "signature": "int16_t FCanMerge(FLEET *pfl)",
         "file": "ship.c",
-        "line": 679,
+        "line": 917,
         "kind": "definition"
       },
       {
@@ -8660,7 +8660,7 @@
       {
         "signature": "void DestroyAllIshdef(int16_t ishdef, int16_t iplr)",
         "file": "ship.c",
-        "line": 701,
+        "line": 939,
         "kind": "definition"
       },
       {
@@ -8674,7 +8674,7 @@
       {
         "signature": "int16_t WtMaxShdefStat(const SHDEF *lpshdef, GrStat grStat)",
         "file": "ship.c",
-        "line": 717,
+        "line": 955,
         "kind": "definition"
       },
       {
@@ -8688,7 +8688,7 @@
       {
         "signature": "int16_t FEnumCalcJettison(void *lprt, RecordType rt, int16_t cb, PLANET *lppl, int16_t iFleet)",
         "file": "ship.c",
-        "line": 779,
+        "line": 1017,
         "kind": "definition"
       },
       {
@@ -8702,7 +8702,7 @@
       {
         "signature": "void DestroyAllIshdefSB(int16_t ishdefSB, int16_t iplr)",
         "file": "ship.c",
-        "line": 821,
+        "line": 1059,
         "kind": "definition"
       },
       {
@@ -8716,7 +8716,7 @@
       {
         "signature": "void GetTruePartCost(int16_t iPlayer, PART *ppart, uint16_t rgCosts[static 4])",
         "file": "ship.c",
-        "line": 834,
+        "line": 1072,
         "kind": "definition"
       },
       {
@@ -8730,7 +8730,7 @@
       {
         "signature": "void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks)",
         "file": "ship.c",
-        "line": 928,
+        "line": 1166,
         "kind": "definition"
       },
       {
@@ -8744,7 +8744,7 @@
       {
         "signature": "int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo)",
         "file": "ship.c",
-        "line": 969,
+        "line": 1204,
         "kind": "definition"
       },
       {
@@ -8758,7 +8758,7 @@
       {
         "signature": "void FleetOrdersChangeTarget(FLEET *lpflOld)",
         "file": "ship.c",
-        "line": 1105,
+        "line": 1340,
         "kind": "definition"
       },
       {
@@ -8772,7 +8772,7 @@
       {
         "signature": "INT_PTR CALLBACK TransferDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship.c",
-        "line": 1146,
+        "line": 1381,
         "kind": "definition"
       },
       {
@@ -8786,7 +8786,7 @@
       {
         "signature": "LRESULT CALLBACK FakeEditProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship.c",
-        "line": 1160,
+        "line": 1395,
         "kind": "definition"
       },
       {
@@ -8800,7 +8800,7 @@
       {
         "signature": "void ShipCommandProc(HWND hwnd, WPARAM wParam, LPARAM lParam)",
         "file": "ship.c",
-        "line": 1169,
+        "line": 1404,
         "kind": "definition"
       },
       {
@@ -8814,7 +8814,7 @@
       {
         "signature": "void DrawXferDlg(HWND hwnd, HDC hdc, RECT *prc, int16_t iSupply)",
         "file": "ship.c",
-        "line": 1198,
+        "line": 1433,
         "kind": "definition"
       },
       {
@@ -8828,7 +8828,7 @@
       {
         "signature": "void DrawFleetShipsXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply)",
         "file": "ship.c",
-        "line": 1210,
+        "line": 1445,
         "kind": "definition"
       },
       {
@@ -8842,7 +8842,7 @@
       {
         "signature": "void DrawShipPlanet(HDC hdc, TILE *ptile, OBJ obj)",
         "file": "ship.c",
-        "line": 1223,
+        "line": 1458,
         "kind": "definition"
       },
       {
@@ -8856,7 +8856,7 @@
       {
         "signature": "void DrawFleetComp(HDC hdc, TILE *ptile, OBJ obj)",
         "file": "ship.c",
-        "line": 1241,
+        "line": 1476,
         "kind": "definition"
       },
       {
@@ -8870,7 +8870,7 @@
       {
         "signature": "void UpdateOrdersDDs(int16_t iLevel)",
         "file": "ship.c",
-        "line": 1261,
+        "line": 1496,
         "kind": "definition"
       },
       {
@@ -8884,7 +8884,7 @@
       {
         "signature": "void SetFleetDropDownSel(int16_t id)",
         "file": "ship.c",
-        "line": 1278,
+        "line": 1513,
         "kind": "definition"
       },
       {
@@ -8898,7 +8898,7 @@
       {
         "signature": "void FillBattleDD(int16_t iSel)",
         "file": "ship.c",
-        "line": 1286,
+        "line": 1521,
         "kind": "definition"
       },
       {
@@ -8912,7 +8912,7 @@
       {
         "signature": "void FillFleetCompLB(void)",
         "file": "ship.c",
-        "line": 1294,
+        "line": 1529,
         "kind": "definition"
       },
       {
@@ -8926,7 +8926,7 @@
       {
         "signature": "uint16_t ClickInShipOrders(POINT pt, int16_t sks, int16_t fCursor, int16_t fRightBtn)",
         "file": "ship.c",
-        "line": 1301,
+        "line": 1536,
         "kind": "definition"
       },
       {
@@ -8940,7 +8940,7 @@
       {
         "signature": "void UpdateXferBtns(void)",
         "file": "ship.c",
-        "line": 1353,
+        "line": 1588,
         "kind": "definition"
       },
       {
@@ -8954,7 +8954,7 @@
       {
         "signature": "int16_t FSetupXferBtns(RECT *prc)",
         "file": "ship.c",
-        "line": 1363,
+        "line": 1598,
         "kind": "definition"
       },
       {
@@ -8968,7 +8968,7 @@
       {
         "signature": "void DrawFleetBitmap(FLEET *lpfl, HDC hdc, int16_t x, int16_t y, int16_t fFrame, int16_t ibmp, int16_t cDiff, int16_t fShrink, int16_t ibmpRace, int16_t csh)",
         "file": "ship.c",
-        "line": 1385,
+        "line": 1620,
         "kind": "definition"
       },
       {
@@ -8982,7 +8982,7 @@
       {
         "signature": "void DrawShipOrders(HDC hdc, TILE *ptile, OBJ obj)",
         "file": "ship.c",
-        "line": 1402,
+        "line": 1637,
         "kind": "definition"
       },
       {
@@ -8996,7 +8996,7 @@
       {
         "signature": "void DrawFleetGauge(HDC hdc, RECT *prc, FLEET *lpfl, int16_t grbit)",
         "file": "ship.c",
-        "line": 1429,
+        "line": 1664,
         "kind": "definition"
       },
       {
@@ -9010,7 +9010,7 @@
       {
         "signature": "void DrawFleetCargoXferSide(HDC hdc, RECT *prc, FLEET *pfl, int16_t iSupply)",
         "file": "ship.c",
-        "line": 1442,
+        "line": 1677,
         "kind": "definition"
       },
       {
@@ -9024,7 +9024,7 @@
       {
         "signature": "void DrawThingXferSide(HDC hdc, RECT *prc, THING *pth, int16_t iSupply)",
         "file": "ship.c",
-        "line": 1461,
+        "line": 1696,
         "kind": "definition"
       },
       {
@@ -9038,7 +9038,7 @@
       {
         "signature": "void DrawShipWayPtOrders(HDC hdc, TILE *ptile, OBJ obj)",
         "file": "ship.c",
-        "line": 1473,
+        "line": 1708,
         "kind": "definition"
       },
       {
@@ -9052,7 +9052,7 @@
       {
         "signature": "void DrawPlanetXferSide(HDC hdc, RECT *prc, PLANET *ppl, int16_t iSupply)",
         "file": "ship.c",
-        "line": 1521,
+        "line": 1756,
         "kind": "definition"
       },
       {
@@ -9066,7 +9066,7 @@
       {
         "signature": "void DrawShipCargo(HDC hdc, TILE *ptile, OBJ obj)",
         "file": "ship.c",
-        "line": 1533,
+        "line": 1768,
         "kind": "definition"
       },
       {
@@ -9080,7 +9080,7 @@
       {
         "signature": "void FillOrdersLB(void)",
         "file": "ship.c",
-        "line": 1549,
+        "line": 1784,
         "kind": "definition"
       },
       {
@@ -9094,7 +9094,7 @@
       {
         "signature": "int16_t FTrackXfer(HWND hwnd, int16_t x, int16_t y, int16_t fkb)",
         "file": "ship.c",
-        "line": 1559,
+        "line": 1794,
         "kind": "definition"
       },
       {
@@ -9194,7 +9194,7 @@
       {
         "signature": "int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg)",
         "file": "ship2.c",
-        "line": 361,
+        "line": 381,
         "kind": "definition"
       },
       {
@@ -9208,7 +9208,7 @@
       {
         "signature": "int16_t PctCloakFromLpfl(FLEET *lpfl)",
         "file": "ship2.c",
-        "line": 412,
+        "line": 432,
         "kind": "definition"
       },
       {
@@ -9222,7 +9222,7 @@
       {
         "signature": "void NoAutoTrackFleet(FLEET *lpflTarget)",
         "file": "ship2.c",
-        "line": 434,
+        "line": 454,
         "kind": "definition"
       },
       {
@@ -9236,7 +9236,7 @@
       {
         "signature": "int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef)",
         "file": "ship2.c",
-        "line": 459,
+        "line": 479,
         "kind": "definition"
       },
       {
@@ -9250,7 +9250,7 @@
       {
         "signature": "int16_t FColonizer(FLEET *lpfl)",
         "file": "ship2.c",
-        "line": 478,
+        "line": 541,
         "kind": "definition"
       },
       {
@@ -9264,7 +9264,7 @@
       {
         "signature": "void AutoRouteFleet(FLEET *lpfl, PLANET *lppl)",
         "file": "ship2.c",
-        "line": 492,
+        "line": 555,
         "kind": "definition"
       },
       {
@@ -9278,7 +9278,7 @@
       {
         "signature": "void KillUsedWaypoints(void)",
         "file": "ship2.c",
-        "line": 565,
+        "line": 628,
         "kind": "definition"
       },
       {
@@ -9292,7 +9292,7 @@
       {
         "signature": "int32_t CMineFromLpfl(FLEET *lpfl)",
         "file": "ship2.c",
-        "line": 579,
+        "line": 642,
         "kind": "definition"
       },
       {
@@ -9306,7 +9306,7 @@
       {
         "signature": "void MarkTechsSeen(HUL *lphul, int16_t iplr)",
         "file": "ship2.c",
-        "line": 613,
+        "line": 676,
         "kind": "definition"
       },
       {
@@ -9320,7 +9320,7 @@
       {
         "signature": "int16_t CPtsCloakFromLphs(HS *lphs)",
         "file": "ship2.c",
-        "line": 622,
+        "line": 685,
         "kind": "definition"
       },
       {
@@ -9334,7 +9334,7 @@
       {
         "signature": "int32_t CMineSweepFromLpfl(FLEET *lpfl)",
         "file": "ship2.c",
-        "line": 691,
+        "line": 754,
         "kind": "definition"
       },
       {
@@ -9348,7 +9348,7 @@
       {
         "signature": "INT_PTR CALLBACK RenameDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship2.c",
-        "line": 710,
+        "line": 773,
         "kind": "definition"
       },
       {
@@ -9362,7 +9362,7 @@
       {
         "signature": "INT_PTR CALLBACK MergeFleetsDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship2.c",
-        "line": 721,
+        "line": 784,
         "kind": "definition"
       },
       {
@@ -9376,7 +9376,7 @@
       {
         "signature": "INT_PTR CALLBACK ZipOrderDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship2.c",
-        "line": 734,
+        "line": 797,
         "kind": "definition"
       },
       {
@@ -9390,7 +9390,7 @@
       {
         "signature": "INT_PTR CALLBACK RenameZipDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)",
         "file": "ship2.c",
-        "line": 761,
+        "line": 824,
         "kind": "definition"
       },
       {
@@ -9404,7 +9404,7 @@
       {
         "signature": "void EnableZipBtns(HWND hwnd, int16_t iSel)",
         "file": "ship2.c",
-        "line": 769,
+        "line": 832,
         "kind": "definition"
       },
       {
@@ -11068,7 +11068,7 @@
       {
         "signature": "void MysteryTrader(void)",
         "file": "turn2.c",
-        "line": 1156,
+        "line": 1185,
         "kind": "definition"
       },
       {
@@ -11082,7 +11082,7 @@
       {
         "signature": "int16_t FQueueColonistDrop(FLEET *lpfl, PLANET *lppl, int32_t cColonists)",
         "file": "turn2.c",
-        "line": 1235,
+        "line": 1264,
         "kind": "definition"
       },
       {
@@ -11096,7 +11096,7 @@
       {
         "signature": "int16_t CBuildProdItem(PLANET *lppl, PROD *lpprod, PROD *pprodPartial, int32_t *rgRes, int16_t fAlchemy, int16_t *pmdStatus, int16_t fCalcOnly)",
         "file": "turn2.c",
-        "line": 1263,
+        "line": 1292,
         "kind": "definition"
       }
     ],
@@ -11104,7 +11104,7 @@
       {
         "signature": "void AutoTerraform(void)",
         "file": "turn2.c",
-        "line": 1475,
+        "line": 1504,
         "kind": "definition"
       },
       {
@@ -11118,7 +11118,7 @@
       {
         "signature": "int16_t FPacketDecay(THING *lpth, int16_t pctRate)",
         "file": "turn2.c",
-        "line": 1534,
+        "line": 1563,
         "kind": "definition"
       },
       {
@@ -11132,7 +11132,7 @@
       {
         "signature": "void TransferToOthers(void)",
         "file": "turn2.c",
-        "line": 1545,
+        "line": 1617,
         "kind": "definition"
       },
       {
@@ -11146,7 +11146,7 @@
       {
         "signature": "void MineMinerals(void)",
         "file": "turn2.c",
-        "line": 1562,
+        "line": 1634,
         "kind": "definition"
       },
       {
@@ -11160,7 +11160,7 @@
       {
         "signature": "int16_t FBuildObject(PLANET *lppl, GrobjClass grobj, int16_t iItem, int16_t cBuilt, int32_t *rgMinerals)",
         "file": "turn2.c",
-        "line": 1573,
+        "line": 1645,
         "kind": "definition"
       },
       {
@@ -11174,7 +11174,7 @@
       {
         "signature": "int16_t IBestRemoteTerra(PLANET *lppl, int16_t iplr, int16_t fHelp)",
         "file": "turn2.c",
-        "line": 1992,
+        "line": 2064,
         "kind": "definition"
       },
       {
@@ -11188,7 +11188,7 @@
       {
         "signature": "void PlanetaryClimateChange(void)",
         "file": "turn2.c",
-        "line": 2018,
+        "line": 2090,
         "kind": "definition"
       },
       {
@@ -11202,7 +11202,7 @@
       {
         "signature": "void DiscoverNewMinerals(void)",
         "file": "turn2.c",
-        "line": 2055,
+        "line": 2127,
         "kind": "definition"
       },
       {
@@ -11216,7 +11216,7 @@
       {
         "signature": "void MeteorStrike(void)",
         "file": "turn2.c",
-        "line": 2075,
+        "line": 2147,
         "kind": "definition"
       },
       {
@@ -11230,7 +11230,7 @@
       {
         "signature": "void HealShips(void)",
         "file": "turn2.c",
-        "line": 2159,
+        "line": 2231,
         "kind": "definition"
       },
       {
@@ -11244,7 +11244,7 @@
       {
         "signature": "void CreateShip(int16_t iPlr, FLEET *lpfl, int16_t ishdef, int16_t cShip)",
         "file": "turn2.c",
-        "line": 2173,
+        "line": 2245,
         "kind": "definition"
       },
       {
@@ -11258,7 +11258,7 @@
       {
         "signature": "void BreedColonistsInTransit(void)",
         "file": "turn2.c",
-        "line": 2182,
+        "line": 2254,
         "kind": "definition"
       },
       {
@@ -11272,7 +11272,7 @@
       {
         "signature": "void RandomEvents(void)",
         "file": "turn2.c",
-        "line": 2232,
+        "line": 2304,
         "kind": "definition"
       },
       {
@@ -11286,7 +11286,7 @@
       {
         "signature": "void UnmarkMineFields(void)",
         "file": "turn2.c",
-        "line": 2240,
+        "line": 2312,
         "kind": "definition"
       },
       {
@@ -11932,7 +11932,7 @@
       {
         "signature": "void ClearFile(int16_t dt)",
         "file": "util.c",
-        "line": 360,
+        "line": 412,
         "kind": "definition"
       },
       {
@@ -11946,7 +11946,7 @@
       {
         "signature": "int32_t LComputePower(SHDEF *lpshdef)",
         "file": "util.c",
-        "line": 384,
+        "line": 436,
         "kind": "definition"
       },
       {
@@ -11960,7 +11960,7 @@
       {
         "signature": "char * PszGetFleetName(int16_t id)",
         "file": "util.c",
-        "line": 444,
+        "line": 496,
         "kind": "definition"
       },
       {
@@ -11974,7 +11974,7 @@
       {
         "signature": "char * PszGetThingName(int16_t id)",
         "file": "util.c",
-        "line": 494,
+        "line": 546,
         "kind": "definition"
       },
       {
@@ -11988,7 +11988,7 @@
       {
         "signature": "int32_t LongFromSerialCh(char ch)",
         "file": "util.c",
-        "line": 550,
+        "line": 602,
         "kind": "definition"
       },
       {
@@ -12002,7 +12002,7 @@
       {
         "signature": "uint16_t WPackLong(int32_t l)",
         "file": "util.c",
-        "line": 567,
+        "line": 619,
         "kind": "definition"
       },
       {
@@ -12016,7 +12016,7 @@
       {
         "signature": "double DGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)",
         "file": "util.c",
-        "line": 580,
+        "line": 632,
         "kind": "definition"
       },
       {
@@ -12030,7 +12030,7 @@
       {
         "signature": "int16_t FDeleteFleet(int16_t idFleet, int16_t grobjSel, int16_t idSel)",
         "file": "util.c",
-        "line": 592,
+        "line": 644,
         "kind": "definition"
       },
       {
@@ -12044,7 +12044,7 @@
       {
         "signature": "int32_t WtFromLpfl(FLEET *lpfl)",
         "file": "util.c",
-        "line": 606,
+        "line": 658,
         "kind": "definition"
       },
       {
@@ -12058,7 +12058,7 @@
       {
         "signature": "void SelectOursAtObject(POINT *ppt)",
         "file": "util.c",
-        "line": 622,
+        "line": 675,
         "kind": "definition"
       },
       {
@@ -12072,7 +12072,7 @@
       {
         "signature": "char * PszGetPlanetName(int16_t id)",
         "file": "util.c",
-        "line": 633,
+        "line": 733,
         "kind": "definition"
       },
       {
@@ -12086,7 +12086,7 @@
       {
         "signature": "int16_t FDupFleet(FLEET *lpfl, FLEET *pfl)",
         "file": "util.c",
-        "line": 648,
+        "line": 748,
         "kind": "definition"
       },
       {
@@ -12100,7 +12100,7 @@
       {
         "signature": "int16_t FDupPlanet(PLANET *lppl, PLANET *ppl)",
         "file": "util.c",
-        "line": 687,
+        "line": 787,
         "kind": "definition"
       },
       {
@@ -12114,7 +12114,7 @@
       {
         "signature": "char * PszFleetNameFromWord(uint16_t w)",
         "file": "util.c",
-        "line": 728,
+        "line": 828,
         "kind": "definition"
       },
       {
@@ -12128,7 +12128,7 @@
       {
         "signature": "int16_t FValidSerialNo(char *psz, int32_t *plSerial)",
         "file": "util.c",
-        "line": 759,
+        "line": 859,
         "kind": "definition"
       },
       {
@@ -12142,7 +12142,7 @@
       {
         "signature": "char * PszGetDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)",
         "file": "util.c",
-        "line": 771,
+        "line": 871,
         "kind": "definition"
       },
       {
@@ -12156,7 +12156,7 @@
       {
         "signature": "void CalcPctSurvive(PLANET *lppl, float *ppct, float *ppctSmart)",
         "file": "util.c",
-        "line": 790,
+        "line": 890,
         "kind": "definition"
       },
       {
@@ -12170,7 +12170,7 @@
       {
         "signature": "int16_t IshFindSimilarDesign(HUL *lphul, int16_t iPlrDst)",
         "file": "util.c",
-        "line": 846,
+        "line": 946,
         "kind": "definition"
       },
       {
@@ -12184,7 +12184,7 @@
       {
         "signature": "void DecorateHullName(int16_t iplr, int16_t ish, char *psz)",
         "file": "util.c",
-        "line": 870,
+        "line": 970,
         "kind": "definition"
       },
       {
@@ -12198,7 +12198,7 @@
       {
         "signature": "int16_t FCanBuildShdef(SHDEF *lpshdef, int16_t iplr)",
         "file": "util.c",
-        "line": 903,
+        "line": 1003,
         "kind": "definition"
       },
       {
@@ -12212,7 +12212,7 @@
       {
         "signature": "int16_t FFleetMergeAll(FLEET *pfl)",
         "file": "util.c",
-        "line": 933,
+        "line": 1033,
         "kind": "definition"
       },
       {
@@ -12226,7 +12226,7 @@
       {
         "signature": "int16_t ICompFleetPoint2(void *arg1, void *arg2)",
         "file": "util.c",
-        "line": 951,
+        "line": 1051,
         "kind": "definition"
       },
       {
@@ -12240,7 +12240,7 @@
       {
         "signature": "void TurnLog(StringId ids)",
         "file": "util.c",
-        "line": 974,
+        "line": 1074,
         "kind": "definition"
       },
       {
@@ -12254,7 +12254,7 @@
       {
         "signature": "char * PszPlayerName(int16_t iPlayer, int16_t fCapital, int16_t fPlural, int16_t fThe, int16_t grWord, PLAYER *pplr)",
         "file": "util.c",
-        "line": 985,
+        "line": 1085,
         "kind": "definition"
       },
       {
@@ -12268,7 +12268,7 @@
       {
         "signature": "int16_t IStargateFromLppl(PLANET *lppl)",
         "file": "util.c",
-        "line": 1066,
+        "line": 1166,
         "kind": "definition"
       },
       {
@@ -12282,7 +12282,7 @@
       {
         "signature": "int32_t DpOfLpflIshdef(FLEET *lpfl, int16_t ishdef)",
         "file": "util.c",
-        "line": 1085,
+        "line": 1185,
         "kind": "definition"
       },
       {
@@ -12296,7 +12296,7 @@
       {
         "signature": "int16_t FFleetSplitAll(FLEET *pfl)",
         "file": "util.c",
-        "line": 1101,
+        "line": 1201,
         "kind": "definition"
       },
       {
@@ -12310,7 +12310,7 @@
       {
         "signature": "int16_t ICompFleetPoint(void *arg1, void *arg2)",
         "file": "util.c",
-        "line": 1129,
+        "line": 1229,
         "kind": "definition"
       },
       {
@@ -12324,7 +12324,7 @@
       {
         "signature": "void OutputSz(int16_t dt, char *sz)",
         "file": "util.c",
-        "line": 1146,
+        "line": 1246,
         "kind": "definition"
       },
       {
@@ -12338,7 +12338,7 @@
       {
         "signature": "void ComputeShdefPowers(void)",
         "file": "util.c",
-        "line": 1193,
+        "line": 1293,
         "kind": "definition"
       },
       {
@@ -12352,7 +12352,7 @@
       {
         "signature": "int16_t GetPlanetScannerRange(PLANET *lppl, int16_t *pDeep)",
         "file": "util.c",
-        "line": 1210,
+        "line": 1310,
         "kind": "definition"
       },
       {
@@ -12366,7 +12366,7 @@
       {
         "signature": "FLEET * LpflNew(int16_t iPlr, int16_t idPl)",
         "file": "util.c",
-        "line": 1253,
+        "line": 1353,
         "kind": "definition"
       },
       {
@@ -12380,7 +12380,7 @@
       {
         "signature": "void UpdateShdefCost(SHDEF *shdef)",
         "file": "util.c",
-        "line": 1318,
+        "line": 1418,
         "kind": "definition"
       },
       {
@@ -12394,7 +12394,7 @@
       {
         "signature": "int16_t FLookupSelPlanet(PLANET *ppl)",
         "file": "util.c",
-        "line": 1408,
+        "line": 1508,
         "kind": "definition"
       },
       {
@@ -12408,7 +12408,7 @@
       {
         "signature": "int16_t FLookupThing(int16_t idth, THING *pth)",
         "file": "util.c",
-        "line": 1415,
+        "line": 1515,
         "kind": "definition"
       },
       {
@@ -12422,7 +12422,7 @@
       {
         "signature": "int16_t FLookupFleet(int16_t idFleet, FLEET *pfl)",
         "file": "util.c",
-        "line": 1449,
+        "line": 1549,
         "kind": "definition"
       },
       {
@@ -12436,7 +12436,7 @@
       {
         "signature": "int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t idSkip)",
         "file": "util.c",
-        "line": 1508,
+        "line": 1608,
         "kind": "definition"
       },
       {
@@ -12450,7 +12450,7 @@
       {
         "signature": "void LinkFleets(int16_t fUnused)",
         "file": "util.c",
-        "line": 1518,
+        "line": 1649,
         "kind": "definition"
       },
       {
@@ -12464,7 +12464,7 @@
       {
         "signature": "int16_t IflFromLpfl(FLEET *lpfl)",
         "file": "util.c",
-        "line": 1554,
+        "line": 1685,
         "kind": "definition"
       },
       {
@@ -12478,7 +12478,7 @@
       {
         "signature": "int32_t DpShieldOfShdef(SHDEF *lpshdef, int16_t iplr)",
         "file": "util.c",
-        "line": 1565,
+        "line": 1696,
         "kind": "definition"
       },
       {
@@ -12492,7 +12492,7 @@
       {
         "signature": "void GetTrueHullCost(int16_t iPlayer, HUL *lphul, uint16_t *rgCost)",
         "file": "util.c",
-        "line": 1599,
+        "line": 1730,
         "kind": "definition"
       },
       {
@@ -12506,7 +12506,7 @@
       {
         "signature": "int16_t GetShdefScannerRange(SHDEF *lpshdef, int16_t iplr, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
         "file": "util.c",
-        "line": 1608,
+        "line": 1739,
         "kind": "definition"
       },
       {
@@ -12520,7 +12520,7 @@
       {
         "signature": "void ValidateWaypoints(void)",
         "file": "util.c",
-        "line": 1634,
+        "line": 1765,
         "kind": "definition"
       },
       {
@@ -12534,7 +12534,7 @@
       {
         "signature": "int32_t ChgPopFromPlanet(PLANET *lppl, int16_t fUpdate)",
         "file": "util.c",
-        "line": 1653,
+        "line": 1784,
         "kind": "definition"
       },
       {
@@ -12548,7 +12548,7 @@
       {
         "signature": "int16_t FFleetCanJumpgate(FLEET *lpfl)",
         "file": "util.c",
-        "line": 1796,
+        "line": 1927,
         "kind": "definition"
       },
       {
@@ -12562,7 +12562,7 @@
       {
         "signature": "int32_t CalcPlayerScore(int16_t iPlr, SCORE *pscore)",
         "file": "util.c",
-        "line": 1819,
+        "line": 1950,
         "kind": "definition"
       },
       {
@@ -12576,7 +12576,7 @@
       {
         "signature": "int16_t FLookupPlanet(int16_t iPlanet, PLANET *ppl)",
         "file": "util.c",
-        "line": 1836,
+        "line": 1967,
         "kind": "definition"
       },
       {
@@ -12590,7 +12590,7 @@
       {
         "signature": "FLEET * LpflNewSplit(FLEET *pfl)",
         "file": "util.c",
-        "line": 1922,
+        "line": 2053,
         "kind": "definition"
       },
       {
@@ -12604,7 +12604,7 @@
       {
         "signature": "uint16_t WFromLpfl(FLEET *lpfl)",
         "file": "util.c",
-        "line": 1946,
+        "line": 2077,
         "kind": "definition"
       },
       {
@@ -12618,7 +12618,7 @@
       {
         "signature": "int16_t FLookupObject(GrobjClass grobj, int16_t id, void *pobj)",
         "file": "util.c",
-        "line": 1959,
+        "line": 2090,
         "kind": "definition"
       },
       {
@@ -12632,7 +12632,7 @@
       {
         "signature": "int16_t GetFleetScannerRange(FLEET *lpfl, int16_t *pdPlanRange, int16_t *ppctDetect, int16_t *piSteal)",
         "file": "util.c",
-        "line": 1970,
+        "line": 2101,
         "kind": "definition"
       },
       {
@@ -12646,7 +12646,7 @@
       {
         "signature": "int16_t FFindNearestObject(STARSPOINT pt, GrobjClass grobj, SCAN *pscan)",
         "file": "util.c",
-        "line": 2010,
+        "line": 2141,
         "kind": "definition"
       },
       {
@@ -12660,7 +12660,7 @@
       {
         "signature": "int16_t CchGetETA(HDC hdc, FLEET *lpfl, char *sz, int16_t iwp, int16_t fSmall)",
         "file": "util.c",
-        "line": 2231,
+        "line": 2362,
         "kind": "definition"
       },
       {
@@ -12674,7 +12674,7 @@
       {
         "signature": "void DrawABunchOfStars(HDC hdc, RECT *prc)",
         "file": "util.c",
-        "line": 2249,
+        "line": 2380,
         "kind": "definition"
       },
       {
@@ -12688,7 +12688,7 @@
       {
         "signature": "void DrawPlanetPrintDot(HDC hdc, int16_t x, int16_t y, int16_t iSize)",
         "file": "util.c",
-        "line": 2262,
+        "line": 2393,
         "kind": "definition"
       },
       {

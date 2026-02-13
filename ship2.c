@@ -436,12 +436,32 @@ int32_t CMineSweepFromLphul(HUL *lphul) {
     HS     *lphs;
     int32_t lRange;
     int16_t j;
-    int16_t fStarbase;
     int32_t lPow;
     PART    part;
+    BEAM   *pbeam;
 
-    /* TODO: implement */
-    return 0;
+    lPow = 0;
+    for (j = 0, lphs = lphul->rghs; j < lphul->chs; j++, lphs++) {
+        if (lphs->grhst != hstBeam)
+            continue;
+        part.hs = *lphs;
+        FLookupPart(&part);
+        pbeam = part.pbeam;
+        if (pbeam->grfAbilities & 1)
+            continue;
+        if (pbeam->grfAbilities & 2) {
+            lRange = 4;
+        } else {
+            lRange = (int32_t)pbeam->dRangeMax;
+        }
+        if (lphul->ihuldef >= ihuldefCount) {
+            lRange += 1;
+        }
+        lPow += (uint32_t)(lRange * lRange) * (uint32_t)lphs->cItem * (uint32_t)pbeam->dp;
+    }
+    if (lPow < 1)
+        lPow = 0;
+    return lPow;
 }
 
 int16_t MdCalcStargateDamage(int16_t isbsSrc, int16_t isbsDst, int16_t dDist, int16_t wt, int16_t *ppctDmg) {
@@ -557,8 +577,51 @@ int32_t CLayMinesFromLpfl(FLEET *lpfl, int16_t iType, int16_t ishdef) {
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP2:0x291e */
 
-    /* TODO: implement */
-    return 0;
+    cMineTot = 0;
+
+    if (iType == 0) {
+        iMin = iminesMineDispenser40;
+        iMax = iminesMineDispenser130;
+    } else if (iType == 1) {
+        iMin = iminesHeavyDispenser50;
+        iMax = iminesHeavyDispenser200;
+    } else if (iType == 2) {
+        iMin = iminesSpeedTrap20;
+        iMax = iminesSpeedTrap50;
+    } else {
+        iMin = 0;
+        iMax = 9;
+    }
+
+    for (i = 0; i < cShdefMax; i++) {
+        if (lpfl->rgcsh[i] <= 0 || (ishdef != -1 && i != ishdef))
+            continue;
+
+        lphul = &rglpshdef[lpfl->iPlayer][i].hul;
+        cMine = 0;
+        for (j = 0, lphs = lphul->rghs; j < lphul->chs; j++, lphs++) {
+            if (lphs->grhst == hstMines && lphs->iItem >= iMin && lphs->iItem <= iMax) {
+                part.hs = *lphs;
+                FLookupPart(&part);
+                cMine += (uint32_t)lphs->cItem * (uint32_t)part.pmines->grAbility;
+            } else if (iType < 1 && lphs->grhst == hstBeam && lphs->iItem == ibeamMultiContainedMunition) {
+                cMine += (uint32_t)lphs->cItem << 2;
+            }
+        }
+
+        if (lphul->ihuldef == ihuldefMiniMineLayer || lphul->ihuldef == ihuldefSuperMineLayer)
+            cMine <<= 1;
+
+        cMine *= (int32_t)lpfl->rgcsh[i];
+        cMineTot += cMine;
+    }
+
+    if (cMineTot < 10000001)
+        cMineTot *= 10;
+    else
+        cMineTot = 100000000;
+
+    return cMineTot;
 }
 
 int16_t FColonizer(FLEET *lpfl) {

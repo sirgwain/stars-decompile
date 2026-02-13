@@ -386,7 +386,7 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
     int16_t rgrgcshLoss[2][16];
     int32_t rgrgCargoDelta[2][5];
     int32_t rgFuelCapacity[2];
-    FLEET  *rgpflNew[1];
+    FLEET  *rgpflNew[2];
     int16_t wtCargoMax;
     int16_t wtFuelMax;
     int16_t i;
@@ -401,7 +401,6 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
     int32_t cshDmgDst;
     int32_t cshDmgSrc;
     int16_t iSrc;
-    int32_t pctNew;
     int32_t cshDmgMoved;
 
     /* debug symbols */
@@ -410,7 +409,246 @@ void FleetTransferCargoBalance(FLEET *pflNew1, FLEET *pflNew2) {
     /* block (block) @ MEMORY_SHIP:0xb81c */
     /* block (block) @ MEMORY_SHIP:0xbb73 */
 
-    /* TODO: implement */
+    /* ------------------------------------------------------------ */
+    /* asm: 1050:ae7d..afbd  (init, load old fleets if not dead)     */
+    /* ------------------------------------------------------------ */
+
+    wtCargoXfer = 0;
+    rgpflNew[0] = pflNew1;
+    rgpflNew[1] = pflNew2;
+
+    iplr = pflNew2->iPlayer; /* asm: 1050:ae90..ae96 (iPlayer -> [BP-4]) */
+    fDeadFleet = 0;
+
+    for (i = 0; i < 2; i++) {
+        if (rgpflNew[i]->fDead == 0) {
+            /* asm: 1050:aefc..af1f */
+            FLookupFleet(rgpflNew[i]->id, &rgflCur[i]);
+        } else {
+            /* asm: 1050:aec3..aef9 */
+            fDeadFleet = 1;
+            memset(&rgflCur[i], 0, 0x7c);
+            rgflCur[i].iPlayer = iplr;
+        }
+
+        /* asm: 1050:af22..af75 (zero per-side accumulators) */
+        rgCargoCapLoss[i] = 0;
+        rgCargoCapacity[i] = 0;
+        rgFuelCapLoss[i] = 0;
+        rgFuelCapacity[i] = 0;
+
+        /* asm: 1050:af77..afae (zero deltas [2][5]) */
+        for (j = 0; j < 5; j++) {
+            rgrgCargoDelta[i][j] = 0;
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+    /* asm: 1050:afbd..bd05  (capacity + loss accumulation per shdef)*/
+    /* ------------------------------------------------------------ */
+
+    for (ishdef = 0; ishdef < cShdefMax; ishdef++) {
+        /* asm: 1050:afc6..afeb (skip if neither side has this shdef) */
+        if (rgflCur[0].rgcsh[ishdef] == 0 && rgflCur[1].rgcsh[ishdef] == 0)
+            continue;
+
+        /* asm: 1050:afee..b03a (lpshdef = rglpshdef[iplr] + ishdef*0x93; stats) */
+        lpshdef = &rglpshdef[iplr][ishdef];
+        wtFuelMax = WtMaxShdefStat(lpshdef, grStatFuel);
+        wtCargoMax = WtMaxShdefStat(lpshdef, grStatCargo);
+
+        /* asm: 1050:b03e..b1e0 (per-side accumulate capacities and losses) */
+        for (i = 0; i < 2; i++) {
+            rgrgcshLoss[i][ishdef] = (int16_t)(rgflCur[i].rgcsh[ishdef] - rgpflNew[i]->rgcsh[ishdef]);
+
+            if (rgflCur[i].rgcsh[ishdef] != 0) {
+                rgFuelCapacity[i] += (int32_t)rgflCur[i].rgcsh[ishdef] * wtFuelMax;
+                rgCargoCapacity[i] += (int32_t)rgflCur[i].rgcsh[ishdef] * wtCargoMax;
+
+                if (rgrgcshLoss[i][ishdef] > 0) {
+                    rgFuelCapLoss[i] += (int32_t)rgrgcshLoss[i][ishdef] * wtFuelMax;
+                    rgCargoCapLoss[i] += (int32_t)rgrgcshLoss[i][ishdef] * wtCargoMax;
+                }
+            }
+        }
+
+        /* ------------------------------------------------------------ */
+        /* asm: 1050:b2..bcf4  (damage % rebalance when exact ship swap) */
+        /*  uses rgdv[ishdef].pctSh (low 7) and .pctDp (high 9)          */
+        /* ------------------------------------------------------------ */
+        if (fDeadFleet == 0 && rgrgcshLoss[0][ishdef] == (int16_t)-rgrgcshLoss[1][ishdef] && rgrgcshLoss[0][ishdef] != 0) {
+
+            /* asm: 1050:??  (uVar10 = (rgrgcshLoss[0] < 0)) */
+            iSrc = (rgrgcshLoss[0][ishdef] < 0) ? 1 : 0; /* side losing ships */
+
+            /* asm: 1050:??  (cshDmg = pctSh * csh / 100, guarded on csh<1) */
+            if (rgflCur[iSrc].rgcsh[ishdef] < 1) {
+                cshDmgSrc = 0;
+            } else {
+                cshDmgSrc = ((int32_t)rgflCur[iSrc].rgdv[ishdef].pctSh * (int32_t)rgflCur[iSrc].rgcsh[ishdef]) / 100;
+            }
+
+            if (rgflCur[iSrc ^ 1].rgcsh[ishdef] < 1) {
+                cshDmgDst = 0;
+            } else {
+                cshDmgDst = ((int32_t)rgflCur[iSrc ^ 1].rgdv[ishdef].pctSh * (int32_t)rgflCur[iSrc ^ 1].rgcsh[ishdef]) / 100;
+            }
+
+            if (cshDmgSrc == 0 || cshDmgDst == 0) {
+                if (cshDmgSrc == 0) {
+                    if (cshDmgDst == 0) {
+                        /* asm: clear pctSh */
+                        rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctSh = 0;
+                    } else {
+                        /* asm: pctNew = ceil(cshDmgDst*100 / csh) */
+                        int32_t pctNew = (cshDmgDst * 100 + rgpflNew[iSrc ^ 1]->rgcsh[ishdef] - 1) / rgpflNew[iSrc ^ 1]->rgcsh[ishdef];
+                        rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctSh = pctNew;
+                    }
+                } else {
+                    /* asm: move some damaged “mass”; copy pctDp bits from src -> dst */
+                    cshDmgMoved = cshDmgSrc;
+                    if (rgrgcshLoss[iSrc][ishdef] < cshDmgMoved)
+                        cshDmgMoved = rgrgcshLoss[iSrc][ishdef];
+
+                    rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctDp = rgpflNew[iSrc]->rgdv[ishdef].pctDp;
+
+                    {
+                        /* block 2/3 overlap locals in NB09: pctNew + cshDmgMoved */
+                        int32_t pctNew = (cshDmgMoved * 100 + rgpflNew[iSrc ^ 1]->rgcsh[ishdef] - 1) / rgpflNew[iSrc ^ 1]->rgcsh[ishdef];
+                        rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctSh = pctNew;
+                    }
+
+                    if (cshDmgMoved == cshDmgSrc) {
+                        rgpflNew[iSrc]->rgdv[ishdef].pctSh = 0;
+                    } else {
+                        int32_t pctNew = ((cshDmgSrc - cshDmgMoved) * 100 + rgpflNew[iSrc]->rgcsh[ishdef] - 1) / rgpflNew[iSrc]->rgcsh[ishdef];
+                        rgpflNew[iSrc]->rgdv[ishdef].pctSh = pctNew;
+                    }
+                }
+            } else {
+                /* asm: both sides have dmg -> weighted pctDp merge + pctSh recompute */
+                cshDmgMoved = cshDmgSrc;
+                if (rgrgcshLoss[iSrc][ishdef] < cshDmgMoved)
+                    cshDmgMoved = rgrgcshLoss[iSrc][ishdef];
+
+                {
+                    int32_t num = cshDmgMoved * (int32_t)rgflCur[iSrc].rgdv[ishdef].pctDp + cshDmgDst * (int32_t)rgflCur[iSrc ^ 1].rgdv[ishdef].pctDp +
+                                  rgpflNew[iSrc ^ 1]->rgcsh[ishdef] - 1;
+                    int32_t den = rgpflNew[iSrc ^ 1]->rgcsh[ishdef];
+                    rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctDp = num / den;
+                }
+
+                {
+                    int32_t pctNew = ((cshDmgDst + cshDmgMoved) * 100 + rgpflNew[iSrc ^ 1]->rgcsh[ishdef] - 1) / rgpflNew[iSrc ^ 1]->rgcsh[ishdef];
+                    rgpflNew[iSrc ^ 1]->rgdv[ishdef].pctSh = pctNew;
+                }
+
+                if (cshDmgMoved == cshDmgSrc) {
+                    rgpflNew[iSrc]->rgdv[ishdef].pctSh = 0;
+                } else {
+                    int32_t pctNew = ((cshDmgSrc - cshDmgMoved) * 100 + rgpflNew[iSrc]->rgcsh[ishdef] - 1) / rgpflNew[iSrc]->rgcsh[ishdef];
+                    rgpflNew[iSrc]->rgdv[ishdef].pctSh = pctNew;
+                }
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------ */
+    /* asm: 1050:bd05..c1a7  (compute cargo/fuel deltas per side)     */
+    /* ------------------------------------------------------------ */
+
+    i = 0;
+    while (1) {
+        if (i > 1) {
+            /* ------------------------------------------------------------ */
+            /* asm: 1050:c1??.. (apply deltas: + to i, - to other)           */
+            /* ------------------------------------------------------------ */
+            for (i = 0; i < 2; i++) {
+                for (j = 0; j < 5; j++) {
+                    rgpflNew[i]->rgwtMin[j] += rgrgCargoDelta[i][j];
+                    rgpflNew[i ^ 1]->rgwtMin[j] -= rgrgCargoDelta[i][j];
+                }
+            }
+            return;
+        }
+
+        /* ------------------------------------------------------------ */
+        /* asm: 1050:bd0e..be2c  (fuel delta = fuel * fuelCapLoss / fuelCap) */
+        /* overflow-avoid with FPU path when values exceed 45000-ish         */
+        /* ------------------------------------------------------------ */
+        if (rgFuelCapacity[i] != 0) {
+            int32_t fuel = rgpflNew[i]->rgwtMin[4];
+
+            if (fuel < 45001 && rgFuelCapLoss[i] >= 0 && rgFuelCapLoss[i] <= 45000) {
+                l = (int32_t)(((int64_t)fuel * rgFuelCapLoss[i]) / rgFuelCapacity[i]);
+            } else {
+                /* asm: 1050:bd86..bdbd (FILD fuel; FILD loss; FMUL; FILD cap; FDIV; __ftol) */
+                l = (int32_t)((double)fuel * (double)rgFuelCapLoss[i] / (double)rgFuelCapacity[i]);
+            }
+
+            lChg = l;
+            rgrgCargoDelta[i][4] -= lChg;
+        }
+
+        /* ------------------------------------------------------------ */
+        /* asm: 1050:be2c..c1a2  (cargo delta spread across 4 bins)       */
+        /* ------------------------------------------------------------ */
+        if (rgCargoCapacity[i] != 0) {
+            wtCargoTot = 0;
+            for (j = 0; j < 4; j++) {
+                wtCargoTot += rgpflNew[i]->rgwtMin[j];
+            }
+
+            if (wtCargoTot != 0) {
+                if (wtCargoTot < 45001 && rgCargoCapLoss[i] >= 0 && rgCargoCapLoss[i] <= 45000) {
+                    wtCargoXfer = (int32_t)(((int64_t)wtCargoTot * rgCargoCapLoss[i]) / rgCargoCapacity[i]);
+                } else {
+                    /* asm: 1050:bed1..bf06 (FILD wtCargoTot; FILD loss; FMUL; FILD cap; FDIV; __ftol) */
+                    wtCargoXfer = (int32_t)((double)wtCargoTot * (double)rgCargoCapLoss[i] / (double)rgCargoCapacity[i]);
+                }
+
+                if (wtCargoXfer != 0) {
+                    int32_t wtLeft = wtCargoXfer;
+
+                    /* proportional subtract across 4 cargo bins */
+                    for (j = 0; j < 4; j++) {
+                        int32_t part;
+
+                        if (rgpflNew[i]->rgwtMin[j] < 45001 && wtCargoTot < 45001 && wtLeft < 45001) {
+                            part = (int32_t)(((int64_t)rgpflNew[i]->rgwtMin[j] * wtCargoXfer) / wtCargoTot);
+                        } else {
+                            /* asm: (FILD item; FILD wtCargoXfer; FMUL; FILD tot; FDIV; __ftol) */
+                            part = (int32_t)((double)rgpflNew[i]->rgwtMin[j] * (double)wtCargoXfer / (double)wtCargoTot);
+                        }
+
+                        /* clamp to remaining */
+                        if (part > wtLeft)
+                            part = wtLeft;
+
+                        rgrgCargoDelta[i][j] -= part;
+                        wtLeft -= part;
+                    }
+
+                    /* ------------------------------------------------------------ */
+                    /* asm: 1050:c0??  (distribute any remainder by -1 steps)       */
+                    /* ------------------------------------------------------------ */
+                    if (wtLeft > 0) {
+                        j = 0;
+                        while (j < 4 && wtLeft > 0) {
+                            /* asm condition: if (rgwtMin[j] + delta[j] > 0) then delta-- and wtLeft-- */
+                            if (rgpflNew[i]->rgwtMin[j] + rgrgCargoDelta[i][j] > 0) {
+                                rgrgCargoDelta[i][j] -= 1;
+                                wtLeft -= 1;
+                            }
+                            j++;
+                        }
+                    }
+                }
+            }
+        }
+
+        i++;
+    }
 }
 
 void SelectAdjFleet(int16_t dInc, int16_t idFleet) {
@@ -942,10 +1180,7 @@ void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks) {
     PROD   *lpprod;
 
     FORPLANETS(lppl, lpplMac) {
-        if (lppl->lpplprod != NULL &&
-            lppl->lpplprod->iprodMac != 0 &&
-            lppl->iPlayer == idPlayer &&
-            lppl->fStarbase &&
+        if (lppl->lpplprod != NULL && lppl->lpplprod->iprodMac != 0 && lppl->iPlayer == idPlayer && lppl->fStarbase &&
             (!fSpaceDocks || rglpshdefSB[idPlayer][lppl->isb].hul.ihuldef == (ihuldefSBSpaceDock + ihuldefCount))) {
 
             iDst = 0;

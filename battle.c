@@ -3,6 +3,7 @@
 #include "types.h"
 
 #include "battle.h"
+#include "build.h"
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
@@ -10,6 +11,7 @@
 #include "race.h"
 #include "research.h"
 #include "ship.h"
+#include "ship2.h"
 #include "thing.h"
 #include "util.h"
 #include "utilgen.h"
@@ -414,12 +416,50 @@ int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn) {
     int16_t iflMac;
     int16_t i;
     FLEET  *lpfl;
+    char   *sz;
+    int16_t result;
 
-    /* debug symbols */
-    /* label LCommit @ MEMORY_BATTLE:0x1714 */
+    fFoundBigger = false;
+LCommit:
+    do {
+        for (iflMac = 0; iflMac < cFleet; iflMac++) {
+            lpfl = rglpfl[iflMac];
+            if (lpfl == NULL)
+                break;
+            if (lpfl->iPlayer > idPlayer)
+                break;
+            if (lpfl->iPlayer < idPlayer)
+                continue;
 
-    /* TODO: implement */
-    return 0;
+            if (lpfl->iplan > (uint8_t)iplan) {
+                if (fWarn == 0) {
+                    lpfl->iplan--;
+                } else {
+                    fFoundBigger = true;
+                }
+            } else if (lpfl->iplan == (uint8_t)iplan) {
+                if (fWarn != 0) {
+                    sz = PszFormatIds(idsCurrentlyHaveFleetsUsingBattlePlanIf, NULL);
+                    result = AlertSz(sz, 0x31);
+                    if (result == 2)
+                        return 0;
+                    fWarn = 0;
+                    goto LCommit;
+                }
+                lpfl->iplan--;
+            }
+        }
+
+        if (fWarn == 0 || !fFoundBigger) {
+            rgcbtlplan[idPlayer]--;
+            for (i = iplan; i < (int16_t)rgcbtlplan[idPlayer]; i++) {
+                rglpbtlplan[idPlayer][i] = rglpbtlplan[idPlayer][i + 1];
+                rglpbtlplan[idPlayer][i].iplan = i;
+            }
+            return 1;
+        }
+        fWarn = 0;
+    } while (true);
 }
 
 void RegenShield(TOK *ptok) {
@@ -890,8 +930,46 @@ int32_t CTorpHit(int32_t cTorpBase, TOK *ptok, int16_t pctBase, int16_t pctBC) {
     int32_t pctHit;
     int32_t cTorpHit;
 
-    /* TODO: implement */
-    return 0;
+    if (cTorpBase == 0 || pctBase == 0)
+        return 0;
+
+    pctJam = (int32_t)ptok->pctJam;
+    if (pctJam != 0 && pctBC != 0) {
+        pctJam -= (int32_t)pctBC;
+        if (pctJam < 0) {
+            pctBC = (int16_t)(-pctJam);
+            pctJam = 0;
+        } else {
+            pctBC = 0;
+        }
+    }
+
+    if (pctBC == 0) {
+        if (pctJam == 0) {
+            pctHit = (int32_t)pctBase;
+        } else {
+            pctHit = (int32_t)pctBase * (100 - pctJam) / 100;
+        }
+    } else {
+        pctHit = 100 - (int32_t)(100 - pctBase) * (int32_t)(100 - pctBC) / 100;
+    }
+
+    if (pctHit < 1)
+        pctHit = 1;
+
+    if (pctHit >= 100)
+        return cTorpBase;
+
+    if (cTorpBase < 201) {
+        cTorpHit = 0;
+        for (i = 0; i < (int16_t)cTorpBase; i++) {
+            if (Random(100) < (int16_t)pctHit)
+                cTorpHit++;
+        }
+        return cTorpHit;
+    } else {
+        return cTorpBase * pctHit / 100;
+    }
 }
 
 int16_t FCanKillTok(TOK *ptok1, TOK *ptok2) {
@@ -1484,7 +1562,7 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
     PLANET   *lppl;
     int16_t   fDampeningField;
     int16_t   initMin;
-    uint16_t *lpwtCargoCur;
+    uint16_t *lpwtCargoCur; /* stack overlap in asm: used only as a segment helper for REP MOVS */
     TOK      *ptokT;
     uint8_t   mpiplrdibrc[16];
     int16_t   fDumpCargo;
@@ -1494,7 +1572,214 @@ void InitializeBoard(FLEET *lpfl, int16_t ibrc, uint16_t grfPlayer, uint8_t *pin
     /* debug symbols */
     /* label LTooManyTokens @ MEMORY_BATTLE:0x4a8f */
 
-    /* TODO: implement */
+    /* ------------------------------------------------------------
+     * asm: 10f0:45b4..4641
+     * init locals; build mpiplrdibrc[] (player->side index) and clear rgfTorp[]
+     */
+    initMin = -1;
+    initMac = -1;
+    fDampeningField = 0;
+    ishdef = 0;
+
+    memset(mpiplrdibrc, 0xFF, sizeof(mpiplrdibrc));
+    for (iplr = 0; iplr < game.cPlayer; iplr++) {
+        if ((grfPlayer & (1u << (iplr & 0x1F))) != 0) {
+            mpiplrdibrc[iplr] = (uint8_t)ishdef;
+            ishdef++;
+        }
+    }
+
+    memset(rgfTorp, 0, sizeof(rgfTorp));
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:4644..485a
+     * init token pointer; optional starbase token from lpfl->idPlanet
+     */
+    lpflCur = lpfl;
+    ptok = vrgtok;
+
+    if (lpfl->idPlanet != -1) {
+        lppl = LpplFromId(lpfl->idPlanet);
+        iplr = lppl->iPlayer;
+
+        if (iplr != -1 && lppl->fStarbase && ((grfPlayer & (1u << (iplr & 0x1F))) != 0)) {
+            /* tok->grobj = 1 (starbase) */
+            ptok->grobj = 1;
+
+            /* planet.lStarbase high-word bit: fNoHeal (asm: AND 0xBFFF; OR 0x4000) */
+            lppl->fNoHeal = 1;
+
+            /* starting board position: rgbrcStart[ibrc + sideIndex] (table is in CS in asm) */
+            ptok->brc = rgbrcStart[ibrc + mpiplrdibrc[iplr]];
+
+            ptok->id = lppl->id;
+            ptok->iplr = (uint8_t)iplr;
+            ptok->csh = 1;
+
+            /* tok->ishdef = (lppl->isb & 0xF) + 0x10 */
+            ptok->ishdef = lppl->isb + 0x10;
+
+            CheckInitiative(ptok);
+            CheckWeapons(ptok, &fDampeningField, pinit);
+
+            rgfTorp[iplr] |= ptok->fTorp;
+
+            /* asm: if initBase==0xFF mdTarget0=5 else mdTarget0=3 */
+            if (ptok->initBase == 0xFF) {
+                ptok->mdTarget0 = 5;
+            } else {
+                ptok->mdTarget0 = 3;
+            }
+
+            /* mdTarget1=1; mdTarget2=1; mdTactic=5 */
+            ptok->mdTarget1 = 1;
+            ptok->mdTarget2 = 1;
+            ptok->mdTactic = 5;
+
+            /* dv.pctDp = (lppl->pctDp >>?); asm uses low-word >>4, then takes low 9 bits */
+            ptok->dv.pctDp = (uint16_t)(lppl->pctDp & 0x01FF);
+
+            /* if dv.pctDp != 0 then dv.pctSh = 100 */
+            if (ptok->dv.pctDp != 0) {
+                ptok->dv.pctSh = 100;
+            }
+
+            /* clear speed nibble */
+            ptok->spd = 0;
+
+            /* wt = 0xFFFF */
+            ptok->wt = 0xFFFF;
+
+            ptok++;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:485e..4a8c
+     * iterate circular fleet list; add ship tokens; mark missed fleets
+     */
+    do {
+        if (!lpflCur->fDead) {
+            /* asm checks (dirLong >> (16+7)) & 1 */
+            if ((((uint32_t)lpflCur->dirLong >> 23) & 1u) == 0) {
+                if (lpflCur->fInclude) {
+                    /* fleet wFlags bit: fNoHeal (asm: AND 0xBFFF; OR 0x4000) */
+                    lpflCur->fNoHeal = 1;
+
+                    iplr = lpflCur->iPlayer;
+                    fDumpCargo = FDumpCargo(lpflCur);
+
+                    for (ishdef = 0; ishdef < 16; ishdef++) {
+                        if (lpflCur->rgcsh[ishdef] != 0) {
+                            ptok->grobj = 2;
+
+                            ptok->brc = rgbrcStart[ibrc + mpiplrdibrc[iplr]];
+
+                            ptok->id = lpflCur->id;
+
+                            /* asm derives iplr from (fleet.id >> 9) & 0xF; use bitfield */
+                            ptok->iplr = (uint8_t)lpflCur->iplr;
+
+                            ptok->ishdef = (uint8_t)ishdef;
+
+                            ptok->csh = lpflCur->rgcsh[ishdef];
+                            ptok->dv.dp = lpflCur->rgdv[ishdef].dp;
+
+                            CheckInitiative(ptok);
+                            CheckWeapons(ptok, &fDampeningField, pinit);
+
+                            rgfTorp[iplr] |= ptok->fTorp;
+
+                            CheckTarget(ptok, lpflCur, ishdef);
+
+                            {
+                                uint16_t spd = SpdOfShip(lpflCur, ishdef, ptok, fDumpCargo, 0);
+                                ptok->spd = spd & 0xF;
+                            }
+
+                            ptok++;
+
+                            /* asm: if ( (ptok - vrgtok)/0x1D > 0xFF ) goto LTooManyTokens */
+                            if ((ptok - vrgtok) > 0xFF) {
+                                goto LTooManyTokens;
+                            }
+                        }
+                    }
+                }
+            } else {
+                /* asm: grfMissed |= 1 << iPlayer */
+                grfMissed |= 1u << (lpflCur->iPlayer & 0x1F);
+            }
+        }
+
+        lpflCur = lpflCur->lpflNext;
+    } while (lpflCur != lpfl);
+
+LTooManyTokens:
+    /* ------------------------------------------------------------
+     * asm: 10f0:4a8f..4ac1
+     * finalize token count and randomize order
+     */
+    vctok = (int16_t)(ptok - vrgtok);
+    RandomizeTokOrder();
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:4ac4..4c8c
+     * per-token postprocessing, dampening-speed adjust, copy to lpbBattleCur,
+     * and compute initMin/initMac across tokens (ignoring 0xFF).
+     */
+    ptokT = vrgtok;
+    while (ptokT < ptok) {
+        /* set moved + active bits in TOK.wFlags */
+        ptokT->fMoved = 1;
+        ptokT->fActive = 1;
+
+        /* if initMin==0xFF then clear mdTarget1 nibble */
+        if (ptokT->initMin == 0xFF) {
+            ptokT->mdTarget1 = 0;
+        }
+
+        /* fRegen depends on dpShield and race flag ibitRaceRegeneratingShields */
+        if (ptokT->dpShield == 0 || GetRaceGrbit((PLAYER *)rgplr + ptokT->iplr, ibitRaceRegeneratingShields) == 0) {
+            ptokT->fRegen = 0;
+        } else {
+            ptokT->fRegen = 1;
+        }
+
+        /* dampening field speed penalty for non-starbase tokens */
+        if (fDampeningField != 0 && ptokT->grobj != 1) {
+            uint16_t spd = ptokT->spd;
+            if ((int16_t)(spd - 4) < 1) {
+                spd = 0;
+            } else {
+                spd = (uint16_t)(spd - 4);
+            }
+            ptokT->spd = (uint16_t)(spd & 0xF);
+        }
+
+        /* asm uses REP MOVSW/MOVSB of 0x1D bytes into lpbBattleCur */
+        memcpy(lpbBattleCur, ptokT, sizeof(TOK));
+        lpbBattleCur += sizeof(TOK);
+
+        /* track initMin (minimum) */
+        if (ptokT->initMin != 0xFF && (initMin == -1 || ptokT->initMin < initMin)) {
+            initMin = ptokT->initMin;
+        }
+
+        /* track initMac (maximum) */
+        if (ptokT->initMac != 0xFF && (initMac == -1 || initMac < ptokT->initMac)) {
+            initMac = ptokT->initMac;
+        }
+
+        ptokT++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:4c8c..4ca7
+     * return initMin/initMac (low byte)
+     */
+    *pinitMin = initMin & 0xFF;
+    *pinitMac = initMac & 0xFF;
 }
 
 int16_t DzMoveRangeToConsider(TOK *ptok, uint16_t grfAttack, uint8_t *pbrc) {
@@ -1610,7 +1895,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
 
     memset(rgfInit, 0, sizeof(rgfInit));
 
-    /* asm uses __fmemset(vrgtok, 0, 0x1d00) */
+    /* asm uses memset(vrgtok, 0, 0x1d00) */
     memset(vrgtok, 0, 0x1d00);
 
     lpbtldata = (BTLDATA *)lpbBattleCur;
@@ -1710,7 +1995,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
         ptok = vrgtok;
         for (itok = 0; itok < vctok; itok++, ptok++) {
             if (ptok->fActive) {
-                if (ptok->grobj == 1) {
+                if (ptok->grobj == grobjPlanet) {
                     /* asm: wFlags &= 0x3fff */
                     ptok->dMovesLeft = 0;
                 } else {
@@ -1795,7 +2080,7 @@ int16_t FDoCoolBattle(FLEET *lpfl, int16_t cplr, uint16_t *rggrfAttack, uint16_t
                             /* asm: preserve top two bits (dMovesLeft) then clear and OR back; net effect = no change */
                             /* (kept as-is for flow parity; no-op in bitfield form) */
 
-                            if (ptok->grobj == 1 || (brcOrig == ptok->brc && ptok->initMin != 0xff)) {
+                            if (ptok->grobj == grobjPlanet || (brcOrig == ptok->brc && ptok->initMin != 0xff)) {
                                 lpbBattleCur -= 6; /* undo record */
                             } else {
                                 lpbtlrec->brcDest = ptok->brc;
@@ -1937,7 +2222,202 @@ void CheckWeapons(TOK *ptok, int16_t *pfDampeningField, uint8_t *pinit) {
     int16_t dxyPart;
     PART    part;
 
-    /* TODO: implement */
+    /* ---- prologue ---- */
+    pctCap = 1000;
+    pctBeamDef = 1000;
+    pctHit = 10000;
+
+    initBase = ptok->initBase;
+
+    initMin = -1;
+    initMac = -1;
+    dxyMax = -1;
+    dxyLim = -1;
+
+    lpshdef = LpshdefFromTok(ptok);
+    ldp = DpShieldOfShdef(lpshdef, ptok->iplr);
+
+    lphul = &lpshdef->hul;
+
+    /* ---- iterate hull slots ---- */
+    for (ihs = 0; ihs < lphul->chs; ihs++) {
+        HS *hs = &lphul->rghs[ihs];
+
+        if ((hs->grhst & (hstSpecialM | hstSpecialE | hstMining | hstTorp | hstBeam | hstArmor | hstShield | hstScanner)) != hstNone && hs->cItem != 0) {
+
+            pctJam = 100;
+            dxyPart = -1;
+            part.hs = *hs;
+
+            /* ---- init for weapons ---- */
+            if ((part.hs.grhst & hstWeapon) == hstNone) {
+                init = -1;
+            } else {
+                idPlayer = ptok->iplr;
+                FLookupPart(&part);
+                idPlayer = -1;
+
+                if (part.hs.grhst == hstBeam)
+                    init = initBase + part.pbeam->init;
+                else
+                    init = initBase + part.ptorp->init;
+
+                if (init > 63)
+                    init = 63;
+            }
+
+            /* ---- per-slot handling ---- */
+            switch (part.hs.grhst) {
+
+            case hstShield:
+                if (part.hs.iItem == ishieldLangstonShell)
+                    pctJam = 95;
+                break;
+
+            case hstArmor:
+                if (part.hs.iItem == iarmorMegaPolyShell)
+                    pctJam = 80;
+                break;
+
+            case hstBeam:
+                idPlayer = ptok->iplr;
+                FLookupPart(&part);
+                idPlayer = -1;
+                dxyPart = part.pbeam->dRangeMax;
+                break;
+
+            case hstTorp:
+                ptok->fTorp = 1;
+                idPlayer = ptok->iplr;
+                FLookupPart(&part);
+                idPlayer = -1;
+                dxyPart = part.ptorp->dRangeMax;
+                break;
+
+            case hstMining:
+                if (part.hs.iItem == iminingAlienMiner)
+                    pctJam = 70;
+                break;
+
+            case hstSpecialE: {
+                switch (part.hs.iItem) {
+
+                case ispecialEMultiFunctionPod:
+                    pctJam = 90;
+                    break;
+
+                case ispecialEJammer10:
+                case ispecialEJammer20:
+                case ispecialEJammer30:
+                case ispecialEJammer50:
+                    idPlayer = ptok->iplr;
+                    FLookupPart(&part);
+                    idPlayer = -1;
+                    pctJam = 100 - part.pspecial->grAbility;
+                    break;
+
+                case ispecialEEnergyCapacitor:
+                case ispecialEFluxCapacitor:
+                    idPlayer = ptok->iplr;
+                    FLookupPart(&part);
+                    idPlayer = -1;
+
+                    for (i = part.hs.cItem; i > 0; i--) {
+                        int32_t factor = part.pspecial->grAbility + 100;
+                        pctCap = (int32_t)((uint64_t)pctCap * factor / 100);
+                    }
+                    break;
+
+                case ispecialEEnergyDampener:
+                    *pfDampeningField = 1;
+                    break;
+
+                case ispecialETachyonDetector:
+                    ptok->fDetector = 1;
+                    break;
+                }
+                break;
+            }
+
+            case hstSpecialM:
+                if (part.hs.iItem == ispecialMBeamDeflector) {
+                    idPlayer = ptok->iplr;
+                    FLookupPart(&part);
+                    idPlayer = -1;
+
+                    for (i = part.hs.cItem; i > 0; i--) {
+                        int32_t factor = 100 - part.pspecial->grAbility;
+                        pctBeamDef = (int32_t)((uint64_t)pctBeamDef * factor / 100);
+                    }
+                }
+                break;
+            }
+
+            /* ---- apply jam multiplier ---- */
+            if (pctJam < 100) {
+                for (i = part.hs.cItem; i > 0; i--) {
+                    pctHit = (int32_t)((uint64_t)pctHit * pctJam / 100);
+                }
+            }
+
+            /* ---- range + initiative tracking ---- */
+            if (dxyPart != -1) {
+                if (ptok->grobj == 1)
+                    dxyPart++;
+
+                if (dxyMax < 0 || dxyPart < dxyMax)
+                    dxyMax = dxyPart;
+
+                if (dxyLim < dxyPart)
+                    dxyLim = dxyPart;
+
+                pinit[init] = 1;
+
+                if (initMin == -1 || init < initMin)
+                    initMin = init;
+
+                if (initMac < init)
+                    initMac = init;
+            }
+        }
+    }
+
+    /* ---- finalize pctJam ---- */
+    if (pctHit == 10000) {
+        ptok->pctJam = 0;
+    } else {
+        uint32_t q = (pctHit + 50) / 100;
+        uint32_t v = 100 - q;
+        ptok->pctJam = v;
+
+        if (ptok->pctJam > 0x5f)
+            ptok->pctJam = 0x5f;
+    }
+
+    if (ptok->grobj == 1)
+        ptok->pctJam -= ptok->pctJam / 4;
+
+    /* ---- finalize cap / beam def ---- */
+    if (pctCap != 1000) {
+        if (pctCap > 0x9f6)
+            pctCap = 0x9f6;
+
+        ptok->pctCap = pctCap / 10;
+    }
+
+    ptok->pctBeamDef = pctBeamDef / 10;
+
+    /* ---- store nibble fields + init range ---- */
+    ptok->dxyMax = dxyMax & 0xF;
+    ptok->dxyLim = dxyLim & 0xF;
+    ptok->initMin = initMin;
+    ptok->initMac = initMac;
+
+    /* ---- shield clamp ---- */
+    if ((uint32_t)ldp >> 16 == 0)
+        ptok->dpShield = ldp;
+    else
+        ptok->dpShield = 0xffff;
 }
 
 SHDEF *LpshdefFromTok(TOK *ptok) {
@@ -2444,20 +2924,351 @@ int16_t FDamageTok(TOK *ptok, int16_t itok, int32_t *pdpBeam, int32_t dpTorp, ui
     int32_t   dp;
     uint16_t  pctDpNew;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_BATTLE:0x8514 */
+    /* ------------------------------------------------------------
+     * asm: 10f0:81d4..8217
+     * prolog, dp = *pdpBeam, init battle record (8 bytes)
+     * ------------------------------------------------------------ */
+    dp = *pdpBeam;
 
-    /* TODO: implement */
-    return 0;
+    memset(lpbBattleCur, 0, 8);
+    lpbBattleCur[0] = itok;
+    lpbBattleCur[1] = grfWeapon;
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:8218..8303
+     * apply beam damage to shields first (ptok->dpShield is per-ship; total shield = dpShield * csh)
+     * record absorbed shield damage into battlecur+4 (packed)
+     * ------------------------------------------------------------ */
+    if (ptok->dpShield == 0) {
+        if (fShieldsOnly != 0) {
+            return 0;
+        }
+    } else {
+        /* dpOrig = total shield points across the stack */
+        dpOrig = (int32_t)((uint32_t)ptok->dpShield * (uint32_t)ptok->csh);
+
+        if ((uint32_t)dp < (uint32_t)dpOrig) {
+            /* some shields remain */
+            *(uint16_t *)(lpbBattleCur + 4) = WPackLong(dp);
+
+            /* new per-ship shield = (totalShield - dp) / csh */
+            ptok->dpShield = (uint16_t)(((uint32_t)dpOrig - (uint32_t)dp) / (uint32_t)ptok->csh);
+
+            dp = 0;
+        } else {
+            /* shields exhausted */
+            dp -= dpOrig;
+
+            *(uint16_t *)(lpbBattleCur + 4) = WPackLong(dpOrig);
+            ptok->dpShield = 0;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10f0:8304..838d
+     * early-out record if nothing left to do (or shields-only) and no torps
+     * also: if weapon has bit 2 set, OR in 0xC0 into battlecur[1]
+     * ------------------------------------------------------------ */
+    if (((dp == 0) || (fShieldsOnly != 0)) && (dpTorp == 0)) {
+        *(uint16_t *)(lpbBattleCur + 6) = ptok->dv.dp;
+        *pdpBeam = dp;
+
+        if ((lpbBattleCur[1] & bitFTorp) != 0) {
+            lpbBattleCur[1] = (uint8_t)(lpbBattleCur[1] | 0xC0u);
+        }
+
+        lpbBattleCur += 8;
+    } else {
+        /* --------------------------------------------------------
+         * asm: 10f0:838e..83c7
+         * cKillMax = *pcTorp if provided, else INT32_MAX
+         * dpT = total incoming damage (beam+torp) tracked as dpT
+         * -------------------------------------------------------- */
+        if (pcTorp == NULL) {
+            cKillMax = 0x7fffffffL;
+        } else {
+            cKillMax = *pcTorp;
+        }
+
+        dpT = dp + dpTorp;
+
+        ishdef = ptok->ishdef;
+        dpShdef = (int32_t)(uint32_t)LpshdefFromTok(ptok)->hul.dp;
+        dv.dp = ptok->dv.dp;
+
+        /* --------------------------------------------------------
+         * asm: 10f0:83c8..856c
+         * starbase token path (ptok->grobj == 1)
+         * -------------------------------------------------------- */
+        if (ptok->grobj == grobjPlanet) {
+            lppl = LpplFromId(ptok->id);
+
+            /* if already damaged (dv.pctDp != 0), add “extra” effective DP: dpShdef * pctDp / 500 */
+            if (dv.pctDp != 0) {
+                dpT += (int32_t)(((uint32_t)dpShdef * dv.pctDp) / 500u);
+            }
+
+            dp = dpT;
+
+            /* if dp < dpShdef (also preserves the asm’s “(dp < 0) || (dp < 0x10000 && lo(dp) < dpShdef)” shape) */
+            if ((dp < 0) || ((dp < 0x10000L) && ((uint32_t)dp < (uint32_t)dpShdef))) {
+                /* compute new planet starbase pctDp = ceil(dp*500 / dpShdef) with “must-change” tweak */
+                pctDpNew = (uint16_t)(((uint32_t)dp * 500u) / (uint32_t)dpShdef);
+
+                if (lppl->pctDp == pctDpNew) {
+                    /* ensure visible change: increment stored pctDp by 1 (fits the asm’s +0x10 in lStarbase high bits) */
+                    lppl->pctDp = (uint16_t)(lppl->pctDp + 1);
+                } else {
+                    lppl->pctDp = pctDpNew;
+                }
+
+                /* record updated dp% into battlecur dv (keep pctSh low 7 bits, set pctDp high 9 bits) */
+                *(uint16_t *)(lpbBattleCur + 6) = (uint16_t)((*(uint16_t *)(lpbBattleCur + 6) & 0x007Fu) | (uint16_t)(lppl->pctDp << 7));
+
+                fStarbaseDamaged = 1;
+            } else {
+                /* starbase destroyed: set pctDp=500 (=> 500<<7 == 64000) */
+                *(uint16_t *)(lpbBattleCur + 6) = (uint16_t)((*(uint16_t *)(lpbBattleCur + 6) & 0x007Fu) | 64000u);
+
+                /* mark token dead */
+                lpbBattleCur[2] = 1;
+                lpbBattleCur[3] = 0;
+
+                ptok->wFlags &= (uint16_t)~1u; /* clear fActive */
+                ptok->csh = 0;
+
+                fStarbaseDied = 1;
+
+                if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) != raMacintosh) {
+                    /* clear planet fStarbase */
+                    lppl->fStarbase = 0;
+                    KillQueuedShips(lppl);
+                    KillQueuedMassPackets(lppl);
+                }
+            }
+
+            /* if pctDp != 0 in the recorded dv, force it to 100 and copy into ptok->dv */
+            if ((*(uint16_t *)(lpbBattleCur + 6) >> 7) != 0) {
+                *(uint16_t *)(lpbBattleCur + 6) = (uint16_t)((*(uint16_t *)(lpbBattleCur + 6) & 0xFF80u) | 100u);
+                ptok->dv.dp = *(uint16_t *)(lpbBattleCur + 6);
+            }
+
+            *pdpBeam = 0;
+            lpbBattleCur += 8;
+        } else {
+            /* --------------------------------------------------------
+             * asm: 10f0:856d.. (ship token path)
+             * -------------------------------------------------------- */
+
+            /* if mdTactic == 1: clear it and update wFlags */
+            if (ptok->mdTactic == 1) {
+                ptok->mdTactic = 0;
+                ptok->wFlags = (uint16_t)((ptok->wFlags & 0xFC1Fu) | 0x00E0u);
+            }
+
+            lpfl = LpflFromId(ptok->id);
+            cshOrig = ptok->csh;
+
+            /* cshOrigDamaged and ddpOrig derive from dv.{pctSh,pctDp} */
+            if (dv.pctDp == 0) {
+                cshOrigDamaged = 0;
+                ddpOrig = 0;
+            } else {
+                /* cshOrigDamaged = ceil(cshOrig * pctSh / 100), but if result==0 => 1 */
+                cshOrigDamaged = (int16_t)(((uint32_t)cshOrig * dv.pctSh) / 100u);
+                if (cshOrigDamaged == 0) {
+                    cshOrigDamaged = 1;
+                }
+
+                /* ddpOrig = ceil(dpShdef * pctDp / 500), but if result==0 => 1 */
+                ddpOrig = (int32_t)(((uint32_t)dpShdef * dv.pctDp) / 500u);
+                if (ddpOrig == 0) {
+                    ddpOrig = 1;
+                }
+            }
+
+            /* pwLosses = vrgPlrLosses + iplr*16 + ishdef; set 0x8000 */
+            pwLosses = vrgPlrLosses + (uint16_t)ptok->iplr * 16u + (uint16_t)ptok->ishdef;
+            *pwLosses = (uint16_t)(*pwLosses | 0x8000u);
+
+            csh = cshOrig;
+
+            /* --------------------------------------------------------
+             * asm: “kill damaged ships first” loop
+             * cost per kill = dpShdef - ddpOrig (can be <= dpShdef)
+             * -------------------------------------------------------- */
+            if (cshOrigDamaged != 0) {
+                int16_t cshDamagedStart = cshOrigDamaged;
+                int32_t dpPerKillDamaged = dpShdef - ddpOrig;
+
+                csh = cshOrigDamaged;
+                while ((dpPerKillDamaged <= dpT) && (csh != 0) && (cKillMax != 0)) {
+                    dpT -= dpPerKillDamaged;
+                    csh--;
+
+                    cKillMax--;
+
+                    if ((*pwLosses & 0x1FFFu) < 0x1FFFu) {
+                        (*pwLosses)++;
+                    }
+                }
+
+                /* dpPerKillNormal = ddpOrig + (dpShdef - ddpOrig) == dpShdef */
+                ddpOrig += dpPerKillDamaged;
+
+                cshOrigDamaged = csh;
+
+                /* restore total remaining ship count: remaining damaged + undamaged */
+                csh = csh + (cshOrig - cshDamagedStart);
+            }
+
+            /* --------------------------------------------------------
+             * asm: “kill remaining ships” loop using dpShdef cost
+             * -------------------------------------------------------- */
+            while ((ddpOrig <= dpT) && (csh != 0) && (cKillMax != 0)) {
+                dpT -= ddpOrig;
+                csh--;
+
+                cKillMax--;
+
+                if ((*pwLosses & 0x1FFFu) < 0x1FFFu) {
+                    (*pwLosses)++;
+                }
+            }
+
+            if (cKillMax <= 0) {
+                dpT = 0;
+            }
+
+            /* --------------------------------------------------------
+             * asm: compute new pctSh / pctDp depending on leftover dpT and remaining ships
+             * -------------------------------------------------------- */
+            if ((dpT == 0) || (csh == 0)) {
+                if (cshOrigDamaged == 0) {
+                    pctSh = 0;
+                    pctDp = 0;
+                } else {
+                    /* pctSh = ceil(cshOrigDamaged*100 / csh) */
+                    pctSh = (int16_t)(((uint32_t)cshOrigDamaged * 100u + (uint32_t)csh - 1u) / (uint32_t)csh);
+                    pctDp = dv.pctDp;
+                }
+            } else {
+                /* average remaining dp per ship: ceil((dpT + ddpOrig*cshOrigDamaged) / csh) with +csh-1 bias */
+                if (cshOrigDamaged != 0) {
+                    dpT += (int32_t)((uint32_t)ddpOrig * (uint32_t)cshOrigDamaged);
+                    dpT += (csh - 1);
+                }
+
+                dpT = (int32_t)((uint32_t)dpT / (uint32_t)csh);
+                if (dpT == 0) {
+                    dpT = 1;
+                }
+
+                /* pctDp = ceil(dpT*500 / dpShdef), min 1 */
+                pctDp = (int16_t)(((uint32_t)dpT * 500u + (uint32_t)dpShdef - 1u) / (uint32_t)dpShdef);
+                if (pctDp == 0) {
+                    pctDp = 1;
+                }
+
+                pctSh = 100;
+            }
+
+            /* --------------------------------------------------------
+             * asm: record kills, apply KillShips, update dv + fleet dv, compute leftover beam dp
+             * -------------------------------------------------------- */
+            *(uint16_t *)(lpbBattleCur + 2) = (uint16_t)(ptok->csh - csh);
+            if (csh != ptok->csh) {
+                KillShips(ptok, *(int16_t *)(lpbBattleCur + 2), ptok->ishdef, lpfl, 1);
+            }
+
+            if (csh != 0) {
+                if (pctDp > 499) {
+                    pctDp = 499;
+                }
+
+                ptok->dv.pctDp = pctDp;
+                ptok->dv.pctSh = pctSh;
+
+                /* this was the decompiler’s “rgcsh[ishdef+0x10] = dv.dp” alias; real target is rgdv[].dp */
+                lpfl->rgdv[ptok->ishdef].dp = ptok->dv.dp;
+
+                dpT = 0;
+            }
+
+            if (dpTorp < dpT) {
+                *pdpBeam = dpT - dpTorp;
+            } else {
+                *pdpBeam = 0;
+            }
+
+            *(uint16_t *)(lpbBattleCur + 6) = ptok->dv.dp;
+            lpbBattleCur += 8;
+
+            if (pcTorp != NULL) {
+                *pcTorp = cKillMax;
+            }
+        }
+    }
+
+    /* asm: function returns 1 on non-early-exit path */
+    return 1;
 }
 
 void KillShips(TOK *ptok, int16_t cshKill, int16_t ishdef, FLEET *lpfl, int16_t fFallout) {
-    FLEET   flDead;
-    int16_t i;
-    FLEET   flSrc;
-    int16_t csh;
+    FLEET    flDead;
+    int16_t  i;
+    FLEET    flSrc;
+    SHDEF   *lpshdef;
+    uint16_t csh;
 
-    /* TODO: implement */
+    if (cshKill == 0)
+        return;
+
+    if (fFallout) {
+        lpshdef = LpshdefFromTok(ptok);
+        MarkTechsSeen(&lpshdef->hul, (uint16_t)ptok->iplr);
+    }
+
+    flSrc = *lpfl;
+    memset(&flDead, 0, sizeof(FLEET));
+
+    csh = flSrc.rgcsh[ishdef] - cshKill;
+    flDead.rgcsh[ishdef] = cshKill;
+    flSrc.rgcsh[ishdef] = csh;
+    ptok->csh = csh;
+
+    if (csh == 0) {
+        ptok->fActive = 0;
+        for (ishdef = 0; ishdef < cShdefMax && flSrc.rgcsh[ishdef] == 0; ishdef++)
+            ;
+        if (ishdef == cShdefMax) {
+            lpfl->fDead = 1;
+            if (fFallout) {
+                for (i = 0; i < 3; i++)
+                    flDead.rgwtMin[i] = flSrc.rgwtMin[i];
+            }
+        }
+    }
+
+    if (!lpfl->fDead) {
+        flDead.iPlayer = flSrc.iPlayer;
+        // Mark the dead fleet as dead
+        flDead.det = 7;
+        flDead.fDead = 1;
+        FleetTransferCargoBalance(&flSrc, &flDead);
+    }
+
+    if (fFallout) {
+        flDead.iPlayer = flSrc.iPlayer;
+        flDead.pt.x = flSrc.pt.x;
+        flDead.pt.y = flSrc.pt.y;
+        flDead.idPlanet = flSrc.idPlanet;
+        CreateSalvage(&flDead, &lpthBattle);
+    }
+
+    if (!lpfl->fDead) {
+        *lpfl = flSrc;
+    }
 }
 
 void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *rgPlrLosses, int16_t grfPlayer, int16_t cShipsInvolved, int16_t cShdefsInvolved,
@@ -2969,12 +3780,52 @@ void SendBattleMessages(FLEET *lpflBtl, int16_t cplr, int16_t idBtl, uint16_t *r
 
 int16_t FDoesPrimaryTargetTypeExist(TOK *ptok, uint16_t grfAttack) {
     uint16_t mdTarget;
-    int16_t  iplr;
-    int16_t  iplrLook;
     TOK      tok;
     int16_t  itokLook;
 
-    /* TODO: implement */
+    mdTarget = ptok->mdTarget1;
+    if (mdTarget == mdTargetNone)
+        return 0;
+
+    for (itokLook = 0; itokLook < vctok; itokLook++) {
+        if (vrgtok[itokLook].iplr == ptok->iplr)
+            continue;
+        if (((1 << (vrgtok[itokLook].iplr & 0x1F)) & grfAttack) == 0)
+            continue;
+
+        tok = vrgtok[itokLook];
+        if (!tok.fActive)
+            continue;
+
+        switch (mdTarget) {
+        case mdTargetAny:
+            return 1;
+        case mdTargetStarbase:
+            if (tok.grobj == grobjPlanet)
+                return 1;
+            break;
+        case mdTargetArmedShips:
+            if (tok.mdTarget0 == mdTargetArmedShips)
+                return 1;
+            break;
+        case mdTargetBombersFreighters:
+            if (tok.mdTarget0 == mdTargetBombersFreighters || tok.mdTarget0 == mdTargetFreighters)
+                return 1;
+            break;
+        case mdTargetUnarmedShips:
+            if (tok.mdTarget0 > mdTargetBombersFreighters)
+                return 1;
+            break;
+        case mdTargetFuelTransports:
+            if (tok.mdTarget0 == mdTargetFuelTransports)
+                return 1;
+            break;
+        case mdTargetFreighters:
+            if (tok.mdTarget0 == mdTargetFreighters)
+                return 1;
+            break;
+        }
+    }
     return 0;
 }
 

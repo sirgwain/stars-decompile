@@ -1313,15 +1313,44 @@ void UpdatePlayerScores(void) {
 }
 
 void UpdateGuesses(void) {
-    PLANET *lppl;
-    float   pct;
-    PLANET *lpplMac;
-    int32_t l;
+    PLANET  *lppl;
+    float    pct;
+    PLANET  *lpplMac;
+    int32_t  l;
+    uint32_t pop;
+    int16_t  randVal;
+    int32_t  defGuess;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TURN2:0x5377 */
+    FORPLANETS(lppl, lpplMac) {
+        if (lppl->rgwtMin[3] == 0) {
+            lppl->uGuesses = 0;
+        } else {
+            pop = (uint32_t)lppl->rgwtMin[3];
+            if (GetRaceStat((PLAYER *)rgplr + lppl->iPlayer, rsMajorAdv) == raMacintosh) {
+                l = 0;
+            } else {
+                randVal = Random((int16_t)(pop >> 2));
+                l = (int32_t)((pop + (int32_t)randVal - (pop >> 3)) >> 2);
+                if (l > 4090)
+                    l = 4090;
+                else if (l < 1)
+                    l = 1;
+            }
+            lppl->uPopGuess = l & 0xFFF;
 
-    /* TODO: implement */
+            if (lppl->cDefenses == 0) {
+                lppl->uDefGuess = 0;
+            } else {
+                CalcPctSurvive(lppl, &pct, NULL);
+                defGuess = (104 - (int32_t)pct) / 6;
+                if (defGuess < 1)
+                    defGuess = 1;
+                else if (defGuess > 15)
+                    defGuess = 15;
+                lppl->uDefGuess = defGuess;
+            }
+        }
+    }
 }
 
 void MysteryTrader(void) {
@@ -1708,9 +1737,52 @@ int16_t FPacketDecay(THING *lpth, int16_t pctRate) {
     int16_t  i;
     uint16_t wDecay;
     int32_t  lDecay;
+    int16_t  rsResult;
+    uint32_t ulDecay;
 
-    /* TODO: implement */
-    return 0;
+    if (lpth->thp.iDecayRate == 0) {
+        return 0;
+    }
+
+    if (lpth->thp.iDecayRate == 1) {
+        iRate = 10;
+    } else if (lpth->thp.iDecayRate == 2) {
+        iRate = 25;
+    } else if (lpth->thp.iDecayRate == 3) {
+        iRate = 50;
+    }
+
+    rsResult = GetRaceStat(&rgplr[lpth->iplr], rsMajorAdv);
+    if (rsResult == raMassAccel) {
+        iRate = iRate / 2;
+        iRateMin = 5;
+    } else {
+        iRateMin = 10;
+    }
+
+    lDecay = 0;
+    for (i = 0; i < 3; i++) {
+        if (lpth->thp.rgwtMin[i] != 0) {
+            ulDecay = (uint32_t)(uint16_t)lpth->thp.rgwtMin[i] * (uint32_t)iRate * (uint32_t)pctRate / 10000;
+            wDecay = iRateMin;
+            if (iRateMin <= (uint16_t)ulDecay) {
+                wDecay = (uint16_t)ulDecay;
+            }
+            if (lpth->thp.rgwtMin[i] <= (int16_t)wDecay) {
+                wDecay = (uint16_t)lpth->thp.rgwtMin[i];
+            }
+            lpth->thp.rgwtMin[i] = lpth->thp.rgwtMin[i] - wDecay;
+            lDecay += (int32_t)lpth->thp.rgwtMin[i];
+        }
+    }
+
+    if (lDecay == 0) {
+        FreeLpth(lpth);
+        return 1;
+    } else {
+        lpth->thp.wtMax = (int32_t)(lDecay + 9) / 10;
+        return 0;
+    }
 }
 
 void TransferToOthers(void) {

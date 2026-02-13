@@ -356,11 +356,63 @@ int16_t FLookupSelShip(FLEET *pfl) {
 }
 
 int16_t FMatchTarget(FLEET *lpflTarget, int16_t mdTarget, int16_t fExact) {
-    int16_t imd;
-    int16_t ish;
+    int16_t  ish;
+    HULDEF  *pHuldef;
+    uint16_t imdCat;
 
-    /* TODO: implement */
-    return 0;
+    // TODO: build an enum for these imdCat
+    if (mdTarget != mdTargetArmedShips) {
+        if (mdTarget == mdTargetBombersFreighters) {
+            for (ish = 0; ish < 16; ish++) {
+                if (lpflTarget->rgcsh[ish] != 0) {
+                    pHuldef = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef);
+                    imdCat = pHuldef->imdCategory;
+                    if (imdCat == 1 || imdCat == 5)
+                        break;
+                }
+            }
+            return (ish != 16) ? 1 : 0;
+        }
+        if (mdTarget != mdTargetUnarmedShips) {
+            if (mdTarget == mdTargetFuelTransports) {
+                for (ish = 0; ish < cShdefMax; ish++) {
+                    if (lpflTarget->rgcsh[ish] != 0) {
+                        pHuldef = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef);
+                        if (pHuldef->imdCategory == 7)
+                            break;
+                    }
+                }
+                return (ish != 16) ? 1 : 0;
+            }
+            if (mdTarget != mdTargetFreighters) {
+                return fExact ? 0 : 1;
+            }
+            for (ish = 0; ish < cShdefMax; ish++) {
+                if (lpflTarget->rgcsh[ish] != 0) {
+                    pHuldef = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef);
+                    if (pHuldef->imdCategory == 1)
+                        break;
+                }
+            }
+            return (ish != 16) ? 1 : 0;
+        }
+    }
+
+    /* mdTarget == ArmedShips or UnarmedShips: look for armed ship categories (2,3,4) */
+    for (ish = 0; ish < cShdefMax; ish++) {
+        if (lpflTarget->rgcsh[ish] != 0) {
+            pHuldef = LphuldefFromId(rglpshdef[lpflTarget->iPlayer][ish].hul.ihuldef);
+            imdCat = pHuldef->imdCategory;
+            if (imdCat > 1 && imdCat < 5)
+                break;
+        }
+    }
+
+    if (mdTarget == mdTargetArmedShips)
+        return (ish != cShdefMax) ? 1 : 0;
+
+    /* mdTarget == UnarmedShips: return 1 if NO armed ships found */
+    return (ish == cShdefMax) ? 1 : 0;
 }
 
 void ClearFile(int16_t dt) {
@@ -653,16 +705,64 @@ int32_t WtFromLpfl(FLEET *lpfl) {
     return cMass;
 }
 
+#ifdef _WIN32
 void SelectOursAtObject(POINT *ppt) {
-    int16_t id;
-    POINT   pt;
-    int16_t ish;
-    int16_t i;
-    FLEET  *lpfl;
-    SCAN    scan;
+    int16_t    id;
+    STARSPOINT pt;
+    int16_t    ish;
+    int16_t    i;
+    FLEET     *lpfl;
+    SCAN       scan;
 
-    /* TODO: implement */
+    if (ppt->x == -1) {
+        if (ppt->y & 0x8000) {
+            SelectAdjFleet(0, (int16_t)(ppt->y & 0x7FFF));
+            return;
+        }
+        pt = rgptPlan[ppt->y];
+    } else {
+        pt.x = (int16_t)ppt->x;
+        pt.y = (int16_t)ppt->y;
+    }
+
+    id = -1;
+    for (ish = 0; ish < cFleet; ish++) {
+        lpfl = rglpfl[ish];
+        if (lpfl == NULL)
+            break;
+        if (pt.x == lpfl->pt.x && pt.y == lpfl->pt.y) {
+            if (lpfl->iPlayer == idPlayer) {
+                SelectAdjFleet(0, lpfl->id);
+                return;
+            }
+            if (id == -1)
+                id = lpfl->id;
+        }
+    }
+
+    for (i = 0; i < game.cPlanMax; i++) {
+        if (rgptPlan[i].x == pt.x && rgptPlan[i].y == pt.y) {
+            SelectAdjPlanet(0, i);
+            return;
+        }
+    }
+
+    scan.iwp = -1;
+    if (FFindNearestObject(pt, grobjThing, &scan) && scan.grobj == grobjThing && scan.ith != -1 && lpThings[scan.ith].ith == 1 &&
+        lpThings[scan.ith].thp.iWarp == 0) {
+        ChangeScanSel(&scan, 1);
+        {
+            POINT ptScreen = {scan.pt.x, scan.pt.y};
+            FEnsurePointOnScreen(ptScreen, 1);
+        }
+        UpdateWindow(hwndScanner);
+        SendMessage(hwndScanner, WM_CHAR, 0x76, 0);
+    } else {
+        if (id != -1)
+            SelectAdjFleet(0, id);
+    }
 }
+#endif /* _WIN32 */
 
 char *PszGetPlanetName(int16_t id) {
     char *pszPlan;
@@ -1551,7 +1651,38 @@ int16_t FLookupOrbitingXfer(int16_t idPlanet, int16_t iNth, XFER *pxf, int16_t i
     FLEET  *lpfl;
     THING  *lpthMac;
 
-    /* TODO: implement */
+    if (cFleet <= 0)
+        return 0;
+
+    for (i = 0; i < cFleet; i++) {
+        lpfl = rglpfl[i];
+        if (lpfl == NULL)
+            break;
+        if (lpfl->idPlanet == idPlanet && lpfl->id != idSkip && (idSkip == -1 || (lpfl->pt.x == sel.pt.x && lpfl->pt.y == sel.pt.y))) {
+            if (iNth-- == 0) {
+                if (pxf != NULL) {
+                    pxf->fl = *lpfl;
+                    pxf->grobj = grobjFleet;
+                    pxf->id = lpfl->id;
+                }
+                return 1;
+            }
+        }
+    }
+
+    FORTHINGS(lpth, lpthMac) {
+        if (lpth->ith == 1 && lpth->pt.x == sel.pt.x && lpth->pt.y == sel.pt.y) {
+            if (iNth-- == 0) {
+                if (pxf != NULL) {
+                    pxf->th = *lpth;
+                    pxf->grobj = grobjThing;
+                    pxf->id = lpth->idFull;
+                }
+                return 1;
+            }
+        }
+    }
+
     return 0;
 }
 
