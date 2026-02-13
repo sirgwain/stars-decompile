@@ -5,6 +5,7 @@
 #include "enums.h"
 #include "globals.h"
 #include "log.h"
+#include "mdi.h"
 #include "memory.h"
 #include "msg.h"
 #include "parts.h"
@@ -685,8 +686,71 @@ int16_t FDeleteFleet(int16_t idFleet, int16_t grobjSel, int16_t idSel) {
     /* debug symbols */
     /* block (block) @ MEMORY_UTIL:0x2eb7 */
 
-    /* TODO: implement */
-    return 0;
+    for (i = 0; i < cFleet; i++) {
+        lpfl = rglpfl[i];
+        if (lpfl == NULL || lpfl->id == idFleet)
+            break;
+        if (idFleet < lpfl->id)
+            return 0;
+    }
+
+    if (i == cFleet)
+        return 0;
+
+#ifdef _WIN32
+    if (idFleet == sel.fl.id)
+        RedrawScanSel(0, 0);
+#endif
+
+    lpfl->fDead = 1;
+    FleetOrdersChangeTarget(lpfl);
+    FreePl((PL *)lpfl->lpplord);
+    if (lpfl->lpszName != NULL)
+        FreeLp(lpfl->lpszName, htString);
+
+    cFleet--;
+    iPlr = lpfl->iPlayer;
+    idDel = lpfl->id;
+    rgplr[iPlr].cFleet = (rgplr[iPlr].cFleet - 1) & 0xfff;
+
+    if (grobjSel == 0 && lpfl->idPlanet != -1) {
+        lppl = LpplFromId(lpfl->idPlanet);
+        if (lppl != NULL && lppl->iPlayer == idPlayer) {
+            grobjSel = 1;
+            idSel = lpfl->idPlanet;
+        }
+    }
+
+    if (cFleet != i)
+        memmove(&rglpfl[i], &rglpfl[i + 1], (cFleet - i) * sizeof(FLEET *));
+
+    FreeLp(lpfl, htFleets);
+    gd.fFleetLinkValid = 0;
+
+#ifdef _WIN32
+    if (sel.fl.id != -1) {
+        if (i < sel.scan.ifl) {
+            sel.scan.ifl--;
+        } else if (idDel == sel.fl.id) {
+            if (grobjSel == grobjNone) {
+                sel.grobj = grobjNone;
+                sel.scan.grobj = grobjNone;
+                FFindSomethingAndSelectIt();
+                return 1;
+            }
+            sel.grobj = grobjNone;
+            if (grobjSel == 2)
+                SelectAdjFleet(0, idSel);
+            else
+                SelectAdjPlanet(0, idSel);
+        }
+    }
+
+    if (((gd.grBits >> 1) & 1) == 0 && hwndMessage != 0)
+        SetMsgTitle(hwndMessage);
+#endif
+
+    return 1;
 }
 
 int32_t WtFromLpfl(FLEET *lpfl) {

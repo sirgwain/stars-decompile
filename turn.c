@@ -71,20 +71,72 @@ void DoOrders(int16_t fPostMovement) {
 }
 
 void FuelFleets(void) {
-    int16_t j;
-    int32_t cPods;
-    PLANET *lppl;
-    int16_t i;
-    int16_t ifl;
-    FLEET  *lpfl;
-    SHDEF  *lpshdef;
-    int32_t csh;
-    HUL    *lphul;
+    int16_t  j;
+    int32_t  cPods;
+    PLANET  *lppl;
+    int16_t  i;
+    int16_t  ifl;
+    FLEET   *lpfl;
+    SHDEF   *lpshdef;
+    int32_t  csh;
+    HUL     *lphul;
+    int32_t  lFuelGen;
+    uint32_t uFuelPods;
 
     /* debug symbols */
     /* label LChkFuelTransport @ MEMORY_TURN:0x306e */
 
-    /* TODO: implement */
+    for (ifl = 0; ifl < cFleet; ifl++) {
+        lpfl = rglpfl[ifl];
+        if (lpfl == NULL)
+            return;
+
+        if (lpfl->fDead)
+            continue;
+
+        /* Check if orbiting a friendly starbase with fuel capacity */
+        if (lpfl->idPlanet != -1 && lpPlanets[lpfl->idPlanet].fStarbase && lpPlanets[lpfl->idPlanet].iPlayer != -1 &&
+            (lpfl->iPlayer == lpPlanets[lpfl->idPlanet].iPlayer || rgplr[lpPlanets[lpfl->idPlanet].iPlayer].rgmdRelation[lpfl->iPlayer] == 1)) {
+            int16_t iPlanetPlr = lpPlanets[lpfl->idPlanet].iPlayer;
+            HULDEF *lphuldef = LphuldefFromId(rglpshdefSB[iPlanetPlr][lpPlanets[lpfl->idPlanet].isb].hul.ihuldef);
+            if (lphuldef->hul.wtCargoMax != 0) {
+                /* Fill fuel to max */
+                lpfl->rgwtMin[4] = LGetFleetStat(lpfl, grStatFuel);
+                continue;
+            }
+        }
+
+        /* Calculate fuel from fuel pods and fuel transports */
+        lFuelGen = 0;
+        uFuelPods = 0;
+        for (i = 0; i < cShdefMax; i++) {
+            if (lpfl->rgcsh[i] == 0)
+                continue;
+
+            lpshdef = rglpshdef[lpfl->iPlayer];
+            SHDEF *lpsd = &lpshdef[i];
+            j = (int16_t)lpsd->hul.chs;
+            for (j = j - 1; j >= 0; j--) {
+                if (lpsd->hul.rghs[j].grhst == hstSpecialE && lpsd->hul.rghs[j].iItem == ispecialEAntiMatterGenerator) {
+                    uFuelPods += (uint32_t)lpfl->rgcsh[i] * (uint32_t)lpsd->hul.rghs[j].cItem;
+                }
+            }
+
+            /* LChkFuelTransport */
+            if (lpsd->hul.ihuldef == ihuldefFuelTransport || lpsd->hul.ihuldef == ihuldefSuperFuelXport) {
+                lFuelGen += (uint32_t)lpfl->rgcsh[i] * 200;
+            }
+        }
+
+        if (lFuelGen != 0 || uFuelPods != 0) {
+            int32_t lMaxFuel = LGetFleetStat(lpfl, grStatFuel);
+            int32_t lNewFuel = uFuelPods * 50 + lFuelGen + lpfl->rgwtMin[4];
+            if (lNewFuel < lMaxFuel)
+                lpfl->rgwtMin[4] = lNewFuel;
+            else
+                lpfl->rgwtMin[4] = lMaxFuel;
+        }
+    }
 }
 
 int16_t FGenerateTurn(void) {

@@ -767,7 +767,70 @@ void MarkTechsSeen(HUL *lphul, int16_t iplr) {
     int16_t ihs;
     PART    part;
 
-    /* TODO: implement */
+    iplrSav = idPlayer;
+    idPlayer = iplr;
+
+    /* Look up hull part techs */
+    part.hs.grhst = hstHull;
+    part.hs.iItem = (uint8_t)lphul->ihuldef;
+    FLookupPart(&part);
+    for (iTech = 0; iTech < 6; iTech++) {
+        if (part.phul->rgTech[iTech] > (uint8_t)rgTechBattle[iTech])
+            rgTechBattle[iTech] = part.phul->rgTech[iTech];
+    }
+
+    for (ihs = 0; ihs < (int16_t)(uint16_t)lphul->chs; ihs++) {
+        if (lphul->rghs[ihs].cItem == 0)
+            continue;
+
+        part.hs = lphul->rghs[ihs];
+        FLookupPart(&part);
+
+        for (iTech = 0; iTech < 6; iTech++) {
+            if (part.phul->rgTech[iTech] > (uint8_t)rgTechBattle[iTech])
+                rgTechBattle[iTech] = part.phul->rgTech[iTech];
+        }
+
+        iTech = -1;
+        if (part.hs.grhst == hstEngine) {
+            if (part.hs.iItem == iengineEnigmaPulsar)
+                iTech = 9;
+        } else if (part.hs.grhst == hstShield) {
+            if (part.hs.iItem == ishieldLangstonShell)
+                iTech = 2;
+        } else if (part.hs.grhst == hstArmor) {
+            if (part.hs.iItem == iarmorMegaPolyShell)
+                iTech = 3;
+        } else if (part.hs.grhst == hstBeam) {
+            if (part.hs.iItem == ibeamMultiContainedMunition)
+                iTech = 7;
+        } else if (part.hs.grhst == hstTorp) {
+            if (part.hs.iItem == itorpAntiMatterTorpedo)
+                iTech = 6;
+        } else if (part.hs.grhst == hstBomb) {
+            if (part.hs.iItem == ibombHushABoom)
+                iTech = 5;
+        } else if (part.hs.grhst == hstMining) {
+            if (part.hs.iItem == iminingAlienMiner)
+                iTech = 4;
+        } else if (part.hs.grhst == hstSpecialE) {
+            if (part.hs.iItem == ispecialEMultiFunctionPod)
+                iTech = 1;
+        } else if (part.hs.grhst == hstSpecialM) {
+            if (part.hs.iItem == ispecialMMultiCargoPod)
+                iTech = 0;
+            else if (part.hs.iItem == ispecialMJumpGate)
+                iTech = 11;
+        }
+
+        if (iTech != -1 && rgTechTrader[iTech] < 25) {
+            rgTechTrader[iTech] += part.hs.cItem;
+            if (rgTechTrader[iTech] > 25)
+                rgTechTrader[iTech] = 25;
+        }
+    }
+
+    idPlayer = iplrSav;
 }
 
 int16_t CPtsCloakFromLphs(HS *lphs) {

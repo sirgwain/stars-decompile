@@ -8,8 +8,10 @@
 #include "planet.h"
 #include "race.h"
 #include "report.h"
+#include "scan.h"
 #include "ship.h"
 #include "util.h"
+#include "utilgen.h"
 
 /* functions */
 
@@ -318,17 +320,88 @@ int32_t EstFuelUse(FLEET *lpfl, int16_t iOrd, int16_t iWarp, int32_t dTravel, in
 }
 
 void DeleteCurWayPoint(int16_t fBackup) {
-    POINT   pt;
-    POINT   rgpt[3];
-    int16_t cpt;
-    SCAN    scan;
-    int16_t ipt;
-    RECT    rc;
+    int16_t    cpt;
+    STARSPOINT pt;
+    POINT      rgpt[3];
+    SCAN       scan;
+    int16_t    ipt;
+    RECT       rc;
 
     /* debug symbols */
     /* block (block) @ MEMORY_SHIP:0x9dce */
 
-    /* TODO: implement */
+    if (sel.fl.cord < 2 || sel.iwpAct == 0) {
+#ifdef _WIN32
+        MessageBeep(0x40);
+#endif
+        return;
+    }
+
+    if ((grbitScan & 0x80) != 0) {
+        PLORD *lpplord = sel.fl.lpplord;
+        rgpt[0].x = lpplord->rgord[sel.iwpAct].pt.x;
+        rgpt[0].y = lpplord->rgord[sel.iwpAct].pt.y;
+        rgpt[1].x = lpplord->rgord[sel.iwpAct - 1].pt.x;
+        rgpt[1].y = lpplord->rgord[sel.iwpAct - 1].pt.y;
+        if (sel.iwpAct < sel.fl.cord - 1) {
+            cpt = 3;
+            rgpt[2].x = lpplord->rgord[sel.iwpAct + 1].pt.x;
+            rgpt[2].y = lpplord->rgord[sel.iwpAct + 1].pt.y;
+        } else {
+            cpt = 2;
+        }
+    }
+
+#ifdef _WIN32
+    RedrawScanSel(0, 0);
+#endif
+
+    /* Remove current waypoint by shifting orders down */
+    memmove(&sel.fl.lpplord->rgord[sel.iwpAct], &sel.fl.lpplord->rgord[sel.iwpAct + 1], (sel.fl.cord - sel.iwpAct - 1) * sizeof(ORDER));
+    sel.fl.cord--;
+    sel.fl.lpplord->iordMac--;
+
+    int16_t iVar2 = sel.iwpAct - 1;
+
+    /* Check for duplicate adjacent waypoints and remove */
+    if (iVar2 < sel.fl.cord - 1) {
+        STARSPOINT *ptPrev = &sel.fl.lpplord->rgord[iVar2].pt;
+        STARSPOINT *ptNext = &sel.fl.lpplord->rgord[sel.iwpAct].pt;
+        if (ptPrev->x == ptNext->x && ptPrev->y == ptNext->y) {
+            int16_t iNext = sel.iwpAct + 1;
+            int16_t iCur = sel.iwpAct;
+            sel.iwpAct = iVar2;
+            memmove(&sel.fl.lpplord->rgord[iCur], &sel.fl.lpplord->rgord[iNext], (sel.fl.cord - iVar2 - 2) * sizeof(ORDER));
+            sel.fl.cord--;
+            sel.fl.lpplord->iordMac--;
+            iVar2 = sel.iwpAct;
+        }
+    }
+
+    sel.iwpAct = iVar2;
+    if (fBackup == 0 && sel.iwpAct < sel.fl.cord - 1)
+        sel.iwpAct++;
+
+#ifdef _WIN32
+    RedrawScanSel(0, 0);
+#endif
+    FLookupFleet(-1, (FLEET *)&sel.fl);
+
+#ifdef _WIN32
+    STARSPOINT ptWp = sel.fl.lpplord->rgord[sel.iwpAct].pt;
+    FFindNearestObject(ptWp, 0x8f, &scan);
+    sel.iwpAct = -2;
+    ChangeScanSel(&scan, 1);
+#endif
+
+#ifdef _WIN32
+    if ((grbitScan & 0x80) != 0) {
+        for (ipt = 0; ipt < cpt; ipt++)
+            LogicalToScan(&rgpt[ipt]);
+        BoundPoints(&rc, rgpt, cpt);
+        InvalidateRect(hwndScanner, &rc, 1);
+    }
+#endif
 }
 
 int16_t TransferStuff(int16_t id1, int16_t grobj1, int16_t id2, int16_t grobj2, int16_t mdXfer) {

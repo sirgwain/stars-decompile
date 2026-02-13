@@ -63,11 +63,14 @@ def _find_proc(procs: List[Dict[str, Any]], name: str) -> Dict[str, Any]:
     cand = sorted({p.get("name", "") for p in (starts or contains) if p.get("name")})
     if not cand:
         _die(f"proc not found: {name!r}")
-    _die(f"ambiguous proc name {name!r}; candidates: {', '.join(cand[:30])}{'...' if len(cand)>30 else ''}")
+    _die(
+        f"ambiguous proc name {name!r}; candidates: {', '.join(cand[:30])}{'...' if len(cand)>30 else ''}"
+    )
 
 
 def _format_bp(off: int) -> str:
     # off is signed; params are positive, locals negative.
+    off = off - 2
     if off >= 0:
         return f"[BP+{off}]"
     return f"[BP{off}]"  # off already includes '-'
@@ -138,7 +141,9 @@ def _print_locals(locals_: List[Dict[str, Any]]) -> str:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="Print NB09 proc signature + BP-relative locals grouped by block.")
+    ap = argparse.ArgumentParser(
+        description="Print NB09 proc signature + BP-relative locals grouped by block."
+    )
     ap.add_argument("--db", required=True, help="Path to nb09_ghidra_globals.json")
     ap.add_argument("proc", help="Procedure/function name (case-insensitive).")
     args = ap.parse_args(argv)
@@ -162,7 +167,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     typ = p.get("types", {})
 
     addr = str(gh.get("addr", "????:????"))
-    seg, off = _parse_seg_off(addr) if re.fullmatch(r"[0-9A-Fa-f]{4}:[0-9A-Fa-f]{4}", addr) else ("????", 0)
+    seg, off = (
+        _parse_seg_off(addr)
+        if re.fullmatch(r"[0-9A-Fa-f]{4}:[0-9A-Fa-f]{4}", addr)
+        else ("????", 0)
+    )
     segname = segmap.get("segname", "UNKNOWN")
 
     tags = typ.get("tags", [])
