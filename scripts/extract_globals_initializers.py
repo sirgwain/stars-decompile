@@ -26,6 +26,11 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple, Iterable, Any
 
 
+# If true, expand anonymous-union raw aliases into per-bitfield designated initializers
+# when a matching bitfield layout was parsed from types.h.
+EMIT_BITFIELDS = False
+
+
 # ----------------------------
 # Type parsing (types.h)
 # ----------------------------
@@ -38,10 +43,39 @@ class FieldDef:
 
 
 @dataclass(frozen=True)
+class BitfieldDef:
+    name: str
+    width: int
+    shift: int
+
+
+@dataclass(frozen=True)
+class BitfieldGroupDef:
+    """Bitfield layout for a raw scalar alias at a struct offset.
+
+    This is primarily for Stars!'s common pattern:
+
+        union {
+            struct { uint16_t a:4; uint16_t b:4; ... };
+            uint16_t wRaw_0000;
+        }; /* +0x0000 */
+
+    When emitting initializers, we can either set the raw scalar alias (wRaw_0000)
+    or optionally expand and set the named bitfields.
+    """
+
+    offset: int
+    raw_name: str
+    raw_type: str
+    bits: Tuple[BitfieldDef, ...]
+
+
+@dataclass(frozen=True)
 class StructDef:
     name: str
     size: int
     fields: Tuple[FieldDef, ...]
+    bitfield_groups: Tuple[BitfieldGroupDef, ...] = ()
 
 
 def _strip_c_comments(s: str) -> str:
@@ -56,6 +90,11 @@ def parse_types_h_structs(types_h_path: str) -> Dict[str, StructDef]:
 
     We rely on per-field offset comments in types.h like:  `/* +0x0036 */`.
     This matches the format emitted by your nb09 struct dumping.
+
+    Important: many Stars! structs use anonymous unions/bitfields at a given offset,
+    and the *only* initializer-relevant member is the raw scalar alias (e.g. wRaw_0000).
+    We therefore treat an anonymous `union { ... } ; /* +0xOFF */` as a field at +0xOFF,
+    selecting the best scalar member inside the union (preferring names like wRaw_*/lRaw_*).
     """
     txt = open(types_h_path, "r", encoding="utf-8", errors="replace").read()
 
@@ -68,10 +107,116 @@ def parse_types_h_structs(types_h_path: str) -> Dict[str, StructDef]:
         re.S,
     )
 
+    # Simple fields that carry their own offset comment.
     field_re = re.compile(
         r"^\s*(?P<decl>[^;]+?)\s*;\s*/\*\s*\+0x(?P<off>[0-9a-fA-F]+)\s*\*/\s*$",
         re.M,
     )
+
+    # Anonymous unions that carry a trailing offset comment on the union itself.
+    union_re = re.compile(
+        r"^\s*union\s*\{(?P<body>.*?)\}\s*;\s*/\*\s*\+0x(?P<off>[0-9a-fA-F]+)\s*\*/\s*$",
+        re.S | re.M,
+    )
+
+    # Bitfield member lines inside `struct { ... }` within a union, e.g.
+    #   uint16_t foo : 4;
+    bitfield_line_re = re.compile(
+        r"^\s*(?P<type>[A-Za-z_][\w\s]*?)\s+(?P<name>[A-Za-z_][\w]*?)\s*:\s*(?P<w>\d+)\s*;\s*$",
+        re.M,
+    )
+
+    # Match a `struct { ... };` inside a union body.
+    union_struct_re = re.compile(r"struct\s*\{(?P<body>.*?)\}\s*;", re.S)
+
+    # Scalar member decl inside union body: "uint16_t wRaw_0000;"
+    union_member_re = re.compile(
+        r"^\s*(?P<type>[A-Za-z_][\w\s]*?)\s+(?P<name>[A-Za-z_]\w*)\s*;\s*$",
+        re.M,
+    )
+
+    def _pick_union_scalar_member(ubody: str) -> Optional[Tuple[str, str]]:
+        ubody_nc = _strip_c_comments(ubody)
+        best: Optional[Tuple[int, int, str, str]] = None  # (score, size, type, name)
+        for mm in union_member_re.finditer(ubody_nc):
+            c_type = " ".join(mm.group("type").split()).strip()
+            nm = mm.group("name").strip()
+
+            # Skip obvious non-scalars / unsupported.
+            if ":" in c_type or ":" in nm:
+                continue
+            if "[" in c_type or "[" in nm:
+                continue
+            if "(" in c_type or "(" in nm:
+                continue
+
+            s = sizeof_ctype(c_type)
+            if not s:
+                # We only want raw primitive aliases for init purposes.
+                continue
+            sz, _signed = s
+
+            score = 0
+            if re.match(r"^(wRaw_|lRaw_|dwRaw_|grBits|wRaw|lRaw|dwRaw)", nm):
+                score += 100
+            if "Raw" in nm or "raw" in nm:
+                score += 50
+            # Prefer wider scalars if multiple exist.
+            score += sz
+
+            cand = (score, sz, c_type, nm)
+            if best is None or cand > best:
+                best = cand
+        if best is None:
+            return None
+        _score, _sz, c_type, nm = best
+        return (c_type, nm)
+
+    def _pick_union_bitfields(ubody: str, raw_type: str) -> Optional[Tuple[BitfieldDef, ...]]:
+        """If the union body contains a `struct { <bitfields> };`, return its bit layout.
+
+        We assume standard C bitfield packing for an unsigned raw scalar alias:
+        fields are allocated from LSB upward in declaration order within the
+        underlying type unit. This matches how the Stars! structs were dumped.
+        """
+        raw_sz = sizeof_ctype(raw_type)
+        if not raw_sz:
+            return None
+        raw_bytes, _signed = raw_sz
+        raw_bits = raw_bytes * 8
+
+        ubody_nc = _strip_c_comments(ubody)
+        best_bits: Optional[Tuple[BitfieldDef, ...]] = None
+
+        for sm in union_struct_re.finditer(ubody_nc):
+            sb = sm.group("body")
+            shift = 0
+            bits: List[BitfieldDef] = []
+            ok = True
+            for lm in bitfield_line_re.finditer(sb):
+                t = " ".join(lm.group("type").split()).strip()
+                # If the bitfield base type doesn't match the raw alias width, skip.
+                tsz = sizeof_ctype(t)
+                if not tsz or tsz[0] * 8 != raw_bits:
+                    ok = False
+                    break
+                name = lm.group("name").strip()
+                w = int(lm.group("w"))
+                if w <= 0:
+                    continue
+                if shift + w > raw_bits:
+                    ok = False
+                    break
+                bits.append(BitfieldDef(name=name, width=w, shift=shift))
+                shift += w
+
+            if ok and bits:
+                # Prefer the struct that covers the most bits (typically the full word).
+                cand = tuple(bits)
+                if best_bits is None or sum(b.width for b in cand) > sum(b.width for b in best_bits):
+                    best_bits = cand
+
+        return best_bits
 
     out: Dict[str, StructDef] = {}
     for m in struct_re.finditer(txt):
@@ -80,11 +225,15 @@ def parse_types_h_structs(types_h_path: str) -> Dict[str, StructDef]:
         name = m.group(3)
 
         fields: List[FieldDef] = []
+        bfgroups: List[BitfieldGroupDef] = []
+
+        # 1) Normal fields with explicit offsets.
         for fm in field_re.finditer(body):
             decl = fm.group("decl").strip()
             off = int(fm.group("off"), 16)
 
-            # Skip unions/anonymous structs/bitfields/function pointers.
+            # Skip unions/anonymous structs/bitfields/function pointers on this path;
+            # unions are handled separately below.
             if decl.startswith("union") or decl.startswith("struct"):
                 continue
             if ":" in decl:
@@ -109,9 +258,31 @@ def parse_types_h_structs(types_h_path: str) -> Dict[str, StructDef]:
 
             fields.append(FieldDef(name=field_name, c_type=field_type, offset=off))
 
-        out[name] = StructDef(name=name, size=size, fields=tuple(sorted(fields, key=lambda f: f.offset)))
+        # 2) Anonymous unions with a union-level offset comment: choose scalar raw alias.
+        for um in union_re.finditer(body):
+            uoff = int(um.group("off"), 16)
+            pick = _pick_union_scalar_member(um.group("body"))
+            if not pick:
+                continue
+            utype, uname = pick
+            if not any(f.name == uname and f.offset == uoff for f in fields):
+                fields.append(FieldDef(name=uname, c_type=utype, offset=uoff))
+
+            # Also capture the bitfield layout (if any) so we can optionally emit
+            # designated initializers for the bitfields instead of the raw alias.
+            b = _pick_union_bitfields(um.group("body"), utype)
+            if b:
+                bfgroups.append(BitfieldGroupDef(offset=uoff, raw_name=uname, raw_type=utype, bits=b))
+
+        out[name] = StructDef(
+            name=name,
+            size=size,
+            fields=tuple(sorted(fields, key=lambda f: f.offset)),
+            bitfield_groups=tuple(bfgroups),
+        )
 
     return out
+
 
 
 # Backwards-compat alias (some earlier iterations used a different name).
@@ -443,6 +614,9 @@ def format_char_array_as_c_string(bs: bytes) -> Optional[str]:
 def format_struct_initializer(sd: StructDef, bs: bytes, structs: Dict[str, StructDef], _depth: int = 0) -> str:
     parts: List[str] = []
     fields = list(sd.fields)
+    bf_groups: Dict[Tuple[int, str], BitfieldGroupDef] = {
+        (g.offset, g.raw_name): g for g in sd.bitfield_groups
+    }
     for idx, f in enumerate(fields):
         # Prefer computing the field size from its declared type. This is important
         # because our simple types.h parser intentionally skips bitfields and some
@@ -463,6 +637,22 @@ def format_struct_initializer(sd: StructDef, bs: bytes, structs: Dict[str, Struc
 
         field_bs = bs[f.offset:]
         base, dims = parse_array_dims(f.c_type)
+
+        # Optional: expand a raw alias field (e.g. wRaw_0000) into named bitfields.
+        if EMIT_BITFIELDS and not dims:
+            g = bf_groups.get((f.offset, f.name))
+            if g is not None:
+                raw_v = _unpack_primitive(field_region, base)
+                if raw_v is not None:
+                    for b in g.bits:
+                        # Common nb09 dump names for padding.
+                        if b.name.startswith("unused") or b.name.startswith("pad"):
+                            continue
+                        mask = (1 << b.width) - 1
+                        val = (raw_v >> b.shift) & mask
+                        if val != 0:
+                            parts.append(f".{b.name} = {val}")
+                    continue
 
         # For char[N], only emit a string literal for likely-string fields.
         if base == "char" and dims and len(dims) == 1:
@@ -573,8 +763,16 @@ def main() -> int:
     ap.add_argument("--segments", required=True, help="segments.csv exported from Ghidra")
     ap.add_argument("--globals", required=True, help="nb09_ghidra_globals.json")
     ap.add_argument("--types", default="types.h", help="types.h used to decode struct layouts")
+    ap.add_argument(
+        "--bitfields",
+        action="store_true",
+        help="Emit named bitfield designated initializers when a matching anonymous-union layout is known",
+    )
     ap.add_argument("--out", required=True, help="Output C file")
     args = ap.parse_args()
+
+    global EMIT_BITFIELDS
+    EMIT_BITFIELDS = bool(args.bitfields)
 
     seg_ranges_by_seg = load_seg_ranges(args.segments)
     ne_segs = load_ne_segment_table(args.exe)

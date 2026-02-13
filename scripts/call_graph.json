@@ -132,7 +132,7 @@
         "MessageWndProc",
         "PlanetWndProc",
         "PopupWndProc",
-        "ReportDlg",
+        "ReportWndProc",
         "ResearchDlg",
         "RestoreSelection",
         "ScoreXDlg",
@@ -180,7 +180,7 @@
         "HostTimerProc",
         "LphbAlloc",
         "LphbReAlloc",
-        "MsgDlg",
+        "SerialDlg",
         "NewGameDlg2",
         "NewPasswordDlg",
         "PasswordDlg",
@@ -847,7 +847,7 @@
         "GetIniWinRc",
         "HostModeDialog",
         "MessageWndProc",
-        "MsgDlg",
+        "SerialDlg",
         "NewGameDlg",
         "NewGameDlg2",
         "NewGameWizard",
@@ -3120,7 +3120,7 @@
         "Draw3dFrame",
         "_strlen"
       ],
-      "called_by": ["ReportDlg"],
+      "called_by": ["ReportWndProc"],
       "is_leaf": false,
       "depth": -1
     },
@@ -3808,7 +3808,7 @@
     "DxReportColHdr": {
       "addr": "1108:305e",
       "calls": ["CchGetString", "GetTextExtent"],
-      "called_by": ["DrawReport", "ReportColumnPopup", "ReportDlg"],
+      "called_by": ["DrawReport", "ReportColumnPopup", "ReportWndProc"],
       "is_leaf": false,
       "depth": 2
     },
@@ -4093,7 +4093,7 @@
         "TransferStuff",
         "__aFulshr"
       ],
-      "called_by": ["FHandleKey", "ReportDlg"],
+      "called_by": ["FHandleKey", "ReportWndProc"],
       "is_leaf": false,
       "depth": -1
     },
@@ -6369,7 +6369,7 @@
         "__aFlshr",
         "__aFulmul"
       ],
-      "called_by": ["FrameWndProc", "MessageWndProc", "MsgDlg"],
+      "called_by": ["FrameWndProc", "MessageWndProc", "SerialDlg"],
       "is_leaf": false,
       "depth": 1
     },
@@ -7010,7 +7010,7 @@
         "CommandHandler",
         "InitializeMenu",
         "RefitFrameChildren",
-        "ReportDlg",
+        "ReportWndProc",
         "RestoreGameState",
         "SaveGameState",
         "TutorDlg"
@@ -9346,7 +9346,7 @@
       "is_leaf": false,
       "depth": -1
     },
-    "MsgDlg": {
+    "SerialDlg": {
       "addr": "1030:8f68",
       "calls": [
         "AlertSz",
@@ -10198,7 +10198,7 @@
         "HostTimerProc",
         "LphbAlloc",
         "LphbReAlloc",
-        "MsgDlg",
+        "SerialDlg",
         "NewGameDlg2",
         "NewPasswordDlg",
         "PasswordDlg",
@@ -11342,11 +11342,11 @@
         "_strcat",
         "_strcpy"
       ],
-      "called_by": ["ReportDlg"],
+      "called_by": ["ReportWndProc"],
       "is_leaf": false,
       "depth": 5
     },
-    "ReportDlg": {
+    "ReportWndProc": {
       "addr": "1108:0018",
       "calls": [
         "AdvanceTutor",
@@ -11834,7 +11834,7 @@
     "SetHScrollBar": {
       "addr": "1108:09e8",
       "calls": ["GetClientRect", "GetSystemMetrics", "SetScrollPos", "SetScrollRange", "SetWindowPos"],
-      "called_by": ["ReportColumnPopup", "ReportDlg"],
+      "called_by": ["ReportColumnPopup", "ReportWndProc"],
       "is_leaf": true,
       "depth": 0
     },
@@ -12283,7 +12283,7 @@
     "SortReportCache": {
       "addr": "1108:589c",
       "calls": ["CBattles", "__fmemcpy", "_qsort"],
-      "called_by": ["InvalidateReport", "ReportColumnPopup", "ReportDlg"],
+      "called_by": ["InvalidateReport", "ReportColumnPopup", "ReportWndProc"],
       "is_leaf": false,
       "depth": 1
     },
@@ -12354,7 +12354,7 @@
         "FindDlg",
         "HostModeDialog",
         "MergeFleetsDlg",
-        "MsgDlg",
+        "SerialDlg",
         "NewGameDlg",
         "NewGameDlg2",
         "NewGameDlg3",
@@ -12370,7 +12370,7 @@
         "RelationsDlg",
         "RenameDlg",
         "RenameZipDlg",
-        "ReportDlg",
+        "ReportWndProc",
         "ResearchDlg",
         "ScoreXDlg",
         "ShipCommandProc",
@@ -13531,7 +13531,7 @@
       "QueueAiStarbases",
       "QuickBuildDefenses",
       "RemoveIshdefFromAllQueues",
-      "ReportDlg",
+      "ReportWndProc",
       "ResearchDlg",
       "RestoreSelection",
       "SatisfyOrders",
@@ -14094,7 +14094,7 @@
       "FileError",
       "LphbAlloc",
       "LphbReAlloc",
-      "MsgDlg",
+      "SerialDlg",
       "PasswordDlg",
       "PrintMapDlg",
       "PszGetMessageN",

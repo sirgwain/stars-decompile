@@ -137,6 +137,7 @@ typedef enum HullSlotType {
     hstTerra = 0x2000,
     hstHull = 0x4000,
     hstPlanetary = 0x8000,
+    hstWeapon = hstTorp | hstBeam,
 } HullSlotType;
 
 typedef enum HullDef {
@@ -715,5 +716,22 @@ typedef enum MdTarget {
     mdTargetFuelTransports = 6,    /* "Fuel Transports" */
     mdTargetFreighters = 7,        /* "Freighters" */
 } MdTarget;
+
+typedef enum BattleTactic {
+    mdTacticDisengage = 0,             /* "Disengage" */
+    mdTacticDisengageIfChallenged = 1, /* "Disengage if challenged" */
+    mdTacticMinDamageToSelf = 2,       /* "Minimize damage to self" */
+    mdTacticMaxNetDamage = 3,          /* "Maximize net damage" */
+    mdTacticMaxDamageRatio = 4,        /* "Maximize damage ratio" */
+    mdTacticMaxDamage = 5,             /* "Maximize damage" */
+} BattleTactic;
+
+typedef enum GrfWeapon {
+    bitFBeamLow = 0x0001,
+    bitFBeamHigh = 0x0002,
+    bitFTorp = 0x0004,
+    bitFMissile = 0x0008,
+    bitFDeflected = 0x0080,
+} GrfWeapon;
 
 #endif /* ENUMS_H_ */

@@ -1638,52 +1638,52 @@ done: /* asm: 10b0:4f35 */
 }
 
 int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit) {
-    int32_t  d2Closest;
-    int16_t  rgishInc[16];
-    int16_t  dTravel;
-    POINT    ptAct;
-    int16_t  iWarp;
-    POINT    ptDst;
-    int16_t  dy;
-    int32_t  d2;
-    int16_t  j;
-    int16_t  dEnd;
-    FLEET    flSrc;
-    int32_t  dpsh;
-    int16_t  cshT;
-    int32_t  dmgReduce;
-    int32_t  dmgToApply;
-    int16_t  i;
-    THING   *lpth;
-    int16_t  dmgExtra;
-    int16_t  cshDamaged;
-    int16_t  fMineExpert;
-    POINT    ptSrc;
-    int16_t  iPlayer;
-    int16_t  cFields;
-    int16_t  dStart;
-    FLEET    flDead;
-    THING   *lpthMac;
-    int32_t  csh;
-    int16_t  rgi[3];
-    int16_t  pct;
-    int32_t  dmgTot;
-    int16_t  cshDead;
-    int16_t  rgcField[3];
-    int16_t  raMajor;
-    int16_t  dx;
-    int32_t  dpShield;
-    int16_t  iType;
-    int16_t  rgFieldE[3][8];
-    THING   *lpthClosest;
-    int16_t  cishInc;
-    THING   *lpthSalvage;
-    int16_t  fHasRamScoop;
-    int16_t  dmgPer;
-    int16_t  rgFieldS[3][8];
-    int16_t  cEngines;
-    uint16_t ibit; /* stack-overlap with cEngines per NB09 (block-local in asm) */
-    int32_t  dmgPerShip;
+    int32_t    d2Closest;
+    int16_t    rgishInc[16];
+    int16_t    dTravel;
+    STARSPOINT ptAct;
+    int16_t    iWarp;
+    STARSPOINT ptDst;
+    int16_t    dy;
+    int32_t    d2;
+    int16_t    j;
+    int16_t    dEnd;
+    FLEET      flSrc;
+    int32_t    dpsh;
+    int16_t    cshT;
+    int32_t    dmgReduce;
+    int32_t    dmgToApply;
+    int16_t    i;
+    THING     *lpth;
+    int16_t    dmgExtra;
+    int16_t    cshDamaged;
+    int16_t    fMineExpert;
+    STARSPOINT ptSrc;
+    int16_t    iPlayer;
+    int16_t    cFields;
+    int16_t    dStart;
+    FLEET      flDead;
+    THING     *lpthMac;
+    int32_t    csh;
+    int16_t    rgi[3];
+    int16_t    pct;
+    int32_t    dmgTot;
+    int16_t    cshDead;
+    int16_t    rgcField[3];
+    int16_t    raMajor;
+    int16_t    dx;
+    int32_t    dpShield;
+    int16_t    iType;
+    int16_t    rgFieldE[3][8];
+    THING     *lpthClosest;
+    int16_t    cishInc;
+    THING     *lpthSalvage;
+    int16_t    fHasRamScoop;
+    int16_t    dmgPer;
+    int16_t    rgFieldS[3][8];
+    int16_t    cEngines;
+    uint16_t   ibit; /* stack-overlap with cEngines per NB09 (block-local in asm) */
+    int32_t    dmgPerShip;
 
     /* ------------------------------------------------------------
      * asm: 10b0:4f60..  prologue / init locals
@@ -1750,7 +1750,7 @@ int16_t FTravelThroughMineFields(FLEET *lpfl, int16_t *pdTravel, THING *lpthHit)
         for (lpth = lpThings; lpth < lpthMac; ++lpth) {
             if (lpth->iplr != iPlayer && lpth->ith == 0 && rgplr[lpth->iplr].rgmdRelation[iPlayer] != 1) {
 
-                POINT ptL1, ptL2, ptC;
+                STARSPOINT ptL1, ptL2, ptC;
                 ptL1 = ptSrc;
                 ptL2 = ptDst;
                 ptC.x = lpth->pt.x;

@@ -3,7 +3,9 @@
 
 #include "build.h"
 #include "globals.h"
+#include "memory.h"
 #include "parts.h"
+#include "planet.h"
 #include "race.h"
 #include "report.h"
 #include "ship.h"
@@ -939,7 +941,38 @@ void RemoveIshdefFromAllQueues(int16_t ishdef, int16_t fSpaceDocks) {
     PLANET *lpplMac;
     PROD   *lpprod;
 
-    /* TODO: implement */
+    FORPLANETS(lppl, lpplMac) {
+        if (lppl->lpplprod != NULL &&
+            lppl->lpplprod->iprodMac != 0 &&
+            lppl->iPlayer == idPlayer &&
+            lppl->fStarbase &&
+            (!fSpaceDocks || rglpshdefSB[idPlayer][lppl->isb].hul.ihuldef == (ihuldefSBSpaceDock + ihuldefCount))) {
+
+            iDst = 0;
+            FORPROD(lppl->lpplprod, lpprod, iprod) {
+                if (lpprod->grobj != grobjFleet || lpprod->iItem != ishdef) {
+                    if (iDst != iprod) {
+                        lppl->lpplprod->rgprod[iDst].dwRaw_0000 = lpprod->dwRaw_0000;
+                    }
+                    iDst++;
+                }
+            }
+
+            if (iDst == 0) {
+                FreePl((PL *)lppl->lpplprod);
+                lppl->lpplprod = NULL;
+            } else if (iDst != iprod) {
+                lppl->lpplprod->iprodMac = (uint8_t)iDst;
+            }
+        }
+    }
+
+    if (sel.grobj == grobjPlanet && sel.pl.lpplprod != NULL) {
+        FLookupPlanet(sel.pl.id, &sel.pl);
+#ifdef _WIN32
+        FillPlanetProdLB(hwndPlanetProdLB, sel.pl.lpplprod, NULL);
+#endif
+    }
 }
 
 int32_t LFuelUseToWaypoint(FLEET *lpfl, int16_t iwp, int16_t fMaxCargo) {

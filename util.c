@@ -1,6 +1,7 @@
 #include <limits.h>
 #include <stdint.h>
 
+#include "battle.h"
 #include "enums.h"
 #include "globals.h"
 #include "log.h"
@@ -406,8 +407,52 @@ int32_t LComputePower(SHDEF *lpshdef) {
     int32_t dp;
     PART    part;
 
-    /* TODO: implement */
-    return 0;
+    for (ihs = 0; ihs < lpshdef->hul.chs; ihs++) {
+        part.hs = lpshdef->hul.rghs[ihs];
+        if (part.hs.cItem == 0)
+            continue;
+
+        if (FLookupPart(&part)) {
+            switch (part.hs.grhst) {
+            case hstBeam:
+                dp = (long)part.pbeam->dp * part.hs.cItem * (part.pbeam->dRangeMax + 3) / 4L;
+
+                if (part.pbeam->grfAbilities & 1) // Sapper
+                    dp /= 3;
+
+                dpBeams += dp;
+                break;
+
+            case hstTorp:
+                dpTorps += (long)part.ptorp->dp * part.hs.cItem * (part.ptorp->dRangeMax - 2) / 2;
+                break;
+            case hstBomb:
+                dpBombs += (part.pbomb->dDmgCol + part.pbomb->dDmgBldg) * part.hs.cItem * 2;
+                break;
+            case hstSpecialE:
+                switch (part.hs.iItem) {
+                case ispecialEEnergyCapacitor:
+                case ispecialEFluxCapacitor:
+                    for (i = (int)part.hs.cItem; i > 0; i--)
+                        pctCap = pctCap * (100L + part.pspecial->grAbility) / 100L;
+                    break;
+                }
+                break;
+            }
+        }
+    }
+
+    if (pctCap != 1000) {
+        pctCap /= 10;
+        if (pctCap > 255)
+            pctCap = 255;
+        dpBeams = dpBeams * pctCap / 100;
+    }
+
+    dSpeed = SpdOfShip(NULL, 0, NULL, fFalse, lpshdef);
+    dpBeams += dpBeams * (dSpeed - 4) / 10;
+
+    return (dpBombs + dpBeams + dpTorps);
 }
 
 char *PszGetFleetName(int16_t id) {
@@ -1201,11 +1246,42 @@ int16_t GetPlanetScannerRange(PLANET *lppl, int16_t *pDeep) {
     int16_t dRange;
     PART    part;
 
-    /* debug symbols */
-    /* label LFinishUp @ MEMORY_UTIL:0x4def */
+    iPlrSav = idPlayer;
+    idPlayer = lppl->iPlayer;
 
-    /* TODO: implement */
-    return 0;
+    if (pDeep != NULL) {
+        *pDeep = 0;
+    }
+
+    if (GetRaceStat(&rgplr[lppl->iPlayer], rsMajorAdv) == raMacintosh) {
+        dRange = (int16_t)(int32_t)sqrt((double)((uint32_t)lppl->rgwtMin[3] * 10));
+        if (GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) == 0) {
+            if (pDeep != NULL && lppl->fStarbase && rglpshdefSB[lppl->iPlayer][lppl->isb].hul.ihuldef > (ihuldefSBSpaceStation + ihuldefCount)) {
+                *pDeep = dRange / 2;
+            }
+        } else {
+            dRange = (int16_t)((int32_t)dRange * 1412 / 1000);
+            if (pDeep != NULL) {
+                *pDeep = 0;
+            }
+        }
+    } else {
+        if (lppl->iScanner == iNoScanner) {
+            dRange = 0;
+        } else {
+            LookupBestPlanetaryScanner(&part);
+            if (pDeep != NULL && part.pscanner->dRange < 0) {
+                *pDeep = -part.pscanner->dRange >> 1;
+            }
+            dRange = abs(part.pscanner->dRange);
+            if (GetRaceGrbit(&rgplr[idPlayer], ibitRaceNoAdvScanner) != 0) {
+                dRange = dRange << 1;
+            }
+        }
+    }
+
+    idPlayer = iPlrSav;
+    return dRange;
 }
 
 FLEET *LpflNew(int16_t iPlr, int16_t idPl) {

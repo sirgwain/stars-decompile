@@ -991,7 +991,7 @@ MDI_LNop:
     } else {
         szWork[200] = '\x01';
     }
-    local_16 = (undefined1[4])MakeProcInstance(MsgDlg, hInst);
+    local_16 = (undefined1[4])MakeProcInstance(SerialDlg, hInst);
     hWndParent = hwndTitle;
     if (hwndTitle == 0) {
         hWndParent = hwndFrame;

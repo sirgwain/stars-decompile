@@ -7,7 +7,10 @@
 #include "planet.h"
 #include "produce.h"
 #include "race.h"
+#include "report.h"
+#include "ship.h"
 #include "ship2.h"
+#include "tutor.h"
 #include "util.h"
 #include "utilgen.h"
 
@@ -1278,7 +1281,107 @@ void ChangeMainObjSel(int16_t grobjNew, int16_t iObjSel) {
     int16_t i;
     FLEET  *lpfl;
 
-    /* TODO: implement */
+    idSkip = -1;
+    fSameType = (grobjNew == sel.grobj);
+
+    if (fAi && fSameType && iObjSel == sel.id)
+        return;
+
+    InvalidateReport(sel.grobj != grobjPlanet, 0);
+
+    if (grobjNew == grobjPlanet) {
+        InvalidateReport(0, 0);
+        if (!FLookupPlanet(iObjSel, &sel.pl))
+            return;
+
+        sel.pt.x = rgptPlan[iObjSel].x;
+        sel.pt.y = rgptPlan[iObjSel].y;
+        sel.scan.iwp = -1;
+        sel.iwpAct = -1;
+
+        for (i = 0; i < cFleet; i++) {
+            lpfl = rglpfl[i];
+            if (lpfl == NULL || (lpfl->idPlanet == iObjSel && lpfl->iPlayer == idPlayer))
+                break;
+        }
+
+        if (i == cFleet) {
+            sel.fl.id = -1;
+            sel.grobjFull = grobjPlanet;
+        } else {
+            FDupFleet(lpfl, &sel.fl);
+            sel.grobjFull = grobjFleet | grobjPlanet;
+        }
+
+        if (!fAi) {
+            FillPlanetProdLB(0, 0, 0);
+            SendMessage(hwndPlanetProdLB, CB_GETCURSEL, 0, 0);
+        }
+    } else {
+        InvalidateReport(1, 0);
+        if (!FLookupFleet(iObjSel, &sel.fl))
+            return;
+
+        sel.pt.x = sel.fl.pt.x;
+        sel.pt.y = sel.fl.pt.y;
+
+        if (sel.fl.idPlanet == -1 || (sel.fl.idPlanet != sel.pl.id && !FLookupPlanet(sel.fl.idPlanet, &sel.pl))) {
+            sel.pl.id = -1;
+        }
+
+        sel.grobjFull = (sel.pl.id != -1) | grobjFleet;
+        sel.iwpAct = 0;
+
+        if (!fAi) {
+            FillOrdersLB();
+            FillFleetCompLB();
+            FillBattleDD(sel.fl.iplan + 1);
+            idSkip = iObjSel;
+            SendMessage(rghwndOrderDD[0], CB_SETCURSEL, sel.fl.lpplord[2].iordMax & 0xf, 0);
+        }
+    }
+
+    sel.grobj = grobjNew;
+    sel.id = iObjSel;
+    gd.fSetMassMode = 0;
+    gd.fSetRouteMode = 0;
+
+    if (!fAi) {
+        if (!fSameType) {
+            for (i = 0; i < 13; i++)
+                ShowWindow(rghwndBtn[i], 0);
+            for (i = 0; i < 3; i++)
+                ShowWindow(rghwndOrderDD[i], 0);
+            ShowWindow(hwndOrderED, 0);
+            ShowWindow(hwndShipDD, 0);
+            ShowWindow(hwndBattleDD, 0);
+            ShowWindow(hwndShipLB, 0);
+            ShowWindow(hwndFleetCompLB, 0);
+            ShowWindow(hwndPlanetProdLB, 0);
+            ShowWindow(hwndRepCB, 0);
+            for (i = 0; i < 19; i++) {
+                rgrcRef[i].bottom = -6;
+                rgrcRef[i].top = -5;
+            }
+        }
+
+        FillShipDD(idSkip);
+
+        if (!fSameType) {
+            InvalidateRect(hwndPlanet, NULL, TRUE);
+            if ((grbitScan & 0x10) && sel.grobj == grobjPlanet) {
+                grbitScan &= ~0x10;
+                InvalidateRect(hwndTb, NULL, TRUE);
+            }
+        } else {
+            DrawPlanShip(0, 0x4fff);
+        }
+
+        SetPlanetTitleBar(hwndPlanet);
+
+        if (gd.fTutorial)
+            AdvanceTutor();
+    }
 }
 
 void DrawProductionItem(HDC hdc, RECT *prc, char *psz, int16_t inflate, int16_t fSelected, int16_t fListbox) {

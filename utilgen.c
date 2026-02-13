@@ -385,7 +385,7 @@ uint32_t GetDiskSerialNumber(void) {
     return sizeof(fakeEnv);
 }
 
-int16_t FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd) {
+int16_t FIntersectCircleLine(STARSPOINT ptL1, STARSPOINT ptL2, STARSPOINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd) {
     int32_t dyT;
     int32_t dxdy;
     int16_t dCtr;

@@ -6,47 +6,57 @@
 /* Unassigned symbols (no file inferred) */
 
 /* globals */
-BTLDATA   *vlpbdVCR;
-BTLDATA   *vlpbdVCRNext;
-BTLPLAN   *rglpbtlplan[16];
-BTLPLAN    btlplan = {0};
-BTLREC    *vlpbrVCR;
-BTN       *rgbtnXfer;
-char      *lpbDefMac;
-char      *lpbDefUni;
-char      *lpchBatch;
-char      *lpchBatchMac;
-char      *MPCTD = "m%d";
-char      *mpdtsz[8] = {"xy", "x", "hst", "m", "h", "r", "log", "chk"};
-char      *PCTD = "%d";
-char      *PCTDKT = "%dkT";
-char      *PCTDPCTPCT = "%d%%";
-char      *PCTDXPCTDPCTPCT = "%d.%d%%";
-char      *PCTLD = "%ld";
-char      *PCTLD00 = "%ld00";
-char      *rgszMineField[5] = {"Standard", "Heavy", "Speed Bump", "rs!", ""};
-char      *rgszMinerals[6] = {"Ironium", "Boranium", "Germanium", "Colonists", "Fuel", "Resources"};
-char      *rgszPlanetAttr[3] = {"Gravity", "Temperature", "Radiation"};
-char      *rgszPlanetAttrAbbr[3] = {"Grav", "Temp", "Rad"};
-char      *rgszZipOrder[7] = {"QuikLoad", "QuikDrop", "WaitLoad", "Clear", "", "", ""};
-char      *szButton = "BUTTON";
-char      *szCombobox = "COMBOBOX";
-char      *szDblDash = "-- ";
-char      *szEdit = "EDIT";
-char      *szHelpFile = "stars!.hlp";
-char      *szListbox = "LISTBOX";
-char      *vrgszComputerLevel[5] = {"Easy", "Standard", "Tough", "Expert", "Random"};
-char      *vrgszComputerPlayers[7] = {"Robotoids", "Turindrones", "Automitrons", "Rototills", "Cybertrons", "Macinti", "Random"};
-char      *vrgszFileNew;
-char      *vrgszMRU;
-char      *vrgszRCWWidth[2] = {"<<     >>", ">>     <<"};
-char      *vrgszUnits[6] = {"kT", "kT", "kT", "00", "mg", "% "};
-char       iLastGet = -1;
-char       iLastMsgGet = -1;
-char       iLastStrGet = -1;
-uint8_t    rgbCur[1024] = {0};
-char       rgszArial[4][32] = {0};
-char       rgszSpeed[30];
+BTLDATA *vlpbdVCR;
+BTLDATA *vlpbdVCRNext;
+BTLPLAN *rglpbtlplan[16];
+BTLPLAN  btlplan = {0};
+BTLREC  *vlpbrVCR;
+BTN     *rgbtnXfer;
+char    *lpbDefMac;
+char    *lpbDefUni;
+char    *lpchBatch;
+char    *lpchBatchMac;
+char    *MPCTD = "m%d";
+char    *mpdtsz[8] = {"xy", "x", "hst", "m", "h", "r", "log", "chk"};
+char    *PCTD = "%d";
+char    *PCTDKT = "%dkT";
+char    *PCTDPCTPCT = "%d%%";
+char    *PCTDXPCTDPCTPCT = "%d.%d%%";
+char    *PCTLD = "%ld";
+char    *PCTLD00 = "%ld00";
+char    *rgszMineField[5] = {"Standard", "Heavy", "Speed Bump", "rs!", ""};
+char    *rgszMinerals[6] = {"Ironium", "Boranium", "Germanium", "Colonists", "Fuel", "Resources"};
+char    *rgszPlanetAttr[3] = {"Gravity", "Temperature", "Radiation"};
+char    *rgszPlanetAttrAbbr[3] = {"Grav", "Temp", "Rad"};
+char    *rgszZipOrder[7] = {"QuikLoad", "QuikDrop", "WaitLoad", "Clear", "", "", ""};
+char    *szButton = "BUTTON";
+char    *szCombobox = "COMBOBOX";
+char    *szDblDash = "-- ";
+char    *szEdit = "EDIT";
+char    *szHelpFile = "stars!.hlp";
+char    *szListbox = "LISTBOX";
+char    *vrgszComputerLevel[5] = {"Easy", "Standard", "Tough", "Expert", "Random"};
+char    *vrgszComputerPlayers[7] = {"Robotoids", "Turindrones", "Automitrons", "Rototills", "Cybertrons", "Macinti", "Random"};
+char    *vrgszFileNew;
+char    *vrgszMRU;
+char    *vrgszRCWWidth[2] = {"<<     >>", ">>     <<"};
+char    *vrgszUnits[6] = {"kT", "kT", "kT", "00", "mg", "% "};
+char     iLastGet = -1;
+char     iLastMsgGet = -1;
+char     iLastStrGet = -1;
+uint8_t  rgbCur[1024] = {0};
+char     rgszArial[4][32] = {0};
+char     rgszSpeed[30] = {
+    '-', '-', 0, 189, 0, 0, // 1/2
+    190, 0,   0,            // 3/4
+    '1', 0,   0,            // 1
+    '1', 188, 0,            // 1 1/4
+    '1', 189, 0,            // 1 1/2
+    '1', 190, 0,            // 1 3/4
+    '2', 0,   0,            // 2
+    '2', 188, 0,            // 1 1/4
+    '2', 189, 0,            // 1 1/2
+};
 char       szBackup[256];
 char       szBase[256];
 char       szCRLF[3];
@@ -68,16 +78,7 @@ char       vszDefPass[17] = {0};
 COLDROP   *lpcd;
 FLEET    **rglpfl;
 FRAMESTUFF vfs = {0};
-GAME       game = {.lid = 0,
-                   .mdSize = 2,
-                   .mdDensity = 1,
-                   .cPlayer = 2,
-                   .cPlanMax = 0,
-                   .mdStartDist = 1,
-                   .fDirty = 0,
-                   .turn = 0x0000,
-                   .rgvc = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-                   .szName = ""};
+GAME       game = {.mdSize = 2, .mdDensity = 1, .cPlayer = 2, .mdStartDist = 1};
 GDATA      gd = {};
 HDR        hdrCur = {0};
 HDR        hdrPrev = {0};
@@ -250,6 +251,8 @@ PLAYER     rgplr[16] = {0};
 PLAYER     vplr = {0};
 PLAYER     vrgplrDef[7] = {
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 1,
          .rgEnvVar = {50, 50, 50},
          .rgEnvVarMin = {15, 15, 15},
          .rgEnvVarMax = {85, 85, 85},
@@ -257,6 +260,8 @@ PLAYER     vrgplrDef[7] = {
          .pctResearch = 15,
          .rgAttr = {10, 10, 10, 10, 10, 5, 10, 0, 1, 1, 1, 1, 1, 1, 9, 0}},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 12,
          .rgEnvVar = {33, 58, 33},
          .rgEnvVarMin = {10, 35, 13},
          .rgEnvVarMax = {56, 81, 53},
@@ -265,6 +270,8 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {10, 10, 9, 17, 10, 9, 10, 4, 0, 0, 2, 1, 1, 2, 7, 0},
          .grbitAttr = 0x80000503},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 4,
          .rgEnvVar = {-1, 50, 85},
          .rgEnvVarMin = {-1, 0, 70},
          .rgEnvVarMax = {-1, 100, 100},
@@ -273,6 +280,8 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {10, 10, 10, 10, 9, 10, 6, 1, 2, 2, 2, 2, 1, 0, 2, 0},
          .grbitAttr = 0x00002108},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 25,
          .rgEnvVar = {-1, 50, 50},
          .rgEnvVarMin = {-1, 12, 0},
          .rgEnvVarMax = {-1, 88, 100},
@@ -281,6 +290,8 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {9, 10, 10, 10, 10, 15, 5, 3, 0, 0, 0, 0, 0, 0, 1, 0},
          .grbitAttr = 0x2000000c},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 5,
          .rgEnvVar = {-1, -1, -1},
          .rgEnvVarMin = {-1, -1, -1},
          .rgEnvVarMax = {-1, -1, -1},
@@ -289,6 +300,8 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {8, 12, 12, 15, 10, 9, 10, 3, 1, 1, 2, 2, 1, 0, 0, 0},
          .grbitAttr = 0x00001221},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 18,
          .rgEnvVar = {15, 50, 85},
          .rgEnvVarMin = {0, 0, 70},
          .rgEnvVarMax = {30, 100, 100},
@@ -297,6 +310,8 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {7, 11, 10, 18, 10, 10, 10, 0, 2, 0, 2, 2, 2, 2, 5, 0},
          .grbitAttr = 0x000005c4},
     {.iPlayer = -1,
+         .det = 7,
+         .iPlrBmp = 31,
          .rgEnvVar = {50, 50, 50},
          .rgEnvVarMin = {17, 17, 17},
          .rgEnvVarMax = {83, 83, 83},
@@ -305,132 +320,78 @@ PLAYER     vrgplrDef[7] = {
          .rgAttr = {10, 10, 10, 10, 10, 3, 10, 0, 1, 1, 1, 1, 1, 1, 0, 0},
          .grbitAttr = 0x40000000},
 };
-POINT       ptPlaque = {0};
-POINT       ptslotGlob = {0};
-POINT       ptSpeedVCR = {0};
-POINT       ptStickyBattlePlansDlg = {.x = -1, .y = -1};
-POINT       ptStickyBrowserDlg = {.x = -1, .y = -1};
-POINT       ptStickyFindDlg = {.x = -1, .y = -1};
-POINT       ptStickyHostModeDlg = {.x = -1, .y = -1};
-POINT       ptStickyMergeFleetsDlg = {.x = -1, .y = -1};
-POINT       ptStickyNewDlg = {.x = -1, .y = -1};
-POINT       ptStickyPrintMapDlg = {.x = -1, .y = -1};
-POINT       ptStickyProduceDlg = {.x = -1, .y = -1};
-POINT       ptStickyRaceDlg = {.x = -1, .y = -1};
-POINT       ptStickyRelationsDlg = {.x = -1, .y = -1};
-POINT       ptStickyRenameDlg = {.x = -1, .y = -1};
-POINT       ptStickyResDlg = {.x = -1, .y = -1};
-POINT       ptStickyScoreXDlg = {.x = -1, .y = -1};
-POINT       ptStickySlotDlg = {.x = -1, .y = -1};
-POINT       ptStickyTransferDlg = {.x = -1, .y = -1};
-POINT       ptStickyTutorDlg = {.x = -1, .y = -1};
-POINT       ptStickyVCRDlg = {.x = -1, .y = -1};
-POINT       ptStickyZipOrderDlg = {.x = -1, .y = -1};
-POINT       ptStickyZipProdDlg = {.x = -1, .y = -1};
-POINT       rgptArrow[5] = {{.x = 3, .y = 0}, {.x = 0, .y = 3}, {.x = -1, .y = 3}, {.x = 2, .y = 3}, {.x = -3, .y = 6}};
-STARSPOINT  rgptPlan[999] = {0};
-POINT       rgptTriangle[3] = {{.x = 4, .y = 0}, {.x = 0, .y = 4}, {.x = -1, .y = 4}};
-POINT       vptMsg = {0};
-POINT       vptTbLast = {.x = -1, .y = -1};
-PROD       *pProdGlob;
-POPUPDATA   GlobalPD = {.grPopup = 0, .iPlrMax = 0};
-RECT       *vrgrcRCW;
-RECT        rcCargo = {0};
-RECT        rcMsgText = {0};
-RECT        rcMsgTitle = {0};
-RECT        rcProdDiamond = {0};
-RECT        rcSpinBot = {0};
-RECT        rcSpinTop = {0};
-RECT        rgrcBuildSpin[2] = {0};
-RECT        rgrcRef[19] = {0};
-RECT        vrcTooltip = {0};
-RECT        vrgrcSlot[16] = {0};
-RPT        *vprptCur;
-RPT         vrptBattle = {.grbitVisible = 65535,
-                          .irpt = 3,
-                          .cFields = 15,
-                          .cFieldFirst = 1,
-                          .icolSort = 0,
-                          .fAscending = 1,
-                          .irowFirst = 0,
-                          .ptDlg = {.x = -1, .y = -1},
-                          .ptSize = {.x = 600, .y = 400},
-                          .fCached = 0,
-                          .rgbdx = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-                          .cRows = 0,
-                          .cRowsVis = 0,
-                          .iSubsort = 0,
-                          .hwndVScroll = 0x0000,
-                          .hwndHScroll = 0x0000,
-                          .cColScroll = 0};
-RPT         vrptEFleet = {.grbitVisible = 65535,
-                          .irpt = 2,
-                          .cFields = 12,
-                          .cFieldFirst = 1,
-                          .icolSort = 0,
-                          .fAscending = 1,
-                          .irowFirst = 0,
-                          .ptDlg = {.x = -1, .y = -1},
-                          .ptSize = {.x = 600, .y = 400},
-                          .fCached = 0,
-                          .rgbdx = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-                          .cRows = 0,
-                          .cRowsVis = 0,
-                          .iSubsort = 0,
-                          .hwndVScroll = 0x0000,
-                          .hwndHScroll = 0x0000,
-                          .cColScroll = 0};
-RPT         vrptFleet = {.grbitVisible = 65535,
-                         .irpt = 1,
-                         .cFields = 12,
-                         .cFieldFirst = 1,
-                         .icolSort = 0,
-                         .fAscending = 1,
-                         .irowFirst = 0,
-                         .ptDlg = {.x = -1, .y = -1},
-                         .ptSize = {.x = 600, .y = 400},
-                         .fCached = 0,
-                         .rgbdx = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-                         .cRows = 0,
-                         .cRowsVis = 0,
-                         .iSubsort = 0,
-                         .hwndVScroll = 0x0000,
-                         .hwndHScroll = 0x0000,
-                         .cColScroll = 0};
-RPT         vrptPlanet = {.grbitVisible = 65535,
-                          .irpt = 0,
-                          .cFields = 15,
-                          .cFieldFirst = 1,
-                          .icolSort = 0,
-                          .fAscending = 1,
-                          .irowFirst = 0,
-                          .ptDlg = {.x = -1, .y = -1},
-                          .ptSize = {.x = 600, .y = 400},
-                          .fCached = 0,
-                          .rgbdx = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
-                          .cRows = 0,
-                          .cRowsVis = 0,
-                          .iSubsort = 0,
-                          .hwndVScroll = 0x0000,
-                          .hwndHScroll = 0x0000,
-                          .cColScroll = 0};
-SCOREX     *rgsxPlr[1];
-SCOREX     *vlprgScoreX;
-SEL         sel = {0};
-SHDEF      *lpshdefBuild;
-SHDEF      *rglpshdef[cPlayerMax] = {0};
-SHDEF      *rglpshdefSB[cPlayerMax] = {0};
-SHDEF       rgshdef[16] = {0};
-SHDEF       shdefBuild = {0};
-THING      *lpthBattle;
-THING      *lpThings;
-TILE        rgtilePlanet[6] = {{.yTop = 1, .dyFull = 85, .grbit = 128, .idh = 0x05e2}, {.yTop = 6, .dyFull = 5, .grbit = 1, .idh = 0x05e5},
-                               {.yTop = 8, .dyFull = 6, .grbit = 8, .idh = 0x05e4},    {.yTop = 6, .dyFull = 22, .grbit = 4, .idh = 0x05e6},
-                               {.yTop = 10, .dyFull = 20, .grbit = 64, .idh = 0x05e3}, {.yTop = 8, .dyFull = 15, .grbit = 256, .idh = 0x05e7}};
-TILE        rgtileShip[7] = {{.yTop = 1, .dyFull = 85, .grbit = 128, .idh = 0x05e9}, {.yTop = 3, .dyFull = 5, .grbit = 64, .idh = 0x05ea},
-                             {.yTop = 11, .dyFull = 19, .grbit = 32, .idh = 0x05ee}, {.yTop = 6, .dyFull = 12, .grbit = 256, .idh = 0x05ef},
-                             {.yTop = 7, .dyFull = 14, .grbit = 1, .idh = 0x05eb},   {.yTop = 12, .dyFull = 16, .grbit = 512, .idh = 0x05ec},
-                             {.yTop = 6, .dyFull = 22, .grbit = 4, .idh = 0x05ed}};
+POINT      ptPlaque = {0};
+POINT      ptslotGlob = {0};
+POINT      ptSpeedVCR = {0};
+POINT      ptStickyBattlePlansDlg = {.x = -1, .y = -1};
+POINT      ptStickyBrowserDlg = {.x = -1, .y = -1};
+POINT      ptStickyFindDlg = {.x = -1, .y = -1};
+POINT      ptStickyHostModeDlg = {.x = -1, .y = -1};
+POINT      ptStickyMergeFleetsDlg = {.x = -1, .y = -1};
+POINT      ptStickyNewDlg = {.x = -1, .y = -1};
+POINT      ptStickyPrintMapDlg = {.x = -1, .y = -1};
+POINT      ptStickyProduceDlg = {.x = -1, .y = -1};
+POINT      ptStickyRaceDlg = {.x = -1, .y = -1};
+POINT      ptStickyRelationsDlg = {.x = -1, .y = -1};
+POINT      ptStickyRenameDlg = {.x = -1, .y = -1};
+POINT      ptStickyResDlg = {.x = -1, .y = -1};
+POINT      ptStickyScoreXDlg = {.x = -1, .y = -1};
+POINT      ptStickySlotDlg = {.x = -1, .y = -1};
+POINT      ptStickyTransferDlg = {.x = -1, .y = -1};
+POINT      ptStickyTutorDlg = {.x = -1, .y = -1};
+POINT      ptStickyVCRDlg = {.x = -1, .y = -1};
+POINT      ptStickyZipOrderDlg = {.x = -1, .y = -1};
+POINT      ptStickyZipProdDlg = {.x = -1, .y = -1};
+POINT      rgptArrow[5] = {{.x = 3, .y = 0}, {.x = 0, .y = 3}, {.x = -1, .y = 3}, {.x = 2, .y = 3}, {.x = -3, .y = 6}};
+STARSPOINT rgptPlan[999] = {0};
+POINT      rgptTriangle[3] = {{.x = 4, .y = 0}, {.x = 0, .y = 4}, {.x = -1, .y = 4}};
+POINT      vptMsg = {0};
+POINT      vptTbLast = {.x = -1, .y = -1};
+PROD      *pProdGlob;
+POPUPDATA  GlobalPD = {.grPopup = 0, .iPlrMax = 0};
+RECT      *vrgrcRCW;
+RECT       rcCargo = {0};
+RECT       rcMsgText = {0};
+RECT       rcMsgTitle = {0};
+RECT       rcProdDiamond = {0};
+RECT       rcSpinBot = {0};
+RECT       rcSpinTop = {0};
+RECT       rgrcBuildSpin[2] = {0};
+RECT       rgrcRef[19] = {0};
+RECT       vrcTooltip = {0};
+RECT       vrgrcSlot[16] = {0};
+RPT       *vprptCur;
+RPT        vrptBattle = {.grbitVisible = 65535, .irpt = 3, .cFields = 15, .cFieldFirst = 1, .fAscending = 1, .ptDlg = {0}, .ptSize = {0}};
+RPT        vrptEFleet = {.grbitVisible = 65535, .irpt = 2, .cFields = 12, .cFieldFirst = 1, .fAscending = 1, .ptDlg = {0}, .ptSize = {0}};
+RPT        vrptFleet = {.grbitVisible = 65535, .irpt = 1, .cFields = 12, .cFieldFirst = 1, .fAscending = 1, .ptDlg = {0}, .ptSize = {0}};
+RPT        vrptPlanet = {.grbitVisible = 65535, .cFields = 15, .cFieldFirst = 1, .fAscending = 1, .ptDlg = {0}, .ptSize = {0}};
+SCOREX    *rgsxPlr[1];
+SCOREX    *vlprgScoreX;
+SEL        sel = {0};
+SHDEF     *lpshdefBuild;
+SHDEF     *rglpshdef[cPlayerMax] = {0};
+SHDEF     *rglpshdefSB[cPlayerMax] = {0};
+SHDEF      rgshdef[16] = {0};
+SHDEF      shdefBuild = {0};
+THING     *lpthBattle;
+THING     *lpThings;
+TILE       rgtilePlanet[6] = {
+    {.yTop = 1, .dyFull = 85, .grbit = 128, .fPopped = 1, .fMinTitle = 1, .idh = 0x05e2},
+    {.yTop = 6, .dyFull = 5, .grbit = 1, .id = 1, .fPopped = 1, .idh = 0x05e5},
+    {.yTop = 8, .dyFull = 6, .grbit = 8, .id = 4, .fPopped = 1, .idh = 0x05e4},
+    {.yTop = 6, .dyFull = 22, .grbit = 4, .iCol = 1, .id = 5, .fPopped = 1, .fNullPtr = 1, .idh = 0x05e6},
+    {.yTop = 10, .dyFull = 20, .grbit = 64, .iCol = 1, .id = 6, .fPopped = 1, .idh = 0x05e3},
+    {.yTop = 8, .dyFull = 15, .grbit = 256, .iCol = 1, .id = 7, .fPopped = 1, .fNullPtr = 1, .fMinTitle = 1, .idh = 0x05e7},
+};
+TILE rgtileShip[7] = {
+    {.yTop = 1, .dyFull = 85, .grbit = 128, .fPopped = 1, .fMinTitle = 1, .idh = 0x05e9},
+    {.yTop = 3, .dyFull = 5, .grbit = 64, .id = 5, .fPopped = 1, .fMinTitle = 1, .idh = 0x05ea},
+    {.yTop = 11, .dyFull = 19, .grbit = 32, .id = 3, .fPopped = 1, .idh = 0x05ee},
+    {.yTop = 6, .dyFull = 12, .grbit = 256, .id = 4, .fPopped = 1, .idh = 0x05ef},
+    {.yTop = 7, .dyFull = 14, .grbit = 1, .iCol = 1, .id = 1, .fPopped = 1, .idh = 0x05eb},
+    {.yTop = 12, .dyFull = 16, .grbit = 512, .iCol = 1, .id = 9, .fPopped = 1, .idh = 0x05ec},
+    {.yTop = 6, .dyFull = 22, .grbit = 4, .iCol = 1, .id = 8, .fPopped = 1, .idh = 0x05ed},
+};
 TIMER       vtimer = {0};
 TOK        *vrgtok;
 TURNSERIAL *vrgts;

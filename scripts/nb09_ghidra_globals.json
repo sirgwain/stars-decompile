@@ -25296,7 +25296,7 @@
       }
     },
     {
-      "name": "ReportDlg",
+      "name": "ReportWndProc",
       "cv": {
         "seg": 34,
         "off": 24,
@@ -25306,7 +25306,7 @@
       },
       "types": {
         "typind": 4243,
-        "proto": "int32_t ReportDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+        "proto": "int32_t ReportWndProc(uint16_t, uint16_t, uint16_t, int32_t)",
         "tags": ["PASCAL", "RET32"],
         "is_pascal": true,
         "ret": {
@@ -100243,7 +100243,7 @@
       }
     },
     {
-      "name": "MsgDlg",
+      "name": "SerialDlg",
       "cv": {
         "seg": 7,
         "off": 36712,
@@ -100253,7 +100253,7 @@
       },
       "types": {
         "typind": 4203,
-        "proto": "int16_t MsgDlg(uint16_t, uint16_t, uint16_t, int32_t)",
+        "proto": "int16_t SerialDlg(uint16_t, uint16_t, uint16_t, int32_t)",
         "tags": ["PASCAL"],
         "is_pascal": true,
         "ret": {

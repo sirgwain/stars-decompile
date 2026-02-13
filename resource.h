@@ -335,6 +335,13 @@
 #define IDD_PANIC 2504 /* PanicDlg */
 #define IDD_TUTOR 2502 /* never referenced */
 
+/* Save Prompt */
+#define IDD_SAVE_TURN               1068
+#define IDD_SAVE_TURN_SINGLE_PLAYER 2025
+#define IDC_SAVESUBMIT              1066 /* 0x42A - Save & Submit */
+#define IDC_NO                      1067 /* 0x42B - Don't Save */
+#define idhSaveFileCommands         1090 /* 0x442 - help context */
+
 /* find */
 #define IDD_FIND      4202 /* FindDlg */
 #define IDC_VERSION   801

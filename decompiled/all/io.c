@@ -1915,16 +1915,16 @@ void UpdateBattleRecords(void)
 // Segment: MEMORY_IO
 // ======================================================================
 
-short AskSaveDialog(HWND hwnd, ushort message, ushort wParam, long lParam)
+short AskSaveDialog(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
     short sVar1;
 
-    if (message != 2) {
-        if (message == 0x110) {
+    if (message != WM_DESTROY) {
+        if (message == WM_INITDIALOG) {
             return 1;
         }
-        if (message == 0x111) {
+        if (message == WM_COMMAND) {
             if (((wParam == 0x429) || (wParam == 0x42b)) || (wParam == 0x42a)) {
                 if (wParam == 0x42b) {
                     sVar1 = 0;

@@ -37,9 +37,10 @@
 #endif
 
 // custom POINT because win32 point is no longer 16 bit ints
+#/* typind 0 (0) size=16 */
 typedef struct STARSPOINT {
     int16_t x;
-    int16_t y;
+    int16_t y; /* + 0x0002*/
 } STARSPOINT;
 
 /* typind 4153 (0x1039) size=4 */
@@ -1998,8 +1999,6 @@ typedef struct _fleet {
         struct {
             uint16_t dirFltX : 8;
             uint16_t dirFltY : 8;
-        };
-        struct {
             uint16_t iwarpFlt : 4;
             uint16_t fdirValid : 1;
             uint16_t fCompChg : 1;

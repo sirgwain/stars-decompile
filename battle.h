@@ -9,7 +9,7 @@ extern uint8_t rgbrcStart[136];
 
 /* functions */
 int16_t FFleetHasTeeth(FLEET *lpfl);
-void    DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, POINT *ppt);
+void    DropSalvage(THING **plpth, int32_t *rgwtMinerals, int16_t iplr, STARSPOINT *ppt);
 void    CheckTarget(TOK *ptok, FLEET *lpfl, int16_t ishdef);
 void    CreateSalvage(FLEET *pfl, THING **plpth);
 void    DoBattles(int16_t fPostMovement);
@@ -21,7 +21,7 @@ void    CheckInitiative(TOK *ptok);
 int16_t FDeleteBattlePlan(int16_t iplan, int16_t fWarn);
 void    RegenShield(TOK *ptok);
 int16_t FDumpCargo(FLEET *lpfl);
-int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, int16_t mdTactic);
+int32_t ScoreFromGiveAndTakeAndTactic(int32_t dpGive, int32_t dpTake, BattleTactic mdTactic);
 int16_t FAttack(int16_t itokAttacker, int16_t init, BTLREC *lpbtlrec, uint16_t grfAttack);
 int16_t FHullHasTeeth(HUL *lphul);
 int16_t FFleetHasBombs(FLEET *lpfl);

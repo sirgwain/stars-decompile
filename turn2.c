@@ -1,6 +1,7 @@
 
 #include "types.h"
 
+#include "battle.h"
 #include "build.h"
 #include "globals.h"
 #include "memory.h"
@@ -489,20 +490,404 @@ void DropColonists(void) {
     int32_t  lPower;
     COLDROP *lpcdMax;
     int16_t  cpq;
-    int16_t  iTech;
-    int16_t  iDst;
+    int16_t  iTech; /* overlaps iDst in NB09 */
+    int16_t  iDst;  /* overlaps iTech in NB09 (block-scoped usage) */
     int16_t  iBonus;
     PROD     prod;
     int16_t  ipq;
 
-    /* debug symbols */
-    /* block (block) @ MEMORY_TURN2:0x3ebb */
-    /* block (block) @ MEMORY_TURN2:0x3f27 */
-    /* block (block) @ MEMORY_TURN2:0x4329 */
-    /* label IncCur @ MEMORY_TURN2:0x442b */
-    /* label WritePlanet @ MEMORY_TURN2:0x42fc */
+    /* ------------------------------------------------------------
+     * asm: 10b8:34eb..351e
+     * if (cColDrop == 0) return; set up lpcdCur and lpcdMax
+     * ------------------------------------------------------------ */
+    if (cColDrop == 0) {
+        return;
+    }
 
-    /* TODO: implement */
+    lpcdCur = lpcd;
+    lpcdMax = lpcd + cColDrop;
+
+    /* ------------------------------------------------------------
+     * asm loop head: 10b8:3521..3545 (skip invalid entries)
+     * ------------------------------------------------------------ */
+    while (lpcdCur < lpcdMax) {
+        if (lpcdCur->idPlanetDst == -1) {
+            goto IncCur;
+        }
+        if (lpcdCur->cColonist == 0) {
+            goto IncCur;
+        }
+
+        /* --------------------------------------------------------
+         * asm: 10b8:3548..35ef
+         * clear rgcCol/rgcPower, init totals, lookup planet, pctSurvive adjust
+         * -------------------------------------------------------- */
+        memset(rgcCol, 0, sizeof(rgcCol));
+        memset(rgcPower, 0, sizeof(rgcPower));
+
+        cPowerTot = 0;
+        cColTot = 0;
+
+        idPlanet = lpcdCur->idPlanetDst;
+        FLookupPlanet(idPlanet, &pl);
+
+        iplrOldOwner = pl.iPlayer;
+
+        CalcPctSurvive(&pl, &pctSurvive, 0);
+
+        /* pctSurvive = (fRam11201d8e - pctSurvive) / fRam11201d92 + pctSurvive; */
+        pctSurvive = (1.0f - pctSurvive) / 4.0f + pctSurvive;
+
+        /* --------------------------------------------------------
+         * asm: 10b8:35e3..383c
+         * gather all drops to this planet into rgcCol/rgcPower, emit various msgs,
+         * and mark each consumed entry by idPlanetDst=-1
+         * -------------------------------------------------------- */
+        lpcdLook = lpcdCur;
+        while (lpcdLook < lpcdMax) {
+            if (lpcdLook->idPlanetDst == idPlanet) {
+                int16_t ra = GetRaceStat(&rgplr[lpcdLook->idPlr], rsMajorAdv);
+
+                /* Macintosh special case warning */
+                /* asm: 10b8:3601..365d */
+                if (ra == raMacintosh && (!lpcdLook->fCanColonize || pl.iPlayer != -1)) {
+                    FSendPlrMsg2(lpcdLook->idPlr, idmColonistsAttemptingSetShopReducedProtoplasmicBlo, pl.id, pl.id, 0);
+                }
+                /* forced transport died (uninhabited + cannot colonize) */
+                /* asm: 10b8:3660..36ca */
+                else if (pl.iPlayer == -1 && !lpcdLook->fCanColonize) {
+                    uint32_t uCol = lpcdLook->cColonist;
+                    FSendPlrMsg(lpcdLook->idPlr, idmColonistsForcedTransportDiedBecauseDidColonize, pl.id, (int16_t)(uCol & 0xFFFFu), (int16_t)(uCol >> 16),
+                                pl.id, 0, 0, 0, 0);
+                }
+                /* starbase present (and inhabited) blocks drop */
+                /* asm: 10b8:36cd..3706 (bit9 == fStarbase) */
+                else if (pl.fStarbase && pl.iPlayer != -1) {
+                    FSendPlrMsg2(lpcdLook->idPlr, idmColonistsAssaultingHaveKilledForcesOrbitingStarb, pl.id, pl.id, 0);
+                }
+                /* normal collect */
+                /* asm: 10b8:3709..381c */
+                else {
+                    int16_t iplr = lpcdLook->idPlr;
+
+                    rgcCol[iplr] += lpcdLook->cColonist;
+                    cColTot += lpcdLook->cColonist;
+
+                    ra = GetRaceStat(&rgplr[iplr], rsMajorAdv);
+                    if (ra == raAttack) {
+                        lPower = 165; /* 0xA5 */
+                    } else {
+                        ra = GetRaceStat(&rgplr[iplr], rsMajorAdv);
+                        lPower = (ra == raMacintosh) ? 0 : 110; /* 0x6E */
+                    }
+
+                    /* lPower = (cColonist * lPower) / 100; then * pctSurvive and ftol */
+                    {
+                        int32_t basePower = (int32_t)(((int64_t)lpcdLook->cColonist * lPower) / 100);
+                        int32_t scaled = (int32_t)((double)basePower * pctSurvive);
+
+                        cPowerTot += scaled;
+                        rgcPower[iplr] += scaled;
+                    }
+                }
+
+                /* mark entry consumed */
+                lpcdLook->idPlanetDst = -1;
+            }
+
+            lpcdLook++;
+        }
+
+        /* --------------------------------------------------------
+         * asm: 10b8:383c..3aeb and 10b8:3aee..3b02
+         * resolve outcome depending on inhabited/uninhabited
+         * -------------------------------------------------------- */
+
+        if (pl.iPlayer == -1) {
+            /* uninhabited: pick winner from rgcPower; possibly everybody dies; possibly win w/ messaging;
+               also possibly grant tech/wreckage and seed new colony queue from zpq1 */
+            /* asm: 10b8:3aee..3b02 falls into the same resolver after setting “defender power=0” */
+            lDefensePower = 0;
+            lOldPop = 0;
+        ResolveAfterClearing:
+            /* ----------------------------------------------------
+             * asm: 10b8:3b02..3be0
+             * find max/second, detect tie, count sides
+             * ---------------------------------------------------- */
+            cMax = -1;
+            c2nd = 0;
+            cSides = 0;
+            fTie = 0;
+            iMax = 0;
+
+            for (i = 0; i < game.cPlayer; i++) {
+                if (rgcCol[i] != 0) {
+                    cSides++;
+
+                    if (rgcPower[i] >= cMax) {
+                        if (rgcPower[i] == cMax) {
+                            fTie = 1;
+                        } else {
+                            fTie = 0;
+                            c2nd = cMax;
+                            cMax = rgcPower[i];
+                            iMax = i;
+                        }
+                    }
+                }
+            }
+
+            /* asm: 10b8:3be0.. (if cMax < 1) */
+            if (cMax < 1) {
+                goto IncCur;
+            }
+
+            if (fTie) {
+                /* nobody wins; message all involved; if planet had old owner, notify them too; clear planet owner */
+                /* ghidra block around bVar15 / idmInvolvedWayAssault... */
+                for (i = 0; i < game.cPlayer; i++) {
+                    if (rgcCol[i] != 0) {
+                        FSendPlrMsg2(i, idmInvolvedWayAssaultNobodysTroopsSurvivedBrutal, pl.id, cSides, pl.id);
+                    }
+                }
+                if (iplrOldOwner != -1) {
+                    FSendPlrMsg2(iplrOldOwner, idmMultitudeEnemiesHaveMountedProngAttackResulting, pl.id, cSides, pl.id);
+                    pl.iPlayer = -1;
+                }
+            } else {
+                /* there is a winner iMax */
+                if (iplrOldOwner == -1) {
+                    if (cSides < 2) {
+                        /* winner controls uninhabited planet */
+                        int16_t ra = GetRaceStat(&rgplr[iMax], rsMajorAdv);
+                        FSendPlrMsg2(iMax, (ra == raMacintosh) + idmColonistsControl, pl.id, pl.id, 0);
+                    } else {
+                        /* multi-way uninhabited: messages */
+                        for (i = 0; i < 16; i++) {
+                            if (rgcCol[i] != 0) {
+                                if (i == iMax) {
+                                    FSendPlrMsg2(i, idmInvolvedWayRaceUninhabitedPlanetForcesCrush, pl.id, cSides, pl.id);
+                                } else {
+                                    FSendPlrMsg(i, idmColonistsDestroyedWayRaceUninhabitedPlanetContro, pl.id, cSides, pl.id, (int16_t)(iMax | 0x00B0), 0, 0, 0,
+                                                0);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    /* inhabited originally (but we’re in “pl.iPlayer == -1” branch only when currently uninhabited);
+                       this path is for “assaulted and then planet becomes empty” case in decompile flow */
+                    for (i = 0; i < 16; i++) {
+                        if (rgcCol[i] != 0) {
+                            if (i == iMax) {
+                                FSendPlrMsg2(i, idmTroopsCrushSColonistsControlPlanet, pl.id, (int16_t)(iplrOldOwner | 0x20), pl.id);
+                            } else {
+                                FSendPlrMsg2(i, idmColonistsDroppedDestroyedSpiritedFighting, pl.id, pl.id, 0);
+                            }
+                        }
+                    }
+
+                    {
+                        uint32_t uCol = rgcCol[iMax];
+                        FSendPlrMsg(iplrOldOwner, idmHaveAttackedFirstRateStormTroopersThough, pl.id, (int16_t)(iMax | 0x30), pl.id, (int16_t)(uCol & 0xFFFFu),
+                                    (int16_t)(uCol >> 16), 0, 0, 0);
+
+                        memset(rgTechBattle, 0, 6);
+                        memset(rgTechTrader, 0, 13);
+                        for (i = 0; i < 6; i++) {
+                            rgTechBattle[i] = rgplr[iplrOldOwner].rgTech[i];
+                        }
+                        ITechLearnATech(iMax, -1, pl.id, idmWreckageDiscoveredBattleHasBoostedResearchResour, 0);
+                        pl.iPlayer = -1;
+                    }
+                }
+
+                /* ----------------------------------------------------
+                 * asm: 10b8:?? (matches ghidra block that sets pl.fNoResearch from zpq1.fNoResearch)
+                 * ---------------------------------------------------- */
+                if (iMax != -1) {
+                    cpq = rgplr[iMax].zpq1.cpq;
+
+                    pl.fNoResearch = rgplr[iMax].zpq1.fNoResearch & 1;
+
+                    if (cpq != 0) {
+                        pl.lpplprod = (PLPROD *)LpplAlloc(4, cpq, htOrd);
+
+                        memset(&prod, 0, sizeof(prod));
+                        prod.grobj = grobjPlanet; /* from asm: sets grobj bit0 (overall bit17) */
+
+                        iDst = 0; /* local_f8 in ghidra: count of copied entries */
+
+                        for (ipq = 0; ipq < cpq; ipq++) {
+                            uint16_t wq = rgplr[iMax].zpq1.rgpq[ipq].w;
+                            iTech = wq & 0x003Fu; /* mdIdle (6 bits) */
+                            iBonus = wq >> 6;     /* cQuan (10 bits) */
+
+                            /* Macintosh filter: skip <= 2 */
+                            if (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh && iTech <= 2) {
+                                continue;
+                            }
+                            /* Terra filter: skip 4,5 */
+                            if (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raTerra && (iTech == 4 || iTech == 5)) {
+                                continue;
+                            }
+
+                            prod.cItem = iBonus;
+                            prod.iItem = iTech;
+
+                            /* store into planet queue (header is 4 bytes; PROD entries are 4 bytes) */
+                            ((PROD *)((uint8_t *)pl.lpplprod + 4))[iDst] = prod;
+                            iDst++;
+                        }
+
+                        if (iDst < 1) {
+                            FreePl((PL *)pl.lpplprod);
+                            pl.lpplprod = NULL;
+                        } else {
+                            ((PLPROD *)pl.lpplprod)->iprodMac = (uint8_t)iDst;
+
+                            /* write back lpplprod pointer to the real planet record */
+                            {
+                                PLANET *lpplReal = LpplFromId(pl.id);
+                                lpplReal->lpplprod = pl.lpplprod;
+                            }
+                        }
+                    }
+                }
+
+                pl.iPlayer = iMax;
+
+                /* Macintosh colony: set starbase + twiddle SB counts */
+                if (GetRaceStat(&rgplr[iMax], rsMajorAdv) == raMacintosh) {
+                    pl.fStarbase = 1;
+                    pl.pctDp = 0; /* pl.lStarbase low bits cleared in asm */
+
+                    /* increment two counters in the player’s SB SHDEF (matches ghidra’s +0x83/+0x7f increments) */
+                    rglpshdefSB[iMax]->cBuilt++;
+                    rglpshdefSB[iMax]->cExist++;
+                }
+
+                /* ----------------------------------------------------
+                 * asm: later uses cColTot/cMax and (cMax-c2nd)/cMax scaling; clamps to >=1
+                 * (this matches ghidra’s uVar20 population calculation)
+                 * ---------------------------------------------------- */
+                {
+                    int32_t newPop;
+
+                    if (cColTot == 0 || cMax == 0) {
+                        newPop = rgcCol[iMax];
+                    } else {
+                        /* newPop = rgcCol[iMax] * ((cColTot - cPowerTot) * cMax / cColTot) / cMax; (as in decompile) */
+                        int32_t tmp = (int32_t)(((int64_t)cMax * (cColTot - cPowerTot)) / cColTot);
+                        newPop = (int32_t)(((int64_t)rgcCol[iMax] * tmp) / cMax);
+                    }
+
+                    if (c2nd > 0) {
+                        pl.rgwtMin[3] = newPop;
+                        newPop = (int32_t)(((int64_t)newPop * (cMax - c2nd)) / cMax);
+                    }
+
+                    if (newPop < 1) {
+                        newPop = 1;
+                    }
+
+                    pl.rgwtMin[3] = newPop;
+                }
+            }
+        } else {
+            /* --------------------------------------------------------
+             * inhabited: compute defense power; if attackers win, UninhabitPlanet and re-run resolver;
+             * else resolve defender-vs-each-attacker messages and pop reduction
+             * -------------------------------------------------------- */
+
+            lPower = (GetRaceStat(&rgplr[pl.iPlayer], rsMajorAdv) == raDefend) ? 200 : 100;
+            lDefensePower = (int32_t)(((int64_t)pl.rgwtMin[3] * lPower) / 100);
+
+            if (lDefensePower <= cPowerTot) {
+                /* attackers overwhelm defenses */
+                lOldPop = pl.rgwtMin[3];
+                UninhabitPlanet(&pl);
+                pl.iPlayer = -1;
+                goto ResolveAfterClearing;
+            }
+
+            /* for each attacker side: compare pctSurvive to 1.0 and branch to massacre vs defense-destroys */
+            for (i = 0; i < 16; i++) {
+                if (rgcCol[i] != 0) {
+                    if (pctSurvive == 1.0f) {
+                        /* attackers massacred */
+                        {
+                            uint32_t uCol = rgcCol[i];
+                            FSendPlrMsg(i, idmColonistsDroppedMassacredGroundTroops, pl.id, (int16_t)(uCol & 0xFFFFu), (int16_t)(uCol >> 16), pl.id,
+                                        (int16_t)(pl.iPlayer | 0x30), 0, 0, 0);
+                            FSendPlrMsg(pl.iPlayer, idmGroundTroopsValiantlyDestroyedAttackingBarbarian, pl.id, pl.id, (int16_t)(uCol & 0xFFFFu),
+                                        (int16_t)(uCol >> 16), (int16_t)(i | 0x30), 0, 0, 0);
+                        }
+                    } else {
+                        /* defenses destroyed the attackers, remainder massacred (uses ftol(10000*(pctSurvive-1))) */
+                        int16_t pct = (int16_t)(10000.0 * (pctSurvive - 1.0f));
+                        {
+                            uint32_t uCol = rgcCol[i];
+                            FSendPlrMsg(i, idmColonistsDroppedDestroyedPlanetaryDefensesRestMa, pl.id, (int16_t)(uCol & 0xFFFFu), (int16_t)(uCol >> 16), pl.id,
+                                        pct, (int16_t)(pl.iPlayer | 0x30), 0, 0);
+                            FSendPlrMsg(pl.iPlayer, idmPlanetaryDefensesGroundTroopsDestroyedInvadingTr, pl.id, pl.id, (int16_t)(uCol & 0xFFFFu),
+                                        (int16_t)(uCol >> 16), (int16_t)(i | 0x30), 0, 0, 0);
+                        }
+                    }
+                }
+            }
+
+            /* pop reduction (as in ghidra): newPop = pl.pop - (pl.pop * cPowerTot / lDefensePower) */
+            pl.rgwtMin[3] = pl.rgwtMin[3] - (int32_t)(((int64_t)pl.rgwtMin[3] * cPowerTot) / lDefensePower);
+        }
+
+        /* ------------------------------------------------------------
+         * asm: 10b8:?? (artifact check / discovery)
+         * if planet still inhabited, and has artifact, and game.fNoRandom==0:
+         *   Random(6), Random(0x12d) => bonus; scale if pop<10; msg; add to rgplr[].rgResSpent[?]
+         *   clear artifact flag
+         * ------------------------------------------------------------ */
+        if (pl.iPlayer != -1) {
+            if (pl.fArtifact && game.fNoRandom == 0) {
+                int16_t iRes = Random(6);
+                int16_t r = Random(301);
+                int32_t bonus = r + 100;
+
+                if (pl.rgwtMin[3] < 10) {
+                    bonus = (pl.rgwtMin[3] * bonus) / 10;
+                }
+
+                FSendPlrMsg(pl.iPlayer, idmColonistsSettlingHaveFoundStrangeArtifactBoostin, -2, pl.id, iRes, (int16_t)bonus, 0, 0, 0, 0);
+
+                rgplr[pl.iPlayer].rgResSpent[iRes] += bonus;
+
+                /* if not “slow tech” (game.fSlowTech==0), also set prod.dwRaw_0000 = bonus (matches ghidra quirk) */
+                if (game.fSlowTech == 0) {
+                    prod.dwRaw_0000 = bonus;
+                }
+
+                pl.fArtifact = 0;
+            }
+        }
+
+        /* ------------------------------------------------------------
+         * asm: TURN2::WritePlanet (10b8:42fc etc): write back planet and clear local
+         * ghidra ends each planet pass with FLookupPlanet(-1,&pl)
+         * ------------------------------------------------------------ */
+        /* keep ghidra’s behavior: “write” via lookup(-1) side-effect */
+        FLookupPlanet(-1, &pl);
+
+    IncCur:
+        /* ------------------------------------------------------------
+         * asm: 10b8:442b..442f
+         * ------------------------------------------------------------ */
+        lpcdCur++;
+    }
+
+    /* ------------------------------------------------------------
+     * asm: 10b8:4440..4445
+     * ------------------------------------------------------------ */
+    cColDrop = 0;
 }
 
 void TossNonAutoBuildItems(PLANET *lppl) {
@@ -693,7 +1078,8 @@ void UpdateResearchStatus(int16_t fUsePool) {
                                     idm = idmRecentBreakthroughHasAlsoGivenHullType;
                                     iGoto = -3;
                                 } else {
-                                    if (grbitCur == hstTerra && GetRaceGrbit(&rgplr[i], ibitRaceTT) && (iItem == 8 || iItem == 0xc || iItem == 0x10)) {
+                                    if (grbitCur == hstTerra && GetRaceGrbit(&rgplr[i], ibitRaceTT) &&
+                                        (iItem == iterraGravityTerraform3 || iItem == iterraTempTerraform3 || iItem == iterraRadiationTerraform3)) {
                                         iItem++;
                                         goto ScanNextItem;
                                     }

@@ -4,12 +4,12 @@
 //
 
 // ======================================================================
-// Function: ReportDlg
+// Function: ReportWndProc
 // Address: 1108:0018
 // Segment: MEMORY_REPORT
 // ======================================================================
 
-long ReportDlg(HWND hwnd, WMType msg, ushort wParam, long lParam)
+long ReportWndProc(HWND hwnd, WMType msg, ushort wParam, long lParam)
 
 {
     int         iVar1;

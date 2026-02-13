@@ -5043,7 +5043,7 @@ void SendBattleMessages(FLEET *lpflBtl, short cplr, short idBtl, ushort *rgPlrLo
     short      cUsDead;
     FLEET     *lpflT;
     short      j;
-    short      idm;
+    MessageId  idm;
     short      i;
     short      cThemDead;
     FLEET     *lpfl;
@@ -5172,19 +5172,19 @@ void SendBattleMessages(FLEET *lpflBtl, short cplr, short idBtl, ushort *rgPlrLo
                         }
                         if (((pwUs == 0) && (fStarbaseDied != 0)) || ((pwUs != 0 && ((*pwUs & 0x3fff) != 0)))) {
                             if (((pwThem == 0) && (fStarbaseDamaged != 0)) || ((pwThem != 0 && ((*pwThem & 0x8000) != 0)))) {
-                                idm = 0x94;
+                                idm = idmBattleTookPlaceDestroyedWhichDamagedFray;
                             } else {
-                                idm = 0x92;
+                                idm = idmBattleTookPlaceDestroyedWhichTookDamage;
                             }
                             bVar3 = false;
                         } else if (((pwThem == 0) && (fStarbaseDied != 0)) || ((pwThem != 0 && ((*pwThem & 0x3fff) != 0)))) {
                             if (((pwUs == 0) && (fStarbaseDamaged != 0)) || ((pwUs != 0 && ((*pwUs & 0x8000) != 0)))) {
-                                idm = 0x93;
+                                idm = idmBattleTookPlaceDestroyedHoweverTookDamage;
                             } else {
-                                idm = 0x91;
+                                idm = idmBattleTookPlaceDestroyedTakingDamage;
                             }
                         } else {
-                            idm = 0x95;
+                            idm = idmBattleTookPlaceNeitherNorDestroyedIncident;
                         }
                         if (pwUs == 0) {
                             i = iplrStarbase << 5 | isb + 0x10U;
@@ -5223,19 +5223,19 @@ void SendBattleMessages(FLEET *lpflBtl, short cplr, short idBtl, ushort *rgPlrLo
                         }
                         if (((pwUs == 0) && (fStarbaseDied != 0)) || ((pwUs != 0 && ((*pwUs & 0x4000) == 0)))) {
                             if (((pwThem == 0) && (fStarbaseDamaged != 0)) || ((pwThem != 0 && ((*pwThem & 0x8000) != 0)))) {
-                                idm = 0x99;
+                                idm = idmBattleTookPlaceDestroyedWhichDamagedFray2;
                             } else {
-                                idm = 0x97;
+                                idm = idmBattleTookPlaceDestroyedWhichTookDamage2;
                             }
                             bVar3 = false;
                         } else if (((pwThem == 0) && (fStarbaseDied != 0)) || ((pwThem != 0 && ((*pwThem & 0x4000) == 0)))) {
                             if (((pwUs == 0) && (fStarbaseDamaged != 0)) || ((pwUs != 0 && ((*pwUs & 0x8000) != 0)))) {
-                                idm = 0x98;
+                                idm = idmBattleTookPlaceDestroyedHoweverTookDamage2;
                             } else {
-                                idm = 0x96;
+                                idm = idmBattleTookPlaceDestroyedTakingDamage2;
                             }
                         } else {
-                            idm = 0x9a;
+                            idm = idmBattleTookPlaceNeitherNorCompletelyDestroyed;
                         }
                         if (pwUs == 0) {
                             cUs = 1;
@@ -5422,12 +5422,12 @@ void SendBattleMessages(FLEET *lpflBtl, short cplr, short idBtl, ushort *rgPlrLo
             } else {
                 if (iplr == iplrStarbase) {
                     if ((lpopStarbase._2_2_ < 0) || ((lpopStarbase._2_2_ < 1 && ((uint)lpopStarbase < 0x3e9)))) {
-                        idm = 0x8e;
+                        idm = idmBattleTookPlaceDestroyedColonistsHaveJoined;
                     } else {
-                        idm = 0x8d;
+                        idm = idmBattleTookPlaceDestroyedScreamsColonistsEcho;
                     }
                 } else {
-                    idm = 0x144;
+                    idm = idmBattleTookPlaceDestroyedKillingColonistsBargain;
                 }
                 j = iplrStarbase << 5 | isb + 0x10U;
                 uVar9 = 0;

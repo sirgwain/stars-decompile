@@ -70,20 +70,6 @@ int16_t IdmGiveTraderPart(uint16_t grbitTrader, int16_t iplr, uint16_t *piGoto) 
     return idm;
 }
 
-void DrawThingGauge(uint16_t hdc, RECT *prc, THING *lpth, int16_t md) {
-    int16_t  iMode;
-    int16_t  cSections;
-    int16_t  fDisabled;
-    uint16_t rghbr[5];
-    int16_t  c;
-    int16_t  i;
-    int32_t  rgSize[5];
-    int32_t  lMax;
-    int32_t  l;
-
-    /* TODO: implement */
-}
-
 void FreeLpth(THING *lpth) {
     THING *end;
     size_t idx;
@@ -739,3 +725,20 @@ int16_t IValidateWormholePos(THING *lpthWorm) {
 
     return iRet;
 }
+
+#ifdef _WIN32
+
+void DrawThingGauge(uint16_t hdc, RECT *prc, THING *lpth, int16_t md) {
+    int16_t  iMode;
+    int16_t  cSections;
+    int16_t  fDisabled;
+    uint16_t rghbr[5];
+    int16_t  c;
+    int16_t  i;
+    int32_t  rgSize[5];
+    int32_t  lMax;
+    int32_t  l;
+
+    /* TODO: implement */
+}
+#endif /* _WIN32 */

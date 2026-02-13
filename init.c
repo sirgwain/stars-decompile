@@ -265,7 +265,7 @@ bool FCreateStuff(void) {
     lpfnFakeListProc   = MakeProcInstance(FakeListProc, hInst);
     lpfnHostTimerProc  = MakeProcInstance(HostTimerProc, hInst);
     lpfnBrowserDlgProc = MakeProcInstance(BrowserDlg, hInst);
-    lpfnReportDlgProc  = MakeProcInstance(ReportDlg, hInst);
+    lpfnReportDlgProc  = MakeProcInstance(ReportWndProc, hInst);
     lpfnGaugeDlgProc   = MakeProcInstance(ProgressGaugeDlg, hInst);
     */
 

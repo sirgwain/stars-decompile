@@ -31,28 +31,31 @@ enum {
 };
 
 /* functions */
-void    FileError(StringId ids);                                           /* MEMORY_IO:0x4a10 */
-void    StreamOpen(const char *szFile, MdOpenFlags mdOpen);                /* MEMORY_IO:0x52ae */
-void    UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan); /* MEMORY_IO:0x40ce */
-bool    FBadFileError(StringId ids);                                       /* MEMORY_IO:0x524e */
-void    ReadRtPlr(PLAYER *pplr, uint8_t *pbIn);                            /* MEMORY_IO:0x05e2 */
-void    UpdateBattleRecords(void);                                         /* MEMORY_IO:0x41ac */
-bool    FReadFleet(FLEET *lpfl);                                           /* MEMORY_IO:0x3a4c */
-bool    FLoadGame(const char *pszFileName, char *pszExt);                  /* MEMORY_IO:0x0810 */
-bool    FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);       /* MEMORY_IO:0x0006 */
-void    ReadRt(void);                                                      /* MEMORY_IO:0x5168 */
-bool    FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md);         /* MEMORY_IO:0x4ac2 */
-int16_t AskSaveDialog(void); /* PASCAL */                                  /* MEMORY_IO:0x432a */
-void    StreamClose(void);                                                 /* MEMORY_IO:0x53cc */
+void FileError(StringId ids);
+void StreamOpen(const char *szFile, MdOpenFlags mdOpen);
+void UnpackBattlePlan(uint8_t *lpb, BTLPLAN *lpbtlplan, int16_t iplan);
+bool FBadFileError(StringId ids);
+void ReadRtPlr(PLAYER *pplr, uint8_t *pbIn);
+void UpdateBattleRecords(void);
+bool FReadFleet(FLEET *lpfl);
+bool FLoadGame(const char *pszFileName, char *pszExt);
+bool FReadShDef(RTSHDEF *lprt, SHDEF *lpshdef, int16_t iplrLoad);
+void ReadRt(void);
+bool FOpenFile(DtFileType dt, int16_t iPlayer, MdOpenFlags md);
+void StreamClose(void);
 
-bool FNewTurnAvail(int16_t idPlayer);                                            /* MEMORY_IO:0x4f22 */
-void GetFileStatus(int16_t dt, int16_t iPlayer);                                 /* MEMORY_IO:0x4a60 */
-bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited); /* MEMORY_IO:0x3206 */
-void PromptSaveGame(void);                                                       /* MEMORY_IO:0x43ee */
-bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md);                 /* MEMORY_IO:0x4fb2 */
-bool FValidSerialLong(uint32_t lSerial);                                         /* MEMORY_IO:0x48c4 */
-void DestroyCurGame(void);                                                       /* MEMORY_IO:0x44b0 */
-void RgFromStream(void *rg, uint16_t cb);                                        /* MEMORY_IO:0x53f4 */
-bool FBogusLong(uint32_t lSerial);                                               /* MEMORY_IO:0x484c */
+bool FNewTurnAvail(int16_t idPlayer);
+void GetFileStatus(int16_t dt, int16_t iPlayer);
+bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited);
+bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md);
+bool FValidSerialLong(uint32_t lSerial);
+void DestroyCurGame(void);
+void RgFromStream(void *rg, uint16_t cb);
+bool FBogusLong(uint32_t lSerial);
+
+#ifdef _WIN32
+void             PromptSaveGame(void);
+INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+#endif
 
 #endif /* FILE_H_ */

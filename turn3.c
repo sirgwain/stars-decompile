@@ -103,8 +103,8 @@ FleetLoop:
      * asm: 10b0:67e8..6815-ish (masking *(uint16_t*)(&dirLong+2))
      * ------------------------------------------------------------ */
     if (iPass == 1) {
-        lpfl->dirLong &= ~(0x0020u << 16);
-        lpfl->dirLong &= ~(0x0040u << 16);
+        lpfl->fCompChg = 0;
+        lpfl->fTargeted = 0;
     }
 
     /* ------------------------------------------------------------
@@ -112,7 +112,7 @@ FleetLoop:
      * asm: 10b0:6815.. (tests wFlags_0004 bit10 and dirLong_hi bit7)
      * NOTE: bit10 is FLEET.fDead per types.h.
      * ------------------------------------------------------------ */
-    if (lpfl->fDead || (((uint32_t)lpfl->dirLong >> (16 + 7)) & 1u))
+    if (lpfl->fDead || lpfl->fSkipped)
         goto NextFleet;
 
     /* ------------------------------------------------------------

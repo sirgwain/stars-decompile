@@ -79,33 +79,6 @@ def get_decompiled_line_count(impl_status: dict, func_name: str) -> Optional[int
     return info.get("decompiled_line_count")
 
 
-def is_win32_function(impl_status: dict, func_name: str) -> bool:
-    """Return True if function is classified as win32 in implementation_status.json."""
-    funcs = impl_status.get("functions", {})
-    info = funcs.get(func_name)
-    if not info:
-        return False
-    return bool(info.get("win32", False))
-
-
-def get_func_file(impl_status: dict, func_name: str) -> Optional[str]:
-    """Return the source file name for a function (e.g., 'aiutil.c') if known."""
-    funcs = impl_status.get("functions", {})
-    info = funcs.get(func_name)
-    if not info:
-        return None
-    f = info.get("file")
-    return str(f) if f else None
-
-
-def is_ai_source_file(file_name: Optional[str]) -> bool:
-    """Return True if the file is in the ai*.c family (ai.c, ai2.c, aiutil.c, ...)."""
-    if not file_name:
-        return False
-    base = Path(file_name).name.lower()
-    return base.startswith("ai") and base.endswith(".c")
-
-
 def _ansi_256_color(n: int) -> str:
     return f"\033[38;5;{n}m"
 
@@ -634,69 +607,88 @@ def cmd_todo(args) -> None:
     )
 
 
-def cmd_unimplemented_all(args) -> None:
-    """List all unimplemented functions, grouped by non-win32/win32.
+def cmd_unimplemented_all(args: argparse.Namespace) -> None:
+    list_unimplemented_all(exclude_ai=args.exclude_ai, exclude_win32=args.exclude_win32)
 
-    Sorting: decompiled LOC descending (missing/unknown LOC sorted last).
 
-    Flags:
-      --exclude-ai    : skip any functions whose source file matches ai*.c
-      --exclude-win32 : skip functions classified as win32
+def list_unimplemented_all(*, exclude_ai: bool, exclude_win32: bool) -> None:
+    """List all unimplemented functions, grouped by non-win32/win32 and sorted by LOC.
+
+    Unimplemented = status in {stub, missing}.
+    Sorting: decompiled_line_count descending (unknown last), then file, then name.
+    Filters:
+      - exclude_ai: skip any functions in ai*.c
+      - exclude_win32: skip functions with win32 == True
     """
-    impl_status = load_implementation_status()
+    impl = load_implementation_status()
+    funcs = impl.get("functions")
+    if not isinstance(funcs, dict):
+        funcs = impl.get("by_function", {})
+    if not isinstance(funcs, dict):
+        print("implementation_status.json missing functions map", file=sys.stderr)
+        sys.exit(2)
 
-    funcs = impl_status.get("functions", {})
     rows = []
-    for name, info in funcs.items():
-        st = info.get("status", STATUS_MISSING)
-        if st not in (STATUS_STUB, STATUS_MISSING):
+    for name, ent in funcs.items():
+        if not isinstance(ent, dict):
+            continue
+        status = ent.get("status")
+        if status not in (STATUS_STUB, STATUS_MISSING):
             continue
 
-        file_name = info.get("file")
-        if getattr(args, "exclude_ai", False) and is_ai_source_file(file_name):
+        file = ent.get("file") or "?"
+        win32 = bool(ent.get("win32", False))
+
+        if exclude_win32 and win32:
             continue
+        if exclude_ai:
+            fbase = Path(str(file)).name
+            if fbase.startswith("ai") and fbase.endswith(".c"):
+                continue
 
-        win32 = bool(info.get("win32", False))
-        if getattr(args, "exclude_win32", False) and win32:
-            continue
+        loc = ent.get("decompiled_line_count")
+        try:
+            loc_i = int(loc) if loc is not None else None
+        except Exception:
+            loc_i = None
 
-        loc = info.get("decompiled_line_count")
-        loc_i = int(loc) if isinstance(loc, int) else (int(loc) if loc is not None else None)
+        root_file = ent.get("root_file") or ent.get("file") or "?"
+        root_line = ent.get("root_line") or ent.get("line")
+        dec_file = ent.get("decompiled_file") or "?"
+        dec_line = ent.get("decompiled_line")
 
-        rows.append(
-            {
-                "name": name,
-                "status": st,
-                "win32": win32,
-                "file": str(file_name) if file_name else "?",
-                "loc": loc_i,
-            }
-        )
+        rows.append((win32, file, name, status, loc_i, root_file, root_line, dec_file, dec_line))
 
-    def sort_key(r: dict) -> tuple:
-        # LOC descending; unknown LOC sorted last.
-        loc = r["loc"]
-        loc_sort = -loc if loc is not None else 10**12
-        return (loc_sort, r["status"], r["name"])
+    def sort_key(r):
+        win32, file, name, status, loc_i, *_ = r
+        loc_sort = loc_i if loc_i is not None else -10**9
+        unknown = (loc_i is None)
+        return (-loc_sort, unknown, file, name)
 
     rows.sort(key=sort_key)
 
-    def emit_group(title: str, want_win32: bool) -> None:
-        group = [r for r in rows if r["win32"] == want_win32]
-        if not group:
-            return
-        print(f"{title}:")
-        for r in group:
-            loc_s = str(r["loc"]) if r["loc"] is not None else "?"
-            print(f"  {loc_s:>5}  {status_tag(r['status']):<7}  {r['file']:<12}  {r['name']}")
-        print()
+    def fmt_row(r):
+        win32, file, name, status, loc_i, root_file, root_line, dec_file, dec_line = r
+        loc_s = f"{loc_i:5d}" if loc_i is not None else "    ?"
+        status_s = "STUB" if status == STATUS_STUB else "MISSING"
+        root_line_s = str(root_line) if root_line is not None else "?"
+        dec_line_s = str(dec_line) if dec_line is not None else "?"
+        return (f"{loc_s}  {status_s:<7} {file:<12} {name:<28} "
+                f"root={root_file}:{root_line_s}  dec={dec_file}:{dec_line_s}")
 
-    if not getattr(args, "exclude_win32", False):
-        emit_group("non-win32", False)
-        emit_group("win32", True)
-    else:
-        emit_group("non-win32", False)
+    non = [r for r in rows if not r[0]]
+    win = [r for r in rows if r[0]]
 
+    if non:
+        print("non-win32:")
+        for r in non:
+            print("    " + fmt_row(r))
+    if win and not exclude_win32:
+        if non:
+            print()
+        print("win32:")
+        for r in win:
+            print("    " + fmt_row(r))
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -736,6 +728,23 @@ def main() -> None:
     add_common_flags(unimpl_parser)
     unimpl_parser.set_defaults(func=cmd_unimplemented)
 
+    unimpl_all_parser = subparsers.add_parser(
+        "unimplemented-all",
+        help="List all unimplemented functions, grouped by win32/non-win32 and sorted by LOC",
+    )
+    unimpl_all_parser.add_argument(
+        "--exclude-ai",
+        action="store_true",
+        help="Exclude any functions in ai*.c",
+    )
+    unimpl_all_parser.add_argument(
+        "--exclude-win32",
+        action="store_true",
+        help="Exclude win32 functions",
+    )
+    add_common_flags(unimpl_all_parser)
+    unimpl_all_parser.set_defaults(func=cmd_unimplemented_all)
+
     todo_parser = subparsers.add_parser(
         "todo",
         help="Show implementation frontiers (implemented -> first unimplemented)",
@@ -762,25 +771,6 @@ def main() -> None:
     )
     add_common_flags(todo_parser)
     todo_parser.set_defaults(func=cmd_todo)
-
-    unimpl_all_parser = subparsers.add_parser(
-        "unimplemented-all",
-        help=(
-            "List all unimplemented functions (STUB+MISSING), grouped by win32/non-win32 "
-            "and sorted by decompiled LOC (desc)."
-        ),
-    )
-    unimpl_all_parser.add_argument(
-        "--exclude-ai",
-        action="store_true",
-        help="Exclude any functions defined in ai*.c (ai.c, ai2.c, aiutil.c, ...).",
-    )
-    unimpl_all_parser.add_argument(
-        "--exclude-win32",
-        action="store_true",
-        help="Exclude functions classified as win32.",
-    )
-    unimpl_all_parser.set_defaults(func=cmd_unimplemented_all)
 
     args = parser.parse_args()
     if args.command is None:

@@ -5,6 +5,7 @@
 #include "debuglog.h"
 #include "globals.h"
 #include "port.h"
+#include "resource.h"
 #include "strings.h"
 #include "types.h"
 
@@ -1623,12 +1624,6 @@ LBadFile:
     return false;
 }
 
-int16_t AskSaveDialog(void) {
-
-    /* TODO: implement */
-    return 0;
-}
-
 void StreamClose(void) { Stars_CloseFile(&hf); }
 
 bool FNewTurnAvail(int16_t idPlayer) {
@@ -1866,13 +1861,6 @@ bool FReadPlanet(int16_t iPlayer, PLANET *lppl, bool fHistory, bool fPreInited) 
     return true;
 }
 
-void PromptSaveGame(void) {
-    int16_t (*lpProc)(void);
-    int16_t fRet;
-
-    /* TODO: implement */
-}
-
 bool FCheckFile(DtFileType dt, int16_t iPlayer, MdCheckType md) {
     bool     fReturn = false;
     bool     fOpened;
@@ -1984,7 +1972,9 @@ void DestroyCurGame(void) {
     }
 
     if (idPlayer != iPlayerNil && game.fDirty) {
+#ifdef _WIN32
         PromptSaveGame();
+#endif
     }
 
     ResetHb(htPlanets);
@@ -2161,3 +2151,40 @@ bool FBogusLong(uint32_t lSerial) {
     // no serials in the port
     return false;
 }
+
+#ifdef _WIN32
+INT_PTR CALLBACK AskSaveDialog(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    switch (message) {
+    case WM_INITDIALOG:
+        return TRUE;
+
+    case WM_COMMAND:
+        if (wParam == IDC_SAVE || wParam == IDC_NO || wParam == IDC_SAVESUBMIT) {
+            EndDialog(hwnd, wParam == IDC_NO ? FALSE : (wParam == IDC_SAVESUBMIT ? -1 : TRUE));
+            return TRUE;
+        } else if (wParam == IDC_HELP) {
+            WinHelp(hwnd, szHelpFile, HELP_CONTEXT, idhSaveFileCommands);
+            return TRUE;
+        }
+        break;
+
+    case WM_DESTROY:
+        break;
+    }
+
+    return FALSE;
+}
+
+void PromptSaveGame(void) {
+    INT_PTR fRet;
+
+    fRet = DialogBox(hInst, game.fSinglePlr ? MAKEINTRESOURCE(IDD_SAVE_TURN_SINGLE_PLAYER) : MAKEINTRESOURCE(IDD_SAVE_TURN), hwndFrame, AskSaveDialog);
+
+    if (fRet) {
+        gd.fSubmit = (fRet == -1);
+        FWriteLogFile(szBase, idPlayer);
+        FWriteHistFile(idPlayer);
+    }
+}
+
+#endif

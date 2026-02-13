@@ -3383,7 +3383,8 @@ typedef enum DialogId {
     /* relations / diplomacy */
     IDD_RELATIONS = 2008, /* RelationsDlg */
 
-    IDD_SAVE_TURN = 2025, /* Save  */
+    IDD_SAVE_TURN1 = 1068, /* Save  */
+    IDD_SAVE_TURN2 = 2025, /* Save  */
 
     /* tutorial / panic */
     IDD_PANIC = 2504, /* PanicDlg */

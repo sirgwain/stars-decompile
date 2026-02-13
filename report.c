@@ -214,22 +214,43 @@ INT_PTR CALLBACK ScoreXDlg(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 // Renamed from ReportDlg, because it's used like a window, not a dialog
 LRESULT CALLBACK ReportWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    HDC         hdc;
-    HMENU       hmenu;
-    RECT        rc;
-    int16_t     i;
-    uint16_t    swp;
-    int16_t     iCur;
-    int16_t     idm;
-    int16_t     dx;
-    int16_t     cRow;
-    POINT       pt;
-    int16_t     iNew;
-    int16_t     ibit;
-    int16_t     iCol;
-    int16_t     iRow;
-    int16_t     xCur;
-    PAINTSTRUCT ps;
+    /* locals (function scope) */
+    HDC     hdc;    /* [BP-6]  */
+    HMENU   hmenu;  /* [BP-8]  */
+    RECT    rc;     /* [BP-16] */
+    int16_t i;      /* [BP-18] */
+    int16_t dx;     /* [BP-20] */
+
+    /* locals (block 2) */
+    uint16_t swp;   /* [BP-18] */
+    int16_t  cRow;  /* [BP-20] */
+    // int16_t  dx;    /* [BP-22] */
+
+    /* locals (block 3) */
+    POINT    pt;    /* [BP-20] */
+    // int16_t  i;     /* [BP-22] */
+    int16_t  ibit;  /* [BP-24] */
+    int16_t  iCol;  /* [BP-26] */
+    int16_t  iRow;  /* [BP-28] */
+    int16_t  xCur;  /* [BP-30] */
+
+    /* locals (block 4) */
+    int16_t  iCur;  /* [BP-18] */
+    int16_t  iNew;  /* [BP-20] */
+
+    /* locals (block 5) */
+    // int16_t  iCur;  /* [BP-18] */
+    // int16_t  iNew;  /* [BP-20] */
+
+    /* locals (block 6) */
+    // int16_t  i;     /* [BP-22] */
+    // int16_t  ibit;  /* [BP-24] */
+
+    /* locals (block 7) */
+    PAINTSTRUCT ps; /* [BP-48] */
+
+    /* locals (block 8) */
+    int16_t idm;    /* [BP-18] */
 
     switch (msg) {
     case WM_CREATE:

@@ -449,7 +449,7 @@ long MessageWndProc(HWND hwnd, WMType message, ushort wParam, long lParam)
                         break;
                     case 9:
                         szWork[200] = '\x02';
-                        local_2e = (POINT)MakeProcInstance(MsgDlg, hInst);
+                        local_2e = (POINT)MakeProcInstance(SerialDlg, hInst);
                         HVar6 = hwndTitle;
                         if (hwndTitle == 0) {
                             HVar6 = hwndFrame;
@@ -1805,12 +1805,12 @@ char *PszFormatString(char *pszFormat, short *pParamsReal)
 }
 
 // ======================================================================
-// Function: MsgDlg
+// Function: SerialDlg
 // Address: 1030:8f68
 // Segment: MEMORY_MSG
 // ======================================================================
 
-short MsgDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
+short SerialDlg(HWND hwnd, WMType message, ushort wParam, long lParam)
 
 {
     HWND        HVar1;

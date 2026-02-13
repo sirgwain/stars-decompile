@@ -1579,7 +1579,7 @@ void DropColonists(void)
                 FLookupPlanet(sVar8, &pl);
                 sVar9 = pl.iPlayer;
                 CalcPctSurvive(&pl, &pctSurvive, 0);
-                pctSurvive = (fRam11201d8e - pctSurvive) / fRam11201d92 + pctSurvive;
+                pctSurvive = (FLOAT_1120_1d8e - pctSurvive) / FLOAT_1120_1d92 + pctSurvive;
                 lpcdLook = lpcdCur;
                 while ((COLDROP *)lpcdLook < pCVar10) {
                     uVar14 = (undefined2)((ulong)lpcdLook >> 0x10);

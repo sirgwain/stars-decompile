@@ -27,7 +27,7 @@ void     ExpandRc(RECT *prc, int16_t dx, int16_t dy);
 int16_t  ReadBigBlock(int16_t hFile, char *lpBuffer, uint32_t dwSize);
 char    *PszFromLongK(int32_t l, int16_t *pcch);
 uint32_t GetDiskSerialNumber(void);
-int16_t  FIntersectCircleLine(POINT ptL1, POINT ptL2, POINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd);
+int16_t  FIntersectCircleLine(STARSPOINT ptL1, STARSPOINT ptL2, STARSPOINT ptC, int32_t r2, int16_t dMax, int16_t *pdStart, int16_t *pdEnd);
 void     Randomize2(uint32_t dw);
 void     Randomize(uint32_t dw);
 int16_t  CchGetString(StringId ids, char *psz);
